@@ -32,7 +32,7 @@ namespace
 
         print_spinner();
 
-        array2d<unsigned char>::kernel_1a_c img1, img2;
+        array2d<unsigned char> img1, img2;
 
         img1.set_size(100,100);
 
@@ -66,7 +66,7 @@ namespace
         }
 
         {
-            array2d<hsi_pixel>::kernel_1a img;
+            array2d<hsi_pixel> img;
             img.set_size(14,15);
             for (long r = 0; r < 14; ++r)
             {
@@ -106,7 +106,7 @@ namespace
 
 
         {
-            array2d<rgb_alpha_pixel>::kernel_1a img;
+            array2d<rgb_alpha_pixel> img;
             img.set_size(14,15);
             for (long r = 0; r < 14; ++r)
             {
@@ -144,10 +144,110 @@ namespace
             }
         }
 
+#ifdef DLIB_PNG_SUPPORT
+        {
+            array2d<rgb_alpha_pixel> img;
+            img.set_size(14,15);
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    img[r][c].red = static_cast<unsigned char>(r*14 + c + 1);
+                    img[r][c].green = static_cast<unsigned char>(r*14 + c + 2);
+                    img[r][c].blue = static_cast<unsigned char>(r*14 + c + 3);
+                    img[r][c].alpha = static_cast<unsigned char>(r*14 + c + 4);
+                }
+            }
+
+            save_png(img, "test.png");
+
+            img.clear();
+            DLIB_TEST(img.nr() == 0);
+            DLIB_TEST(img.nc() == 0);
+
+            load_png(img, "test.png");
+            
+            DLIB_TEST(img.nr() == 14);
+            DLIB_TEST(img.nc() == 15);
+
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    DLIB_TEST(img[r][c].red == r*14 + c + 1);
+                    DLIB_TEST(img[r][c].green == r*14 + c + 2);
+                    DLIB_TEST(img[r][c].blue == r*14 + c + 3);
+                    DLIB_TEST(img[r][c].alpha == r*14 + c + 4);
+                }
+            }
+        }
+#endif // DLIB_PNG_SUPPORT
+
 
 
         {
-            array2d<rgb_pixel>::kernel_1a img;
+            array2d<rgb_pixel> img;
+            img.set_size(14,15);
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    img[r][c].red = static_cast<unsigned char>(r*14 + c + 1);
+                    img[r][c].green = static_cast<unsigned char>(r*14 + c + 2);
+                    img[r][c].blue = static_cast<unsigned char>(r*14 + c + 3);
+                }
+            }
+
+            ostringstream sout;
+            save_dng(img, sout);
+            save_bmp(img, sout);
+            save_dng(img, sout);
+            save_bmp(img, sout);
+            istringstream sin(sout.str());
+
+            for (int i  = 0; i < 2; ++i)
+            {
+                img.clear();
+                DLIB_TEST(img.nr() == 0);
+                DLIB_TEST(img.nc() == 0);
+
+                load_dng(img, sin);
+
+                DLIB_TEST(img.nr() == 14);
+                DLIB_TEST(img.nc() == 15);
+
+                for (long r = 0; r < 14; ++r)
+                {
+                    for (long c = 0; c < 15; ++c)
+                    {
+                        DLIB_TEST(img[r][c].red == r*14 + c + 1);
+                        DLIB_TEST(img[r][c].green == r*14 + c + 2);
+                        DLIB_TEST(img[r][c].blue == r*14 + c + 3);
+                    }
+                }
+
+                img.clear();
+                DLIB_TEST(img.nr() == 0);
+                DLIB_TEST(img.nc() == 0);
+
+                load_bmp(img, sin);
+
+                DLIB_TEST(img.nr() == 14);
+                DLIB_TEST(img.nc() == 15);
+
+                for (long r = 0; r < 14; ++r)
+                {
+                    for (long c = 0; c < 15; ++c)
+                    {
+                        DLIB_TEST_MSG(img[r][c].red == r*14 + c + 1, "got " << (int)img[r][c].red << "  but expected " << r*14 + c + 1);
+                        DLIB_TEST(img[r][c].green == r*14 + c + 2);
+                        DLIB_TEST(img[r][c].blue == r*14 + c + 3);
+                    }
+                }
+            }
+        }
+        {
+            array2d<bgr_pixel> img;
             img.set_size(14,15);
             for (long r = 0; r < 14; ++r)
             {
@@ -208,17 +308,87 @@ namespace
             }
         }
 
-
-
-
+#ifdef DLIB_PNG_SUPPORT
         {
-            array2d<unsigned short>::kernel_1a img;
+            array2d<rgb_pixel> img;
             img.set_size(14,15);
             for (long r = 0; r < 14; ++r)
             {
                 for (long c = 0; c < 15; ++c)
                 {
-                    img[r][c] = static_cast<unsigned short>(r*14 + c + 0xFF);
+                    img[r][c].red = static_cast<unsigned char>(r*14 + c + 1);
+                    img[r][c].green = static_cast<unsigned char>(r*14 + c + 2);
+                    img[r][c].blue = static_cast<unsigned char>(r*14 + c + 3);
+                }
+            }
+
+            save_png(img, "test.png");
+
+            img.clear();
+            DLIB_TEST(img.nr() == 0);
+            DLIB_TEST(img.nc() == 0);
+
+            load_png(img, "test.png");
+
+            DLIB_TEST(img.nr() == 14);
+            DLIB_TEST(img.nc() == 15);
+
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    DLIB_TEST(img[r][c].red == r*14 + c + 1);
+                    DLIB_TEST(img[r][c].green == r*14 + c + 2);
+                    DLIB_TEST(img[r][c].blue == r*14 + c + 3);
+                }
+            }
+        }
+        {
+            array2d<bgr_pixel> img;
+            img.set_size(14,15);
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    img[r][c].red = static_cast<unsigned char>(r*14 + c + 1);
+                    img[r][c].green = static_cast<unsigned char>(r*14 + c + 2);
+                    img[r][c].blue = static_cast<unsigned char>(r*14 + c + 3);
+                }
+            }
+
+            save_png(img, "test.png");
+
+            img.clear();
+            DLIB_TEST(img.nr() == 0);
+            DLIB_TEST(img.nc() == 0);
+
+            load_png(img, "test.png");
+
+            DLIB_TEST(img.nr() == 14);
+            DLIB_TEST(img.nc() == 15);
+
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    DLIB_TEST(img[r][c].red == r*14 + c + 1);
+                    DLIB_TEST(img[r][c].green == r*14 + c + 2);
+                    DLIB_TEST(img[r][c].blue == r*14 + c + 3);
+                }
+            }
+        }
+#endif // DLIB_PNG_SUPPORT
+
+
+
+        {
+            array2d<unsigned short> img;
+            img.set_size(14,15);
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    img[r][c] = static_cast<unsigned short>(r*14 + c + 0xF0);
                 }
             }
 
@@ -239,15 +409,49 @@ namespace
             {
                 for (long c = 0; c < 15; ++c)
                 {
-                    DLIB_TEST(img[r][c] == r*14 + c + 0xFF);
+                    DLIB_TEST(img[r][c] == r*14 + c + 0xF0);
                 }
             }
         }
 
 
+#ifdef DLIB_PNG_SUPPORT
+        {
+            array2d<unsigned short> img;
+            img.set_size(14,15);
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    img[r][c] = static_cast<unsigned short>(r*14 + c + 0xF0);
+                }
+            }
+
+            save_png(img, "test.png");
+
+            img.clear();
+            DLIB_TEST(img.nr() == 0);
+            DLIB_TEST(img.nc() == 0);
+
+            load_png(img, "test.png");
+            
+            DLIB_TEST(img.nr() == 14);
+            DLIB_TEST(img.nc() == 15);
+
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    DLIB_TEST(img[r][c] == r*14 + c + 0xF0);
+                }
+            }
+        }
+#endif // DLIB_PNG_SUPPORT
+
+
 
         {
-            array2d<unsigned char>::kernel_1a img;
+            array2d<unsigned char> img;
             img.set_size(14,15);
             for (long r = 0; r < 14; ++r)
             {
@@ -303,12 +507,46 @@ namespace
             }
         }
 
+
+#ifdef DLIB_PNG_SUPPORT
+        {
+            array2d<unsigned char> img;
+            img.set_size(14,15);
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    img[r][c] = static_cast<unsigned char>(r*14 + c);
+                }
+            }
+
+            save_png(img, "test.png");
+
+            img.clear();
+            DLIB_TEST(img.nr() == 0);
+            DLIB_TEST(img.nc() == 0);
+
+            load_png(img, "test.png");
+
+            DLIB_TEST(img.nr() == 14);
+            DLIB_TEST(img.nc() == 15);
+
+            for (long r = 0; r < 14; ++r)
+            {
+                for (long c = 0; c < 15; ++c)
+                {
+                    DLIB_TEST(img[r][c] == r*14 + c);
+                }
+            }
+
+        }
+#endif // DLIB_PNG_SUPPORT
 
 
         {
             // in this test we will only assign pixel values that can be
             // represented with 8 bits even though we are using a wider pixel type.
-            array2d<unsigned short>::kernel_1a img;
+            array2d<unsigned short> img;
             img.set_size(14,15);
             for (long r = 0; r < 14; ++r)
             {
@@ -365,8 +603,8 @@ namespace
         }
 
         {
-            array2d<unsigned short>::kernel_1a_c img1;
-            array2d<unsigned char>::kernel_1a_c img2;
+            array2d<unsigned short> img1;
+            array2d<unsigned char> img2;
             img1.set_size(10,10);
             assign_all_pixels(img1, 0);
 
@@ -394,7 +632,7 @@ namespace
         }
 
         {
-            array2d<unsigned char>::kernel_1a_c img;
+            array2d<unsigned char> img;
             img.set_size(10,10);
             assign_all_pixels(img, 0);
 
@@ -419,7 +657,7 @@ namespace
         }
 
         {
-            array2d<unsigned char>::kernel_1a_c img;
+            array2d<unsigned char> img;
             img.set_size(11,11);
             assign_all_pixels(img, 0);
 
@@ -451,7 +689,7 @@ namespace
     {
         dlib::rand rnd;
 
-        array2d<unsigned char>::kernel_1a_c img;
+        array2d<unsigned char> img;
         integral_image int_img;
 
         int_img.load(img);

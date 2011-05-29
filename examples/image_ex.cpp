@@ -34,39 +34,30 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        // Here we open the image file.  Note that when you open a binary file with 
-        // the C++ ifstream you must supply the ios::binary flag.
-        ifstream fin(argv[1],ios::binary);
-        if (!fin)
-        {
-            cout << "error, can't find " << argv[1] << endl;
-            return 1;
-        }
-
         // Here we declare an image object that can store rgb_pixels.  Note that in 
         // dlib there is no explicit image object, just a 2D array and
         // various pixel types.  
-        array2d<rgb_pixel>::kernel_1a img;
+        array2d<rgb_pixel> img;
 
-        // now load the bmp file into our image.  If the file isn't really a BMP
-        // or is corrupted then load_bmp() will throw an exception.
-        load_bmp(img, fin);
+        // Now load the image file into our image.  If something is wrong then
+        // load_image() will throw an exception.  Also, if you compiled with libpng
+        // and libjpeg then load_image() can also load PNG and JPEG files in addition
+        // to BMP files.
+        load_image(img, argv[1]);
 
         // Now lets use some image functions.  This example is going to perform
         // simple edge detection on the image.  First lets find the horizontal and
         // vertical gradient images.
-        array2d<short>::kernel_1a horz_gradient, vert_gradient;
-        array2d<unsigned char>::kernel_1a edge_image;
-        sobel_edge_detector(img,horz_gradient, vert_gradient);
+        array2d<short> horz_gradient, vert_gradient;
+        array2d<unsigned char> edge_image;
+        sobel_edge_detector(img, horz_gradient, vert_gradient);
 
         // now we do the non-maximum edge suppression step so that our edges are nice and thin
         suppress_non_maximum_edges(horz_gradient, vert_gradient, edge_image); 
 
-        // Now we would like to see what our images look like.  So lets use our 
-        // window to display them on the screen.
-
-
-        // create a window to display the edge image 
+        // Now we would like to see what our images look like.  So lets use a 
+        // window to display them on the screen.  (Note that you can zoom into 
+        // the window by holding CTRL and scrolling the mouse wheel)
         image_window my_window(edge_image);
 
         // also make a window to display the original image
