@@ -158,6 +158,18 @@ namespace dlib
             return (val-mean())/std::sqrt(variance());
         }
 
+        template <typename U>
+        friend void serialize (
+            const running_stats<U>& item, 
+            std::ostream& out 
+        );
+
+        template <typename U>
+        friend void deserialize (
+            running_stats<U>& item, 
+            std::istream& in
+        ); 
+
     private:
         T sum;
         T sum_sqr;
@@ -166,6 +178,34 @@ namespace dlib
         T min_value;
         T max_value;
     };
+
+    template <typename T>
+    void serialize (
+        const running_stats<T>& item, 
+        std::ostream& out 
+    )
+    {
+        serialize(item.sum, out);
+        serialize(item.sum_sqr, out);
+        serialize(item.n, out);
+        serialize(item.maximum_n, out);
+        serialize(item.min_value, out);
+        serialize(item.max_value, out);
+    }
+
+    template <typename T>
+    void deserialize (
+        running_stats<T>& item, 
+        std::istream& in
+    ) 
+    {
+        deserialize(item.sum, in);
+        deserialize(item.sum_sqr, in);
+        deserialize(item.n, in);
+        deserialize(item.maximum_n, in);
+        deserialize(item.min_value, in);
+        deserialize(item.max_value, in);
+    }
 
 // ----------------------------------------------------------------------------------------
 
@@ -342,6 +382,137 @@ namespace dlib
         T sum_yy;
         T n;
     };
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T, 
+        typename alloc
+        >
+    double mean_sign_agreement (
+        const std::vector<T,alloc>& a,
+        const std::vector<T,alloc>& b
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(a.size() == b.size(),
+                    "\t double mean_sign_agreement(a,b)"
+                    << "\n\t a and b must be the same length."
+                    << "\n\t a.size(): " << a.size()
+                    << "\n\t b.size(): " << b.size()
+        );
+
+        
+        double temp = 0;
+        for (unsigned long i = 0; i < a.size(); ++i)
+        {
+            if (a[i] >= 0 && b[i] >= 0 ||
+                a[i] < 0  && b[i] <  0)
+            {
+                temp += 1;
+            }
+        }
+
+        return temp/a.size();
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T, 
+        typename alloc
+        >
+    double correlation (
+        const std::vector<T,alloc>& a,
+        const std::vector<T,alloc>& b
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(a.size() == b.size() && a.size() > 1,
+                    "\t double correlation(a,b)"
+                    << "\n\t a and b must be the same length and have more than one element."
+                    << "\n\t a.size(): " << a.size()
+                    << "\n\t b.size(): " << b.size()
+        );
+
+        running_scalar_covariance<double> rs;
+        for (unsigned long i = 0; i < a.size(); ++i)
+        {
+            rs.add(a[i], b[i]);
+        }
+        return rs.correlation();
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T, 
+        typename alloc
+        >
+    double covariance (
+        const std::vector<T,alloc>& a,
+        const std::vector<T,alloc>& b
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(a.size() == b.size() && a.size() > 1,
+                    "\t double covariance(a,b)"
+                    << "\n\t a and b must be the same length and have more than one element."
+                    << "\n\t a.size(): " << a.size()
+                    << "\n\t b.size(): " << b.size()
+        );
+
+        running_scalar_covariance<double> rs;
+        for (unsigned long i = 0; i < a.size(); ++i)
+        {
+            rs.add(a[i], b[i]);
+        }
+        return rs.covariance();
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T, 
+        typename alloc
+        >
+    double r_squared (
+        const std::vector<T,alloc>& a,
+        const std::vector<T,alloc>& b
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(a.size() == b.size() && a.size() > 1,
+                    "\t double r_squared(a,b)"
+                    << "\n\t a and b must be the same length and have more than one element."
+                    << "\n\t a.size(): " << a.size()
+                    << "\n\t b.size(): " << b.size()
+        );
+
+        return std::pow(correlation(a,b),2.0);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T, 
+        typename alloc
+        >
+    double mean_squared_error (
+        const std::vector<T,alloc>& a,
+        const std::vector<T,alloc>& b
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(a.size() == b.size(),
+                    "\t double mean_squared_error(a,b)"
+                    << "\n\t a and b must be the same length."
+                    << "\n\t a.size(): " << a.size()
+                    << "\n\t b.size(): " << b.size()
+        );
+
+        return mean(squared(matrix_cast<double>(vector_to_matrix(a))-matrix_cast<double>(vector_to_matrix(b))));
+    }
 
 // ----------------------------------------------------------------------------------------
 

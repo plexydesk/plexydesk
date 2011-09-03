@@ -69,7 +69,7 @@ namespace dlib
             ensures
                 - interprets p as a point in a parent image and returns the
                   point in a downsampled image which corresponds to p.
-                - This function is the inverse of point_up().  I.e. for an point P:
+                - This function is the inverse of point_up().  I.e. for a point P:
                   point_down(point_up(P)) == P
         !*/
 
@@ -81,7 +81,7 @@ namespace dlib
             ensures
                 - interprets p as a point in a downsampled image and returns the
                   point in a parent image which corresponds to p.
-                - This function is the inverse of point_down().  I.e. for an point P:
+                - This function is the inverse of point_down().  I.e. for a point P:
                   point_up(point_down(P)) == P
         !*/
 
@@ -152,6 +152,45 @@ namespace dlib
         !*/
 
     };
+
+// ----------------------------------------------------------------------------------------
+
+    class pyramid_down_3_2 : noncopyable
+    {
+        /*!
+            WHAT THIS OBJECT REPRESENTS
+                This is a function object with an interface identical to pyramid_down (defined
+                at the top of this file) except that it downsamples images at a ratio of 3 to 2
+                instead of 2 to 1.
+        !*/
+    };
+
+
+// ----------------------------------------------------------------------------------------
+
+    class pyramid_down_4_3 : noncopyable
+    {
+        /*!
+            WHAT THIS OBJECT REPRESENTS
+                This is a function object with an interface identical to pyramid_down (defined
+                at the top of this file) except that it downsamples images at a ratio of 4 to 3
+                instead of 2 to 1.
+        !*/
+    };
+
+// ----------------------------------------------------------------------------------------
+
+    class pyramid_down_5_4 : noncopyable
+    {
+        /*!
+            WHAT THIS OBJECT REPRESENTS
+                This is a function object with an interface identical to pyramid_down (defined
+                at the top of this file) except that it downsamples images at a ratio of 5 to 4
+                instead of 2 to 1.
+        !*/
+    };
+
+// ----------------------------------------------------------------------------------------
 
 }
 

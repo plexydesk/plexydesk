@@ -5,7 +5,7 @@
 
 
 #include "array2d/array2d_kernel_1.h"
-#include "algs.h"
+#include "array2d/serialize_pixel_overloads.h"
 
 #endif // DLIB_ARRAY2d_
 

@@ -6,8 +6,10 @@
    This work is published from United States. 
 -->
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-   <xsl:output method='html' version='1.0' encoding='UTF-8' indent='yes' />
+   <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+   <xsl:output method='html' version='1.0' encoding='UTF-8' indent='no' />
+   <xsl:strip-space elements="*" />
+   <xsl:preserve-space elements="pre code_box preserve_space" />
    
    
    <!-- ************************************************************************* -->
@@ -47,214 +49,238 @@
    <xsl:template match="/doc">
       <html>
          <head>
-            <!-- Verify with Google -->
-            <meta name="verify-v1" content="{$google_verify_id}" />
-            <meta name="google-site-verification" content="{$google_verify_id2}" />
-            <title>
-               <xsl:value-of select="$project_name"/>
-               <xsl:if test="title">
-               - <xsl:value-of select="title" />
-               </xsl:if>
-            </title>
+<!-- Verify with Google -->
+<meta name="verify-v1" content="{$google_verify_id}" />
+<meta name="google-site-verification" content="{$google_verify_id2}" />
+<title>
+   <xsl:value-of select="$project_name"/>
+   <xsl:if test="title">
+   - <xsl:value-of select="title" />
+   </xsl:if>
+</title>
 
 
-      <xsl:if test="$is_chm != 'true'">
-            <!-- Piwik -->
-            <script type="text/javascript">
-            var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/dclib/" : "http://apps.sourceforge.net/piwik/dclib/");
-            document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-            </script><script type="text/javascript">
-            piwik_action_name = '';
-            piwik_idsite = 1;
-            piwik_url = pkBaseURL + "piwik.php";
-            piwik_log(piwik_action_name, piwik_idsite, piwik_url);
-            </script>
-            <object><noscript><p><img src="http://apps.sourceforge.net/piwik/dclib/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
-            <!-- End Piwik Tag -->
-       </xsl:if>
+<xsl:if test="$is_chm != 'true'">
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/dclib/" : "http://apps.sourceforge.net/piwik/dclib/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/dclib/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+</xsl:if>
 
 
 
-            <!-- [client side code for collapsing and unfolding branches] -->
-            <script language="JavaScript">
+<!-- [client side code for collapsing and unfolding branches] -->
+<script language="JavaScript">
 
-            // ---------------------------------------------
-            // --- Name:    Easy DHTML Treeview           --
-            // --- Author:  D.D. de Kerf                  --
-            // --- Version: 0.2          Date: 13-6-2001  --
-            // ---------------------------------------------
-            function Toggle(node)
+// ---------------------------------------------
+// --- Name:    Easy DHTML Treeview           --
+// --- Author:  D.D. de Kerf                  --
+// --- Version: 0.2          Date: 13-6-2001  --
+// ---------------------------------------------
+function Toggle(node)
+{
+   // Unfold the branch if it isn't visible
+   var next_node = node.nextSibling;
+   if (next_node.style.display == 'none')
+   {
+      // Change the image (if there is an image)
+      if (node.childNodes.length > 0)
+      {
+         if (node.childNodes.length > 0)
+         { 
+            if (node.childNodes.item(0).nodeName == "IMG")
             {
-               // Unfold the branch if it isn't visible
-               var next_node = node.nextSibling;
-               if (next_node.style.display == 'none')
-               {
-                  // Change the image (if there is an image)
-                  if (node.childNodes.length > 0)
-                  {
-                     if (node.childNodes.length > 0)
-                     { 
-                        if (node.childNodes.item(0).nodeName == "IMG")
-                        {
-                           node.childNodes.item(0).src = "minus.gif";
-                        }
-                     }
-                  }
-
-                  next_node.style.display = 'block';
-               }
-               // Collapse the branch if it IS visible
-               else
-               {
-                  // Change the image (if there is an image)
-                  if (node.childNodes.length > 0)
-                  {
-                     if (node.childNodes.length > 0)
-                     { 
-                        if (node.childNodes.item(0).nodeName == "IMG")
-                        {
-                           node.childNodes.item(0).src = "plus.gif";
-                        }
-                     }
-                  }
-
-                  next_node.style.display = 'none';
-               }
-
+               node.childNodes.item(0).src = "minus.gif";
             }
-            function BigToggle(node)
+         }
+      }
+
+      next_node.style.display = 'block';
+   }
+   // Collapse the branch if it IS visible
+   else
+   {
+      // Change the image (if there is an image)
+      if (node.childNodes.length > 0)
+      {
+         if (node.childNodes.length > 0)
+         { 
+            if (node.childNodes.item(0).nodeName == "IMG")
             {
-               // Unfold the branch if it isn't visible
-               var next_node = node.nextSibling;
-               if (next_node.style.display == 'none')
-               {
-                  // Change the image (if there is an image)
-                  if (node.childNodes.length > 0)
-                  {
-                     if (node.childNodes.length > 0)
-                     { 
-                        if (node.childNodes.item(0).nodeName == "IMG")
-                        {
-                           node.childNodes.item(0).src = "bigminus.gif";
-                        }
-                     }
-                  }
-
-                  next_node.style.display = 'block';
-               }
-               // Collapse the branch if it IS visible
-               else
-               {
-                  // Change the image (if there is an image)
-                  if (node.childNodes.length > 0)
-                  {
-                     if (node.childNodes.length > 0)
-                     { 
-                        if (node.childNodes.item(0).nodeName == "IMG")
-                        {
-                           node.childNodes.item(0).src = "bigplus.gif";
-                        }
-                     }
-                  }
-
-                  next_node.style.display = 'none';
-               }
-
+               node.childNodes.item(0).src = "plus.gif";
             }
-            </script>
-            
-            <style type="text/css">
-               body {margin:0px;}
-               pre {margin:0px;}
+         }
+      }
 
-               ul.tree  li { list-style: none;  margin-left:10px;} 
-               ul.tree  { margin:0px; padding:0px; margin-left:5px; font-size:0.95em; }
-               ul.tree  li ul { margin-left:10px; padding:0px; }
+      next_node.style.display = 'none';
+   }
 
-               div#component {
-                  background-color:white; 
-                  border: 2px solid rgb(102,102,102); 
-                  text-align:left;
-                  margin-top: 1.5em;
-                  padding: 0.7em;
-               }
+}
+function BigToggle(node)
+{
+   // Unfold the branch if it isn't visible
+   var next_node = node.nextSibling;
+   if (next_node.style.display == 'none')
+   {
+      // Change the image (if there is an image)
+      if (node.childNodes.length > 0)
+      {
+         if (node.childNodes.length > 0)
+         { 
+            if (node.childNodes.item(0).nodeName == "IMG")
+            {
+               node.childNodes.item(0).src = "bigminus.gif";
+            }
+         }
+      }
 
-               div#function {
-                  background-color:white; 
-                  border: 2px solid rgb(102,102,255); 
-                  text-align:left;
-                  margin-top: 0.3em;
-                  padding: 0.3em;
-               }
+      next_node.style.display = 'block';
+   }
+   // Collapse the branch if it IS visible
+   else
+   {
+      // Change the image (if there is an image)
+      if (node.childNodes.length > 0)
+      {
+         if (node.childNodes.length > 0)
+         { 
+            if (node.childNodes.item(0).nodeName == "IMG")
+            {
+               node.childNodes.item(0).src = "bigplus.gif";
+            }
+         }
+      }
 
-               div#class {
-                  background-color:white; 
-                  border: 2px solid rgb(255,102,102); 
-                  text-align:left;
-                  margin-top: 0.3em;
-                  padding: 0.3em;
-               }
+      next_node.style.display = 'none';
+   }
 
-               div#extension {
-                  background-color:#FDFDFD; 
-                  border: 1px solid rgb(102,102,102); 
-                  text-align:left;
-                  margin-top: 1.0em;
-                  padding: 0.7em;
-               }
+}
+</script>
 
-               div#logb {
-                  text-align:left;
-                  padding: 0.0em;
-                  float: left;
-                  background-color:#c0c0c0; 
-                  border: double ; 
-                  margin: 0.5em;
-               }
+<style type="text/css">
+   body {margin:0px;}
+   pre {margin:0px;}
 
-               .bdotted {border-bottom: 1px dotted}
-               .bdashed {border-bottom: 1px dashed}
-               .bsolid {border-bottom: 1px solid}
-               .bdouble {border-bottom: 1px double}
-               .bgroove {border-bottom: 1px groove}
-               .bridge {border-bottom: 1px ridge}
-               .binset {border-bottom: 1px inset}
-               .boutset {border-bottom: 1px outset}
+   ul.tree  li { list-style: none;  margin-left:10px;} 
+   ul.tree  { margin:0px; padding:0px; margin-left:5px; font-size:0.95em; }
+   ul.tree  li ul { margin-left:10px; padding:0px; }
 
-               div#row1 {
-                  background-color:#dfdfdf; 
-               }
-               div#row2 {
-                  background-color:#f2f2f2; 
-               }
+   div#component {
+      background-color:white; 
+      border: 2px solid rgb(102,102,102); 
+      text-align:left;
+      margin-top: 1.5em;
+      padding: 0.7em;
+   }
 
-               div#typedefs {
-                  margin-left: 1.5em;
-                  margin-top: 0.2em;
-                  border: 1px dotted;
-                  width: 52em;
-               }
+   div#question {
+      background-color:white; 
+      border: 2px solid rgb(102,102,102); 
+      text-align:left;
+      margin-top: 1.5em;
+      margin-bottom: 90%;
+      padding: 0.7em;
+   }
 
-               div#tdn {
-                  width: 10em;
-               }
+   div#function {
+      background-color:white; 
+      border: 2px solid rgb(102,102,255); 
+      text-align:left;
+      margin-top: 0.3em;
+      padding: 0.3em;
+   }
 
-               .fullhr {
-                  clear: both;
-               }
+   div#class {
+      background-color:white; 
+      border: 2px solid rgb(255,102,102); 
+      text-align:left;
+      margin-top: 0.3em;
+      padding: 0.3em;
+   }
 
-               body {
-                  text-align: center;
-               }
+   div#extension {
+      background-color:#FDFDFD; 
+      border: 1px solid rgb(102,102,102); 
+      text-align:left;
+      margin-top: 1.0em;
+      padding: 0.7em;
+   }
 
-               div#entire_page {
-                  width:<xsl:value-of select="$main_width"/>;  
-                  text-align: left;
-                  margin-top: 0.4em;
-                  margin-left: auto;
-                  margin-right: auto;
-               }
-            </style>
+   div#logb {
+      text-align:left;
+      padding: 0.0em;
+      float: left;
+      background-color:#c0c0c0; 
+      border: double ; 
+      margin: 0.5em;
+   }
+
+
+   .code_box
+   {
+      color: black;
+      margin: 1em 0.25in;
+      padding: 0.5em;
+      background: rgb(240,240,240);
+      border-top: black dotted 1px;
+      border-left: black dotted 1px;
+      border-right: black solid 2px;
+      border-bottom: black solid 2px;
+   }
+
+
+
+   .bdotted {border-bottom: 1px dotted}
+   .bdashed {border-bottom: 1px dashed}
+   .bsolid {border-bottom: 1px solid}
+   .bdouble {border-bottom: 1px double}
+   .bgroove {border-bottom: 1px groove}
+   .bridge {border-bottom: 1px ridge}
+   .binset {border-bottom: 1px inset}
+   .boutset {border-bottom: 1px outset}
+
+   div#row1 {
+      background-color:#dfdfdf; 
+   }
+   div#row2 {
+      background-color:#f2f2f2; 
+   }
+
+   div#typedefs {
+      margin-left: 1.5em;
+      margin-top: 0.2em;
+      border: 1px dotted;
+      width: 52em;
+   }
+
+   div#tdn {
+      width: 10em;
+   }
+
+   .fullhr {
+      clear: both;
+   }
+
+   body {
+      text-align: center;
+   }
+
+   div#entire_page {
+      width:<xsl:value-of select="$main_width"/>;  
+      text-align: left;
+      margin-top: 0.4em;
+      margin-left: auto;
+      margin-right: auto;
+   }
+</style>
             
          </head>
          <body bgcolor="{$background_color}">
@@ -270,6 +296,18 @@
                         <center><h1> <xsl:value-of select="title" /> </h1></center>
                      </xsl:if>
                      <xsl:apply-templates select="body"/>
+
+                     <xsl:for-each select="questions">
+                        <xsl:sort select="translate(@group,$lcletters, $ucletters)"/> 
+                        <xsl:if test="@group"><h2><xsl:value-of select="@group"/></h2></xsl:if>
+                        <ul>
+                        <xsl:for-each select="question">      
+                           <xsl:sort select="translate(@text,$lcletters, $ucletters)"/> 
+                           <li><a href="#{@text}"><xsl:value-of select="@text"/></a></li>
+                        </xsl:for-each>
+                        </ul>
+                     </xsl:for-each>
+
                   </td>
                   <!-- ************************************************************************* -->
                        <xsl:choose>
@@ -290,6 +328,7 @@
             </table>
                   
                <xsl:apply-templates select="components"/>
+               <xsl:apply-templates select="questions"/>
                   
             </div>
          </body>
@@ -430,6 +469,24 @@
       </ul>
    </xsl:template>   
    
+   
+   <!-- ************************************************************************* -->
+      
+   <xsl:template match="questions">
+
+      <xsl:for-each select="question">      
+         <xsl:sort select="translate(@text,$lcletters, $ucletters)"/> 
+
+         <a name = "{@text}">
+            <div id="question">
+               <a href="#top"><font size='2'><center>[top]</center></font></a>
+               <h2><xsl:value-of select="@text"/></h2>
+               <xsl:apply-templates select="."/>
+            </div>
+         </a>
+      </xsl:for-each>
+   </xsl:template>
+      
    <!-- ************************************************************************* -->
       
    <xsl:template match="components">
@@ -714,6 +771,10 @@
          <xsl:apply-templates/>
        </h1>
    </xsl:template>
+
+   <xsl:template match="preserve_space">
+         <xsl:apply-templates/>
+   </xsl:template>
    
    <xsl:template match="p">
       <p>
@@ -808,9 +869,19 @@
        </b>
    </xsl:template>   
    <xsl:template match="font">
-      <font color="{@color}">
-         <xsl:apply-templates/>
-       </font>
+      <xsl:if test="@style">
+         <font color="{@color}" style="{@style}">
+            <xsl:apply-templates/>
+         </font>
+      </xsl:if>
+      <xsl:if test="not(@style)">
+         <font color="{@color}">
+            <xsl:apply-templates/>
+         </font>
+      </xsl:if>
+   </xsl:template>   
+   <xsl:template match="image">
+      <img src="{@src}" border="0"/>
    </xsl:template>   
    <xsl:template match="img">
       <img src="{@src}" border="0" height="{@height}" width="{@width}" alt="{@alt}">
@@ -861,6 +932,7 @@
 
    <xsl:template match="term_list">
       <center>
+         <div style="font-size:1.2em">
       <a href="#A">[A]</a> 
       <a href="#B">[B]</a> 
       <a href="#C">[C]</a> 
@@ -887,6 +959,7 @@
       <a href="#X">[X]</a> 
       <a href="#Y">[Y]</a> 
       <a href="#Z">[Z]</a> 
+         </div>
       </center>
       <xsl:call-template name="term_list_go" >
          <xsl:with-param name="num" select="1"/>
@@ -1193,6 +1266,11 @@
          </div>
    </xsl:template>
 
+   <!-- ************************************************************************* -->
+
+   <xsl:template match="code_box">
+      <pre class="code_box"><xsl:apply-templates/></pre>
+   </xsl:template>  
 
    <!-- ************************************************************************* -->
    <!-- ************************************************************************* -->

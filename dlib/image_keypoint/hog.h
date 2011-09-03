@@ -63,6 +63,14 @@ namespace dlib
             num_block_cols(0)
         {}
 
+        void clear (
+        )
+        {
+            num_block_rows = 0;
+            num_block_cols = 0;
+            hist_cells.clear();
+        }
+
         template <
             typename image_type
             >
@@ -151,6 +159,81 @@ namespace dlib
 
             return rectangle(col, row, col+cell_size*block_size-1, row+cell_size*block_size-1);
         }
+
+        const point image_to_feat_space (
+            const point& p
+        ) const
+        {
+
+            const long half_block = block_size/2;
+            if ((block_size%2) == 0)
+            {
+                return point(((p.x()-1)/(long)cell_size - half_block)/(long)cell_stride,
+                             ((p.y()-1)/(long)cell_size - half_block)/(long)cell_stride);
+            }
+            else
+            {
+                return point(((p.x()-1-(long)cell_size/2)/(long)cell_size - half_block)/(long)cell_stride,
+                             ((p.y()-1-(long)cell_size/2)/(long)cell_size - half_block)/(long)cell_stride);
+            }
+        }
+
+        const rectangle image_to_feat_space (
+            const rectangle& rect
+        ) const
+        {
+            return rectangle(image_to_feat_space(rect.tl_corner()), image_to_feat_space(rect.br_corner()));
+        }
+
+        const point feat_to_image_space (
+            const point& p
+        ) const
+        {
+            const long half_block = block_size/2;
+            if ((block_size%2) == 0)
+            {
+                return point((p.x()*cell_stride + half_block)*cell_size + 1,
+                             (p.y()*cell_stride + half_block)*cell_size + 1);
+            }
+            else
+            {
+                return point((p.x()*cell_stride + half_block)*cell_size + 1 + cell_size/2,
+                             (p.y()*cell_stride + half_block)*cell_size + 1 + cell_size/2);
+            }
+        }
+
+        const rectangle feat_to_image_space (
+            const rectangle& rect
+        ) const
+        {
+            return rectangle(feat_to_image_space(rect.tl_corner()), feat_to_image_space(rect.br_corner()));
+        }
+
+        template <
+            unsigned long T1,
+            unsigned long T2,
+            unsigned long T3,
+            unsigned long T4,
+            int           T5,
+            int           T6 
+            >
+        friend void serialize (
+            const hog_image<T1,T2,T3,T4,T5,T6>& item,
+            std::ostream& out
+        );
+
+        template <
+            unsigned long T1,
+            unsigned long T2,
+            unsigned long T3,
+            unsigned long T4,
+            int           T5,
+            int           T6 
+            >
+        friend void deserialize (
+            hog_image<T1,T2,T3,T4,T5,T6>& item,
+            std::istream& in 
+        );
 
     private:
 
@@ -380,6 +463,63 @@ namespace dlib
 
 
     };
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        unsigned long T1,
+        unsigned long T2,
+        unsigned long T3,
+        unsigned long T4,
+        int           T5,
+        int           T6 
+        >
+    void serialize (
+        const hog_image<T1,T2,T3,T4,T5,T6>& item,
+        std::ostream& out
+    )
+    {
+        // serialize item.hist_cells
+        serialize(item.hist_cells.nc(),out);
+        serialize(item.hist_cells.nr(),out);
+        item.hist_cells.reset();
+        while (item.hist_cells.move_next())
+            serialize(item.hist_cells.element().values,out);
+        item.hist_cells.reset();
+
+
+
+        serialize(item.num_block_rows, out);
+        serialize(item.num_block_cols, out);
+    }
+
+    template <
+        unsigned long T1,
+        unsigned long T2,
+        unsigned long T3,
+        unsigned long T4,
+        int           T5,
+        int           T6 
+        >
+    void deserialize (
+        hog_image<T1,T2,T3,T4,T5,T6>& item,
+        std::istream& in 
+    )
+    {
+        // deserialize item.hist_cells
+        long nc, nr;
+        deserialize(nc,in);
+        deserialize(nr,in);
+        item.hist_cells.set_size(nr,nc);
+        while (item.hist_cells.move_next())
+            deserialize(item.hist_cells.element().values,in); 
+        item.hist_cells.reset();
+
+
+
+        deserialize(item.num_block_rows, in);
+        deserialize(item.num_block_cols, in);
+    }
 
 // ----------------------------------------------------------------------------------------
 

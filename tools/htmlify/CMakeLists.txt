@@ -15,7 +15,7 @@ set (target_name htmlify)
 PROJECT(${target_name})
 
 # add all the cpp files we want to compile to this list.  This tells
-# cmake that they are part of our target (which is the exectuable named htmlify)
+# cmake that they are part of our target (which is the executable named htmlify)
 ADD_EXECUTABLE(${target_name} 
 htmlify.cpp
 to_xml.cpp
@@ -41,9 +41,5 @@ INSTALL(TARGETS ${target_name}
 
 
 #set default build type to Release
-if(NOT CMAKE_BUILD_TYPE)
-   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-      "Choose the type of build, options are: Debug Release
-      RelWithDebInfo MinSizeRel." FORCE)
-endif()
+include(../../dlib/release_build_by_default)
 

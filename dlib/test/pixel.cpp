@@ -8,6 +8,7 @@
 #include <ctime>
 #include <dlib/pixel.h>
 #include <dlib/matrix.h>
+#include <dlib/image_io.h>
 
 #include "tester.h"
 
@@ -433,6 +434,29 @@ namespace
             DLIB_TEST(get_pixel_intensity(p_rgb) == 0);
             DLIB_TEST(get_pixel_intensity(p_gray16) == 0);
 
+            p_rgb.red = 100;
+            p_rgb.green = 100;
+            p_rgb.blue = 100;
+            DLIB_TEST(get_pixel_intensity(p_rgb) == 100);
+            p_rgb.red = 1;
+            p_rgb.green = 2;
+            p_rgb.blue = 3;
+            DLIB_TEST(get_pixel_intensity(p_rgb) == 2);
+            p_rgba.alpha = 100;
+            p_rgba.red = 100;
+            p_rgba.green = 100;
+            p_rgba.blue = 100;
+            DLIB_TEST(get_pixel_intensity(p_rgba) == 100);
+            p_rgba.red = 1;
+            p_rgba.green = 2;
+            p_rgba.blue = 3;
+            p_rgba.alpha = 0;
+            DLIB_TEST(get_pixel_intensity(p_rgba) == 2);
+            p_hsi.h = 123;
+            p_hsi.s = 100;
+            p_hsi.i = 84;
+            DLIB_TEST(get_pixel_intensity(p_hsi) == 84);
+
             p_float = 54.25;
             DLIB_TEST(get_pixel_intensity(p_float) == 54.25);
 
@@ -443,6 +467,18 @@ namespace
             assign_pixel_intensity(p_schar, -100);
             assign_pixel_intensity(p_int, -10000);
             assign_pixel_intensity(p_gray, -100);
+
+            p_rgba.red = 10;
+            p_rgba.green = 10;
+            p_rgba.blue = 10;
+            p_rgba.alpha = 0;
+            DLIB_TEST_MSG(get_pixel_intensity(p_rgba) == 10, (int)get_pixel_intensity(p_rgba));
+            assign_pixel_intensity(p_rgba, 2);
+            DLIB_TEST_MSG(p_rgba.red == 2, (int)p_rgba.red);
+            DLIB_TEST_MSG(p_rgba.green == 2, (int)p_rgba.green);
+            DLIB_TEST_MSG(p_rgba.blue == 2, (int)p_rgba.blue);
+            DLIB_TEST_MSG(p_rgba.alpha == 0, (int)p_rgba.alpha);
+            DLIB_TEST_MSG(get_pixel_intensity(p_rgba) == 2, (int)get_pixel_intensity(p_rgba));
 
             DLIB_TEST(p_float == -1000);
             DLIB_TEST(get_pixel_intensity(p_float) == -1000);

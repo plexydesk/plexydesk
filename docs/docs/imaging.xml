@@ -16,6 +16,34 @@
             array2d</a> objects that contain various kinds of pixels.  
          </p>
 
+         <p>
+            <h2>Pixel Types</h2>
+            Most image handling routines in dlib will accept images containing any pixel type. 
+            This is made possible by defining a traits class, <a href="#pixel_traits">pixel_traits</a>, for 
+            each possible pixel type.  This traits class enables image processing routines to determine
+            how to handle each kind of pixel and therefore only pixels which have a pixel_traits definition
+            may be used.  The following list defines all the pixel types which come with pixel_traits definitions.  
+            <ul>
+               <li><b>RGB</b>
+                  <ul> There are two RGB pixel types in dlib, <a href="#rgb_pixel">rgb_pixel</a> and <a href="#bgr_pixel">bgr_pixel</a>.  
+                  Each defines a 24bit RGB pixel type.  The bgr_pixel is identical to rgb_pixel except that it lays
+                  the color channels down in memory in BGR order rather than RGB order and is therefore useful
+                  for interfacing with other image processing tools which expect this format (e.g. <a href="#cv_image">OpenCV</a>). </ul>
+               </li>
+               <li><b>RGB Alpha</b>
+                  <ul>The <a href="#rgb_alpha_pixel">rgb_alpha_pixel</a> is an 8bit per channel RGB pixel with an 8bit alpha channel.</ul>
+               </li>
+               <li><b>HSI</b>
+                  <ul>The <a href="#hsi_pixel">hsi_pixel</a> is a 24bit pixel which represents a point in the Hue Saturation Intensity 
+                  (HSI) color space. </ul>
+               </li>
+               <li><b>Grayscale</b>
+                  <ul>Any built in scalar type may be used as a grayscale pixel type.  For example, unsigned char, int, double, etc.</ul>
+               </li>
+            </ul>
+
+
+         </p>
    </body>
 
    <!-- ************************************************************************* -->
@@ -53,6 +81,7 @@
          <name>Keypoints and Descriptors</name>
 
          <item>integral_image</item>
+         <item>integral_image_generic</item>
          <item>hessian_pyramid</item>
          <item>compute_dominant_angle</item>
          <item>compute_surf_descriptor</item>
@@ -81,6 +110,7 @@
          <item>cv_image</item>
 
          <item>draw_line</item> 
+         <item>fill_rect</item> 
          <item>assign_image</item> 
          <item>assign_image_scaled</item> 
          <item>assign_all_pixels</item> 
@@ -88,7 +118,12 @@
          <item>equalize_histogram</item> 
          <item>get_histogram</item> 
          <item>spatially_filter_image</item> 
+         <item>separable_3x3_filter_block_grayscale</item> 
+         <item>separable_3x3_filter_block_rgb</item> 
          <item>pyramid_down</item> 
+         <item>pyramid_down_3_2</item> 
+         <item>pyramid_down_4_3</item> 
+         <item>pyramid_down_5_4</item> 
          <item>zero_border_pixels</item> 
 
          <item>binary_dilation</item>
@@ -99,6 +134,7 @@
          <item>binary_union</item>
          <item>binary_difference</item>
          <item>binary_complement</item>
+         <item>scan_image</item>
       </section>
 
     </top>  
@@ -113,7 +149,7 @@
    <!-- ************************************************************************* -->
       
       <component>
-         <name>integral_image</name>
+         <name>integral_image_generic</name>
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/integral_image_abstract.h</spec_file>
          <description>
@@ -123,6 +159,21 @@
                 normal image and then you can use the get_sum_of_area()
                 member function to compute sums of pixels in a given area in
                 constant time.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>integral_image</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file>dlib/image_transforms/integral_image_abstract.h</spec_file>
+         <description>
+            This is a specialization of the <a href="#integral_image_generic">integral_image_generic</a>
+            template for the case where sums of pixel values should be represented with 
+            longs.  E.g. if you use 8bit pixels in your original images then this is
+            the appropriate kind of integral image to use with them.
          </description>
                                  
       </component>
@@ -425,8 +476,7 @@
          <description>
             get_pixel_intensity() is a templated function that 
             returns the grayscale intensity of a pixel.  If the pixel isn't a grayscale
-            pixel then it converts the pixel to the HSI color space and returns the
-            obtained intensity value.
+            pixel then it converts the pixel to grayscale and returns that value.
          </description>
                                  
       </component>
@@ -508,8 +558,16 @@
          <file>dlib/image_io.h</file>
          <spec_file link="true">dlib/image_saver/image_saver_abstract.h</spec_file>
          <description>        
-      This global function writes an image out to an ostream as a dlib DNG file (a lossless 
+      This global function saves an image as a dlib DNG file (a lossless 
       compressed image format). 
+            <p>
+               This routine can save images containing any type of pixel.  However, the DNG format
+               can natively store only the following pixel types: <b>rgb_pixel</b>, <b>hsi_pixel</b>,
+               <b>rgb_alpha_pixel</b>, <b>uint8</b>, and <b>uint16</b>.  All other pixel
+               types will be converted into one of these types as appropriate before being
+               saved to disk.
+            </p>
+
          </description>
                                  
       </component>
@@ -527,6 +585,13 @@
                must also set your build environment to link to the libpng library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
                automatically.
+            </p>
+            <p>
+               This routine can save images containing any type of pixel.  However, save_png() can
+               only natively store the following pixel types: <b>rgb_pixel</b>, 
+               <b>rgb_alpha_pixel</b>, <b>uint8</b>, and <b>uint16</b>.  All other pixel
+               types will be converted into one of these types as appropriate before being
+               saved to disk.
             </p>
          </description>
                                  
@@ -595,7 +660,14 @@
          <file>dlib/image_io.h</file>
          <spec_file link="true">dlib/image_saver/image_saver_abstract.h</spec_file>
          <description>        
-      This global function writes an image out to an ostream as a MS Windows BMP file. 
+            This global function saves an image as a MS Windows BMP file. 
+
+            <p>
+               This routine can save images containing any type of pixel.  However, it will
+               convert all color pixels into <b>rgb_pixel</b> and grayscale pixels into 
+               <b>uint8</b> type before saving to disk.  
+            </p>
+
          </description>
                                  
       </component>
@@ -607,7 +679,19 @@
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/draw_abstract.h</spec_file>
          <description>        
-            This global function draws a line onto an image.
+            This global function draws a line on an image.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>fill_rect</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/draw_abstract.h</spec_file>
+         <description>        
+            This global function draws a solid rectangle on an image.
          </description>
                                  
       </component>
@@ -778,11 +862,77 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>separable_3x3_filter_block_grayscale</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/spatial_filtering_abstract.h</spec_file>
+         <description>        
+            This routine filters part of an image with a user supplied 3x3 separable filter.
+            The output is a grayscale sub-image.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>separable_3x3_filter_block_rgb</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/spatial_filtering_abstract.h</spec_file>
+         <description>        
+            This routine filters part of an image with a user supplied 3x3 separable filter.
+            The output is a RGB sub-image.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>pyramid_down</name>
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
          <description>        
-               This is a simple function object to help create image pyramids.
+               This is a simple function object to help create image pyramids.  It 
+               downsamples an image by half.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>pyramid_down_3_2</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
+         <description>        
+               This is a simple function object to help create image pyramids.  It 
+               downsamples an image by a ratio of 3 to 2.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>pyramid_down_4_3</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
+         <description>        
+               This is a simple function object to help create image pyramids.  It 
+               downsamples an image by a ratio of 4 to 3.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>pyramid_down_5_4</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
+         <description>        
+               This is a simple function object to help create image pyramids.  It 
+               downsamples an image by a ratio of 5 to 4.
          </description>
                                  
       </component>
@@ -794,8 +944,8 @@
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/thresholding_abstract.h</spec_file>
          <description>        
-            This global function performs a simple binary thresholding on an image with a user
-            supplied threshold.  However, instead of taking a user supplied threshold
+            This global function performs a simple binary thresholding on an image.  
+            Instead of taking a user supplied threshold
             it computes one from the image using k-means clustering.
          </description>
                                  
@@ -906,6 +1056,21 @@
          <spec_file link="true">dlib/image_transforms/morphological_operations_abstract.h</spec_file>
          <description>        
             This global function computes the complement of a binary image. 
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>scan_image</name>
+         <file>dlib/image_processing.h</file>
+         <spec_file link="true">dlib/image_processing/scan_image_abstract.h</spec_file>
+         <description>        
+            This global function is a tool for sliding a set of rectangles
+            over an image space and finding the locations where the sum of pixels in
+            the rectangles exceeds a threshold.  It is useful for implementing
+            certain kinds of sliding window classifiers.
          </description>
                                  
       </component>

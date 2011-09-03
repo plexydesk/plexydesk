@@ -580,6 +580,10 @@
                   <name>get_parent_directory</name>
                   <link>dlib/dir_nav/dir_nav_extensions_abstract.h.html#get_parent_directory</link>
                </item>
+               <item>
+                  <name>file_exists</name>
+                  <link>dlib/dir_nav/dir_nav_extensions_abstract.h.html#file_exists</link>
+               </item>
             </sub>
          </item>
          <item>
@@ -592,6 +596,10 @@
                <item>
                   <name>get_current_dir</name>
                   <link>dlib/misc_api/misc_api_kernel_abstract.h.html#get_current_dir</link>
+               </item>
+               <item>
+                  <name>set_current_dir</name>
+                  <link>dlib/misc_api/misc_api_kernel_abstract.h.html#set_current_dir</link>
                </item>
                <item>
                   <name>create_directory</name>
@@ -1167,9 +1175,9 @@
                   The implementation of this extension can be found 
                   <a href="dlib/threads/thread_pool_extension.h.html">here</a>.  It is 
                   implemented such that no memory allocations occur after the thread pool
-                  has been constructed (the future object also doesn't perform any memory allocations or contain any system
-                  resources such as mutex objects).
-
+                  has been constructed so long as the user doesn't call
+                  any of the add_task_by_value() routines.  The future object also doesn't
+                  perform any memory allocations or contain any system resources such as mutex objects. 
                </description> 
 
                <examples>

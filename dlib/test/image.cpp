@@ -53,6 +53,25 @@ namespace
             }
         }
 
+        img2.clear();
+        DLIB_TEST(img2.size() == 0);
+        DLIB_TEST(img2.nr() == 0);
+        DLIB_TEST(img2.nc() == 0);
+        assign_image(img2, array_to_matrix(img1));
+
+        DLIB_TEST_MSG(img1.nr() == 100 && img1.nc() == 100 &&
+                     img2.nr() == 100 && img2.nc() == 100,"");
+
+
+        for (long r = 0; r < img1.nr(); ++r)
+        {
+            for (long c = 0; c < img1.nc(); ++c)
+            {
+                DLIB_TEST(img1[r][c] == 7);
+                DLIB_TEST(img2[r][c] == 7);
+            }
+        }
+
 
         threshold_image(img1, img2, 4);
 
@@ -147,7 +166,10 @@ namespace
 #ifdef DLIB_PNG_SUPPORT
         {
             array2d<rgb_alpha_pixel> img;
+            array2d<rgb_pixel> img2, img3;
             img.set_size(14,15);
+            img2.set_size(img.nr(),img.nc());
+            img3.set_size(img.nr(),img.nc());
             for (long r = 0; r < 14; ++r)
             {
                 for (long c = 0; c < 15; ++c)
@@ -170,6 +192,11 @@ namespace
             DLIB_TEST(img.nr() == 14);
             DLIB_TEST(img.nc() == 15);
 
+            assign_all_pixels(img2, 255);
+            assign_all_pixels(img3, 0);
+            load_png(img2, "test.png");
+            assign_image(img3, img);
+
             for (long r = 0; r < 14; ++r)
             {
                 for (long c = 0; c < 15; ++c)
@@ -178,6 +205,10 @@ namespace
                     DLIB_TEST(img[r][c].green == r*14 + c + 2);
                     DLIB_TEST(img[r][c].blue == r*14 + c + 3);
                     DLIB_TEST(img[r][c].alpha == r*14 + c + 4);
+
+                    DLIB_TEST(img2[r][c].red == img3[r][c].red);
+                    DLIB_TEST(img2[r][c].green == img3[r][c].green);
+                    DLIB_TEST(img2[r][c].blue == img3[r][c].blue);
                 }
             }
         }
@@ -684,13 +715,14 @@ namespace
     }
 
 
+    template <typename T, typename pixel_type>
     void test_integral_image (
     )
     {
         dlib::rand rnd;
 
-        array2d<unsigned char> img;
-        integral_image int_img;
+        array2d<pixel_type> img;
+        integral_image_generic<T> int_img;
 
         int_img.load(img);
         DLIB_TEST(int_img.nr() == 0);
@@ -706,7 +738,7 @@ namespace
             {
                 for (long c = 0; c < img.nc(); ++c)
                 {
-                    img[r][c] = rnd.get_random_8bit_number();
+                    img[r][c] = (int)rnd.get_random_8bit_number() - 100;
                 }
             }
 
@@ -715,14 +747,14 @@ namespace
             DLIB_TEST(int_img.nc() == img.nc());
 
             // make 200 random rectangles
-            for (int j = 0; j < 200; ++j)
+            for (int j = 0; j < 500; ++j)
             {
                 point p1(rnd.get_random_32bit_number()%img.nc(), rnd.get_random_32bit_number()%img.nr());
                 point p2(rnd.get_random_32bit_number()%img.nc(), rnd.get_random_32bit_number()%img.nr());
                 rectangle rect(p1,p2);
-                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<long>(array_to_matrix(img)), rect)));
+                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<T>(array_to_matrix(img)), rect)));
                 rect = rectangle(p1,p1);
-                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<long>(array_to_matrix(img)), rect)));
+                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<T>(array_to_matrix(img)), rect)));
             }
 
         }
@@ -744,7 +776,10 @@ namespace
         )
         {
             image_test();
-            test_integral_image();
+            test_integral_image<long, unsigned char>();
+            test_integral_image<double, int>();
+            test_integral_image<long, unsigned char>();
+            test_integral_image<double, float>();
         }
     } a;
 

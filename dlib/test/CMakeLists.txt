@@ -3,12 +3,7 @@
 # information about it at http://www.cmake.org
 #
 
-# setting this makes CMake allow normal looking IF ELSE statements
-SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
-cmake_minimum_required(VERSION 2.4)
-if(COMMAND cmake_policy)
-   cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+cmake_minimum_required(VERSION 2.6)
 
 # This variable contains a list of all the tests we are building
 # into the regression test suite.
@@ -43,16 +38,19 @@ set (tests
    empirical_kernel_map.cpp
    entropy_coder.cpp
    entropy_encoder_model.cpp
+   find_map_nmplp.cpp
    geometry.cpp
    graph.cpp
    hash.cpp
    hash_map.cpp
    hash_set.cpp
    hash_table.cpp
+   hog_image.cpp
    image.cpp
    is_same_object.cpp
    kcentroid.cpp
    kernel_matrix.cpp
+   kmeans.cpp
    least_squares.cpp
    linear_manifold_regularizer.cpp
    lz77_buffer.cpp
@@ -84,6 +82,7 @@ set (tests
    rand.cpp
    read_write_mutex.cpp
    reference_counter.cpp
+   scan_image.cpp
    sequence.cpp
    serialize.cpp
    set.cpp
@@ -136,4 +135,7 @@ endif()
 # Tell cmake to link our target executable to the non-gui version of the dlib
 # library.  
 TARGET_LINK_LIBRARIES(${target_name} dlib )
+
+# make the default build be in "Release" mode
+include(../release_build_by_default)
 

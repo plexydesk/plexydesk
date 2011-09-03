@@ -105,6 +105,10 @@
             <link>howto_contribute.html</link>
          </item>
          <item>
+            <name>FAQ</name>
+            <link>faq.html</link>
+         </item>
+         <item>
             <name>Index</name>
             <link>term_index.html</link>
          </item>
@@ -190,6 +194,10 @@
                <item>
                   <name>Support_Vector_Machine</name>
                   <link>svm_ex.cpp.html</link>
+               </item>
+               <item>
+                  <name>Using_Custom_Kernels</name>
+                  <link>using_custom_kernels_ex.cpp.html</link>
                </item>
                <item>
                   <name>Support_Vector_Regression</name>

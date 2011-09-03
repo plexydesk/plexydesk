@@ -22,7 +22,9 @@
          <term file="dlib/geometry/rectangle_abstract.h.html" name="resize_rect_width"/>
          <term file="dlib/geometry/rectangle_abstract.h.html" name="resize_rect_height"/>
          <term file="dlib/geometry/rectangle_abstract.h.html" name="centered_rect"/>
+         <term file="dlib/geometry/rectangle_abstract.h.html" name="center"/>
          <term file="dlib/geometry/rectangle_abstract.h.html" name="nearest_point"/>
+         <term file="dlib/geometry/rectangle_abstract.h.html" name="distance_to_rect_edge"/>
          <term file="dlib/geometry/rectangle_abstract.h.html" name="shrink_rect"/>
          <term file="dlib/geometry/rectangle_abstract.h.html" name="grow_rect"/>
 
@@ -53,6 +55,7 @@
          <term file="optimization.html" name="solve_least_squares_lm"/>
          <term file="optimization.html" name="find_min_trust_region"/>
          <term file="optimization.html" name="find_max_trust_region"/>
+         <term file="optimization.html" name="find_map_nmplp"/>
          <term file="optimization.html" name="solve_trust_region_subproblem"/>
          <term file="optimization.html" name="find_min_single_variable"/>
          <term file="optimization.html" name="find_min_using_approximate_derivatives"/>
@@ -129,6 +132,11 @@
          <term file="algorithms.html" name="point_rotator"/>
          <term file="algorithms.html" name="running_stats"/>
          <term file="algorithms.html" name="running_scalar_covariance"/>
+         <term file="algorithms.html" name="mean_sign_agreement"/>
+         <term file="algorithms.html" name="correlation"/>
+         <term file="algorithms.html" name="covariance"/>
+         <term file="algorithms.html" name="r_squared"/>
+         <term file="algorithms.html" name="mean_squared_error"/>
          <term file="algorithms.html" name="running_covariance"/>
          <term file="algorithms.html" name="random_subset_selector"/>
          <term file="algorithms.html" name="randomly_subsample"/>
@@ -259,7 +267,7 @@
          <term file="ml.html" name="radial_basis_kernel"/>
 
 
-         <term file="dlib/svm/sparse_vector_abstract.h.html" name="sparse_vectors"/>
+         <term file="ml.html" name="sparse vectors"/>
          <term file="ml.html" name="sparse_linear_kernel"/>
          <term file="ml.html" name="sparse_polynomial_kernel"/>
          <term file="ml.html" name="sparse_sigmoid_kernel"/>
@@ -553,6 +561,8 @@
 
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="sleep"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="get_current_dir"/>
+         <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="set_current_dir"/>
+         <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="set_current_dir_error"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="dir_create_error"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="create_directory"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="timestamper"/>
@@ -565,11 +575,11 @@
          <term file="dlib/dir_nav/dir_nav_kernel_abstract.h.html" name="directory"/>
          <term file="dlib/dir_nav/dir_nav_kernel_abstract.h.html" name="dir_not_found"/>
          <term file="dlib/dir_nav/dir_nav_kernel_abstract.h.html" name="listing_error"/>
-         <term link="dlib/dir_nav/dir_nav_extensions_abstract.h.html#get_files_in_directory_tree" 
-            name="get_files_in_directory_tree"/>
-         <term link="dlib/dir_nav/dir_nav_extensions_abstract.h.html#get_parent_directory" 
-            name="get_parent_directory"/>
+         <term file="dlib/dir_nav/dir_nav_extensions_abstract.h.html" name="get_files_in_directory_tree"/>
+         <term file="dlib/dir_nav/dir_nav_extensions_abstract.h.html" name="get_parent_directory"/>
+         <term file="dlib/dir_nav/dir_nav_extensions_abstract.h.html" name="file_exists"/>
          <term file="dlib/dir_nav/dir_nav_extensions_abstract.h.html" name="match_ending"/>
+         <term file="dlib/dir_nav/dir_nav_extensions_abstract.h.html" name="match_endings"/>
          <term file="dlib/dir_nav/dir_nav_extensions_abstract.h.html" name="match_all"/>
 
 
@@ -715,7 +725,7 @@
          <term file="dlib/gui_widgets/drawable_abstract.h.html" name="events_are_enabled"/>
 
          <term name="draw_line">
-            <term link="dlib/gui_widgets/canvas_drawing_abstract.h.html#draw_line" name="in the drawable GUI object"/>
+            <term link="dlib/gui_widgets/canvas_drawing_abstract.h.html#draw_line" name="for the GUI canvas object"/>
             <term link="imaging.html#draw_line" name="for image/array2d objects"/>
          </term>
 
@@ -757,7 +767,11 @@
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_button_up"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_checkered"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_image"/>
-         <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="fill_rect"/>
+         <term name="fill_rect">
+            <term link="dlib/gui_widgets/canvas_drawing_abstract.h.html#fill_rect" name="for GUI canvas objects"/>
+            <term link="dlib/image_transforms/draw_abstract.h.html#fill_rect" name="for image/array2d objects"/>
+         </term>
+
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="fill_rect_with_vertical_gradient"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="fill_gradient_rounded"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_rounded_rectangle"/>
@@ -948,13 +962,19 @@
          <term file="imaging.html" name="load_image"/>
          <term file="imaging.html" name="save_dng"/>
          <term file="imaging.html" name="spatially_filter_image"/>
+         <term file="imaging.html" name="separable_3x3_filter_block_grayscale"/>
+         <term file="imaging.html" name="separable_3x3_filter_block_rgb"/>
          <term file="imaging.html" name="pyramid_down"/>
+         <term file="imaging.html" name="pyramid_down_3_2"/>
+         <term file="imaging.html" name="pyramid_down_4_3"/>
+         <term file="imaging.html" name="pyramid_down_5_4"/>
          <term file="imaging.html" name="threshold_image"/>
          <term file="imaging.html" name="auto_threshold_image"/>
          <term file="imaging.html" name="png_loader"/>
          <term file="imaging.html" name="jpeg_loader"/>
 
          <term file="imaging.html" name="integral_image"/>
+         <term file="imaging.html" name="integral_image_generic"/>
          <term file="imaging.html" name="hessian_pyramid"/>
          <term file="imaging.html" name="compute_dominant_angle"/>
          <term file="imaging.html" name="compute_surf_descriptor"/>
@@ -965,6 +985,10 @@
          <term file="imaging.html" name="get_surf_points"/>
          <term file="imaging.html" name="interest_point"/>
          <term file="imaging.html" name="surf_point"/>
+
+         <term file="imaging.html" name="scan_image"/>
+         <term file="dlib/image_processing/scan_image_abstract.h.html" name="all_images_same_size"/>
+         <term file="dlib/image_processing/scan_image_abstract.h.html" name="sum_of_rects_in_images"/>
 
 
 

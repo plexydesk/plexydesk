@@ -31,6 +31,11 @@
          <item>murmur_hash3</item> 
          <item>running_stats</item> 
          <item>running_scalar_covariance</item> 
+         <item>mean_sign_agreement</item> 
+         <item>correlation</item> 
+         <item>covariance</item> 
+         <item>r_squared</item> 
+         <item>mean_squared_error</item> 
          <item>running_covariance</item> 
          <item>random_subset_selector</item> 
          <item>randomly_subsample</item> 
@@ -51,6 +56,7 @@
                <item>point_rotator</item> 
                <item>get_rect</item> 
                <item>centered_rect</item> 
+               <item>center</item> 
                <item>shrink_rect</item> 
                <item>grow_rect</item> 
                <item>translate_rect</item> 
@@ -59,6 +65,7 @@
                <item>resize_rect_height</item> 
                <item>move_rect</item> 
                <item>nearest_point</item> 
+               <item>distance_to_rect_edge</item> 
             </sub>
          </item>
          <item nolink="true">
@@ -290,6 +297,66 @@
          <description>
                 This object is a simple tool for computing the covariance of a 
                 sequence of scalar values.  
+         </description>
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>mean_sign_agreement</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/statistics_abstract.h</spec_file>
+         <description>
+               This is a function for computing the probability that 
+               matching elements of two std::vectors have the same sign.
+         </description>
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>correlation</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/statistics_abstract.h</spec_file>
+         <description>
+               This is a function for computing the correlation between 
+               matching elements of two std::vectors.
+         </description>
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>covariance</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/statistics_abstract.h</spec_file>
+         <description>
+               This is a function for computing the covariance between 
+               matching elements of two std::vectors.
+         </description>
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>r_squared</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/statistics_abstract.h</spec_file>
+         <description>
+               This is a function for computing the R squared coefficient between 
+               matching elements of two std::vectors.
+         </description>
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>mean_squared_error</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/statistics_abstract.h</spec_file>
+         <description>
+               This is a function for computing the mean squared error between 
+               matching elements of two std::vectors.
          </description>
       </component>
       
@@ -662,6 +729,20 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>distance_to_rect_edge</name>
+         <file>dlib/geometry.h</file>
+         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
+         <description>        
+            This function takes a <a href="#rectangle">rectangle</a> and a 
+            <a href="#point">point</a> and returns the Manhattan distance between
+            the rectangle's edge and the point.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>move_rect</name>
          <file>dlib/geometry.h</file>
          <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
@@ -759,6 +840,18 @@
          <examples>
             <example>quantum_computing_ex.cpp.html</example>
          </examples>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>center</name>
+         <file>dlib/geometry.h</file>
+         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
+         <description>        
+            Returns the center point of a <a href="#rectangle">rectangle</a>.
+         </description>
                                  
       </component>
 

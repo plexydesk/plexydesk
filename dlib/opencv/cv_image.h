@@ -16,6 +16,7 @@ namespace dlib
     {
     public:
         typedef pixel_type type;
+        typedef default_memory_manager mem_manager_type;
 
         cv_image (const IplImage* img) 
         {
@@ -60,6 +61,7 @@ namespace dlib
 
         long nr() const { return _nr; }
         long nc() const { return _nc; }
+        long width_step() const { return _widthStep; }
 
         cv_image& operator=( const cv_image& item)
         {

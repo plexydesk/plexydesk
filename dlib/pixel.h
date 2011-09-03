@@ -237,7 +237,7 @@ namespace dlib
             - if (pixel_traits<P>::grayscale == true) then
                 - returns src
             - else
-                - converts src to the HSI color space and returns the intensity 
+                - converts src to grayscale and returns the resulting value.
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -255,9 +255,14 @@ namespace dlib
             - pixel_traits<P> must be defined
             - pixel_traits<T> must be defined
         ensures
-            - #get_pixel_intensity(dest) == get_pixel_intensity(new_intensity) 
-              (or if get_pixel_intensity(new_intensity) can't be represented by 
-              dest then the closest value representable by dest is used)
+            - This function changes the intensity of the dest pixel. So if the pixel in 
+              question is a grayscale pixel then it simply assigns that pixel with the 
+              value of get_pixel_intensity(new_intensity).  However, if the pixel is not 
+              a grayscale pixel then it converts the pixel to the HSI color space and sets 
+              the I channel to the given intensity and then converts this HSI value back to 
+              the original pixel's color space.
+            - Note that we don't necessarily have #get_pixel_intensity(dest) == get_pixel_intensity(new_intensity) 
+              due to vagaries of how converting to and from HSI works out.
             - if (the dest pixel has an alpha channel) then
                 - #dest.alpha == dest.alpha
     !*/
@@ -836,9 +841,9 @@ namespace dlib
             h.l = src.i/255.0;
             c = HSL2RGB(h);
 
-            dest.red = static_cast<unsigned char>(c.r*255.0);
-            dest.green = static_cast<unsigned char>(c.g*255.0);
-            dest.blue = static_cast<unsigned char>(c.b*255.0);
+            dest.red = static_cast<unsigned char>(c.r*255.0 + 0.5);
+            dest.green = static_cast<unsigned char>(c.g*255.0 + 0.5);
+            dest.blue = static_cast<unsigned char>(c.b*255.0 + 0.5);
         }
 
     // -----------------------------
@@ -890,9 +895,9 @@ namespace dlib
             h.l = src.i/255.0;
             c = HSL2RGB(h);
 
-            dest.red = static_cast<unsigned char>(c.r*255.0);
-            dest.green = static_cast<unsigned char>(c.g*255.0);
-            dest.blue = static_cast<unsigned char>(c.b*255.0);
+            dest.red = static_cast<unsigned char>(c.r*255.0 + 0.5);
+            dest.green = static_cast<unsigned char>(c.g*255.0 + 0.5);
+            dest.blue = static_cast<unsigned char>(c.b*255.0 + 0.5);
             dest.alpha = 255;
         }
 
@@ -929,9 +934,9 @@ namespace dlib
             c1.b = src.blue/255.0;
             c2 = RGB2HSL(c1);
 
-            dest.h = static_cast<unsigned char>(c2.h/360.0*255.0);
-            dest.s = static_cast<unsigned char>(c2.s*255.0);
-            dest.i = static_cast<unsigned char>(c2.l*255.0);
+            dest.h = static_cast<unsigned char>(c2.h/360.0*255.0 + 0.5);
+            dest.s = static_cast<unsigned char>(c2.s*255.0 + 0.5);
+            dest.i = static_cast<unsigned char>(c2.l*255.0 + 0.5);
         }
 
         template < typename P1, typename P2 >
@@ -984,12 +989,15 @@ namespace dlib
         const T& new_intensity
     )
     {
-        unsigned long alpha = dest.alpha;
         hsi_pixel p;
-        assign_pixel(p,dest);
+        const unsigned long old_alpha = dest.alpha;
+        dest.alpha = 255;
+        rgb_pixel temp;
+        assign_pixel(temp, dest); // put dest into an rgb_pixel to avoid the somewhat complicated assign_pixel(hsi,rgb_alpha).
+        assign_pixel(p,temp);
         assign_pixel(p.i, new_intensity);
         assign_pixel(dest,p);
-        dest.alpha = alpha;
+        dest.alpha = old_alpha;
     }
 
     template <
@@ -1043,9 +1051,9 @@ namespace dlib
     {
         P temp = src;
         temp.alpha = 255;
-        hsi_pixel p;
+        typename pixel_traits<P>::basic_pixel_type p;
         assign_pixel(p,temp);
-        return static_cast<typename pixel_traits<P>::basic_pixel_type>(p.i);
+        return p;
     }
 
     template <
@@ -1057,9 +1065,9 @@ namespace dlib
         const P& src
     )
     {
-        hsi_pixel p;
+        typename pixel_traits<P>::basic_pixel_type p;
         assign_pixel(p,src);
-        return static_cast<typename pixel_traits<P>::basic_pixel_type>(p.i);
+        return p;
     }
 
     template <
@@ -1161,9 +1169,9 @@ namespace dlib
     {
         try
         {
-            serialize(item.red,out);
-            serialize(item.green,out);
             serialize(item.blue,out);
+            serialize(item.green,out);
+            serialize(item.red,out);
         }
         catch (serialization_error& e)
         {
@@ -1180,9 +1188,9 @@ namespace dlib
     {
         try
         {
-            deserialize(item.red,in);
-            deserialize(item.green,in);
             deserialize(item.blue,in);
+            deserialize(item.green,in);
+            deserialize(item.red,in);
         }
         catch (serialization_error& e)
         {

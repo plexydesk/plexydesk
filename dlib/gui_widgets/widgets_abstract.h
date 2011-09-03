@@ -2011,7 +2011,7 @@ namespace dlib
             >
         void set_graph_modified_handler (
             T& object,
-            void (T::*event_handler_)()
+            void (T::*event_handler)()
         );
         /*!
             requires
@@ -2317,14 +2317,22 @@ namespace dlib
     {
         /*!
             INITIAL VALUE
-                This object isn't displaying anything. 
+                - This object isn't displaying anything. 
+                - get_overlay_rects().size() == 0
+                - get_default_overlay_rect_label() == ""
+                - get_default_overlay_rect_color() == rgb_alpha_pixel(255,0,0,255) (i.e. RED)
 
             WHAT THIS OBJECT REPRESENTS
                 This object represents an image inside a scrollable region.  
                 You give it an image to display by calling set_image().
                 This widget also allows you to add rectangle and line overlays that
-                will be drawn on top of the image.  Finally, if you hold the Ctrl key
-                you can zoom in and out using the mouse wheel.
+                will be drawn on top of the image.  
+                
+                If you hold the Ctrl key you can zoom in and out using the mouse wheel.
+                You can also add new overlay rectangles by holding shift, left clicking,
+                and dragging the mouse.  Finally, you can delete an overlay rectangle
+                by double clicking on it and hitting delete or backspace.
+                
 
                 The image is drawn such that:
                     - the pixel img[0][0] is the upper left corner of the image.
@@ -2360,7 +2368,8 @@ namespace dlib
         );
         /*!
             requires
-                - image_type == an implementation of array2d/array2d_kernel_abstract.h
+                - image_type == an implementation of array2d/array2d_kernel_abstract.h or
+                  a dlib::matrix or something convertible to a matrix via array_to_matrix()
                 - pixel_traits<typename image_type::type> must be defined 
             ensures
                 - #*this widget is now displaying the given image new_img.
@@ -2494,7 +2503,129 @@ namespace dlib
         /*!
             ensures
                 - removes all overlays from this object.  
+                - #get_overlay_rects().size() == 0
         !*/
+
+        std::vector<overlay_rect> get_overlay_rects (
+        ) const;
+        /*!
+            ensures
+                - returns a copy of all the overlay_rect objects currently displayed.
+        !*/
+
+        void set_default_overlay_rect_label (
+            const std::string& label
+        );
+        /*!
+            ensures
+                - #get_default_overlay_rect_label() == label
+        !*/
+
+        std::string get_default_overlay_rect_label (
+        ) const;
+        /*!
+            ensures
+                - returns the label given to new overlay rectangles created by the user
+                  (i.e. when the user holds shift and adds them with the mouse)
+        !*/
+
+        void set_default_overlay_rect_color (
+            const rgb_alpha_pixel& color
+        );
+        /*!
+            ensures
+                - #get_default_overlay_rect_color() == color
+        !*/
+
+        rgb_alpha_pixel get_default_overlay_rect_color (
+        ) const;
+        /*!
+            ensures
+                - returns the color given to new overlay rectangles created by the user
+                  (i.e. when the user holds shift and adds them with the mouse)
+        !*/
+
+        rectangle get_image_display_rect (
+        ) const;
+        /*!
+            ensures
+                - returns a rectangle R that tells you how big the image inside the
+                  display is when it appears on the screen.  Note that it takes the
+                  current zoom level into account.
+                    - R.width()  == the width of the displayed image
+                    - R.height() == the height of the displayed image
+                    - R.tl_corner() == (0,0)
+        !*/
+
+        template <
+            typename T
+            >
+        void set_overlay_rects_changed_handler (
+            T& object,
+            void (T::*event_handler)()
+        );
+        /*
+            requires
+                - event_handler is a valid pointer to a member function in T 
+            ensures
+                - the event_handler function is called on object when the user adds
+                  or removes an overlay rectangle.
+                - any previous calls to this function are overridden by this new call.  
+                  (i.e. you can only have one event handler associated with this 
+                  event at a time)
+            throws
+                - std::bad_alloc
+        */
+
+        void set_overlay_rects_changed_handler (
+            const any_function<void()>& event_handler
+        );
+        /*
+            ensures
+                - the event_handler function is called when the user adds or removes 
+                  an overlay rectangle.
+                - any previous calls to this function are overridden by this new call.  
+                  (i.e. you can only have one event handler associated with this 
+                  event at a time)
+            throws
+                - std::bad_alloc
+        */
+
+        template <
+            typename T
+            >
+        void set_overlay_rect_selected_handler (
+            T& object,
+            void (T::*event_handler)(const overlay_rect& orect)
+        );
+        /*
+            requires
+                - event_handler is a valid pointer to a member function in T 
+            ensures
+                - The event_handler function is called on object when the user selects
+                  an overlay rectangle by double clicking on it.  The selected rectangle 
+                  will be passed to event_handler().
+                - any previous calls to this function are overridden by this new call.  
+                  (i.e. you can only have one event handler associated with this 
+                  event at a time)
+            throws
+                - std::bad_alloc
+        */
+
+        void set_overlay_rects_changed_handler (
+            const any_function<void(const overlay_rect& orect)>& event_handler
+        );
+        /*
+            ensures
+                - The event_handler function is called when the user selects an overlay 
+                  rectangle by double clicking on it.  The selected rectangle will be 
+                  passed to event_handler().
+                - any previous calls to this function are overridden by this new call.  
+                  (i.e. you can only have one event handler associated with this 
+                  event at a time)
+            throws
+                - std::bad_alloc
+        */
 
     private:
 
@@ -2534,7 +2665,8 @@ namespace dlib
         ); 
         /*!
             requires
-                - image_type == an implementation of array2d/array2d_kernel_abstract.h
+                - image_type == an implementation of array2d/array2d_kernel_abstract.h or
+                  a dlib::matrix or something convertible to a matrix via array_to_matrix()
                 - pixel_traits<typename image_type::type> must be defined 
             ensures
                 - this object is properly initialized 

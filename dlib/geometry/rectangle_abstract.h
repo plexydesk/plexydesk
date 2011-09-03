@@ -404,6 +404,16 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    point center (
+        const dlib::rectangle& rect
+    );
+    /*!
+        ensures
+            - returns the center of the given rectangle
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     inline const rectangle centered_rect (
         const point& p,
         unsigned long width,
@@ -412,6 +422,7 @@ namespace dlib
     /*!
         ensures
             - returns a rectangle R such that:
+                - center(R) == p
                 - if (width == 0 || height == 0)
                     - R.width() == 0 
                     - R.height() == 0 
@@ -419,7 +430,6 @@ namespace dlib
                     - R.width() == width
                     - R.height() == height 
                 - R.tl_corner() == point(p.x()-width/2, p.y()-height/2)
-                - The center of R is a the point p 
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -433,6 +443,7 @@ namespace dlib
     /*!
         ensures
             - returns a rectangle R such that:
+                - center(R) == p
                 - if (width == 0 || height == 0)
                     - R.width() == 0 
                     - R.height() == 0 
@@ -440,7 +451,6 @@ namespace dlib
                     - R.width() == width
                     - R.height() == height 
                 - R.tl_corner() == point(x-width/2, y-height/2)
-                - The center of R is a the point (x,y)
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -609,6 +619,17 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    inline long distance_to_rect_edge (
+        const rectangle& rect,
+        const point& p
+    );
+    /*!
+        ensures
+            - returns the Manhattan distance between the edge of rect and p.
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     template <
         typename T 
         >
@@ -623,6 +644,30 @@ namespace dlib
               (i.e. assuming T represents some kind of rectangular grid, such as
               the dlib::matrix or dlib::array2d objects, this function returns the
               bounding rectangle for that gridded object.)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    inline rectangle operator+ (
+        const rectangle& r,
+        const point& p
+    );
+    /*!
+        ensures
+            - returns r + rectangle(p)
+              (i.e. returns the rectangle that contains both r and p)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    inline rectangle operator+ (
+        const point& p,
+        const rectangle& r
+    );
+    /*!
+        ensures
+            - returns r + rectangle(p)
+              (i.e. returns the rectangle that contains both r and p)
     !*/
 
 // ----------------------------------------------------------------------------------------

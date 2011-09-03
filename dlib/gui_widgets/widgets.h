@@ -3200,11 +3200,24 @@ namespace dlib
                 - img.size() == 0
                 - overlay_rects.size() == 0
                 - overlay_lines.size() == 0
+                - drawing_rect == false
+                - rect_is_selected == false
 
             CONVENTION
                 - img == the image this object displays
                 - overlay_rects == the overlay rectangles this object displays
                 - overlay_lines == the overlay lines this object displays
+
+                - if (drawing_rect) then
+                    - the user is drawing a rectangle on the screen and is
+                      thus holding down CTRL and the left mouse button.
+                    - rect_anchor == the point on the screen where the user
+                      clicked to begin drawing the rectangle.  
+                    - rect_to_draw == the rectangle which should appear on the screen.
+
+                - if (rect_is_selected) then
+                    - selected_rect == the index in overlay_rects of the user selected
+                      rectangle.
         !*/
 
     public:
@@ -3228,10 +3241,18 @@ namespace dlib
             // if the new image has a different size when compared to the previous image
             // then we should readjust the total rectangle size.
             if (new_img.nr() != img.nr() || new_img.nc() != img.nc())
-                set_total_rect_size(new_img.nc(), new_img.nr());
+            {
+                if (zoom_in_scale != 1)
+                    set_total_rect_size(new_img.nc()*zoom_in_scale, new_img.nr()*zoom_in_scale);
+                else
+                    set_total_rect_size(new_img.nc()/zoom_out_scale, new_img.nr()/zoom_out_scale);
+            }
             else
+            {
                 parent.invalidate_rectangle(rect);
+            }
 
+            rect_is_selected = false;
             assign_image_scaled(img,new_img);
         }
 
@@ -3284,6 +3305,67 @@ namespace dlib
         void clear_overlay (
         );
 
+        rectangle get_image_display_rect (
+        ) const;
+
+        std::vector<overlay_rect> get_overlay_rects (
+        ) const;
+
+        void set_default_overlay_rect_label (
+            const std::string& label
+        );
+
+        std::string get_default_overlay_rect_label (
+        ) const;
+
+        void set_default_overlay_rect_color (
+            const rgb_alpha_pixel& color
+        );
+
+        rgb_alpha_pixel get_default_overlay_rect_color (
+        ) const;
+
+        template <
+            typename T
+            >
+        void set_overlay_rects_changed_handler (
+            T& object,
+            void (T::*event_handler_)()
+        )
+        {
+            auto_mutex M(m);
+            event_handler = make_mfp(object,event_handler_);
+        }
+
+        void set_overlay_rects_changed_handler (
+            const any_function<void()>& event_handler_
+        )
+        {
+            auto_mutex M(m);
+            event_handler = event_handler_;
+        }
+
+        template <
+            typename T
+            >
+        void set_overlay_rect_selected_handler (
+            T& object,
+            void (T::*event_handler_)(const overlay_rect& orect)
+        )
+        {
+            auto_mutex M(m);
+            orect_selected_event_handler = make_mfp(object,event_handler_);
+        }
+
+        void set_overlay_rects_changed_handler (
+            const any_function<void(const overlay_rect& orect)>& event_handler_
+        )
+        {
+            auto_mutex M(m);
+            orect_selected_event_handler = event_handler_;
+        }
+
+
     private:
 
         void draw (
@@ -3298,6 +3380,36 @@ namespace dlib
             unsigned long state
         );
 
+        void on_mouse_down (
+            unsigned long btn,
+            unsigned long state,
+            long x,
+            long y,
+            bool is_double_click
+        );
+
+        void on_mouse_up (
+            unsigned long btn,
+            unsigned long state,
+            long x,
+            long y
+        );
+
+        void on_mouse_move (
+            unsigned long state,
+            long x,
+            long y
+        );
+
+        void on_keydown (
+            unsigned long key,
+            bool is_printable,
+            unsigned long state
+        );
+
+        rgb_alpha_pixel invert_pixel (const rgb_alpha_pixel& p) const
+        { return rgb_alpha_pixel(255-p.red, 255-p.green, 255-p.blue, p.alpha); }
+
         array2d<rgb_alpha_pixel> img;
 
 
@@ -3306,6 +3418,15 @@ namespace dlib
 
         long zoom_in_scale;
         long zoom_out_scale;
+        bool drawing_rect;
+        point rect_anchor;
+        rectangle rect_to_draw;
+        bool rect_is_selected;
+        unsigned long selected_rect;
+        rgb_alpha_pixel default_rect_color;
+        std::string default_rect_label;
+        any_function<void()> event_handler;
+        any_function<void(const overlay_rect& orect)> orect_selected_event_handler;
 
         // restricted functions
         image_display(image_display&);        // copy constructor
@@ -3327,7 +3448,7 @@ namespace dlib
         template < typename image_type >
         image_window(
             const image_type& img
-        ) : gui_img(*this), nr(0), nc(0) { set_image(img); show(); }
+        ) : gui_img(*this) { set_image(img); show(); }
 
         ~image_window(
         );
@@ -3341,18 +3462,16 @@ namespace dlib
             auto_mutex M(wm);
             gui_img.set_image(img); 
 
-            // Only readjust the size of the window if the new image has a different size
-            // than the last image given to this object.
-            if (img.nr() != nr || img.nc() != nc)
+            const rectangle r = gui_img.get_image_display_rect();
+            if (image_rect != r)
             {
                 // set the size of this window to match the size of the input image
-                set_size(img.nc()+padding*2,img.nr()+padding*2);
+                set_size(r.width()+padding*2,r.height()+padding*2);
 
                 // call this to make sure everything else is setup properly
                 on_window_resized();
 
-                nr = img.nr();
-                nc = img.nc();
+                image_rect = r;
             }
         }
 
@@ -3385,7 +3504,7 @@ namespace dlib
         image_window& operator= (image_window&);
 
         image_display gui_img;
-        long nr, nc;
+        rectangle image_rect;
     };
 
 // ----------------------------------------------------------------------------------------

@@ -36,6 +36,7 @@ namespace dlib
 
     public:
         typedef pixel_type type;
+        typedef default_memory_manager mem_manager_type;
 
         cv_image (
             const IplImage* img
@@ -141,6 +142,13 @@ namespace dlib
                 - returns #*this
         !*/
 
+        long width_step (
+        ) const;
+        /*!
+            ensures
+                - returns the pointer offset to step from one row to another.
+                  That is, &item[0][0] + step_width(item) == &item[1][0].
+        !*/
     };
 
 
