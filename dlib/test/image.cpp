@@ -762,6 +762,230 @@ namespace
 
     }
 
+    template <typename T>
+    void test_filtering(bool use_abs, unsigned long scale )
+    {
+        print_spinner();
+        dlog << LINFO << "test_filtering(" << use_abs << "," << scale << ")";
+        array2d<T> img, img2, img3;
+        img.set_size(10,11);
+
+        assign_all_pixels(img, 10);
+
+        matrix<int,3,5> filter2;
+        filter2 = 1,1,1,1,1,
+                  1,1,1,1,1,
+                  1,1,1,1,1;
+
+        assign_all_pixels(img2,3);
+        spatially_filter_image(img, img2, filter2);
+
+        const rectangle rect(2,1,img.nc()-3,img.nr()-2);
+
+        for (long r = 0; r<img2.nr(); ++r)
+        {
+            for (long c = 0; c<img2.nc(); ++c)
+            {
+                if (rect.contains(c,r))
+                {
+                    DLIB_TEST_MSG(img2[r][c] == 150, (int)img2[r][c]);
+                }
+                else
+                {
+                    DLIB_TEST_MSG(img2[r][c] == 0,(int)img2[r][c]);
+                }
+            }
+        }
+
+
+        assign_all_pixels(img2,3);
+        assign_all_pixels(img3,3);
+        spatially_filter_image(img, img2, filter2);
+
+        matrix<int,1,5> row_filter;
+        matrix<int,1,3> col_filter;
+
+        row_filter = 1,1,1,1,1;
+        col_filter = 1,1,1;
+
+        spatially_filter_image_separable(img, img3, row_filter, col_filter);
+
+        DLIB_TEST(array_to_matrix(img2) == array_to_matrix(img3));
+
+
+        dlib::rand  rnd;
+
+        for (int i = 0; i < 30; ++i)
+        {
+            for (long r = 0; r < img.nr(); ++r)
+            {
+                for (long c = 0; c < img.nc(); ++c)
+                {
+                    img[r][c] = rnd.get_random_8bit_number();
+                }
+            }
+
+            row_filter(0) = ((int)rnd.get_random_8bit_number() - 100)/10;
+            row_filter(1) = ((int)rnd.get_random_8bit_number() - 100)/10;
+            row_filter(2) = ((int)rnd.get_random_8bit_number() - 100)/10;
+            row_filter(3) = ((int)rnd.get_random_8bit_number() - 100)/10;
+            row_filter(4) = ((int)rnd.get_random_8bit_number() - 100)/10;
+            col_filter(0) = ((int)rnd.get_random_8bit_number() - 100)/10;
+            col_filter(1) = ((int)rnd.get_random_8bit_number() - 100)/10;
+            col_filter(2) = ((int)rnd.get_random_8bit_number() - 100)/10;
+
+            const matrix<int,3,5> filter = trans(col_filter)*row_filter;
+
+            assign_all_pixels(img2,3);
+            assign_all_pixels(img3,3);
+            // Just make sure both filtering methods give the same results.
+            spatially_filter_image(img, img2, filter, scale, use_abs);
+            spatially_filter_image_separable(img, img3, row_filter, col_filter, scale, use_abs);
+            DLIB_TEST(array_to_matrix(img2) == array_to_matrix(img3));
+        }
+
+        {
+            array2d<int> img, img2;
+            img.set_size(3,4);
+
+            matrix<int> filter(3,3);
+            filter = 1;
+            assign_all_pixels(img,-1);
+
+            spatially_filter_image(img,img2,filter);
+
+            DLIB_TEST(img2[0][0] == 0);
+            DLIB_TEST(img2[0][1] == 0);
+            DLIB_TEST(img2[0][2] == 0);
+            DLIB_TEST(img2[0][3] == 0);
+
+            DLIB_TEST(img2[1][0] == 0);
+            DLIB_TEST(img2[1][1] == -9);
+            DLIB_TEST(img2[1][2] == -9);
+            DLIB_TEST(img2[1][3] == 0);
+
+            DLIB_TEST(img2[2][0] == 0);
+            DLIB_TEST(img2[2][1] == 0);
+            DLIB_TEST(img2[2][2] == 0);
+            DLIB_TEST(img2[2][3] == 0);
+
+            assign_all_pixels(img,-1);
+
+            spatially_filter_image(img,img2,filter,2,true);
+
+            DLIB_TEST(img2[0][0] == 0);
+            DLIB_TEST(img2[0][1] == 0);
+            DLIB_TEST(img2[0][2] == 0);
+            DLIB_TEST(img2[0][3] == 0);
+
+            DLIB_TEST(img2[1][0] == 0);
+            DLIB_TEST(img2[1][1] == 4);
+            DLIB_TEST(img2[1][2] == 4);
+            DLIB_TEST(img2[1][3] == 0);
+
+            DLIB_TEST(img2[2][0] == 0);
+            DLIB_TEST(img2[2][1] == 0);
+            DLIB_TEST(img2[2][2] == 0);
+            DLIB_TEST(img2[2][3] == 0);
+
+            matrix<int> rowf(3,1), colf(3,1);
+            rowf = 1;
+            colf = 1;
+            assign_all_pixels(img,-1);
+
+            spatially_filter_image_separable(img,img2,rowf,colf);
+            DLIB_TEST(img2[0][0] == 0);
+            DLIB_TEST(img2[0][1] == 0);
+            DLIB_TEST(img2[0][2] == 0);
+            DLIB_TEST(img2[0][3] == 0);
+
+            DLIB_TEST(img2[1][0] == 0);
+            DLIB_TEST(img2[1][1] == -9);
+            DLIB_TEST(img2[1][2] == -9);
+            DLIB_TEST(img2[1][3] == 0);
+
+            DLIB_TEST(img2[2][0] == 0);
+            DLIB_TEST(img2[2][1] == 0);
+            DLIB_TEST(img2[2][2] == 0);
+            DLIB_TEST(img2[2][3] == 0);
+
+            spatially_filter_image_separable(img,img2,rowf,colf,1,true);
+            DLIB_TEST(img2[0][0] == 0);
+            DLIB_TEST(img2[0][1] == 0);
+            DLIB_TEST(img2[0][2] == 0);
+            DLIB_TEST(img2[0][3] == 0);
+
+            DLIB_TEST(img2[1][0] == 0);
+            DLIB_TEST(img2[1][1] == 9);
+            DLIB_TEST(img2[1][2] == 9);
+            DLIB_TEST(img2[1][3] == 0);
+
+            DLIB_TEST(img2[2][0] == 0);
+            DLIB_TEST(img2[2][1] == 0);
+            DLIB_TEST(img2[2][2] == 0);
+            DLIB_TEST(img2[2][3] == 0);
+        }
+        {
+            array2d<double> img, img2;
+            img.set_size(3,4);
+
+            matrix<double> filter(3,3);
+            filter = 1;
+            assign_all_pixels(img,-1);
+
+            spatially_filter_image(img,img2,filter,2);
+
+            DLIB_TEST(img2[0][0] == 0);
+            DLIB_TEST(img2[0][1] == 0);
+            DLIB_TEST(img2[0][2] == 0);
+            DLIB_TEST(img2[0][3] == 0);
+
+            DLIB_TEST(img2[1][0] == 0);
+            DLIB_TEST((img2[1][1] -  -4.5) < 1e-14);
+            DLIB_TEST((img2[1][2] -  -4.5) < 1e-14);
+            DLIB_TEST(img2[1][3] == 0);
+
+            DLIB_TEST(img2[2][0] == 0);
+            DLIB_TEST(img2[2][1] == 0);
+            DLIB_TEST(img2[2][2] == 0);
+            DLIB_TEST(img2[2][3] == 0);
+
+        }
+    }
+
+    void test_zero_border_pixels(
+    )
+    {
+        array2d<unsigned char> img;
+        img.set_size(4,5);
+
+        assign_all_pixels(img, 1);
+        zero_border_pixels(img, 2,1);
+
+        DLIB_TEST(img[0][0] == 0);
+        DLIB_TEST(img[1][0] == 0);
+        DLIB_TEST(img[2][0] == 0);
+        DLIB_TEST(img[3][0] == 0);
+        DLIB_TEST(img[0][1] == 0);
+        DLIB_TEST(img[1][1] == 0);
+        DLIB_TEST(img[2][1] == 0);
+        DLIB_TEST(img[3][1] == 0);
+
+        DLIB_TEST(img[0][3] == 0);
+        DLIB_TEST(img[1][3] == 0);
+        DLIB_TEST(img[2][3] == 0);
+        DLIB_TEST(img[3][3] == 0);
+        DLIB_TEST(img[0][4] == 0);
+        DLIB_TEST(img[1][4] == 0);
+        DLIB_TEST(img[2][4] == 0);
+        DLIB_TEST(img[3][4] == 0);
+
+        DLIB_TEST(img[0][2] == 0);
+        DLIB_TEST(img[3][2] == 0);
+
+        DLIB_TEST(img[1][2] == 1);
+        DLIB_TEST(img[2][2] == 1);
+    }
 
     class image_tester : public tester
     {
@@ -780,6 +1004,17 @@ namespace
             test_integral_image<double, int>();
             test_integral_image<long, unsigned char>();
             test_integral_image<double, float>();
+
+            test_zero_border_pixels();
+
+            test_filtering<unsigned char>(false,1);
+            test_filtering<unsigned char>(true,1);
+            test_filtering<unsigned char>(false,3);
+            test_filtering<unsigned char>(true,3);
+            test_filtering<int>(false,1);
+            test_filtering<int>(true,1);
+            test_filtering<int>(false,3);
+            test_filtering<int>(true,3);
         }
     } a;
 

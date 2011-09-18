@@ -1,7 +1,7 @@
 // Copyright (C) 2011  Davis E. King (davis@dlib.net)
 // License: Boost Software License   See LICENSE.txt for the full license.
-#undef DLIB_FIND_MAP_nMPLP_ABSTRACT_H__
-#ifdef DLIB_FIND_MAP_nMPLP_ABSTRACT_H__
+#undef DLIB_FIND_MAX_FACTOR_GRAPH_nMPLP_ABSTRACT_H__
+#ifdef DLIB_FIND_MAX_FACTOR_GRAPH_nMPLP_ABSTRACT_H__
 
 #include <vector>
 
@@ -18,12 +18,12 @@ namespace dlib
                 This object represents a factor graph or graphical model.  In 
                 particular, this object defines the interface a MAP problem on
                 a factor graph must implement if it is to be solved using the 
-                find_map_nmplp() routine defined at the bottom of this file.  
+                find_max_factor_graph_nmplp() routine defined at the bottom of this file.  
 
                 Note that there is no dlib::map_problem object.  What you are
                 looking at here is simply the interface definition for a map problem.
                 You must implement your own version of this object for the problem
-                you wish to solve and then pass it to the find_map_nmplp() routine.
+                you wish to solve and then pass it to the find_max_factor_graph_nmplp() routine.
         !*/
 
     public:
@@ -300,7 +300,7 @@ namespace dlib
     template <
         typename map_problem
         >
-    void find_map_nmplp (
+    void find_max_factor_graph_nmplp (
         const map_problem& prob,
         std::vector<unsigned long>& map_assignment,
         unsigned long max_iter,
@@ -323,7 +323,7 @@ namespace dlib
             - #map_assignment.size() == prob.number_of_nodes()
             - for all valid i:
                 - #map_assignment[prob.node_id(i)] < prob.num_states(i)
-                - #map_assignment[prob.node_id(i)] == approximate MAP assignment for node/variable i.
+                - #map_assignment[prob.node_id(i)] == The approximate MAP assignment for node/variable i.
             - eps controls the stopping condition, smaller values of eps lead to more accurate 
               solutions of the relaxed linear program but may take more iterations.  Note that
               the algorithm will never execute more than max_iter iterations regardless of
@@ -333,13 +333,13 @@ namespace dlib
             - This function is an implementation of the NMPLP algorithm introduced in the 
               following paper:
                 Fixing Max-Product: Convergent Message Passing Algorithms for MAP LP-Relaxations 
-                by Amir Globerson Tommi Jaakkola
+                by Amir Globerson and Tommi Jaakkola
     !*/
 
 // ----------------------------------------------------------------------------------------
 
 }
 
-#endif // DLIB_FIND_MAP_nMPLP_H__
+#endif // DLIB_FIND_MAX_FACTOR_GRAPH_nMPLP_H__
 
 

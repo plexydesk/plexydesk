@@ -93,6 +93,8 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
       <section>
          <name>Structured Prediction</name>
          <item>structural_svm_problem</item> 
+         <item>structural_svm_object_detection_problem</item> 
+         <item>structural_object_detection_trainer</item> 
          <item>structural_svm_problem_threaded</item> 
          <item>svm_struct_controller_node</item> 
          <item>svm_struct_processing_node</item> 
@@ -139,12 +141,14 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
       <section>
          <name>Validation</name>
          <item>cross_validate_trainer</item> 
+         <item>cross_validate_object_detection_trainer</item> 
          <item>cross_validate_trainer_threaded</item> 
          <item>cross_validate_multiclass_trainer</item> 
          <item>cross_validate_regression_trainer</item> 
          <item>test_binary_decision_function</item> 
          <item>test_multiclass_decision_function</item> 
          <item>test_regression_function</item> 
+         <item>test_object_detection_function</item> 
       </section>
 
       <section>
@@ -2021,10 +2025,47 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <spec_file link="true">dlib/svm/cross_validate_regression_trainer_abstract.h</spec_file>
          <description>
             Performs k-fold cross validation on a user supplied regression trainer object such
-            as the <a href="#svr_trainer">svr_trainer</a> and returns the mean squared error.
+            as the <a href="#svr_trainer">svr_trainer</a> and returns the mean squared error
+            and R-squared value.
          </description>
          <examples>
             <example>svr_ex.cpp.html</example>
+         </examples>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>cross_validate_object_detection_trainer</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/cross_validate_object_detection_trainer_abstract.h</spec_file>
+         <description>
+            Performs k-fold cross validation on a user supplied object detection trainer such
+            as the <a href="#structural_object_detection_trainer">structural_object_detection_trainer</a> 
+            and returns the precision and recall. 
+         </description>
+         <examples>
+            <example>object_detector_ex.cpp.html</example>
+            <example>object_detector_advanced_ex.cpp.html</example>
+         </examples>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>test_object_detection_function</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/cross_validate_object_detection_trainer_abstract.h</spec_file>
+         <description>
+            Tests an object detector such
+            as the <a href="imaging.html#object_detector">object_detector</a> 
+            and returns the precision and recall. 
+         </description>
+         <examples>
+            <example>object_detector_ex.cpp.html</example>
+            <example>object_detector_advanced_ex.cpp.html</example>
          </examples>
                                  
       </component>
@@ -2037,7 +2078,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <spec_file link="true">dlib/svm/cross_validate_regression_trainer_abstract.h</spec_file>
          <description>
             Tests a regression function (e.g. <a href="#decision_function">decision_function</a>)
-            and returns the mean squared error.
+            and returns the mean squared error and R-squared value.
          </description>
                                  
       </component>
@@ -2102,6 +2143,52 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
             have multiple computers then you can use the <a href="#svm_struct_controller_node">svm_struct_controller_node</a>
             to distribute the work across many computers.
          </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>structural_svm_object_detection_problem</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/structural_svm_object_detection_problem_abstract.h</spec_file>
+         <description>
+               This object is a tool for learning the parameter vector needed to use
+               a <a href="imaging.html#scan_image_pyramid">scan_image_pyramid</a> object.  
+
+            <p>
+               It learns the parameter vector by formulating the problem as a <a href="#structural_svm_problem">structural 
+               SVM problem</a>.  The general approach is similar to the method discussed in 
+               Learning to Localize Objects with Structured Output Regression by 
+               Matthew B. Blaschko and Christoph H. Lampert.  However, the method has 
+               been extended to datasets with multiple, potentially overlapping, objects 
+               per image and the measure of loss is different from what is described in 
+               the paper.  
+            </p>
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>structural_object_detection_trainer</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/structural_object_detection_trainer_abstract.h</spec_file>
+         <description>
+               This object is a tool for learning to detect objects in images based on a set of labeled images.  
+               The training procedure produces an <a href="imaging.html#object_detector">object_detector</a> which
+               can be used to predict the locations of objects in new images. 
+               <p>
+               Note that this is just a convenience wrapper around the 
+               <a href="#structural_svm_object_detection_problem">structural_svm_object_detection_problem</a>
+               to make it look similar to all the other trainers in dlib.  
+               </p>
+         </description>
+         <examples>
+            <example>object_detector_ex.cpp.html</example>
+            <example>object_detector_advanced_ex.cpp.html</example>
+         </examples>
                                  
       </component>
       

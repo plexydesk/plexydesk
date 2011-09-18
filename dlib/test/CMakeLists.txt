@@ -38,7 +38,7 @@ set (tests
    empirical_kernel_map.cpp
    entropy_coder.cpp
    entropy_encoder_model.cpp
-   find_map_nmplp.cpp
+   find_max_factor_graph_nmplp.cpp
    geometry.cpp
    graph.cpp
    hash.cpp
@@ -69,6 +69,7 @@ set (tests
    member_function_pointer.cpp
    metaprogramming.cpp
    multithreaded_object.cpp
+   object_detector.cpp
    one_vs_all_trainer.cpp
    one_vs_one_trainer.cpp
    optimization.cpp

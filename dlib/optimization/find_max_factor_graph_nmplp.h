@@ -1,9 +1,9 @@
 // Copyright (C) 2011  Davis E. King (davis@dlib.net)
 // License: Boost Software License   See LICENSE.txt for the full license.
-#ifndef DLIB_FIND_MAP_nMPLP_H__
-#define DLIB_FIND_MAP_nMPLP_H__
+#ifndef DLIB_FIND_MAX_FACTOR_GRAPH_nMPLP_H__
+#define DLIB_FIND_MAX_FACTOR_GRAPH_nMPLP_H__
 
-#include "find_map_nmplp_abstract.h"
+#include "find_max_factor_graph_nmplp_abstract.h"
 #include <vector>
 #include <map>
 #include "../matrix.h"
@@ -17,7 +17,7 @@ namespace dlib
     template <
         typename map_problem
         >
-    void find_map_nmplp (
+    void find_max_factor_graph_nmplp (
         const map_problem& prob,
         std::vector<unsigned long>& map_assignment,
         unsigned long max_iter,
@@ -26,7 +26,7 @@ namespace dlib
     {
         // make sure requires clause is not broken
         DLIB_ASSERT( eps > 0,
-                     "\t void find_map_nmplp()"
+                     "\t void find_max_factor_graph_nmplp()"
                      << "\n\t eps must be greater than zero"
                      << "\n\t eps:  " << eps 
                 );
@@ -35,7 +35,7 @@ namespace dlib
             This function is an implementation of the NMPLP algorithm introduced in the 
             following paper:
                 Fixing Max-Product: Convergent Message Passing Algorithms for MAP LP-Relaxations 
-                by Amir Globerson Tommi Jaakkola
+                by Amir Globerson and Tommi Jaakkola
 
                 In particular, see the pseudocode in Figure 1.  The code in this function
                 follows what is described there.
@@ -197,5 +197,5 @@ namespace dlib
 
 }
 
-#endif // DLIB_FIND_MAP_nMPLP_H__
+#endif // DLIB_FIND_MAX_FACTOR_GRAPH_nMPLP_H__
 

@@ -36,6 +36,8 @@
          <term file="dlib/optimization/optimization_oca_abstract.h.html" name="oca_problem"/>
          <term file="ml.html" name="structural_svm_problem"/>
          <term file="ml.html" name="structural_svm_problem_threaded"/>
+         <term file="ml.html" name="structural_svm_object_detection_problem"/>
+         <term file="ml.html" name="structural_object_detection_trainer"/>
          <term file="ml.html" name="svm_struct_controller_node"/>
          <term file="ml.html" name="svm_struct_processing_node"/>
 
@@ -55,7 +57,7 @@
          <term file="optimization.html" name="solve_least_squares_lm"/>
          <term file="optimization.html" name="find_min_trust_region"/>
          <term file="optimization.html" name="find_max_trust_region"/>
-         <term file="optimization.html" name="find_map_nmplp"/>
+         <term file="optimization.html" name="find_max_factor_graph_nmplp"/>
          <term file="optimization.html" name="solve_trust_region_subproblem"/>
          <term file="optimization.html" name="find_min_single_variable"/>
          <term file="optimization.html" name="find_min_using_approximate_derivatives"/>
@@ -218,10 +220,12 @@
          <term file="ml.html" name="train_probabilistic_decision_function"/>
          <term file="ml.html" name="probabilistic"/>
          <term file="ml.html" name="cross_validate_trainer"/>
+         <term file="ml.html" name="cross_validate_object_detection_trainer"/>
          <term file="ml.html" name="cross_validate_trainer_threaded"/>
          <term file="ml.html" name="cross_validate_multiclass_trainer"/>
          <term file="ml.html" name="cross_validate_regression_trainer"/>
          <term file="ml.html" name="test_binary_decision_function"/>
+         <term file="ml.html" name="test_object_detection_function"/>
          <term file="ml.html" name="test_multiclass_decision_function"/>
          <term file="ml.html" name="test_regression_function"/>
          <term link="ml.html#svm_nu_trainer" name="support vector machine"/>
@@ -769,7 +773,7 @@
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_image"/>
          <term name="fill_rect">
             <term link="dlib/gui_widgets/canvas_drawing_abstract.h.html#fill_rect" name="for GUI canvas objects"/>
-            <term link="dlib/image_transforms/draw_abstract.h.html#fill_rect" name="for image/array2d objects"/>
+            <term link="imaging.html#fill_rect" name="for image/array2d objects"/>
          </term>
 
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="fill_rect_with_vertical_gradient"/>
@@ -962,6 +966,7 @@
          <term file="imaging.html" name="load_image"/>
          <term file="imaging.html" name="save_dng"/>
          <term file="imaging.html" name="spatially_filter_image"/>
+         <term file="imaging.html" name="spatially_filter_image_separable"/>
          <term file="imaging.html" name="separable_3x3_filter_block_grayscale"/>
          <term file="imaging.html" name="separable_3x3_filter_block_rgb"/>
          <term file="imaging.html" name="pyramid_down"/>
@@ -979,6 +984,7 @@
          <term file="imaging.html" name="compute_dominant_angle"/>
          <term file="imaging.html" name="compute_surf_descriptor"/>
          <term file="imaging.html" name="hog_image"/>
+         <term file="imaging.html" name="hashed_feature_image"/>
          <term file="imaging.html" name="haar_x"/>
          <term file="imaging.html" name="haar_y"/>
          <term file="imaging.html" name="get_interest_points"/>
@@ -986,7 +992,14 @@
          <term file="imaging.html" name="interest_point"/>
          <term file="imaging.html" name="surf_point"/>
 
+         <term file="imaging.html" name="test_box_overlap"/>
+         <term file="imaging.html" name="object_detector"/>
          <term file="imaging.html" name="scan_image"/>
+         <term file="imaging.html" name="scan_image_pyramid"/>
+         <term file="imaging.html" name="compute_box_dimensions"/>
+         <term file="imaging.html" name="create_single_box_detection_template"/>
+         <term file="imaging.html" name="create_overlapped_2x2_detection_template"/>
+         <term file="imaging.html" name="create_grid_detection_template"/>
          <term file="dlib/image_processing/scan_image_abstract.h.html" name="all_images_same_size"/>
          <term file="dlib/image_processing/scan_image_abstract.h.html" name="sum_of_rects_in_images"/>
 

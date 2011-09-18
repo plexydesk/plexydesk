@@ -7,6 +7,8 @@
 #include "spatial_filtering_abstract.h"
 #include "../algs.h"
 #include "../assert.h"
+#include "../array2d.h"
+#include "../matrix.h"
 #include <limits>
 
 namespace dlib
@@ -17,26 +19,28 @@ namespace dlib
     template <
         typename in_image_type,
         typename out_image_type,
-        typename filter_type,
-        long M,
-        long N
+        typename EXP,
+        typename T
         >
     void spatially_filter_image (
         const in_image_type& in_img,
         out_image_type& out_img,
-        const filter_type (&filter)[M][N],
-        unsigned long scale = 1,
+        const matrix_exp<EXP>& filter,
+        T scale,
         bool use_abs = false
     )
     {
         COMPILE_TIME_ASSERT( pixel_traits<typename in_image_type::type>::has_alpha == false );
         COMPILE_TIME_ASSERT( pixel_traits<typename out_image_type::type>::has_alpha == false );
 
-        COMPILE_TIME_ASSERT(M%2 == 1);
-        COMPILE_TIME_ASSERT(N%2 == 1);
-        DLIB_ASSERT(scale > 0,
+        DLIB_ASSERT(scale != 0 &&
+                    filter.nr()%2 == 1 &&
+                    filter.nc()%2 == 1,
             "\tvoid spatially_filter_image()"
-            << "\n\tYou can't give a scale of zero"
+            << "\n\t You can't give a scale of zero or a filter with even dimensions"
+            << "\n\t scale: "<< scale
+            << "\n\t filter.nr(): "<< filter.nr()
+            << "\n\t filter.nc(): "<< filter.nc()
             );
         DLIB_ASSERT(is_same_object(in_img, out_img) == false,
             "\tvoid spatially_filter_image()"
@@ -54,13 +58,13 @@ namespace dlib
 
         out_img.set_size(in_img.nr(),in_img.nc());
 
-        zero_border_pixels(out_img, M/2, N/2); 
+        zero_border_pixels(out_img, filter.nc()/2, filter.nr()/2); 
 
         // figure out the range that we should apply the filter to
-        const long first_row = M/2;
-        const long first_col = N/2;
-        const long last_row = in_img.nr() - M/2;
-        const long last_col = in_img.nc() - N/2;
+        const long first_row = filter.nr()/2;
+        const long first_col = filter.nc()/2;
+        const long last_row = in_img.nr() - filter.nr()/2;
+        const long last_col = in_img.nc() - filter.nc()/2;
 
         // apply the filter to the image
         for (long r = first_row; r < last_row; ++r)
@@ -70,29 +74,21 @@ namespace dlib
                 typedef typename pixel_traits<typename in_image_type::type>::basic_pixel_type bp_type;
                 typename promote<bp_type>::type p;
                 typename promote<bp_type>::type temp = 0;
-                for (long m = 0; m < M; ++m)
+                for (long m = 0; m < filter.nr(); ++m)
                 {
-                    for (long n = 0; n < N; ++n)
+                    for (long n = 0; n < filter.nc(); ++n)
                     {
                         // pull out the current pixel and put it into p
-                        p = get_pixel_intensity(in_img[r-M/2+m][c-N/2+n]);
-                        temp += p*filter[m][n];
+                        p = get_pixel_intensity(in_img[r-filter.nr()/2+m][c-filter.nc()/2+n]);
+                        temp += p*filter(m,n);
                     }
                 }
 
                 temp /= scale;
 
-                // Catch any underflow or apply abs as appropriate
-                if (temp < 0)
+                if (use_abs && temp < 0)
                 {
-                    if (use_abs)
-                    {
-                        temp = -temp;
-                    }
-                    else
-                    {
-                        temp = 0;
-                    }
+                    temp = -temp;
                 }
 
                 // save this pixel to the output image
@@ -100,6 +96,143 @@ namespace dlib
                 assign_pixel_intensity(out_img[r][c], temp);
             }
         }
+    }
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP
+        >
+    void spatially_filter_image (
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP>& filter
+    )
+    {
+        spatially_filter_image(in_img,out_img,filter,1);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP1,
+        typename EXP2,
+        typename T
+        >
+    void spatially_filter_image_separable (
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP1>& row_filter,
+        const matrix_exp<EXP2>& col_filter,
+        T scale,
+        bool use_abs = false
+    )
+    {
+        COMPILE_TIME_ASSERT( pixel_traits<typename in_image_type::type>::has_alpha == false );
+        COMPILE_TIME_ASSERT( pixel_traits<typename out_image_type::type>::has_alpha == false );
+
+        DLIB_ASSERT(scale != 0 &&
+                    row_filter.size()%2 == 1 &&
+                    col_filter.size()%2 == 1 &&
+                    is_vector(row_filter) &&
+                    is_vector(col_filter),
+            "\tvoid spatially_filter_image_separable()"
+            << "\n\t Invalid inputs were given to this function."
+            << "\n\t scale: "<< scale
+            << "\n\t row_filter.size(): "<< row_filter.size()
+            << "\n\t col_filter.size(): "<< col_filter.size()
+            << "\n\t is_vector(row_filter): "<< is_vector(row_filter)
+            << "\n\t is_vector(col_filter): "<< is_vector(col_filter)
+            );
+        DLIB_ASSERT(is_same_object(in_img, out_img) == false,
+            "\tvoid spatially_filter_image_separable()"
+            << "\n\tYou must give two different image objects"
+            );
+
+
+
+        // if there isn't any input image then don't do anything
+        if (in_img.size() == 0)
+        {
+            out_img.clear();
+            return;
+        }
+
+        out_img.set_size(in_img.nr(),in_img.nc());
+
+        zero_border_pixels(out_img, row_filter.size()/2, col_filter.size()/2); 
+
+        // figure out the range that we should apply the filter to
+        const long first_row = col_filter.size()/2;
+        const long first_col = row_filter.size()/2;
+        const long last_row = in_img.nr() - col_filter.size()/2;
+        const long last_col = in_img.nc() - row_filter.size()/2;
+
+        typedef typename pixel_traits<typename in_image_type::type>::basic_pixel_type bp_type;
+
+        typedef typename out_image_type::mem_manager_type mem_manager_type;
+
+        array2d<typename promote<bp_type>::type,mem_manager_type> temp_img;
+        temp_img.set_size(in_img.nr(), in_img.nc());
+
+        // apply the row filter
+        for (long r = 0; r < in_img.nr(); ++r)
+        {
+            for (long c = first_col; c < last_col; ++c)
+            {
+                typename promote<bp_type>::type p;
+                typename promote<bp_type>::type temp = 0;
+                for (long n = 0; n < row_filter.size(); ++n)
+                {
+                    // pull out the current pixel and put it into p
+                    p = get_pixel_intensity(in_img[r][c-row_filter.size()/2+n]);
+                    temp += p*row_filter(n);
+                }
+                temp_img[r][c] = temp;
+            }
+        }
+
+        // apply the column filter 
+        for (long r = first_row; r < last_row; ++r)
+        {
+            for (long c = first_col; c < last_col; ++c)
+            {
+                typename promote<bp_type>::type temp = 0;
+                for (long m = 0; m < col_filter.size(); ++m)
+                {
+                    temp += temp_img[r-col_filter.size()/2+m][c]*col_filter(m);
+                }
+
+                temp /= scale;
+
+                if (use_abs && temp < 0)
+                {
+                    temp = -temp;
+                }
+
+                // save this pixel to the output image
+                assign_pixel(out_img[r][c], in_img[r][c]);
+                assign_pixel_intensity(out_img[r][c], temp);
+            }
+        }
+    }
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP1,
+        typename EXP2
+        >
+    void spatially_filter_image_separable (
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP1>& row_filter,
+        const matrix_exp<EXP2>& col_filter
+    )
+    {
+        spatially_filter_image_separable(in_img,out_img,row_filter,col_filter,1);
     }
 
 // ----------------------------------------------------------------------------------------

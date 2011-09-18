@@ -4,6 +4,7 @@
 #ifdef DLIB_SPATIAL_FILTERINg_ABSTRACT_
 
 #include "../pixel.h"
+#include "../matrix.h"
 
 namespace dlib
 {
@@ -13,15 +14,14 @@ namespace dlib
     template <
         typename in_image_type,
         typename out_image_type,
-        typename filter_type,
-        long M,
-        long N
+        typename EXP,
+        typename T
         >
     void spatially_filter_image (
         const in_image_type& in_img,
         out_image_type& out_img,
-        const filter_type (&filter)[M][N],
-        unsigned long scale = 1,
+        const matrix_exp<EXP>& filter,
+        T scale = 1,
         bool use_abs = false
     );
     /*!
@@ -31,24 +31,71 @@ namespace dlib
             - pixel_traits<typename in_image_type::type>::has_alpha == false
             - pixel_traits<typename out_image_type::type>::has_alpha == false 
             - is_same_object(in_img, out_img) == false 
-            - scale > 0
-            - M % 2 == 1  (i.e. M must be odd)
-            - N % 2 == 1  (i.e. N must be odd)
+            - T must be some scalar type
+            - scale != 0
+            - filter.nr() % 2 == 1  (i.e. must be odd)
+            - filter.nc() % 2 == 1  (i.e. must be odd)
         ensures
             - Applies the given spatial filter to in_img and stores the result in out_img.  Also 
               divides each resulting pixel by scale.  
-            - pixel values after filtering that are > pixel_traits<out_image_type>::max() are
-              set to pixel_traits<out_image_type>::max()
+            - Pixel values are stored into out_img using the assign_pixel() function and therefore
+              any applicable color space conversion or value saturation is performed.
+            - if (pixel_traits<typename in_image_type::type>::grayscale == false) then
+                - the pixel values are converted to the HSI color space and the filtering
+                  is done on the intensity channel only.
+            - if (use_abs == true) then
+                - pixel values after filtering that are < 0 are converted to their absolute values.
+            - Pixels close enough to the edge of in_img to not have the filter still fit 
+              inside the image are set to zero.
+            - #out_img.nc() == in_img.nc()
+            - #out_img.nr() == in_img.nr()
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP1,
+        typename EXP2,
+        typename T
+        >
+    void spatially_filter_image_separable (
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP1>& row_filter,
+        const matrix_exp<EXP2>& col_filter,
+        T scale = 1,
+        bool use_abs = false
+    );
+    /*!
+        requires
+            - in_image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - out_image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename in_image_type::type>::has_alpha == false
+            - pixel_traits<typename out_image_type::type>::has_alpha == false 
+            - is_same_object(in_img, out_img) == false 
+            - T must be some scalar type
+            - scale != 0
+            - is_vector(row_filter) == true
+            - is_vector(col_filter) == true
+            - row_filter.size() % 2 == 1  (i.e. must be odd)
+            - col_filter.size() % 2 == 1  (i.e. must be odd)
+        ensures
+            - Applies the given separable spatial filter to in_img and stores the result in out_img.  
+              Also divides each resulting pixel by scale.  Calling this function has the same
+              effect as calling the regular spatially_filter_image() routine with a filter,
+              FILT, defined as follows: 
+                - FILT(r,c) == col_filter(r)*row_filter(c)
+            - Pixel values are stored into out_img using the assign_pixel() function and therefore
+              any applicable color space conversion or value saturation is performed.
             - if (pixel_traits<typename in_image_type::type>::grayscale == false) then
                 - the pixel values are converted to the HSI color space and the filtering
                   is done on the intensity channel only.
             - if (use_abs == true) then
                 - pixel values after filtering that are < 0 are converted to their absolute values
-            - else
-                - pixel values after filtering that are < 0 are assigned the value of 0
             - Pixels close enough to the edge of in_img to not have the filter still fit 
-              inside the image are not modified.  i.e. Whatever value the border of out_img
-              had to begin with is what it will have after this function returns.
+              inside the image are set to zero.
             - #out_img.nc() == in_img.nc()
             - #out_img.nr() == in_img.nr()
     !*/
@@ -73,6 +120,7 @@ namespace dlib
     /*!
         requires
             - in_image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename in_image_type::type> must be defined 
             - T should be a scalar type
             - shrink_rect(get_rect(img),1).contains(c,r)
             - shrink_rect(get_rect(img),1).contains(c+NC-1,r+NR-1)
