@@ -384,6 +384,11 @@ namespace dlib
     {
         static const bool value = true;
     };
+    template <typename T>
+    struct is_const_type<const T&>
+    {
+        static const bool value = true;
+    };
 
 // ----------------------------------------------------------------------------------------
 
@@ -430,6 +435,19 @@ namespace dlib
     private:
         is_same_type();
     };
+
+// ----------------------------------------------------------------------------------------
+
+    /*!A is_float_type
+
+        This is a template that can be used to determine if a type is one of the built
+        int floating point types (i.e. float, double, or long double).
+    !*/
+
+    template < typename T > struct is_float_type  { const static bool value = false; };
+    template <> struct is_float_type<float>       { const static bool value = true; };
+    template <> struct is_float_type<double>      { const static bool value = true; };
+    template <> struct is_float_type<long double> { const static bool value = true; };
 
 // ----------------------------------------------------------------------------------------
 

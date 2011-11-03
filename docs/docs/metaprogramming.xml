@@ -34,6 +34,7 @@
          <item>is_const_type</item>
          <item>is_reference_type</item>
          <item>is_same_type</item>
+         <item>is_float_type</item>
          <item>is_convertible</item>
          <item>is_complex</item>
          <item>is_function</item>
@@ -42,6 +43,7 @@
          <item>static_switch</item>
          <item>noncopyable</item>
          <item>enable_if</item>
+         <item>is_array2d</item>
          <item>is_graph</item>
          <item>is_rand</item>
          <item>is_matrix</item>
@@ -228,6 +230,19 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>is_float_type</name>
+         <file>dlib/algs.h</file>
+         <spec_file link="true">dlib/algs.h</spec_file>
+         <description>
+            This is a template where is_float_type&lt;T&gt;::value == true when T is
+            a floating point type (i.e. float, double, or long double) and false otherwise.
+         </description>
+         
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>is_same_object</name>
          <file>dlib/algs.h</file>
          <spec_file link="true">dlib/algs.h</spec_file>
@@ -392,6 +407,19 @@
          <description>
             This is a template where is_graph&lt;T&gt;::value == true when T
             is a <a href="containers.html#graph">graph</a> object.
+         </description>
+         
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>is_array2d</name>
+         <file>dlib/is_kind.h</file>
+         <spec_file link="true">dlib/is_kind.h</spec_file>
+         <description>
+            This is a template where is_array2d&lt;T&gt;::value == true when T
+            is an <a href="containers.html#array2d">array2d</a> object.
          </description>
          
       </component>

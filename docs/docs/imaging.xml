@@ -121,11 +121,35 @@
          <item>threshold_image</item>
          <item>auto_threshold_image</item>
       </section>
+
+      <section>
+         <name>Morphology</name>
+         <item>label_connected_blobs</item>
+         <item>segment_image</item>
+         <item>binary_dilation</item>
+         <item>binary_erosion</item>
+         <item>binary_open</item>
+         <item>binary_close</item>
+         <item>binary_intersection</item>
+         <item>binary_union</item>
+         <item>binary_difference</item>
+         <item>binary_complement</item>
+      </section>
+
+      <section>
+         <name>Filtering</name>
+         <item>gaussian_blur</item> 
+         <item>spatially_filter_image</item> 
+         <item>spatially_filter_image_separable</item> 
+         <item>separable_3x3_filter_block_grayscale</item> 
+         <item>separable_3x3_filter_block_rgb</item> 
+      </section>
  
       <section>
          <name>Miscellaneous</name>
 
          <item>cv_image</item>
+         <item>randomly_color_image</item>
 
          <item>draw_line</item> 
          <item>fill_rect</item> 
@@ -135,24 +159,12 @@
          <item>assign_border_pixels</item> 
          <item>equalize_histogram</item> 
          <item>get_histogram</item> 
-         <item>spatially_filter_image</item> 
-         <item>spatially_filter_image_separable</item> 
-         <item>separable_3x3_filter_block_grayscale</item> 
-         <item>separable_3x3_filter_block_rgb</item> 
          <item>pyramid_down</item> 
          <item>pyramid_down_3_2</item> 
          <item>pyramid_down_4_3</item> 
          <item>pyramid_down_5_4</item> 
          <item>zero_border_pixels</item> 
 
-         <item>binary_dilation</item>
-         <item>binary_erosion</item>
-         <item>binary_open</item>
-         <item>binary_close</item>
-         <item>binary_intersection</item>
-         <item>binary_union</item>
-         <item>binary_difference</item>
-         <item>binary_complement</item>
       </section>
 
     </top>  
@@ -478,6 +490,26 @@
             
    <!-- ************************************************************************* -->
       
+      
+      <component>
+         <name>randomly_color_image</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/randomly_color_image_abstract.h</spec_file>
+         <description>
+              Randomly generates a mapping from gray level pixel values
+              to the RGB pixel space and then uses this mapping to create
+              a colored version an image. 
+              <p>
+                 This function is useful for displaying the results of some image 
+                 segmentation.  For example, the output of <a href="#label_connected_blobs">label_connected_blobs</a>
+                 or <a href="#segment_image">segment_image</a>.
+              </p>
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
       <component>
          <name>assign_pixel</name>
          <file>dlib/pixel.h</file>
@@ -535,7 +567,7 @@
                Note that you must define DLIB_PNG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libpng library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically.
+               automatically (assuming libpng is properly installed on your system).
             </p>
          </description>
                                  
@@ -554,7 +586,7 @@
                Note that you must define DLIB_JPEG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libjpeg library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically.
+               automatically (assuming libjpeg is properly installed in your system).
             </p>
          </description>
                                  
@@ -573,7 +605,7 @@
                Note that you must define DLIB_JPEG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libjpeg library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically.
+               automatically (assuming libjpeg is properly installed in your system).
             </p>
          </description>
                                  
@@ -625,7 +657,7 @@
                Note that you must define DLIB_PNG_SUPPORT if you want to use this function.  You
                must also set your build environment to link to the libpng library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically.
+               automatically (assuming libpng is properly installed in your system).
             </p>
             <p>
                This routine can save images containing any type of pixel.  However, save_png() can
@@ -688,7 +720,7 @@
                Note that you must define DLIB_PNG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libpng library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically.
+               automatically (assuming libpng is properly installed on your system).
             </p>
          </description>
 
@@ -903,6 +935,18 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>gaussian_blur</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/spatial_filtering_abstract.h</spec_file>
+         <description>        
+            This global function blurs an image by convolving it with a Gaussian filter.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>spatially_filter_image_separable</name>
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/spatial_filtering_abstract.h</spec_file>
@@ -1014,6 +1058,34 @@
          <description>        
             This global function performs a simple binary thresholding on an image with a user
             supplied threshold.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>label_connected_blobs</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/label_connected_blobs_abstract.h</spec_file>
+         <description>        
+              This function labels each of the connected blobs in an image with a unique integer label.  
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>segment_image</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/segment_image_abstract.h</spec_file>
+         <description>        
+              Attempts to segment an image into regions which have some visual consistency to them.
+              In particular, this function implements the algorithm described in the paper:
+              <blockquote>
+               Efficient Graph-Based Image Segmentation by Felzenszwalb and Huttenlocher.
+              </blockquote>
          </description>
                                  
       </component>

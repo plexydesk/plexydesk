@@ -12,13 +12,26 @@
 
 <current>
 New Stuff:
+ 
+Non-Backwards Compatible Changes:
+
+Bug fixes:
+
+Other:
+
+</current>
+
+<!-- *******************************************************************************  -->
+
+<old name="17.43" date="Oct 21, 2011">
+New Stuff:
    - Two new routines for performing MAP inference in factor graphs:
       - For chain-structured graphs: find_max_factor_graph_viterbi()
       - For general graphs:          find_max_factor_graph_nmplp()
    - Image Processing
       - Added more tools for creating image pyramids.  See pyramid_down_5_4, 
         pyramid_down_4_3, and pyramid_down_3_2.
-      - Added more image filtering functions.
+      - Added more image filtering and morphology functions.
       - Added a set of tools for creating sliding window classifiers:
          - Added the scan_image() routine.  It is a tool for sliding a set of 
            rectangles over an image space and finding the locations where the sum 
@@ -33,11 +46,12 @@ New Stuff:
    - Added the following functions for computing statistics on vectors:
      mean_sign_agreement(), correlation(), covariance(), r_squared(),
      and mean_squared_error()
+   - Added a C++ wrapper for SQLite (see the new database and statement objects)
  
 Non-Backwards Compatible Changes:
    - Changed the interface to the ridge regression trainer objects so that they 
-     report the entire set of LOO prediction values rather than a summary statistic 
-     like mean squared error.
+     report the entire set of leave-one-out prediction values rather than a 
+     summary statistic like mean squared error.
    - Changed the serialization routine for bgr_pixels to store the pixels in BGR 
      order rather than RGB.
    - Changed the interface for the spatially_filter_image() routine to take the 
@@ -46,6 +60,9 @@ Non-Backwards Compatible Changes:
    - Changed the test_regression_function() and cross_validate_regression_trainer()
      routines so they return both the MSE and R-squared values rather than just the
      MSE.
+   - Changed suppress_non_maximum_edges() to use the L2 norm instead of L1 norm
+     for measuring the strength of an edge since this produces a slightly better
+     result.
 
 Bug fixes:
    - The image_display didn't display overlay rectangles quite right.  If you zoomed
@@ -62,6 +79,12 @@ Bug fixes:
      It wasn't tokenizing double quoted strings right.
    - Fixed a bug in spatially_filter_image() which showed up when using non-square 
      filters.  The bug would cause the edges of the output image to be incorrect.
+   - Fixed a bug in the matrix class.  Expressions of the form mat *= mat(0) would
+     evaluate incorrectly because the *= operator took the right hand side by reference
+     and thus experienced an aliasing problem.  The other op= operators had similar
+     problems and have also been fixed.
+   - Fixed a bug pointed out by Justin Solomon which could cause the svr_trainer and
+     svm_c_trainer to produce incorrect results in certain unusual cases.  
 
 Other:
    - Added a more complete set of methods for converting between image space and 
@@ -70,7 +93,7 @@ Other:
    - Made the integral_image more general by making it templated on the type of 
      scalar used to store the sums.
 
-</current>
+</old>
 
 <!-- *******************************************************************************  -->
 
