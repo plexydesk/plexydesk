@@ -84,6 +84,36 @@ namespace dlib
             labels(labels_),
             fe(fe_)
         {
+            // make sure requires clause is not broken
+            DLIB_ASSERT(is_sequence_labeling_problem(samples,labels) == true &&
+                        contains_invalid_labeling(fe, samples, labels) == false,
+                        "\t structural_svm_sequence_labeling_problem::structural_svm_sequence_labeling_problem()"
+                        << "\n\t invalid inputs were given to this function"
+                        << "\n\t samples.size(): " << samples.size() 
+                        << "\n\t is_sequence_labeling_problem(samples,labels): " << is_sequence_labeling_problem(samples,labels)
+                        << "\n\t contains_invalid_labeling(fe,samples,labels): " << contains_invalid_labeling(fe,samples,labels)
+                        << "\n\t this: " << this
+                        );
+
+#ifdef ENABLE_ASSERTS
+            for (unsigned long i = 0; i < labels.size(); ++i)
+            {
+                for (unsigned long j = 0; j < labels[i].size(); ++j)
+                {
+                    // make sure requires clause is not broken
+                    DLIB_ASSERT(labels[i][j] < fe.num_labels(),
+                                "\t structural_svm_sequence_labeling_problem::structural_svm_sequence_labeling_problem()"
+                                << "\n\t The given labels in labels are invalid."
+                                << "\n\t labels[i][j]: " << labels[i][j] 
+                                << "\n\t fe.num_labels(): " << fe.num_labels()
+                                << "\n\t i: " << i 
+                                << "\n\t j: " << j 
+                                << "\n\t this: " << this
+                                );
+                }
+            }
+#endif
+
         }
 
     private:
@@ -159,8 +189,8 @@ namespace dlib
                 const matrix_exp<EXP>& node_states
             ) const
             {
-                // Note that it is intentional that we don't call fe.reject_labeling() here
-                // because doing so would break the structural svm optimizer. 
+                if (dlib::impl::call_reject_labeling_if_exists(fe, sequence,  node_states, node_id))
+                    return -std::numeric_limits<double>::infinity();
 
                 double loss = 0;
                 if (node_states(0) != label[node_id])

@@ -123,7 +123,76 @@ namespace dlib
         }
     }
 
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
 
+    template <
+        typename feature_extractor 
+        >
+    typename enable_if<dlib::impl::has_reject_labeling<feature_extractor>,bool>::type contains_invalid_labeling (
+        const feature_extractor& fe,
+        const std::vector<typename feature_extractor::sample_type>& x,
+        const std::vector<unsigned long>& y
+    )
+    {
+        if (x.size() != y.size())
+            return true;
+
+        matrix<unsigned long,0,1> node_states;
+
+        for (unsigned long i = 0; i < x.size(); ++i)
+        {
+            node_states.set_size(std::min(fe.order(),i) + 1);
+            for (unsigned long j = 0; j < (unsigned long)node_states.size(); ++j)
+                node_states(j) = y[i-j];
+
+            if (fe.reject_labeling(x, node_states, i))
+                return true;
+        }
+
+        return false;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename feature_extractor 
+        >
+    typename disable_if<dlib::impl::has_reject_labeling<feature_extractor>,bool>::type contains_invalid_labeling (
+        const feature_extractor& ,
+        const std::vector<typename feature_extractor::sample_type>& x,
+        const std::vector<unsigned long>& y 
+    )
+    {
+        if (x.size() != y.size())
+            return true;
+
+        return false;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename feature_extractor 
+        >
+    bool contains_invalid_labeling (
+        const feature_extractor& fe,
+        const std::vector<std::vector<typename feature_extractor::sample_type> >& x,
+        const std::vector<std::vector<unsigned long> >& y
+    )
+    {
+        if (x.size() != y.size())
+            return true;
+
+        for (unsigned long i = 0; i < x.size(); ++i)
+        {
+            if (contains_invalid_labeling(fe,x[i],y[i]))
+                return true;
+        }
+        return false;
+    }
+
+// ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
 
     template <
@@ -186,16 +255,31 @@ namespace dlib
             weights = 0;
         }
 
-        sequence_labeler(
-            const feature_extractor& fe_,
+        explicit sequence_labeler(
             const matrix<double,0,1>& weights_
+        ) : 
+            weights(weights_)
+        {
+            // make sure requires clause is not broken
+            DLIB_ASSERT(fe.num_features() == static_cast<unsigned long>(weights_.size()),
+                "\t sequence_labeler::sequence_labeler(weights_)"
+                << "\n\t These sizes should match"
+                << "\n\t fe.num_features(): " << fe.num_features() 
+                << "\n\t weights_.size():   " << weights_.size() 
+                << "\n\t this: " << this
+                );
+        }
+
+        sequence_labeler(
+            const matrix<double,0,1>& weights_,
+            const feature_extractor& fe_
         ) :
             fe(fe_),
             weights(weights_)
         {
             // make sure requires clause is not broken
             DLIB_ASSERT(fe_.num_features() == static_cast<unsigned long>(weights_.size()),
-                "\t sequence_labeler::sequence_labeler()"
+                "\t sequence_labeler::sequence_labeler(weights_,fe_)"
                 << "\n\t These sizes should match"
                 << "\n\t fe_.num_features(): " << fe_.num_features() 
                 << "\n\t weights_.size():    " << weights_.size() 
@@ -279,7 +363,7 @@ namespace dlib
         deserialize(fe, in);
         deserialize(weights, in);
 
-        item = sequence_labeler<feature_extractor>(fe, weights);
+        item = sequence_labeler<feature_extractor>(weights, fe);
     }
 
 // ----------------------------------------------------------------------------------------

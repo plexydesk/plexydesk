@@ -50,14 +50,15 @@ namespace dlib
         );
         /*!
             requires
-                - is_sequence_labeling_problem(samples, labels)
+                - is_sequence_labeling_problem(samples, labels) == true
+                - contains_invalid_labeling(fe, samples, labels) == false
                 - for all valid i and j: labels[i][j] < fe.num_labels()
             ensures
                 - This object attempts to learn a mapping from the given samples to the 
                   given labels.  In particular, it attempts to learn to predict labels[i] 
                   based on samples[i].  Or in other words, this object can be used to learn 
                   a parameter vector, w, such that a sequence_labeler declared as:
-                    sequence_labeler<feature_extractor> labeler(fe,w)
+                    sequence_labeler<feature_extractor> labeler(w,fe)
                   results in a labeler object which attempts to compute the following mapping:
                     labels[i] == labeler(samples[i])
                 - This object will use num_threads threads during the optimization 

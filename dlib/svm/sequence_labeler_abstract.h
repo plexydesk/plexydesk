@@ -23,16 +23,22 @@ namespace dlib
                 The model used by sequence_labeler objects is the following.  
                 Given an input sequence x, predict an output label sequence y
                 such that:
-                    y == argmax_y dot(w, PSI(x,y))
+                    y == argmax_Y dot(w, PSI(x,Y))
                     Where w is a parameter vector.
 
                 Therefore, a feature extractor defines how the PSI(x,y) feature vector 
                 is calculated.  It also defines how many output labels there are as 
                 well as the order of the model.  
 
-                Finally, note that PSI(x,y) is a sum of feature vectors, each extracted 
-                at one of the positions of the input sequence x.  Each of these constituent
-                feature vectors is defined by the get_features() method of this class.
+                Finally, note that PSI(x,y) is a sum of feature vectors, each derived 
+                from the entire input sequence x but only part of the label sequence y.
+                Each of these constituent feature vectors is defined by the get_features() 
+                method of this class.
+
+            THREAD SAFETY
+                Instances of this object should be thread safe, that is, it should 
+                be safe for multiple threads to make concurrent calls to the member 
+                functions of this object.
         !*/
 
     public:
@@ -123,15 +129,18 @@ namespace dlib
                 - for all valid i:
                     - interprets y(i) as the label corresponding to x[position-i]
                 - This function computes the part of PSI() corresponding to the x[position]
-                  element of the input sequence.  The features are returned as a sparse
-                  vector by invoking set_feature().  For example, to set the feature with
-                  an index of 55 to the value of 1 this method would call:
+                  element of the input sequence.  Moreover, this part of PSI() is returned as 
+                  a sparse vector by invoking set_feature().  For example, to set the feature 
+                  with an index of 55 to the value of 1 this method would call:
                     set_feature(55);
                   Or equivalently:
                     set_feature(55,1);
                   Therefore, the first argument to set_feature is the index of the feature 
                   to be set while the second argument is the value the feature should take.
-                - This function only calls set_feature() once for each feature index.
+                  Additionally, note that calling set_feature() multiple times with the same 
+                  feature index does NOT overwrite the old value, it adds to the previous 
+                  value.  For example, if you call set_feature(55) 3 times then it will
+                  result in feature 55 having a value of 3.
                 - This function only calls set_feature() with feature_index values < num_features()
         !*/
 
@@ -153,6 +162,51 @@ namespace dlib
     );
     /*!
         provides deserialization support 
+    !*/
+
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename feature_extractor 
+        >
+    bool contains_invalid_labeling (
+        const feature_extractor& fe,
+        const std::vector<typename feature_extractor::sample_type>& x,
+        const std::vector<unsigned long>& y
+    );
+    /*!
+        requires
+            - feature_extractor must be an object that implements an interface compatible 
+              with the example_feature_extractor discussed above.
+        ensures
+            - if (x.size() != y.size() ||
+                fe.reject_labeling() rejects any of the labels in y) then
+                - returns true
+            - else
+                - returns false
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename feature_extractor 
+        >
+    bool contains_invalid_labeling (
+        const feature_extractor& fe,
+        const std::vector<std::vector<typename feature_extractor::sample_type> >& x,
+        const std::vector<std::vector<unsigned long> >& y
+    );
+    /*!
+        requires
+            - feature_extractor must be an object that implements an interface compatible 
+              with the example_feature_extractor discussed above.
+        ensures
+            - if (x.size() != y.size() ||
+                contains_invalid_labeling(fe,x[i],y[i]) == true for some i ) then
+                - returns true
+            - else
+                - returns false
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -182,7 +236,7 @@ namespace dlib
                 The model used by this object is the following.  Given
                 an input sequence x, predict an output label sequence y
                 such that:
-                    y == argmax_y dot(get_weights(), PSI(x,y))
+                    y == argmax_Y dot(get_weights(), PSI(x,Y))
                     Where PSI() is defined by the feature_extractor template
                     argument.  
         !*/
@@ -196,14 +250,27 @@ namespace dlib
         );
         /*!
             ensures
-                - #get_weights().size() == fe.num_features()
+                - #get_feature_extractor() == feature_extractor() 
+                  (i.e. it will have its default value)
+                - #get_weights().size() == #get_feature_extractor().num_features()
                 - #get_weights() == 0
-                - #get_feature_extractor() will have an initial value for its type
+        !*/
+
+        explicit sequence_labeler(
+            const matrix<double,0,1>& weights
+        ); 
+        /*!
+            requires
+                - feature_extractor().num_features() == weights.size()
+            ensures
+                - #get_feature_extractor() == feature_extractor() 
+                  (i.e. it will have its default value)
+                - #get_weights() == weights
         !*/
 
         sequence_labeler(
-            const feature_extractor& fe,
-            const matrix<double,0,1>& weights
+            const matrix<double,0,1>& weights,
+            const feature_extractor& fe
         ); 
         /*!
             requires

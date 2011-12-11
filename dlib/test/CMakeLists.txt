@@ -14,6 +14,7 @@ set (tests
    any_function.cpp
    array2d.cpp
    array.cpp
+   assignment_learning.cpp
    base64.cpp
    bayes_nets.cpp
    bigint.cpp
@@ -87,6 +88,7 @@ set (tests
    reference_counter.cpp
    scan_image.cpp
    sequence.cpp
+   sequence_labeler.cpp
    serialize.cpp
    set.cpp
    sldf.cpp

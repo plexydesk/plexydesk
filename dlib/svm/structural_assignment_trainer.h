@@ -1,12 +1,12 @@
 // Copyright (C) 2011  Davis E. King (davis@dlib.net)
 // License: Boost Software License   See LICENSE.txt for the full license.
-#ifndef DLIB_STRUCTURAL_SEQUENCE_LABELING_TRAiNER_H__
-#define DLIB_STRUCTURAL_SEQUENCE_LABELING_TRAiNER_H__
+#ifndef DLIB_STRUCTURAL_ASSiGNMENT_TRAINER_H__
+#define DLIB_STRUCTURAL_ASSiGNMENT_TRAINER_H__
 
-#include "structural_sequence_labeling_trainer_abstract.h"
+#include "structural_assignment_trainer_abstract.h"
 #include "../algs.h"
 #include "../optimization.h"
-#include "structural_svm_sequence_labeling_problem.h"
+#include "structural_svm_assignment_problem.h"
 
 
 namespace dlib
@@ -17,33 +17,30 @@ namespace dlib
     template <
         typename feature_extractor
         >
-    class structural_sequence_labeling_trainer
+    class structural_assignment_trainer
     {
     public:
-        typedef typename feature_extractor::sample_type sample_type;
-        typedef std::vector<sample_type> sample_sequence_type;
-        typedef std::vector<unsigned long> labeled_sequence_type;
+        typedef typename feature_extractor::lhs_element lhs_element;
+        typedef typename feature_extractor::rhs_element rhs_element;
+        typedef std::pair<std::vector<lhs_element>, std::vector<rhs_element> > sample_type;
+        typedef std::vector<long> label_type;
+        typedef assignment_function<feature_extractor> trained_function_type;
 
-        typedef sequence_labeler<feature_extractor> trained_function_type;
+        structural_assignment_trainer (
+        )  
+        {
+            set_defaults();
+        }
 
-        explicit structural_sequence_labeling_trainer (
+        explicit structural_assignment_trainer (
             const feature_extractor& fe_
         ) : fe(fe_)
         {
             set_defaults();
         }
 
-        structural_sequence_labeling_trainer (
-        )
-        {
-            set_defaults();
-        }
-
         const feature_extractor& get_feature_extractor (
         ) const { return fe; }
-
-        unsigned long num_labels (
-        ) const { return fe.num_labels(); }
 
         void set_num_threads (
             unsigned long num
@@ -64,7 +61,7 @@ namespace dlib
         {
             // make sure requires clause is not broken
             DLIB_ASSERT(eps_ > 0,
-                "\t void structural_sequence_labeling_trainer::set_epsilon()"
+                "\t void structural_assignment_trainer::set_epsilon()"
                 << "\n\t eps_ must be greater than 0"
                 << "\n\t eps_: " << eps_ 
                 << "\n\t this: " << this
@@ -120,7 +117,7 @@ namespace dlib
         {
             // make sure requires clause is not broken
             DLIB_ASSERT(C_ > 0,
-                "\t void structural_sequence_labeling_trainer::set_c()"
+                "\t void structural_assignment_trainer::set_c()"
                 << "\n\t C_ must be greater than 0"
                 << "\n\t C_:    " << C_ 
                 << "\n\t this: " << this
@@ -135,61 +132,67 @@ namespace dlib
             return C;
         }
 
+        bool forces_assignment(
+        ) const { return force_assignment; } 
 
-        const sequence_labeler<feature_extractor> train(
-            const std::vector<sample_sequence_type>& x,
-            const std::vector<labeled_sequence_type>& y
+        void set_forces_assignment (
+            bool new_value
+        )
+        {
+            force_assignment = new_value;
+        }
+
+        const assignment_function<feature_extractor> train (  
+            const std::vector<sample_type>& samples,
+            const std::vector<label_type>& labels
         ) const
         {
-
             // make sure requires clause is not broken
-            DLIB_ASSERT(is_sequence_labeling_problem(x,y) == true &&
-                        contains_invalid_labeling(get_feature_extractor(), x, y) == false,
-                        "\t sequence_labeler structural_sequence_labeling_trainer::train(x,y)"
-                        << "\n\t invalid inputs were given to this function"
-                        << "\n\t x.size(): " << x.size() 
-                        << "\n\t is_sequence_labeling_problem(x,y): " << is_sequence_labeling_problem(x,y)
-                        << "\n\t contains_invalid_labeling(get_feature_extractor(),x,y): " << contains_invalid_labeling(get_feature_extractor(),x,y)
-                        << "\n\t this: " << this
-            );
-
 #ifdef ENABLE_ASSERTS
-            for (unsigned long i = 0; i < y.size(); ++i)
+            if (force_assignment)
             {
-                for (unsigned long j = 0; j < y[i].size(); ++j)
-                {
-                    // make sure requires clause is not broken
-                    DLIB_ASSERT(y[i][j] < num_labels(),
-                                "\t sequence_labeler structural_sequence_labeling_trainer::train(x,y)"
-                                << "\n\t The given labels in y are invalid."
-                                << "\n\t y[i][j]: " << y[i][j] 
-                                << "\n\t num_labels(): " << num_labels()
-                                << "\n\t i: " << i 
-                                << "\n\t j: " << j 
-                                << "\n\t this: " << this
-                    );
-                }
+                DLIB_ASSERT(is_forced_assignment_problem(samples, labels), 
+                            "\t assignment_function structural_assignment_trainer::train()"
+                            << "\n\t invalid inputs were given to this function"
+                            << "\n\t is_forced_assignment_problem(samples,labels): " << is_forced_assignment_problem(samples,labels)
+                            << "\n\t is_assignment_problem(samples,labels):        " << is_assignment_problem(samples,labels)
+                            << "\n\t is_learning_problem(samples,labels):          " << is_learning_problem(samples,labels)
+                );
+            }
+            else
+            {
+                DLIB_ASSERT(is_assignment_problem(samples, labels),
+                            "\t assignment_function structural_assignment_trainer::train()"
+                            << "\n\t invalid inputs were given to this function"
+                            << "\n\t is_assignment_problem(samples,labels): " << is_assignment_problem(samples,labels)
+                            << "\n\t is_learning_problem(samples,labels):   " << is_learning_problem(samples,labels)
+                );
             }
 #endif
 
 
 
+            structural_svm_assignment_problem<feature_extractor> prob(samples,labels, fe, force_assignment, num_threads);
 
-            structural_svm_sequence_labeling_problem<feature_extractor> prob(x, y, fe, num_threads);
-            matrix<double,0,1> weights; 
             if (verbose)
                 prob.be_verbose();
 
-            prob.set_epsilon(eps);
             prob.set_c(C);
+            prob.set_epsilon(eps);
             prob.set_max_cache_size(max_cache_size);
+
+            matrix<double,0,1> weights; 
+
             solver(prob, weights);
 
-            return sequence_labeler<feature_extractor>(weights,fe);
+            return assignment_function<feature_extractor>(weights,fe,force_assignment);
+
         }
+
 
     private:
 
+        bool force_assignment;
         double C;
         oca solver;
         double eps;
@@ -199,6 +202,7 @@ namespace dlib
 
         void set_defaults ()
         {
+            force_assignment = false;
             C = 100;
             verbose = false;
             eps = 0.1;
@@ -213,7 +217,8 @@ namespace dlib
 
 }
 
-#endif // DLIB_STRUCTURAL_SEQUENCE_LABELING_TRAiNER_H__
+#endif // DLIB_STRUCTURAL_ASSiGNMENT_TRAINER_H__
+
 
 
 

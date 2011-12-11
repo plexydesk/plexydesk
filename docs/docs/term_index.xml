@@ -41,8 +41,17 @@
          <term file="ml.html" name="svm_struct_controller_node"/>
          <term file="ml.html" name="svm_struct_processing_node"/>
          <term file="ml.html" name="sequence_labeler"/>
+         <term file="dlib/svm/sequence_labeler_abstract.h.html" name="contains_invalid_labeling"/>
          <term file="ml.html" name="structural_svm_sequence_labeling_problem"/>
          <term file="ml.html" name="structural_sequence_labeling_trainer"/>
+
+         <term file="ml.html" name="is_forced_assignment_problem"/>
+         <term file="ml.html" name="is_assignment_problem"/>
+         <term file="ml.html" name="assignment_function"/>
+         <term file="ml.html" name="test_assignment_function"/>
+         <term file="ml.html" name="cross_validate_assignment_trainer"/>
+         <term file="ml.html" name="structural_svm_assignment_problem"/>
+         <term file="ml.html" name="structural_assignment_trainer"/>
 
          <term file="dlib/optimization/optimization_solve_qp2_using_smo_abstract.h.html" name="invalid_nu_error"/>
          <term file="dlib/optimization/optimization_solve_qp2_using_smo_abstract.h.html" name="maximum_nu"/>
@@ -276,6 +285,7 @@
          <term file="ml.html" name="probabilistic_decision_function"/>
          <term file="ml.html" name="probabilistic_function"/>
          <term file="ml.html" name="linear_kernel"/>
+         <term file="ml.html" name="histogram_intersection_kernel"/>
          <term file="ml.html" name="offset_kernel"/>
          <term file="ml.html" name="polynomial_kernel"/>
          <term file="ml.html" name="sigmoid_kernel"/>
@@ -285,6 +295,7 @@
          <term link="ml.html#sparse vectors" name="unsorted sparse vectors"/>
          <term file="ml.html" name="sparse vectors"/>
          <term file="ml.html" name="sparse_linear_kernel"/>
+         <term file="ml.html" name="sparse_histogram_intersection_kernel"/>
          <term file="ml.html" name="sparse_polynomial_kernel"/>
          <term file="ml.html" name="sparse_sigmoid_kernel"/>
          <term file="ml.html" name="sparse_radial_basis_kernel"/>
