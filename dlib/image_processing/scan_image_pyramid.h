@@ -74,6 +74,17 @@ namespace dlib
         inline unsigned long get_max_detections_per_template (
         ) const;
 
+        void set_min_pyramid_layer_size (
+            unsigned long width,
+            unsigned long height 
+        );
+
+        inline unsigned long get_min_pyramid_layer_width (
+        ) const;
+
+        inline unsigned long get_min_pyramid_layer_height (
+        ) const;
+
         void set_max_detections_per_template (
             unsigned long max_dets
         );
@@ -85,9 +96,12 @@ namespace dlib
         ) const;
 
         void get_feature_vector (
-            const std::vector<rectangle>& rects,
-            feature_vector_type& psi,
-            std::vector<rectangle>& mapped_rects
+            const rectangle& rect,
+            feature_vector_type& psi
+        ) const;
+
+        const rectangle get_best_matching_rect (
+            const rectangle& rect
         ) const;
 
         template <typename T, typename U>
@@ -128,12 +142,57 @@ namespace dlib
             deserialize(item.rects, in);
         }
 
+        void get_mapped_rect_and_metadata (
+            const unsigned long number_pyramid_levels,
+            rectangle rect,
+            rectangle& mapped_rect,
+            detection_template& best_template,
+            unsigned long& best_level
+        ) const;
+
+        double get_match_score (
+            rectangle r1,
+            rectangle r2
+        ) const
+        {
+            // make the rectangles overlap as much as possible before computing the match score.
+            r1 = move_rect(r1, r2.tl_corner());
+            return (r1.intersect(r2).area())/(double)(r1 + r2).area();
+        }
+
+        void test_coordinate_transforms()
+        {
+            for (long x = -10; x <= 10; x += 10)
+            {
+                for (long y = -10; y <= 10; y += 10)
+                {
+                    const rectangle rect = centered_rect(x,y,5,6);
+                    rectangle a;
+
+                    a = feats_config.image_to_feat_space(rect);
+                    if (a.width()  > 10000000 || a.height() > 10000000 )
+                    {
+                        DLIB_CASSERT(false, "The image_to_feat_space() routine is outputting rectangles of an implausibly "
+                                     << "\nlarge size.  This means there is probably a bug in your feature extractor.");
+                    }
+                    a = feats_config.feat_to_image_space(rect);
+                    if (a.width()  > 10000000 || a.height() > 10000000 )
+                    {
+                        DLIB_CASSERT(false, "The feat_to_image_space() routine is outputting rectangles of an implausibly "
+                                     << "\nlarge size.  This means there is probably a bug in your feature extractor.");
+                    }
+                }
+            }
+            
+        }
 
         feature_extractor_type feats_config; // just here to hold configuration.  use it to populate the feats elements.
-        typename array<feature_extractor_type>::kernel_2a feats;
+        array<feature_extractor_type> feats;
         std::vector<detection_template> det_templates;
         unsigned long max_dets_per_template;
         unsigned long max_pyramid_levels;
+        unsigned long min_pyramid_layer_width;
+        unsigned long min_pyramid_layer_height;
 
     };
 
@@ -150,6 +209,8 @@ namespace dlib
         serialize(item.det_templates, out);
         serialize(item.max_dets_per_template, out);
         serialize(item.max_pyramid_levels, out);
+        serialize(item.min_pyramid_layer_width, out);
+        serialize(item.min_pyramid_layer_height, out);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -165,6 +226,8 @@ namespace dlib
         deserialize(item.det_templates, in);
         deserialize(item.max_dets_per_template, in);
         deserialize(item.max_pyramid_levels, in);
+        deserialize(item.min_pyramid_layer_width, in);
+        deserialize(item.min_pyramid_layer_height, in);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -181,7 +244,9 @@ namespace dlib
     scan_image_pyramid (
     ) : 
         max_dets_per_template(10000),
-        max_pyramid_levels(1000)
+        max_pyramid_levels(1000),
+        min_pyramid_layer_width(20),
+        min_pyramid_layer_height(20)
     {
     }
 
@@ -204,14 +269,12 @@ namespace dlib
 
         // figure out how many pyramid levels we should be using based on the image size
         pyramid_type pyr;
-        while (rect.width() > 20 && rect.height() > 20)
+        do
         {
             rect = pyr.rect_down(rect);
             ++levels;
-
-            if (levels >= max_pyramid_levels)
-                break;
-        }
+        } while (rect.width() >= min_pyramid_layer_width && rect.height() >= min_pyramid_layer_height &&
+                 levels < max_pyramid_levels);
 
         if (feats.max_size() < levels)
             feats.set_max_size(levels);
@@ -299,7 +362,8 @@ namespace dlib
         const feature_extractor_type& fe
     )
     {
-        return feats_config.copy_configuration(fe);
+        test_coordinate_transforms();
+        feats_config.copy_configuration(fe);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -317,6 +381,8 @@ namespace dlib
         det_templates = item.det_templates;
         max_dets_per_template = item.max_dets_per_template;
         max_pyramid_levels = item.max_pyramid_levels;
+        min_pyramid_layer_width = item.min_pyramid_layer_width;
+        min_pyramid_layer_height = item.min_pyramid_layer_height;
     }
 
 // ----------------------------------------------------------------------------------------
@@ -468,7 +534,7 @@ namespace dlib
 
         dets.clear();
 
-        array<array2d<double> >::kernel_2a saliency_images;
+        array<array2d<double> > saliency_images;
         saliency_images.set_max_size(get_num_components_per_detection_template());
         saliency_images.set_size(get_num_components_per_detection_template());
         std::vector<std::pair<unsigned int,rectangle> > region_rects(get_num_components_per_detection_template()); 
@@ -479,17 +545,16 @@ namespace dlib
         for (unsigned long l = 0; l < feats.size(); ++l)
         {
             for (unsigned long i = 0; i < saliency_images.size(); ++i)
-                saliency_images[i].set_size(feats[l].nr(), feats[l].nc());
-
-            // build saliency images for pyramid level l 
-            for (long r = 0; r < feats[l].nr(); ++r)
             {
-                for (long c = 0; c < feats[l].nc(); ++c)
+                saliency_images[i].set_size(feats[l].nr(), feats[l].nc());
+                const unsigned long offset = feats_config.get_num_dimensions()*i;
+
+                // build saliency images for pyramid level l 
+                for (long r = 0; r < feats[l].nr(); ++r)
                 {
-                    const typename feature_extractor_type::descriptor_type& descriptor = feats[l](r,c);
-                    for (unsigned long i = 0; i < saliency_images.size(); ++i)
+                    for (long c = 0; c < feats[l].nc(); ++c)
                     {
-                        const unsigned long offset = feats_config.get_num_dimensions()*i;
+                        const typename feature_extractor_type::descriptor_type& descriptor = feats[l](r,c);
 
                         double sum = 0;
                         for (unsigned long k = 0; k < descriptor.size(); ++k)
@@ -533,11 +598,109 @@ namespace dlib
         typename Pyramid_type,
         typename Feature_extractor_type
         >
+    const rectangle scan_image_pyramid<Pyramid_type,Feature_extractor_type>::
+    get_best_matching_rect (
+        const rectangle& rect
+    ) const
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(get_num_detection_templates() > 0 ,
+            "\t const rectangle scan_image_pyramid::get_best_matching_rect()"
+            << "\n\t Invalid inputs were given to this function "
+            << "\n\t get_num_detection_templates(): " << get_num_detection_templates()
+            << "\n\t this: " << this
+            );
+
+        rectangle mapped_rect;
+        detection_template best_template;
+        unsigned long best_level;
+        get_mapped_rect_and_metadata(max_pyramid_levels, rect, mapped_rect, best_template, best_level);
+        return mapped_rect;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename Pyramid_type,
+        typename Feature_extractor_type
+        >
+    void scan_image_pyramid<Pyramid_type,Feature_extractor_type>::
+    get_mapped_rect_and_metadata (
+        const unsigned long number_pyramid_levels,
+        rectangle rect,
+        rectangle& mapped_rect,
+        detection_template& best_template,
+        unsigned long& best_level
+    ) const
+    {
+        pyramid_type pyr;
+        // Figure out the pyramid level which best matches rect against one of our 
+        // detection template object boxes.
+        best_level = 0;
+        double best_match_score = -1;
+
+
+        // for all the levels
+        for (unsigned long l = 0; l < number_pyramid_levels; ++l)
+        {
+            // Run the center point through the feature/image space transformation just to make
+            // sure we exactly replicate the procedure for shifting an object_box used elsewhere 
+            // in this file.
+            const rectangle temp = pyr.rect_down(rect,l);
+            if (temp.area() <= 1) 
+                break;
+            const point origin = feats_config.feat_to_image_space(feats_config.image_to_feat_space(center(temp)));
+
+            for (unsigned long t = 0; t < det_templates.size(); ++t)
+            {
+                // Map this detection template into the normal image space and see how
+                // close it is to the rect we are looking for.  We do the translation here
+                // because the rect_up() routine takes place using integer arithmetic and
+                // could potentially give slightly different results with and without the
+                // translation.
+                rectangle mapped_rect = translate_rect(det_templates[t].object_box, origin);
+                mapped_rect = pyr.rect_up(mapped_rect, l);
+
+                const double match_score = get_match_score(mapped_rect, rect);
+                if (match_score > best_match_score)
+                {
+                    best_match_score = match_score;
+                    best_level = l;
+                    best_template = det_templates[t];
+                }
+            }
+        }
+
+
+        // Now we translate best_template into the right spot (it should be centered at the location 
+        // determined by rect) and convert it into the feature image coordinate system.
+        rect = pyr.rect_down(rect,best_level);
+        const point offset = -feats_config.image_to_feat_space(point(0,0));
+        const point origin = feats_config.image_to_feat_space(center(rect)) + offset;
+        for (unsigned long k = 0; k < best_template.rects.size(); ++k)
+        {
+            rectangle temp = best_template.rects[k];
+            temp = feats_config.image_to_feat_space(temp);
+            temp = translate_rect(temp, origin);
+            best_template.rects[k] = temp;
+        }
+
+        // The input rectangle was mapped to one of the detection templates.  Reverse the process
+        // to figure out what the mapped rectangle is in the original input space.
+        mapped_rect = translate_rect(best_template.object_box, feats_config.feat_to_image_space(origin-offset));
+        mapped_rect = pyr.rect_up(mapped_rect, best_level);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename Pyramid_type,
+        typename Feature_extractor_type
+        >
     void scan_image_pyramid<Pyramid_type,Feature_extractor_type>::
     get_feature_vector (
-        const std::vector<rectangle>& rects,
-        feature_vector_type& psi,
-        std::vector<rectangle>& mapped_rects
+        const rectangle& rect,
+        feature_vector_type& psi
     ) const
     {
         // make sure requires clause is not broken
@@ -553,92 +716,81 @@ namespace dlib
             << "\n\t this: " << this
             );
 
-        psi = 0;
-
-        mapped_rects.clear();
-
         pyramid_type pyr;
-        for (unsigned long i = 0; i < rects.size(); ++i)
+        rectangle mapped_rect;
+        detection_template best_template;
+        unsigned long best_level;
+        get_mapped_rect_and_metadata (feats.size(), rect, mapped_rect, best_template, best_level);
+
+        for (unsigned long j = 0; j < best_template.rects.size(); ++j)
         {
-            // Figure out the pyramid level which best matches rects[i] against one of our 
-            // detection template object boxes.
-            unsigned long best_level = 0;
-            double match_score = std::numeric_limits<double>::infinity();
-            detection_template best_template;
-
-            rectangle rect = rects[i];
-            const dlib::vector<double,2> p(rect.width(), rect.height());
-
-            // for all the levels
-            for (unsigned long l = 0; l < feats.size(); ++l)
+            const rectangle rect = best_template.rects[j].intersect(get_rect(feats[best_level]));
+            const unsigned long template_region_id = j;
+            const unsigned long offset = feats_config.get_num_dimensions()*template_region_id;
+            for (long r = rect.top(); r <= rect.bottom(); ++r)
             {
-                // Run the center point through the feature/image space transformation just to make
-                // sure we exactly replicate the procedure for shifting an object_box used elsewhere 
-                // in this file.
-                const point origin = feats[l].feat_to_image_space(feats[l].image_to_feat_space(center(pyr.rect_down(rect,l))));
-
-                for (unsigned long t = 0; t < det_templates.size(); ++t)
+                for (long c = rect.left(); c <= rect.right(); ++c)
                 {
-                    // Map this detection template into the normal image space and see how
-                    // close it is to the rect we are looking for.  We do the translation here
-                    // because the rect_up() routine takes place using integer arithmetic and
-                    // could potentially give slightly different results with and without the
-                    // translation.
-                    rectangle mapped_rect = translate_rect(det_templates[t].object_box, origin);
-                    mapped_rect = pyr.rect_up(mapped_rect, l);
-
-                    const dlib::vector<double,2> p2(mapped_rect.width(),
-                                                    mapped_rect.height());
-                    if ((p-p2).length() < match_score)
+                    const typename feature_extractor_type::descriptor_type& descriptor = feats[best_level](r,c);
+                    for (unsigned long k = 0; k < descriptor.size(); ++k)
                     {
-                        match_score = (p-p2).length();
-                        best_level = l;
-                        best_template = det_templates[t];
-                    }
-                }
-            }
-
-
-            // Now get the features out of feats[best_level].  But first translate best_template 
-            // into the right spot (it should be centered at the location determined by rects[i])
-            // and convert it into the feature image coordinate system.
-            rect = pyr.rect_down(rects[i],best_level);
-            const point offset = -feats[best_level].image_to_feat_space(point(0,0));
-            const point origin = feats[best_level].image_to_feat_space(center(rect)) + offset;
-            for (unsigned long k = 0; k < best_template.rects.size(); ++k)
-            {
-                rectangle temp = best_template.rects[k];
-                temp = feats[best_level].image_to_feat_space(temp);
-                temp = translate_rect(temp, origin);
-                temp = get_rect(feats[best_level]).intersect(temp);
-                best_template.rects[k] = temp;
-            }
-
-            // The input rectangle was mapped to one of the detection templates.  Reverse the process
-            // to figure out what the mapped rectangle is in the original input space.
-            rectangle mapped_rect = translate_rect(best_template.object_box, feats[best_level].feat_to_image_space(origin-offset));
-            mapped_rect = pyr.rect_up(mapped_rect, best_level);
-            mapped_rects.push_back(mapped_rect);
-
-            for (unsigned long j = 0; j < best_template.rects.size(); ++j)
-            {
-                rect = best_template.rects[j];
-                const unsigned long template_region_id = j;
-                const unsigned long offset = feats_config.get_num_dimensions()*template_region_id;
-                for (long r = rect.top(); r <= rect.bottom(); ++r)
-                {
-                    for (long c = rect.left(); c <= rect.right(); ++c)
-                    {
-                        const typename feature_extractor_type::descriptor_type& descriptor = feats[best_level](r,c);
-                        for (unsigned long k = 0; k < descriptor.size(); ++k)
-                        {
-                            psi(descriptor[k].first + offset) += descriptor[k].second;
-                        }
+                        psi(descriptor[k].first + offset) += descriptor[k].second;
                     }
                 }
             }
         }
 
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename Pyramid_type,
+        typename Feature_extractor_type
+        >
+    void scan_image_pyramid<Pyramid_type,Feature_extractor_type>::
+    set_min_pyramid_layer_size (
+        unsigned long width,
+        unsigned long height 
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(width > 0 && height > 0 ,
+            "\t void scan_image_pyramid::set_min_pyramid_layer_size()"
+            << "\n\t These sizes can't be zero. "
+            << "\n\t width:  " << width 
+            << "\n\t height: " << height 
+            << "\n\t this:   " << this
+            );
+
+        min_pyramid_layer_width = width;
+        min_pyramid_layer_height = height;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename Pyramid_type,
+        typename Feature_extractor_type
+        >
+    unsigned long scan_image_pyramid<Pyramid_type,Feature_extractor_type>::
+    get_min_pyramid_layer_width (
+    ) const
+    {
+        return min_pyramid_layer_width;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename Pyramid_type,
+        typename Feature_extractor_type
+        >
+    unsigned long scan_image_pyramid<Pyramid_type,Feature_extractor_type>::
+    get_min_pyramid_layer_height (
+    ) const
+    {
+        return min_pyramid_layer_height;
     }
 
 // ----------------------------------------------------------------------------------------

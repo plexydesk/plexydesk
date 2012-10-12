@@ -153,7 +153,7 @@ namespace dlib
         }
 
 
-        matrix<double, 1, 2, mem_manager_type> res;
+        matrix<double, 1, 2> res;
         res(0) = (double)num_pos_correct/(double)(num_pos); 
         res(1) = (double)num_neg_correct/(double)(num_neg); 
         return res;
@@ -178,10 +178,10 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename sample_type
+        typename sequence_type 
         >
     bool is_sequence_labeling_problem (
-        const std::vector<std::vector<sample_type> >& samples,
+        const std::vector<sequence_type>& samples,
         const std::vector<std::vector<unsigned long> >& labels
     )
     {

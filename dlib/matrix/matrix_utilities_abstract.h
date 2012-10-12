@@ -93,6 +93,7 @@ namespace dlib
             - is_vector(m1) == true
             - is_vector(m2) == true
             - m1.size() == m2.size()
+            - m1.size() > 0
         ensures
             - returns the dot product between m1 and m2. That is, this function 
               computes and returns the sum, for all i, of m1(i)*m2(i).
@@ -247,6 +248,19 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    const matrix_exp ones_matrix (
+        const matrix_exp& mat
+    );
+    /*!
+        requires
+            - mat.nr() > 0 && mat.nc() > 0
+        ensures
+            - Let T denote the type of element in mat. Then this function
+              returns uniform_matrix<T>(mat.nr(), mat.nc(), 1)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     template <
         typename T
         >
@@ -263,6 +277,19 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    const matrix_exp zeros_matrix (
+        const matrix_exp& mat
+    );
+    /*!
+        requires
+            - mat.nr() > 0 && mat.nc() > 0
+        ensures
+            - Let T denote the type of element in mat. Then this function
+              returns uniform_matrix<T>(mat.nr(), mat.nc(), 0)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     template <
         typename T
         >
@@ -275,6 +302,19 @@ namespace dlib
             - nr > 0 && nc > 0
         ensures
             - returns uniform_matrix<T>(nr, nc, 0)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    const matrix_exp identity_matrix (
+        const matrix_exp& mat
+    );
+    /*!
+        requires
+            - mat.nr() == mat.nc()
+        ensures
+            - returns an identity matrix with the same dimensions as mat and
+              containing the same type of elements as mat.
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1355,7 +1395,9 @@ namespace dlib
         requires
             - m.size() > 0
         ensures
-            - returns the value of the smallest element of m
+            - returns the value of the smallest element of m.  If m contains complex
+              elements then the element returned is the one with the smallest norm
+              according to std::norm().
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1367,7 +1409,9 @@ namespace dlib
         requires
             - m.size() > 0
         ensures
-            - returns the value of the biggest element of m
+            - returns the value of the biggest element of m.  If m contains complex
+              elements then the element returned is the one with the largest norm
+              according to std::norm().
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1662,6 +1706,42 @@ namespace dlib
                         - R(r,c) == lower
                     - else
                         - R(r,c) == m(r,c)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    const matrix_exp lowerbound (
+        const matrix_exp& m,
+        const matrix_exp::type& thresh 
+    );
+    /*!
+        ensures
+            - returns a matrix R such that:
+                - R::type == the same type that was in m
+                - R has the same dimensions as m
+                - for all valid r and c:
+                    - if (m(r,c) >= thresh) then
+                        - R(r,c) == m(r,c)
+                    - else
+                        - R(r,c) == thresh
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    const matrix_exp upperbound (
+        const matrix_exp& m,
+        const matrix_exp::type& thresh 
+    );
+    /*!
+        ensures
+            - returns a matrix R such that:
+                - R::type == the same type that was in m
+                - R has the same dimensions as m
+                - for all valid r and c:
+                    - if (m(r,c) <= thresh) then
+                        - R(r,c) == m(r,c)
+                    - else
+                        - R(r,c) == thresh
     !*/
 
 // ----------------------------------------------------------------------------------------

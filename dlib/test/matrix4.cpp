@@ -607,6 +607,31 @@ namespace
                 DLIB_TEST(equal(0.0/m , zeros_matrix<double>(3,4)));
             }
         }
+
+        {
+            matrix<int> m(2,3);
+            m = 1,2,3,
+                4,5,6;
+            matrix<int> M(2,3);
+            M = m;
+
+            DLIB_TEST(upperbound(m,6) == M);
+            DLIB_TEST(upperbound(m,60) == M);
+            DLIB_TEST(lowerbound(m,-2) == M);
+            DLIB_TEST(lowerbound(m,0) == M);
+
+            M = 2,2,3,
+                4,5,6;
+            DLIB_TEST(lowerbound(m,2) == M);
+
+            M = 0,0,0,
+                0,0,0;
+            DLIB_TEST(upperbound(m,0) == M);
+
+            M = 1,2,3,
+                3,3,3;
+            DLIB_TEST(upperbound(m,3) == M);
+        }
     }
 
 
@@ -760,9 +785,154 @@ namespace
         DLIB_TEST(temp3 == temp);
 
 
+        for (int i = 0; i < 3; ++i)
+        {
+            dlib::rand rnd;
+            matrix<complex<int> > a, b;
+            a = complex_matrix(matrix_cast<int>(round(20*randm(2,7,rnd))), 
+                               matrix_cast<int>(round(20*randm(2,7,rnd))));
+            b = complex_matrix(matrix_cast<int>(round(20*randm(3,2,rnd))), 
+                               matrix_cast<int>(round(20*randm(3,2,rnd))));
+
+            DLIB_TEST(xcorr(a,b)       == conv(a, flip(conj(b))));
+            DLIB_TEST(xcorr_valid(a,b) == conv_valid(a, flip(conj(b))));
+            DLIB_TEST(xcorr_same(a,b)  == conv_same(a, flip(conj(b))));
+        }
     }
 
+    void test_complex()
+    {
+        matrix<complex<double> > a, b;
 
+        a = complex_matrix(linspace(1,7,7), linspace(2,8,7));
+        b = complex_matrix(linspace(4,10,7), linspace(2,8,7));
+
+        DLIB_TEST(mean(a) == complex<double>(4, 5));
+    }
+
+    void test_setsubs()
+    {
+        {
+            matrix<double> m(3,3);
+            m = 0;
+
+            set_colm(m,0) += 1;
+            set_rowm(m,0) += 1;
+            set_subm(m,1,1,2,2) += 5;
+
+            matrix<double> m2(3,3);
+            m2 = 2, 1, 1,
+                 1, 5, 5, 
+                 1, 5, 5;
+
+            DLIB_TEST(m == m2);
+
+            set_colm(m,0) -= 1;
+            set_rowm(m,0) -= 1;
+            set_subm(m,1,1,2,2) -= 5;
+
+            m2 = 0;
+            DLIB_TEST(m == m2);
+
+            matrix<double,1,3> r;
+            matrix<double,3,1> c;
+            matrix<double,2,2> b;
+            r = 1,2,3;
+
+            c = 2,
+                3,
+                4;
+
+            b = 2,3,
+                4,5;
+
+            set_colm(m,1) += c;
+            set_rowm(m,1) += r;
+            set_subm(m,1,1,2,2) += b;
+
+            m2 = 0, 2, 0,
+                 1, 7, 6,
+                 0, 8, 5;
+
+            DLIB_TEST(m2 == m);
+
+            set_colm(m,1) -= c;
+            set_rowm(m,1) -= r;
+            set_subm(m,1,1,2,2) -= b;
+
+            m2 = 0;
+            DLIB_TEST(m2 == m);
+
+
+            // check that the code path for destructive aliasing works right.
+            m = 2*identity_matrix<double>(3);
+            set_colm(m,1) += m*c;
+            m2 = 2, 4, 0,
+                 0, 8, 0,
+                 0, 8, 2;
+            DLIB_TEST(m == m2);
+
+            m = 2*identity_matrix<double>(3);
+            set_colm(m,1) -= m*c;
+            m2 = 2, -4, 0,
+                 0, -4, 0,
+                 0, -8, 2;
+            DLIB_TEST(m == m2);
+
+            m = 2*identity_matrix<double>(3);
+            set_rowm(m,1) += r*m;
+            m2 = 2, 0, 0,
+                 2, 6, 6,
+                 0, 0, 2;
+            DLIB_TEST(m == m2);
+
+            m = 2*identity_matrix<double>(3);
+            set_rowm(m,1) -= r*m;
+            m2 = 2, 0, 0,
+                -2, -2, -6,
+                 0, 0, 2;
+            DLIB_TEST(m == m2);
+
+            m = identity_matrix<double>(3);
+            const rectangle rect(0,0,1,1);
+            set_subm(m,rect) += subm(m,rect)*b;
+            m2 = 3, 3, 0,
+                 4, 6, 0,
+                 0, 0, 1;
+            DLIB_TEST(m == m2);
+
+            m = identity_matrix<double>(3);
+            set_subm(m,rect) -= subm(m,rect)*b;
+            m2 = -1, -3, 0,
+                 -4, -4, 0,
+                  0, 0, 1;
+            DLIB_TEST(m == m2);
+
+        }
+
+        {
+            matrix<double,1,1> a, b;
+            a = 2;
+            b = 3;
+            DLIB_TEST(dot(a,b) == 6);
+        }
+        {
+            matrix<double,1,1> a;
+            matrix<double,0,1> b(1);
+            a = 2;
+            b = 3;
+            DLIB_TEST(dot(a,b) == 6);
+            DLIB_TEST(dot(b,a) == 6);
+        }
+        {
+            matrix<double,1,1> a;
+            matrix<double,1,0> b(1);
+            a = 2;
+            b = 3;
+            DLIB_TEST(dot(a,b) == 6);
+            DLIB_TEST(dot(b,a) == 6);
+        }
+    }
 
     class matrix_tester : public tester
     {
@@ -776,12 +946,16 @@ namespace
         void perform_test (
         )
         {
+            test_setsubs();
+
             test_conv<0,0,0,0>();
             test_conv<1,2,3,4>();
 
             test_stuff();
             for (int i = 0; i < 10; ++i)
                 matrix_test();
+
+            test_complex();
         }
     } a;
 

@@ -21,7 +21,9 @@ namespace dlib
                 OCA solves optimization problems with the following form:
                     Minimize: f(w) == 0.5*dot(w,w) + C*R(w)
 
-                    Where R(w) is a user-supplied convex function and C > 0
+                    Where R(w) is a user-supplied convex function and C > 0.  Optionally,
+                    there can also be non-negativity constraints on some or all of the 
+                    elements of w.
 
 
                 Note that the stopping condition must be provided by the user
@@ -124,7 +126,9 @@ namespace dlib
                 For reference, OCA solves optimization problems with the following form:
                     Minimize: f(w) == 0.5*dot(w,w) + C*R(w)
 
-                    Where R(w) is a user-supplied convex function and C > 0
+                    Where R(w) is a user-supplied convex function and C > 0.  Optionally,
+                    this object can also add non-negativity constraints to some or all
+                    of the elements of w.
 
 
                 For a detailed discussion you should consult the following papers
@@ -149,7 +153,8 @@ namespace dlib
             >
         typename matrix_type::type operator() (
             const oca_problem<matrix_type>& problem,
-            matrix_type& w
+            matrix_type& w,
+            unsigned long num_nonnegative = 0 
         ) const;
         /*!
             requires
@@ -160,6 +165,12 @@ namespace dlib
                 - The optimization algorithm runs until problem.optimization_status() 
                   indicates it is time to stop.
                 - returns the objective value at the solution #w
+                - if (num_nonnegative != 0) then
+                    - Adds the constraint that #w(i) >= 0 for all i < num_nonnegative.
+                      That is, the first num_nonnegative elements of #w will always be
+                      non-negative.  This includes the copies of w passed to get_risk()
+                      in the form of the current_solution vector as well as the final
+                      output of this function.
         !*/
 
         void set_subproblem_epsilon (

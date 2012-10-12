@@ -34,6 +34,15 @@ namespace dlib
             const matrix<double,0,1>& w_ 
         );
 
+        const matrix<double,0,1>& get_w (
+        ) const;
+
+        const overlap_tester_type& get_overlap_tester (
+        ) const;
+
+        const image_scanner_type& get_scanner (
+        ) const;
+
         object_detector& operator= (
             const object_detector& item 
         );
@@ -43,7 +52,16 @@ namespace dlib
             >
         std::vector<rectangle> operator() (
             const image_type& img
-        ) const;
+        );
+
+        template <
+            typename image_type
+            >
+        void operator() (
+            const image_type& img,
+            std::vector<std::pair<double, rectangle> >& final_dets,
+            double adjust_threshold = 0
+        );
 
         template <typename T, typename U>
         friend void serialize (
@@ -72,9 +90,22 @@ namespace dlib
             return false;
         }
 
+        bool overlaps_any_box (
+            const std::vector<std::pair<double,rectangle> >& rects,
+            const dlib::rectangle& rect
+        ) const
+        {
+            for (unsigned long i = 0; i < rects.size(); ++i)
+            {
+                if (boxes_overlap(rects[i].second, rect))
+                    return true;
+            }
+            return false;
+        }
+
         overlap_tester_type boxes_overlap;
         matrix<double,0,1> w;
-        mutable image_scanner_type scanner;
+        image_scanner_type scanner;
     };
 
 // ----------------------------------------------------------------------------------------
@@ -198,7 +229,7 @@ namespace dlib
     std::vector<rectangle> object_detector<image_scanner_type,overlap_tester_type>::
     operator() (
         const image_type& img
-    ) const
+    ) 
     {
         std::vector<rectangle> final_dets;
         if (w.size() != 0)
@@ -209,7 +240,7 @@ namespace dlib
             scanner.load(img);
             scanner.detect(w, dets, thresh);
 
-            for (unsigned long i = 0; i < dets.size() && final_dets.size() < 100; ++i)
+            for (unsigned long i = 0; i < dets.size(); ++i)
             {
                 if (overlaps_any_box(final_dets, dets[i].second))
                     continue;
@@ -219,6 +250,81 @@ namespace dlib
         }
 
         return final_dets;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_scanner_type,
+        typename overlap_tester_type
+        >
+    template <
+        typename image_type
+        >
+    void object_detector<image_scanner_type,overlap_tester_type>::
+    operator() (
+        const image_type& img,
+        std::vector<std::pair<double, rectangle> >& final_dets,
+        double adjust_threshold
+    ) 
+    {
+        final_dets.clear();
+        if (w.size() != 0)
+        {
+            std::vector<std::pair<double, rectangle> > dets;
+            const double thresh = w(scanner.get_num_dimensions()) + adjust_threshold;
+
+            scanner.load(img);
+            scanner.detect(w, dets, thresh);
+
+            for (unsigned long i = 0; i < dets.size(); ++i)
+            {
+                if (overlaps_any_box(final_dets, dets[i].second))
+                    continue;
+
+                dets[i].first -= thresh;
+                final_dets.push_back(dets[i]);
+            }
+        }
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_scanner_type,
+        typename overlap_tester_type
+        >
+    const matrix<double,0,1>& object_detector<image_scanner_type,overlap_tester_type>::
+    get_w (
+    ) const
+    {
+        return w;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_scanner_type,
+        typename overlap_tester_type
+        >
+    const overlap_tester_type& object_detector<image_scanner_type,overlap_tester_type>::
+    get_overlap_tester (
+    ) const
+    {
+        return boxes_overlap;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_scanner_type,
+        typename overlap_tester_type
+        >
+    const image_scanner_type& object_detector<image_scanner_type,overlap_tester_type>::
+    get_scanner (
+    ) const
+    {
+        return scanner;
     }
 
 // ----------------------------------------------------------------------------------------

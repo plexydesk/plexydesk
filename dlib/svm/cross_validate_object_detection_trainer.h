@@ -73,7 +73,7 @@ namespace dlib
         typename image_array_type
         >
     const matrix<double,1,2> test_object_detection_function (
-        const object_detector_type& detector,
+        object_detector_type& detector,
         const image_array_type& images,
         const std::vector<std::vector<rectangle> >& truth_rects,
         const double overlap_eps = 0.5
@@ -205,7 +205,7 @@ namespace dlib
 
 
             impl::array_subset_helper<image_array_type> array_subset(images, train_idx_set);
-            const typename trainer_type::trained_function_type& detector = trainer.train(array_subset, training_rects);
+            typename trainer_type::trained_function_type detector = trainer.train(array_subset, training_rects);
             for (unsigned long i = 0; i < test_idx_set.size(); ++i)
             {
                 const std::vector<rectangle>& hits = detector(images[test_idx_set[i]]);

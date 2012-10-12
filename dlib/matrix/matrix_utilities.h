@@ -64,6 +64,14 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    namespace impl
+    {
+        template <typename T>
+        const T& magnitude (const T& item) { return item; }
+        template <typename T>
+        T magnitude (const std::complex<T>& item) { return std::norm(item); }
+    }
+
     template <
         typename EXP
         >
@@ -87,9 +95,9 @@ namespace dlib
             for (long c = 0; c < m.nc(); ++c)
             {
                 type temp = m(r,c);
-                if (temp > max_val)
+                if (dlib::impl::magnitude(temp) > dlib::impl::magnitude(max_val))
                     max_val = temp;
-                if (temp < min_val)
+                if (dlib::impl::magnitude(temp) < dlib::impl::magnitude(min_val))
                     min_val = temp;
             }
         }
@@ -118,7 +126,7 @@ namespace dlib
         for (long i = 1; i < m.size(); ++i)
         {
             type temp = m(i);
-            if (temp > val)
+            if (dlib::impl::magnitude(temp) > dlib::impl::magnitude(val))
             {
                 val = temp;
                 best_idx = i;
@@ -150,7 +158,7 @@ namespace dlib
         for (long i = 1; i < m.size(); ++i)
         {
             type temp = m(i);
-            if (temp < val)
+            if (dlib::impl::magnitude(temp) < dlib::impl::magnitude(val))
             {
                 val = temp;
                 best_idx = i;
@@ -181,7 +189,7 @@ namespace dlib
             for (long c = 0; c < m.nc(); ++c)
             {
                 type temp = m(r,c);
-                if (temp > val)
+                if (dlib::impl::magnitude(temp) > dlib::impl::magnitude(val))
                     val = temp;
             }
         }
@@ -210,7 +218,7 @@ namespace dlib
             for (long c = 0; c < m.nc(); ++c)
             {
                 type temp = m(r,c);
-                if (temp < val)
+                if (dlib::impl::magnitude(temp) < dlib::impl::magnitude(val))
                     val = temp;
             }
         }
@@ -569,9 +577,10 @@ namespace dlib
         COMPILE_TIME_ASSERT(EXP1::NR*EXP1::NC == 0 ||
                             EXP2::NR*EXP2::NC == 0);
 
-        DLIB_ASSERT(is_vector(m1) && is_vector(m2) && m1.size() == m2.size(), 
+        DLIB_ASSERT(is_vector(m1) && is_vector(m2) && m1.size() == m2.size() &&
+                    m1.size() > 0, 
             "\t type dot(const matrix_exp& m1, const matrix_exp& m2)"
-            << "\n\t You can only compute the dot product between vectors of equal length"
+            << "\n\t You can only compute the dot product between non-empty vectors of equal length."
             << "\n\t is_vector(m1): " << is_vector(m1) 
             << "\n\t is_vector(m2): " << is_vector(m2) 
             << "\n\t m1.size():     " << m1.size() 
@@ -587,7 +596,7 @@ namespace dlib
     }
 
     template < typename EXP1, typename EXP2 >
-    typename enable_if_c<EXP1::NR == 1 && EXP2::NR == 1, typename EXP1::type>::type 
+    typename enable_if_c<EXP1::NR == 1 && EXP2::NR == 1 && EXP1::NC != 1 && EXP2::NC != 1, typename EXP1::type>::type 
     dot ( const matrix_exp<EXP1>& m1, const matrix_exp<EXP2>& m2) 
     { 
         DLIB_ASSERT(m1.size() == m2.size(), 
@@ -601,7 +610,7 @@ namespace dlib
     }
 
     template < typename EXP1, typename EXP2 >
-    typename enable_if_c<EXP1::NR == 1 && EXP2::NC == 1, typename EXP1::type>::type 
+    typename enable_if_c<EXP1::NR == 1 && EXP2::NC == 1 && EXP1::NC != 1 && EXP2::NR != 1, typename EXP1::type>::type 
     dot ( const matrix_exp<EXP1>& m1, const matrix_exp<EXP2>& m2) 
     { 
         DLIB_ASSERT(m1.size() == m2.size(), 
@@ -615,7 +624,7 @@ namespace dlib
     }
 
     template < typename EXP1, typename EXP2 >
-    typename enable_if_c<EXP1::NC == 1 && EXP2::NR == 1, typename EXP1::type>::type 
+    typename enable_if_c<EXP1::NC == 1 && EXP2::NR == 1 && EXP1::NR != 1 && EXP2::NC != 1, typename EXP1::type>::type 
     dot ( const matrix_exp<EXP1>& m1, const matrix_exp<EXP2>& m2) 
     { 
         DLIB_ASSERT(m1.size() == m2.size(), 
@@ -629,7 +638,7 @@ namespace dlib
     }
 
     template < typename EXP1, typename EXP2 >
-    typename enable_if_c<EXP1::NC == 1 && EXP2::NC == 1, typename EXP1::type>::type 
+    typename enable_if_c<EXP1::NC == 1 && EXP2::NC == 1 && EXP1::NR != 1 && EXP2::NR != 1, typename EXP1::type>::type 
     dot ( const matrix_exp<EXP1>& m1, const matrix_exp<EXP2>& m2) 
     { 
         DLIB_ASSERT(m1.size() == m2.size(), 
@@ -640,6 +649,20 @@ namespace dlib
             );
         
         return trans(m1)*m2; 
+    }
+
+    template < typename EXP1, typename EXP2 >
+    typename enable_if_c<(EXP1::NC*EXP1::NR == 1) || (EXP2::NC*EXP2::NR == 1), typename EXP1::type>::type 
+    dot ( const matrix_exp<EXP1>& m1, const matrix_exp<EXP2>& m2) 
+    { 
+        DLIB_ASSERT(m1.size() == m2.size(), 
+            "\t type dot(const matrix_exp& m1, const matrix_exp& m2)"
+            << "\n\t You can only compute the dot product between vectors of equal length"
+            << "\n\t m1.size():     " << m1.size() 
+            << "\n\t m2.size():     " << m2.size() 
+            );
+        
+        return m1(0)*m2(0);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -1669,11 +1692,24 @@ namespace dlib
     template <
         typename EXP
         >
-    inline const typename matrix_exp<EXP>::type mean (
+    inline const typename disable_if<is_complex<typename EXP::type>, typename matrix_exp<EXP>::type>::type mean (
         const matrix_exp<EXP>& m
     )
     {
         return sum(m)/(m.nr()*m.nc());
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename EXP
+        >
+    inline const typename enable_if<is_complex<typename EXP::type>, typename matrix_exp<EXP>::type>::type mean (
+        const matrix_exp<EXP>& m
+    )
+    {
+        typedef typename EXP::type::value_type type;
+        return sum(m)/(type)(m.nr()*m.nc());
     }
 
 // ----------------------------------------------------------------------------------------
@@ -1864,6 +1900,26 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
+        typename EXP
+        >
+    const matrix_op<op_uniform_matrix_3<typename EXP::type> > zeros_matrix (
+        const matrix_exp<EXP>& mat
+    )
+    {
+        DLIB_ASSERT(mat.nr() > 0 && mat.nc() > 0, 
+            "\tconst matrix_exp zeros_matrix(mat)"
+            << "\n\t nr and nc have to be bigger than 0"
+            << "\n\t mat.nr(): " << mat.nr()
+            << "\n\t mat.nc(): " << mat.nc()
+            );
+        typedef typename EXP::type T;
+        typedef op_uniform_matrix_3<T> op;
+        return matrix_op<op>(op(mat.nr(), mat.nc(), 0));
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
         typename T
         >
     const matrix_op<op_uniform_matrix_3<T> > ones_matrix (
@@ -1879,6 +1935,26 @@ namespace dlib
             );
         typedef op_uniform_matrix_3<T> op;
         return matrix_op<op>(op(nr, nc, 1));
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename EXP
+        >
+    const matrix_op<op_uniform_matrix_3<typename EXP::type> > ones_matrix (
+        const matrix_exp<EXP>& mat
+    )
+    {
+        DLIB_ASSERT(mat.nr() > 0 && mat.nc() > 0, 
+            "\tconst matrix_exp ones_matrix(mat)"
+            << "\n\t nr and nc have to be bigger than 0"
+            << "\n\t mat.nr(): " << mat.nr()
+            << "\n\t mat.nc(): " << mat.nc()
+            );
+        typedef typename EXP::type T;
+        typedef op_uniform_matrix_3<T> op;
+        return matrix_op<op>(op(mat.nr(), mat.nc(), 1));
     }
 
 // ----------------------------------------------------------------------------------------
@@ -2028,6 +2104,24 @@ namespace dlib
             );
         typedef op_identity_matrix_2<T> op;
         return matrix_diag_op<op>(op(size));
+    }
+
+    template <
+        typename EXP 
+        >
+    const matrix_diag_op<op_identity_matrix_2<typename EXP::type> > identity_matrix (
+        const matrix_exp<EXP>& mat
+    )
+    {
+        DLIB_ASSERT(mat.nr() == mat.nc(), 
+            "\tconst matrix_exp identity_matrix(mat)"
+            << "\n\t mat must be a square matrix."
+            << "\n\t mat.nr(): " << mat.nr() 
+            << "\n\t mat.nc(): " << mat.nc() 
+            );
+        typedef typename EXP::type T;
+        typedef op_identity_matrix_2<T> op;
+        return matrix_diag_op<op>(op(mat.nr()));
     }
 
 // ----------------------------------------------------------------------------------------
@@ -2791,6 +2885,80 @@ namespace dlib
     {
         typedef op_clamp2<EXP> op;
         return matrix_op<op>(op(m.ref(),lower, upper));
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <typename M>
+    struct op_lowerbound : basic_op_m<M>
+    {
+        typedef typename M::type type;
+
+        op_lowerbound( const M& m_, const type& thresh_) : 
+            basic_op_m<M>(m_), thresh(thresh_){}
+
+        const type& thresh;
+
+        typedef const typename M::type const_ret_type;
+        const static long cost = M::cost + 2;
+
+        const_ret_type apply ( long r, long c) const
+        { 
+            const type temp = this->m(r,c);
+            if (temp >= thresh)
+                return temp;
+            else
+                return thresh;
+        }
+    };
+
+    template <
+        typename EXP
+        >
+    const matrix_op<op_lowerbound<EXP> > lowerbound (
+        const matrix_exp<EXP>& m,
+        const typename EXP::type& thresh
+    )
+    {
+        typedef op_lowerbound<EXP> op;
+        return matrix_op<op>(op(m.ref(), thresh));
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <typename M>
+    struct op_upperbound : basic_op_m<M>
+    {
+        typedef typename M::type type;
+
+        op_upperbound( const M& m_, const type& thresh_) : 
+            basic_op_m<M>(m_), thresh(thresh_){}
+
+        const type& thresh;
+
+        typedef const typename M::type const_ret_type;
+        const static long cost = M::cost + 2;
+
+        const_ret_type apply ( long r, long c) const
+        { 
+            const type temp = this->m(r,c);
+            if (temp <= thresh)
+                return temp;
+            else
+                return thresh;
+        }
+    };
+
+    template <
+        typename EXP
+        >
+    const matrix_op<op_upperbound<EXP> > upperbound (
+        const matrix_exp<EXP>& m,
+        const typename EXP::type& thresh
+    )
+    {
+        typedef op_upperbound<EXP> op;
+        return matrix_op<op>(op(m.ref(), thresh));
     }
 
 // ----------------------------------------------------------------------------------------

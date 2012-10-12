@@ -45,11 +45,19 @@ namespace dlib
             eps = 0.3;
             num_threads = 2;
             max_cache_size = 40;
-            overlap_eps = 0.5;
+            match_eps = 0.5;
             loss_per_missed_target = 1;
             loss_per_false_alarm = 1;
 
             scanner.copy_configuration(scanner_);
+
+            auto_overlap_tester = is_same_type<overlap_tester_type,test_box_overlap>::value;
+        }
+
+        bool auto_set_overlap_tester (
+        ) const 
+        { 
+            return auto_overlap_tester; 
         }
 
         void set_overlap_tester (
@@ -57,11 +65,19 @@ namespace dlib
         )
         {
             overlap_tester = tester;
+            auto_overlap_tester = false;
         }
 
         overlap_tester_type get_overlap_tester (
         ) const
         {
+            // make sure requires clause is not broken
+            DLIB_ASSERT(auto_set_overlap_tester() == false,
+                "\t overlap_tester_type structural_object_detection_trainer::get_overlap_tester()"
+                << "\n\t You can't call this function if the overlap tester is generated dynamically."
+                << "\n\t this: " << this
+                );
+
             return overlap_tester;
         }
 
@@ -155,25 +171,25 @@ namespace dlib
             return C;
         }
 
-        void set_overlap_eps (
+        void set_match_eps (
             double eps
         )
         {
             // make sure requires clause is not broken
             DLIB_ASSERT(0 < eps && eps < 1, 
-                "\t void structural_object_detection_trainer::set_overlap_eps(eps)"
+                "\t void structural_object_detection_trainer::set_match_eps(eps)"
                 << "\n\t Invalid inputs were given to this function "
                 << "\n\t eps:  " << eps 
                 << "\n\t this: " << this
                 );
 
-            overlap_eps = eps;
+            match_eps = eps;
         }
 
-        double get_overlap_eps (
+        double get_match_eps (
         ) const
         {
-            return overlap_eps;
+            return match_eps;
         }
 
         double get_loss_per_missed_target (
@@ -235,8 +251,29 @@ namespace dlib
                 << "\n\t is_learning_problem(images,truth_rects): " << is_learning_problem(images,truth_rects)
                 );
 
+            overlap_tester_type local_overlap_tester;
+
+            if (auto_overlap_tester)
+            {
+                std::vector<std::vector<rectangle> > mapped_rects(truth_rects.size());
+                for (unsigned long i = 0; i < truth_rects.size(); ++i)
+                {
+                    mapped_rects[i].resize(truth_rects[i].size());
+                    for (unsigned long j = 0; j < truth_rects[i].size(); ++j)
+                    {
+                        mapped_rects[i][j] = scanner.get_best_matching_rect(truth_rects[i][j]);
+                    }
+                }
+
+                local_overlap_tester = find_tight_overlap_tester(mapped_rects);
+            }
+            else
+            {
+                local_overlap_tester = overlap_tester;
+            }
+
             structural_svm_object_detection_problem<image_scanner_type,overlap_tester_type,image_array_type > 
-                svm_prob(scanner, overlap_tester, images, truth_rects, num_threads);
+                svm_prob(scanner, local_overlap_tester, images, truth_rects, num_threads);
 
             if (verbose)
                 svm_prob.be_verbose();
@@ -244,7 +281,7 @@ namespace dlib
             svm_prob.set_c(C);
             svm_prob.set_epsilon(eps);
             svm_prob.set_max_cache_size(max_cache_size);
-            svm_prob.set_overlap_eps(overlap_eps);
+            svm_prob.set_match_eps(match_eps);
             svm_prob.set_loss_per_missed_target(loss_per_missed_target);
             svm_prob.set_loss_per_false_alarm(loss_per_false_alarm);
             matrix<double,0,1> w;
@@ -253,7 +290,7 @@ namespace dlib
             solver(svm_prob,w);
 
             // report the results of the training.
-            return object_detector<image_scanner_type,overlap_tester_type>(scanner, overlap_tester, w);
+            return object_detector<image_scanner_type,overlap_tester_type>(scanner, local_overlap_tester, w);
         }
 
 
@@ -265,12 +302,13 @@ namespace dlib
         double C;
         oca solver;
         double eps;
-        double overlap_eps;
+        double match_eps;
         bool verbose;
         unsigned long num_threads;
         unsigned long max_cache_size;
         double loss_per_missed_target;
         double loss_per_false_alarm;
+        bool auto_overlap_tester;
 
     }; 
 

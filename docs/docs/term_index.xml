@@ -9,24 +9,26 @@
    <body>
       <term_list>
 
-   <!-- ************* DLIB-ML STUFF **************** -->
 
          <term file="dlib/rand/rand_float_abstract.h.html" name="get_random_float"/>
          <term link="compile.html" name="DLIB_REVISION"/>
 
          <term file="dlib/algs.h.html" name="stack_based_memory_block"/>
 
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="move_rect"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="translate_rect"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="resize_rect"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="resize_rect_width"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="resize_rect_height"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="centered_rect"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="center"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="nearest_point"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="distance_to_rect_edge"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="shrink_rect"/>
-         <term file="dlib/geometry/rectangle_abstract.h.html" name="grow_rect"/>
+         <term file="algorithms.html" name="move_rect"/>
+         <term file="algorithms.html" name="translate_rect"/>
+         <term file="algorithms.html" name="resize_rect"/>
+         <term file="algorithms.html" name="resize_rect_width"/>
+         <term file="algorithms.html" name="resize_rect_height"/>
+         <term file="algorithms.html" name="centered_rect"/>
+         <term file="algorithms.html" name="center"/>
+         <term file="algorithms.html" name="nearest_point"/>
+         <term file="algorithms.html" name="distance_to_rect_edge"/>
+         <term file="algorithms.html" name="shrink_rect"/>
+         <term file="algorithms.html" name="grow_rect"/>
+         <term file="algorithms.html" name="dcenter"/>
+         <term file="algorithms.html" name="kalman_filter"/>
+         <term file="algorithms.html" name="rls_filter"/>
 
 
          <term file="dlib/optimization/optimization_abstract.h.html" name="central_differences"/>
@@ -47,11 +49,17 @@
 
          <term file="ml.html" name="is_forced_assignment_problem"/>
          <term file="ml.html" name="is_assignment_problem"/>
+         <term file="ml.html" name="is_graph_labeling_problem"/>
          <term file="ml.html" name="assignment_function"/>
+         <term file="ml.html" name="graph_labeler"/>
          <term file="ml.html" name="test_assignment_function"/>
+         <term file="ml.html" name="test_graph_labeling_function"/>
          <term file="ml.html" name="cross_validate_assignment_trainer"/>
+         <term file="ml.html" name="cross_validate_graph_labeling_trainer"/>
          <term file="ml.html" name="structural_svm_assignment_problem"/>
+         <term file="ml.html" name="structural_svm_graph_labeling_problem"/>
          <term file="ml.html" name="structural_assignment_trainer"/>
+         <term file="ml.html" name="structural_graph_labeling_trainer"/>
 
          <term file="dlib/optimization/optimization_solve_qp2_using_smo_abstract.h.html" name="invalid_nu_error"/>
          <term file="dlib/optimization/optimization_solve_qp2_using_smo_abstract.h.html" name="maximum_nu"/>
@@ -71,6 +79,16 @@
          <term file="optimization.html" name="find_max_trust_region"/>
          <term file="optimization.html" name="find_max_factor_graph_nmplp"/>
          <term file="optimization.html" name="find_max_factor_graph_viterbi"/>
+
+         <term file="optimization.html" name="find_max_factor_graph_potts"/>
+         <term file="optimization.html" name="min_cut"/>
+         <term file="optimization.html" name="graph_cut_score"/>
+         <term file="optimization.html" name="potts_model_score"/>
+         <term file="dlib/graph_cuts/min_cut_abstract.h.html" name="node_label"/>
+         <term link="dlib/graph_cuts/min_cut_abstract.h.html#node_label" name="SOURCE_CUT"/>
+         <term link="dlib/graph_cuts/min_cut_abstract.h.html#node_label" name="SINK_CUT"/>
+         <term link="dlib/graph_cuts/min_cut_abstract.h.html#node_label" name="FREE_NODE"/>
+
          <term file="optimization.html" name="solve_trust_region_subproblem"/>
          <term file="optimization.html" name="find_min_single_variable"/>
          <term file="optimization.html" name="find_min_using_approximate_derivatives"/>
@@ -78,6 +96,7 @@
          <term file="optimization.html" name="solve_qp_using_smo"/>
          <term file="optimization.html" name="solve_qp2_using_smo"/>
          <term file="optimization.html" name="solve_qp3_using_smo"/>
+         <term file="optimization.html" name="solve_qp4_using_smo"/>
          <term file="optimization.html" name="oca"/>
          <term link="optimization.html#find_min_bobyqa" name="BOBYQA"/>
          <term file="optimization.html" name="find_max"/>
@@ -112,6 +131,9 @@
          <term file="bayes.html" name="node_next_parent_assignment"/>
          <term file="bayes.html" name="node_cpt_filled_out"/>
 
+         <term file="algorithms.html" name="projection_hash"/>
+         <term file="algorithms.html" name="create_random_projection_hash"/>
+         <term file="algorithms.html" name="randomly_sample_image_features"/>
          <term file="algorithms.html" name="disjoint_subsets"/>
          <term link="algorithms.html#disjoint_subsets" name="union-find"/>
          <term file="algorithms.html" name="rectangle"/>
@@ -133,8 +155,10 @@
          <term file="algorithms.html" name="rand"/>
          <term link="algorithms.html#rand" name="Mersenne Twister"/>
          <term file="algorithms.html" name="graph_contains_undirected_cycle"/>
+         <term file="algorithms.html" name="graph_has_symmetric_edges"/>
          <term file="algorithms.html" name="graph_contains_directed_cycle"/>
          <term file="algorithms.html" name="copy_graph_structure"/>
+         <term file="algorithms.html" name="copy_graph"/>
 
          <term file="algorithms.html" name="create_moral_graph"/>
          <term file="algorithms.html" name="triangulate_graph_and_find_cliques"/>
@@ -148,6 +172,9 @@
          <term file="algorithms.html" name="point"/>
          <term file="algorithms.html" name="rotate_point"/>
          <term file="algorithms.html" name="point_rotator"/>
+         <term file="algorithms.html" name="point_transform"/>
+         <term file="algorithms.html" name="point_transform_affine"/>
+         <term file="algorithms.html" name="rotation_matrix"/>
          <term file="algorithms.html" name="running_stats"/>
          <term file="algorithms.html" name="running_scalar_covariance"/>
          <term file="algorithms.html" name="mean_sign_agreement"/>
@@ -160,7 +187,7 @@
          <term file="algorithms.html" name="randomly_subsample"/>
 
          <term file="ml.html" name="select_all_distinct_labels"/>
-         <term file="dlib/svm/multiclass_tools_abstract.h.html#find_missing_pairs" name="find_missing_pairs"/>
+         <term file="dlib/svm/multiclass_tools_abstract.h.html" name="find_missing_pairs"/>
 
          <term file="ml.html" name="svm_multiclass_linear_trainer"/>
          <term link="ml.html#svm_multiclass_linear_trainer" name="Multiclass SVM"/>
@@ -172,6 +199,13 @@
 
          <term file="dlib/svm/pegasos_abstract.h.html" name="replicate_settings"/>
          <term file="ml.html" name="mlp"/>
+         <term file="dlib/data_io/image_dataset_metadata.h.html" name="image"/>
+         <term file="dlib/data_io/image_dataset_metadata.h.html" name="box"/>
+         <term file="dlib/data_io/image_dataset_metadata.h.html" name="dataset"/>
+         <term link="ml.html#load_image_dataset_metadata" name="image_dataset_metadata"/>
+         <term file="ml.html" name="load_image_dataset_metadata"/>
+         <term file="ml.html" name="load_image_dataset"/>
+         <term file="ml.html" name="save_image_dataset_metadata"/>
          <term file="ml.html" name="load_libsvm_formatted_data"/>
          <term file="ml.html" name="save_libsvm_formatted_data"/>
          <term file="ml.html" name="sparse_to_dense"/>
@@ -256,6 +290,7 @@
          <term link="ml.html#krr_trainer" name="regularized least squares"/>
          <term link="ml.html#krr_trainer" name="least squares SVM"/>
          <term file="ml.html" name="krls"/>
+         <term file="ml.html" name="rls"/>
          <term file="ml.html" name="kcentroid"/>
          <term file="ml.html" name="linearly_independent_subset_finder"/>
          <term file="ml.html" name="fill_lisf"/>
@@ -328,6 +363,29 @@
          <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="round_zeros"/>
          <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="complex_matrix"/>
          <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="normalize"/>
+
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="abs"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="acos"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="asin"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="atan"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="ceil"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="conj"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="cos"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="cosh"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="cubed"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="exp"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="floor"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="imag"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="log10"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="log"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="norm"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="pow"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="real"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="sinh"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="sin"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="sqrt"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="tanh"/>
+         <term file="dlib/matrix/matrix_math_functions_abstract.h.html" name="tan"/>
 
 
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="linspace"/>
@@ -436,11 +494,18 @@
             <term link="dlib/svm/sparse_vector_abstract.h.html#length_squared" name="for sparse vectors"/>
          </term>
 
-         <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="min"/>
+         <term name="min">
+            <term link="dlib/matrix/matrix_utilities_abstract.h.html#min" name="for matrix objects"/>
+            <term link="dlib/svm/sparse_vector_abstract.h.html#min" name="for sparse vectors"/>
+         </term>
+         <term name="max">
+            <term link="dlib/matrix/matrix_utilities_abstract.h.html#max" name="for matrix objects"/>
+            <term link="dlib/svm/sparse_vector_abstract.h.html#max" name="for sparse vectors"/>
+         </term>
+
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="find_min_and_max"/>
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="index_of_max"/>
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="index_of_min"/>
-         <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="max"/>
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="sum"/>
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="sum_rows"/>
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="sum_cols"/>
@@ -451,9 +516,13 @@
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="pixel_to_vector"/>
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="vector_to_pixel"/>
          <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="clamp"/>
+         <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="lowerbound"/>
+         <term file="dlib/matrix/matrix_utilities_abstract.h.html" name="upperbound"/>
 
 
          <term file="dlib/svm/sparse_vector_abstract.h.html" name="scale_by"/>
+         <term file="dlib/svm/sparse_vector_abstract.h.html" name="add"/>
+         <term file="dlib/svm/sparse_vector_abstract.h.html" name="subtract"/>
          <term file="dlib/svm/sparse_vector_abstract.h.html" name="distance_squared"/>
          <term file="dlib/svm/sparse_vector_abstract.h.html" name="distance"/>
          <term file="dlib/svm/sparse_vector_abstract.h.html" name="has_unsigned_keys"/>
@@ -485,8 +554,12 @@
          <term file="metaprogramming.html" name="DLIB_CASSERT"/>
          <term file="metaprogramming.html" name="COMPILE_TIME_ASSERT"/>
          <term file="metaprogramming.html" name="DLIB_ASSERT_HAS_STANDARD_LAYOUT"/>
-         <term file="metaprogramming.html" name="TIME_THIS"/>
-         <term link="metaprogramming.html#TIME_THIS" name="TIME_THIS_TO"/>
+         <term file="other.html" name="TIME_THIS"/>
+         <term link="other.html#timing code blocks" name="print"/>
+         <term file="other.html" name="timing code blocks"/>
+         <term link="other.html#timing code blocks" name="start"/>
+         <term link="other.html#timing code blocks" name="stop"/>
+         <term link="other.html#TIME_THIS" name="TIME_THIS_TO"/>
          <term file="metaprogramming.html" name="_dT"/>
          <term file="metaprogramming.html" name="is_pointer_type"/>
          <term file="metaprogramming.html" name="is_const_type"/>
@@ -505,8 +578,10 @@
          <term file="metaprogramming.html" name="static_switch"/>
          <term file="metaprogramming.html" name="is_graph"/>
          <term file="metaprogramming.html" name="is_array2d"/>
+         <term file="metaprogramming.html" name="is_array"/>
          <term file="metaprogramming.html" name="is_rand"/>
          <term file="metaprogramming.html" name="is_matrix"/>
+         <term file="metaprogramming.html" name="is_config_reader"/>
          <term file="metaprogramming.html" name="is_std_vector"/>
          <term file="metaprogramming.html" name="is_pair"/>
          <term file="metaprogramming.html" name="is_directed_graph"/>
@@ -554,9 +629,6 @@
 
          <term link="intro.html#Creating Objects" name="debugging modes: enable/disable"/>
 
-   <!-- ******************************************** -->
-   <!-- ************* GENERAL STUFF **************** -->
-   <!-- ******************************************** -->
 
          <term file="other.html" name="console_progress_indicator"/>
 
@@ -908,6 +980,7 @@
          <term file="algorithms.html" name="bigint"/>
          <term file="algorithms.html" name="crc32"/>
          <term file="algorithms.html" name="murmur_hash3"/>
+         <term file="algorithms.html" name="murmur_hash3_128bit"/>
          <term file="algorithms.html" name="hash"/>
 
 
@@ -951,6 +1024,7 @@
          <term file="containers.html" name="sequence"/>
          <term file="containers.html" name="shared_ptr_thread_safe"/>
          <term file="containers.html" name="sliding_buffer"/>
+         <term file="containers.html" name="circular_buffer"/>
          <term file="containers.html" name="static_map"/>
          <term file="containers.html" name="static_set"/>
 
@@ -960,6 +1034,7 @@
          <term link="dlib/image_transforms/thresholding_abstract.h.html" name="off_pixel"/>
     
 
+         <term file="imaging.html" name="heatmap"/>
          <term file="imaging.html" name="randomly_color_image"/>
          <term file="imaging.html" name="assign_image"/>
          <term file="imaging.html" name="assign_image_scaled"/>
@@ -1002,6 +1077,7 @@
          <term file="imaging.html" name="rgb_pixel"/>
          <term file="imaging.html" name="bgr_pixel"/>
          <term file="imaging.html" name="cv_image"/>
+         <term file="imaging.html" name="toMat"/>
          <term link="imaging.html#cv_image" name="OpenCV Image"/>
          <term file="imaging.html" name="rgb_alpha_pixel"/>
          <term link="imaging.html#rgb_alpha_pixel" name="alpha"/>
@@ -1016,10 +1092,13 @@
          </term>
          <term file="imaging.html" name="gaussian_blur"/>
          <term file="imaging.html" name="spatially_filter_image"/>
+         <term file="imaging.html" name="sum_filter"/>
          <term file="imaging.html" name="spatially_filter_image_separable"/>
+         <term file="imaging.html" name="spatially_filter_image_separable_down"/>
          <term file="imaging.html" name="separable_3x3_filter_block_grayscale"/>
          <term file="imaging.html" name="separable_3x3_filter_block_rgb"/>
          <term file="imaging.html" name="pyramid_down"/>
+         <term file="imaging.html" name="pyramid_disable"/>
          <term file="imaging.html" name="pyramid_down_3_2"/>
          <term file="imaging.html" name="pyramid_down_4_3"/>
          <term file="imaging.html" name="pyramid_down_5_4"/>
@@ -1028,13 +1107,29 @@
          <term file="imaging.html" name="png_loader"/>
          <term file="imaging.html" name="jpeg_loader"/>
 
+         <term file="imaging.html" name="interpolate_nearest_neighbor"/>
+         <term file="imaging.html" name="interpolate_bilinear"/>
+         <term file="imaging.html" name="interpolate_quadratic"/>
+         <term file="imaging.html" name="transform_image"/>
+         <term file="imaging.html" name="rotate_image"/>
+         <term file="imaging.html" name="resize_image"/>
+         <term file="imaging.html" name="pyramid_up"/>
+         <term file="imaging.html" name="flip_image_left_right"/>
+         <term file="imaging.html" name="flip_image_up_down"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="black_background"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="white_background"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="no_background"/>
+
          <term file="imaging.html" name="integral_image"/>
          <term file="imaging.html" name="integral_image_generic"/>
          <term file="imaging.html" name="hessian_pyramid"/>
          <term file="imaging.html" name="compute_dominant_angle"/>
          <term file="imaging.html" name="compute_surf_descriptor"/>
          <term file="imaging.html" name="hog_image"/>
+         <term file="imaging.html" name="fine_hog_image"/>
+         <term file="imaging.html" name="poly_image"/>
          <term file="imaging.html" name="hashed_feature_image"/>
+         <term file="imaging.html" name="nearest_neighbor_feature_image"/>
          <term file="imaging.html" name="haar_x"/>
          <term file="imaging.html" name="haar_y"/>
          <term file="imaging.html" name="get_interest_points"/>
@@ -1050,8 +1145,14 @@
          <term file="imaging.html" name="create_single_box_detection_template"/>
          <term file="imaging.html" name="create_overlapped_2x2_detection_template"/>
          <term file="imaging.html" name="create_grid_detection_template"/>
+         <term file="imaging.html" name="determine_object_boxes"/>
+         <term file="imaging.html" name="setup_grid_detection_templates"/>
+         <term file="imaging.html" name="setup_grid_detection_templates_verbose"/>
+         <term file="imaging.html" name="setup_hashed_features"/>
          <term file="dlib/image_processing/scan_image_abstract.h.html" name="all_images_same_size"/>
          <term file="dlib/image_processing/scan_image_abstract.h.html" name="sum_of_rects_in_images"/>
+         <term file="dlib/image_processing/box_overlap_testing_abstract.h.html" name="find_tight_overlap_tester"/>
+         <term file="dlib/image_processing/scan_image_pyramid_tools_abstract.h.html" name="image_hash_construction_failure"/>
 
 
 
@@ -1115,6 +1216,8 @@
          <term link="parsing.html#utf8_uifstream" name="basic_utf8_ifstream"/>
          <term file="parsing.html" name="base64"/>
          <term file="parsing.html" name="cmd_line_parser"/>
+         <term file="parsing.html" name="get_option"/>
+         <term link="dlib/cmd_line_parser/get_option_abstract.h.html#option_parse_error" name="option_parse_error"/>
          <term file="dlib/interfaces/cmd_line_parser_option.h.html" name="cmd_line_parser_option"/>
          <term link="parsing.html#cmd_line_parser" name="command line parsing"/>
          <term file="parsing.html" name="config_reader"/>
@@ -1130,6 +1233,7 @@
          <term file="parsing.html" name="wrap_string"/>
          <term file="parsing.html" name="xml_parser"/>
          <term file="parsing.html" name="cast_to_string"/>
+         <term file="parsing.html" name="pad_int_with_zeros"/>
          <term file="parsing.html" name="toupper"/>
          <term file="parsing.html" name="tolower"/>
          <term file="parsing.html" name="trim"/>

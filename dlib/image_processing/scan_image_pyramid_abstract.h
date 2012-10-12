@@ -28,13 +28,17 @@ namespace dlib
 
             REQUIREMENTS ON Feature_extractor_type
                 - must be an object with an interface compatible with the hashed_feature_image 
-                  object defined in dlib/image_keypoint/hashed_feature_image_abstract.h.
+                  object defined in dlib/image_keypoint/hashed_feature_image_abstract.h or 
+                  with the nearest_neighbor_feature_image object defined in 
+                  dlib/image_keypoint/nearest_neighbor_feature_image_abstract.h
 
             INITIAL VALUE
                 - get_num_detection_templates() == 0
                 - is_loaded_with_image() == false
                 - get_max_detections_per_template() == 10000
                 - get_max_pyramid_levels() == 1000
+                - get_min_pyramid_layer_width() == 20
+                - get_min_pyramid_layer_height() == 20
 
             WHAT THIS OBJECT REPRESENTS
                 This object is a tool for running a sliding window classifier over
@@ -66,7 +70,7 @@ namespace dlib
                         - Then the feature vector for a sliding window is an M*N dimensional vector
                           [F(1) F(2) F(3) ... F(N)] (i.e. it is a concatenation of the N vectors).
                           This feature vector can be thought of as a collection of N "bags of features",
-                          each bag coming from a spatial location determined one of the enveloping 
+                          each bag coming from a spatial location determined by one of the enveloping 
                           rectangles. 
                           
                    3. A weight vector and a threshold value.  The dot product between the weight
@@ -116,7 +120,7 @@ namespace dlib
                       objects via Feature_extractor_type::load().
                     - image_type objects can be used with Pyramid_type.  That is,
                       if pyr is an object of type Pyramid_type while img1 and img2
-                      are objects of image_type.  Then pyr(img1,img2) should be
+                      are objects of image_type, then pyr(img1,img2) should be
                       a valid expression which downsamples img1 into img2.
             ensures
                 - #is_loaded_with_image() == true
@@ -236,6 +240,39 @@ namespace dlib
                 - #get_max_pyramid_levels() == max_levels
         !*/
 
+        void set_min_pyramid_layer_size (
+            unsigned long width,
+            unsigned long height 
+        );
+        /*!
+            requires
+                - width > 0
+                - height > 0
+            ensures
+                - #get_min_pyramid_layer_width() == width
+                - #get_min_pyramid_layer_height() == height
+        !*/
+
+        inline unsigned long get_min_pyramid_layer_width (
+        ) const;
+        /*!
+            ensures
+                - returns the smallest allowable width of an image in the image pyramid.
+                  All pyramids will always include the original input image, however, no
+                  pyramid levels will be created which have a width smaller than the
+                  value returned by this function.
+        !*/
+
+        inline unsigned long get_min_pyramid_layer_height (
+        ) const;
+        /*!
+            ensures
+                - returns the smallest allowable height of an image in the image pyramid.
+                  All pyramids will always include the original input image, however, no
+                  pyramid levels will be created which have a height smaller than the
+                  value returned by this function.
+        !*/
+
         unsigned long get_max_detections_per_template (
         ) const;
         /*!
@@ -289,10 +326,21 @@ namespace dlib
                   been reached).
         !*/
 
+        const rectangle get_best_matching_rect (
+            const rectangle& rect
+        ) const;
+        /*!
+            requires
+                - get_num_detection_templates() > 0
+            ensures
+                - Since scan_image_pyramid is a sliding window classifier system, not all possible rectangles 
+                  can be represented.  Therefore, this function allows you to supply a rectangle and obtain the
+                  nearest possible sliding window rectangle.
+        !*/
+
         void get_feature_vector (
-            const std::vector<rectangle>& rects,
-            feature_vector_type& psi,
-            std::vector<rectangle>& mapped_rects
+            const rectangle& rects,
+            feature_vector_type& psi
         ) const;
         /*!
             requires
@@ -300,21 +348,21 @@ namespace dlib
                 - get_num_detection_templates() > 0
                 - psi.size() >= get_num_dimensions()
             ensures
-                - This function allows you to determine the feature vector used for a sliding window location
-                  or the sum of such vectors for a set of locations.
-                - if (rects was produced by a call to detect(), i.e. rects contains the contents of dets) then
-                    - #psi == the sum of feature vectors corresponding to the sliding window locations contained
-                      in rects.
-                    - #mapped_rects == rects
-                    - Let w denote the w vector given to detect(), then we have:
-                        - dot(w,#psi) == sum of scores of the dets produced by detect()
+                - This function allows you to determine the feature vector used for a sliding window location.
+                  Note that this vector is added to psi.
+                - if (rect was produced by a call to detect(), i.e. rect contains an element of dets) then
+                    - #psi == psi + the feature vector corresponding to the sliding window location indicated 
+                      by rect.
+                    - Let w denote the w vector given to detect(), then if we assigned psi to 0 before calling
+                      get_feature_vector() then we have:
+                        - dot(w,#psi) == the score produced by detect() for rect.
+                    - get_best_matching_rect(rect) == rect
                 - else
                     - Since scan_image_pyramid is a sliding window classifier system, not all possible rectangles can 
-                      be output by detect().  So in the case where rects contains rectangles which could not arise
-                      from a call to detect(), this function will map the rectangles in rects to the nearest possible 
-                      object boxes and then store the sum of feature vectors for the mapped rectangles into #psi.
-                    - for all valid i: #mapped_rects[i] == the rectangle rects[i] gets mapped to for feature extraction.
-                - #mapped_rects.size() == rects.size()
+                      be output by detect().  So in the case where rect could not arise from a call to detect(), this 
+                      function will map rect to the nearest possible object box and then add the feature vector for 
+                      the mapped rectangle into #psi.
+                    - get_best_matching_rect(rect) == the rectangle rect gets mapped to for feature extraction.
         !*/
 
     };

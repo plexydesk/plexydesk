@@ -55,11 +55,29 @@ namespace dlib
                 - #get_epsilon() == 0.3
                 - #get_num_threads() == 2
                 - #get_max_cache_size() == 40
-                - #get_overlap_eps() == 0.5
+                - #get_match_eps() == 0.5
                 - #get_loss_per_missed_target() == 1
                 - #get_loss_per_false_alarm() == 1
                 - This object will attempt to learn a model for the given
                   scanner object when train() is called.
+                - if (overlap_tester_type == test_box_overlap) then
+                    - #auto_set_overlap_tester() == true
+                - else
+                    - #auto_set_overlap_tester() == false
+        !*/
+
+        bool auto_set_overlap_tester (
+        ) const;
+        /*!
+            ensures
+                - if (this object will automatically determine an appropriate 
+                  state for the overlap tester used for non-max suppression.) then
+                    - returns true
+                    - In this case, it is determined using the find_tight_overlap_tester() 
+                      routine based on the truth_rects given to the 
+                      structural_object_detection_trainer::train() method.  
+                - else
+                    - returns false
         !*/
 
         void set_overlap_tester (
@@ -68,11 +86,14 @@ namespace dlib
         /*!
             ensures
                 - #get_overlap_tester() == tester
+                - #auto_set_overlap_tester() == false
         !*/
 
         overlap_tester_type get_overlap_tester (
         ) const;
         /*!
+            requires
+                - auto_set_overlap_tester() == false
             ensures
                 - returns the overlap tester object which will be used to perform non-max suppression.
                   In particular, this function returns the overlap tester which will populate the
@@ -190,25 +211,25 @@ namespace dlib
                   better generalization. 
         !*/
 
-        void set_overlap_eps (
+        void set_match_eps (
             double eps
         );
         /*!
             requires
                 - 0 < eps < 1
             ensures
-                - #get_overlap_eps() == eps
+                - #get_match_eps() == eps
         !*/
 
-        double get_overlap_eps (
+        double get_match_eps (
         ) const;
         /*!
             ensures
-                - returns the amount of overlap necessary for a detection to be considered
-                  as overlapping with a ground truth rectangle.  If it doesn't overlap then
+                - returns the amount of alignment necessary for a detection to be considered
+                  as matching with a ground truth rectangle.  If it doesn't match then
                   it is considered to be a false alarm.  To define this precisely, let
-                  A and B be two rectangles, then A and B overlap if and only if:
-                    A.intersect(B).area()/(A+B).area() > get_overlap_eps()
+                  A and B be two rectangles, then A and B match if and only if:
+                    A.intersect(B).area()/(A+B).area() > get_match_eps()
         !*/
 
         double get_loss_per_missed_target (

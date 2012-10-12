@@ -40,10 +40,13 @@ set (tests
    empirical_kernel_map.cpp
    entropy_coder.cpp
    entropy_encoder_model.cpp
+   filtering.cpp
    find_max_factor_graph_nmplp.cpp
    find_max_factor_graph_viterbi.cpp
    geometry.cpp
    graph.cpp
+   graph_cuts.cpp
+   graph_labeler.cpp
    hash.cpp
    hash_map.cpp
    hash_set.cpp
@@ -73,6 +76,7 @@ set (tests
    metaprogramming.cpp
    multithreaded_object.cpp
    object_detector.cpp
+   oca.cpp
    one_vs_all_trainer.cpp
    one_vs_one_trainer.cpp
    optimization.cpp
@@ -86,6 +90,7 @@ set (tests
    rand.cpp
    read_write_mutex.cpp
    reference_counter.cpp
+   rls.cpp
    scan_image.cpp
    sequence.cpp
    sequence_labeler.cpp
@@ -97,6 +102,7 @@ set (tests
    sockets2.cpp
    sockets.cpp
    sockstreambuf.cpp
+   sparse_vector.cpp
    stack.cpp
    static_map.cpp
    static_set.cpp
