@@ -44,9 +44,11 @@
          <item>noncopyable</item>
          <item>enable_if</item>
          <item>is_array2d</item>
+         <item>is_array</item>
          <item>is_graph</item>
          <item>is_rand</item>
          <item>is_matrix</item>
+         <item>is_config_reader</item>
          <item>is_std_vector</item>
          <item>is_pair</item>
          <item>is_directed_graph</item>
@@ -71,7 +73,6 @@
          <item>DLIB_ASSERT_HAS_STANDARD_LAYOUT</item> 
          <item>ASSERT_ARE_NOT_SAME_TYPE</item> 
          <item>_dT</item> 
-         <item>TIME_THIS</item> 
          <item>is_same_object</item> 
          <item>assign_zero_if_built_in_scalar_type</item>
          <item>wrap_function</item>
@@ -274,7 +275,7 @@
          <spec_file link="true">dlib/algs.h</spec_file>
          <description>
             This is a template where is_signed_type&lt;T&gt;::value == true when T is
-            a signed integral type and false when it is an unsigned integral
+            a signed scalar type and false when it is an unsigned scalar
             type.
          </description>
          
@@ -288,7 +289,7 @@
          <spec_file link="true">dlib/algs.h</spec_file>
          <description>
             This is a template where is_unsigned_type&lt;T&gt;::value == true when T is
-            an unsigned integral type and false when it is a signed integral
+            an unsigned scalar type and false when it is a signed scalar
             type.
          </description>
          
@@ -399,6 +400,20 @@
       
    <!-- ************************************************************************* -->
       
+      <component>
+         <name>is_config_reader</name>
+         <file>dlib/is_kind.h</file>
+         <spec_file link="true">dlib/is_kind.h</spec_file>
+         <description>
+            This is a template where is_config_reader&lt;T&gt;::value == true when T
+            is a <a href="parsing.html#config_reader">config_reader</a> or
+            config_reader_thread_safe object.
+         </description>
+         
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
       
       <component>
          <name>is_graph</name>
@@ -420,6 +435,19 @@
          <description>
             This is a template where is_array2d&lt;T&gt;::value == true when T
             is an <a href="containers.html#array2d">array2d</a> object.
+         </description>
+         
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>is_array</name>
+         <file>dlib/is_kind.h</file>
+         <spec_file link="true">dlib/is_kind.h</spec_file>
+         <description>
+            This is a template where is_array&lt;T&gt;::value == true when T
+            is an <a href="containers.html#array">array</a> object.
          </description>
          
       </component>
@@ -698,27 +726,6 @@
          <description>        
             This is a template that allows you to turn a global function into a 
             function object.  See the specs for more details. 
-         </description>
-                                 
-      </component>
-            
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>TIME_THIS</name>
-         <file>dlib/time_this.h</file>
-         <spec_file>dlib/time_this.h</spec_file>
-         <description>        
-            <p>
-            This is a macro function for timing blocks of code.  Its form is <tt>TIME_THIS(whatever you want to time)</tt>
-            It's pretty straight forward. It just prints the time it took to std::cout.
-            </p>
-            <p>
-            There is another version of this function called TIME_THIS_TO which takes as a parameter an ostream
-            object to write its output to.  Its form is <tt>TIME_THIS_TO(what you want to time, the output stream)</tt>;
-            </p>
-            
          </description>
                                  
       </component>

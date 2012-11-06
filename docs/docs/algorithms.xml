@@ -42,9 +42,13 @@
                <item>point</item> 
                <item>rotate_point</item> 
                <item>point_rotator</item> 
+               <item>point_transform</item> 
+               <item>point_transform_affine</item> 
+               <item>rotation_matrix</item> 
                <item>get_rect</item> 
                <item>centered_rect</item> 
                <item>center</item> 
+               <item>dcenter</item> 
                <item>shrink_rect</item> 
                <item>grow_rect</item> 
                <item>translate_rect</item> 
@@ -60,6 +64,7 @@
             <name>Graph Utilities</name>
             <sub>
                <item>graph_contains_directed_cycle</item> 
+               <item>graph_has_symmetric_edges</item> 
                <item>graph_contains_undirected_cycle</item> 
                <item>create_moral_graph</item> 
                <item>triangulate_graph_and_find_cliques</item> 
@@ -69,6 +74,7 @@
                <item>is_clique</item> 
                <item>is_maximal_clique</item> 
                <item>copy_graph_structure</item> 
+               <item>copy_graph</item> 
                <item>edge</item> 
                <item>is_join_tree</item> 
                <item>create_join_tree</item> 
@@ -104,6 +110,7 @@
          <item>running_covariance</item> 
          <item>random_subset_selector</item> 
          <item>randomly_subsample</item> 
+         <item>randomly_sample_image_features</item> 
 
       </section>
 
@@ -113,6 +120,15 @@
          <item>crc32</item> 
          <item>hash</item> 
          <item>murmur_hash3</item> 
+         <item>murmur_hash3_128bit</item> 
+         <item>projection_hash</item> 
+         <item>create_random_projection_hash</item> 
+      </section>
+
+      <section>
+         <name>Filtering</name>
+         <item>kalman_filter</item> 
+         <item>rls_filter</item> 
       </section>
     </top>  
    </menu>
@@ -198,6 +214,82 @@
             This function takes a block of memory and returns a 32bit hash.  The 
             hashing algorithm used is Austin Appleby's excellent 
             <a href="http://code.google.com/p/smhasher/">MurmurHash3</a>. 
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>murmur_hash3_128bit</name>
+         <file>dlib/hash.h</file>
+         <spec_file>dlib/general_hash/murmur_hash3_abstract.h</spec_file>
+         <description>
+            This function takes a block of memory and returns a 128bit hash.  The 
+            hashing algorithm used is Austin Appleby's excellent 
+            <a href="http://code.google.com/p/smhasher/">MurmurHash3</a>. 
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>kalman_filter</name>
+         <file>dlib/filtering.h</file>
+         <spec_file>dlib/filtering/kalman_filter_abstract.h</spec_file>
+         <description>
+                This object implements the Kalman filter, which is a tool for 
+                recursively estimating the state of a process given measurements
+                related to that process.  To use this tool you will have to 
+                be familiar with the workings of the Kalman filter.  An excellent
+                introduction can be found in the paper:
+                <blockquote>
+                    An Introduction to the Kalman Filter
+                    by Greg Welch and Gary Bishop
+                </blockquote>
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>rls_filter</name>
+         <file>dlib/filtering.h</file>
+         <spec_file>dlib/filtering/rls_filter_abstract.h</spec_file>
+         <description>
+            This object is a tool for doing time series prediction using 
+            linear <a href="ml.html#rls">recursive least squares</a>.  In particular,
+            this object takes a sequence of points from the user and, at each
+            step, attempts to predict the value of the next point.
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>projection_hash</name>
+         <file>dlib/lsh.h</file>
+         <spec_file>dlib/lsh/projection_hash_abstract.h</spec_file>
+         <description>
+                This is a tool for hashing elements of a vector space into the integers.  
+                It is intended to represent locality sensitive hashing functions such as 
+                the popular <a href="#create_random_projection_hash">random projection hashing</a> method.
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>create_random_projection_hash</name>
+         <file>dlib/lsh.h</file>
+         <spec_file>dlib/lsh/create_random_projection_hash_abstract.h</spec_file>
+         <description>
+            Creates a random projection based locality sensitive 
+            <a href="#projection_hash">hashing function</a>.
          </description>
          
       </component>
@@ -430,6 +522,20 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>randomly_sample_image_features</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/image_feature_sampling_abstract.h</spec_file>
+         <description>
+            Given a feature extractor such as the <a href="imaging.html#hog_image">hog_image</a>,
+            this routine selects a random subsample of local image feature vectors 
+            from a set of images.  
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>hsort_array</name>
          <file>dlib/sort.h</file>
          <spec_file link="true">dlib/sort.h</spec_file>
@@ -531,7 +637,8 @@
          <file>dlib/graph_utils.h</file>
          <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
          <description>        
-            This function takes a <a href="containers.html#graph">graph</a> object and a 
+            This function takes a <a href="containers.html#graph">graph</a> or 
+            <a href="containers.html#directed_graph">directed_graph</a> object and a 
             pair of indices.  It returns a reference to the edge object between the two nodes
             with the given indices. 
          </description>
@@ -574,6 +681,20 @@
          <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
          <description>        
             This function checks a <a href="containers.html#directed_graph">directed_graph</a> for directed cycles.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>graph_has_symmetric_edges</name>
+         <file>dlib/graph_utils.h</file>
+         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
+         <description>        
+            This function checks if a <a href="containers.html#directed_graph">directed_graph</a> 
+            has a pair of nodes with just one edge between them.  If so then it
+            does not have symmetric edges.
          </description>
                                  
       </component>
@@ -716,6 +837,20 @@
             This function takes a <a href="containers.html#graph">graph</a> and a 
             <a href="containers.html#set">set</a> of node index values and checks 
             if the specified set of nodes is a clique in the graph.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>copy_graph</name>
+         <file>dlib/graph_utils.h</file>
+         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
+         <description>        
+            This function takes a <a href="containers.html#graph">graph</a> or 
+            <a href="containers.html#directed_graph">directed_graph</a> and
+            makes a copy of it.
          </description>
                                  
       </component>
@@ -897,6 +1032,21 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>dcenter</name>
+         <file>dlib/geometry.h</file>
+         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
+         <description>        
+            Returns the center point of a <a href="#rectangle">rectangle</a>.  This
+            is a version of <a href="#center">center()</a> which returns a double version 
+            of the point rather than one which uses integers to represent the 
+            result.  Therefore, it is slightly more accurate.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>centered_rect</name>
          <file>dlib/geometry.h</file>
          <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
@@ -956,6 +1106,45 @@
          <description>        
             This is an object that rotates a 2D <a href="#vector">vector</a> or 
             <a href="#point">point</a> object about the origin.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>point_transform</name>
+         <file>dlib/geometry.h</file>
+         <spec_file link="true">dlib/geometry/vector_abstract.h</spec_file>
+         <description>        
+            This is an object that rotates a 2D <a href="#vector">vector</a> or 
+            <a href="#point">point</a> object about the origin and then adds a 
+            displacement vector.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>point_transform_affine</name>
+         <file>dlib/geometry.h</file>
+         <spec_file link="true">dlib/geometry/vector_abstract.h</spec_file>
+         <description>        
+            This is an object that applies an affine transformation to a <a href="#vector">vector</a> or 
+            <a href="#point">point</a>.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>rotation_matrix</name>
+         <file>dlib/geometry.h</file>
+         <spec_file link="true">dlib/geometry/vector_abstract.h</spec_file>
+         <description>        
+            This is a method for creating 2D rotation matrices.
          </description>
                                  
       </component>

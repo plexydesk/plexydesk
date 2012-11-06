@@ -61,6 +61,8 @@
          <item>serialize</item> 
          <item>zero_extend_cast</item> 
          <item>make_mfp</item> 
+         <item>TIME_THIS</item> 
+         <item>timing code blocks</item> 
       </section>
       
       <section>
@@ -976,7 +978,17 @@
          <description>
             This is actually a set of overloaded functions which provide the ability to restore an object's state
             from an input stream.  Currently all dlib container classes, non pointer C++ intrinsics, std::string, 
-            std::vector, std::map, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.  
+            std::vector, std::map, std::set, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.  
+            <p>
+               You can also use serialize() and deserialize() to read/write Google protocol buffer objects.  However, 
+               note that dlib::serialize() writes additional delimiting bytes at the start of each protocol buffer message.  
+               We do this because Google protocol buffers are not 
+               <a href="https://developers.google.com/protocol-buffers/docs/techniques#streaming">self-delimiting</a>
+               on their own.  This means that you can't write more than one protocol buffer object to an output stream 
+               unless you include some kind of delimiter between the messages.  
+               So dlib takes care of this for you by prefixing each message with its length in bytes.  In particular,
+               the number of bytes is encoded as a 32bit little endian integer.  
+            </p>
          </description>
                                  
       </component>
@@ -990,7 +1002,17 @@
          <description>
             This is actually a set of overloaded functions which provide the ability to save an object's state
             to an output stream.  Currently all dlib container classes, non pointer C++ intrinsics, std::string, 
-            std::vector, std::map, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.   
+            std::vector, std::map, std::set, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.   
+            <p>
+               You can also use serialize() and deserialize() to read/write Google protocol buffer objects.  However, 
+               note that dlib::serialize() writes additional delimiting bytes at the start of each protocol buffer message.  
+               We do this because Google protocol buffers are not 
+               <a href="https://developers.google.com/protocol-buffers/docs/techniques#streaming">self-delimiting</a>
+               on their own.  This means that you can't write more than one protocol buffer object to an output stream 
+               unless you include some kind of delimiter between the messages.  
+               So dlib takes care of this for you by prefixing each message with its length in bytes.  In particular,
+               the number of bytes is encoded as a 32bit little endian integer.  
+            </p>
          </description>
                                  
       </component>
@@ -1030,6 +1052,43 @@
       </component>
             
    <!-- ************************************************************************* -->
+
+      <component>
+         <name>TIME_THIS</name>
+         <file>dlib/time_this.h</file>
+         <spec_file>dlib/time_this.h</spec_file>
+         <description>        
+            <p>
+            This is a macro function for timing blocks of code.  Its form is <tt>TIME_THIS(whatever you want to time)</tt>
+            It's pretty straight forward. It just prints the time it took to std::cout.
+            </p>
+            <p>
+            There is another version of this function called TIME_THIS_TO which takes as a parameter an ostream
+            object to write its output to.  Its form is <tt>TIME_THIS_TO(what you want to time, the output stream)</tt>;
+            </p>
+            
+         </description>
+                                 
+      </component>
+            
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>timing code blocks</name>
+         <file>dlib/timing.h</file>
+         <spec_file>dlib/timing.h</spec_file>
+         <description>        
+               This is a set of set of functions for timing blocks of code.  Unlike
+               <a href="#TIME_THIS">TIME_THIS</a>, it can be used to find the cumulative
+               time spent on a block which is executed multiple times.
+         </description>
+                                 
+      </component>
+            
+
+   <!-- ************************************************************************* -->
+
       
    </components>
 

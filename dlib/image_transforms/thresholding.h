@@ -56,6 +56,19 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
+        typename image_type
+        >
+    void threshold_image (
+        image_type& img,
+        typename pixel_traits<typename image_type::type>::basic_pixel_type thresh
+    )
+    {
+        threshold_image(img,img,thresh);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
         typename in_image_type,
         typename out_image_type
         >
@@ -118,10 +131,10 @@ namespace dlib
             moved_a = false;
             moved_b = false;
 
-            long a_hits = 0;
-            long b_hits = 0;
-            long a_mass = 0;
-            long b_mass = 0;
+            int64 a_hits = 0;
+            int64 b_hits = 0;
+            int64 a_mass = 0;
+            int64 b_mass = 0;
 
             for (long i = 0; i < hist.size(); ++i)
             {
@@ -159,6 +172,16 @@ namespace dlib
 
         // now actually apply the threshold
         threshold_image(in_img,out_img,thresh);
+    }
+
+    template <
+        typename image_type
+        >
+    void auto_threshold_image (
+        image_type& img
+    )
+    {
+        auto_threshold_image(img,img);
     }
 
 // ----------------------------------------------------------------------------------------

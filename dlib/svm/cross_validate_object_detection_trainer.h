@@ -8,6 +8,7 @@
 #include "../matrix.h"
 #include "svm.h"
 #include "../geometry.h"
+#include "../image_processing/full_object_detection.h"
 
 namespace dlib
 {
@@ -17,7 +18,7 @@ namespace dlib
     namespace impl
     {
         inline unsigned long number_of_truth_hits (
-            const std::vector<rectangle>& truth_boxes,
+            const std::vector<full_object_detection>& truth_boxes,
             const std::vector<rectangle>& boxes,
             const double overlap_eps
         )
@@ -47,7 +48,7 @@ namespace dlib
                     if (used[j])
                         continue;
 
-                    const double overlap = truth_boxes[i].intersect(boxes[j]).area() / (double)(truth_boxes[i]+boxes[j]).area();
+                    const double overlap = truth_boxes[i].get_rect().intersect(boxes[j]).area() / (double)(truth_boxes[i].get_rect()+boxes[j]).area();
                     if (overlap > best_overlap)
                     {
                         best_overlap = overlap;
@@ -73,18 +74,18 @@ namespace dlib
         typename image_array_type
         >
     const matrix<double,1,2> test_object_detection_function (
-        const object_detector_type& detector,
+        object_detector_type& detector,
         const image_array_type& images,
-        const std::vector<std::vector<rectangle> >& truth_rects,
+        const std::vector<std::vector<full_object_detection> >& truth_dets,
         const double overlap_eps = 0.5
     )
     {
         // make sure requires clause is not broken
-        DLIB_ASSERT( is_learning_problem(images,truth_rects) == true &&
+        DLIB_ASSERT( is_learning_problem(images,truth_dets) == true &&
                      0 < overlap_eps && overlap_eps <= 1,
                     "\t matrix test_object_detection_function()"
                     << "\n\t invalid inputs were given to this function"
-                    << "\n\t is_learning_problem(images,truth_rects): " << is_learning_problem(images,truth_rects)
+                    << "\n\t is_learning_problem(images,truth_dets): " << is_learning_problem(images,truth_dets)
                     << "\n\t overlap_eps: "<< overlap_eps
                     );
 
@@ -99,8 +100,8 @@ namespace dlib
             const std::vector<rectangle>& hits = detector(images[i]);
 
             total_hits += hits.size();
-            correct_hits += impl::number_of_truth_hits(truth_rects[i], hits, overlap_eps);
-            total_true_targets += truth_rects[i].size();
+            correct_hits += impl::number_of_truth_hits(truth_dets[i], hits, overlap_eps);
+            total_true_targets += truth_dets[i].size();
         }
 
 
@@ -119,6 +120,30 @@ namespace dlib
         matrix<double, 1, 2> res;
         res = precision, recall;
         return res;
+    }
+
+    template <
+        typename object_detector_type,
+        typename image_array_type
+        >
+    const matrix<double,1,2> test_object_detection_function (
+        object_detector_type& detector,
+        const image_array_type& images,
+        const std::vector<std::vector<rectangle> >& truth_dets,
+        const double overlap_eps = 0.5
+    )
+    {
+        // convert into a list of regular rectangles.
+        std::vector<std::vector<full_object_detection> > rects(truth_dets.size());
+        for (unsigned long i = 0; i < truth_dets.size(); ++i)
+        {
+            for (unsigned long j = 0; j < truth_dets[i].size(); ++j)
+            {
+                rects[i].push_back(full_object_detection(truth_dets[i][j]));
+            }
+        }
+
+        return test_object_detection_function(detector, images, rects, overlap_eps);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -163,18 +188,18 @@ namespace dlib
     const matrix<double,1,2> cross_validate_object_detection_trainer (
         const trainer_type& trainer,
         const image_array_type& images,
-        const std::vector<std::vector<rectangle> >& truth_rects,
+        const std::vector<std::vector<full_object_detection> >& truth_dets,
         const long folds,
         const double overlap_eps = 0.5
     )
     {
         // make sure requires clause is not broken
-        DLIB_ASSERT( is_learning_problem(images,truth_rects) == true &&
+        DLIB_ASSERT( is_learning_problem(images,truth_dets) == true &&
                      0 < overlap_eps && overlap_eps <= 1 &&
                      1 < folds && folds <= static_cast<long>(images.size()),
                     "\t matrix cross_validate_object_detection_trainer()"
                     << "\n\t invalid inputs were given to this function"
-                    << "\n\t is_learning_problem(images,truth_rects): " << is_learning_problem(images,truth_rects)
+                    << "\n\t is_learning_problem(images,truth_dets): " << is_learning_problem(images,truth_dets)
                     << "\n\t overlap_eps: "<< overlap_eps
                     << "\n\t folds: "<< folds
                     );
@@ -195,24 +220,24 @@ namespace dlib
                 test_idx_set.push_back(test_idx++);
 
             unsigned long train_idx = test_idx%images.size();
-            std::vector<std::vector<rectangle> > training_rects;
+            std::vector<std::vector<full_object_detection> > training_rects;
             for (unsigned long i = 0; i < images.size()-test_size; ++i)
             {
-                training_rects.push_back(truth_rects[train_idx]);
+                training_rects.push_back(truth_dets[train_idx]);
                 train_idx_set.push_back(train_idx);
                 train_idx = (train_idx+1)%images.size();
             }
 
 
             impl::array_subset_helper<image_array_type> array_subset(images, train_idx_set);
-            const typename trainer_type::trained_function_type& detector = trainer.train(array_subset, training_rects);
+            typename trainer_type::trained_function_type detector = trainer.train(array_subset, training_rects);
             for (unsigned long i = 0; i < test_idx_set.size(); ++i)
             {
                 const std::vector<rectangle>& hits = detector(images[test_idx_set[i]]);
 
                 total_hits += hits.size();
-                correct_hits += impl::number_of_truth_hits(truth_rects[test_idx_set[i]], hits, overlap_eps);
-                total_true_targets += truth_rects[test_idx_set[i]].size();
+                correct_hits += impl::number_of_truth_hits(truth_dets[test_idx_set[i]], hits, overlap_eps);
+                total_true_targets += truth_dets[test_idx_set[i]].size();
             }
 
         }
@@ -234,6 +259,31 @@ namespace dlib
         matrix<double, 1, 2> res;
         res = precision, recall;
         return res;
+    }
+
+    template <
+        typename trainer_type,
+        typename image_array_type
+        >
+    const matrix<double,1,2> cross_validate_object_detection_trainer (
+        const trainer_type& trainer,
+        const image_array_type& images,
+        const std::vector<std::vector<rectangle> >& truth_dets,
+        const long folds,
+        const double overlap_eps = 0.5
+    )
+    {
+        // convert into a list of regular rectangles.
+        std::vector<std::vector<full_object_detection> > dets(truth_dets.size());
+        for (unsigned long i = 0; i < truth_dets.size(); ++i)
+        {
+            for (unsigned long j = 0; j < truth_dets[i].size(); ++j)
+            {
+                dets[i].push_back(full_object_detection(truth_dets[i][j]));
+            }
+        }
+
+        return cross_validate_object_detection_trainer(trainer, images, dets, folds, overlap_eps);
     }
 
 // ----------------------------------------------------------------------------------------

@@ -37,8 +37,6 @@ namespace dlib
         ) const;
         /*!
             requires
-                - original.nr() > 10
-                - original.nc() > 10
                 - is_same_object(original, down) == false
                 - in_image_type == is an implementation of array2d/array2d_kernel_abstract.h
                 - out_image_type == is an implementation of array2d/array2d_kernel_abstract.h
@@ -187,6 +185,24 @@ namespace dlib
                 This is a function object with an interface identical to pyramid_down (defined
                 at the top of this file) except that it downsamples images at a ratio of 5 to 4
                 instead of 2 to 1.
+        !*/
+    };
+
+// ----------------------------------------------------------------------------------------
+
+    class pyramid_disable : noncopyable
+    {
+        /*!
+            WHAT THIS OBJECT REPRESENTS
+                This is a function object with an interface identical to pyramid_down (defined
+                at the top of this file) except that it downsamples images at a ratio of infinity
+                to 1.  That means it always outputs images of size 0 regardless of the size
+                of the inputs.  
+                
+                This is useful because it can be supplied to routines which take a pyramid_down 
+                function object and it will essentially disable pyramid processing.  This way, 
+                a pyramid oriented function can be turned into a regular routine which processes
+                just the original undownsampled image.
         !*/
     };
 

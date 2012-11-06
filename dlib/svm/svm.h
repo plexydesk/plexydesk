@@ -153,7 +153,7 @@ namespace dlib
         }
 
 
-        matrix<double, 1, 2, mem_manager_type> res;
+        matrix<double, 1, 2> res;
         res(0) = (double)num_pos_correct/(double)(num_pos); 
         res(1) = (double)num_neg_correct/(double)(num_neg); 
         return res;
@@ -178,10 +178,10 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename sample_type
+        typename sequence_type 
         >
     bool is_sequence_labeling_problem (
-        const std::vector<std::vector<sample_type> >& samples,
+        const std::vector<sequence_type>& samples,
         const std::vector<std::vector<unsigned long> >& labels
     )
     {
@@ -779,9 +779,115 @@ namespace dlib
     template <
         typename T,
         typename U,
+        typename V,
         typename rand_type 
         >
     typename enable_if<is_matrix<T>,void>::type randomize_samples (
+        T& t,
+        U& u,
+        V& v,
+        rand_type& r
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(is_vector(t) && is_vector(u) && is_vector(v) && u.size() == t.size() &&
+                    u.size() == v.size(),
+            "\t randomize_samples(t,u,v)"
+            << "\n\t invalid inputs were given to this function"
+            << "\n\t t.size(): " << t.size()
+            << "\n\t u.size(): " << u.size()
+            << "\n\t v.size(): " << v.size()
+            << "\n\t is_vector(t): " << is_vector(t)
+            << "\n\t is_vector(u): " << is_vector(u)
+            << "\n\t is_vector(v): " << is_vector(v)
+            );
+
+        long n = t.size()-1;
+        while (n > 0)
+        {
+            // put a random integer into idx
+            unsigned long idx = r.get_random_32bit_number();
+
+            // make idx be less than n
+            idx %= n;
+
+            // swap our randomly selected index into the n position
+            exchange(t(idx), t(n));
+            exchange(u(idx), u(n));
+            exchange(v(idx), v(n));
+
+            --n;
+        }
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T,
+        typename U,
+        typename V,
+        typename rand_type
+        >
+    typename disable_if<is_matrix<T>,void>::type randomize_samples (
+        T& t,
+        U& u,
+        V& v,
+        rand_type& r
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(u.size() == t.size() && u.size() == v.size(),
+            "\t randomize_samples(t,u,v)"
+            << "\n\t invalid inputs were given to this function"
+            << "\n\t t.size(): " << t.size()
+            << "\n\t u.size(): " << u.size()
+            << "\n\t v.size(): " << v.size()
+            );
+
+        long n = t.size()-1;
+        while (n > 0)
+        {
+            // put a random integer into idx
+            unsigned long idx = r.get_random_32bit_number();
+
+            // make idx be less than n
+            idx %= n;
+
+            // swap our randomly selected index into the n position
+            exchange(t[idx], t[n]);
+            exchange(u[idx], u[n]);
+            exchange(v[idx], v[n]);
+
+            --n;
+        }
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T,
+        typename U,
+        typename V
+        >
+    typename disable_if<is_rand<V>,void>::type randomize_samples (
+        T& t,
+        U& u,
+        V& v
+    )
+    {
+        rand r;
+        randomize_samples(t,u,v,r);
+    }
+
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T,
+        typename U,
+        typename rand_type 
+        >
+    typename enable_if_c<is_matrix<T>::value && is_rand<rand_type>::value,void>::type randomize_samples (
         T& t,
         U& u,
         rand_type& r
@@ -821,7 +927,7 @@ namespace dlib
         typename U,
         typename rand_type
         >
-    typename disable_if<is_matrix<T>,void>::type randomize_samples (
+    typename disable_if_c<is_matrix<T>::value || !is_rand<rand_type>::value,void>::type randomize_samples (
         T& t,
         U& u,
         rand_type& r
@@ -867,6 +973,7 @@ namespace dlib
         randomize_samples(t,u,r);
     }
 
+// ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
 
     template <

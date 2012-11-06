@@ -87,6 +87,7 @@ makedocs ()
     mkdir docs/cache
     mv cache.$$/dlib docs/cache/
     mv cache.$$/examples docs/cache/
+    mv cache.$$/tools docs/cache/
     rm -rf cache.$$
 
 
@@ -127,6 +128,8 @@ makedocs ()
     cp docs/cache/examples/CMakeLists.txt docs/chm/docs/examples
     cp docs/*.gif docs/web
     cp docs/*.gif docs/chm/docs
+    cp -r docs/guipics docs/web
+    cp -r docs/guipics docs/chm/docs
     cp docs/*.html docs/web
     cp docs/*.html docs/chm/docs
     cp docs/*.png docs/web

@@ -12,7 +12,8 @@
          <p>
             This page documents all the machine learning algorithms present in
             the library.  In particular, there are algorithms for performing 
-            classification, regression, clustering, sequence labeling, anomaly detection, 
+            classification, regression, clustering, sequence labeling, assignment learning,
+            graph segmentation, object detection, anomaly detection, 
             and feature ranking, as well as algorithms for doing more 
             specialized computations.
          </p>
@@ -84,6 +85,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <name>Regression</name>
          <item>mlp</item> 
          <item>krls</item>
+         <item>rls</item>
          <item>krr_trainer</item> 
          <item>rr_trainer</item> 
          <item>svr_trainer</item> 
@@ -98,6 +100,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
                <item>structural_svm_sequence_labeling_problem</item> 
                <item>structural_svm_object_detection_problem</item> 
                <item>structural_svm_assignment_problem</item> 
+               <item>structural_svm_graph_labeling_problem</item> 
             </sub>
          </item>
          <item nolink="true">
@@ -112,6 +115,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <item>structural_object_detection_trainer</item> 
          <item>structural_sequence_labeling_trainer</item> 
          <item>structural_assignment_trainer</item> 
+         <item>structural_graph_labeling_trainer</item> 
       </section>
       <section>
          <name>Unsupervised</name>
@@ -123,6 +127,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <item>find_clusters_using_kmeans</item> 
          <item>vector_normalizer</item> 
          <item>vector_normalizer_pca</item> 
+         <item>sammon_projection</item> 
       </section>
       <section>
          <name>Semi-Supervised</name>
@@ -161,12 +166,14 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <item>cross_validate_regression_trainer</item> 
          <item>cross_validate_sequence_labeler</item> 
          <item>cross_validate_assignment_trainer</item> 
+         <item>cross_validate_graph_labeling_trainer</item> 
          <item>test_binary_decision_function</item> 
          <item>test_multiclass_decision_function</item> 
          <item>test_regression_function</item> 
          <item>test_object_detection_function</item> 
          <item>test_sequence_labeler</item>
          <item>test_assignment_function</item>
+         <item>test_graph_labeling_function</item>
       </section>
 
       <section>
@@ -213,10 +220,14 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <item>one_vs_all_decision_function</item>
          <item>sequence_labeler</item>
          <item>assignment_function</item>
+         <item>graph_labeler</item>
       </section>
 
       <section>
          <name>Data IO</name>
+         <item>load_image_dataset_metadata</item> 
+         <item>load_image_dataset</item> 
+         <item>save_image_dataset_metadata</item> 
          <item>load_libsvm_formatted_data</item> 
          <item>save_libsvm_formatted_data</item> 
          <item>sparse_to_dense</item>
@@ -230,6 +241,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <item>randomize_samples</item> 
          <item>is_binary_classification_problem</item> 
          <item>is_sequence_labeling_problem</item> 
+         <item>is_graph_labeling_problem</item> 
          <item>is_assignment_problem</item> 
          <item>is_forced_assignment_problem</item> 
          <item>approximate_distance_function</item> 
@@ -534,6 +546,25 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
    <!-- ************************************************************************* -->
       
       <component>
+         <name>rls</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/rls_abstract.h</spec_file>
+         <description>
+            This is an implementation of the linear version of the recursive least 
+            squares algorithm.  It accepts training points incrementally and, at 
+            each step, maintains the solution to the following optimization problem:
+            <blockquote>
+               find w minimizing: 0.5*dot(w,w) + C*sum_i(y_i - trans(x_i)*w)^2
+            </blockquote>
+            Where (x_i,y_i) are training pairs.  x_i is some vector and y_i is a target
+            scalar value.
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>svm_pegasos</name>
          <file>dlib/svm.h</file>
          <spec_file link="true">dlib/svm/pegasos_abstract.h</spec_file>
@@ -561,6 +592,13 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
                 function is also unrelated to the size of the dataset (in normal SVM
                 training algorithms, the number of support vectors grows approximately 
                 linearly with the size of the training set).  
+            </p>
+            <p>
+              However, if you are considering using svm_pegasos, you should also try the 
+              <a href="#svm_c_linear_trainer">svm_c_linear_trainer</a> for linear
+              kernels or <a href="#svm_c_ekm_trainer">svm_c_ekm_trainer</a> for non-linear
+              kernels since these other trainers are, usually, faster and easier to use
+              than svm_pegasos.
             </p>
          </description>
 
@@ -623,6 +661,23 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
                 This algorithm is basically a straightforward generalization of the classical PCA
                 technique to handle partially labeled data.  It is useful if you want to learn a linear
                 dimensionality reduction rule using a bunch of data that is partially labeled.  
+         </description>
+
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>sammon_projection</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/sammon_abstract.h</spec_file>
+         <description>
+                This is a function object that computes the Sammon projection of a set
+                of N points in a L-dimensional vector space onto a d-dimensional space
+                (d &lt; L), according to the paper:
+                <blockquote>
+                    A Nonlinear Mapping for Data Structure Analysis (1969) by J.W. Sammon
+                </blockquote>
          </description>
 
       </component>
@@ -1008,7 +1063,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
 
       <component>
          <name>sparse vectors</name>
-         <file>dlib/svm.h</file>
+         <file>dlib/sparse_vector.h</file>
          <spec_file>dlib/svm/sparse_vector_abstract.h</spec_file>
          <description>
             In dlib, sparse vectors are represented using the container objects
@@ -1351,7 +1406,28 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
                 This object is a tool for solving the optimal assignment problem given a 
                 user defined method for computing the quality of any particular assignment. 
          </description>
+         <examples>
+            <example>assignment_learning_ex.cpp.html</example>
+         </examples>
                                  
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>graph_labeler</name>
+         <file>dlib/graph_cuts.h</file>
+         <spec_file link="true">dlib/graph_cuts/graph_labeler_abstract.h</spec_file>
+         <description>
+            This object is a tool for labeling each node in a <a href="containers.html#graph">graph</a> 
+            with a value of true or false, subject to a labeling consistency constraint between 
+            nodes that share an edge.  In particular, this object is useful for 
+            representing a graph labeling model learned via some machine learning 
+            method, such as the <a href="#structural_graph_labeling_trainer">structural_graph_labeling_trainer</a>.
+         </description>
+         <examples>
+            <example>graph_labeling_ex.cpp.html</example>
+         </examples>
       </component>
       
    <!-- ************************************************************************* -->
@@ -1603,6 +1679,19 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
    <!-- ************************************************************************* -->
       
       <component>
+         <name>is_graph_labeling_problem</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/structural_svm_graph_labeling_problem_abstract.h</spec_file>
+         <description>
+            This function takes a set of training data for a graph labeling problem
+            and reports back if it could possibly be a well formed problem.
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>is_forced_assignment_problem</name>
          <file>dlib/svm.h</file>
          <spec_file link="true">dlib/svm/svm_abstract.h</spec_file>
@@ -1690,6 +1779,59 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
    <!-- ************************************************************************* -->
       
       <component>
+         <name>load_image_dataset</name>
+         <file>dlib/data_io.h</file>
+         <spec_file link="true">dlib/data_io/load_image_dataset_abstract.h</spec_file>
+         <description>
+            This is a function which loads the list of images indicated by an
+            <a href="#load_image_dataset_metadata">image dataset metadata file</a>
+            as well as the box locations for each image.  It makes loading the
+            data necessary to train an <a href="imaging.html#object_detector">object_detector</a> 
+            a little more convenient.
+         </description>
+         <examples>
+            <example>train_object_detector.cpp.html</example>
+         </examples>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>load_image_dataset_metadata</name>
+         <file>dlib/data_io.h</file>
+         <spec_file link="true">dlib/data_io/image_dataset_metadata.h</spec_file>
+         <description>
+            dlib comes with a graphical tool for annotating images with
+            labeled rectangles.  The tool produces an XML file containing these
+            annotations.  Therefore, load_image_dataset_metadata() is a routine
+            for parsing these XML files.  Note also that this is the metadata
+            format used by the image labeling tool included with dlib in the
+            tools/imglab folder.
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>save_image_dataset_metadata</name>
+         <file>dlib/data_io.h</file>
+         <spec_file link="true">dlib/data_io/image_dataset_metadata.h</spec_file>
+         <description>
+            This routine is a tool for saving labeled image metadata to an 
+            XML file.  In particular, this routine saves the metadata into a
+            form which can be read by the <a href="#load_image_dataset_metadata">load_image_dataset_metadata</a>
+            routine.  Note also that this is the metadata
+            format used by the image labeling tool included with dlib in the
+            tools/imglab folder.
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>load_libsvm_formatted_data</name>
          <file>dlib/data_io.h</file>
          <spec_file link="true">dlib/data_io/libsvm_io_abstract.h</spec_file>
@@ -1724,8 +1866,8 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
       
       <component>
          <name>sparse_to_dense</name>
-         <file>dlib/data_io.h</file>
-         <spec_file link="true">dlib/data_io/libsvm_io_abstract.h</spec_file>
+         <file>dlib/sparse_vector.h</file>
+         <spec_file link="true">dlib/svm/sparse_vector_abstract.h</spec_file>
          <description>
             This is a simple function that takes a std::vector of 
             <a href="dlib/svm/sparse_vector_abstract.h.html#sparse_vectors">sparse vectors</a> 
@@ -2174,6 +2316,26 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
             as the <a href="#structural_assignment_trainer">structural_assignment_trainer</a>
             and returns the fraction of assignments predicted correctly.
          </description>
+         <examples>
+            <example>assignment_learning_ex.cpp.html</example>
+         </examples>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>cross_validate_graph_labeling_trainer</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/cross_validate_graph_labeling_trainer_abstract.h</spec_file>
+         <description>
+            Performs k-fold cross validation on a user supplied graph labeling trainer object such
+            as the <a href="#structural_graph_labeling_trainer">structural_graph_labeling_trainer</a>
+            and returns the fraction of assignments predicted correctly.
+         </description>
+         <examples>
+            <example>graph_labeling_ex.cpp.html</example>
+         </examples>
                                  
       </component>
       
@@ -2203,6 +2365,22 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
             Tests an <a href="#assignment_function">assignment_function</a> on a set of data 
             and returns the fraction of assignments predicted correctly.
          </description>
+         <examples>
+            <example>assignment_learning_ex.cpp.html</example>
+         </examples>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>test_graph_labeling_function</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/cross_validate_graph_labeling_trainer_abstract.h</spec_file>
+         <description>
+            Tests a <a href="#graph_labeler">graph_labeler</a> on a set of data 
+            and returns the fraction of labels predicted correctly.
+         </description>
                                  
       </component>
       
@@ -2220,6 +2398,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <examples>
             <example>object_detector_ex.cpp.html</example>
             <example>object_detector_advanced_ex.cpp.html</example>
+            <example>train_object_detector.cpp.html</example>
          </examples>
                                  
       </component>
@@ -2238,6 +2417,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <examples>
             <example>object_detector_ex.cpp.html</example>
             <example>object_detector_advanced_ex.cpp.html</example>
+            <example>train_object_detector.cpp.html</example>
          </examples>
                                  
       </component>
@@ -2385,6 +2565,21 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
    <!-- ************************************************************************* -->
       
       <component>
+         <name>structural_svm_graph_labeling_problem</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/structural_svm_graph_labeling_problem_abstract.h</spec_file>
+         <description>
+                This object is a tool for learning the weight vectors needed to use
+                a <a href="#graph_labeler">graph_labeler</a> object.  
+                It learns the parameter vectors by 
+                formulating the problem as a <a href="#structural_svm_problem">structural SVM problem</a>.  
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>structural_object_detection_trainer</name>
          <file>dlib/svm_threaded.h</file>
          <spec_file link="true">dlib/svm/structural_object_detection_trainer_abstract.h</spec_file>
@@ -2401,6 +2596,7 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
          <examples>
             <example>object_detector_ex.cpp.html</example>
             <example>object_detector_advanced_ex.cpp.html</example>
+            <example>train_object_detector.cpp.html</example>
          </examples>
                                  
       </component>
@@ -2431,6 +2627,39 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
    <!-- ************************************************************************* -->
       
       <component>
+         <name>structural_graph_labeling_trainer</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/structural_graph_labeling_trainer_abstract.h</spec_file>
+         <description>
+                This object is a tool for learning to solve a graph labeling problem based
+                on a training dataset of example labeled <a href="containers.html#graph">graphs</a>. 
+                The training procedure produces a <a href="#graph_labeler">graph_labeler</a> object 
+                which can be used to predict the labelings of new graphs.
+
+               <p>
+               To elaborate, a graph labeling problem is a task to learn a binary classifier which 
+               predicts the label of each node in a graph.  Additionally, we have information in 
+               the form of edges between nodes where edges are present when we believe the 
+               linked nodes are likely to have the same label.  Therefore, part of a graph labeling 
+               problem is to learn to score each edge in terms of how strongly the edge should enforce 
+               labeling consistency between its two nodes.  
+               </p>
+
+               <p>
+                Note that this is just a convenience wrapper around the 
+                <a href="#structural_svm_graph_labeling_problem">structural_svm_graph_labeling_problem</a> 
+                to make it look similar to all the other trainers in dlib.  
+            </p>
+         </description>
+         <examples>
+            <example>graph_labeling_ex.cpp.html</example>
+         </examples>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>structural_assignment_trainer</name>
          <file>dlib/svm_threaded.h</file>
          <spec_file link="true">dlib/svm/structural_assignment_trainer_abstract.h</spec_file>
@@ -2445,6 +2674,9 @@ Davis E. King. <a href="http://www.jmlr.org/papers/volume10/king09a/king09a.pdf"
                 <a href="#structural_svm_assignment_problem">structural_svm_assignment_problem</a> 
                 to make it look similar to all the other trainers in dlib.  
          </description>
+         <examples>
+            <example>assignment_learning_ex.cpp.html</example>
+         </examples>
                                  
       </component>
       

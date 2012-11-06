@@ -3,6 +3,7 @@
 #ifndef DLIB_HASHED_IMAGE_FEATUrES_H__
 #define DLIB_HASHED_IMAGE_FEATUrES_H__
 
+#include "../lsh/projection_hash.h"
 #include "hashed_feature_image_abstract.h"
 #include <vector>
 #include "../algs.h"
@@ -15,26 +16,15 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type_ = projection_hash
         >
     class hashed_feature_image : noncopyable
     {
-        /*!
-            INITIAL VALUE
-                - inv_bin_sizes == logspace(-1, 1, 3)
-                - num_dims == 1000
-
-            CONVENTION
-                - inv_bin_sizes.size() > 0
-                - num_dims == get_num_dimensions()
-                - if (has_image_statistics()) then
-                    - rs[i] == the statistics of feature element i.  I.e. the stats of fe(r,c)(i)
-                      over a set of images supplied to accumulate_image_statistics().
-                    - inv_stddev[i] == 1.0/(rs[i].stddev() + 1e-10)
-
-        !*/
 
     public:
+        typedef feature_extractor feature_extractor_type;
+        typedef hash_function_type_ hash_function_type;
 
         typedef std::vector<std::pair<unsigned int,double> > descriptor_type;
 
@@ -44,20 +34,12 @@ namespace dlib
         void clear (
         );
 
-        void set_hash_bin_sizes (
-            const matrix<double,1,0>& bin_sizes 
+        void set_hash (
+            const hash_function_type& hash_
         );
 
-        const matrix<double,1,0> get_hash_bin_sizes (
+        const hash_function_type& get_hash (
         ) const;
-
-        template <
-            typename image_type
-            >
-        inline void accumulate_image_statistics (
-            const image_type& img
-        );
-
 
         void copy_configuration (
             const feature_extractor& item
@@ -85,10 +67,6 @@ namespace dlib
 
         inline long get_num_dimensions (
         ) const;
-
-        void set_num_dimensions (
-            long new_num_dims
-        );
 
         inline const descriptor_type& operator() (
             long row,
@@ -130,20 +108,13 @@ namespace dlib
 
     private:
 
-        inline bool has_image_statistics (
-        ) const;
-
+        array2d<unsigned long> feats;
         feature_extractor fe;
-        typename feature_extractor::descriptor_type inv_stddev;
-        std::vector<running_stats<double> > rs;
-        matrix<double,1,0> inv_bin_sizes;
-        long num_dims;
+        hash_function_type phash;
 
-        // Transient variables.  These are here just so they don't have to get constructed over
-        // and over inside operator().  I.e. they don't logically contribute to the state of 
-        // this object.
-        mutable typename feature_extractor::descriptor_type scaled_feats;
-        mutable matrix<int32,0,1> quantized_feats;
+
+        // This is a transient variable.  It is just here so it doesn't have to be
+        // reallocated over and over inside operator()
         mutable descriptor_type hash_feats;
 
     };
@@ -156,11 +127,9 @@ namespace dlib
         std::ostream& out
     )
     {
+        serialize(item.feats, out);
         serialize(item.fe, out);
-        serialize(item.inv_stddev, out);
-        serialize(item.rs, out);
-        serialize(item.inv_bin_sizes, out);
-        serialize(item.num_dims, out);
+        serialize(item.phash, out);
     }
 
     template <typename T>
@@ -169,11 +138,9 @@ namespace dlib
         std::istream& in 
     )
     {
+        deserialize(item.feats, in);
         deserialize(item.fe, in);
-        deserialize(item.inv_stddev, in);
-        deserialize(item.rs, in);
-        deserialize(item.inv_bin_sizes, in);
-        deserialize(item.num_dims, in);
+        deserialize(item.phash, in);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -183,123 +150,65 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    hashed_feature_image<feature_extractor>::
+    hashed_feature_image<feature_extractor,hash_function_type>::
     hashed_feature_image (
-    ) : 
-        num_dims(1000) 
+    )  
     {
-        inv_bin_sizes = logspace(-1,1,3);
+        hash_feats.resize(1);
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    void hashed_feature_image<feature_extractor>::
+    void hashed_feature_image<feature_extractor,hash_function_type>::
     clear (
     )
     {
         fe.clear();
-        inv_stddev = 0;
-        inv_bin_sizes = logspace(-1,1,3);
-        rs.clear();
-        num_dims = 1000;
+        phash = hash_function_type();
+        feats.clear();
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    void hashed_feature_image<feature_extractor>::
-    set_hash_bin_sizes (
-        const matrix<double,1,0>& bin_sizes 
+    void hashed_feature_image<feature_extractor,hash_function_type>::
+    set_hash (
+        const hash_function_type& hash_
     )
     {
-        // make sure requires clause is not broken
-        DLIB_ASSERT(bin_sizes.size() > 0,
-            "\t void hashed_feature_image::set_hash_bin_sizes()"
-            << "\n\t size of new_scales should not be zero"
-            << "\n\t this: " << this
-            );
-        DLIB_ASSERT(min(bin_sizes) > 0,
-            "\t void hashed_feature_image::set_hash_bin_sizes()"
-            << "\n\t All bins must have sizes greater than zero."
-            << "\n\t min(bin_sizes): " << min(bin_sizes) 
-            << "\n\t this: " << this
-            );
-
-        inv_bin_sizes = reciprocal(bin_sizes);
+        phash = hash_;
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    const matrix<double,1,0> hashed_feature_image<feature_extractor>::
-    get_hash_bin_sizes (
+    const hash_function_type& hashed_feature_image<feature_extractor,hash_function_type>::
+    get_hash (
     ) const
     {
-        return reciprocal(inv_bin_sizes);
+        return phash;
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    template <
-        typename image_type
-        >
-    void hashed_feature_image<feature_extractor>::
-    accumulate_image_statistics (
-        const image_type& img
-    )
-    {
-        feature_extractor temp;
-        temp.load(img);
-
-        if (temp.size() == 0)
-            return;
-
-        rs.resize(temp(0,0).size());
-
-
-        typename feature_extractor::descriptor_type des;
-
-        for (long r = 0; r < temp.nr(); ++r)
-        {
-            for (long c = 0; c < temp.nc(); ++c)
-            {
-                des = temp(r,c);
-                for (long i = 0; i < des.size(); ++i)
-                {
-                    rs[i].add(des(i));
-                }
-            }
-        }
-
-        if (rs[0].current_n() <= 1)
-            return;
-
-        // keep inv_stddev up to date with rs.
-        inv_stddev.set_size(des.nr(), des.nc());
-        for (long i = 0; i < des.size(); ++i)
-        {
-            inv_stddev(i) = 1.0/(rs[i].stddev() + 1e-10);
-        }
-    }
-
-// ----------------------------------------------------------------------------------------
-
-    template <
-        typename feature_extractor
-        >
-    void hashed_feature_image<feature_extractor>::
+    void hashed_feature_image<feature_extractor,hash_function_type>::
     copy_configuration (
         const feature_extractor& item
     )
@@ -310,126 +219,112 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    void hashed_feature_image<feature_extractor>::
+    void hashed_feature_image<feature_extractor,hash_function_type>::
     copy_configuration (
         const hashed_feature_image& item
     )
     {
-        rs = item.rs;
-        inv_stddev = item.inv_stddev;
-        inv_bin_sizes = item.inv_bin_sizes;
         fe.copy_configuration(item.fe);
-        num_dims = item.num_dims;
+        phash = item.phash;
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
-        >
-    bool hashed_feature_image<feature_extractor>::
-    has_image_statistics (
-    ) const
-    {
-        // if we have enough data to compute standard deviations of the features
-        if (rs.size() > 0 && rs[0].current_n() > 1)
-            return true;
-        else
-            return false;
-    }
-
-// ----------------------------------------------------------------------------------------
-
-    template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
     template <
         typename image_type
         >
-    void hashed_feature_image<feature_extractor>::
+    void hashed_feature_image<feature_extractor,hash_function_type>::
     load (
         const image_type& img
     )
     {
         fe.load(img);
+
+        if (fe.size() != 0)
+        {
+            feats.set_size(fe.nr(), fe.nc());
+            for (long r = 0; r < feats.nr(); ++r)
+            {
+                for (long c = 0; c < feats.nc(); ++c)
+                {
+                    feats[r][c] = phash(fe(r,c));
+                }
+            }
+        }
+        else
+        {
+            feats.set_size(0,0);
+        }
+
+        fe.unload();
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    unsigned long hashed_feature_image<feature_extractor>::
+    unsigned long hashed_feature_image<feature_extractor,hash_function_type>::
     size (
     ) const
     {
-        return fe.size();
+        return feats.size();
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    long hashed_feature_image<feature_extractor>::
+    long hashed_feature_image<feature_extractor,hash_function_type>::
     nr (
     ) const
     {
-        return fe.nr();
+        return feats.nr();
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    long hashed_feature_image<feature_extractor>::
+    long hashed_feature_image<feature_extractor,hash_function_type>::
     nc (
     ) const
     {
-        return fe.nc();
+        return feats.nc();
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    long hashed_feature_image<feature_extractor>::
+    long hashed_feature_image<feature_extractor,hash_function_type>::
     get_num_dimensions (
     ) const
     {
-        return num_dims;
+        return phash.num_hash_bins();
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    void hashed_feature_image<feature_extractor>::
-    set_num_dimensions (
-        long new_num_dims
-    )
-    {
-        // make sure requires clause is not broken
-        DLIB_ASSERT(new_num_dims > 0,
-            "\t void hashed_feature_image::set_num_dimensions()"
-            << "\n\t You can't have zero dimensions"
-            << "\n\t this: " << this
-            );
-
-        num_dims = new_num_dims;
-    }
-
-// ----------------------------------------------------------------------------------------
-
-    template <
-        typename feature_extractor
-        >
-    const typename hashed_feature_image<feature_extractor>::descriptor_type& hashed_feature_image<feature_extractor>::
+    const std::vector<std::pair<unsigned int,double> >& hashed_feature_image<feature_extractor,hash_function_type>::
     operator() (
         long row,
         long col
@@ -447,52 +342,32 @@ namespace dlib
             << "\n\t this: " << this
             );
 
-        hash_feats.resize(inv_bin_sizes.size());
-        if (has_image_statistics())
-            scaled_feats = pointwise_multiply(fe(row,col), inv_stddev);
-        else
-            scaled_feats = fe(row,col);
-
-        for (long i = 0; i < inv_bin_sizes.size(); ++i)
-        {
-            quantized_feats = matrix_cast<int32>(inv_bin_sizes(i)*scaled_feats);
-            hash_feats[i] = std::make_pair(hash(quantized_feats)%num_dims,1);
-        }
+        hash_feats[0] = std::make_pair(feats[row][col],1);
         return hash_feats;
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    const rectangle hashed_feature_image<feature_extractor>::
+    const rectangle hashed_feature_image<feature_extractor,hash_function_type>::
     get_block_rect (
         long row,
         long col
     ) const
     {
-        // make sure requires clause is not broken
-        DLIB_ASSERT(0 <= row && row < nr() &&
-                    0 <= col && col < nc(),
-            "\t rectangle hashed_feature_image::get_block_rect(row,col)"
-            << "\n\t Invalid inputs were given to this function"
-            << "\n\t row:  " << row
-            << "\n\t col:  " << col 
-            << "\n\t nr(): " << nr()
-            << "\n\t nc(): " << nc()
-            << "\n\t this: " << this
-            );
-
         return fe.get_block_rect(row,col);
     }
 
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    const point hashed_feature_image<feature_extractor>::
+    const point hashed_feature_image<feature_extractor,hash_function_type>::
     image_to_feat_space (
         const point& p
     ) const
@@ -503,9 +378,10 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    const rectangle hashed_feature_image<feature_extractor>::
+    const rectangle hashed_feature_image<feature_extractor,hash_function_type>::
     image_to_feat_space (
         const rectangle& rect
     ) const
@@ -516,9 +392,10 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    const point hashed_feature_image<feature_extractor>::
+    const point hashed_feature_image<feature_extractor,hash_function_type>::
     feat_to_image_space (
         const point& p
     ) const
@@ -529,9 +406,10 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename feature_extractor
+        typename feature_extractor,
+        typename hash_function_type
         >
-    const rectangle hashed_feature_image<feature_extractor>::
+    const rectangle hashed_feature_image<feature_extractor,hash_function_type>::
     feat_to_image_space (
         const rectangle& rect
     ) const 

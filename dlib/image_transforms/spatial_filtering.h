@@ -22,12 +22,13 @@ namespace dlib
         typename EXP,
         typename T
         >
-    void spatially_filter_image (
+    rectangle spatially_filter_image (
         const in_image_type& in_img,
         out_image_type& out_img,
         const matrix_exp<EXP>& filter,
         T scale,
-        bool use_abs = false
+        bool use_abs = false,
+        bool add_to = false
     )
     {
         COMPILE_TIME_ASSERT( pixel_traits<typename in_image_type::type>::has_alpha == false );
@@ -53,7 +54,7 @@ namespace dlib
         if (in_img.size() == 0)
         {
             out_img.clear();
-            return;
+            return rectangle();
         }
 
         out_img.set_size(in_img.nr(),in_img.nc());
@@ -65,6 +66,8 @@ namespace dlib
         const long first_col = filter.nc()/2;
         const long last_row = in_img.nr() - filter.nr()/2;
         const long last_col = in_img.nc() - filter.nc()/2;
+
+        const rectangle non_border = rectangle(first_col, first_row, last_col-1, last_row-1);
 
         // apply the filter to the image
         for (long r = first_row; r < last_row; ++r)
@@ -92,10 +95,19 @@ namespace dlib
                 }
 
                 // save this pixel to the output image
-                assign_pixel(out_img[r][c], in_img[r][c]);
-                assign_pixel_intensity(out_img[r][c], temp);
+                if (add_to == false)
+                {
+                    assign_pixel(out_img[r][c], in_img[r][c]);
+                    assign_pixel_intensity(out_img[r][c], temp);
+                }
+                else
+                {
+                    assign_pixel(out_img[r][c], temp + get_pixel_intensity(out_img[r][c]));
+                }
             }
         }
+
+        return non_border;
     }
 
     template <
@@ -103,13 +115,13 @@ namespace dlib
         typename out_image_type,
         typename EXP
         >
-    void spatially_filter_image (
+    rectangle spatially_filter_image (
         const in_image_type& in_img,
         out_image_type& out_img,
         const matrix_exp<EXP>& filter
     )
     {
-        spatially_filter_image(in_img,out_img,filter,1);
+        return spatially_filter_image(in_img,out_img,filter,1);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -121,13 +133,14 @@ namespace dlib
         typename EXP2,
         typename T
         >
-    void spatially_filter_image_separable (
+    rectangle spatially_filter_image_separable (
         const in_image_type& in_img,
         out_image_type& out_img,
         const matrix_exp<EXP1>& row_filter,
         const matrix_exp<EXP2>& col_filter,
         T scale,
-        bool use_abs = false
+        bool use_abs = false,
+        bool add_to = false
     )
     {
         COMPILE_TIME_ASSERT( pixel_traits<typename in_image_type::type>::has_alpha == false );
@@ -157,7 +170,7 @@ namespace dlib
         if (in_img.size() == 0)
         {
             out_img.clear();
-            return;
+            return rectangle();
         }
 
         out_img.set_size(in_img.nr(),in_img.nc());
@@ -170,6 +183,7 @@ namespace dlib
         const long last_row = in_img.nr() - col_filter.size()/2;
         const long last_col = in_img.nc() - row_filter.size()/2;
 
+        const rectangle non_border = rectangle(first_col, first_row, last_col-1, last_row-1);
 
         typedef typename out_image_type::mem_manager_type mem_manager_type;
         typedef typename EXP1::type ptype;
@@ -213,10 +227,18 @@ namespace dlib
                 }
 
                 // save this pixel to the output image
-                assign_pixel(out_img[r][c], in_img[r][c]);
-                assign_pixel_intensity(out_img[r][c], temp);
+                if (add_to == false)
+                {
+                    assign_pixel(out_img[r][c], in_img[r][c]);
+                    assign_pixel_intensity(out_img[r][c], temp);
+                }
+                else
+                {
+                    assign_pixel(out_img[r][c], temp + get_pixel_intensity(out_img[r][c]));
+                }
             }
         }
+        return non_border;
     }
 
     template <
@@ -225,14 +247,160 @@ namespace dlib
         typename EXP1,
         typename EXP2
         >
-    void spatially_filter_image_separable (
+    rectangle spatially_filter_image_separable (
         const in_image_type& in_img,
         out_image_type& out_img,
         const matrix_exp<EXP1>& row_filter,
         const matrix_exp<EXP2>& col_filter
     )
     {
-        spatially_filter_image_separable(in_img,out_img,row_filter,col_filter,1);
+        return spatially_filter_image_separable(in_img,out_img,row_filter,col_filter,1);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP1,
+        typename EXP2,
+        typename T
+        >
+    rectangle spatially_filter_image_separable_down (
+        const unsigned long downsample,
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP1>& row_filter,
+        const matrix_exp<EXP2>& col_filter,
+        T scale,
+        bool use_abs = false,
+        bool add_to = false
+    )
+    {
+        COMPILE_TIME_ASSERT( pixel_traits<typename in_image_type::type>::has_alpha == false );
+        COMPILE_TIME_ASSERT( pixel_traits<typename out_image_type::type>::has_alpha == false );
+
+        DLIB_ASSERT(downsample > 0 &&
+                    scale != 0 &&
+                    row_filter.size()%2 == 1 &&
+                    col_filter.size()%2 == 1 &&
+                    is_vector(row_filter) &&
+                    is_vector(col_filter),
+            "\tvoid spatially_filter_image_separable_down()"
+            << "\n\t Invalid inputs were given to this function."
+            << "\n\t downsample: "<< downsample
+            << "\n\t scale: "<< scale
+            << "\n\t row_filter.size(): "<< row_filter.size()
+            << "\n\t col_filter.size(): "<< col_filter.size()
+            << "\n\t is_vector(row_filter): "<< is_vector(row_filter)
+            << "\n\t is_vector(col_filter): "<< is_vector(col_filter)
+            );
+        DLIB_ASSERT(is_same_object(in_img, out_img) == false,
+            "\tvoid spatially_filter_image_separable_down()"
+            << "\n\tYou must give two different image objects"
+            );
+
+
+
+        // if there isn't any input image then don't do anything
+        if (in_img.size() == 0)
+        {
+            out_img.clear();
+            return rectangle();
+        }
+
+        out_img.set_size((long)(std::ceil((double)in_img.nr()/downsample)),
+                         (long)(std::ceil((double)in_img.nc()/downsample)));
+
+        const double col_border = std::floor(col_filter.size()/2.0);
+        const double row_border = std::floor(row_filter.size()/2.0);
+
+        // figure out the range that we should apply the filter to
+        const long first_row = (long)std::ceil(col_border/downsample);
+        const long first_col = (long)std::ceil(row_border/downsample);
+        const long last_row  = (long)std::ceil((in_img.nr() - col_border)/downsample) - 1;
+        const long last_col  = (long)std::ceil((in_img.nc() - row_border)/downsample) - 1;
+
+        // zero border pixels
+        const rectangle non_border = rectangle(first_col, first_row, last_col, last_row);
+        border_enumerator be(get_rect(out_img), non_border );
+        while (be.move_next())
+        {
+            out_img[be.element().y()][be.element().x()] = 0;
+        }
+
+        typedef typename EXP1::type ptype;
+
+        typedef typename out_image_type::mem_manager_type mem_manager_type;
+        array2d<ptype,mem_manager_type> temp_img;
+        temp_img.set_size(in_img.nr(), out_img.nc());
+
+        // apply the row filter
+        for (long r = 0; r < temp_img.nr(); ++r)
+        {
+            for (long c = non_border.left(); c <= non_border.right(); ++c)
+            {
+                ptype p;
+                ptype temp = 0;
+                for (long n = 0; n < row_filter.size(); ++n)
+                {
+                    // pull out the current pixel and put it into p
+                    p = get_pixel_intensity(in_img[r][c*downsample-row_filter.size()/2+n]);
+                    temp += p*row_filter(n);
+                }
+                temp_img[r][c] = temp;
+            }
+        }
+
+        // apply the column filter 
+        for (long r = non_border.top(); r <= non_border.bottom(); ++r)
+        {
+            for (long c = non_border.left(); c <= non_border.right(); ++c)
+            {
+                ptype temp = 0;
+                for (long m = 0; m < col_filter.size(); ++m)
+                {
+                    temp += temp_img[r*downsample-col_filter.size()/2+m][c]*col_filter(m);
+                }
+
+                temp /= scale;
+
+                if (use_abs && temp < 0)
+                {
+                    temp = -temp;
+                }
+
+                // save this pixel to the output image
+                if (add_to == false)
+                {
+                    assign_pixel(out_img[r][c], in_img[r*downsample][c*downsample]);
+                    assign_pixel_intensity(out_img[r][c], temp);
+                }
+                else
+                {
+                    assign_pixel(out_img[r][c], temp + get_pixel_intensity(out_img[r][c]));
+                }
+            }
+        }
+
+        return non_border;
+    }
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP1,
+        typename EXP2
+        >
+    rectangle spatially_filter_image_separable_down (
+        const unsigned long downsample,
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP1>& row_filter,
+        const matrix_exp<EXP2>& col_filter
+    )
+    {
+        return spatially_filter_image_separable_down(downsample,in_img,out_img,row_filter,col_filter,1);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -358,8 +526,8 @@ namespace dlib
             << "\n\t sigma must be bigger than 0"
             << "\n\t sigma: " << sigma 
         );
-        const double pi = 3.1415926535898;
-        return 1.0/(sigma*sigma*2*pi) * std::exp( -(x*x)/(2*sigma*sigma));
+        const double sqrt_2_pi = 2.5066282746310002416123552393401041626930;
+        return 1.0/(sigma*sqrt_2_pi) * std::exp( -(x*x)/(2*sigma*sigma));
     }
 
 // ----------------------------------------------------------------------------------------
@@ -449,6 +617,316 @@ namespace dlib
 
         spatially_filter_image_separable(in_img, out_img, filt, filt, scale);
 
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    namespace impl
+    {
+    template <
+        bool add_to,
+        typename image_type1, 
+        typename image_type2
+        >
+    void sum_filter (
+        const image_type1& img,
+        image_type2& out,
+        const rectangle& rect
+    )
+    {
+        DLIB_ASSERT(img.nr() == out.nr() &&
+                    img.nc() == out.nc() &&
+                    is_same_object(img,out) == false,
+            "\t void sum_filter()"
+            << "\n\t Invalid arguments given to this function."
+            << "\n\t img.nr(): " << img.nr() 
+            << "\n\t img.nc(): " << img.nc() 
+            << "\n\t out.nr(): " << out.nr() 
+            << "\n\t out.nc(): " << out.nc() 
+            << "\n\t is_same_object(img,out): " << is_same_object(img,out) 
+        );
+
+        typedef typename image_type1::type pixel_type;
+        typedef typename promote<pixel_type>::type ptype;
+
+        std::vector<ptype> column_sum;
+        column_sum.resize(img.nc() + rect.width(),0);
+
+        const long top    = -1 + rect.top();
+        const long bottom = -1 + rect.bottom();
+        long left = rect.left()-1;
+
+        // initialize column_sum at row -1
+        for (unsigned long j = 0; j < column_sum.size(); ++j)
+        {
+            rectangle strip(left,top,left,bottom);
+            strip = strip.intersect(get_rect(img));
+            if (!strip.is_empty())
+            {
+                column_sum[j] = sum(matrix_cast<ptype>(subm(array_to_matrix(img),strip)));
+            }
+
+            ++left;
+        }
+
+
+        const rectangle area = get_rect(img);
+
+        // Save width to avoid computing it over and over.
+        const long width = rect.width();
+
+
+        // Now do the bulk of the filtering work.
+        for (long r = 0; r < img.nr(); ++r)
+        {
+            // set to sum at point(-1,r). i.e. should be equal to sum(array_to_matrix(img), translate_rect(rect, point(-1,r)))
+            // We compute it's value in the next loop.
+            ptype cur_sum = 0; 
+
+            // Update the first part of column_sum since we only work on the c+width part of column_sum
+            // in the main loop.
+            const long top    = r + rect.top() - 1;
+            const long bottom = r + rect.bottom();
+            for (long k = 0; k < width; ++k)
+            {
+                const long right  = k-width + rect.right();
+
+                const ptype br_corner = area.contains(right,bottom) ? img[bottom][right] : 0;
+                const ptype tr_corner = area.contains(right,top)    ? img[top][right]    : 0;
+                // update the sum in this column now that we are on the next row
+                column_sum[k] = column_sum[k] + br_corner - tr_corner;
+                cur_sum += column_sum[k];
+            }
+
+            for (long c = 0; c < img.nc(); ++c)
+            {
+                const long top    = r + rect.top() - 1;
+                const long bottom = r + rect.bottom();
+                const long right  = c + rect.right();
+
+                const ptype br_corner = area.contains(right,bottom) ? img[bottom][right] : 0;
+                const ptype tr_corner = area.contains(right,top)    ? img[top][right]    : 0;
+
+                // update the sum in this column now that we are on the next row
+                column_sum[c+width] = column_sum[c+width] + br_corner - tr_corner;
+
+                // add in the new right side of the rect and subtract the old right side.
+                cur_sum = cur_sum + column_sum[c+width] - column_sum[c];
+
+                if (add_to)
+                    out[r][c] += static_cast<typename image_type2::type>(cur_sum);
+                else
+                    out[r][c] = static_cast<typename image_type2::type>(cur_sum);
+            }
+        }
+    }
+    }
+
+    template <
+        typename image_type1, 
+        typename image_type2
+        >
+    void sum_filter (
+        const image_type1& img,
+        image_type2& out,
+        const rectangle& rect
+    )
+    {
+        impl::sum_filter<true>(img,out,rect);
+    }
+
+    template <
+        typename image_type1, 
+        typename image_type2
+        >
+    void sum_filter_assign (
+        const image_type1& img,
+        image_type2& out,
+        const rectangle& rect
+    )
+    {
+        impl::sum_filter<false>(img,out,rect);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    namespace impl
+    {
+        template <typename T>
+        class fast_deque
+        {
+        /*
+            This is a fast and minimal implementation of std::deque for 
+            use with the max_filter.  
+
+            This object assumes that no more than max_size elements
+            will ever be pushed into it at a time.
+        */
+        public:
+
+            explicit fast_deque(unsigned long max_size)
+            {
+                // find a power of two that upper bounds max_size
+                mask = 2;
+                while (mask < max_size)
+                    mask *= 2;
+
+                clear();
+
+                data.resize(mask);
+                --mask;  // make into bit mask
+            }
+
+            void clear()
+            {
+                first = 1;
+                last = 0;
+                size = 0;
+            }
+
+            bool empty() const
+            {
+                return size == 0;
+            }
+
+            void pop_back()
+            {
+                last = (last-1)&mask;
+                --size;
+            }
+
+            void push_back(const T& item)
+            {
+                last = (last+1)&mask;
+                ++size;
+                data[last] = item;
+            }
+
+            void pop_front()
+            {
+                first = (first+1)&mask;
+                --size;
+            }
+
+            const T& front() const
+            {
+                return data[first];
+            }
+
+            const T& back() const
+            {
+                return data[last];
+            }
+
+        private:
+
+            std::vector<T> data;
+            unsigned long mask;
+            unsigned long first;
+            unsigned long last;
+            unsigned long size;
+        };
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type1, 
+        typename image_type2
+        >
+    void max_filter (
+        image_type1& img,
+        image_type2& out,
+        const long width,
+        const long height,
+        const typename image_type1::type& thresh
+    )
+    {
+        DLIB_ASSERT( width > 0 &&
+                     height > 0 &&
+                     out.nr() == img.nr() &&
+                     out.nc() == img.nc() &&
+                     is_same_object(img,out) == false,
+                "\t void max_filter()"
+                << "\n\t Invalid arguments given to this function."
+                << "\n\t img.nr(): " << img.nr() 
+                << "\n\t img.nc(): " << img.nc() 
+                << "\n\t out.nr(): " << out.nr() 
+                << "\n\t out.nc(): " << out.nc() 
+                << "\n\t width:    " << width 
+                << "\n\t height:   " << height 
+                << "\n\t is_same_object(img,out): " << is_same_object(img,out) 
+                     );
+
+        typedef typename image_type1::type pixel_type;
+
+
+        dlib::impl::fast_deque<std::pair<long,pixel_type> > Q(std::max(width,height));
+
+        const long last_col = std::max(img.nc(), ((width-1)/2));
+        const long last_row = std::max(img.nr(), ((height-1)/2));
+
+        // run max filter along rows of img
+        for (long r = 0; r < img.nr(); ++r)
+        {
+            Q.clear();
+            for (long c = 0; c < (width-1)/2 && c < img.nc(); ++c)
+            {
+                while (!Q.empty() && img[r][c] >= Q.back().second)
+                    Q.pop_back();
+                Q.push_back(std::make_pair(c,img[r][c]));
+            }
+
+            for (long c = (width-1)/2; c < img.nc(); ++c)
+            {
+                while (!Q.empty() && img[r][c] >= Q.back().second)
+                    Q.pop_back();
+                while (!Q.empty() && Q.front().first <= c-width)
+                    Q.pop_front();
+                Q.push_back(std::make_pair(c,img[r][c]));
+
+                img[r][c-((width-1)/2)] = Q.front().second;
+            }
+
+            for (long c = last_col; c < img.nc() + ((width-1)/2); ++c)
+            {
+                while (!Q.empty() && Q.front().first <= c-width)
+                    Q.pop_front();
+
+                img[r][c-((width-1)/2)] = Q.front().second;
+            }
+        }
+
+        // run max filter along columns of img.  Store result in out.
+        for (long cc = 0; cc < img.nc(); ++cc)
+        {
+            Q.clear();
+            for (long rr = 0; rr < (height-1)/2 && rr < img.nr(); ++rr)
+            {
+                while (!Q.empty() && img[rr][cc] >= Q.back().second)
+                    Q.pop_back();
+                Q.push_back(std::make_pair(rr,img[rr][cc]));
+            }
+
+            for (long rr = (height-1)/2; rr < img.nr(); ++rr)
+            {
+                while (!Q.empty() && img[rr][cc] >= Q.back().second)
+                    Q.pop_back();
+                while (!Q.empty() && Q.front().first <= rr-height)
+                    Q.pop_front();
+                Q.push_back(std::make_pair(rr,img[rr][cc]));
+
+                out[rr-((height-1)/2)][cc] += std::max(Q.front().second, thresh);
+            }
+
+            for (long rr = last_row; rr < img.nr() + ((height-1)/2); ++rr)
+            {
+                while (!Q.empty() && Q.front().first <= rr-height)
+                    Q.pop_front();
+
+                out[rr-((height-1)/2)][cc] += std::max(Q.front().second, thresh);
+            }
+        }
     }
 
 // ----------------------------------------------------------------------------------------

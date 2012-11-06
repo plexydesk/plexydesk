@@ -17,12 +17,13 @@ namespace dlib
         typename EXP,
         typename T
         >
-    void spatially_filter_image (
+    rectangle spatially_filter_image (
         const in_image_type& in_img,
         out_image_type& out_img,
         const matrix_exp<EXP>& filter,
         T scale = 1,
-        bool use_abs = false
+        bool use_abs = false,
+        bool add_to = false
     );
     /*!
         requires
@@ -41,16 +42,20 @@ namespace dlib
             - The intermediate filter computations will be carried out using variables of type EXP::type.
               This is whatever scalar type is used inside the filter matrix. 
             - Pixel values are stored into out_img using the assign_pixel() function and therefore
-              any applicable color space conversion or value saturation is performed.
+              any applicable color space conversion or value saturation is performed.  Note that if 
+              add_to is true then the filtered output value will be added to out_img rather than 
+              overwriting the original value.
             - if (pixel_traits<typename in_image_type::type>::grayscale == false) then
                 - the pixel values are converted to the HSI color space and the filtering
                   is done on the intensity channel only.
             - if (use_abs == true) then
                 - pixel values after filtering that are < 0 are converted to their absolute values.
             - Pixels close enough to the edge of in_img to not have the filter still fit 
-              inside the image are set to zero.
+              inside the image are always set to zero.
             - #out_img.nc() == in_img.nc()
             - #out_img.nr() == in_img.nr()
+            - returns a rectangle which indicates what pixels in #out_img are considered 
+              non-border pixels and therefore contain output from the filter.
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -62,13 +67,14 @@ namespace dlib
         typename EXP2,
         typename T
         >
-    void spatially_filter_image_separable (
+    rectangle spatially_filter_image_separable (
         const in_image_type& in_img,
         out_image_type& out_img,
         const matrix_exp<EXP1>& row_filter,
         const matrix_exp<EXP2>& col_filter,
         T scale = 1,
-        bool use_abs = false
+        bool use_abs = false,
+        bool add_to = false
     );
     /*!
         requires
@@ -92,16 +98,68 @@ namespace dlib
             - The intermediate filter computations will be carried out using variables of type EXP1::type.
               This is whatever scalar type is used inside the row_filter matrix. 
             - Pixel values are stored into out_img using the assign_pixel() function and therefore
-              any applicable color space conversion or value saturation is performed.
+              any applicable color space conversion or value saturation is performed.  Note that if 
+              add_to is true then the filtered output value will be added to out_img rather than 
+              overwriting the original value.
             - if (pixel_traits<typename in_image_type::type>::grayscale == false) then
                 - the pixel values are converted to the HSI color space and the filtering
                   is done on the intensity channel only.
             - if (use_abs == true) then
                 - pixel values after filtering that are < 0 are converted to their absolute values
             - Pixels close enough to the edge of in_img to not have the filter still fit 
-              inside the image are set to zero.
+              inside the image are always set to zero.
             - #out_img.nc() == in_img.nc()
             - #out_img.nr() == in_img.nr()
+            - returns a rectangle which indicates what pixels in #out_img are considered 
+              non-border pixels and therefore contain output from the filter.
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP1,
+        typename EXP2,
+        typename T
+        >
+    rectangle spatially_filter_image_separable_down (
+        const unsigned long downsample,
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP1>& row_filter,
+        const matrix_exp<EXP2>& col_filter,
+        T scale = 1,
+        bool use_abs = false,
+        bool add_to = false
+    );
+    /*!
+        requires
+            - in_image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - out_image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename in_image_type::type>::has_alpha == false
+            - pixel_traits<typename out_image_type::type>::has_alpha == false 
+            - is_same_object(in_img, out_img) == false 
+            - T must be some scalar type
+            - scale != 0
+            - is_vector(row_filter) == true
+            - is_vector(col_filter) == true
+            - row_filter.size() % 2 == 1  (i.e. must be odd)
+            - col_filter.size() % 2 == 1  (i.e. must be odd)
+            - downsample > 0
+        ensures
+            - This function is equivalent to calling 
+              spatially_filter_image_separable(in_img,out_img,row_filter,col_filter,scale,use_abs,add_to)
+              and then downsampling the output image by a factor of downsample.  Therefore, 
+              we will have that:
+                - #out_img.nr() == ceil((double)in_img.nr()/downsample)
+                - #out_img.nc() == ceil((double)in_img.nc()/downsample)
+                - #out_img[r][c] == filtered pixel corresponding to in_img[r*downsample][c*downsample]
+            - returns a rectangle which indicates what pixels in #out_img are considered 
+              non-border pixels and therefore contain output from the filter.
+            - Note that the first row and column of non-zero padded data are the following
+                - first_row == ceil(floor(col_filter.size()/2.0)/downsample)
+                - first_col == ceil(floor(row_filter.size()/2.0)/downsample)
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -251,6 +309,97 @@ namespace dlib
               inside the image are set to zero.
             - #out_img.nc() == in_img.nc()
             - #out_img.nr() == in_img.nr()
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type1, 
+        typename image_type2
+        >
+    void sum_filter (
+        const image_type1& img,
+        image_type2& out,
+        const rectangle& rect
+    );
+    /*!
+        requires
+            - out.nr() == img.nr() 
+            - out.nc() == img.nc()
+            - image_type1 == an implementation of array2d/array2d_kernel_abstract.h
+              and it must contain a scalar type
+            - image_type2 == an implementation of array2d/array2d_kernel_abstract.h
+              and it must contain a scalar type
+            - is_same_object(img,out) == false
+        ensures
+            - for all valid r and c:
+                - let SUM(r,c) == sum of pixels from img which are inside the rectangle 
+                  translate_rect(rect, point(c,r)).
+                - #out[r][c] == out[r][c] + SUM(r,c)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type1, 
+        typename image_type2
+        >
+    void sum_filter_assign (
+        const image_type1& img,
+        image_type2& out,
+        const rectangle& rect
+    );
+    /*!
+        requires
+            - out.nr() == img.nr() 
+            - out.nc() == img.nc()
+            - image_type1 == an implementation of array2d/array2d_kernel_abstract.h
+              and it must contain a scalar type
+            - image_type2 == an implementation of array2d/array2d_kernel_abstract.h
+              and it must contain a scalar type
+            - is_same_object(img,out) == false
+        ensures
+            - for all valid r and c:
+                - let SUM(r,c) == sum of pixels from img which are inside the rectangle 
+                  translate_rect(rect, point(c,r)).
+                - #out[r][c] == SUM(r,c)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type1, 
+        typename image_type2
+        >
+    void max_filter (
+        image_type1& img,
+        image_type2& out,
+        const long width,
+        const long height,
+        const typename image_type1::type& thresh
+    );
+    /*!
+        requires
+            - out.nr() == img.nr() 
+            - out.nc() == img.nc()
+            - image_type1 == an implementation of array2d/array2d_kernel_abstract.h
+              and it must contain a scalar type
+            - image_type2 == an implementation of array2d/array2d_kernel_abstract.h
+              and it must contain a scalar type
+            - is_same_object(img,out) == false
+            - width > 0 && height > 0
+        ensures
+            - for all valid r and c:
+                - let MAX(r,c) == maximum of pixels from img which are inside the rectangle 
+                  centered_rect(point(c,r), width, height)
+                - if (MAX(r,c) >= thresh)
+                    - #out[r][c] == out[r][c] + MAX(r,c)
+                - else
+                    - #out[r][c] == out[r][c] + thresh 
+            - Does not change the size of img.
+            - Uses img as scratch space.  Therefore, the pixel values in img will have
+              been modified by this function.  That is, max_filter() destroys the contents
+              of img. 
     !*/
 
 // ----------------------------------------------------------------------------------------
