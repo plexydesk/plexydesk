@@ -6,6 +6,7 @@
 #include "structural_svm_object_detection_problem_abstract.h"
 #include "../image_processing/object_detector_abstract.h"
 #include "../image_processing/box_overlap_testing_abstract.h"
+#include "../image_processing/full_object_detection_abstract.h"
 
 
 namespace dlib
@@ -55,11 +56,39 @@ namespace dlib
                 - #get_epsilon() == 0.3
                 - #get_num_threads() == 2
                 - #get_max_cache_size() == 40
-                - #get_overlap_eps() == 0.5
+                - #get_match_eps() == 0.5
                 - #get_loss_per_missed_target() == 1
                 - #get_loss_per_false_alarm() == 1
                 - This object will attempt to learn a model for the given
                   scanner object when train() is called.
+                - #get_scanner() == scanner
+                  (note that only the "configuration" of scanner is copied.
+                  I.e. the copy is done using copy_configuration())
+                - if (overlap_tester_type == test_box_overlap) then
+                    - #auto_set_overlap_tester() == true
+                - else
+                    - #auto_set_overlap_tester() == false
+        !*/
+
+        const image_scanner_type& get_scanner (
+        ) const;
+        /*!
+            ensures
+                - returns the image scanner used by this object.  
+        !*/
+
+        bool auto_set_overlap_tester (
+        ) const;
+        /*!
+            ensures
+                - if (this object will automatically determine an appropriate 
+                  state for the overlap tester used for non-max suppression.) then
+                    - returns true
+                    - In this case, it is determined using the find_tight_overlap_tester() 
+                      routine based on the truth_object_detections given to the 
+                      structural_object_detection_trainer::train() method.  
+                - else
+                    - returns false
         !*/
 
         void set_overlap_tester (
@@ -68,11 +97,14 @@ namespace dlib
         /*!
             ensures
                 - #get_overlap_tester() == tester
+                - #auto_set_overlap_tester() == false
         !*/
 
         overlap_tester_type get_overlap_tester (
         ) const;
         /*!
+            requires
+                - auto_set_overlap_tester() == false
             ensures
                 - returns the overlap tester object which will be used to perform non-max suppression.
                   In particular, this function returns the overlap tester which will populate the
@@ -190,25 +222,25 @@ namespace dlib
                   better generalization. 
         !*/
 
-        void set_overlap_eps (
+        void set_match_eps (
             double eps
         );
         /*!
             requires
                 - 0 < eps < 1
             ensures
-                - #get_overlap_eps() == eps
+                - #get_match_eps() == eps
         !*/
 
-        double get_overlap_eps (
+        double get_match_eps (
         ) const;
         /*!
             ensures
-                - returns the amount of overlap necessary for a detection to be considered
-                  as overlapping with a ground truth rectangle.  If it doesn't overlap then
+                - returns the amount of alignment necessary for a detection to be considered
+                  as matching with a ground truth rectangle.  If it doesn't match then
                   it is considered to be a false alarm.  To define this precisely, let
-                  A and B be two rectangles, then A and B overlap if and only if:
-                    A.intersect(B).area()/(A+B).area() > get_overlap_eps()
+                  A and B be two rectangles, then A and B match if and only if:
+                    A.intersect(B).area()/(A+B).area() > get_match_eps()
         !*/
 
         double get_loss_per_missed_target (
@@ -255,19 +287,43 @@ namespace dlib
             >
         const trained_function_type train (
             const image_array_type& images,
-            const std::vector<std::vector<rectangle> >& truth_rects
+            const std::vector<std::vector<full_object_detection> >& truth_object_detections
         ) const;
         /*!
             requires
-                - is_learning_problem(images, truth_rects) == true
+                - is_learning_problem(images, truth_object_detections) == true
                 - it must be valid to pass images[0] into the image_scanner_type::load() method.
                   (also, image_array_type must be an implementation of dlib/array/array_kernel_abstract.h)
+                - for all valid i, j:
+                    - truth_object_detections[i][j].num_parts() == get_scanner().get_num_movable_components_per_detection_template() 
+                    - all_parts_in_rect(truth_object_detections[i][j]) == true
             ensures
                 - Uses the structural_svm_object_detection_problem to train an object_detector 
-                  on the given images and truth_rects.  
+                  on the given images and truth_object_detections.  
                 - returns a function F with the following properties:
                     - F(new_image) == A prediction of what objects are present in new_image.  This
                       is a set of rectangles indicating their positions.
+        !*/
+
+        template <
+            typename image_array_type
+            >
+        const trained_function_type train (
+            const image_array_type& images,
+            const std::vector<std::vector<rectangle> >& truth_object_detections
+        ) const;
+        /*!
+            requires
+                - is_learning_problem(images, truth_object_detections) == true
+                - it must be valid to pass images[0] into the image_scanner_type::load() method.
+                  (also, image_array_type must be an implementation of dlib/array/array_kernel_abstract.h)
+                - get_scanner().get_num_movable_components_per_detection_template() == 0
+            ensures
+                - This function is identical to the above train(), except that it converts 
+                  each element of truth_object_detections into a full_object_detection by 
+                  passing it to full_object_detection's constructor taking only a rectangle.
+                  Therefore, this version of train() is a convenience function for for the 
+                  case where you don't have any movable components of the detection templates.
         !*/
     }; 
 

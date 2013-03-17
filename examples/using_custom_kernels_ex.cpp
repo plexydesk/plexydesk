@@ -12,7 +12,7 @@
 
 
 #include <iostream>
-#include "dlib/svm.h"
+#include <dlib/svm.h>
 
 using namespace std;
 using namespace dlib;
@@ -152,7 +152,7 @@ int main()
             samples.push_back(samp);
 
             // if this point is less than 13 from the origin
-            if (sqrt((double)r*r + c*c) <= 13)
+            if (sqrt(r*r + c*c) <= 13)
                 labels.push_back(+1);
             else
                 labels.push_back(-1);
@@ -160,8 +160,8 @@ int main()
         }
     }
     cout << "samples generated: " << samples.size() << endl;
-    cout << "  number of +1 samples: " << sum(vector_to_matrix(labels) > 0) << endl;
-    cout << "  number of -1 samples: " << sum(vector_to_matrix(labels) < 0) << endl;
+    cout << "  number of +1 samples: " << sum(mat(labels) > 0) << endl;
+    cout << "  number of -1 samples: " << sum(mat(labels) < 0) << endl;
 
 
     // A valid kernel must always give rise to kernel matrices which are symmetric 

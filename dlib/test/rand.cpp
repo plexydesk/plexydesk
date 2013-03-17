@@ -9,6 +9,7 @@
 #include <cmath>
 #include <dlib/rand.h>
 #include <dlib/compress_stream.h>
+#include <dlib/hash.h>
 
 #include "tester.h"
 
@@ -160,7 +161,10 @@ namespace
 
 
             for (int i =0; i < 1000; ++i)
+            {
                 r.get_random_32bit_number();
+                r.get_random_gaussian();
+            }
 
             ostringstream sout;
             serialize(r, sout);
@@ -172,6 +176,7 @@ namespace
             for (int i =0; i < 1000; ++i)
             {
                 DLIB_TEST(r.get_random_32bit_number() == r2.get_random_32bit_number());
+                DLIB_TEST(std::abs(r.get_random_gaussian() - r2.get_random_gaussian()) < 1e-14);
             }
         }
 
@@ -200,9 +205,181 @@ namespace
     }
 
 
+    template <typename rand_type>
+    void test_normal_numbers(
+        rand_type& rnd
+    )
+    {
+        print_spinner();
+        dlog << LINFO << "test normality";
+        double cnt1 = 0; // num <= -1.2
+        double cnt2 = 0; // num <= -0.5 
+        double cnt3 = 0; // num <= 0
+        double cnt4 = 0; // num <= 0.5
+        double cnt5 = 0; // num <= 1.2
 
+        const unsigned long total = 1000000;
+        for (unsigned long i = 0; i < total; ++i)
+        {
+            const double r = rnd.get_random_gaussian();
+            if (r <= -1.2) cnt1 += 1;
+            if (r <= -0.5) cnt2 += 1;
+            if (r <=  0)   cnt3 += 1;
+            if (r <=  0.5) cnt4 += 1;
+            if (r <=  1.2) cnt5 += 1;
+        }
 
+        cnt1 /= total;
+        cnt2 /= total;
+        cnt3 /= total;
+        cnt4 /= total;
+        cnt5 /= total;
 
+        dlog << LINFO << "cnt1: "<< cnt1;
+        dlog << LINFO << "cnt2: "<< cnt2;
+        dlog << LINFO << "cnt3: "<< cnt3;
+        dlog << LINFO << "cnt4: "<< cnt4;
+        dlog << LINFO << "cnt5: "<< cnt5;
+
+        DLIB_TEST(std::abs(cnt1 - 0.11507) < 0.001);
+        DLIB_TEST(std::abs(cnt2 - 0.30854) < 0.001);
+        DLIB_TEST(std::abs(cnt3 - 0.5)     < 0.001);
+        DLIB_TEST(std::abs(cnt4 - 0.69146) < 0.001);
+        DLIB_TEST(std::abs(cnt5 - 0.88493) < 0.001);
+
+    }
+
+    void test_gaussian_random_hash()
+    {
+        print_spinner();
+        dlog << LINFO << "test_gaussian_random_hash()";
+        double cnt1 = 0; // num <= -1.2
+        double cnt2 = 0; // num <= -0.5 
+        double cnt3 = 0; // num <= 0
+        double cnt4 = 0; // num <= 0.5
+        double cnt5 = 0; // num <= 1.2
+
+        const unsigned long total = 1000000;
+        for (unsigned long i = 0; i < total; ++i)
+        {
+            const double r = gaussian_random_hash(i,0,0);
+            if (r <= -1.2) cnt1 += 1;
+            if (r <= -0.5) cnt2 += 1;
+            if (r <=  0)   cnt3 += 1;
+            if (r <=  0.5) cnt4 += 1;
+            if (r <=  1.2) cnt5 += 1;
+        }
+        for (unsigned long i = 0; i < total; ++i)
+        {
+            const double r = gaussian_random_hash(0,i,0);
+            if (r <= -1.2) cnt1 += 1;
+            if (r <= -0.5) cnt2 += 1;
+            if (r <=  0)   cnt3 += 1;
+            if (r <=  0.5) cnt4 += 1;
+            if (r <=  1.2) cnt5 += 1;
+        }
+        for (unsigned long i = 0; i < total; ++i)
+        {
+            const double r = gaussian_random_hash(0,0,i);
+            if (r <= -1.2) cnt1 += 1;
+            if (r <= -0.5) cnt2 += 1;
+            if (r <=  0)   cnt3 += 1;
+            if (r <=  0.5) cnt4 += 1;
+            if (r <=  1.2) cnt5 += 1;
+        }
+
+        cnt1 /= total*3;
+        cnt2 /= total*3;
+        cnt3 /= total*3;
+        cnt4 /= total*3;
+        cnt5 /= total*3;
+
+        dlog << LINFO << "cnt1: "<< cnt1;
+        dlog << LINFO << "cnt2: "<< cnt2;
+        dlog << LINFO << "cnt3: "<< cnt3;
+        dlog << LINFO << "cnt4: "<< cnt4;
+        dlog << LINFO << "cnt5: "<< cnt5;
+
+        DLIB_TEST(std::abs(cnt1 - 0.11507) < 0.001);
+        DLIB_TEST(std::abs(cnt2 - 0.30854) < 0.001);
+        DLIB_TEST(std::abs(cnt3 - 0.5)     < 0.001);
+        DLIB_TEST(std::abs(cnt4 - 0.69146) < 0.001);
+        DLIB_TEST(std::abs(cnt5 - 0.88493) < 0.001);
+    }
+
+    void test_uniform_random_hash()
+    {
+        print_spinner();
+        dlog << LINFO << "test_uniform_random_hash()";
+        double cnt1 = 0; // num <= 0.2
+        double cnt2 = 0; // num <= 0.4 
+        double cnt3 = 0; // num <= 0.6
+        double cnt4 = 0; // num <= 0.8
+        double cnt5 = 0; // num <= 1.0
+
+        double min_val = 10;
+        double max_val = 0;
+
+        const unsigned long total = 1000000;
+        for (unsigned long i = 0; i < total; ++i)
+        {
+            const double r = uniform_random_hash(i,0,0);
+            min_val = min(r,min_val);
+            max_val = max(r,max_val);
+
+            if (r <=  0.2) cnt1 += 1;
+            if (r <=  0.4) cnt2 += 1;
+            if (r <=  0.6) cnt3 += 1;
+            if (r <=  0.8) cnt4 += 1;
+            if (r <=  1.0) cnt5 += 1;
+        }
+        for (unsigned long i = 0; i < total; ++i)
+        {
+            const double r = uniform_random_hash(0,i,0);
+            min_val = min(r,min_val);
+            max_val = max(r,max_val);
+
+            if (r <=  0.2) cnt1 += 1;
+            if (r <=  0.4) cnt2 += 1;
+            if (r <=  0.6) cnt3 += 1;
+            if (r <=  0.8) cnt4 += 1;
+            if (r <=  1.0) cnt5 += 1;
+        }
+        for (unsigned long i = 0; i < total; ++i)
+        {
+            const double r = uniform_random_hash(0,0,i);
+            min_val = min(r,min_val);
+            max_val = max(r,max_val);
+
+            if (r <=  0.2) cnt1 += 1;
+            if (r <=  0.4) cnt2 += 1;
+            if (r <=  0.6) cnt3 += 1;
+            if (r <=  0.8) cnt4 += 1;
+            if (r <=  1.0) cnt5 += 1;
+        }
+
+        cnt1 /= total*3;
+        cnt2 /= total*3;
+        cnt3 /= total*3;
+        cnt4 /= total*3;
+        cnt5 /= total*3;
+
+        dlog << LINFO << "cnt1: "<< cnt1;
+        dlog << LINFO << "cnt2: "<< cnt2;
+        dlog << LINFO << "cnt3: "<< cnt3;
+        dlog << LINFO << "cnt4: "<< cnt4;
+        dlog << LINFO << "cnt5: "<< cnt5;
+        dlog << LINFO << "min_val: "<< min_val;
+        dlog << LINFO << "max_val: "<< max_val;
+
+        DLIB_TEST(std::abs(cnt1 - 0.2) < 0.001);
+        DLIB_TEST(std::abs(cnt2 - 0.4) < 0.001);
+        DLIB_TEST(std::abs(cnt3 - 0.6) < 0.001);
+        DLIB_TEST(std::abs(cnt4 - 0.8) < 0.001);
+        DLIB_TEST(std::abs(cnt5 - 1.0) < 0.001);
+        DLIB_TEST(std::abs(min_val - 0.0) < 0.001);
+        DLIB_TEST(std::abs(max_val - 1.0) < 0.001);
+    }
 
     class rand_tester : public tester
     {
@@ -219,6 +396,11 @@ namespace
             dlog << LINFO << "testing kernel_1a";
             rand_test<dlib::rand>();
             rand_test<dlib::rand>();
+
+            dlib::rand rnd;
+            test_normal_numbers(rnd);
+            test_gaussian_random_hash();
+            test_uniform_random_hash();
         }
     } a;
 

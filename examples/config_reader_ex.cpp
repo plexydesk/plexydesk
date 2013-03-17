@@ -9,19 +9,10 @@
 */
 
 
-#include "dlib/config_reader.h"
-#include "dlib/string.h"
+#include <dlib/config_reader.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
-
-
-// Here I'm just making a typedef of the config reader we will be using.  If you
-// look at the documentation you will see that there are two possible config_reader
-// types we could use here.  The other one is a thread-safe version for use in an
-// application that needs to access a global config reader from multiple threads.  
-// But we aren't doing that here so I'm using the normal kind.
-typedef dlib::config_reader cr_type;
 
 
 using namespace std;
@@ -65,7 +56,7 @@ user2 {
 // ----------------------------------------------------------------------------------------
 
 void print_config_reader_contents (
-    const cr_type& cr,
+    const config_reader& cr,
     int depth = 0
 );
 /*
@@ -79,7 +70,7 @@ int main()
 {
     try
     {
-        cr_type cr("config.txt");
+        config_reader cr("config.txt");
 
         // Use our recursive function to print everything in the config file.
         print_config_reader_contents(cr);
@@ -96,13 +87,18 @@ int main()
         cout << cr.block("user1").block("details")["editor"] << endl;
 
         
-        // Note that you can use the string_assign object, sa, to easily convert fields 
-        // into non-string types.  For example, the config file has an integer id 
-        // field that could be converted into an int like so:
-        int id1 = sa = cr.block("user1")["id"];
-        int id2 = sa = cr.block("user2")["id"];
+        // Note that you can use get_option() to easily convert fields into 
+        // non-string types.  For example, the config file has an integer id 
+        // field that can be converted into an int like so:
+        int id1 = get_option(cr,"user1.id",0); 
+        int id2 = get_option(cr,"user2.id",0); 
         cout << "user1's id is " << id1 << endl;
         cout << "user2's id is " << id2 << endl;
+        // The third argument to get_option() is the default value returned if 
+        // the config reader doesn't contain a corresponding entry.  So for 
+        // example, the following prints 321 since there is no user3.
+        int id3 = get_option(cr,"user3.id",321); 
+        cout << "user3's id is " << id3 << endl;
 
     }
     catch (exception& e)
@@ -117,7 +113,7 @@ int main()
 // ----------------------------------------------------------------------------------------
 
 void print_config_reader_contents (
-    const cr_type& cr,
+    const config_reader& cr,
     int depth 
 )
 {

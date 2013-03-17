@@ -6,9 +6,6 @@
    <!-- ************************************************************************* -->
 
    <body>
-      <center><h1>dlib C++ library</h1></center>
-      <br/><br/>
-
 
       <p>
 
@@ -53,14 +50,18 @@
 
             <li><b>Portable Code</b>
                <ul>
-                  <li>All non ISO C++ code is isolated inside the OS abstraction layers which are kept as small as possible.   
-                     The rest of the library is either layered on top of the OS 
-                     abstraction layers or is pure ISO C++.  </li>
+                  <li>There is no installation or configure step needed before you can use the library.  See the
+                     <a href="compile.html">How to compile</a> page for details.</li>
+                  <li>All operating system specific code is isolated inside the OS abstraction layers which are 
+                     kept as small as possible.   The rest of the library is either layered on top of the OS 
+                     abstraction layers or is pure ISO standard C++.  </li>
                   <li>Big/little endian agnostic</li>
                   <li>No other packages are required to use the library.  Only APIs that are
                      provided by an out of the box OS are needed. </li> 
-                  <li>The library is tested regularly on win32, Linux, and Mac OS X systems.  However, it should 
-                     work on any POSIX system and has been tested on Solaris, HPUX, and the BSDs.</li>
+                  <li>Good unit test coverage.  The ratio of unit test lines of code to library lines of
+                     code is about 1 to 5.</li>
+                  <li>The library is tested regularly on MS Windows, Linux, and Mac OS X systems.  However, it should 
+                     work on any POSIX system and has been used on Solaris, HPUX, and the BSDs.</li>
                </ul>
             </li>
             <li><b>Threading</b>
@@ -71,6 +72,7 @@
                   <li><a href="api.html#thread_specific_data">Thread specific data</a></li>
                   <li><a href="api.html#threaded_object">Threaded objects</a></li>
                   <li><a href="api.html#thread_function">Threaded functions</a></li>
+                  <li><a href="api.html#parallel_for">Parallel for loops</a></li>
                   <li>A <a href="api.html#thread_pool">thread_pool</a> with support for futures</li>
                </ul>
             </li>
@@ -79,11 +81,13 @@
                <ul>
                   <li>The library provides a portable and simple <a href="api.html#sockets">TCP sockets API</a></li>
                   <li>An object to help you make TCP based <a href="network.html#server">servers</a></li>
-                  <li>A <a href="network.html#sockstreambuf">streambuf</a> object that enables TCP sockets 
-                  to interoperate with the C++ iostreams library </li>
-                  <li>A simple <a href="network.html#http">HTTP server</a> object you can use to embed a 
+                  <li><a href="network.html#iosockstream">iostream</a> and <a href="network.html#sockstreambuf">streambuf</a> 
+                  objects that enables TCP sockets to interoperate with the C++ iostreams library </li>
+                  <li>A simple <a href="network.html#server_http">HTTP server</a> object you can use to embed a 
                   web server into your applications</li> 
                   <li>A message passing <a href="other.html#pipe">pipe</a> for inter-thread and <a href="network.html#bridge">inter-process</a> communication</li>
+                  <li>A tool used to implement algorithms using the 
+                     <a href="network.html#bsp_context">Bulk Synchronous Parallel (BSP)</a> computing model</li>
                </ul>
             </li>
 
@@ -98,7 +102,7 @@
 
             <li><b>Numerical Algorithms</b>
                <ul>
-                  <li>A fast <a href="containers.html#matrix">matrix</a> object implemented using the expression 
+                  <li>A fast <a href="linear_algebra.html#matrix">matrix</a> object implemented using the expression 
                      templates technique and capable of using BLAS and LAPACK libraries when available.</li>
                   <li>Numerous linear algebra and mathematical operations are defined for the matrix object such as the 
                      <a href="dlib/matrix/matrix_la_abstract.h.html#svd">singular value decomposition</a>, 
@@ -114,9 +118,14 @@
                   <li>Box-constrained derivative-free optimization via the 
                       <a href="optimization.html#find_min_bobyqa">BOBYQA</a> algorithm</li> 
                   <li>An implementation of the <a href="optimization.html#oca">Optimized Cutting Plane Algorithm</a></li> 
-                  <li>Several <preserve_space><a href="optimization.html#solve_qp2_using_smo">quadratic</a> 
-                              <a href="optimization.html#solve_qp3_using_smo">program</a>
-                              <a href="optimization.html#solve_qp_using_smo">solvers</a></preserve_space> </li> 
+                  <li><preserve_space><a href="optimization.html#solve_qp_using_smo">Several</a> 
+                                      <a href="optimization.html#solve_qp2_using_smo">quadratic</a> 
+                                      <a href="optimization.html#solve_qp3_using_smo">program</a>
+                                      <a href="optimization.html#solve_qp4_using_smo">solvers</a></preserve_space> </li> 
+                  <li>Combinatorial optimization tools for solving 
+                     <a href="optimization.html#max_cost_assignment">optimal assignment</a> and
+                     <a href="optimization.html#min_cut">min cut/max flow</a> problems as well as
+                     the <a href="optimization.html#find_max_parse_cky">CKY algorithm</a> for finding the most probable parse tree</li>
                   <li>A <a href="algorithms.html#bigint">big integer</a> object</li>
                   <li>A <a href="algorithms.html#rand">random number</a> object</li>
                </ul>
@@ -134,14 +143,21 @@
                   <li>A <a href="ml.html#svm_multiclass_linear_trainer">Multiclass SVM</a></li>
                   <li>A tool for solving the optimization problem associated with 
                      <a href="ml.html#structural_svm_problem">structural support vector machines</a>. </li> 
+                  <li>Structural SVM tools for <a href="ml.html#structural_sequence_labeling_trainer">sequence labeling</a> </li>  
+                  <li>Structural SVM tools for solving <a href="ml.html#structural_assignment_trainer">assignment problems</a> </li>  
+                  <li>Structural SVM tools for <a href="ml.html#structural_object_detection_trainer">object detection</a> in images </li>  
+                  <li>Structural SVM tools for <a href="ml.html#structural_graph_labeling_trainer">labeling nodes</a> in graphs </li>  
+                  <li>A large-scale <a href="ml.html#svm_rank_trainer">SVM-Rank</a> implementation</li>
                   <li>An online <a href="ml.html#krls">kernel RLS regression</a> algorithm</li>
                   <li>An online <a href="ml.html#svm_pegasos">SVM classification</a> algorithm</li>
-                  <li>An online kernelized <a href="ml.html#kcentroid">centroid estimator</a>/novelty detector</li> and
-                     offline support vector <a href="ml.html#svm_one_class_trainer">one-class classification</a>
-                  <li>A kernelized <a href="ml.html#kkmeans">k-means</a> clustering algorithm</li>
+                  <li>An online kernelized <a href="ml.html#kcentroid">centroid estimator</a>/novelty detector and
+                     offline support vector <a href="ml.html#svm_one_class_trainer">one-class classification</a></li>
+                  <li>Clustering algorithms: <a href="ml.html#find_clusters_using_kmeans">linear</a> 
+                        or <a href="ml.html#kkmeans">kernel k-means</a>, 
+                        <a href="ml.html#chinese_whispers">Chinese Whispers</a>, and 
+                        <a href="ml.html#newman_cluster">Newman clustering</a>.  </li>
                   <li><a href="ml.html#rbf_network_trainer">Radial Basis Function Networks</a></li>
                   <li><a href="ml.html#mlp">Multi layer perceptrons</a> </li>  
-                  <li>Tools for <a href="ml.html#sequence_labeler">sequence labeling</a> </li>  
                </ul>
             </li>
 
@@ -152,14 +168,16 @@
                   <li><a href="bayes.html#bayesian_network_gibbs_sampler">Gibbs sampler</a> markov chain monte 
                   carlo algorithm for approximate inference in a Bayesian network.</li>
                   <li>Routines for performing MAP inference in 
-                     <a href="optimization.html#find_max_factor_graph_viterbi">chain-structured</a> or 
+                     <a href="optimization.html#find_max_factor_graph_viterbi">chain-structured</a>,
+                     <a href="optimization.html#find_max_factor_graph_potts">Potts</a>, or 
                      <a href="optimization.html#find_max_factor_graph_nmplp">general</a> factor graphs.</li>
                </ul>
             </li>
 
             <li><b>Image Processing</b>
                <ul>
-                  <li>Windows BMP <a href="imaging.html#load_bmp">read</a> and <a href="imaging.html#save_bmp">write</a> support</li>
+                  <li>Routines for <a href="imaging.html#load_image">reading</a> and 
+                  <a href="imaging.html#save_bmp">writing</a> common image formats.  </li>
                   <li>Automatic color space conversion between various pixel types</li>  
                   <li>Common image operations such as edge finding and morphological operations</li>
                   <li>Implementations of the <a href="imaging.html#get_surf_points">SURF</a>

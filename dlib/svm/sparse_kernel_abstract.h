@@ -27,6 +27,9 @@ namespace dlib
             WHAT THIS OBJECT REPRESENTS
                 This object represents a radial basis function kernel
                 that works with sparse vectors.
+
+            THREAD SAFETY
+                This kernel is threadsafe.  
         !*/
 
         typedef typename T::value_type::second_type scalar_type;
@@ -67,7 +70,7 @@ namespace dlib
                 - a is a sparse vector
                 - b is a sparse vector
             ensures
-                - returns exp(-gamma * sparse_vector::distance_squared(a,b))
+                - returns exp(-gamma * distance_squared(a,b))
         !*/
 
         sparse_radial_basis_kernel& operator= (
@@ -128,6 +131,9 @@ namespace dlib
             WHAT THIS OBJECT REPRESENTS
                 This object represents a sigmoid kernel
                 that works with sparse vectors.
+
+            THREAD SAFETY
+                This kernel is threadsafe.  
         !*/
 
         typedef typename T::value_type::second_type scalar_type;
@@ -173,7 +179,7 @@ namespace dlib
                 - a is a sparse vector
                 - b is a sparse vector
             ensures
-                - returns tanh(gamma * sparse_vector::dot(a,b) + coef)
+                - returns tanh(gamma * dot(a,b) + coef)
         !*/
 
         sparse_sigmoid_kernel& operator= (
@@ -235,6 +241,9 @@ namespace dlib
             WHAT THIS OBJECT REPRESENTS
                 This object represents a polynomial kernel
                 that works with sparse vectors.
+
+            THREAD SAFETY
+                This kernel is threadsafe.  
         !*/
 
         typedef typename T::value_type::second_type scalar_type;
@@ -285,7 +294,7 @@ namespace dlib
                 - a is a sparse vector
                 - b is a sparse vector
             ensures
-                - returns pow(gamma * sparse_vector::dot(a,b) + coef, degree)
+                - returns pow(gamma * dot(a,b) + coef, degree)
         !*/
 
         sparse_polynomial_kernel& operator= (
@@ -347,6 +356,9 @@ namespace dlib
             WHAT THIS OBJECT REPRESENTS
                 This object represents a linear function kernel
                 that works with sparse vectors.
+
+            THREAD SAFETY
+                This kernel is threadsafe.  
         !*/
 
         typedef typename T::value_type::second_type scalar_type;
@@ -362,7 +374,7 @@ namespace dlib
                 - a is a sparse vector
                 - b is a sparse vector
             ensures
-                - returns sparse_vector::dot(a,b) 
+                - returns dot(a,b) 
         !*/
 
         bool operator== (
@@ -410,6 +422,9 @@ namespace dlib
             WHAT THIS OBJECT REPRESENTS
                 This object represents a histogram intersection kernel 
                 that works with sparse vectors.
+
+            THREAD SAFETY
+                This kernel is threadsafe.  
         !*/
 
         typedef typename T::value_type::second_type scalar_type;

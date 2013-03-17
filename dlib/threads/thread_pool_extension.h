@@ -182,7 +182,7 @@ namespace dlib
                 // aren't any other worker threads free so just perform the task right
                 // here
 
-                m.unlock();
+                M.unlock();
                 (obj.*funct)();
 
                 // return a task id that is both non-zero and also one
@@ -225,7 +225,7 @@ namespace dlib
                 // aren't any other worker threads free so just perform the task right
                 // here
 
-                m.unlock();
+                M.unlock();
                 (obj.*funct)(arg1);
 
                 // return a task id that is both non-zero and also one
@@ -270,7 +270,7 @@ namespace dlib
                 // aren't any other worker threads free so just perform the task right
                 // here
 
-                m.unlock();
+                M.unlock();
                 (obj.*funct)(arg1, arg2);
 
                 // return a task id that is both non-zero and also one
@@ -445,17 +445,17 @@ namespace dlib
             long arg1;
             long arg2;
 
-            member_function_pointer<>::kernel_1a mfp0;
-            member_function_pointer<long>::kernel_1a mfp1;
-            member_function_pointer<long,long>::kernel_1a mfp2;
+            member_function_pointer<> mfp0;
+            member_function_pointer<long> mfp1;
+            member_function_pointer<long,long> mfp2;
             bfp_type bfp;
 
             shared_ptr<function_object_copy> function_copy;
 
         };
 
-        array<task_state_type>::expand_1d tasks;
-        array<thread_id_type>::expand_1d worker_thread_ids;
+        array<task_state_type> tasks;
+        array<thread_id_type> worker_thread_ids;
 
         mutex m;
         signaler task_done_signaler;

@@ -42,8 +42,9 @@ namespace dlib
         !*/
 
     public:
-        // This should be the type of elements in the input sequence
-        typedef the_type_of_elements_of_x sample_type;
+        // This should be the type used to represent an input sequence.  It can be
+        // anything so long as it has a .size() which returns the length of the sequence.
+        typedef the_type_used_to_represent_a_sequence sequence_type;
 
         example_feature_extractor (
         ); 
@@ -81,7 +82,7 @@ namespace dlib
 
         template <typename EXP>
         bool reject_labeling (
-            const std::vector<sample_type>& x,
+            const sequence_type& x,
             const matrix_exp<EXP>& y,
             unsigned long position
         ) const;
@@ -90,7 +91,7 @@ namespace dlib
                 - EXP::type == unsigned long
                   (i.e. y contains unsigned longs)
                 - position < x.size()
-                - y.size() == min(position, order) + 1
+                - y.size() == min(position, order()) + 1
                 - is_vector(y) == true
                 - max(y) < num_labels() 
             ensures
@@ -110,7 +111,7 @@ namespace dlib
         template <typename feature_setter, typename EXP>
         void get_features (
             feature_setter& set_feature,
-            const std::vector<sample_type>& x,
+            const sequence_type& x,
             const matrix_exp<EXP>& y,
             unsigned long position
         ) const;
@@ -118,8 +119,9 @@ namespace dlib
             requires
                 - EXP::type == unsigned long
                   (i.e. y contains unsigned longs)
+                - reject_labeling(x,y,position) == false
                 - position < x.size()
-                - y.size() == min(position, order) + 1
+                - y.size() == min(position, order()) + 1
                 - is_vector(y) == true
                 - max(y) < num_labels() 
                 - set_feature is a function object which allows expressions of the form:
@@ -142,6 +144,23 @@ namespace dlib
                   value.  For example, if you call set_feature(55) 3 times then it will
                   result in feature 55 having a value of 3.
                 - This function only calls set_feature() with feature_index values < num_features()
+        !*/
+
+        unsigned long num_nonnegative_weights (
+        ) const;
+        /*!
+            ensures
+                - returns the number of elements of the w parameter vector which should be
+                  non-negative.  That is, this feature extractor is intended to be used
+                  with w vectors where the first num_nonnegative_weights() elements of w
+                  are >= 0.  That is, it should be the case that w(i) >= 0 for all i <
+                  num_nonnegative_weights().
+                - Note that num_nonnegative_weights() is just an optional method to allow
+                  you to tell a tool like the structural_sequence_labeling_trainer that the
+                  learned w should have a certain number of non-negative elements.
+                  Therefore, if you do not provide a num_nonnegative_weights() method in
+                  your feature extractor then it will default to a value of 0, indicating
+                  that all elements of the w parameter vector may be any value.
         !*/
 
     };
@@ -172,7 +191,7 @@ namespace dlib
         >
     bool contains_invalid_labeling (
         const feature_extractor& fe,
-        const std::vector<typename feature_extractor::sample_type>& x,
+        const typename feature_extractor::sequence_type& x,
         const std::vector<unsigned long>& y
     );
     /*!
@@ -194,7 +213,7 @@ namespace dlib
         >
     bool contains_invalid_labeling (
         const feature_extractor& fe,
-        const std::vector<std::vector<typename feature_extractor::sample_type> >& x,
+        const std::vector<typename feature_extractor::sequence_type>& x,
         const std::vector<std::vector<unsigned long> >& y
     );
     /*!
@@ -239,11 +258,19 @@ namespace dlib
                     y == argmax_Y dot(get_weights(), PSI(x,Y))
                     Where PSI() is defined by the feature_extractor template
                     argument.  
+
+            THREAD SAFETY
+                It is always safe to use distinct instances of this object in different
+                threads.  However, when a single instance is shared between threads then
+                the following rules apply:
+                    It is safe to call the const members of this object from multiple
+                    threads so long as the feature_extractor is also threadsafe.  This is
+                    because the const members are purely read-only operations.  However,
+                    any operation that modifies a sequence_labeler is not threadsafe.
         !*/
 
     public:
-        typedef typename feature_extractor::sample_type sample_type;
-        typedef std::vector<sample_type> sample_sequence_type;
+        typedef typename feature_extractor::sequence_type sample_sequence_type;
         typedef std::vector<unsigned long> labeled_sequence_type;
 
         sequence_labeler(

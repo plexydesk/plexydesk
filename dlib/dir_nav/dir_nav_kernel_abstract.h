@@ -56,10 +56,6 @@ namespace dlib
                 object is constructed.  Thus if a file changes sizes after its
                 file object has been created its file object's size() method
                 will not reflect the new file size.    
-
-            THREAD SAFETY
-                This object is reference counted so use with caution in a threaded
-                environment.
         !*/
 
     public:
@@ -162,6 +158,17 @@ namespace dlib
                     - returns false
         !*/
 
+        bool operator != (
+            const file& rhs
+        ) const;
+        /*!
+            ensures
+                - if (*this and rhs represent the same file) then
+                    - returns false 
+                - else
+                    - returns true 
+        !*/
+
         bool operator < (
             const file& item
         ) const;
@@ -197,10 +204,6 @@ namespace dlib
                 the ability to traverse a directory tree.  
 
                 Note that the directories . and .. are not returned by get_dirs() 
-
-            THREAD SAFETY
-                This object is reference counted so use with caution in a threaded
-                environment.
         !*/
 
     public:
@@ -390,6 +393,17 @@ namespace dlib
                     - returns true
                 - else
                     - returns false
+        !*/
+
+        bool operator != (
+            const directory& rhs
+        ) const;
+        /*!
+            ensures
+                - if (*this and rhs represent the same directory) then
+                    - returns false 
+                - else
+                    - returns true 
         !*/
 
         bool operator < (

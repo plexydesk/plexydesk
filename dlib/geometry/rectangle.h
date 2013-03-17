@@ -381,6 +381,18 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    inline dlib::vector<double,2> dcenter (
+        const dlib::rectangle& rect
+    )
+    {
+        dlib::vector<double,2> temp(rect.left() + rect.right(),
+                                    rect.top() + rect.bottom());
+
+        return temp/2.0;
+    }
+
+// ----------------------------------------------------------------------------------------
+
     inline long distance_to_rect_edge (
         const rectangle& rect,
         const point& p
@@ -464,6 +476,28 @@ namespace dlib
     )
     {
         return shrink_rect(rect, -num);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    inline const rectangle shrink_rect (
+        const rectangle& rect,
+        long width,
+        long height
+    )
+    {
+        return rectangle(rect.left()+width, rect.top()+height, rect.right()-width, rect.bottom()-height);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    inline const rectangle grow_rect (
+        const rectangle& rect,
+        long width,
+        long height
+    )
+    {
+        return shrink_rect(rect, -width, -height);
     }
 
 // ----------------------------------------------------------------------------------------

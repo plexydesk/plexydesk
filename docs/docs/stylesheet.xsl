@@ -49,6 +49,7 @@
    <xsl:template match="/doc">
       <html>
          <head>
+         <link rel="shortcut icon" href="dlib-icon.ico"/>
 <!-- Verify with Google -->
 <meta name="verify-v1" content="{$google_verify_id}" />
 <meta name="google-site-verification" content="{$google_verify_id2}" />
@@ -286,7 +287,10 @@ function BigToggle(node)
          <body bgcolor="{$background_color}">
             <a name="top" />
             <div id="entire_page">
-            <table bgcolor="white" height="100%" bordercolor="{$background_color}" CELLSPACING="0" CELLPADDING="10">
+            <a href="http://dlib.net"><img src="dlib-logo.png"/></a>
+
+            <table bgcolor="white" height="100%" bordercolor="{$background_color}" 
+                CELLSPACING="0" CELLPADDING="10" style="border:0px;margin-top:2px">
                <tr height="100%">
                   <xsl:apply-templates select="document($main_menu)/doc/menu"/>
 
@@ -504,21 +508,23 @@ function BigToggle(node)
          <BR/>
          <xsl:apply-templates select="description"/>
 
-         <xsl:if test="spec_file">
+         <xsl:if test="file">
             <BR/>
+            <BR/><B><font style='font-size:1.4em'><tt>#include &lt;<xsl:value-of select="file"/>&gt;</tt></font></B>
+         </xsl:if>
+         <xsl:if test="spec_file">
             <xsl:choose>
                <xsl:when test="spec_file/@link = 'true'">
                   <BR/>
-                  <b><font style='font-size:1.3em' color='#007700'>Specification: </font></b> <a href="{spec_file}.html#{name}"><xsl:value-of select="spec_file"/></a>
+                  <b><a href="{spec_file}.html#{name}">
+                     <font style='font-size:1.4em'>Detailed Documentation</font></a></b> 
                </xsl:when>
                <xsl:otherwise>
                   <BR/>
-                  <b><font style='font-size:1.3em' color='#007700'>Specification: </font></b> <a href="{spec_file}.html"><xsl:value-of select="spec_file"/></a>
+                  <b><a href="{spec_file}.html">
+                     <font style='font-size:1.4em'>Detailed Documentation</font></a></b>
                </xsl:otherwise>
             </xsl:choose>
-         </xsl:if>
-         <xsl:if test="file">
-            <BR/><B>File to include: </B> <a href="{file}.html"><xsl:value-of select="file"/></a>
          </xsl:if>
          <xsl:if test="body_file">
             <BR/>
@@ -552,10 +558,12 @@ function BigToggle(node)
                <BR/>
                <xsl:choose>
                   <xsl:when test="spec_file/@link = 'true'">
-                     <b><font style='font-size:1.3em' color='#007700'>Specification: </font></b> <a href="{spec_file}.html#{name}"><xsl:value-of select="spec_file"/></a>
+                     <b><a href="{spec_file}.html#{name}">
+                        <font style='font-size:1.4em'>Detailed Documentation</font></a></b>
                   </xsl:when>
                   <xsl:otherwise>
-                     <b><font style='font-size:1.3em' color='#007700'>Specification: </font></b> <a href="{spec_file}.html"><xsl:value-of select="spec_file"/></a>
+                     <b><a href="{spec_file}.html">
+                        <font style='font-size:1.4em'>Detailed Documentation</font></a></b>
                   </xsl:otherwise>
                </xsl:choose>
 
@@ -578,14 +586,14 @@ function BigToggle(node)
    </xsl:template>      
 
    <xsl:template match="examples">
-    <BR/><b>Code Examples: </b>
+    <BR/>Example Programs: 
       <xsl:for-each select="example">
          <xsl:choose>
             <xsl:when test="position() = last()">
-               <a href="{.}"><xsl:value-of select="position()"/></a>
+               <a href="{.}"><xsl:value-of select="substring-before(.,'.html')"/></a>
             </xsl:when>
             <xsl:otherwise>
-               <a href="{.}"><xsl:value-of select="position()"/></a>, 
+               <a href="{.}"><xsl:value-of select="substring-before(.,'.html')"/></a>,
             </xsl:otherwise>
          </xsl:choose>              
       </xsl:for-each>
@@ -828,15 +836,37 @@ function BigToggle(node)
          <xsl:apply-templates/>
        </xsl:if>
    </xsl:template>   
+   <xsl:template match="td">
+      <td align="center">
+         <xsl:apply-templates/>
+       </td>
+   </xsl:template>   
+   <xsl:template match="tr">
+      <tr>
+         <xsl:apply-templates/>
+       </tr>
+   </xsl:template>   
+   <xsl:template match="table">
+      <table>
+         <xsl:apply-templates/>
+       </table>
+   </xsl:template>   
    <xsl:template match="li">
       <li>
          <xsl:apply-templates/>
        </li>
    </xsl:template>   
    <xsl:template match="ul">
-      <ul>
-         <xsl:apply-templates/>
-       </ul>
+      <xsl:if test="@style">
+         <ul style="{@style}">
+            <xsl:apply-templates/>
+         </ul>
+      </xsl:if>
+      <xsl:if test="not(@style)">
+         <ul>
+            <xsl:apply-templates/>
+         </ul>
+      </xsl:if>
    </xsl:template>   
    <xsl:template match="u">
       <u>
@@ -1033,7 +1063,8 @@ function BigToggle(node)
    <xsl:template match="log">
       <xsl:for-each select="logentry">
       <xsl:sort order="descending" data-type="number" select="./@revision"/>
-      <u>Revision</u>: <xsl:value-of select="substring(@node,1,12)"/> <br/>
+      <u>Revision</u>: <xsl:value-of select="substring(@node,1,16)"/> <br/>
+      <u>Author</u>: <a href="mailto:{author/@email}"><xsl:value-of select="author"/></a> <br/>
       <u>Date</u>: <xsl:call-template name="format-date"><xsl:with-param name="xsd-date" select="date"/></xsl:call-template> <br/>
             <xsl:apply-templates select="msg"/>
             <xsl:apply-templates select="paths"/>
@@ -1096,7 +1127,7 @@ function BigToggle(node)
    </xsl:template>
 
    <xsl:template match="msg">
-    <pre><xsl:value-of select="."/></pre>
+      <p style="margin:0.4em"><xsl:value-of select="."/></p>
    </xsl:template>
 
    

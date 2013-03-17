@@ -65,7 +65,7 @@ namespace dlib
 
         template <typename T, bool Tb> 
         struct has_matrix_multiply<matrix_mul_scal_exp<T,Tb> >  
-        { const static bool value = has_matrix_multiply<T>::value; };
+        { const static bool value = true; };
 
         template <typename T> 
         struct has_matrix_multiply<matrix_div_scal_exp<T> >  
@@ -112,6 +112,12 @@ namespace dlib
 
         template <typename T, long NR, typename MM, typename L>
         struct matrix_type_id<matrix<T,NR,1,MM,L> >
+        {
+            const static int value = column_matrix;
+        };
+
+        template <typename T, typename MM, typename L>
+        struct matrix_type_id<matrix<T,1,1,MM,L> >
         {
             const static int value = column_matrix;
         };
@@ -639,6 +645,22 @@ namespace dlib
     // Once we get into this function it means that we are dealing with a matrix of float,
     // double, complex<float>, or complex<double> and the src_exp contains at least one
     // matrix multiply.
+
+        template <
+            typename T, long NR, long NC, typename MM, typename L,
+            long NR2, long NC2, bool Sb
+            >
+        void matrix_assign_blas (
+            matrix<T,NR,NC,MM,L>& dest,
+            const matrix_mul_scal_exp<matrix<T,NR2,NC2,MM,L>,Sb>& src
+        )
+        {
+            // It's ok that we don't check for aliasing in this case because there isn't
+            // any complex unrolling of successive + or - operators in this expression.
+            matrix_assign_blas_proxy(dest,src.m,src.s,false, false);
+        }
+            
+    // ------------------------------------------------------------------------------------
 
         template <
             typename T, long NR, long NC, typename MM, typename L,

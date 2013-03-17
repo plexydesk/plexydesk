@@ -57,7 +57,7 @@ namespace
         DLIB_TEST(img2.size() == 0);
         DLIB_TEST(img2.nr() == 0);
         DLIB_TEST(img2.nc() == 0);
-        assign_image(img2, array_to_matrix(img1));
+        assign_image(img2, mat(img1));
 
         DLIB_TEST_MSG(img1.nr() == 100 && img1.nc() == 100 &&
                      img2.nr() == 100 && img2.nc() == 100,"");
@@ -669,22 +669,22 @@ namespace
 
             assign_border_pixels(img, 2,2, 4);
 
-            DLIB_TEST(zeros_matrix<unsigned char>(6,6) == subm(array_to_matrix(img), rectangle(2,2,7,7)));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(array_to_matrix(img), 0));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(array_to_matrix(img), 1));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(array_to_matrix(img), 8));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(array_to_matrix(img), 9));
+            DLIB_TEST(zeros_matrix<unsigned char>(6,6) == subm(mat(img), rectangle(2,2,7,7)));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(mat(img), 0));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(mat(img), 1));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(mat(img), 8));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,10, 4) == rowm(mat(img), 9));
 
-            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(array_to_matrix(img), 0));
-            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(array_to_matrix(img), 1));
-            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(array_to_matrix(img), 8));
-            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(array_to_matrix(img), 9));
+            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(mat(img), 0));
+            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(mat(img), 1));
+            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(mat(img), 8));
+            DLIB_TEST(uniform_matrix<unsigned char>(10,1, 4) == colm(mat(img), 9));
 
 
             assign_border_pixels(img, 7, 7, 5);
-            DLIB_TEST(uniform_matrix<unsigned char>(10,10, 5) == array_to_matrix(img));
+            DLIB_TEST(uniform_matrix<unsigned char>(10,10, 5) == mat(img));
             assign_border_pixels(img, 37, 47, 5);
-            DLIB_TEST(uniform_matrix<unsigned char>(10,10, 5) == array_to_matrix(img));
+            DLIB_TEST(uniform_matrix<unsigned char>(10,10, 5) == mat(img));
         }
 
         {
@@ -694,21 +694,21 @@ namespace
 
             assign_border_pixels(img, 2,2, 4);
 
-            DLIB_TEST(zeros_matrix<unsigned char>(7,7) == subm(array_to_matrix(img), rectangle(2,2,8,8)));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(array_to_matrix(img), 0));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(array_to_matrix(img), 1));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(array_to_matrix(img), 9));
-            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(array_to_matrix(img), 10));
+            DLIB_TEST(zeros_matrix<unsigned char>(7,7) == subm(mat(img), rectangle(2,2,8,8)));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(mat(img), 0));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(mat(img), 1));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(mat(img), 9));
+            DLIB_TEST(uniform_matrix<unsigned char>(1,11, 4) == rowm(mat(img), 10));
 
-            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(array_to_matrix(img), 0));
-            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(array_to_matrix(img), 1));
-            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(array_to_matrix(img), 9));
-            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(array_to_matrix(img), 10));
+            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(mat(img), 0));
+            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(mat(img), 1));
+            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(mat(img), 9));
+            DLIB_TEST(uniform_matrix<unsigned char>(11,1, 4) == colm(mat(img), 10));
 
             assign_border_pixels(img, 7, 7, 5);
-            DLIB_TEST(uniform_matrix<unsigned char>(11,11, 5) == array_to_matrix(img));
+            DLIB_TEST(uniform_matrix<unsigned char>(11,11, 5) == mat(img));
             assign_border_pixels(img, 70, 57, 5);
-            DLIB_TEST(uniform_matrix<unsigned char>(11,11, 5) == array_to_matrix(img));
+            DLIB_TEST(uniform_matrix<unsigned char>(11,11, 5) == mat(img));
         }
 
 
@@ -752,9 +752,9 @@ namespace
                 point p1(rnd.get_random_32bit_number()%img.nc(), rnd.get_random_32bit_number()%img.nr());
                 point p2(rnd.get_random_32bit_number()%img.nc(), rnd.get_random_32bit_number()%img.nr());
                 rectangle rect(p1,p2);
-                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<T>(array_to_matrix(img)), rect)));
+                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<T>(mat(img)), rect)));
                 rect = rectangle(p1,p1);
-                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<T>(array_to_matrix(img)), rect)));
+                DLIB_TEST(int_img.get_sum_of_area(rect) == sum(subm(matrix_cast<T>(mat(img)), rect)));
             }
 
         }
@@ -778,7 +778,8 @@ namespace
                   1,1,1,1,1;
 
         assign_all_pixels(img2,3);
-        spatially_filter_image(img, img2, filter2);
+        rectangle brect = spatially_filter_image(img, img2, filter2);
+        DLIB_TEST(brect == shrink_rect(get_rect(img), filter2.nc()/2, filter2.nr()/2));
 
         const rectangle rect(2,1,img.nc()-3,img.nr()-2);
 
@@ -800,7 +801,8 @@ namespace
 
         assign_all_pixels(img2,3);
         assign_all_pixels(img3,3);
-        spatially_filter_image(img, img2, filter2);
+        brect = spatially_filter_image(img, img2, filter2);
+        DLIB_TEST(brect == shrink_rect(get_rect(img), filter2.nc()/2, filter2.nr()/2));
 
         matrix<int,1,5> row_filter;
         matrix<int,1,3> col_filter;
@@ -810,7 +812,7 @@ namespace
 
         spatially_filter_image_separable(img, img3, row_filter, col_filter);
 
-        DLIB_TEST(array_to_matrix(img2) == array_to_matrix(img3));
+        DLIB_TEST(mat(img2) == mat(img3));
 
 
         dlib::rand  rnd;
@@ -839,9 +841,13 @@ namespace
             assign_all_pixels(img2,3);
             assign_all_pixels(img3,3);
             // Just make sure both filtering methods give the same results.
-            spatially_filter_image(img, img2, filter, scale, use_abs);
-            spatially_filter_image_separable(img, img3, row_filter, col_filter, scale, use_abs);
-            DLIB_TEST(array_to_matrix(img2) == array_to_matrix(img3));
+            rectangle brect1, brect2;
+            brect1 = spatially_filter_image(img, img2, filter, scale, use_abs);
+            brect2 = spatially_filter_image_separable(img, img3, row_filter, col_filter, scale, use_abs);
+            DLIB_TEST(mat(img2) == mat(img3));
+
+            DLIB_TEST(brect1 == shrink_rect(get_rect(img), filter.nc()/2, filter.nr()/2));
+            DLIB_TEST(brect1 == brect2);
         }
 
         {
@@ -924,6 +930,23 @@ namespace
             DLIB_TEST(img2[2][1] == 0);
             DLIB_TEST(img2[2][2] == 0);
             DLIB_TEST(img2[2][3] == 0);
+
+            assign_all_pixels(img2, 3);
+            spatially_filter_image_separable(img,img2,rowf,colf,1,true, true);
+            DLIB_TEST(img2[0][0] == 0);
+            DLIB_TEST(img2[0][1] == 0);
+            DLIB_TEST(img2[0][2] == 0);
+            DLIB_TEST(img2[0][3] == 0);
+
+            DLIB_TEST(img2[1][0] == 0);
+            DLIB_TEST_MSG(img2[1][1] == 9+3, img2[1][1] );
+            DLIB_TEST(img2[1][2] == 9+3);
+            DLIB_TEST(img2[1][3] == 0);
+
+            DLIB_TEST(img2[2][0] == 0);
+            DLIB_TEST(img2[2][1] == 0);
+            DLIB_TEST(img2[2][2] == 0);
+            DLIB_TEST(img2[2][3] == 0);
         }
         {
             array2d<double> img, img2;
@@ -941,8 +964,36 @@ namespace
             DLIB_TEST(img2[0][3] == 0);
 
             DLIB_TEST(img2[1][0] == 0);
-            DLIB_TEST((img2[1][1] -  -4.5) < 1e-14);
-            DLIB_TEST((img2[1][2] -  -4.5) < 1e-14);
+            DLIB_TEST(std::abs(img2[1][1] -  -4.5) < 1e-14);
+            DLIB_TEST(std::abs(img2[1][2] -  -4.5) < 1e-14);
+            DLIB_TEST(img2[1][3] == 0);
+
+            DLIB_TEST(img2[2][0] == 0);
+            DLIB_TEST(img2[2][1] == 0);
+            DLIB_TEST(img2[2][2] == 0);
+            DLIB_TEST(img2[2][3] == 0);
+
+        }
+        {
+            array2d<double> img, img2;
+            img.set_size(3,4);
+            img2.set_size(3,4);
+            assign_all_pixels(img2, 8);
+
+            matrix<double> filter(3,3);
+            filter = 1;
+            assign_all_pixels(img,-1);
+
+            spatially_filter_image(img,img2,filter,2, false, true);
+
+            DLIB_TEST(img2[0][0] == 0);
+            DLIB_TEST(img2[0][1] == 0);
+            DLIB_TEST(img2[0][2] == 0);
+            DLIB_TEST(img2[0][3] == 0);
+
+            DLIB_TEST(img2[1][0] == 0);
+            DLIB_TEST(std::abs(img2[1][1] -  -4.5 - 8) < 1e-14);
+            DLIB_TEST(std::abs(img2[1][2] -  -4.5 - 8) < 1e-14);
             DLIB_TEST(img2[1][3] == 0);
 
             DLIB_TEST(img2[2][0] == 0);
@@ -1110,6 +1161,179 @@ namespace
         }
     }
 
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename in_image_type,
+        typename out_image_type
+        >
+    void downsample_image (
+        const unsigned long downsample,
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        bool add_to
+    )
+    {
+        out_img.set_size((in_img.nr()+downsample-1)/downsample,
+                         (in_img.nc()+downsample-1)/downsample);
+
+        for (long r = 0; r < out_img.nr(); ++r)
+        {
+            for (long c = 0; c < out_img.nc(); ++c)
+            {
+                if (add_to)
+                    out_img[r][c] += in_img[r*downsample][c*downsample];
+                else
+                    out_img[r][c] = in_img[r*downsample][c*downsample];
+            }
+        }
+    }
+
+    template <
+        typename in_image_type,
+        typename out_image_type,
+        typename EXP1,
+        typename EXP2,
+        typename T
+        >
+    void test_spatially_filter_image_separable_down_simple (
+        const unsigned long downsample,
+        const in_image_type& in_img,
+        out_image_type& out_img,
+        const matrix_exp<EXP1>& row_filter,
+        const matrix_exp<EXP2>& col_filter,
+        T scale,
+        bool use_abs = false,
+        bool add_to = false
+    )
+    {
+        out_image_type temp;
+        spatially_filter_image_separable(in_img, temp, row_filter, col_filter, scale, use_abs, false);
+        downsample_image(downsample, temp, out_img, add_to);
+    }
+
+
+
+
+    template <unsigned long downsample>
+    void test_downsampled_filtering_helper(long row_filt_size, long col_filt_size)
+    {
+        print_spinner();
+        dlog << LTRACE << "***********************************";
+        dlog << LTRACE << "downsample: " << downsample;
+        dlog << LTRACE << "row_filt_size: "<< row_filt_size;
+        dlog << LTRACE << "col_filt_size: "<< col_filt_size;
+        dlib::rand rnd;
+        array2d<int> out1, out2;
+        for (long nr = 0; nr < 3; ++nr)
+        {
+            for (long nc = 0; nc < 3; ++nc)
+            {
+                dlog << LTRACE << "nr: "<< nr;
+                dlog << LTRACE << "nc: "<< nc;
+                array2d<unsigned char> img(25+nr,25+nc);
+                for (int k = 0; k < 5; ++k)
+                {
+                    for (long r = 0; r < img.nr(); ++r)
+                    {
+                        for (long c = 0; c < img.nc(); ++c)
+                        {
+                            img[r][c] = rnd.get_random_8bit_number();
+                        }
+                    }
+
+                    matrix<int,0,1> row_filter(row_filt_size);
+                    matrix<int,0,1> col_filter(col_filt_size);
+
+                    row_filter = matrix_cast<int>(10*randm(row_filt_size,1, rnd));
+                    col_filter = matrix_cast<int>(10*randm(col_filt_size,1, rnd));
+
+                    row_filter -= 3;
+                    col_filter -= 3;
+
+
+                    test_spatially_filter_image_separable_down_simple(downsample, img, out1, row_filter, col_filter,1 );
+                    spatially_filter_image_separable_down(downsample, img, out2, row_filter, col_filter);
+
+                    DLIB_TEST(get_rect(out1) == get_rect(out2));
+                    DLIB_TEST(mat(out1) == mat(out2));
+
+                    test_spatially_filter_image_separable_down_simple(downsample, img, out1, row_filter, col_filter,3, true, true );
+                    spatially_filter_image_separable_down(downsample, img, out2, row_filter, col_filter, 3, true, true);
+
+                    DLIB_TEST(get_rect(out1) == get_rect(out2));
+                    DLIB_TEST(mat(out1) == mat(out2));
+
+                }
+            }
+        }
+    }
+
+    void test_downsampled_filtering()
+    {
+        test_downsampled_filtering_helper<1>(5,5);
+        test_downsampled_filtering_helper<2>(5,5);
+        test_downsampled_filtering_helper<3>(5,5);
+        test_downsampled_filtering_helper<1>(3,5);
+        test_downsampled_filtering_helper<2>(3,5);
+        test_downsampled_filtering_helper<3>(3,5);
+        test_downsampled_filtering_helper<1>(5,3);
+        test_downsampled_filtering_helper<2>(5,3);
+        test_downsampled_filtering_helper<3>(5,3);
+
+        test_downsampled_filtering_helper<1>(3,3);
+        test_downsampled_filtering_helper<2>(3,3);
+        test_downsampled_filtering_helper<3>(3,3);
+
+        test_downsampled_filtering_helper<1>(1,1);
+        test_downsampled_filtering_helper<2>(1,1);
+        test_downsampled_filtering_helper<3>(1,1);
+
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <typename T>
+    void test_segment_image()
+    {
+        print_spinner();
+        array2d<T> img(100,100);
+        for (long r = 0; r < img.nr(); ++r)
+        {
+            for (long c = 0; c < img.nc(); ++c)
+            {
+                if (c < 50 || r < 50)
+                    assign_pixel(img[r][c], 0);
+                else
+                    assign_pixel(img[r][c], 255);
+            }
+        }
+
+        array2d<unsigned long> out;
+        segment_image(img, out);
+
+        DLIB_TEST(get_rect(img) == get_rect(out));
+        const unsigned long v1 = out[0][0];
+        const unsigned long v2 = out[90][90];
+
+        for (long r = 0; r < img.nr(); ++r)
+        {
+            for (long c = 0; c < img.nc(); ++c)
+            {
+                if (c < 50 || r < 50)
+                {
+                    DLIB_TEST(out[r][c] == v1);
+                }
+                else
+                {
+                    DLIB_TEST(out[r][c] == v2);
+                }
+            }
+        }
+    }
+
+// ----------------------------------------------------------------------------------------
+
     class image_tester : public tester
     {
     public:
@@ -1141,6 +1365,14 @@ namespace
 
             test_label_connected_blobs();
             test_label_connected_blobs2();
+            test_downsampled_filtering();
+
+            test_segment_image<unsigned char>();
+            test_segment_image<unsigned short>();
+            test_segment_image<double>();
+            test_segment_image<int>();
+            test_segment_image<rgb_pixel>();
+            test_segment_image<rgb_alpha_pixel>();
         }
     } a;
 

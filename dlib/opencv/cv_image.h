@@ -5,6 +5,8 @@
 
 #include "cv_image_abstract.h"
 #include "../algs.h"
+#include "../pixel.h"
+#include "../matrix/matrix_mat.h"
 
 namespace dlib
 {
@@ -18,15 +20,25 @@ namespace dlib
         typedef pixel_type type;
         typedef default_memory_manager mem_manager_type;
 
+        cv_image (const cv::Mat img) 
+        {
+            DLIB_CASSERT(img.depth() == cv::DataType<typename pixel_traits<pixel_type>::basic_pixel_type>::depth &&
+                         img.channels() == pixel_traits<pixel_type>::num, 
+                         "The pixel type you gave doesn't match pixel used by the open cv Mat object.");
+            IplImage temp = img;
+            init(&temp);
+        }
+
+        cv_image (const IplImage img) 
+        {
+            init(&img);
+        }
+
         cv_image (const IplImage* img) 
         {
-            check_image_type(img);
-            _data = img->imageData;
-            _widthStep = img->widthStep;
-            _nr = img->height;
-            _nc = img->width;
-
+            init(img);
         }
+
         cv_image() : _data(0), _widthStep(0), _nr(0), _nc(0) {}
 
         unsigned long size () const { return static_cast<unsigned long>(_nr*_nc); }
@@ -35,7 +47,7 @@ namespace dlib
         { 
             // make sure requires clause is not broken
             DLIB_ASSERT(0 <= row && row < nr(),
-                "\tpixel_type* operator[](row)"
+                "\tpixel_type* cv_image::operator[](row)"
                 << "\n\t you have asked for an out of bounds row " 
                 << "\n\t row:  " << row
                 << "\n\t nr(): " << nr() 
@@ -49,7 +61,7 @@ namespace dlib
         { 
             // make sure requires clause is not broken
             DLIB_ASSERT(0 <= row && row < nr(),
-                "\tconst pixel_type* operator[](row)"
+                "\tconst pixel_type* cv_image::operator[](row)"
                 << "\n\t you have asked for an out of bounds row " 
                 << "\n\t row:  " << row
                 << "\n\t nr(): " << nr() 
@@ -74,22 +86,36 @@ namespace dlib
 
         cv_image& operator=( const IplImage* img)
         {
-            check_image_type(img);
-            _data = img->imageData;
-            _widthStep = img->widthStep;
-            _nr = img->height;
-            _nc = img->width;
+            init(img);
+            return *this;
+        }
+
+        cv_image& operator=( const IplImage img)
+        {
+            init(&img);
+            return *this;
+        }
+
+        cv_image& operator=( const cv::Mat img)
+        {
+            IplImage temp = img;
+            init(&temp);
             return *this;
         }
 
     private:
 
-        inline void check_image_type (const IplImage* img) const
+        void init (const IplImage* img) 
         {
-            DLIB_ASSERT( img->dataOrder == 0, "Only interleaved color channels are supported with cv_image"); 
-            DLIB_ASSERT((img->depth&0xFF)/8*img->nChannels == sizeof(pixel_type), 
+            DLIB_CASSERT( img->dataOrder == 0, "Only interleaved color channels are supported with cv_image"); 
+            DLIB_CASSERT((img->depth&0xFF)/8*img->nChannels == sizeof(pixel_type), 
                          "The pixel type you gave doesn't match the size of pixel used by the open cv image struct");
-   
+
+            _data = img->imageData;
+            _widthStep = img->widthStep;
+            _nr = img->height;
+            _nc = img->width;
+
         }
 
         char* _data;
@@ -97,6 +123,21 @@ namespace dlib
         long _nr;
         long _nc;
     };
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename T
+        >
+    const matrix_op<op_array2d_to_mat<cv_image<T> > > mat (
+        const cv_image<T>& m 
+    )
+    {
+        typedef op_array2d_to_mat<cv_image<T> > op;
+        return matrix_op<op>(op(m));
+    }
+
+// ----------------------------------------------------------------------------------------
 
 }
 

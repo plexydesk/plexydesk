@@ -436,7 +436,7 @@ namespace dlib
             DLIB_ASSERT(lhs.nc() == rhs.nc() &&
                    lhs.nr() == rhs.nr(), 
                 "\tconst matrix_exp operator-(const matrix_exp& lhs, const matrix_exp& rhs)"
-                << "\n\tYou are trying to add two incompatible matrices together"
+                << "\n\tYou are trying to subtract two incompatible matrices"
                 << "\n\tlhs.nr(): " << lhs.nr()
                 << "\n\tlhs.nc(): " << lhs.nc()
                 << "\n\trhs.nr(): " << rhs.nr()
@@ -996,6 +996,8 @@ namespace dlib
         const static long NR = matrix_traits<matrix>::NR;
         const static long NC = matrix_traits<matrix>::NC;
         const static long cost = matrix_traits<matrix>::cost;
+        typedef T*          iterator;       
+        typedef const T*    const_iterator; 
 
         matrix () 
         {
@@ -1500,9 +1502,7 @@ namespace dlib
             const T a
         )
         {
-            const long size = data.nr()*data.nc();
-            for (long i = 0; i < size; ++i)
-                data(i) *= a;
+            *this = *this * a;
             return *this;
         }
 
@@ -1510,9 +1510,7 @@ namespace dlib
             const T a
         )
         {
-            const long size = data.nr()*data.nc();
-            for (long i = 0; i < size; ++i)
-                data(i) /= a;
+            *this = *this / a;
             return *this;
         }
 
@@ -1550,6 +1548,39 @@ namespace dlib
         bool destructively_aliases (
             const matrix_exp<U>& 
         ) const { return false; }
+
+
+        iterator begin() 
+        {
+            if (size() != 0)
+                return &data(0,0);
+            else
+                return 0;
+        }
+
+        iterator end()
+        {
+            if (size() != 0)
+                return &data(0,0)+size();
+            else
+                return 0;
+        }
+
+        const_iterator begin()  const
+        {
+            if (size() != 0)
+                return &data(0,0);
+            else
+                return 0;
+        }
+
+        const_iterator end() const
+        {
+            if (size() != 0)
+                return &data(0,0)+size();
+            else
+                return 0;
+        }
 
     private:
         struct literal_assign_helper
@@ -1754,6 +1785,22 @@ namespace dlib
         out.width(old);
         return out;
     }
+
+    /*
+    template <
+        typename T, 
+        long NR, 
+        long NC,
+        typename MM,
+        typename L
+        >
+    std::istream& operator>> (
+        std::istream& in,
+        matrix<T,NR,NC,MM,L>& m
+    );
+
+    This function is defined inside the matrix_read_from_istream.h file.
+    */
 
 // ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ namespace
     )
     {
         
-        listener& list = *reinterpret_cast<listener*>(param);
+        listener& list = *static_cast<listener*>(param);
         connection* con;
         list.accept(con);
 
@@ -241,10 +241,10 @@ namespace
         void perform_test (
         )
         {
-            dlog << LINFO << "testing kernel_1a";
-            sockstreambuf_test<sockstreambuf::kernel_1a>();
-            dlog << LINFO << "testing kernel_2a";
-            sockstreambuf_test<sockstreambuf::kernel_2a>();
+            dlog << LINFO << "testing sockstreambuf";
+            sockstreambuf_test<sockstreambuf>();
+            dlog << LINFO << "testing sockstreambuf_unbuffered";
+            sockstreambuf_test<sockstreambuf_unbuffered>();
         }
     } a;
 

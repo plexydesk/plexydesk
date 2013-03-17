@@ -104,7 +104,7 @@ namespace dlib
             long max_iter = 1000
         )
         {
-            do_train(vector_to_matrix(samples),vector_to_matrix(initial_centers),max_iter);
+            do_train(mat(samples),mat(initial_centers),max_iter);
         }
 
         unsigned long operator() (
@@ -270,12 +270,12 @@ namespace dlib
 
         }
 
-        typename array<scoped_ptr<kcentroid<kernel_type> > >::expand_1b_c centers;
+        array<scoped_ptr<kcentroid<kernel_type> > > centers;
         kcentroid<kernel_type> kc;
         scalar_type min_change;
 
         // temp variables
-        array<unsigned long>::expand_1b_c assignments;
+        array<unsigned long> assignments;
     };
 
 // ----------------------------------------------------------------------------------------

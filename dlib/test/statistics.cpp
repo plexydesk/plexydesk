@@ -8,7 +8,10 @@
 #include <ctime>
 #include <dlib/statistics.h>
 #include <dlib/rand.h>
+#include <dlib/svm.h>
 #include <algorithm>
+#include <dlib/matrix.h>
+#include <cmath>
 
 #include "tester.h"
 
@@ -154,9 +157,9 @@ namespace
                     }
                     DLIB_TEST(cov.in_vector_size() == (long)dims);
 
-                    DLIB_TEST(equal(mean(vector_to_matrix(vects)), cov.mean()));
-                    DLIB_TEST_MSG(equal(covariance(vector_to_matrix(vects)), cov.covariance()),
-                              max(abs(covariance(vector_to_matrix(vects)) - cov.covariance()))
+                    DLIB_TEST(equal(mean(mat(vects)), cov.mean()));
+                    DLIB_TEST_MSG(equal(covariance(mat(vects)), cov.covariance()),
+                              max(abs(covariance(mat(vects)) - cov.covariance()))
                               << "   dims = " << dims << "   samps = " << samps
                               );
                 }
@@ -181,9 +184,9 @@ namespace
                     }
                     DLIB_TEST((cov+cov2).in_vector_size() == (long)dims);
 
-                    DLIB_TEST(equal(mean(vector_to_matrix(vects)), (cov+cov2).mean()));
-                    DLIB_TEST_MSG(equal(covariance(vector_to_matrix(vects)), (cov+cov2).covariance()),
-                              max(abs(covariance(vector_to_matrix(vects)) - (cov+cov2).covariance()))
+                    DLIB_TEST(equal(mean(mat(vects)), (cov+cov2).mean()));
+                    DLIB_TEST_MSG(equal(covariance(mat(vects)), (cov+cov2).covariance()),
+                              max(abs(covariance(mat(vects)) - (cov+cov2).covariance()))
                               << "   dims = " << dims << "   samps = " << samps
                               );
                 }
@@ -238,6 +241,215 @@ namespace
 
         }
 
+        void test_skewness_and_kurtosis_1()
+        {
+
+            dlib::rand rnum;
+            running_stats<double> rs1;
+
+            double tp = 0;
+
+            rnum.set_seed("DlibRocks");
+
+            for(int i = 0; i< 1000000; i++)
+            {
+                tp = rnum.get_random_gaussian();
+                rs1.add(tp);
+            }   
+
+            // check the unbiased skewness and excess kurtosis of one million Gaussian
+            // draws are both near zero.
+            DLIB_TEST(abs(rs1.skewness()) < 0.1);
+            DLIB_TEST(abs(rs1.ex_kurtosis()) < 0.1);
+        }
+
+        void test_skewness_and_kurtosis_2()
+        {
+
+            string str = "DlibRocks";
+
+            for(int j = 0; j<5 ; j++)
+            {
+                matrix<double,1,100000> dat;
+                dlib::rand rnum;
+                running_stats<double> rs1;
+     
+                double tp = 0;
+                double n = 100000;
+                double xb = 0;
+    
+                double sknum = 0;
+                double skdenom = 0;
+                double unbi_skew = 0;
+    
+                double exkurnum = 0;
+                double exkurdenom = 0;
+                double unbi_exkur = 0;
+
+                random_shuffle(str.begin(), str.end());
+                rnum.set_seed(str);
+
+                for(int i = 0; i<n; i++)
+                {
+                    tp = rnum.get_random_gaussian();
+                    rs1.add(tp);
+                    dat(i)=tp;
+                    xb += dat(i);
+                }   
+    
+                xb = xb/n;
+
+                for(int i = 0; i < n; i++ )
+                { 
+                    sknum += pow(dat(i) - xb,3);
+                    skdenom += pow(dat(i) - xb,2);
+                    exkurnum += pow(dat(i) - xb,4);
+                    exkurdenom += pow(dat(i)-xb,2);
+                }
+
+                sknum = sknum/n;
+                skdenom = pow(skdenom/n,1.5);
+                exkurnum = exkurnum/n;
+                exkurdenom = pow(exkurdenom/n,2);
+    
+                unbi_skew = sqrt(n*(n-1))/(n-2)*sknum/skdenom;
+                unbi_exkur = (n-1)*((n+1)*(exkurnum/exkurdenom-3)+6)/((n-2)*(n-3));
+
+                dlog << LINFO << "Skew Diff: " <<  unbi_skew - rs1.skewness();
+                dlog << LINFO << "Kur Diff: " << unbi_exkur - rs1.ex_kurtosis();
+                
+                // Test an alternative implementation of the unbiased skewness and excess
+                // kurtosis against the one in running_stats.
+                DLIB_TEST(abs(unbi_skew - rs1.skewness()) < 1e-10);
+                DLIB_TEST(abs(unbi_exkur - rs1.ex_kurtosis()) < 1e-10);
+            }
+        }
+
+        void test_randomize_samples()
+        {
+            std::vector<unsigned int> t(15),u(15),v(15);
+
+            for (unsigned long i = 0; i < t.size(); ++i)
+            {
+                t[i] = i;
+                u[i] = i+1;
+                v[i] = i+2;
+            }
+            randomize_samples(t,u,v);
+
+            DLIB_TEST(t.size() == 15);
+            DLIB_TEST(u.size() == 15);
+            DLIB_TEST(v.size() == 15);
+
+            for (unsigned long i = 0; i < t.size(); ++i)
+            {
+                const unsigned long val = t[i];
+                DLIB_TEST(u[i] == val+1);
+                DLIB_TEST(v[i] == val+2);
+            }
+        }
+        void test_randomize_samples2()
+        {
+            dlib::matrix<int,15,1> t(15),u(15),v(15);
+
+            for (long i = 0; i < t.size(); ++i)
+            {
+                t(i) = i;
+                u(i) = i+1;
+                v(i) = i+2;
+            }
+            randomize_samples(t,u,v);
+
+            DLIB_TEST(t.size() == 15);
+            DLIB_TEST(u.size() == 15);
+            DLIB_TEST(v.size() == 15);
+
+            for (long i = 0; i < t.size(); ++i)
+            {
+                const long val = t(i);
+                DLIB_TEST(u(i) == val+1);
+                DLIB_TEST(v(i) == val+2);
+            }
+        }
+
+        void another_test()
+        {
+            std::vector<double> a;
+
+            running_stats<double> rs1, rs2;
+
+            for (int i = 0; i < 10; ++i)
+            {
+                rs1.add(i);
+                a.push_back(i);
+            }
+
+            DLIB_TEST(std::abs(variance(mat(a)) - rs1.variance()) < 1e-13);
+            DLIB_TEST(std::abs(stddev(mat(a)) - rs1.stddev()) < 1e-13);
+            DLIB_TEST(std::abs(mean(mat(a)) - rs1.mean()) < 1e-13);
+
+            for (int i = 10; i < 20; ++i)
+            {
+                rs2.add(i);
+                a.push_back(i);
+            }
+
+            DLIB_TEST(std::abs(variance(mat(a)) - (rs1+rs2).variance()) < 1e-13);
+            DLIB_TEST(std::abs(mean(mat(a)) - (rs1+rs2).mean()) < 1e-13);
+            DLIB_TEST((rs1+rs2).current_n() == 20);
+
+            running_scalar_covariance<double> rc1, rc2, rc3;
+            dlib::rand rnd;
+            for (double i = 0; i < 10; ++i)
+            {
+                const double a = i + rnd.get_random_gaussian();
+                const double b = i + rnd.get_random_gaussian();
+                rc1.add(a,b);
+                rc3.add(a,b);
+            }
+            for (double i = 11; i < 20; ++i)
+            {
+                const double a = i + rnd.get_random_gaussian();
+                const double b = i + rnd.get_random_gaussian();
+                rc2.add(a,b);
+                rc3.add(a,b);
+            }
+
+            DLIB_TEST(std::abs((rc1+rc2).mean_x() - rc3.mean_x()) < 1e-13);
+            DLIB_TEST(std::abs((rc1+rc2).mean_y() - rc3.mean_y()) < 1e-13);
+            DLIB_TEST_MSG(std::abs((rc1+rc2).variance_x() - rc3.variance_x()) < 1e-13, std::abs((rc1+rc2).variance_x() - rc3.variance_x()));
+            DLIB_TEST(std::abs((rc1+rc2).variance_y() - rc3.variance_y()) < 1e-13);
+            DLIB_TEST(std::abs((rc1+rc2).covariance() - rc3.covariance()) < 1e-13);
+            DLIB_TEST((rc1+rc2).current_n() == rc3.current_n());
+
+            rs1.set_max_n(50);
+            DLIB_TEST(rs1.max_n() == 50);
+        }
+
+        void test_average_precision()
+        {
+            std::vector<bool> items;
+            DLIB_TEST(average_precision(items) == 1);
+            DLIB_TEST(average_precision(items,1) == 0);
+
+            items.push_back(true);
+            DLIB_TEST(average_precision(items) == 1);
+            DLIB_TEST(std::abs(average_precision(items,1) - 0.5) < 1e-14);
+
+            items.push_back(true);
+            DLIB_TEST(average_precision(items) == 1);
+            DLIB_TEST(std::abs(average_precision(items,1) - 2.0/3.0) < 1e-14);
+
+            items.push_back(false);
+
+            DLIB_TEST(average_precision(items) == 1);
+            DLIB_TEST(std::abs(average_precision(items,1) - 2.0/3.0) < 1e-14);
+
+            items.push_back(true);
+
+            DLIB_TEST(std::abs(average_precision(items) - (2.0+3.0/4.0)/3.0) < 1e-14);
+        }
+
         void perform_test (
         )
         {
@@ -245,6 +457,12 @@ namespace
             test_random_subset_selector2();
             test_running_covariance();
             test_running_stats();
+            test_skewness_and_kurtosis_1();
+            test_skewness_and_kurtosis_2();
+            test_randomize_samples();
+            test_randomize_samples2();
+            another_test();
+            test_average_precision();
         }
     } a;
 

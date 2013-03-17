@@ -33,47 +33,6 @@
                <item>gate</item> 
             </sub>
          </item>
-         <item nolink="true">
-            <name>Geometry</name>
-            <sub>
-               <item>border_enumerator</item> 
-               <item>rectangle</item> 
-               <item>vector</item> 
-               <item>point</item> 
-               <item>rotate_point</item> 
-               <item>point_rotator</item> 
-               <item>get_rect</item> 
-               <item>centered_rect</item> 
-               <item>center</item> 
-               <item>shrink_rect</item> 
-               <item>grow_rect</item> 
-               <item>translate_rect</item> 
-               <item>resize_rect</item> 
-               <item>resize_rect_width</item> 
-               <item>resize_rect_height</item> 
-               <item>move_rect</item> 
-               <item>nearest_point</item> 
-               <item>distance_to_rect_edge</item> 
-            </sub>
-         </item>
-         <item nolink="true">
-            <name>Graph Utilities</name>
-            <sub>
-               <item>graph_contains_directed_cycle</item> 
-               <item>graph_contains_undirected_cycle</item> 
-               <item>create_moral_graph</item> 
-               <item>triangulate_graph_and_find_cliques</item> 
-               <item>graph_contains_length_one_cycle</item> 
-               <item>find_connected_nodes</item> 
-               <item>graph_is_connected</item> 
-               <item>is_clique</item> 
-               <item>is_maximal_clique</item> 
-               <item>copy_graph_structure</item> 
-               <item>edge</item> 
-               <item>is_join_tree</item> 
-               <item>create_join_tree</item> 
-            </sub>
-         </item>
          <item>hsort_array</item> 
          <item>isort_array</item> 
          <item>put_in_range</item> 
@@ -90,6 +49,8 @@
          </item>
       </section>
 
+
+
       <section>
          <name>Statistics</name>
          <item>rand</item> 
@@ -104,6 +65,7 @@
          <item>running_covariance</item> 
          <item>random_subset_selector</item> 
          <item>randomly_subsample</item> 
+         <item>randomly_sample_image_features</item> 
 
       </section>
 
@@ -112,8 +74,27 @@
          <item>md5</item> 
          <item>crc32</item> 
          <item>hash</item> 
+         <item>count_bits</item> 
+         <item>hamming_distance</item> 
          <item>murmur_hash3</item> 
+         <item>murmur_hash3_128bit</item> 
+         <item>gaussian_random_hash</item> 
+         <item>uniform_random_hash</item> 
+         <item>projection_hash</item> 
+         <item>create_random_projection_hash</item> 
+         <item>hash_samples</item> 
+         <item>hash_similar_angles_64</item> 
+         <item>hash_similar_angles_128</item> 
+         <item>hash_similar_angles_256</item> 
+         <item>hash_similar_angles_512</item> 
       </section>
+
+      <section>
+         <name>Filtering</name>
+         <item>kalman_filter</item> 
+         <item>rls_filter</item> 
+      </section>
+
     </top>  
    </menu>
 
@@ -123,6 +104,82 @@
 
    <components>
    
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>hash_similar_angles_64</name>
+         <file>dlib/lsh.h</file>
+         <spec_file link="true">dlib/lsh/hashes_abstract.h</spec_file>
+         <description>
+            This object is a tool for computing locality sensitive hashes that give
+            vectors with small angles between each other similar hash values.  In
+            particular, this object creates 64 random planes which pass though the
+            origin and uses them to create a 64bit hash.
+         </description>
+
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>hash_similar_angles_128</name>
+         <file>dlib/lsh.h</file>
+         <spec_file link="true">dlib/lsh/hashes_abstract.h</spec_file>
+         <description>
+            This object is a tool for computing locality sensitive hashes that give
+            vectors with small angles between each other similar hash values.  In
+            particular, this object creates 128 random planes which pass though the
+            origin and uses them to create a 128bit hash.
+         </description>
+
+      </component>
+
+   <!-- ************************************************************************* -->
+
+
+      <component>
+         <name>hash_similar_angles_256</name>
+         <file>dlib/lsh.h</file>
+         <spec_file link="true">dlib/lsh/hashes_abstract.h</spec_file>
+         <description>
+            This object is a tool for computing locality sensitive hashes that give
+            vectors with small angles between each other similar hash values.  In
+            particular, this object creates 256 random planes which pass though the
+            origin and uses them to create a 256bit hash.
+         </description>
+
+      </component>
+
+   <!-- ************************************************************************* -->
+
+
+      <component>
+         <name>hash_similar_angles_512</name>
+         <file>dlib/lsh.h</file>
+         <spec_file link="true">dlib/lsh/hashes_abstract.h</spec_file>
+         <description>
+            This object is a tool for computing locality sensitive hashes that give
+            vectors with small angles between each other similar hash values.  In
+            particular, this object creates 512 random planes which pass though the
+            origin and uses them to create a 512bit hash.
+         </description>
+
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>hash_samples</name>
+         <file>dlib/graph_utils_threaded.h</file>
+         <spec_file link="true">dlib/graph_utils/find_k_nearest_neighbors_lsh_abstract.h</spec_file>
+         <description>
+            This is a simple function for hashing a bunch of vectors using a
+            locality sensitive hashing object such as <a href="#hash_similar_angles_128">hash_similar_angles_128</a>.  
+            It is also capable of running in parallel on a multi-core CPU.
+         </description>
+
+      </component>
+
    <!-- ************************************************************************* -->
 
       <component checked="true">
@@ -191,6 +248,31 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>gaussian_random_hash</name>
+         <file>dlib/hash.h</file>
+         <spec_file link="true">dlib/general_hash/random_hashing_abstract.h</spec_file>
+         <description>
+              This function uses hashing to generate Gaussian distributed random values
+              with mean 0 and variance 1.  
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>uniform_random_hash</name>
+         <file>dlib/hash.h</file>
+         <spec_file link="true">dlib/general_hash/random_hashing_abstract.h</spec_file>
+         <description>
+              This function uses hashing to generate uniform random values in the range [0,1).
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>murmur_hash3</name>
          <file>dlib/hash.h</file>
          <spec_file>dlib/general_hash/murmur_hash3_abstract.h</spec_file>
@@ -205,16 +287,118 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>murmur_hash3_128bit</name>
+         <file>dlib/hash.h</file>
+         <spec_file link="true">dlib/general_hash/murmur_hash3_abstract.h</spec_file>
+         <description>
+            This function takes a block of memory and returns a 128bit hash.  The 
+            hashing algorithm used is Austin Appleby's excellent 
+            <a href="http://code.google.com/p/smhasher/">MurmurHash3</a>. 
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>kalman_filter</name>
+         <file>dlib/filtering.h</file>
+         <spec_file>dlib/filtering/kalman_filter_abstract.h</spec_file>
+         <description>
+                This object implements the Kalman filter, which is a tool for 
+                recursively estimating the state of a process given measurements
+                related to that process.  To use this tool you will have to 
+                be familiar with the workings of the Kalman filter.  An excellent
+                introduction can be found in the paper:
+                <blockquote>
+                    An Introduction to the Kalman Filter
+                    by Greg Welch and Gary Bishop
+                </blockquote>
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>rls_filter</name>
+         <file>dlib/filtering.h</file>
+         <spec_file>dlib/filtering/rls_filter_abstract.h</spec_file>
+         <description>
+            This object is a tool for doing time series prediction using 
+            linear <a href="ml.html#rls">recursive least squares</a>.  In particular,
+            this object takes a sequence of points from the user and, at each
+            step, attempts to predict the value of the next point.
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>projection_hash</name>
+         <file>dlib/lsh.h</file>
+         <spec_file>dlib/lsh/projection_hash_abstract.h</spec_file>
+         <description>
+                This is a tool for hashing elements of a vector space into the integers.  
+                It is intended to represent locality sensitive hashing functions such as 
+                the popular <a href="#create_random_projection_hash">random projection hashing</a> method.
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>create_random_projection_hash</name>
+         <file>dlib/lsh.h</file>
+         <spec_file>dlib/lsh/create_random_projection_hash_abstract.h</spec_file>
+         <description>
+            Creates a random projection based locality sensitive 
+            <a href="#projection_hash">hashing function</a>.
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>hash</name>
          <file>dlib/hash.h</file>
          <spec_file>dlib/general_hash/hash_abstract.h</spec_file>
          <description>
             This is a set of convenience functions for invoking <a href="#murmur_hash3">murmur_hash3</a>
-            on std::strings, std::vectors, std::maps, or <a href="containers.html#matrix">dlib::matrix</a> objects.
+            on std::strings, std::vectors, std::maps, or <a href="linear_algebra.html#matrix">dlib::matrix</a> objects.
             <p>
                As an aside, the hash() for matrix objects is defined <a href="dlib/matrix/matrix_utilities_abstract.h.html#hash">here</a>.
                It has the same interface as all the others.
             </p>
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>count_bits</name>
+         <file>dlib/hash.h</file>
+         <spec_file link="true">dlib/general_hash/count_bits_abstract.h</spec_file>
+         <description>
+            This function counts the number of bits in an unsigned integer which are
+            set to 1.
+         </description>
+         
+      </component>
+            
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>hamming_distance</name>
+         <file>dlib/hash.h</file>
+         <spec_file link="true">dlib/general_hash/count_bits_abstract.h</spec_file>
+         <description>
+            This function returns the hamming distance between two unsigned integers.
+            That is, it returns the number of bits which differer in the two integers.
          </description>
          
       </component>
@@ -231,54 +415,6 @@
          
       </component>
             
-   <!-- ************************************************************************* -->
-      
-      <component>
-         <name>rectangle</name>
-         <file>dlib/geometry.h</file>
-         <spec_file>dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>
-            This object represents a rectangular region inside a Cartesian 
-            coordinate system.  It allows you to easily represent and manipulate
-            rectangles.
-         </description>
-      </component>
-            
-   <!-- ************************************************************************* -->
-      
-      <component>
-         <name>border_enumerator</name>
-         <file>dlib/geometry.h</file>
-         <spec_file>dlib/geometry/border_enumerator_abstract.h</spec_file>
-         <description>
-            This object is an <a href="containers.html#enumerable">enumerator</a> 
-            over the border <a href="#point">points</a> of a 
-            <a href="#rectangle">rectangle</a>.
-         </description>
-      </component>
-            
-   <!-- ************************************************************************* -->
-      
-      <component>
-         <name>vector</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/vector_abstract.h</spec_file>
-         <description>
-            This object represents a two or three dimensional vector.
-         </description>
-      </component>
-      
-   <!-- ************************************************************************* -->
-      
-      <component>
-         <name>point</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/vector_abstract.h</spec_file>
-         <description>
-               This object represents a point inside a Cartesian coordinate system.
-         </description>
-      </component>
-      
    <!-- ************************************************************************* -->
       
       <component>
@@ -430,6 +566,20 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>randomly_sample_image_features</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/image_feature_sampling_abstract.h</spec_file>
+         <description>
+            Given a feature extractor such as the <a href="imaging.html#hog_image">hog_image</a>,
+            this routine selects a random subsample of local image feature vectors 
+            from a set of images.  
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>hsort_array</name>
          <file>dlib/sort.h</file>
          <spec_file link="true">dlib/sort.h</spec_file>
@@ -527,60 +677,6 @@
    <!-- ************************************************************************* -->
 
       <component>
-         <name>edge</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a> object and a 
-            pair of indices.  It returns a reference to the edge object between the two nodes
-            with the given indices. 
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>is_join_tree</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes two <a href="containers.html#graph">graph</a> objects and
-            checks if the second of the two graphs is a valid join tree (aka tree decomposition)
-            of the first graph.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>create_join_tree</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a> object and
-            creates a join tree for that graph.  Or in other words, this function finds a 
-            tree decomposition of the given graph.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>graph_contains_directed_cycle</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function checks a <a href="containers.html#directed_graph">directed_graph</a> for directed cycles.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
          <name>set_intersection</name>
          <file>dlib/set_utils.h</file>
          <spec_file link="true">dlib/set_utils/set_utils_abstract.h</spec_file>
@@ -633,224 +729,6 @@
    <!-- ************************************************************************* -->
 
       <component>
-         <name>triangulate_graph_and_find_cliques</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a> and
-            turns it into a chordal graph.  It also returns a 
-            <a href="containers.html#set">set</a> that contains
-            all the cliques present in the chordal graph.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>create_moral_graph</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#directed_graph">directed_graph</a>
-            and returns the moralized version of the graph in the form of a 
-            <a href="containers.html#graph">graph</a> object.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>graph_contains_length_one_cycle</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a>
-            or <a href="containers.html#directed_graph">directed_graph</a> object and
-            returns true if and only if the graph contains a node that has an edge that
-            links back to itself.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>find_connected_nodes</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a node from a <a href="containers.html#graph">graph</a>
-            or <a href="containers.html#directed_graph">directed_graph</a> object and a 
-            <a href="containers.html#set">set</a> of unsigned longs.  It finds all the
-            nodes in the given graph that are connected to the given node by an 
-            undirected path and returns them in the set (also note that the
-            original query node is also returned in this set).
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>graph_is_connected</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a> or
-            <a href="containers.html#directed_graph">directed_graph</a> object and
-            determines if the graph is connected.  That is, it returns true if and only if
-            there is an undirected path between any two nodes in the given graph.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>is_clique</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a> and a 
-            <a href="containers.html#set">set</a> of node index values and checks 
-            if the specified set of nodes is a clique in the graph.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>copy_graph_structure</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a> or 
-            <a href="containers.html#directed_graph">directed_graph</a> and copies  
-            its structure to another graph or directed_graph object.  The only 
-            restriction is that you can't copy the structure of a graph into a
-            directed_graph.  The three other possible combinations are allowed
-            however.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>is_maximal_clique</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="containers.html#graph">graph</a> and a 
-            <a href="containers.html#set">set</a> of node index values and checks 
-            if the specified set of nodes is a maximal clique in the graph.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>nearest_point</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> and a 
-            <a href="#point">point</a> and returns the point in the given 
-            rectangle that is nearest to the given point.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>distance_to_rect_edge</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> and a 
-            <a href="#point">point</a> and returns the Manhattan distance between
-            the rectangle's edge and the point.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>move_rect</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> and moves
-            it so that it's upper left corner occupies the given location.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>resize_rect_height</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> and 
-            returns a new rectangle with the given height but otherwise with the 
-            same edge points as the original rectangle. 
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>resize_rect_width</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> and 
-            returns a new rectangle with the given width but otherwise with the 
-            same edge points as the original rectangle. 
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>resize_rect</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> and 
-            returns a new rectangle with the given size but with the same upper
-            left corner as the original rectangle.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>translate_rect</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> and moves
-            it by a given number of units along the x and y axis relative to
-            where it was before the move.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
          <name>quantum_register</name>
          <file>dlib/quantum_computing.h</file>
          <spec_file link="true">dlib/quantum_computing/quantum_computing_abstract.h</spec_file>
@@ -879,109 +757,6 @@
          <examples>
             <example>quantum_computing_ex.cpp.html</example>
          </examples>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>center</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            Returns the center point of a <a href="#rectangle">rectangle</a>.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>centered_rect</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            There are various overloads of this function but the basic idea is
-            that it returns a <a href="#rectangle">rectangle</a> with a given 
-            width and height and centered about a given point.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>shrink_rect</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> object, 
-            shrinks its borders by a given amount, and returns the result.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>grow_rect</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This function takes a <a href="#rectangle">rectangle</a> object, 
-            grows its borders by a given amount, and returns the result.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>rotate_point</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/vector_abstract.h</spec_file>
-         <description>        
-            This is a function that rotates a 2D <a href="#vector">vector</a> or 
-            <a href="#point">point</a> object about a given point.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>point_rotator</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/vector_abstract.h</spec_file>
-         <description>        
-            This is an object that rotates a 2D <a href="#vector">vector</a> or 
-            <a href="#point">point</a> object about the origin.
-         </description>
-                                 
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>get_rect</name>
-         <file>dlib/geometry.h</file>
-         <spec_file link="true">dlib/geometry/rectangle_abstract.h</spec_file>
-         <description>        
-            This is a simple template function that returns a rectangle 
-            representing the size of a 2D container (e.g. <a href="containers.html#matrix">matrix</a> or
-            <a href="containers.html#array2d">array2d</a>). 
-         </description>
-      </component>
-
-   <!-- ************************************************************************* -->
-
-      <component>
-         <name>graph_contains_undirected_cycle</name>
-         <file>dlib/graph_utils.h</file>
-         <spec_file link="true">dlib/graph_utils/graph_utils_abstract.h</spec_file>
-         <description>        
-            This function checks a <a href="containers.html#directed_graph">directed_graph</a> for undirected cycles.
-         </description>
                                  
       </component>
 

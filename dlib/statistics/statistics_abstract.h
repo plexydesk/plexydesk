@@ -1,4 +1,4 @@
-// Copyright (C) 2008  Davis E. King (davis@dlib.net)
+// Copyright (C) 2008  Davis E. King (davis@dlib.net), Steve Taylor
 // License: Boost Software License   See LICENSE.txt for the full license.
 #undef DLIB_STATISTICs_ABSTRACT_
 #ifdef DLIB_STATISTICs_ABSTRACT_
@@ -101,7 +101,7 @@ namespace dlib
             - a.size() == b.size()
         ensures
             - returns the mean squared error between all the elements of a and b.
-              (i.e. mean(squared(vector_to_matrix(a)-vector_to_matrix(b))))
+              (i.e. mean(squared(mat(a)-mat(b))))
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -121,8 +121,8 @@ namespace dlib
                 - current_n() == 0
 
             WHAT THIS OBJECT REPRESENTS
-                This object represents something that can compute the running mean and
-                variance of a stream of real numbers.  
+                This object represents something that can compute the running mean, 
+                variance, skewness, and excess kurtosis of a stream of real numbers.  
 
                 As this object accumulates more and more numbers it will be the case
                 that each new number impacts the current mean and variance estimate
@@ -184,10 +184,13 @@ namespace dlib
         );
         /*!
             ensures
-                - updates the mean and variance stored in this object so that
-                  the new value is factored into them
-                - #mean() == mean()*current_n()/(current_n()+1) + val/(current_n()+1)
-                - #variance() == the updated variance that takes this new value into account
+                - updates the mean, variance, skewness, and kurtosis stored in this object
+                  so that the new value is factored into them.
+                - #mean() == mean()*current_n()/(current_n()+1) + val/(current_n()+1).
+                  (i.e. the updated mean value that takes the new value into account)
+                - #variance() == the updated variance that takes this new value into account.
+                - #skewness() == the updated skewness that takes this new value into account.
+                - #ex_kurtosis() == the updated kurtosis that takes this new value into account.
                 - if (current_n() < max_n()) then
                     - #current_n() == current_n() + 1
                 - else
@@ -208,7 +211,7 @@ namespace dlib
             requires
                 - current_n() > 1
             ensures
-                - returns the variance of all the values presented to this
+                - returns the unbiased sample variance of all the values presented to this
                   object so far.
         !*/
 
@@ -218,8 +221,28 @@ namespace dlib
             requires
                 - current_n() > 1
             ensures
-                - returns the standard deviation of all the values presented to this
-                  object so far.
+                - returns the unbiased sampled standard deviation of all the values
+                  presented to this object so far.
+        !*/
+
+        T skewness (
+        ) const;
+        /*!
+            requires
+                - current_n() > 2
+            ensures
+                - returns the unbiased sample skewness of all the values presented 
+                  to this object so far.
+        !*/
+
+        T ex_kurtosis(
+        ) const;
+        /*!
+            requires
+                - current_n() > 3
+            ensures
+                - returns the unbiased sample kurtosis of all the values presented 
+                  to this object so far.
         !*/
 
         T max (
@@ -248,6 +271,19 @@ namespace dlib
                 - current_n() > 1
             ensures
                 - return (val-mean())/stddev();
+        !*/
+
+        running_stats operator+ (
+            const running_stats& rhs
+        ) const;
+        /*!
+            requires
+                - max_n() == rhs.max_n()
+            ensures
+                - returns a new running_stats object that represents the combination of all
+                  the values given to *this and rhs.  That is, this function returns a
+                  running_stats object, R, that is equivalent to what you would obtain if
+                  all calls to this->add() and rhs.add() had instead been done to R.
         !*/
     };
 
@@ -400,6 +436,18 @@ namespace dlib
                 - returns the unbiased sample standard deviation of all y samples
                   presented to this object via add().
         !*/
+
+        running_scalar_covariance operator+ (
+            const running_covariance& rhs
+        ) const;
+        /*!
+            ensures
+                - returns a new running_scalar_covariance object that represents the
+                  combination of all the values given to *this and rhs.  That is, this
+                  function returns a running_scalar_covariance object, R, that is
+                  equivalent to what you would obtain if all calls to this->add() and
+                  rhs.add() had instead been done to R.
+        !*/
     };
 
 // ----------------------------------------------------------------------------------------
@@ -543,7 +591,7 @@ namespace dlib
                 to store intermediate results for normalization.  This avoids
                 needing to reallocate it every time this object performs normalization
                 but also makes it non-thread safe.  So make sure you don't share
-                this object between threads. 
+                instances of this object between threads. 
         !*/
 
     public:
@@ -559,7 +607,7 @@ namespace dlib
             requires
                 - samples.size() > 0
                 - samples == a column matrix or something convertible to a column 
-                  matrix via vector_to_matrix().  Also, x should contain 
+                  matrix via mat().  Also, x should contain 
                   matrix_type objects that represent nonempty column vectors.
             ensures
                 - #in_vector_size() == samples(0).nr()
@@ -620,8 +668,8 @@ namespace dlib
                   following properties: 
                     - Z.nr() == out_vector_size()
                     - Z.nc() == 1
-                    - the expected value of each element of Z is 0 
-                    - the expected variance of each element of Z is 1
+                    - the mean of each element of Z is 0 
+                    - the variance of each element of Z is 1
                     - Z == pointwise_multiply(x-means(), std_devs());
         !*/
 
@@ -699,7 +747,7 @@ namespace dlib
                 to store intermediate results for normalization.  This avoids
                 needing to reallocate it every time this object performs normalization
                 but also makes it non-thread safe.  So make sure you don't share
-                this object between threads. 
+                instances of this object between threads. 
         !*/
 
     public:
@@ -717,7 +765,7 @@ namespace dlib
                 - 0 < eps <= 1
                 - samples.size() > 0
                 - samples == a column matrix or something convertible to a column 
-                  matrix via vector_to_matrix().  Also, x should contain 
+                  matrix via mat().  Also, x should contain 
                   matrix_type objects that represent nonempty column vectors.
             ensures
                 - This object has learned how to normalize vectors that look like
@@ -796,8 +844,8 @@ namespace dlib
                   following properties: 
                     - Z.nr() == out_vector_size()
                     - Z.nc() == 1
-                    - the expected value of each element of Z is 0 
-                    - the expected variance of each element of Z is 1
+                    - the mean of each element of Z is 0 
+                    - the variance of each element of Z is 1
                     - Z == pca_matrix()*pointwise_multiply(x-means(), std_devs());
         !*/
 

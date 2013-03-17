@@ -34,6 +34,7 @@
          <item>timer</item> 
          <item>timeout</item> 
          <item>member_function_pointer</item>
+         <item>vectorstream</item>
          <item>bound_function_pointer</item>
          <item>error</item>
          <item>console_progress_indicator</item>
@@ -61,6 +62,8 @@
          <item>serialize</item> 
          <item>zero_extend_cast</item> 
          <item>make_mfp</item> 
+         <item>TIME_THIS</item> 
+         <item>timing code blocks</item> 
       </section>
       
       <section>
@@ -328,8 +331,23 @@
          <file>dlib/pipe.h</file>
          <spec_file>dlib/pipe/pipe_kernel_abstract.h</spec_file>
          <description>
-                This is a first in first out queue with a fixed maximum size containing items 
-                of type T.  It is suitable for passing objects between threads.
+                This is a first in first out queue with a fixed maximum size.  
+                It is suitable for passing objects between threads.
+
+               <p>
+                  This object is optimized for speed, therefore, it uses
+                  global <tt>swap()</tt> to create a zero-copy method for moving objects
+                  around.  For example, on a computer running Ubuntu 12.04 with
+                  a 2.67GHz Intel i7 920 CPU it is possible to pass over 4.4
+                  million <tt>std::vector&lt;int&gt;</tt> objects a second between two
+                  threads.  This is regardless of the number of ints in the <tt>std::vector</tt>
+                  objects.  In particular, this test was done with 100,000 
+                  ints in each <tt>std::vector</tt>.
+               </p>
+               <p>
+                  Finally, note that you can use the pipe as an efficient method to pass
+                  messages between two networked computers by using the <a href="network.html#bridge">bridge</a>.
+               </p>
          </description>
          
          <examples>
@@ -343,42 +361,50 @@
       
    <!-- ************************************************************************* -->
       
-      <component checked="true">
+      <component>
          <name>bound_function_pointer</name>
          <file>dlib/bound_function_pointer.h</file>
          <spec_file>dlib/bound_function_pointer/bound_function_pointer_kernel_abstract.h</spec_file>
          <description>
             This object represents a function with all its arguments bound to specific objects. 
+
+            <p>
+               This implementation is done using type erasure and placement new.  This
+               means that it never allocates memory on the heap and instead stores everything
+               on the stack.
+            </p>
          </description>
-         
-         <implementations>
-            <implementation>
-               <name>bound_function_pointer_kernel_1</name>
-               <file>dlib/bound_function_pointer/bound_function_pointer_kernel_1.h</file>
-               <description> 
-                  This implementation is done using type erasure and placement new.  This
-                  means that it never allocates memory on the heap and instead stores everything
-                  on the stack.
-               </description> 
-    
-               <typedefs>
-                  <typedef>
-                     <name>kernel_1a</name>
-                     <description>is a typedef for bound_function_pointer_kernel_1</description>
-                  </typedef>
-               </typedefs>                
-               
-            </implementation> 
-                     
-         </implementations>
-                           
                         
       </component>
       
       
    <!-- ************************************************************************* -->
       
-      <component checked="true">
+      <component>
+         <name>vectorstream</name>
+         <file>dlib/vectorstream.h</file>
+         <spec_file>dlib/vectorstream/vectorstream_abstract.h</spec_file>
+         <description>
+                This is an iostream object that reads and writes from an in-memory buffer.
+                It functions very much the same way as the std::stringstream object.
+                However, while the std::stringstream holds its buffer internally and it can
+                only be accessed by copying it out, the vectorstream uses an external
+                std::vector&lt;char&gt; as its buffer.  That is, it holds a reference to an
+                external vector and does not contain any internal buffers of its own.  
+
+               <p>
+                This object is useful as a slightly more efficient alternative to the
+                std::stringstream since you can avoid the overhead of copying buffer
+                contents to and from the stream.  This is particularly useful when used as
+                a source or target for <a href="#serialize">serialization</a> routines.
+               </p>
+         </description>
+      </component>
+      
+      
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>member_function_pointer</name>
          <file>dlib/member_function_pointer.h</file>
          <spec_file>dlib/member_function_pointer/member_function_pointer_kernel_abstract.h</spec_file>
@@ -386,34 +412,17 @@
             This object represents a member function pointer.  It is useful because
             instances of this object can be created without needing to know the type
             of object whose member function we will be calling.
+            <p>
+                  The implementation of this object is done using type erasure and placement new.  This
+                  means that it never allocates memory on the heap and instead stores everything
+                  on the stack.
+            </p>
          </description>
          
          <examples>
             <example>member_function_pointer_ex.cpp.html</example>
          </examples>
 
-         <implementations>
-            <implementation>
-               <name>member_function_pointer_kernel_1</name>
-               <file>dlib/member_function_pointer/member_function_pointer_kernel_1.h</file>
-               <description> 
-                  This implementation is done using type erasure and placement new.  This
-                  means that it never allocates memory on the heap and instead stores everything
-                  on the stack.
-               </description> 
-    
-               <typedefs>
-                  <typedef>
-                     <name>kernel_1a</name>
-                     <description>is a typedef for member_function_pointer_kernel_1</description>
-                  </typedef>
-               </typedefs>                
-               
-            </implementation> 
-                     
-         </implementations>
-                           
-                        
       </component>
       
       
@@ -831,30 +840,10 @@
       <component>
          <name>timeout</name>
          <file>dlib/timeout.h</file>
-         <spec_file>dlib/timeout/timeout_kernel_abstract.h</spec_file>
+         <spec_file>dlib/timeout/timeout_abstract.h</spec_file>
          <description>
             This object provides a simple way to implement a timeout. 
          </description>
-    
-         <implementations>
-            <implementation>
-               <name>timeout_kernel_1</name>
-               <file>dlib/timeout/timeout_kernel_1.h</file>
-               <description> 
-                  This is implemented in the obvious way using virtual functions and templates.
-               </description> 
-    
-               <typedefs>
-                  <typedef>
-                     <name>kernel_1a</name>
-                     <description>is a typedef for timeout_kernel_1</description>
-                  </typedef>
-               </typedefs>                
-               
-            </implementation> 
-                     
-         </implementations>
-                        
       </component>
             
    <!-- ************************************************************************* -->
@@ -862,54 +851,23 @@
       <component>
          <name>timer</name>
          <file>dlib/timer.h</file>
-         <spec_file>dlib/timer/timer_kernel_abstract.h</spec_file>
+         <spec_file>dlib/timer/timer_abstract.h</spec_file>
          <description>
                 This object represents a timer that will call a given member function 
                 repeatedly at regular intervals.
+                <p>
+                  The implementation of this object has a single master thread
+                  that does all the waiting.  This master thread creates and
+                  dispatches threads to specific timer objects when they need
+                  to run their action functions.  When a timer object isn't
+                  executing its action function then it doesn't have any thread
+                  allocated to it at all.  So it is fairly efficient.
+                </p>
          </description>
     
          <examples>
             <example>timer_ex.cpp.html</example>
          </examples>
-         
-         <implementations>
-            <implementation>
-               <name>timer_kernel_1</name>
-               <file>dlib/timer/timer_kernel_1.h</file>
-               <description> 
-                  This is implemented in the obvious way.
-               </description> 
-    
-               <typedefs>
-                  <typedef>
-                     <name>kernel_1a</name>
-                     <description>is a typedef for timer_kernel_1</description>
-                  </typedef>
-               </typedefs>                
-               
-            </implementation> 
-                     
-            <implementation>
-               <name>timer_kernel_2</name>
-               <file>dlib/timer/timer_kernel_2.h</file>
-               <description> 
-                  This implementation has a single master thread that does all the waiting.
-                  This master thread creates and dispatches threads to specific timer objects
-                  when they need to run their action functions.  When a timer object isn't executing 
-                  its action function then it doesn't have any thread allocated to it at all.  So
-                  it is much more efficient than timer_kernel_1.
-               </description> 
-    
-               <typedefs>
-                  <typedef>
-                     <name>kernel_2a</name>
-                     <description>is a typedef for timer_kernel_2</description>
-                  </typedef>
-               </typedefs>                
-               
-            </implementation> 
-                     
-         </implementations>
                         
       </component>
             
@@ -976,7 +934,17 @@
          <description>
             This is actually a set of overloaded functions which provide the ability to restore an object's state
             from an input stream.  Currently all dlib container classes, non pointer C++ intrinsics, std::string, 
-            std::vector, std::map, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.  
+            std::vector, std::map, std::set, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.  
+            <p>
+               You can also use serialize() and deserialize() to read/write Google protocol buffer objects.  However, 
+               note that dlib::serialize() writes additional delimiting bytes at the start of each protocol buffer message.  
+               We do this because Google protocol buffers are not 
+               <a href="https://developers.google.com/protocol-buffers/docs/techniques#streaming">self-delimiting</a>
+               on their own.  This means that you can't write more than one protocol buffer object to an output stream 
+               unless you include some kind of delimiter between the messages.  
+               So dlib takes care of this for you by prefixing each message with its length in bytes.  In particular,
+               the number of bytes is encoded as a 32bit little endian integer.  
+            </p>
          </description>
                                  
       </component>
@@ -990,7 +958,17 @@
          <description>
             This is actually a set of overloaded functions which provide the ability to save an object's state
             to an output stream.  Currently all dlib container classes, non pointer C++ intrinsics, std::string, 
-            std::vector, std::map, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.   
+            std::vector, std::map, std::set, std::complex, dlib::bigint, dlib::uint64, dlib::int64, C style arrays, and dlib::vector objects are serializable.   
+            <p>
+               You can also use serialize() and deserialize() to read/write Google protocol buffer objects.  However, 
+               note that dlib::serialize() writes additional delimiting bytes at the start of each protocol buffer message.  
+               We do this because Google protocol buffers are not 
+               <a href="https://developers.google.com/protocol-buffers/docs/techniques#streaming">self-delimiting</a>
+               on their own.  This means that you can't write more than one protocol buffer object to an output stream 
+               unless you include some kind of delimiter between the messages.  
+               So dlib takes care of this for you by prefixing each message with its length in bytes.  In particular,
+               the number of bytes is encoded as a 32bit little endian integer.  
+            </p>
          </description>
                                  
       </component>
@@ -1030,6 +1008,43 @@
       </component>
             
    <!-- ************************************************************************* -->
+
+      <component>
+         <name>TIME_THIS</name>
+         <file>dlib/time_this.h</file>
+         <spec_file>dlib/time_this.h</spec_file>
+         <description>        
+            <p>
+            This is a macro function for timing blocks of code.  Its form is <tt>TIME_THIS(whatever you want to time)</tt>
+            It's pretty straight forward. It just prints the time it took to std::cout.
+            </p>
+            <p>
+            There is another version of this function called TIME_THIS_TO which takes as a parameter an ostream
+            object to write its output to.  Its form is <tt>TIME_THIS_TO(what you want to time, the output stream)</tt>;
+            </p>
+            
+         </description>
+                                 
+      </component>
+            
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>timing code blocks</name>
+         <file>dlib/timing.h</file>
+         <spec_file>dlib/timing.h</spec_file>
+         <description>        
+               This is a set of set of functions for timing blocks of code.  Unlike
+               <a href="#TIME_THIS">TIME_THIS</a>, it can be used to find the cumulative
+               time spent on a block which is executed multiple times.
+         </description>
+                                 
+      </component>
+            
+
+   <!-- ************************************************************************* -->
+
       
    </components>
 

@@ -37,8 +37,8 @@
 
 
 #include <iostream>
-#include "dlib/svm_threaded.h"
-#include "dlib/rand.h"
+#include <dlib/svm_threaded.h>
+#include <dlib/rand.h>
 
 using namespace std;
 using namespace dlib;
@@ -67,9 +67,10 @@ class feature_extractor
     */
 
 public:
-    // This defines the type used to represent the elements of an observed 
-    // sequence.  You can use any type here.  
-    typedef unsigned long sample_type; 
+    // This defines the type used to represent the observed sequence.  You can use 
+    // any type here so long as it has a .size() which returns the number of things
+    // in the sequence.  
+    typedef std::vector<unsigned long> sequence_type; 
 
     unsigned long num_features() const
     /*!
@@ -111,7 +112,7 @@ public:
     template <typename feature_setter, typename EXP>
     void get_features (
         feature_setter& set_feature,
-        const std::vector<sample_type>& x,
+        const sequence_type& x,
         const matrix_exp<EXP>& y,
         unsigned long position
     ) const
@@ -227,8 +228,8 @@ int main()
     // print out some of the randomly sampled sequences
     for (int i = 0; i < 10; ++i)
     {
-        cout << "hidden states:   " << trans(vector_to_matrix(labels[i]));
-        cout << "observed states: " << trans(vector_to_matrix(samples[i]));
+        cout << "hidden states:   " << trans(mat(labels[i]));
+        cout << "observed states: " << trans(mat(samples[i]));
         cout << "******************************" << endl;
     }
 
@@ -250,8 +251,8 @@ int main()
     // Test the learned labeler on one of the training samples.  In this
     // case it will give the correct sequence of labels.
     std::vector<unsigned long> predicted_labels = labeler(samples[0]);
-    cout << "true hidden states:      "<< trans(vector_to_matrix(labels[0]));
-    cout << "predicted hidden states: "<< trans(vector_to_matrix(predicted_labels));
+    cout << "true hidden states:      "<< trans(mat(labels[0]));
+    cout << "predicted hidden states: "<< trans(mat(predicted_labels));
 
 
 
@@ -375,7 +376,7 @@ void make_dataset (
         unsigned long previous_label = rnd.get_random_32bit_number()%num_label_states;
         for (unsigned long i = 0; i < sample.size(); ++i)
         {
-            unsigned long next_label, next_sample;
+            unsigned long next_label = 0, next_sample = 0;
             sample_hmm(rnd, transition_probabilities, emission_probabilities, 
                        previous_label, next_label, next_sample);
 

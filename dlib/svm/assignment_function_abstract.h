@@ -75,6 +75,23 @@ namespace dlib
                   is "good").
         !*/
 
+        unsigned long num_nonnegative_weights (
+        ) const;
+        /*!
+            ensures
+                - returns the number of elements of the w parameter vector which should be
+                  non-negative.  That is, this feature extractor is intended to be used
+                  with w vectors where the first num_nonnegative_weights() elements of w
+                  are >= 0.  That is, it should be the case that w(i) >= 0 for all i <
+                  num_nonnegative_weights().
+                - Note that num_nonnegative_weights() is just an optional method to allow
+                  you to tell a tool like the structural_assignment_trainer that the
+                  learned w should have a certain number of non-negative elements.
+                  Therefore, if you do not provide a num_nonnegative_weights() method in
+                  your feature extractor then it will default to a value of 0, indicating
+                  that all elements of the w parameter vector may be any value.
+        !*/
+
     };
 
 // ----------------------------------------------------------------------------------------
@@ -126,6 +143,15 @@ namespace dlib
                     match_score(l,r) == dot(w, PSI(l,r))
                 where l is an element of LHS, r is an element of RHS, w is a parameter 
                 vector, and PSI() is defined by the feature_extractor template argument.  
+
+            THREAD SAFETY
+                It is always safe to use distinct instances of this object in different
+                threads.  However, when a single instance is shared between threads then
+                the following rules apply:
+                    It is safe to call the const members of this object from multiple
+                    threads so long as the feature_extractor is also threadsafe.  This is
+                    because the const members are purely read-only operations.  However,
+                    any operation that modifies an assignment_function is not threadsafe.
         !*/
 
     public:

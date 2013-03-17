@@ -11,6 +11,11 @@
             <chm_sub>algorithms.xml</chm_sub>
          </item>
          <item>
+            <name>Graph Tools</name>
+            <link>graph_tools.html</link>
+            <chm_sub>graph_tools.xml</chm_sub>
+         </item>
+         <item>
             <name>Optimization</name>
             <link>optimization.html</link>
             <chm_sub>optimization.xml</chm_sub>
@@ -19,6 +24,11 @@
             <name>Machine Learning</name>
             <link>ml.html</link>
             <chm_sub>ml.xml</chm_sub>
+         </item>
+         <item>
+            <name>Linear Algebra</name>
+            <link>linear_algebra.html</link>
+            <chm_sub>linear_algebra.xml</chm_sub>
          </item>
          <item>
             <name>Bayesian Nets</name>
@@ -115,6 +125,30 @@
          <item nolink="true">
             <name>Examples</name>
             <sub>
+               <item>
+                  <name>Train_Object_Detector</name>
+                  <link>train_object_detector.cpp.html</link>
+               </item>
+               <item>
+                  <name>Parallel_For_Loops</name>
+                  <link>parallel_for_ex.cpp.html</link>
+               </item>
+               <item>
+                  <name>SVM-Rank</name>
+                  <link>svm_rank_ex.cpp.html</link>
+               </item>
+               <item>
+                  <name>BSP</name>
+                  <link>bsp_ex.cpp.html</link>
+               </item>
+               <item>
+                  <name>Assignment_Learning</name>
+                  <link>assignment_learning_ex.cpp.html</link>
+               </item>
+               <item>
+                  <name>Graph_Labeling</name>
+                  <link>graph_labeling_ex.cpp.html</link>
+               </item>
                <item>
                   <name>Sequence_Labeling</name>
                   <link>sequence_labeler_ex.cpp.html</link>
@@ -268,6 +302,14 @@
                   <link>sockstreambuf_ex.cpp.html</link>
                </item>
                <item>
+                  <name>IO Streams Server</name>
+                  <link>server_iostream_ex.cpp.html</link>
+               </item>
+               <item>
+                  <name>IO Socket Streams</name>
+                  <link>iosockstream_ex.cpp.html</link>
+               </item>
+               <item>
                   <name>Logger</name>
                   <link>logger_ex.cpp.html</link>
                </item>
@@ -294,10 +336,6 @@
                <item>
                   <name>Sockets</name>
                   <link>sockets_ex.cpp.html</link>
-               </item>
-               <item>
-                  <name>Sockets_2</name>
-                  <link>sockets_ex_2.cpp.html</link>
                </item>
                <item>
                   <name>Queue</name>

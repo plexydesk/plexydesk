@@ -43,6 +43,7 @@
          <item>string_cast</item>
          <item>string_assign</item>
          <item>cast_to_string</item>
+         <item>pad_int_with_zeros</item>
          <item>cast_to_wstring</item>
          <item>wrap_string</item>
          <item>narrow</item> 
@@ -274,6 +275,18 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>pad_int_with_zeros</name>
+         <file>dlib/string.h</file>
+         <spec_file link="true">dlib/string/string_abstract.h</spec_file>
+         <description>        
+            Converts an integer into a string and pads it with leading zeros.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>string_cast</name>
          <file>dlib/string.h</file>
          <spec_file link="true">dlib/string/string_abstract.h</spec_file>
@@ -405,74 +418,26 @@
             This object allows you to easily parse a command line.      Note that the
             documentation for the <a href="dlib/interfaces/cmd_line_parser_option.h.html">cmd_line_parser_option</a>
             (the object returned by the parser's .option() function) is in a separate file.
+            <p>
+               Note also that there are standard typedefs for the ASCII and wide character versions of the
+               cmd_line_parser template.  These are the <tt>command_line_parser</tt> and <tt>wcommand_line_parser</tt>
+               types respectively.
+            </p>
          </description>
          
          <examples>
             <example>compress_stream_ex.cpp.html</example>
+            <example>train_object_detector.cpp.html</example>
          </examples>
-
-         <implementations>
-            <implementation>
-               <name>cmd_line_parser_kernel_1</name>
-               <file>dlib/cmd_line_parser/cmd_line_parser_kernel_1.h</file>
-               <description> 
-                  This implementation uses the <a href="containers.html#map">map</a> and <a href="containers.html#sequence">sequence</a> 
-                  containers to keep track of the command line options and arguments.  For further details see the above link.
-               </description> 
-    
-               <typedefs>
-                  <typedef>
-                     <name>kernel_1a</name>
-                     <description>is a typedef for cmd_line_parser_kernel_1 that uses map_kernel_1a and sequence_kernel_2a</description>
-                  </typedef>
-               </typedefs>                
-               
-            </implementation> 
-                     
-         </implementations>
-                     
 
          <extensions>
             <extension>
-               <name>cmd_line_parser_check</name>
-               <spec_file>dlib/cmd_line_parser/cmd_line_parser_check_abstract.h</spec_file>
-               <description>
-                This gives a cmd_line_parser object the ability to easily perform various
-                kinds of validation on the command line input.
-               </description>
-               <implementations>
-                  <implementation>
-                     <name>cmd_line_parser_check_1</name>
-                     <file>dlib/cmd_line_parser/cmd_line_parser_check_1.h</file>
-                     <description>This implementation is done in the obvious way.  See the source for details</description>
-                     <typedefs>
-                        <typedef>
-                           <name>check_1a</name>
-                           <description>is a typedef for cmd_line_parser_print_1 extended by cmd_line_parser_check_1</description>
-                        </typedef>
-                     </typedefs>
-                  </implementation>
-               </implementations>
-            </extension>
-
-            <extension>
-               <name>cmd_line_parser_print</name>
-               <spec_file>dlib/cmd_line_parser/cmd_line_parser_print_abstract.h</spec_file>
-               <description>This extension gives a cmd_line_parser object the ability to print its command line options 
-               in a nice format.</description>
-               <implementations>
-                  <implementation>
-                     <name>cmd_line_parser_print_1</name>
-                     <file>dlib/cmd_line_parser/cmd_line_parser_print_1.h</file>
-                     <description>This implementation is done by enumerating the options of the parser and printing them.</description>
-                     <typedefs>
-                        <typedef>
-                           <name>print_1a</name>
-                           <description>is a typedef for cmd_line_parser_kernel_1 extended by cmd_line_parser_print_1</description>
-                        </typedef>
-                     </typedefs>
-                  </implementation>
-               </implementations>
+               <name>get_option</name>
+               <spec_file>dlib/cmd_line_parser/get_option_abstract.h</spec_file>
+               <description>This extension provides a convenience function for accessing the 
+                  options to a command line argument or a <a href="#config_reader">config_reader</a>.  It 
+                  is automatically #included when using the command line parser or config reader.
+                  </description>
             </extension>
          </extensions>              
                                     
@@ -626,7 +591,7 @@
             
    <!-- ************************************************************************* -->
       
-      <component checked="true">
+      <component>
          <name>xml_parser</name>
          <file>dlib/xml_parser.h</file>
          <spec_file>dlib/xml_parser/xml_parser_kernel_abstract.h</spec_file>
@@ -649,29 +614,6 @@
          <examples>
             <example>xml_parser_ex.cpp.html</example>
          </examples>
-         
-         <implementations>
-            <implementation>
-               <name>xml_parser_kernel_1</name>
-               <file>dlib/xml_parser/xml_parser_kernel_1.h</file>
-               <description> 
-                  This implementation is done using a <a href="containers.html#stack">stack</a> (as opposed to recursive descent) to parse
-                  xml documents.  It also uses a <a href="containers.html#map">map</a> to implement the attribute_list interface and 
-                  internally uses the <a href="containers.html#sequence">sequence</a> object to keep track of all registered document and error
-                  handlers.
-               </description> 
-    
-               <typedefs>
-                  <typedef>
-                     <name>kernel_1a</name>
-                     <description>is a typedef for xml_parser_kernel_1 that uses map_kernel_1a, stack_kernel_1a, and sequence_kernel_2a</description>
-                  </typedef>
-               </typedefs>                
-               
-            </implementation> 
-                     
-         </implementations>
-                        
       </component>
             
       

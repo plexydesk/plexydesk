@@ -1,6 +1,6 @@
 
 #include "convert_pascal_v1.h"
-#include "image_dataset_metadata.h"
+#include "dlib/data_io.h"
 #include <iostream>
 #include <string>
 #include <dlib/dir_nav.h>
@@ -76,15 +76,16 @@ namespace
                 }
                 else if (words.size() > 4 && (words[2] == "for" || words[2] == "on") && words[3] == "object")
                 {
-                    int idx = sa = words[4];
+                    long idx = sa = words[4];
                     --idx;
-                    if (idx >= img.boxes.size())
+                    if (idx >= (long)img.boxes.size())
                         throw dlib::error("Invalid object id number of " + words[4]);
 
                     if (words[0] == "Center" && words[1] == "point" && words.size() > 9)
                     {
-                        img.boxes[idx].head.x() = sa = words[8];
-                        img.boxes[idx].head.y() = sa = words[9];
+                        const long x = sa = words[8];
+                        const long y = sa = words[9];
+                        img.boxes[idx].parts["head"] = point(x,y);
                     }
                     else if (words[0] == "Bounding" && words[1] == "box" && words.size() > 13)
                     {
@@ -136,7 +137,7 @@ namespace
 }
 
 void convert_pascal_v1(
-    const parser_type& parser
+    const command_line_parser& parser
 )
 {
     cout << "Convert from PASCAL v1.00 annotation format..." << endl;
@@ -163,7 +164,7 @@ void convert_pascal_v1(
             dataset.images.push_back(img);
 
         }
-        catch (exception& e)
+        catch (exception& )
         {
             cout << "Error while processing file " << parser[i] << endl << endl;
             throw;

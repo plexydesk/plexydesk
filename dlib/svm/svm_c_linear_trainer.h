@@ -68,14 +68,14 @@ namespace dlib
         ) const 
         {
             // plus 1 for the bias term
-            return sparse_vector::max_index_plus_one(samples) + 1;
+            return max_index_plus_one(samples) + 1;
         }
 
         virtual bool optimization_status (
             scalar_type current_objective_value,
             scalar_type current_error_gap,
-            scalar_type ,
-            scalar_type ,
+            scalar_type current_risk_value,
+            scalar_type current_risk_gap,
             unsigned long num_cutting_planes,
             unsigned long num_iterations
         ) const 
@@ -83,20 +83,19 @@ namespace dlib
             if (be_verbose)
             {
                 using namespace std;
-                cout << "svm objective: " << current_objective_value << endl;
-                cout << "gap: " << current_error_gap << endl;
-                cout << "num planes: " << num_cutting_planes << endl;
-                cout << "iter: " << num_iterations << endl;
+                cout << "objective:     " << current_objective_value << endl;
+                cout << "objective gap: " << current_error_gap << endl;
+                cout << "risk:          " << current_risk_value << endl;
+                cout << "risk gap:      " << current_risk_gap << endl;
+                cout << "num planes:    " << num_cutting_planes << endl;
+                cout << "iter:          " << num_iterations << endl;
                 cout << endl;
             }
 
             if (num_iterations >= max_iterations)
                 return true;
 
-            if (current_objective_value == 0)
-                return true;
-
-            if (current_error_gap/current_objective_value < eps)
+            if (current_risk_gap < eps)
                 return true;
 
             return false;
@@ -138,13 +137,13 @@ namespace dlib
                 {
                     if (labels(i) > 0)
                     {
-                        sparse_vector::subtract_from(subgradient, samples(i), Cpos);
+                        subtract_from(subgradient, samples(i), Cpos);
 
                         subgradient(subgradient.size()-1) += Cpos;
                     }
                     else
                     {
-                        sparse_vector::add_to(subgradient, samples(i), Cneg);
+                        add_to(subgradient, samples(i), Cneg);
 
                         subgradient(subgradient.size()-1) -= Cneg;
                     }
@@ -171,10 +170,11 @@ namespace dlib
                 - for all i: #dot_prods[i] == dot(colm(#w,0,w.size()-1), samples(i)) - #w(w.size()-1)
         !*/
         {
-            using dlib::sparse_vector::dot;
-            using dlib::dot;
+            // The reason for using w_size_m1 and not just w.size()-1 is because
+            // doing it this way avoids an inane warning from gcc that can occur in some cases.
+            const long w_size_m1 = w.size()-1;
             for (long i = 0; i < samples.size(); ++i)
-                dot_prods[i] = dot(colm(w,0,w.size()-1), samples(i)) - w(w.size()-1);
+                dot_prods[i] = dot(colm(w,0,w_size_m1), samples(i)) - w(w_size_m1);
 
             if (is_first_call)
             {
@@ -351,6 +351,8 @@ namespace dlib
             verbose = false;
             eps = 0.001;
             max_iterations = 10000;
+            learn_nonnegative_weights = false;
+            last_weight_1 = false;
         }
 
         explicit svm_c_linear_trainer (
@@ -370,6 +372,8 @@ namespace dlib
             verbose = false;
             eps = 0.001;
             max_iterations = 10000;
+            learn_nonnegative_weights = false;
+            last_weight_1 = false;
         }
 
         void set_epsilon (
@@ -429,6 +433,29 @@ namespace dlib
         ) const
         {
             return kernel_type();
+        }
+
+        bool learns_nonnegative_weights (
+        ) const { return learn_nonnegative_weights; }
+       
+        void set_learns_nonnegative_weights (
+            bool value
+        )
+        {
+            learn_nonnegative_weights = value;
+        }
+
+        bool forces_last_weight_to_1 (
+        ) const
+        {
+            return last_weight_1;
+        }
+
+        void force_last_weight_to_1 (
+            bool should_last_weight_be_1
+        )
+        {
+            last_weight_1 = should_last_weight_be_1;
         }
 
         void set_c (
@@ -499,7 +526,7 @@ namespace dlib
         ) const
         {
             scalar_type obj;
-            return do_train(vector_to_matrix(x),vector_to_matrix(y),obj);
+            return do_train(mat(x),mat(y),obj);
         }
 
 
@@ -513,7 +540,7 @@ namespace dlib
             scalar_type& svm_objective
         ) const
         {
-            return do_train(vector_to_matrix(x),vector_to_matrix(y),svm_objective);
+            return do_train(mat(x),mat(y),svm_objective);
         }
 
     private:
@@ -543,9 +570,26 @@ namespace dlib
             typedef matrix<scalar_type,0,1> w_type;
             w_type w;
 
+            const unsigned long num_dims = max_index_plus_one(x);
+
+            unsigned long num_nonnegative = 0;
+            if (learn_nonnegative_weights)
+            {
+                num_nonnegative = num_dims;
+            }
+
+            unsigned long force_weight_1_idx = std::numeric_limits<unsigned long>::max(); 
+            if (last_weight_1)
+            {
+                force_weight_1_idx = num_dims-1; 
+            }
+
+
             svm_objective = solver(
                 make_oca_problem_c_svm<w_type>(Cpos, Cneg, x, y, verbose, eps, max_iterations), 
-                w);
+                w,
+                num_nonnegative,
+                force_weight_1_idx);
 
             // put the solution into a decision function and then return it
             decision_function<kernel_type> df;
@@ -555,8 +599,8 @@ namespace dlib
             // sparse vector container so we need to use this special kind of copy to handle that case.
             // As an aside, the reason for using max_index_plus_one() and not just w.size()-1 is because
             // doing it this way avoids an inane warning from gcc that can occur in some cases.
-            const long out_size = sparse_vector::max_index_plus_one(x);
-            sparse_vector::assign(df.basis_vectors(0), matrix_cast<scalar_type>(colm(w, 0, out_size)));
+            const long out_size = max_index_plus_one(x);
+            assign(df.basis_vectors(0), matrix_cast<scalar_type>(colm(w, 0, out_size)));
             df.alpha.set_size(1);
             df.alpha(0) = 1;
 
@@ -569,6 +613,8 @@ namespace dlib
         scalar_type eps;
         bool verbose;
         unsigned long max_iterations;
+        bool learn_nonnegative_weights;
+        bool last_weight_1;
     }; 
 
 // ----------------------------------------------------------------------------------------

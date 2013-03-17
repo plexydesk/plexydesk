@@ -43,6 +43,31 @@ namespace dlib
         const unsigned short port;
     };
 
+    inline connect_to_ip_and_port connect_to (
+        const network_address& addr
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(addr.port != 0,
+            "\t connect_to_ip_and_port()"
+            << "\n\t The TCP port to connect to can't be 0."
+            << "\n\t addr.port: " << addr.port
+            );
+
+        if (is_ip_address(addr.host_address))
+        {
+            return connect_to_ip_and_port(addr.host_address, addr.port);
+        }
+        else
+        {
+            std::string ip;
+            if(hostname_to_ip(addr.host_address,ip))
+                throw socket_error(ERESOLVE,"unable to resolve '" + addr.host_address + "' in connect_to()");
+
+            return connect_to_ip_and_port(ip, addr.port);
+        }
+    }
+
     struct listen_on_port
     {
         listen_on_port(
@@ -400,6 +425,12 @@ namespace dlib
                             << con->get_foreign_ip() << ":" << con->get_foreign_port() 
                             << ".\nThe exception error message is: \n" << e.what();
                     }
+                    catch (std::exception& e)
+                    {
+                        dlog << LERROR << "std::exception thrown while deserializing message from " 
+                            << con->get_foreign_ip() << ":" << con->get_foreign_port() 
+                            << ".\nThe exception error message is: \n" << e.what();
+                    }
 
 
 
@@ -486,6 +517,12 @@ namespace dlib
                     catch (dlib::serialization_error& e)
                     {
                         dlog << LERROR << "dlib::serialization_error thrown while serializing message to " 
+                            << con->get_foreign_ip() << ":" << con->get_foreign_port() 
+                            << ".\nThe exception error message is: \n" << e.what();
+                    }
+                    catch (std::exception& e)
+                    {
+                        dlog << LERROR << "std::exception thrown while serializing message to " 
                             << con->get_foreign_ip() << ":" << con->get_foreign_port() 
                             << ".\nThe exception error message is: \n" << e.what();
                     }

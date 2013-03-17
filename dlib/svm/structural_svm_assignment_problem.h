@@ -94,6 +94,7 @@ namespace dlib
         ) const 
         {
             typename feature_extractor::feature_vector_type feats;
+            psi.set_size(fe.num_features());
             psi = 0;
             for (unsigned long i = 0; i < sample.first.size(); ++i)
             {
@@ -148,9 +149,6 @@ namespace dlib
             feature_vector_type& psi
         ) const
         {
-            using dlib::sparse_vector::dot;
-            using dlib::dot;
-
             matrix<double> cost;
             unsigned long size;
             if (force_assignment)

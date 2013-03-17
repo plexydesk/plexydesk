@@ -3,8 +3,10 @@
 #ifndef DLIB_SVm_HEADER
 #define DLIB_SVM_HEADER
 
+#include "svm/svm_rank_trainer.h"
 #include "svm/svm.h"
 #include "svm/krls.h"
+#include "svm/rls.h"
 #include "svm/kcentroid.h"
 #include "svm/kcentroid_overloads.h"
 #include "svm/kkmeans.h"
@@ -20,6 +22,7 @@
 #include "svm/kernel_matrix.h"
 #include "svm/empirical_kernel_map.h"
 #include "svm/svm_c_linear_trainer.h"
+#include "svm/svm_c_linear_dcd_trainer.h"
 #include "svm/svm_c_ekm_trainer.h"
 #include "svm/simplify_linear_decision_function.h"
 #include "svm/krr_trainer.h"
@@ -44,6 +47,7 @@
 #include "svm/svm_multiclass_linear_trainer.h"
 #include "svm/sequence_labeler.h"
 #include "svm/assignment_function.h"
+#include "svm/active_learning.h"
 
 #endif // DLIB_SVm_HEADER
 

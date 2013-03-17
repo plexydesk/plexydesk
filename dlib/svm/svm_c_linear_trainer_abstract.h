@@ -52,6 +52,8 @@ namespace dlib
                 - #get_epsilon() == 0.001
                 - this object will not be verbose unless be_verbose() is called
                 - #get_max_iterations() == 10000
+                - #learns_nonnegative_weights() == false
+                - #force_last_weight_to_1() == false
         !*/
 
         explicit svm_c_linear_trainer (
@@ -69,6 +71,8 @@ namespace dlib
                 - #get_epsilon() == 0.001
                 - this object will not be verbose unless be_verbose() is called
                 - #get_max_iterations() == 10000
+                - #learns_nonnegative_weights() == false
+                - #force_last_weight_to_1() == false
         !*/
 
         void set_epsilon (
@@ -86,8 +90,10 @@ namespace dlib
         /*!
             ensures
                 - returns the error epsilon that determines when training should stop.
-                  Smaller values may result in a more accurate solution but take longer 
-                  to execute.
+                  Smaller values may result in a more accurate solution but take longer to
+                  train.  You can think of this epsilon value as saying "solve the
+                  optimization problem until the probability of misclassification is within
+                  epsilon of its optimal value".  
         !*/
 
         void set_max_iterations (
@@ -143,6 +149,46 @@ namespace dlib
                 - returns a copy of the kernel function in use by this object.  Since
                   the linear kernels don't have any parameters this function just
                   returns kernel_type()
+        !*/
+
+        bool learns_nonnegative_weights (
+        ) const;
+        /*!
+            ensures
+                - The output of training is a weight vector and a bias value.  These
+                  two things define the resulting decision function.  That is, the
+                  decision function simply takes the dot product between the learned
+                  weight vector and a test sample, then subtracts the bias value.  
+                  Therefore, if learns_nonnegative_weights() == true then the resulting
+                  learned weight vector will always have non-negative entries.  The
+                  bias value may still be negative though.
+        !*/
+       
+        void set_learns_nonnegative_weights (
+            bool value
+        );
+        /*!
+            ensures
+                - #learns_nonnegative_weights() == value
+        !*/
+
+        bool forces_last_weight_to_1 (
+        ) const;
+        /*!
+            ensures
+                - returns true if this trainer has the constraint that the last weight in
+                  the learned parameter vector must be 1.  This is the weight corresponding
+                  to the feature in the training vectors with the highest dimension.  
+                - Forcing the last weight to 1 also disables the bias and therefore the b
+                  field of the learned decision_function will be 0 when forces_last_weight_to_1() == true.
+        !*/
+
+        void force_last_weight_to_1 (
+            bool should_last_weight_be_1
+        );
+        /*!
+            ensures
+                - #forces_last_weight_to_1() == should_last_weight_be_1
         !*/
 
         void set_c (
@@ -211,9 +257,9 @@ namespace dlib
         /*!
             requires
                 - is_binary_classification_problem(x,y) == true
-                - x == a matrix or something convertible to a matrix via vector_to_matrix().
+                - x == a matrix or something convertible to a matrix via mat().
                   Also, x should contain sample_type objects.
-                - y == a matrix or something convertible to a matrix via vector_to_matrix().
+                - y == a matrix or something convertible to a matrix via mat().
                   Also, y should contain scalar_type objects.
             ensures
                 - trains a C support vector classifier given the training samples in x and 
@@ -240,9 +286,9 @@ namespace dlib
         /*!
             requires
                 - is_binary_classification_problem(x,y) == true
-                - x == a matrix or something convertible to a matrix via vector_to_matrix().
+                - x == a matrix or something convertible to a matrix via mat().
                   Also, x should contain sample_type objects.
-                - y == a matrix or something convertible to a matrix via vector_to_matrix().
+                - y == a matrix or something convertible to a matrix via mat().
                   Also, y should contain scalar_type objects.
             ensures
                 - trains a C support vector classifier given the training samples in x and 

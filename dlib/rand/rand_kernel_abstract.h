@@ -34,6 +34,19 @@ namespace dlib
                     - std::bad_alloc
             !*/
 
+            rand (
+                const std::string& seed_value
+            );
+            /*!
+                ensures 
+                    - #*this is properly initialized
+                    - #get_seed() == seed_value
+                    - This version of the constructor is equivalent to using
+                      the default constructor and then calling set_seed(seed_value)
+                throws
+                    - std::bad_alloc
+            !*/
+
             virtual ~rand(
             ); 
             /*!
@@ -72,8 +85,6 @@ namespace dlib
             /*!
                 ensures
                     - returns a pseudorandom number in the range 0 to 255
-                throws
-                    - std::bad_alloc
             !*/
 
             uint16 get_random_16bit_number (
@@ -81,8 +92,6 @@ namespace dlib
             /*!
                 ensures
                     - returns a pseudorandom number in the range 0 to 2^16-1 
-                throws
-                    - std::bad_alloc
             !*/
 
             uint32 get_random_32bit_number (
@@ -90,8 +99,13 @@ namespace dlib
             /*!
                 ensures
                     - returns a pseudorandom number in the range 0 to 2^32-1 
-                throws
-                    - std::bad_alloc
+            !*/
+
+            uint64 get_random_64bit_number (
+            );
+            /*!
+                ensures
+                    - returns a pseudorandom number in the range 0 to 2^64-1 
             !*/
 
             float get_random_float (
@@ -99,8 +113,6 @@ namespace dlib
             /*!
                 ensures
                     - returns a random float number N where:  0.0 <= N < 1.0.
-                throws
-                    - std::bad_alloc
             !*/
 
             double get_random_double (
@@ -108,8 +120,14 @@ namespace dlib
             /*!
                 ensures
                     - returns a random double number N where:  0.0 <= N < 1.0.
-                throws
-                    - std::bad_alloc
+            !*/
+
+            double get_random_gaussian (
+            );
+            /*!
+                ensures
+                    - returns a random number sampled from a Gaussian distribution 
+                      with mean 0 and standard deviation 1. 
             !*/
 
             void swap (

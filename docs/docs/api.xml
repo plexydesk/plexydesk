@@ -298,6 +298,10 @@
                         <link>dlib/gui_widgets/canvas_drawing_abstract.h.html#draw_solid_circle</link>
                      </item>
                      <item>
+                        <name>draw_solid_convex_polygon</name>
+                        <link>dlib/gui_widgets/canvas_drawing_abstract.h.html#draw_solid_convex_polygon</link>
+                     </item>
+                     <item>
                         <name>draw_button_down</name>
                         <link>dlib/gui_widgets/canvas_drawing_abstract.h.html#draw_button_down</link>
                      </item>
@@ -617,62 +621,24 @@
                <item nolink="true">
                   <name>extensions</name>
                   <sub>
-                     <item>   
-                        <name>thread_specific_data</name>
-                        <link>dlib/threads/thread_specific_data_extension_abstract.h.html</link>
-                     </item>
-                     <item>   
-                        <name>create_new_thread extension</name>
-                        <link>dlib/threads/create_new_thread_extension_abstract.h.html#create_new_thread</link>
-                     </item>
-                     <item>   
-                        <name>rsignaler</name>
-                        <link>dlib/threads/rsignaler_extension_abstract.h.html#rsignaler</link>
-                     </item>
-                     <item>   
-                        <name>rmutex</name>
-                        <link>dlib/threads/rmutex_extension_abstract.h.html#rmutex</link>
-                     </item>
-                     <item>   
-                        <name>read_write_mutex</name>
-                        <link>dlib/threads/read_write_mutex_extension_abstract.h.html#read_write_mutex</link>
-                     </item>
-                     <item>   
-                        <name>auto_mutex</name>
-                        <link>dlib/threads/auto_mutex_extension_abstract.h.html#auto_mutex</link>
-                     </item>
-                     <item>   
-                        <name>auto_mutex_readonly</name>
-                        <link>dlib/threads/auto_mutex_extension_abstract.h.html#auto_mutex_readonly</link>
-                     </item>
-                     <item>   
-                        <name>auto_unlock</name>
-                        <link>dlib/threads/auto_unlock_extension_abstract.h.html#auto_unlock</link>
-                     </item>
-                     <item>   
-                        <name>auto_unlock_readonly</name>
-                        <link>dlib/threads/auto_unlock_extension_abstract.h.html#auto_unlock_readonly</link>
-                     </item>
-                     <item>   
-                        <name>threaded_object</name>
-                        <link>dlib/threads/threaded_object_extension_abstract.h.html#threaded_object</link>
-                     </item>
-                     <item>   
-                        <name>thread_pool</name>
-                        <link>dlib/threads/thread_pool_extension_abstract.h.html#thread_pool</link>
-                     </item>
+                     <item>thread_specific_data</item>
+                     <item>create_new_thread_extension</item>
+                     <item>rsignaler</item>
+                     <item>rmutex</item>
+                     <item>read_write_mutex</item>
+                     <item>auto_mutex</item>
+                     <item>auto_mutex_readonly</item>
+                     <item>auto_unlock</item>
+                     <item>auto_unlock_readonly</item>
+                     <item>threaded_object</item>
+                     <item>thread_pool</item>
+                     <item>parallel_for</item>
                      <item>   
                         <name>future</name>
                         <link>dlib/threads/thread_pool_extension_abstract.h.html#future</link>
                      </item>
-                     <item>   
-                        <name>thread_function</name>
-                        <link>dlib/threads/thread_function_extension_abstract.h.html#thread_function</link>
-                     </item>
-                     <item>   
-                        <name>multithreaded_object</name>
-                        <link>dlib/threads/multithreaded_object_extension_abstract.h.html#multithreaded_object</link>
-                     </item>
+                     <item>thread_function</item>
+                     <item>multithreaded_object</item>
                   </sub>
                </item>
                <item>   
@@ -711,6 +677,10 @@
                <item nolink="true">
                   <name>extensions</name>
                   <sub>
+                     <item>   
+                        <name>network_address</name>
+                        <link>dlib/sockets/sockets_extensions_abstract.h.html#network_address</link>
+                     </item>
                      <item>   
                         <name>connect</name>
                         <link>dlib/sockets/sockets_extensions_abstract.h.html#connect</link>
@@ -811,11 +781,7 @@
                <name>dir_nav_extensions</name>
                <spec_file>dlib/dir_nav/dir_nav_extensions_abstract.h</spec_file>
                <description> 
-                   <p>
                      This is just some miscellaneous extensions to the dir_nav component. 
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/dir_nav/dir_nav_extensions.h.html">here</a>.
                </description> 
             </extension>
          </extensions>
@@ -911,9 +877,11 @@
          </description>
 
          <examples>
+            <example>iosockstream_ex.cpp.html</example>
             <example>sockets_ex.cpp.html</example>
             <example>sockstreambuf_ex.cpp.html</example>
-            <example>sockets_ex_2.cpp.html</example>
+            <example>server_http_ex.cpp.html</example>
+            <example>server_iostream_ex.cpp.html</example>
          </examples>
          
          <implementations>
@@ -941,11 +909,7 @@
                <name>sockets_extensions</name>
                <spec_file>dlib/sockets/sockets_extensions_abstract.h</spec_file>
                <description> 
-                   <p>
                      This is just some miscellaneous extensions to the socket api.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/sockets/sockets_extensions.h.html">here</a>.
                </description> 
             </extension>
 
@@ -978,6 +942,10 @@
             <example>threads_ex.cpp.html</example>
             <example>logger_ex_2.cpp.html</example>
             <example>pipe_ex.cpp.html</example>
+            <example>multithreaded_object_ex.cpp.html</example>
+            <example>threaded_object_ex.cpp.html</example>
+            <example>thread_function_ex.cpp.html</example>
+            <example>thread_pool_ex.cpp.html</example>
          </examples>
          
          <implementations>
@@ -1005,13 +973,9 @@
                <name>rsignaler</name>
                <spec_file>dlib/threads/rsignaler_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds a signaler object that can be used with the rmutex object. 
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/rsignaler_extension.h.html">here</a>.
                </description> 
             </extension>
 
@@ -1020,11 +984,7 @@
                <name>thread_specific_data</name>
                <spec_file>dlib/threads/thread_specific_data_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                      This extension adds the ability to easily create thread specific data.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/thread_specific_data_extension.h.html">here</a>.
                </description> 
             </extension>
 
@@ -1033,14 +993,10 @@
                <name>rmutex</name>
                <spec_file>dlib/threads/rmutex_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds a mutex object that can handle recursive calls
                   to lock().  
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/rmutex_extension.h.html">here</a>.
                </description> 
             </extension>
 
@@ -1048,29 +1004,21 @@
                <name>read_write_mutex</name>
                <spec_file>dlib/threads/read_write_mutex_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds a mutex object that can perform both normal "write locks" as well as "readonly locks".  
                   See the specification for details.
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/read_write_mutex_extension.h.html">here</a>.
                </description> 
             </extension>
 
             <extension>
-               <name>create_new_thread extension</name>
+               <name>create_new_thread_extension</name>
                <spec_file>dlib/threads/create_new_thread_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds some templated overloads to the 
                   <a href="dlib/threads/threads_kernel_abstract.h.html#create_new_thread">create_new_thread()</a> function.  They allow you to create new threads using member functions from a class.
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/create_new_thread_extension.h.html">here</a>.
                </description> 
 
                
@@ -1080,13 +1028,9 @@
                <name>auto_mutex</name>
                <spec_file>dlib/threads/auto_mutex_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds a mechanism to automatically lock and unlock a mutex.
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/auto_mutex_extension.h.html">here</a>.
                </description> 
 
                <examples>
@@ -1099,14 +1043,10 @@
                <name>auto_mutex_readonly</name>
                <spec_file link="true">dlib/threads/auto_mutex_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds a mechanism to automatically perform a readonly lock and unlock 
                   of a <a href="#read_write_mutex">read_write_mutex</a>.
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/auto_mutex_extension.h.html">here</a>.
                </description> 
             </extension>
 
@@ -1114,13 +1054,9 @@
                <name>auto_unlock_readonly</name>
                <spec_file link="true">dlib/threads/auto_unlock_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds a mechanism to automatically remove a readonly unlock from a <a href="#read_write_mutex">read_write_mutex</a>.
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/auto_unlock_extension.h.html">here</a>.
                </description> 
             </extension>
 
@@ -1128,12 +1064,8 @@
                <name>thread_function</name>
                <spec_file>dlib/threads/thread_function_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                 This object represents a thread on a global C++ function.  That is, it allows you 
                 to run a global function in its own thread.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/thread_function_extension.h.html">here</a>.
                </description> 
 
                <examples>
@@ -1147,12 +1079,8 @@
                <name>threaded_object</name>
                <spec_file>dlib/threads/threaded_object_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                      This extension represents a simple threaded object.  It provides a convenient 
                      mechanism to create an object that contains a thread.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/threaded_object_extension.h.html">here</a>.
                </description> 
 
                <examples>
@@ -1186,16 +1114,24 @@
             </extension>
 
             <extension>
+               <name>parallel_for</name>
+               <spec_file>dlib/threads/parallel_for_extension_abstract.h</spec_file>
+               <description> 
+                  This is a set of functions for executing the contents of a for loop in parallel.  
+                  It is useful for taking advantage of multi-processor systems.  
+               </description> 
+               <examples>
+                  <example>parallel_for_ex.cpp.html</example>
+               </examples>
+            </extension>
+
+            <extension>
                <name>multithreaded_object</name>
                <spec_file>dlib/threads/multithreaded_object_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                 This object represents a multithreaded object.  It is similar to 
                 the <a href="#threaded_object">threaded_object</a> except it allows you to have many threads in a 
                 single object rather than just one.  
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/multithreaded_object_extension.h.html">here</a>.
                </description> 
 
                <examples>
@@ -1208,13 +1144,9 @@
                <name>auto_unlock</name>
                <spec_file>dlib/threads/auto_unlock_extension_abstract.h</spec_file>
                <description> 
-                   <p>
                   This extension adds a mechanism to automatically unlock a mutex.
                   Also note that this extension is included by dlib/threads.h so you don't have to include 
                   anything extra to get it.
-                  </p>
-                  The implementation of this extension can be found 
-                  <a href="dlib/threads/auto_unlock_extension.h.html">here</a>.
                </description> 
 
                
@@ -1250,6 +1182,42 @@
             component.  I put it on this page just because I expect that people would
             look here when searching for the sort of functionality provided by this component. 
             </p>
+            
+
+            <center><h2>Primary widgets</h2></center>
+            <table>
+               <tr>
+                  <td><a href="dlib/gui_widgets/base_widgets_abstract.h.html#button"><img src="guipics/button.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#check_box"><img src="guipics/check_box.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#radio_button"><img src="guipics/radio_button.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#label"><img src="guipics/label.png"/></a></td>
+               </tr>
+               <tr>
+                  <td><a href="dlib/gui_widgets/base_widgets_abstract.h.html#scroll_bar"><img src="guipics/scroll_bar.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#text_field"><img src="guipics/text_field.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#text_box"><img src="guipics/text_box.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#text_grid"><img src="guipics/text_grid.png"/></a></td>
+               </tr>
+               <tr>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#list_box"><img src="guipics/list_box.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#menu_bar"><img src="guipics/menu_bar.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/base_widgets_abstract.h.html#popup_menu"><img src="guipics/popup_menu.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#tabbed_display"><img src="guipics/tabbed_display.png"/></a></td>
+               </tr>
+               <tr>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#named_rectangle"><img src="guipics/named_rectangle.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#image_window"><img src="guipics/image_window.jpg"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#directed_graph_drawer"><img src="guipics/directed_graph_drawer.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#mouse_tracker"><img src="guipics/mouse_tracker.png"/></a></td>
+               </tr>
+               <tr>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#message_box"><img src="guipics/message_box.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#open_existing_file_box"><img src="guipics/open_existing_file_box.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#open_file_box"><img src="guipics/open_file_box.png"/></a></td>
+                  <td><a href="dlib/gui_widgets/widgets_abstract.h.html#save_file_box"><img src="guipics/save_file_box.png"/></a></td>
+               </tr>
+            </table>
+
          </description>
          
          <examples>

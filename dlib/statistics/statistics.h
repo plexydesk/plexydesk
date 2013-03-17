@@ -1,4 +1,4 @@
-// Copyright (C) 2008  Davis E. King (davis@dlib.net)
+// Copyright (C) 2008  Davis E. King (davis@dlib.net), Steve Taylor
 // License: Boost Software License   See LICENSE.txt for the full license.
 #ifndef DLIB_STATISTICs_
 #define DLIB_STATISTICs_
@@ -35,7 +35,10 @@ namespace dlib
         void clear()
         {
             sum = 0;
-            sum_sqr = 0;
+            sum_sqr  = 0;
+            sum_cub  = 0;
+            sum_four = 0;
+
             n = 0;
             maximum_n = std::numeric_limits<T>::max();
             min_value = std::numeric_limits<T>::infinity();
@@ -53,11 +56,10 @@ namespace dlib
             const T& val
         )
         {
-            const T div_n   = 1/(n+1);
-            const T n_div_n = n*div_n;
-
-            sum     = n_div_n*sum     + val*div_n;
-            sum_sqr = n_div_n*sum_sqr + val*div_n*val;
+            sum      += val;
+            sum_sqr  += val*val;
+            sum_cub  += cubed(val);
+            sum_four += quaded(val);
 
             if (val < min_value)
                 min_value = val;
@@ -71,7 +73,7 @@ namespace dlib
         T max_n (
         ) const
         {
-            return max_n;
+            return maximum_n;
         }
 
         T current_n (
@@ -83,14 +85,17 @@ namespace dlib
         T mean (
         ) const
         {
-            return sum;
+            if (n != 0)
+                return sum/n;
+            else
+                return 0;
         }
 
         T max (
         ) const
         {
             // make sure requires clause is not broken
-            DLIB_ASSERT(current_n() > 1,
+            DLIB_ASSERT(current_n() > 0,
                 "\tT running_stats::max"
                 << "\n\tyou have to add some numbers to this object first"
                 << "\n\tthis: " << this
@@ -103,7 +108,7 @@ namespace dlib
         ) const
         {
             // make sure requires clause is not broken
-            DLIB_ASSERT(current_n() > 1,
+            DLIB_ASSERT(current_n() > 0,
                 "\tT running_stats::min"
                 << "\n\tyou have to add some numbers to this object first"
                 << "\n\tthis: " << this
@@ -122,8 +127,8 @@ namespace dlib
                 << "\n\tthis: " << this
                 );
 
-            T temp = n/(n-1);
-            temp = temp*(sum_sqr - sum*sum);
+            T temp = 1/(n-1);
+            temp = temp*(sum_sqr - sum*sum/n);
             // make sure the variance is never negative.  This might
             // happen due to numerical errors.
             if (temp >= 0)
@@ -145,6 +150,43 @@ namespace dlib
             return std::sqrt(variance());
         }
 
+        T skewness (
+        ) const
+        {  
+            // make sure requires clause is not broken
+            DLIB_ASSERT(current_n() > 2,
+                "\tT running_stats::skewness"
+                << "\n\tyou have to add some numbers to this object first"
+                << "\n\tthis: " << this
+            );
+
+            T temp  = 1/n;
+            T temp1 = std::sqrt(n*(n-1))/(n-2); 
+            temp    = temp1*temp*(sum_cub - 3*sum_sqr*sum*temp + 2*cubed(sum)*temp*temp)/
+                      (std::sqrt(std::pow(temp*(sum_sqr-sum*sum*temp),3)));
+
+            return temp; 
+        }
+
+        T ex_kurtosis (
+        ) const
+        {
+            // make sure requires clause is not broken
+            DLIB_ASSERT(current_n() > 3,
+                "\tT running_stats::kurtosis"
+                << "\n\tyou have to add some numbers to this object first"
+                << "\n\tthis: " << this
+            );
+
+            T temp = 1/n;
+            T m4   = temp*(sum_four - 4*sum_cub*sum*temp+6*sum_sqr*sum*sum*temp*temp
+                     -3*quaded(sum)*cubed(temp));
+            T m2   = temp*(sum_sqr-sum*sum*temp);
+            temp   = (n-1)*((n+1)*m4/(m2*m2)-3*(n-1))/((n-2)*(n-3));
+
+            return temp; 
+        }
+
         T scale (
             const T& val
         ) const
@@ -156,6 +198,31 @@ namespace dlib
                 << "\n\tthis: " << this
                 );
             return (val-mean())/std::sqrt(variance());
+        }
+
+        running_stats operator+ (
+            const running_stats& rhs
+        ) const
+        {
+            // make sure requires clause is not broken
+            DLIB_ASSERT(max_n() == rhs.max_n(),
+                "\trunning_stats running_stats::operator+(rhs)"
+                << "\n\t invalid inputs were given to this function"
+                << "\n\t max_n():     " << max_n() 
+                << "\n\t rhs.max_n(): " << rhs.max_n() 
+                << "\n\t this:        " << this
+                );
+
+            running_stats temp(*this);
+
+            temp.sum += rhs.sum;
+            temp.sum_sqr += rhs.sum_sqr;
+            temp.sum_cub += rhs.sum_cub;
+            temp.sum_four += rhs.sum_four;
+            temp.n += rhs.n;
+            temp.min_value = std::min(rhs.min_value, min_value);
+            temp.max_value = std::max(rhs.max_value, max_value);
+            return temp;
         }
 
         template <typename U>
@@ -173,10 +240,15 @@ namespace dlib
     private:
         T sum;
         T sum_sqr;
+        T sum_cub;
+        T sum_four;
         T n;
         T maximum_n;
         T min_value;
         T max_value;
+    
+        T cubed  (const T& val) const {return val*val*val; }
+        T quaded (const T& val) const {return val*val*val*val; }
     };
 
     template <typename T>
@@ -185,8 +257,13 @@ namespace dlib
         std::ostream& out 
     )
     {
+        int version = 2;
+        serialize(version, out);
+
         serialize(item.sum, out);
         serialize(item.sum_sqr, out);
+        serialize(item.sum_cub, out);
+        serialize(item.sum_four, out);
         serialize(item.n, out);
         serialize(item.maximum_n, out);
         serialize(item.min_value, out);
@@ -199,8 +276,15 @@ namespace dlib
         std::istream& in
     ) 
     {
+        int version = 0;
+        deserialize(version, in);
+        if (version != 2)
+            throw dlib::serialization_error("Unexpected version number found while deserializing dlib::running_stats object.");
+
         deserialize(item.sum, in);
         deserialize(item.sum_sqr, in);
+        deserialize(item.sum_cub, in);
+        deserialize(item.sum_four, in);
         deserialize(item.n, in);
         deserialize(item.maximum_n, in);
         deserialize(item.min_value, in);
@@ -373,6 +457,21 @@ namespace dlib
             return std::sqrt(variance_y());
         }
 
+        running_scalar_covariance operator+ (
+            const running_scalar_covariance& rhs
+        ) const
+        {
+            running_scalar_covariance temp(rhs);
+
+            temp.sum_xy += sum_xy;
+            temp.sum_x  += sum_x;
+            temp.sum_y  += sum_y;
+            temp.sum_xx += sum_xx;
+            temp.sum_yy += sum_yy;
+            temp.n      += n;
+            return temp;
+        }
+
     private:
 
         T sum_xy;
@@ -511,7 +610,7 @@ namespace dlib
                     << "\n\t b.size(): " << b.size()
         );
 
-        return mean(squared(matrix_cast<double>(vector_to_matrix(a))-matrix_cast<double>(vector_to_matrix(b))));
+        return mean(squared(matrix_cast<double>(mat(a))-matrix_cast<double>(mat(b))));
     }
 
 // ----------------------------------------------------------------------------------------
@@ -699,8 +798,8 @@ namespace dlib
                 << "\n\tthis: " << this
                 );
 
-            m = mean(vector_to_matrix(samples));
-            sd = reciprocal(sqrt(variance(vector_to_matrix(samples))));
+            m = mean(mat(samples));
+            sd = reciprocal(sqrt(variance(mat(samples))));
         }
 
         long in_vector_size (
@@ -862,7 +961,7 @@ namespace dlib
                 << "\n\tyou have to give a nonempty set of samples to this function"
                 << "\n\tthis: " << this
                 );
-            train_pca_impl(vector_to_matrix(samples),eps);
+            train_pca_impl(mat(samples),eps);
         }
 
         long in_vector_size (
@@ -926,29 +1025,17 @@ namespace dlib
             temp_out.swap(item.temp_out);
         }
 
+        template <typename T>
         friend void deserialize (
-            vector_normalizer_pca& item, 
+            vector_normalizer_pca<T>& item, 
             std::istream& in
-        )   
-        {
-            deserialize(item.m, in);
-            deserialize(item.sd, in);
-            deserialize(item.pca, in);
-            if (item.pca.nc() != item.m.nr())
-                throw serialization_error("Error deserializing object of type vector_normalizer_pca\n"   
-                                          "It looks like a serialized vector_normalizer was accidentally deserialized into \n"
-                                          "a vector_normalizer_pca object.");
-        }
+        );
 
+        template <typename T>
         friend void serialize (
-            const vector_normalizer_pca& item, 
+            const vector_normalizer_pca<T>& item, 
             std::ostream& out 
-        )
-        {
-            serialize(item.m, out);
-            serialize(item.sd, out);
-            serialize(item.pca, out);
-        }
+        );
 
     private:
 
@@ -1021,6 +1108,38 @@ namespace dlib
         vector_normalizer_pca<matrix_type>& a, 
         vector_normalizer_pca<matrix_type>& b 
     ) { a.swap(b); }   
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename matrix_type
+        >
+    void deserialize (
+        vector_normalizer_pca<matrix_type>& item, 
+        std::istream& in
+    )   
+    {
+        deserialize(item.m, in);
+        deserialize(item.sd, in);
+        deserialize(item.pca, in);
+        if (item.pca.nc() != item.m.nr())
+            throw serialization_error("Error deserializing object of type vector_normalizer_pca\n"   
+                                        "It looks like a serialized vector_normalizer was accidentally deserialized into \n"
+                                        "a vector_normalizer_pca object.");
+    }
+
+    template <
+        typename matrix_type
+        >
+    void serialize (
+        const vector_normalizer_pca<matrix_type>& item, 
+        std::ostream& out 
+    )
+    {
+        serialize(item.m, out);
+        serialize(item.sd, out);
+        serialize(item.pca, out);
+    }
 
 // ----------------------------------------------------------------------------------------
 

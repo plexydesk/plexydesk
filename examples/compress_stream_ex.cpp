@@ -13,20 +13,23 @@
         Options:
           -c            Indicates that we want to compress a file. 
           -d            Indicates that we want to decompress a file. 
-          -h            Display this help message. 
           --in <arg>    This option takes one argument which specifies the name of the 
                         file we want to compress/decompress. 
-          -l <arg>      Set the compression level [1-3], 3 is max compression, default 
-                        is 2. 
           --out <arg>   This option takes one argument which specifies the name of the 
                         output file. 
+
+        Miscellaneous Options:
+          -h            Display this help message. 
+          -l <arg>      Set the compression level [1-3], 3 is max compression, default 
+                        is 2. 
+
 */
 
 
 
 
-#include "dlib/compress_stream.h"
-#include "dlib/cmd_line_parser.h"
+#include <dlib/compress_stream.h>
+#include <dlib/cmd_line_parser.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -35,13 +38,6 @@
 typedef dlib::compress_stream::kernel_1da cs1;
 typedef dlib::compress_stream::kernel_1ea cs2;
 typedef dlib::compress_stream::kernel_1ec cs3;
-
-// Here I am making another typedef, this time for the version of
-// cmd_line_parser I want to use.  This version gives me a
-// command line parser object that has all the available extensions
-// for command line parsers applied to it.  So I will be able to use
-// its command line validation utilities as well as option printing.
-typedef dlib::cmd_line_parser<char>::check_1a_c clp;
 
 
 using namespace std;
@@ -52,7 +48,7 @@ int main(int argc, char** argv)
 {  
     try
     {
-        clp parser;
+        command_line_parser parser;
 
         // first I will define the command line options I want.  
         // Add a -c option and tell the parser what the option is for.
@@ -62,6 +58,12 @@ int main(int argc, char** argv)
         parser.add_option("in","This option takes one argument which specifies the name of the file we want to compress/decompress.",1);
         // add a --out option that takes 1 argument
         parser.add_option("out","This option takes one argument which specifies the name of the output file.",1);
+        // In the code below, we use the parser.print_options() method to print all our
+        // options to the screen.  We can tell it that we would like some options to be
+        // grouped together by calling set_group_name() before adding those options.  In
+        // general, you can make as many groups as you like by calling set_group_name().
+        // However, here we make only one named group.
+        parser.set_group_name("Miscellaneous Options");
         parser.add_option("h","Display this help message.");
         parser.add_option("l","Set the compression level [1-3], 3 is max compression, default is 2.",1);
 
@@ -103,31 +105,17 @@ int main(int argc, char** argv)
             cout << "Usage: compress_stream_ex (-c|-d|-l) --in input_file --out output_file\n";
             // This function prints out a nicely formatted list of
             // all the options the parser has
-            parser.print_options(cout); 
-                                       
-            cout << endl;
+            parser.print_options(); 
             return 0;
         }
 
-        // Make some references to the options inside the parser.  This is just
-        // for convenience so we don't have to type out the longer form below.  
-        const clp::option_type& option_c = parser.option("c");
-        const clp::option_type& option_d = parser.option("d");
-        const clp::option_type& option_in = parser.option("in");
-        const clp::option_type& option_out = parser.option("out");
-
-        // Figure out what the compression level should be.  The default is 2.
-        int compression_level = 2;
-        // If the user supplied the -l option then use whatever value they gave for the level.
-        // Note that we use the string_assign object, sa, to convert the string returned
-        // by argument() to an int.
-        if (parser.option("l"))
-            compression_level = sa = parser.option("l").argument();
-
+        // Figure out what the compression level should be.  If the user didn't supply
+        // this command line option then a value of 2 will be used. 
+        int compression_level = get_option(parser,"l",2);
 
 
         // make sure one of the c or d options was given
-        if (!option_c && !option_d)
+        if (!parser.option("c") && !parser.option("d"))
         {
             cout << "Error in command line:\n   You must specify either the c option or the d option.\n";
             cout << "\nTry the -h option for more information." << endl;
@@ -140,9 +128,9 @@ int main(int argc, char** argv)
 
         // check if the user told us the input file and if they did then 
         // get the file name
-        if (option_in)
+        if (parser.option("in"))
         {
-            in_file = option_in.argument();
+            in_file = parser.option("in").argument();
         }
         else
         {
@@ -154,9 +142,9 @@ int main(int argc, char** argv)
 
         // check if the user told us the output file and if they did then 
         // get the file name
-        if (option_out)
+        if (parser.option("out"))
         {
-            out_file = option_out.argument();
+            out_file = parser.option("out").argument();
         }
         else
         {
@@ -186,7 +174,7 @@ int main(int argc, char** argv)
 
 
         // now perform the actual compression or decompression.
-        if (option_c)
+        if (parser.option("c"))
         {
             // save the compression level to the output file
             serialize(compression_level, fout);
@@ -248,10 +236,6 @@ int main(int argc, char** argv)
         // Note that this will catch any cmd_line_parse_error exceptions and print
         // the default message.   
         cout << e.what() << endl;
-    }
-    catch (...)
-    {
-        cout << "Some error occurred" << endl;
     }
 }
 

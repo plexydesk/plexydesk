@@ -3,10 +3,10 @@
 #undef DLIB_OBJECT_DeTECTOR_ABSTRACT_H__
 #ifdef DLIB_OBJECT_DeTECTOR_ABSTRACT_H__
 
-#include "../matrix.h"
 #include "../geometry.h"
 #include <vector>
 #include "box_overlap_testing_abstract.h"
+#include "full_object_detection_abstract.h"
 
 namespace dlib
 {
@@ -37,6 +37,8 @@ namespace dlib
                 non-max suppression on the output of the scan_image_pyramid object.  
         !*/
     public:
+        typedef typename image_scanner_type::feature_vector_type feature_vector_type;
+
         object_detector (
         );
         /*!
@@ -51,12 +53,15 @@ namespace dlib
         /*!
             ensures
                 - #*this is a copy of item
+                - #get_scanner() == item.get_scanner()
+                  (note that only the "configuration" of item.get_scanner() is copied.
+                  I.e. the copy is done using copy_configuration())
         !*/
 
         object_detector (
             const image_scanner_type& scanner, 
             const overlap_tester_type& overlap_tester,
-            const matrix<double,0,1>& w 
+            const feature_vector_type& w 
         );
         /*!
             requires
@@ -71,6 +76,32 @@ namespace dlib
                   with respect to overlap_tester.  That is, for all 
                   pairs of returned detections A and B, we will always
                   have: overlap_tester(A,B) == false
+                - #get_w() == w
+                - #get_overlap_tester() == overlap_tester
+                - #get_scanner() == scanner
+                  (note that only the "configuration" of scanner is copied.
+                  I.e. the copy is done using copy_configuration())
+        !*/
+
+        const feature_vector_type& get_w (
+        ) const;
+        /*!
+            ensures
+                - returns the weight vector used by this object
+        !*/
+
+        const overlap_tester_type& get_overlap_tester (
+        ) const;
+        /*!
+            ensures
+                - returns the overlap tester used by this object
+        !*/
+
+        const image_scanner_type& get_scanner (
+        ) const;
+        /*!
+            ensures
+                - returns the image scanner used by this object.  
         !*/
 
         object_detector& operator= (
@@ -79,6 +110,9 @@ namespace dlib
         /*!
             ensures
                 - #*this is a copy of item
+                - #get_scanner() == item.get_scanner()
+                  (note that only the "configuration" of item.get_scanner() is 
+                  copied.  I.e. the copy is done using copy_configuration())
                 - returns #*this
         !*/
 
@@ -87,7 +121,7 @@ namespace dlib
             >
         std::vector<rectangle> operator() (
             const image_type& img
-        ) const;
+        );
         /*!
             requires
                 - img == an object which can be accepted by image_scanner_type::load()
@@ -97,8 +131,80 @@ namespace dlib
                 - The returned vector will be sorted in the sense that the highest
                   confidence detections come first.  E.g. element 0 is the best detection,
                   element 1 the next best, and so on.
+                - #get_scanner() will have been loaded with img. Therefore, you can call
+                  #get_scanner().get_feature_vector() to obtain the feature vectors or
+                  #get_scanner().get_full_object_detection() to get the
+                  full_object_detections for the resulting object detection boxes.
         !*/
 
+        template <
+            typename image_type
+            >
+        void operator() (
+            const image_type& img,
+            std::vector<std::pair<double, rectangle> >& dets,
+            double adjust_threshold = 0
+        );
+        /*!
+            requires
+                - img == an object which can be accepted by image_scanner_type::load()
+            ensures
+                - performs object detection on the given image and stores the
+                  detected objects into #dets.  In particular, we will have that:
+                    - #dets is sorted such that the highest confidence detections 
+                      come first.  E.g. element 0 is the best detection, element 1 
+                      the next best, and so on.
+                    - #dets.size() == the number of detected objects.
+                    - #dets[i].first gives the "detection confidence", of the i-th 
+                      detection.  This is the detection value output by the scanner 
+                      minus the threshold, therefore this is a value > 0.
+                    - #dets[i].second == the bounding box for the i-th detection.
+                - #get_scanner() will have been loaded with img. Therefore, you can call
+                  #get_scanner().get_feature_vector() to obtain the feature vectors or
+                  #get_scanner().get_full_object_detection() to get the
+                  full_object_detections for the resulting object detection boxes.
+                - The detection threshold is adjusted by having adjust_threshold added
+                  to it.  Therefore, an adjust_threshold value > 0 makes detecting
+                  objects harder while a negative one makes it easier.
+        !*/
+
+        template <
+            typename image_type
+            >
+        void operator() (
+            const image_type& img,
+            std::vector<std::pair<double, full_object_detection> >& final_dets,
+            double adjust_threshold = 0
+        );
+        /*!
+            requires
+                - img == an object which can be accepted by image_scanner_type::load()
+            ensures
+                - This function is identical to the above operator() routine, except that
+                  it outputs full_object_detections instead of rectangles.  This means that
+                  the output includes part locations.  In particular, calling this function
+                  is the same as calling the above operator() routine and then using
+                  get_scanner().get_full_object_detection() to resolve all the rectangles
+                  into full_object_detections.  Therefore, this version of operator() is
+                  simply a convenience function for performing this set of operations.
+        !*/
+
+        template <
+            typename image_type
+            >
+        void operator() (
+            const image_type& img,
+            std::vector<full_object_detection>& final_dets,
+            double adjust_threshold = 0
+        );
+        /*!
+            requires
+                - img == an object which can be accepted by image_scanner_type::load()
+            ensures
+                - This function is identical to the above operator() routine, except that
+                  it doesn't include a double valued score.  That is, it just outputs the
+                  full_object_detections.
+        !*/
     };
 
 // ----------------------------------------------------------------------------------------

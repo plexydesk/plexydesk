@@ -8,6 +8,7 @@
 #include "../image_processing.h"
 #include "../array2d.h"
 #include <vector>
+#include "full_object_detection_abstract.h"
 
 namespace dlib
 {
@@ -28,13 +29,17 @@ namespace dlib
 
             REQUIREMENTS ON Feature_extractor_type
                 - must be an object with an interface compatible with the hashed_feature_image 
-                  object defined in dlib/image_keypoint/hashed_feature_image_abstract.h.
+                  object defined in dlib/image_keypoint/hashed_feature_image_abstract.h or 
+                  with the nearest_neighbor_feature_image object defined in 
+                  dlib/image_keypoint/nearest_neighbor_feature_image_abstract.h
 
             INITIAL VALUE
                 - get_num_detection_templates() == 0
                 - is_loaded_with_image() == false
                 - get_max_detections_per_template() == 10000
                 - get_max_pyramid_levels() == 1000
+                - get_min_pyramid_layer_width() == 20
+                - get_min_pyramid_layer_height() == 20
 
             WHAT THIS OBJECT REPRESENTS
                 This object is a tool for running a sliding window classifier over
@@ -43,6 +48,7 @@ namespace dlib
                     Beyond Bags of Features: Spatial Pyramid Matching for Recognizing 
                     Natural Scene Categories by Svetlana Lazebnik, Cordelia Schmid, 
                     and Jean Ponce
+                It also includes the ability to represent movable part models.
 
                 
 
@@ -52,30 +58,42 @@ namespace dlib
                       objects, which associate a vector with each location in an image.
 
                    2. A detection template.  This is a rectangle which defines the shape of a 
-                      sliding window (the object_box), as well as a set of rectangles which
-                      envelop it.  This set of enveloping rectangles defines the spatial
-                      structure of the overall feature extraction within a sliding window.  
-                      In particular, each location of a sliding window has a feature vector
+                      sliding window (i.e. the object_box), as well as a set of rectangular feature 
+                      extraction regions inside it.  This set of regions defines the spatial 
+                      structure of the overall feature extraction within a sliding window.  In 
+                      particular, each location of a sliding window has a feature vector 
                       associated with it.  This feature vector is defined as follows:
-                        - Let N denote the number of enveloping rectangles.
+                        - Let N denote the number of feature extraction zones.
                         - Let M denote the dimensionality of the vectors output by Feature_extractor_type
                           objects.
                         - Let F(i) == the M dimensional vector which is the sum of all vectors 
-                          given by our Feature_extractor_type object inside the ith enveloping 
-                          rectangle.
+                          given by our Feature_extractor_type object inside the ith feature extraction
+                          zone.
                         - Then the feature vector for a sliding window is an M*N dimensional vector
                           [F(1) F(2) F(3) ... F(N)] (i.e. it is a concatenation of the N vectors).
                           This feature vector can be thought of as a collection of N "bags of features",
-                          each bag coming from a spatial location determined one of the enveloping 
-                          rectangles. 
+                          each bag coming from a spatial location determined by one of the rectangular
+                          feature extraction zones.
                           
                    3. A weight vector and a threshold value.  The dot product between the weight
                       vector and the feature vector for a sliding window location gives the score 
                       of the window.  If this score is greater than the threshold value then the 
                       window location is output as a detection.
 
-                Finally, the sliding window classifiers described above are applied to every level 
-                of an image pyramid.  
+                Finally, the sliding window classifiers described above are applied to every level of
+                an image pyramid.  Moreover, some of the feature extraction zones are allowed to move
+                freely within the object box.  This means that when we are sliding the classifier over
+                an image, some feature extraction zones are stationary (i.e. always in the same place
+                relative to the object box) while others are allowed to move anywhere within the object
+                box.  In particular, the movable regions are placed at the locations that maximize the
+                score of the classifier.  Note further that each of the movable feature extraction
+                zones must pass a threshold test for it to be included.  That is, if the score that a
+                movable zone would contribute to the overall score for a sliding window location is not
+                positive then that zone is not included in the feature vector (i.e.  its part of the
+                feature vector is set to zero.  This way the length of the feature vector stays
+                constant).  This movable region construction allows us to represent objects with parts
+                that move around relative to the object box.  For example, a human has hands but they
+                aren't always in the same place relative to a person's bounding box.  
 
             THREAD SAFETY
                 Concurrent access to an instance of this object is not safe and should be protected
@@ -116,7 +134,7 @@ namespace dlib
                       objects via Feature_extractor_type::load().
                     - image_type objects can be used with Pyramid_type.  That is,
                       if pyr is an object of type Pyramid_type while img1 and img2
-                      are objects of image_type.  Then pyr(img1,img2) should be
+                      are objects of image_type, then pyr(img1,img2) should be
                       a valid expression which downsamples img1 into img2.
             ensures
                 - #is_loaded_with_image() == true
@@ -160,30 +178,48 @@ namespace dlib
 
         void add_detection_template (
             const rectangle& object_box,
-            const std::vector<rectangle>& feature_extraction_regions 
+            const std::vector<rectangle>& stationary_feature_extraction_regions,
+            const std::vector<rectangle>& movable_feature_extraction_regions
         );
         /*!
             requires
-                - center(object_box) == point(0,0),
+                - center(object_box) == point(0,0)
+                - for all valid i:
+                    - center(movable_feature_extraction_regions[i]) == point(0,0)
                 - if (get_num_detection_templates() > 0) then
-                    - get_num_components_per_detection_template() == feature_extraction_regions.size()
+                    - get_num_stationary_components_per_detection_template() == stationary_feature_extraction_regions.size() 
+                    - get_num_movable_components_per_detection_template() == movable_feature_extraction_regions.size() 
                       (i.e. if you already have detection templates in this object, then
                       any new detection template must declare a consistent number of 
                       feature extraction regions)
             ensures
                 - Adds another detection template to this object.  In particular, object_box 
-                  defines the size and shape of a sliding window while feature_extraction_regions 
-                  defines the locations for feature extraction as discussed in the WHAT THIS 
-                  OBJECT REPRESENTS section above.  Note also that the locations of the feature 
-                  extraction regions are relative to the object_box.  
+                  defines the size and shape of a sliding window while stationary_feature_extraction_regions 
+                  and movable_feature_extraction_regions defines the locations for feature extraction as 
+                  discussed in the WHAT THIS OBJECT REPRESENTS section above.  Note also that the locations of 
+                  the stationary feature extraction regions are relative to the object_box.  
                 - #get_num_detection_templates() == get_num_detection_templates() + 1
-                - The order of rectangles in feature_extraction_regions matters.  Recall that
-                  each rectangle gets its own set of features.  So given two different templates, 
-                  their ith rectangles will both share the same part of the weight vector (w) 
-                  supplied to detect().  So there should be some reasonable correspondence 
+                - The order of rectangles in stationary_feature_extraction_regions and
+                  movable_feature_extraction_regions matters.  Recall that each rectangle
+                  gets its own set of features.  So given two different templates, their
+                  ith rectangles will both share the same part of the weight vector (i.e. the w
+                  supplied to detect()).  So there should be some reasonable correspondence
                   between the rectangle ordering in different detection templates.  For,
-                  example, different detection templates should place corresponding 
-                  feature extraction regions in roughly the same part of the object_box.
+                  example, different detection templates should place corresponding feature
+                  extraction regions in roughly the same part of the object_box.
+                - #get_num_stationary_components_per_detection_template() = stationary_feature_extraction_regions.size() 
+                - #get_num_movable_components_per_detection_template()    = movable_feature_extraction_regions.size() 
+        !*/
+
+        void add_detection_template (
+            const rectangle& object_box,
+            const std::vector<rectangle>& stationary_feature_extraction_regions
+        );
+        /*!
+            ensures
+                - calls add_detection_template(object_box, stationary_feature_extraction_regions, empty_list)
+                  where empty_list is a vector of size 0.  I.e. this function is just a convenience
+                  routine for adding detection templates with no movable regions.
         !*/
 
         unsigned long get_num_detection_templates (
@@ -193,16 +229,40 @@ namespace dlib
                 - returns the number of detection templates in this object
         !*/
 
+        unsigned long get_num_stationary_components_per_detection_template (
+        ) const;
+        /*!
+            requires
+                - get_num_detection_templates() > 0
+            ensures
+                - A detection template is a rectangle which defines the shape of a sliding
+                  window (the object_box), as well as a set of rectangles which define
+                  feature extraction zones.  This function returns the number of stationary
+                  feature extraction zones in the detection templates used by this object. 
+        !*/
+
+        unsigned long get_num_movable_components_per_detection_template (
+        ) const;
+        /*!
+            requires
+                - get_num_detection_templates() > 0
+            ensures
+                - A detection template is a rectangle which defines the shape of a sliding
+                  window (the object_box), as well as a set of rectangles which define
+                  feature extraction zones.  This function returns the number of movable 
+                  feature extraction zones in the detection templates used by this object. 
+        !*/
+
         unsigned long get_num_components_per_detection_template (
         ) const;
         /*!
             requires
                 - get_num_detection_templates() > 0
             ensures
-                - A detection template is a rectangle which defines the shape of a 
-                  sliding window (the object_box), as well as a set of rectangles which
-                  envelop it.  This function returns the number of enveloping rectangles
-                  in the detection templates used by this object.
+                - returns the total number of feature extraction zones in the detection
+                  templates used by this object.  That is, returns the following:
+                    - get_num_movable_components_per_detection_template() + 
+                      get_num_stationary_components_per_detection_template()
         !*/
 
         long get_num_dimensions (
@@ -213,7 +273,8 @@ namespace dlib
             ensures
                 - returns the number of dimensions in the feature vector for a sliding window
                   location.  This value is the dimensionality of the underlying feature vectors 
-                  produced by Feature_extractor_type times get_num_components_per_detection_template().
+                  produced by Feature_extractor_type times (get_num_stationary_components_per_detection_template() + 
+                  get_num_movable_components_per_detection_template()).
         !*/
 
         unsigned long get_max_pyramid_levels (
@@ -234,6 +295,39 @@ namespace dlib
                 - max_levels > 0
             ensures
                 - #get_max_pyramid_levels() == max_levels
+        !*/
+
+        void set_min_pyramid_layer_size (
+            unsigned long width,
+            unsigned long height 
+        );
+        /*!
+            requires
+                - width > 0
+                - height > 0
+            ensures
+                - #get_min_pyramid_layer_width() == width
+                - #get_min_pyramid_layer_height() == height
+        !*/
+
+        inline unsigned long get_min_pyramid_layer_width (
+        ) const;
+        /*!
+            ensures
+                - returns the smallest allowable width of an image in the image pyramid.
+                  All pyramids will always include the original input image, however, no
+                  pyramid levels will be created which have a width smaller than the
+                  value returned by this function.
+        !*/
+
+        inline unsigned long get_min_pyramid_layer_height (
+        ) const;
+        /*!
+            ensures
+                - returns the smallest allowable height of an image in the image pyramid.
+                  All pyramids will always include the original input image, however, no
+                  pyramid levels will be created which have a height smaller than the
+                  value returned by this function.
         !*/
 
         unsigned long get_max_detections_per_template (
@@ -289,32 +383,67 @@ namespace dlib
                   been reached).
         !*/
 
-        void get_feature_vector (
-            const std::vector<rectangle>& rects,
-            feature_vector_type& psi,
-            std::vector<rectangle>& mapped_rects
+        const rectangle get_best_matching_rect (
+            const rectangle& rect
         ) const;
         /*!
             requires
+                - get_num_detection_templates() > 0
+            ensures
+                - Since scan_image_pyramid is a sliding window classifier system, not all possible rectangles 
+                  can be represented.  Therefore, this function allows you to supply a rectangle and obtain the
+                  nearest possible sliding window rectangle.
+        !*/
+
+        void get_feature_vector (
+            const full_object_detection& obj,
+            feature_vector_type& psi
+        ) const;
+        /*!
+            requires
+                - all_parts_in_rect(obj) == true
+                - obj.num_parts() == get_num_movable_components_per_detection_template()
                 - is_loaded_with_image() == true
                 - get_num_detection_templates() > 0
                 - psi.size() >= get_num_dimensions()
+                  (i.e. psi must have preallocated its memory before this function is called)
             ensures
-                - This function allows you to determine the feature vector used for a sliding window location
-                  or the sum of such vectors for a set of locations.
-                - if (rects was produced by a call to detect(), i.e. rects contains the contents of dets) then
-                    - #psi == the sum of feature vectors corresponding to the sliding window locations contained
-                      in rects.
-                    - #mapped_rects == rects
-                    - Let w denote the w vector given to detect(), then we have:
-                        - dot(w,#psi) == sum of scores of the dets produced by detect()
-                - else
-                    - Since scan_image_pyramid is a sliding window classifier system, not all possible rectangles can 
-                      be output by detect().  So in the case where rects contains rectangles which could not arise
-                      from a call to detect(), this function will map the rectangles in rects to the nearest possible 
-                      object boxes and then store the sum of feature vectors for the mapped rectangles into #psi.
-                    - for all valid i: #mapped_rects[i] == the rectangle rects[i] gets mapped to for feature extraction.
-                - #mapped_rects.size() == rects.size()
+                - This function allows you to determine the feature vector used for a
+                  sliding window location.  Note that this vector is added to psi.  Note
+                  also that you must use get_full_object_detection() to convert a rect from
+                  detect() into the needed full_object_detection.
+                - Since scan_image_pyramid is a sliding window classifier system, not all
+                  possible rectangles can be output by detect().  So in the case where
+                  obj.get_rect() could not arise from a call to detect(), this function
+                  will map obj.get_rect() to the nearest possible object box and then add
+                  the feature vector for the mapped rectangle into #psi.
+                - get_best_matching_rect(obj.get_rect()) == the rectangle obj.get_rect()
+                  gets mapped to for feature extraction.
+        !*/
+
+        full_object_detection get_full_object_detection (
+            const rectangle& rect,
+            const feature_vector_type& w
+        ) const;
+        /*!
+            requires
+                - w.size() >= get_num_dimensions()
+                - is_loaded_with_image() == true
+                - get_num_detection_templates() > 0
+            ensures
+                - This function allows you to determine the full_object_detection
+                  corresponding to a sliding window location.  Note that the detect()
+                  routine doesn't return the locations of the movable parts in a detected
+                  object.  Therefore, if you are using any movable parts in your model you
+                  must use get_full_object_detection() to find out where the movable parts
+                  were detected.  To do this, you supply the w and detected rectangle.
+                  Then the corresponding fully populated full_object_detection will be
+                  returned.
+                - returns a full_object_detection, OBJ, such that: 
+                    - OBJ.get_rect() == rect
+                    - OBJ.num_parts() == get_num_movable_components_per_detection_template()
+                    - OBJ.part(i) == the location of the i-th movable part inside this detection,
+                      or OBJECT_PART_NOT_PRESENT if the part was not found.
         !*/
 
     };

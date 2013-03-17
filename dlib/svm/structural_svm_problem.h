@@ -75,9 +75,6 @@ namespace dlib
                 unsigned long best_idx = 0;
 
 
-                using sparse_vector::dot;
-                using dlib::dot;
-
                 const scalar_type dot_true_psi = dot(true_psi, current_solution);
 
                 // figure out which element in the cache is the best (i.e. has the biggest risk)
@@ -113,13 +110,13 @@ namespace dlib
             if (loss.size() >= prob->get_max_cache_size())
             {
                 // find least recently used cache entry for idx-th sample
-                const long i       = index_of_min(vector_to_matrix(lru_count));
+                const long i       = index_of_min(mat(lru_count));
 
                 // save our new data in the cache
                 loss[i] = out_loss;
                 psi[i]  = out_psi;
 
-                const long max_use = max(vector_to_matrix(lru_count));
+                const long max_use = max(mat(lru_count));
                 // Make sure this new cache entry has the best lru count since we have used
                 // it most recently.
                 lru_count[i] = max_use + 1;
@@ -130,7 +127,7 @@ namespace dlib
                 psi.push_back(out_psi);
                 long max_use = 1;
                 if (lru_count.size() != 0)
-                    max_use = max(vector_to_matrix(lru_count)) + 1;
+                    max_use = max(mat(lru_count)) + 1;
                 lru_count.push_back(max_use);
             }
         }
@@ -298,7 +295,7 @@ namespace dlib
             if (current_risk_gap < eps)
                 should_stop = true;
 
-            if (should_stop && !skip_cache)
+            if (should_stop && !skip_cache && max_cache_size != 0)
             {
                 // Instead of stopping we shouldn't use the cache on the next iteration.  This way
                 // we can be sure to have the best solution rather than assuming the cache is up-to-date
@@ -338,7 +335,7 @@ namespace dlib
                 {
                     cache[i].get_truth_joint_feature_vector_cached(ftemp);
 
-                    sparse_vector::subtract_from(psi_true, ftemp);
+                    subtract_from(psi_true, ftemp);
                 }
             }
 
@@ -352,7 +349,7 @@ namespace dlib
         }
 
         virtual void call_separation_oracle_on_all_samples (
-            matrix_type& w,
+            const matrix_type& w,
             matrix_type& subgradient,
             scalar_type& total_loss
         ) const
@@ -364,7 +361,7 @@ namespace dlib
                 scalar_type loss;
                 separation_oracle_cached(i, w, loss, ftemp);
                 total_loss += loss;
-                sparse_vector::add_to(subgradient, ftemp);
+                add_to(subgradient, ftemp);
             }
         }
 

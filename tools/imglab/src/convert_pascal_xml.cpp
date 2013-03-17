@@ -1,10 +1,11 @@
 
 #include "convert_pascal_xml.h"
-#include "image_dataset_metadata.h"
+#include "dlib/data_io.h"
 #include <iostream>
 #include <dlib/xml_parser.h>
 #include <string>
 #include <dlib/dir_nav.h>
+#include <dlib/cmd_line_parser.h>
 
 using namespace std;
 using namespace dlib;
@@ -49,9 +50,9 @@ namespace
         }
 
         virtual void start_element ( 
-            const unsigned long line_number,
+            const unsigned long ,
             const std::string& name,
-            const dlib::attribute_list& atts
+            const dlib::attribute_list& 
         )
         {
             if (ts.size() == 0 && name != "annotation") 
@@ -66,7 +67,7 @@ namespace
         }
 
         virtual void end_element ( 
-            const unsigned long line_number,
+            const unsigned long ,
             const std::string& name
         )
         {
@@ -105,6 +106,39 @@ namespace
                 else if (ts.back() == "name" && ts[ts.size()-2] == "object")
                 {
                     temp_box.label = trim(data);
+                }
+                else if (ts.back() == "difficult" && ts[ts.size()-2] == "object")
+                {
+                    if (trim(data) == "0" || trim(data) == "false")
+                    {
+                        temp_box.difficult = false;
+                    }
+                    else
+                    {
+                        temp_box.difficult = true;
+                    }
+                }
+                else if (ts.back() == "truncated" && ts[ts.size()-2] == "object")
+                {
+                    if (trim(data) == "0" || trim(data) == "false")
+                    {
+                        temp_box.truncated = false;
+                    }
+                    else
+                    {
+                        temp_box.truncated = true;
+                    }
+                }
+                else if (ts.back() == "occluded" && ts[ts.size()-2] == "object")
+                {
+                    if (trim(data) == "0" || trim(data) == "false")
+                    {
+                        temp_box.occluded = false;
+                    }
+                    else
+                    {
+                        temp_box.occluded = true;
+                    }
                 }
 
             }
@@ -164,7 +198,7 @@ namespace
 }
 
 void convert_pascal_xml(
-    const parser_type& parser
+    const command_line_parser& parser
 )
 {
     cout << "Convert from PASCAL XML annotation format..." << endl;
@@ -193,7 +227,7 @@ void convert_pascal_xml(
             dataset.images.push_back(img);
 
         }
-        catch (exception& e)
+        catch (exception& )
         {
             cout << "Error while processing file " << parser[i] << endl << endl;
             throw;

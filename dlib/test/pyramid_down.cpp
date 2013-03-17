@@ -44,8 +44,8 @@ void test_pyramid_down_grayscale()
     overlap = rect1.intersect(rect2).area() / (double)(rect1 + rect2).area();
     DLIB_TEST(overlap > 0.95);
 
-    DLIB_TEST(min(array_to_matrix(down)) == 10);
-    DLIB_TEST(max(array_to_matrix(down)) == 10);
+    DLIB_TEST(min(mat(down)) == 10);
+    DLIB_TEST(max(mat(down)) == 10);
 }
 
 void test_pyramid_down_rgb()
@@ -169,11 +169,11 @@ void test_pyramid_down_rgb2()
     */
 
 
-    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(array_to_matrix(img2)),rect1)) - 255/3) < 3);
-    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(array_to_matrix(img2)),rect2)) - 255/3) < 3);
-    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(array_to_matrix(img2)),rect3)) - 255/3) < 3);
+    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(mat(img2)),rect1)) - 255/3) < 3);
+    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(mat(img2)),rect2)) - 255/3) < 3);
+    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(mat(img2)),rect3)) - 255/3) < 3);
     assign_image(img4, img);
-    DLIB_TEST(std::abs((int)mean(array_to_matrix(img4)) - mean(array_to_matrix(img2))) < 2);
+    DLIB_TEST(std::abs((int)mean(mat(img4)) - mean(mat(img2))) < 2);
 
 
     rgb_pixel mean1 = mean_pixel(img3, rect1);
@@ -256,11 +256,11 @@ void test_pyramid_down_grayscale2()
     */
 
 
-    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(array_to_matrix(img2)),rect1)) - 255) < 3);
-    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(array_to_matrix(img2)),rect2)) - 170) < 3);
-    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(array_to_matrix(img2)),rect3)) - 100) < 3);
+    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(mat(img2)),rect1)) - 255) < 3);
+    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(mat(img2)),rect2)) - 170) < 3);
+    DLIB_TEST(std::abs((int)mean(subm(matrix_cast<long>(mat(img2)),rect3)) - 100) < 3);
     assign_image(img4, img);
-    DLIB_TEST(std::abs((int)mean(array_to_matrix(img4)) - mean(array_to_matrix(img2))) < 2);
+    DLIB_TEST(std::abs((int)mean(mat(img4)) - mean(mat(img2))) < 2);
 
 
     //my_window.wait_until_closed();
@@ -278,6 +278,31 @@ void test_pyramid_down_grayscale2()
     }
 }
 
+
+// ----------------------------------------------------------------------------------------
+
+template <typename pyramid_down_type>
+void test_pyramid_down_small_sizes()
+{
+    // just make sure it doesn't get messed up with small images.  This test
+    // is only really useful if asserts are enabled.
+    pyramid_down_type pyr;
+
+    for (int size = 0; size < 20; ++size)
+    {
+        array2d<unsigned char> img1(size,size);
+        array2d<rgb_pixel> img2(size,size);
+
+        array2d<unsigned char> out1;
+        array2d<rgb_pixel> out2;
+
+        assign_all_pixels(img1, 0);
+        assign_all_pixels(img2, 0);
+
+        pyr(img1, out1);
+        pyr(img2, out2);
+    }
+}
 
 // ----------------------------------------------------------------------------------------
 
@@ -299,6 +324,17 @@ void test_pyramid_down_grayscale2()
             print_spinner();
             test_pyramid_down_rgb();
 
+            print_spinner();
+            dlog << LINFO << "call test_pyramid_down_small_sizes<pyramid_down>();";
+            test_pyramid_down_small_sizes<pyramid_down>();
+            dlog << LINFO << "call test_pyramid_down_small_sizes<pyramid_down_3_2>();";
+            test_pyramid_down_small_sizes<pyramid_down_3_2>();
+            dlog << LINFO << "call test_pyramid_down_small_sizes<pyramid_down_4_3>();";
+            test_pyramid_down_small_sizes<pyramid_down_4_3>();
+            dlog << LINFO << "call test_pyramid_down_small_sizes<pyramid_down_5_4>();";
+            test_pyramid_down_small_sizes<pyramid_down_5_4>();
+            dlog << LINFO << "call test_pyramid_down_small_sizes<pyramid_disable>();";
+            test_pyramid_down_small_sizes<pyramid_disable>();
 
             print_spinner();
             dlog << LINFO << "call test_pyramid_down_rgb2<pyramid_down>();";

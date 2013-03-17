@@ -158,7 +158,7 @@ namespace dlib
         /*!
             requires
                 - image_type is a dlib::matrix or something convertible to a matrix
-                  via array_to_matrix()
+                  via mat()
                 - pixel_traits<typename image_type::type>::has_alpha == false
             ensures
                 - if (img.nr() < min_size || img.nc() < min_size) then
@@ -167,6 +167,25 @@ namespace dlib
                 - else
                     - generates a HOG image from the given image.   
                     - #size() > 0
+        !*/
+
+        inline void unload (
+        );
+        /*!
+            ensures
+                - #nr() == 0
+                - #nc() == 0
+                - clears only the state information which is populated by load().  For 
+                  example, let H be a hog_image object.  Then consider the two sequences 
+                  of instructions:
+                    Sequence 1:
+                        H.load(img);      
+                        H.unload();
+                        H.load(img);
+
+                    Sequence 2:
+                        H.load(img);
+                  Both sequence 1 and sequence 2 should have the same effect on H.  
         !*/
 
         inline unsigned long size (
@@ -219,12 +238,10 @@ namespace dlib
             long col
         ) const;
         /*!
-            requires
-                - 0 <= row < nr()
-                - 0 <= col < nc()
             ensures
                 - returns a rectangle that tells you what part of the original image is associated
-                  with a particular HOG block.
+                  with a particular HOG block.  That is, what part of the input image is associated
+                  with (*this)(row,col).
                 - The returned rectangle will be cell_size*block_size pixels wide and tall.
         !*/
 

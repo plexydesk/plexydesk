@@ -14,7 +14,7 @@
 
 
 #include <iostream>
-#include "dlib/matrix.h"
+#include <dlib/matrix.h>
 
 using namespace dlib;
 using namespace std;
@@ -384,7 +384,7 @@ void custom_matrix_expressions_example(
         As an aside, note that dlib contains functions equivalent to the ones we 
         defined above.  They are:
             - dlib::trans()
-            - dlib::vector_to_matrix()
+            - dlib::mat() (converts things into matrices)
             - operator+ (e.g. you can say my_mat + 1)
 
 

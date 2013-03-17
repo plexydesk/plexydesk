@@ -4,7 +4,7 @@
 #define DLIB_METADATA_EdITOR_H__
 
 #include <dlib/gui_widgets.h>
-#include "image_dataset_metadata.h"
+#include "dlib/data_io.h"
 
 // ----------------------------------------------------------------------------------------
 
@@ -16,6 +16,10 @@ public:
     );
 
     ~metadata_editor();
+
+    void add_labelable_part_name (
+        const std::string& name
+    );
 
 private:
 

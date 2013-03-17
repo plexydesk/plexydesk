@@ -75,6 +75,19 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <typename T>
+    struct is_array : public default_is_kind_value  
+    {
+        /*!
+            - if (T is an implementation of array/array_kernel_abstract.h) then
+                - is_array<T>::value == true
+            - else
+                - is_array<T>::value == false
+        !*/
+    };
+
+// ----------------------------------------------------------------------------------------
+
+    template <typename T>
     struct is_std_vector : public default_is_kind_value  
     {
         /*!
@@ -108,6 +121,19 @@ namespace dlib
                 - is_rand<T>::value == true
             - else
                 - is_rand<T>::value == false
+        !*/
+    };
+
+// ----------------------------------------------------------------------------------------
+
+    template <typename T>
+    struct is_config_reader : public default_is_kind_value  
+    {
+        /*!
+            - if (T is an implementation of config_reader/config_reader_kernel_abstract.h) then
+                - is_config_reader<T>::value == true
+            - else
+                - is_config_reader<T>::value == false
         !*/
     };
 

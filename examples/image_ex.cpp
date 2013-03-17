@@ -12,9 +12,9 @@
 
 
 
-#include "dlib/gui_widgets.h"
-#include "dlib/image_io.h"
-#include "dlib/image_transforms.h"
+#include <dlib/gui_widgets.h>
+#include <dlib/image_io.h>
+#include <dlib/image_transforms.h>
 #include <fstream>
 
 
@@ -61,14 +61,28 @@ int main(int argc, char** argv)
         // Now we would like to see what our images look like.  So lets use a 
         // window to display them on the screen.  (Note that you can zoom into 
         // the window by holding CTRL and scrolling the mouse wheel)
-        image_window my_window(edge_image);
+        image_window my_window(edge_image, "Normal Edge Image");
+
+        // We can also easily display the edge_image as a heatmap like so.
+        image_window win_hot(heatmap(edge_image, 255));
 
         // also make a window to display the original image
-        image_window my_window2(img);
+        image_window my_window2(img, "Original Image");
 
-        // wait until the user closes both windows before we let the program 
+        // Sometimes you want to get input from the user about which pixels are important
+        // for some task.  You can do this easily by trapping user clicks as shown below.
+        // This loop executes every time the user double clicks on some image pixel and it
+        // will terminate once the user closes the window.
+        point p;
+        while (my_window.get_next_double_click(p))
+        {
+            cout << "User double clicked on pixel:         " << p << endl;
+            cout << "edge pixel value at this location is: " << (int)edge_image[p.y()][p.x()] << endl;
+        }
+
+        // wait until the user closes the windows before we let the program 
         // terminate.
-        my_window.wait_until_closed();
+        win_hot.wait_until_closed();
         my_window2.wait_until_closed();
     }
     catch (exception& e)

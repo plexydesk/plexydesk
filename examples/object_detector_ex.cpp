@@ -10,12 +10,12 @@
 */
 
 
-#include "dlib/svm_threaded.h"
-#include "dlib/gui_widgets.h"
-#include "dlib/array.h"
-#include "dlib/array2d.h"
-#include "dlib/image_keypoint.h"
-#include "dlib/image_processing.h"
+#include <dlib/svm_threaded.h>
+#include <dlib/gui_widgets.h>
+#include <dlib/array.h>
+#include <dlib/array2d.h>
+#include <dlib/image_keypoint.h>
+#include <dlib/image_processing.h>
 
 #include <iostream>
 #include <fstream>
@@ -78,6 +78,20 @@ void make_simple_test_data (
     temp.push_back(centered_rect(point(123,121), 70,70));
     fill_rect(images[2],temp.back(),255); // Paint the square white
     object_locations.push_back(temp);
+
+    // corrupt each image with random noise just to make this a little more 
+    // challenging 
+    dlib::rand rnd;
+    for (unsigned long i = 0; i < images.size(); ++i)
+    {
+        for (long r = 0; r < images[i].nr(); ++r)
+        {
+            for (long c = 0; c < images[i].nc(); ++c)
+            {
+                images[i][r][c] = put_in_range(0,255,images[i][r][c] + 40*rnd.get_random_gaussian());
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------------------
@@ -87,8 +101,7 @@ int main()
     try
     {
         // The first thing we do is create the set of 3 images discussed above.  
-        typedef array<array2d<unsigned char> >::expand_1b  grayscale_image_array_type;
-        grayscale_image_array_type images;
+        dlib::array<array2d<unsigned char> > images;
         std::vector<std::vector<rectangle> > object_locations;
         make_simple_test_data(images, object_locations);
 
@@ -104,25 +117,26 @@ int main()
                       work.  However, to understand this example, all you need to know is that the 
                       feature extractor associates a vector with each location in an image.  This 
                       vector is supposed to capture information which describes how parts of the 
-                      image look in a way that is relevant to the problem you are trying to solve.
+                      image look.  Importantly, it should do this in a way that is relevant to the 
+                      problem you are trying to solve.
 
                    2. A detection template.  This is a rectangle which defines the shape of a 
-                      sliding window (the object_box), as well as a set of rectangles which
-                      envelop it.  This set of enveloping rectangles defines the spatial
-                      structure of the overall feature extraction within a sliding window.  
-                      In particular, each location of a sliding window has a feature vector
+                      sliding window (i.e. the object_box), as well as a set of rectangular feature 
+                      extraction regions inside it.  This set of regions defines the spatial 
+                      structure of the overall feature extraction within a sliding window.  In 
+                      particular, each location of a sliding window has a feature vector 
                       associated with it.  This feature vector is defined as follows:
-                        - Let N denote the number of enveloping rectangles.
-                        - Let M denote the dimensionality of the vectors output by feature_extractor_type
+                        - Let N denote the number of feature extraction zones.
+                        - Let M denote the dimensionality of the vectors output by Feature_extractor_type
                           objects.
                         - Let F(i) == the M dimensional vector which is the sum of all vectors 
-                          given by our feature_extractor_type object inside the ith enveloping 
-                          rectangle.
+                          given by our Feature_extractor_type object inside the ith feature extraction
+                          zone.
                         - Then the feature vector for a sliding window is an M*N dimensional vector
                           [F(1) F(2) F(3) ... F(N)] (i.e. it is a concatenation of the N vectors).
                           This feature vector can be thought of as a collection of N "bags of features",
-                          each bag coming from a spatial location determined by one of the enveloping 
-                          rectangles. 
+                          each bag coming from a spatial location determined by one of the rectangular
+                          feature extraction zones.
                           
                    3. A weight vector and a threshold value.  The dot product between the weight
                       vector and the feature vector for a sliding window location gives the score 
@@ -131,27 +145,47 @@ int main()
                       parameters yourself.  They are automatically populated by the 
                       structural_object_detection_trainer.
 
-                Finally, the sliding window classifiers described above are applied to every level 
-                of an image pyramid.   So you need to tell scan_image_pyramid what kind of pyramid
-                you want to use.  In this case we are using pyramid_down which downsamples each
-                pyramid layer by half (dlib also contains other version of pyramid_down which result 
-                in finer grained pyramids).
+                The sliding window classifiers described above are applied to every level of an image
+                pyramid.   So you need to tell scan_image_pyramid what kind of pyramid you want to
+                use.  In this case we are using pyramid_down which downsamples each pyramid layer by
+                half (dlib also contains other version of pyramid_down which result in finer grained
+                pyramids).
+
+                Finally, some of the feature extraction zones are allowed to move freely within the
+                object box.  This means that when we are sliding the classifier over an image, some
+                feature extraction zones are stationary (i.e. always in the same place relative to
+                the object box) while others are allowed to move anywhere within the object box.  In
+                particular, the movable regions are placed at the locations that maximize the score
+                of the classifier.  Note further that each of the movable feature extraction zones
+                must pass a threshold test for it to be included.  That is, if the score that a
+                movable zone would contribute to the overall score for a sliding window location is
+                not positive then that zone is not included in the feature vector (i.e. its part of
+                the feature vector is set to zero.  This way the length of the feature vector stays
+                constant).  This movable region construction allows us to represent objects with
+                parts that move around relative to the object box.  For example, a human has hands
+                but they aren't always in the same place relative to a person's bounding box.
+                However, to keep this example program simple, we will only be using stationary
+                feature extraction regions.
         */
         typedef hashed_feature_image<hog_image<3,3,1,4,hog_signed_gradient,hog_full_interpolation> > feature_extractor_type;
         typedef scan_image_pyramid<pyramid_down, feature_extractor_type> image_scanner_type;
         image_scanner_type scanner;
-        // Setup the sliding window box.  Lets use a window with the same shape as the white boxes we
-        // are trying to detect.
-        const rectangle object_box = compute_box_dimensions(1,    // width/height ratio
-                                                            70*70 // box area 
-                                                            );
-        // Setup the detection template so it contains 4 feature extraction zones inside the object_box.  These
-        // are the upper left, upper right, lower left, and lower right quadrants of object_box.  (Note that
-        // in general we can add more than one detection template.  But in this case one is enough.)
-        scanner.add_detection_template(object_box, create_grid_detection_template(object_box,2,2));
 
+        // The hashed_feature_image in the scanner needs to be supplied with a hash function capable 
+        // of hashing the outputs of the hog_image.  Calling this function will set it up for us.  The 
+        // 10 here indicates that it will hash hog vectors into the range [0, pow(2,10)).  Therefore,
+        // the feature vectors output by the hashed_feature_image will have dimension pow(2,10).
+        setup_hashed_features(scanner, images, 10);
 
-
+        // We also need to setup the detection templates the scanner will use.  It is important that 
+        // we add detection templates which are capable of matching all the output boxes we want to learn.
+        // For example, if object_locations contained a rectangle with a height to width ratio of 10 but
+        // we only added square detection templates then it would be impossible to detect this non-square
+        // rectangle.  The setup_grid_detection_templates_verbose() routine will take care of this for us by 
+        // looking at the contents of object_locations and automatically picking an appropriate set.  Also, 
+        // the final arguments indicate that we want our detection templates to have 4 feature extraction 
+        // regions laid out in a 2x2 regular grid inside each sliding window.
+        setup_grid_detection_templates_verbose(scanner, object_locations, 2, 2);
 
 
         // Now that we have defined the kind of sliding window classifier system we want and stored 
@@ -160,14 +194,10 @@ int main()
         structural_object_detection_trainer<image_scanner_type> trainer(scanner);
         trainer.set_num_threads(4); // Set this to the number of processing cores on your machine. 
 
-        // This line tells the algorithm that it is never OK for two detections to overlap.  So
-        // this controls how the non-max suppression is performed and in general you can set this up
-        // any way you like. 
-        trainer.set_overlap_tester(test_box_overlap(0));
 
         // There are a variety of other useful parameters to the structural_object_detection_trainer.  
         // Examples of the ones you are most likely to use follow (see dlib documentation for what they do):
-        //trainer.set_overlap_eps(0.80);
+        //trainer.set_match_eps(0.80);
         //trainer.set_c(1.0);
         //trainer.set_loss_per_missed_target(1);
         //trainer.set_loss_per_false_alarm(1);
@@ -198,11 +228,7 @@ int main()
             // Put the image and detections into the window.
             win.clear_overlay();
             win.set_image(images[i]);
-            for (unsigned long j = 0; j < rects.size(); ++j)
-            {
-                // Add each detection as a red box.
-                win.add_overlay(image_display::overlay_rect(rects[j], rgb_pixel(255,0,0)));
-            }
+            win.add_overlay(rects, rgb_pixel(255,0,0));
 
             cout << "Hit enter to see the next image.";
             cin.get();
@@ -224,10 +250,6 @@ int main()
     {
         cout << "\nexception thrown!" << endl;
         cout << e.what() << endl;
-    }
-    catch (...)
-    {
-        cout << "Some error occurred" << endl;
     }
 }
 

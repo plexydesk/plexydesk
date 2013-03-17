@@ -131,9 +131,9 @@ namespace
             brute_force_find_max_factor_graph_viterbi(prob, assign);
             find_max_factor_graph_viterbi(prob, assign2);
 
-            DLIB_TEST_MSG(vector_to_matrix(assign) == vector_to_matrix(assign2),
-                          trans(vector_to_matrix(assign))
-                          << trans(vector_to_matrix(assign2))
+            DLIB_TEST_MSG(mat(assign) == mat(assign2),
+                          trans(mat(assign))
+                          << trans(mat(assign2))
                           );
         }
     }
@@ -187,8 +187,17 @@ namespace
             do_test<0,3,8>();
             do_test<4,3,1>();
             do_test<4,3,0>();
-            do_test<0,3,0>();
 
+            do_test<3,2,1>();
+            do_test<3,2,0>();
+            do_test<3,2,2>();
+            do_test<2,2,1>();
+            do_test_negative<3,2,1>();
+            do_test_negative<3,2,0>();
+            do_test_negative<3,2,2>();
+            do_test_negative<2,2,1>();
+
+            do_test<0,3,0>();
             do_test<1,2,8>();
             do_test<2,2,7>();
             do_test<3,2,8>();

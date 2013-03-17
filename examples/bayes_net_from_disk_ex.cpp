@@ -6,10 +6,10 @@
 */
 
 
-#include "dlib/bayes_utils.h"
-#include "dlib/graph_utils.h"
-#include "dlib/graph.h"
-#include "dlib/directed_graph.h"
+#include <dlib/bayes_utils.h>
+#include <dlib/graph_utils.h>
+#include <dlib/graph.h>
+#include <dlib/directed_graph.h>
 #include <iostream>
 #include <fstream>
 
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 
         // First we need to create an undirected graph which contains set objects at each node and
         // edge.  This long declaration does the trick.
-        typedef graph<set<unsigned long>::compare_1b_c, set<unsigned long>::compare_1b_c>::kernel_1a_c join_tree_type;
+        typedef graph<dlib::set<unsigned long>::compare_1b_c, dlib::set<unsigned long>::compare_1b_c>::kernel_1a_c join_tree_type;
         join_tree_type join_tree;
 
         // Now we need to populate the join_tree with data from our bayesian network.  The next two 

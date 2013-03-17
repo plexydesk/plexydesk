@@ -43,6 +43,7 @@
          <item>solve_qp_using_smo</item> 
          <item>solve_qp2_using_smo</item> 
          <item>solve_qp3_using_smo</item> 
+         <item>solve_qp4_using_smo</item> 
          <item>oca</item> 
          <item>solve_least_squares</item> 
          <item>solve_least_squares_lm</item> 
@@ -51,6 +52,9 @@
          <item>max_sum_submatrix</item> 
          <item>find_max_factor_graph_nmplp</item> 
          <item>find_max_factor_graph_viterbi</item> 
+         <item>find_max_factor_graph_potts</item> 
+         <item>find_max_parse_cky</item> 
+         <item>min_cut</item> 
       </section>
 
       <section>
@@ -71,6 +75,10 @@
          <item>poly_min_extrap</item> 
          <item>lagrange_poly_min_extrap</item> 
          <item>line_search</item> 
+         <item>graph_cut_score</item> 
+         <item>potts_model_score</item> 
+         <item>parse_tree_to_string</item> 
+         <item>find_trees_not_rooted_with_tag</item> 
       </section>
 
     </top>  
@@ -237,6 +245,9 @@
                </p>
 
          </description>
+         <examples>
+            <example>optimization_ex.cpp.html</example>
+         </examples>
                                  
       </component>
 
@@ -390,7 +401,7 @@ subject to the following constraint:
                   <li>Chang and Lin, Training {nu}-Support Vector Classifiers: Theory and Algorithms</li>
                   <li>Chih-Chung Chang and Chih-Jen Lin, LIBSVM : a library for support vector 
                      machines, 2001. Software available at 
-                     <a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm">http://www.csie.ntu.edu.tw/~cjlin/libsvm</a></li>
+                     <a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/">http://www.csie.ntu.edu.tw/~cjlin/libsvm</a></li>
                </ul>
 
          </description>
@@ -421,10 +432,32 @@ subject to the following constraint:
                <ul>
                   <li>Chih-Chung Chang and Chih-Jen Lin, LIBSVM : a library for support vector 
                      machines, 2001. Software available at 
-                     <a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm">http://www.csie.ntu.edu.tw/~cjlin/libsvm</a></li>
+                     <a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/">http://www.csie.ntu.edu.tw/~cjlin/libsvm</a></li>
                   <li>Working Set Selection Using Second Order Information for Training Support Vector Machines by
                      Fan, Chen, and Lin.  In the Journal of Machine Learning Research 2005.</li>
                </ul>
+
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>solve_qp4_using_smo</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/optimization_solve_qp_using_smo_abstract.h</spec_file>
+         <description>
+             This function solves the following quadratic program:
+<pre>
+   Minimize: f(alpha,lambda) == 0.5*trans(alpha)*Q*alpha - trans(alpha)*b + 
+                                0.5*trans(lambda)*lambda - trans(lambda)*A*alpha
+   subject to the following constraints:
+      sum(alpha)  == C 
+      min(alpha)  >= 0 
+      min(lambda) >= 0
+   Where f is convex.  This means that Q should be positive-semidefinite.
+</pre>
 
          </description>
                                  
@@ -442,6 +475,10 @@ subject to the following constraint:
             and jobs and you need to decide which workers to assign to which jobs. Some workers are better at 
             certain jobs than others. So you would like to find out how to assign them all to jobs such that 
             overall productivity is maximized. You can use this routine to solve this problem and others like it. 
+            <p>
+               Note that dlib also contains a <a href="ml.html#structural_assignment_trainer">machine learning</a>
+               method for learning the cost function needed to use the Hungarian algorithm.
+            </p>
 
          </description>
                                  
@@ -476,6 +513,8 @@ subject to the following constraint:
    where X is a set of integer valued variables and f(X) can be written
    as the sum of functions which each involve only two variables from X.
 </pre>
+If the graph is tree-structured then this routine always gives the exact solution to the MAP problem.
+However, for graphs with cycles, the solution may be approximate.
 <br/>
 <br/>
             This function is an implementation of the NMPLP algorithm introduced in the 
@@ -492,6 +531,52 @@ subject to the following constraint:
    <!-- ************************************************************************* -->
       
       <component>
+         <name>find_max_parse_cky</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/find_max_parse_cky_abstract.h</spec_file>
+         <description>
+            This function implements the CKY parsing algorithm.  In particular, it
+            finds the maximum scoring binary parse tree that parses an input sequence of tokens.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>parse_tree_to_string</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/find_max_parse_cky_abstract.h</spec_file>
+         <description>
+            This is a set of functions useful for converting a parse tree output by 
+            <a href="#find_max_parse_cky">find_max_parse_cky</a> into a bracketed string
+            suitable for displaying the parse tree.  
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>find_trees_not_rooted_with_tag</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/find_max_parse_cky_abstract.h</spec_file>
+         <description>
+              Finds all the largest non-overlapping <a href="#find_max_parse_cky">parse trees</a> 
+              in tree that are not rooted with a particular tag.   
+              <p>
+              This function is useful when you want to cut a parse tree
+              into a bunch of sub-trees and you know that the top level of the tree is all
+              composed of the same kind of tag.  So if you want to just "slice off" the top
+              of the tree where this tag lives then this function is useful for doing that.
+              </p>
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>find_max_factor_graph_viterbi</name>
          <file>dlib/optimization.h</file>
          <spec_file link="true">dlib/optimization/find_max_factor_graph_viterbi_abstract.h</spec_file>
@@ -501,6 +586,76 @@ subject to the following constraint:
             algorithm for finding the maximizing assignment.  In addition to basic first order Markov
             models, this function is also capable of finding the MAP assignment for higher order
             Markov models.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>potts_model_score</name>
+         <file>dlib/graph_cuts.h</file>
+         <spec_file link="true">dlib/graph_cuts/find_max_factor_graph_potts_abstract.h</spec_file>
+         <description>
+              This routine computes the model score for a Potts problem and a
+              candidate labeling.  This score is the quantity maximised
+              by the <a href="#find_max_factor_graph_potts">find_max_factor_graph_potts</a>
+              routine.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>graph_cut_score</name>
+         <file>dlib/graph_cuts.h</file>
+         <spec_file link="true">dlib/graph_cuts/min_cut_abstract.h</spec_file>
+         <description>
+            This routine computes the score for a candidate graph cut.  This is the 
+            quantity minimized by the <a href="#min_cut">min_cut</a> algorithm.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>min_cut</name>
+         <file>dlib/graph_cuts.h</file>
+         <spec_file link="true">dlib/graph_cuts/min_cut_abstract.h</spec_file>
+         <description>
+                This is a function object which can be used to find the min cut
+                on a graph.
+                The implementation is based on the method described in the following
+                paper:
+                <blockquote>
+                    An Experimental Comparison of Min-Cut/Max-Flow Algorithms for
+                    Energy Minimization in Vision, by Yuri Boykov and Vladimir Kolmogorov, 
+                    in PAMI 2004.
+                </blockquote>
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>find_max_factor_graph_potts</name>
+         <file>dlib/graph_cuts.h</file>
+         <spec_file link="true">dlib/graph_cuts/find_max_factor_graph_potts_abstract.h</spec_file>
+         <description>
+              This is a set of overloaded functions for exactly solving the MAP problem in a Potts
+              model.  This type of model is useful when you have a problem which
+              can be modeled as a bunch of binary decisions on some variables,
+              but you have some kind of labeling consistency constraint.  This
+              means that there is some penalty for giving certain pairs of variables
+              different labels.  So in addition to trying to figure out how to best
+              label each variable on its own, you have to worry about making the
+              labels pairwise consistent in some sense.  The find_max_factor_graph_potts()
+              routine can be used to find the most probable/highest scoring
+              labeling for this type of model.
+              <p>The implementation of this routine is based on the <a href="#min_cut">min_cut</a> object.</p>
          </description>
                                  
       </component>
@@ -516,7 +671,9 @@ subject to the following constraint:
 <pre>
    Minimize: f(w) == 0.5*dot(w,w) + C*R(w)
 
-   Where R(w) is a user-supplied convex function and C > 0
+   Where R(w) is a user-supplied convex function and C > 0.  Optionally,
+   this object can also add non-negativity constraints to some or all
+   of the elements of w.
 </pre>
 <br/>
 <br/>
@@ -668,6 +825,9 @@ subject to the following constraint:
              Performs an unconstrained minimization of a nonlinear function using 
              a trust region method.
          </description>
+         <examples>
+            <example>optimization_ex.cpp.html</example>
+         </examples>
                                  
       </component>
 

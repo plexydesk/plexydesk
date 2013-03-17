@@ -1,10 +1,11 @@
 
 #include "convert_idl.h"
-#include "image_dataset_metadata.h"
+#include "dlib/data_io.h"
 #include <iostream>
 #include <string>
 #include <dlib/dir_nav.h>
 #include <dlib/time_this.h>
+#include <dlib/cmd_line_parser.h>
 
 using namespace std;
 using namespace dlib;
@@ -163,7 +164,7 @@ namespace
 }
 
 void convert_idl(
-    const parser_type& parser
+    const command_line_parser& parser
 )
 {
     cout << "Convert from IDL annotation format..." << endl;

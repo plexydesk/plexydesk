@@ -593,6 +593,12 @@ namespace dlib
             function(f.function)
         {}
 
+        const std::vector<result_type> get_labels(
+        ) const { return function.get_labels(); }
+
+        unsigned long number_of_classes (
+        ) const { return function.number_of_classes(); }
+
         normalized_function (
             const vector_normalizer<sample_type>& normalizer_,
             const function_type& funct 
@@ -779,8 +785,6 @@ namespace dlib
             // Rather than doing something like, best_idx = index_of_max(weights*x-b)
             // we do the following somewhat more complex thing because this supports
             // both sparse and dense samples.
-            using dlib::sparse_vector::dot;
-            using dlib::dot;
             scalar_type best_val = dot(rowm(weights,0),x) - b(0);
             unsigned long best_idx = 0;
 

@@ -93,6 +93,7 @@ namespace dlib
             - is_vector(m1) == true
             - is_vector(m2) == true
             - m1.size() == m2.size()
+            - m1.size() > 0
         ensures
             - returns the dot product between m1 and m2. That is, this function 
               computes and returns the sum, for all i, of m1(i)*m2(i).
@@ -247,6 +248,19 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    const matrix_exp ones_matrix (
+        const matrix_exp& mat
+    );
+    /*!
+        requires
+            - mat.nr() > 0 && mat.nc() > 0
+        ensures
+            - Let T denote the type of element in mat. Then this function
+              returns uniform_matrix<T>(mat.nr(), mat.nc(), 1)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     template <
         typename T
         >
@@ -263,6 +277,19 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    const matrix_exp zeros_matrix (
+        const matrix_exp& mat
+    );
+    /*!
+        requires
+            - mat.nr() > 0 && mat.nc() > 0
+        ensures
+            - Let T denote the type of element in mat. Then this function
+              returns uniform_matrix<T>(mat.nr(), mat.nc(), 0)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     template <
         typename T
         >
@@ -275,6 +302,19 @@ namespace dlib
             - nr > 0 && nc > 0
         ensures
             - returns uniform_matrix<T>(nr, nc, 0)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    const matrix_exp identity_matrix (
+        const matrix_exp& mat
+    );
+    /*!
+        requires
+            - mat.nr() == mat.nc()
+        ensures
+            - returns an identity matrix with the same dimensions as mat and
+              containing the same type of elements as mat.
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -414,102 +454,6 @@ namespace dlib
                 - M has the same dimensions as m
                 - for all valid r and c:
                   M(r,c) == m(m.nr()-r-1, m.nc()-c-1)
-    !*/
-
-// ----------------------------------------------------------------------------------------
-
-    template <
-        typename vector_type
-        >
-    const matrix_exp vector_to_matrix (
-        const vector_type& vector
-    );
-    /*!
-        requires
-            - vector_type is an implementation of array/array_kernel_abstract.h or
-              std::vector or dlib::std_vector_c or dlib::matrix
-        ensures
-            - if (vector_type is a dlib::matrix) then
-                - returns a reference to vector
-            - else
-                - returns a matrix R such that:
-                    - is_col_vector(R) == true 
-                    - R.size() == vector.size()
-                    - for all valid r:
-                      R(r) == vector[r]
-    !*/
-
-// ----------------------------------------------------------------------------------------
-
-    template <
-        typename array_type
-        >
-    const matrix_exp array_to_matrix (
-        const array_type& array
-    );
-    /*!
-        requires
-            - array_type is an implementation of array2d/array2d_kernel_abstract.h
-              or dlib::matrix
-        ensures
-            - if (array_type is a dlib::matrix) then
-                - returns a reference to array 
-            - else
-                - returns a matrix R such that:
-                    - R.nr() == array.nr() 
-                    - R.nc() == array.nc()
-                    - for all valid r and c:
-                      R(r, c) == array[r][c]
-    !*/
-
-// ----------------------------------------------------------------------------------------
-
-    template <
-        typename T
-        >
-    const matrix_exp pointer_to_matrix (
-        const T* ptr,
-        long nr,
-        long nc
-    );
-    /*!
-        requires
-            - nr > 0
-            - nc > 0
-            - ptr == a pointer to at least nr*nc T objects
-        ensures
-            - returns a matrix M such that:
-                - M.nr() == nr
-                - m.nc() == nc 
-                - for all valid r and c:
-                  M(r,c) == ptr[r*nc + c]
-                  (i.e. the pointer is interpreted as a matrix laid out in memory
-                  in row major order)
-            - Note that the returned matrix doesn't take "ownership" of
-              the pointer and thus will not delete or free it.
-    !*/
-
-// ----------------------------------------------------------------------------------------
-
-    template <
-        typename T
-        >
-    const matrix_exp pointer_to_column_vector (
-        const T* ptr,
-        long nr
-    );
-    /*!
-        requires
-            - nr > 0
-            - ptr == a pointer to at least nr T objects
-        ensures
-            - returns a matrix M such that:
-                - M.nr() == nr
-                - m.nc() == 1
-                - for all valid i:
-                  M(i) == ptr[i]
-            - Note that the returned matrix doesn't take "ownership" of
-              the pointer and thus will not delete or free it.
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1025,6 +969,10 @@ namespace dlib
         ensures
             - returns sqrt(sum(squared(m)))
               (i.e. returns the length of the vector m)
+            - if (m contains integer valued elements) then  
+                - The return type is a double that represents the length.  Therefore, the
+                  return value of length() is always represented using a floating point
+                  type. 
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1355,7 +1303,9 @@ namespace dlib
         requires
             - m.size() > 0
         ensures
-            - returns the value of the smallest element of m
+            - returns the value of the smallest element of m.  If m contains complex
+              elements then the element returned is the one with the smallest norm
+              according to std::norm().
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1367,7 +1317,9 @@ namespace dlib
         requires
             - m.size() > 0
         ensures
-            - returns the value of the biggest element of m
+            - returns the value of the biggest element of m.  If m contains complex
+              elements then the element returned is the one with the largest norm
+              according to std::norm().
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1495,6 +1447,16 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    const matrix_exp::type stddev (
+        const matrix_exp& m
+    );
+    /*!
+        ensures
+            - returns sqrt(variance(m))
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     const matrix covariance (
         const matrix_exp& m
     );
@@ -1558,6 +1520,33 @@ namespace dlib
                 - M.nc() == nc
                 - for all valid i, j:
                     - M(i,j) == a random number such that 0 <= M(i,j) < 1
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    inline const matrix_exp gaussian_randm (
+        long nr,
+        long nc,
+        unsigned long seed = 0
+    );
+    /*!
+        requires
+            - nr >= 0
+            - nc >= 0
+        ensures
+            - returns a matrix with its values filled with 0 mean unit variance Gaussian
+              random numbers.  
+            - Each setting of the seed results in a different random matrix.
+            - The returned matrix is lazily evaluated using the expression templates
+              technique.  This means that the returned matrix doesn't take up any memory
+              and is only an expression template.  The values themselves are computed on
+              demand using the gaussian_random_hash() routine.  
+            - returns a matrix M such that
+                - M::type == double
+                - M.nr() == nr
+                - M.nc() == nc
+                - for all valid i, j:
+                    - M(i,j) == gaussian_random_hash(i,j,seed) 
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -1662,6 +1651,42 @@ namespace dlib
                         - R(r,c) == lower
                     - else
                         - R(r,c) == m(r,c)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    const matrix_exp lowerbound (
+        const matrix_exp& m,
+        const matrix_exp::type& thresh 
+    );
+    /*!
+        ensures
+            - returns a matrix R such that:
+                - R::type == the same type that was in m
+                - R has the same dimensions as m
+                - for all valid r and c:
+                    - if (m(r,c) >= thresh) then
+                        - R(r,c) == m(r,c)
+                    - else
+                        - R(r,c) == thresh
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    const matrix_exp upperbound (
+        const matrix_exp& m,
+        const matrix_exp::type& thresh 
+    );
+    /*!
+        ensures
+            - returns a matrix R such that:
+                - R::type == the same type that was in m
+                - R has the same dimensions as m
+                - for all valid r and c:
+                    - if (m(r,c) <= thresh) then
+                        - R(r,c) == m(r,c)
+                    - else
+                        - R(r,c) == thresh
     !*/
 
 // ----------------------------------------------------------------------------------------
