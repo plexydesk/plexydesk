@@ -422,8 +422,6 @@ namespace
             DLIB_TEST(std::abs((rc1+rc2).covariance() - rc3.covariance()) < 1e-13);
             DLIB_TEST((rc1+rc2).current_n() == rc3.current_n());
 
-            rs1.set_max_n(50);
-            DLIB_TEST(rs1.max_n() == 50);
         }
 
         void test_average_precision()
@@ -448,6 +446,11 @@ namespace
             items.push_back(true);
 
             DLIB_TEST(std::abs(average_precision(items) - (2.0+3.0/4.0)/3.0) < 1e-14);
+
+            items.push_back(true);
+
+            DLIB_TEST(std::abs(average_precision(items)   - (2.0 + 4.0/5.0 + 4.0/5.0)/4.0) < 1e-14);
+            DLIB_TEST(std::abs(average_precision(items,1) - (2.0 + 4.0/5.0 + 4.0/5.0)/5.0) < 1e-14);
         }
 
         void perform_test (

@@ -372,8 +372,8 @@ namespace dlib
             if (set1 != set2)
             {
                 const diff_type diff = sorted_edges[i].diff;
-                const diff_type tau1 = k/data[set1].component_size;
-                const diff_type tau2 = k/data[set2].component_size;
+                const diff_type tau1 = static_cast<diff_type>(k/data[set1].component_size);
+                const diff_type tau2 = static_cast<diff_type>(k/data[set2].component_size);
 
                 const diff_type mint = std::min(data[set1].internal_diff + tau1, 
                                                 data[set2].internal_diff + tau2);
@@ -434,26 +434,6 @@ namespace dlib
             }
         };
 
-        template <typename alloc>
-        void remove_duplicates (
-            std::vector<rectangle,alloc>& rects
-        )
-        {
-            std::sort(rects.begin(), rects.end(), std::less<rectangle>());
-            unsigned long num_unique = 1;
-            for (unsigned long i = 1; i < rects.size(); ++i)
-            {
-                if (rects[i] != rects[i-1])
-                {
-                    rects[num_unique++] = rects[i];
-                }
-            }
-            if (rects.size() != 0)
-                rects.resize(num_unique);
-        }
-
-    // ------------------------------------------------------------------------------------
-
         template <
             typename in_image_type,
             typename diff_type
@@ -503,8 +483,8 @@ namespace dlib
                 if (set1 != set2)
                 {
                     const diff_type diff = sorted_edges[i].diff;
-                    const diff_type tau1 = k/data[set1].component_size;
-                    const diff_type tau2 = k/data[set2].component_size;
+                    const diff_type tau1 = static_cast<diff_type>(k/data[set1].component_size);
+                    const diff_type tau2 = static_cast<diff_type>(k/data[set2].component_size);
 
                     const diff_type mint = std::min(data[set1].internal_diff + tau1, 
                         data[set2].internal_diff + tau2);
@@ -606,6 +586,26 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    template <typename alloc>
+    void remove_duplicates (
+        std::vector<rectangle,alloc>& rects
+    )
+    {
+        std::sort(rects.begin(), rects.end(), std::less<rectangle>());
+        unsigned long num_unique = 1;
+        for (unsigned long i = 1; i < rects.size(); ++i)
+        {
+            if (rects[i] != rects[i-1])
+            {
+                rects[num_unique++] = rects[i];
+            }
+        }
+        if (rects.size() != 0)
+            rects.resize(num_unique);
+    }
+
+// ----------------------------------------------------------------------------------------
+
     template <
         typename in_image_type,
         typename EXP
@@ -617,12 +617,15 @@ namespace dlib
         const unsigned long min_size = 20,
         const unsigned long max_merging_iterations = 50
     )
-    /*!
-        requires
-            - is_vector(kvals) == true
-            - kvals.size() > 0
-    !*/
     {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(is_vector(kvals) && kvals.size() > 0,
+            "\t void find_candidate_object_locations()"
+            << "\n\t Invalid inputs were given to this function."
+            << "\n\t is_vector(kvals): " << is_vector(kvals)
+            << "\n\t kvals.size():     " << kvals.size()
+            );
+
         typedef dlib::memory_manager<char>::kernel_2c mm_type;
         typedef dlib::set<rectangle, mm_type>::kernel_1a set_of_rects;
 
@@ -652,8 +655,14 @@ namespace dlib
             rects.insert(rects.end(), working_rects.begin(), working_rects.end());
 
 
-
-            // now iteratively merge all the rectangles we have and record the results
+            // Now iteratively merge all the rectangles we have and record the results.
+            // Note that, unlike what is described in the paper 
+            //    Segmentation as Selective Search for Object Recognition" by Koen E. A. van de Sande, et al.
+            // we don't use any kind of histogram/SIFT like thing to order the edges
+            // between the blobs.  Here we simply order by the pixel difference value.
+            // Additionally, note that we keep progressively merging boxes in the outer
+            // loop rather than performing just a single iteration as indicated in the
+            // paper.
             set_of_rects detected_rects;
             bool did_merge = true;
             for (unsigned long iter = 0; did_merge && iter < max_merging_iterations; ++iter) 
@@ -661,6 +670,8 @@ namespace dlib
                 did_merge = false;
                 sets.clear();
                 sets.set_size(working_rects.size());
+
+                // recursively merge neighboring blobs until we have merged everything
                 for (unsigned long i = 0; i < edges.size(); ++i)
                 {
                     edge_data temp = edges[i];
@@ -670,6 +681,9 @@ namespace dlib
                     if (temp.set1 != temp.set2)
                     {
                         rectangle merged_rect = working_rects[temp.set1] + working_rects[temp.set2];
+                        // Skip merging this pair of blobs if it was merged in a previous
+                        // iteration.  Doing this lets us consider other possible blob
+                        // merges.
                         if (!detected_rects.is_member(merged_rect))
                         {
                             const unsigned long new_set = sets.merge_sets(temp.set1, temp.set2);

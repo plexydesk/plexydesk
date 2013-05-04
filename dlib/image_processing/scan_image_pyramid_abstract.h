@@ -67,7 +67,7 @@ namespace dlib
                         - Let M denote the dimensionality of the vectors output by Feature_extractor_type
                           objects.
                         - Let F(i) == the M dimensional vector which is the sum of all vectors 
-                          given by our Feature_extractor_type object inside the ith feature extraction
+                          given by our Feature_extractor_type object inside the i-th feature extraction
                           zone.
                         - Then the feature vector for a sliding window is an M*N dimensional vector
                           [F(1) F(2) F(3) ... F(N)] (i.e. it is a concatenation of the N vectors).
@@ -202,7 +202,7 @@ namespace dlib
                 - The order of rectangles in stationary_feature_extraction_regions and
                   movable_feature_extraction_regions matters.  Recall that each rectangle
                   gets its own set of features.  So given two different templates, their
-                  ith rectangles will both share the same part of the weight vector (i.e. the w
+                  i-th rectangles will both share the same part of the weight vector (i.e. the w
                   supplied to detect()).  So there should be some reasonable correspondence
                   between the rectangle ordering in different detection templates.  For,
                   example, different detection templates should place corresponding feature
@@ -339,7 +339,10 @@ namespace dlib
                   function returns a number which defines a hard upper limit on the number of
                   detections allowed by a single scan.  This means that the total number of
                   possible detections produced by detect() is get_max_detections_per_template()*
-                  get_num_detection_templates()*(number of image pyramid layers).
+                  get_num_detection_templates()*(number of image pyramid layers).  Additionally, 
+                  if the maximum number of detections is reached during a scan then this object 
+                  will return a random subsample of all detections which are above the detection 
+                  threshold.
         !*/
 
         void set_max_detections_per_template (

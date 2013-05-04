@@ -488,7 +488,7 @@ namespace
             {
                 for (long c = 0; c < 15; ++c)
                 {
-                    img[r][c] = static_cast<unsigned char>(r*14 + c);
+                    img[r][c] = static_cast<unsigned char>(r*14 + c*111);
                 }
             }
 
@@ -514,7 +514,7 @@ namespace
                 {
                     for (long c = 0; c < 15; ++c)
                     {
-                        DLIB_TEST(img[r][c] == r*14 + c);
+                        DLIB_TEST(img[r][c] == static_cast<unsigned char>(r*14 + c*111));
                     }
                 }
 
@@ -532,7 +532,7 @@ namespace
                 {
                     for (long c = 0; c < 15; ++c)
                     {
-                        DLIB_TEST(img[r][c] == r*14 + c);
+                        DLIB_TEST(img[r][c] == static_cast<unsigned char>(r*14 + c*111));
                     }
                 }
             }
@@ -1334,6 +1334,100 @@ namespace
 
 // ----------------------------------------------------------------------------------------
 
+    template <typename T>
+    void test_dng_floats(double scale)
+    {
+        dlog << LINFO << "in test_dng_floats";
+        print_spinner();
+        array2d<T> img(100,101);
+
+        dlib::rand rnd;
+        for (long r = 0; r < img.nr(); ++r)
+        {
+            for (long c = 0; c < img.nc(); ++c)
+            {
+                T val = rnd.get_random_double()*scale;
+                img[r][c] = val;
+
+                // Lets the float_details object while we are here doing this stuff.
+                float_details temp = val;
+                T val2 = temp;
+                // for the same type we should exactly reproduce the value (unless
+                // it's long double and then maybe it's slightly different).
+                if (is_same_type<T,long double>::value)
+                {
+                    DLIB_TEST(std::abs(val2-val) < scale*std::numeric_limits<T>::epsilon());
+                }
+                else
+                {
+                    DLIB_TEST(val2 == val);
+                }
+
+                float valf = temp;
+                double vald = temp;
+                long double vall = temp;
+
+                DLIB_TEST(std::abs(valf-val) < scale*std::numeric_limits<float>::epsilon());
+                DLIB_TEST(std::abs(vald-val) < scale*std::numeric_limits<double>::epsilon());
+                DLIB_TEST(std::abs(vall-val) < scale*std::numeric_limits<long double>::epsilon());
+            }
+        }
+
+        ostringstream sout;
+        save_dng(img, sout);
+        istringstream sin;
+
+        array2d<float> img1;
+        array2d<double> img2;
+        array2d<long double> img3;
+
+        sin.clear(); sin.str(sout.str());
+        load_dng(img1, sin);
+
+        sin.clear(); sin.str(sout.str());
+        load_dng(img2, sin);
+
+        sin.clear(); sin.str(sout.str());
+        load_dng(img3, sin);
+
+        DLIB_TEST(img.nr() == img1.nr());
+        DLIB_TEST(img.nr() == img2.nr());
+        DLIB_TEST(img.nr() == img3.nr());
+        DLIB_TEST(img.nc() == img1.nc());
+        DLIB_TEST(img.nc() == img2.nc());
+        DLIB_TEST(img.nc() == img3.nc());
+
+        DLIB_TEST(max(abs(mat(img) - matrix_cast<T>(mat(img1)))) < scale*std::numeric_limits<float>::epsilon());
+        DLIB_TEST(max(abs(mat(img) - matrix_cast<T>(mat(img2)))) < scale*std::numeric_limits<double>::epsilon());
+        DLIB_TEST(max(abs(mat(img) - matrix_cast<T>(mat(img3)))) < scale*std::numeric_limits<long double>::epsilon());
+    }
+
+    void test_dng_float_int()
+    {
+        dlog << LINFO << "in test_dng_float_int";
+        print_spinner();
+
+        array2d<uint16> img;
+        assign_image(img, gaussian_randm(101,100)*10000);
+
+        ostringstream sout;
+        save_dng(img, sout);
+        istringstream sin(sout.str());
+        array2d<double> img2;
+        load_dng(img2, sin);
+        sout.clear(); sout.str("");
+
+        save_dng(img2, sout);
+        sin.clear(); sin.str(sout.str());
+        array2d<uint16> img3;
+        load_dng(img3, sin);
+
+        // this whole thing should have been totally lossless.
+        DLIB_TEST(mat(img) == mat(img3));
+    }
+
+// ----------------------------------------------------------------------------------------
+
     class image_tester : public tester
     {
     public:
@@ -1373,6 +1467,15 @@ namespace
             test_segment_image<int>();
             test_segment_image<rgb_pixel>();
             test_segment_image<rgb_alpha_pixel>();
+
+            test_dng_floats<float>(1);
+            test_dng_floats<double>(1);
+            test_dng_floats<long double>(1);
+            test_dng_floats<float>(1e30);
+            test_dng_floats<double>(1e30);
+            test_dng_floats<long double>(1e30);
+
+            test_dng_float_int();
         }
     } a;
 

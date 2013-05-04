@@ -14,27 +14,23 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     template <
-        typename image_scanner_type,
-        typename overlap_tester_type = test_box_overlap
+        typename image_scanner_type
         >
     class object_detector
     {
         /*!
-            REQUIREMENTS ON overlap_tester_type
-                overlap_tester_type must be an implementation of the test_box_overlap
-                object defined in dlib/image_processing/box_overlap_testing_abstract.h.
-
             REQUIREMENTS ON image_scanner_type
                 image_scanner_type must be an implementation of 
-                dlib/image_processing/scan_image_pyramid_abstract.h
+                dlib/image_processing/scan_image_pyramid_abstract.h or 
+                dlib/image_processing/scan_image_boxes_abstract.h 
 
             WHAT THIS OBJECT REPRESENTS
-                This object is a tool for detecting the positions of objects in 
-                an image.  In particular, it is a simple container to aggregate 
-                an instance of the scan_image_pyramid class, the weight vector 
-                needed by scan_image_pyramid, and finally an instance of 
-                test_box_overlap.  The test_box_overlap object is used to perform 
-                non-max suppression on the output of the scan_image_pyramid object.  
+                This object is a tool for detecting the positions of objects in an image.
+                In particular, it is a simple container to aggregate an instance of the
+                scan_image_pyramid or scan_image_boxes classes, the weight vector needed by
+                one of these image scanners, and finally an instance of test_box_overlap.
+                The test_box_overlap object is used to perform non-max suppression on the
+                output of the image scanner object.  
         !*/
     public:
         typedef typename image_scanner_type::feature_vector_type feature_vector_type;
@@ -60,7 +56,7 @@ namespace dlib
 
         object_detector (
             const image_scanner_type& scanner, 
-            const overlap_tester_type& overlap_tester,
+            const test_box_overlap& overlap_tester,
             const feature_vector_type& w 
         );
         /*!
@@ -90,7 +86,7 @@ namespace dlib
                 - returns the weight vector used by this object
         !*/
 
-        const overlap_tester_type& get_overlap_tester (
+        const test_box_overlap& get_overlap_tester (
         ) const;
         /*!
             ensures
@@ -120,7 +116,8 @@ namespace dlib
             typename image_type
             >
         std::vector<rectangle> operator() (
-            const image_type& img
+            const image_type& img,
+            const adjust_threshold = 0
         );
         /*!
             requires
@@ -135,6 +132,11 @@ namespace dlib
                   #get_scanner().get_feature_vector() to obtain the feature vectors or
                   #get_scanner().get_full_object_detection() to get the
                   full_object_detections for the resulting object detection boxes.
+                - The detection threshold is adjusted by having adjust_threshold added to
+                  it.  Therefore, an adjust_threshold value > 0 makes detecting objects
+                  harder while a negative value makes it easier.  This means that, for
+                  example, you can obtain the maximum possible number of detections by
+                  setting adjust_threshold equal to negative infinity.
         !*/
 
         template <
@@ -155,17 +157,21 @@ namespace dlib
                       come first.  E.g. element 0 is the best detection, element 1 
                       the next best, and so on.
                     - #dets.size() == the number of detected objects.
-                    - #dets[i].first gives the "detection confidence", of the i-th 
-                      detection.  This is the detection value output by the scanner 
-                      minus the threshold, therefore this is a value > 0.
+                    - #dets[i].first gives the "detection confidence", of the i-th
+                      detection.  This is the detection value output by the scanner minus
+                      the threshold value stored at the end of the weight vector in get_w(). 
                     - #dets[i].second == the bounding box for the i-th detection.
                 - #get_scanner() will have been loaded with img. Therefore, you can call
                   #get_scanner().get_feature_vector() to obtain the feature vectors or
                   #get_scanner().get_full_object_detection() to get the
                   full_object_detections for the resulting object detection boxes.
-                - The detection threshold is adjusted by having adjust_threshold added
-                  to it.  Therefore, an adjust_threshold value > 0 makes detecting
-                  objects harder while a negative one makes it easier.
+                - The detection threshold is adjusted by having adjust_threshold added to
+                  it.  Therefore, an adjust_threshold value > 0 makes detecting objects
+                  harder while a negative value makes it easier.  Moreover, the following
+                  will be true for all valid i:
+                    - #dets[i].first >= adjust_threshold
+                  This means that, for example, you can obtain the maximum possible number
+                  of detections by setting adjust_threshold equal to negative infinity.
         !*/
 
         template <
@@ -209,20 +215,26 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
-    template <typename T, typename U>
+    template <typename T>
     void serialize (
-        const object_detector<T,U>& item,
+        const object_detector<T>& item,
         std::ostream& out
     );
     /*!
-        provides serialization support
+        provides serialization support.  Note that this function only saves the
+        configuration part of item.get_scanner().  That is, we use the scanner's
+        copy_configuration() function to get a copy of the scanner that doesn't contain any
+        loaded image data and we then save just the configuration part of the scanner.
+        This means that any serialized object_detectors won't remember any images they have
+        processed but will otherwise contain all their state and be able to detect objects
+        in new images.
     !*/
 
 // ----------------------------------------------------------------------------------------
 
-    template <typename T, typename U>
+    template <typename T>
     void deserialize (
-        object_detector<T,U>& item,
+        object_detector<T>& item,
         std::istream& in 
     );
     /*!
