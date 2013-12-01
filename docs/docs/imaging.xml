@@ -85,7 +85,13 @@
          <item>scan_image_movable_parts</item>
          <item>find_points_above_thresh</item>
          <item>scan_image_pyramid</item>
+         <item>scan_image_boxes</item>
+         <item>scan_fhog_pyramid</item>
+         <item>scan_image_custom</item>
+         <item>find_candidate_object_locations</item>
          <item>test_box_overlap</item>
+         <item>remove_unobtainable_rectangles</item>
+         <item>setup_hashed_features</item>
          <item nolink="true">
             <name>Scan Image Pyramid Tools</name>
             <sub>
@@ -97,7 +103,6 @@
                <item>determine_object_boxes</item>
                <item>setup_grid_detection_templates</item>
                <item>setup_grid_detection_templates_verbose</item>
-               <item>setup_hashed_features</item>
             </sub>
          </item>
       </section>
@@ -121,10 +126,13 @@
          </item>
 
          <item>hog_image</item>
+         <item>extract_fhog_features</item>
          <item>fine_hog_image</item>
          <item>poly_image</item>
          <item>hashed_feature_image</item>
+         <item>binned_vector_feature_image</item>
          <item>nearest_neighbor_feature_image</item>
+         <item>randomly_sample_image_features</item> 
       </section>
 
 
@@ -157,6 +165,7 @@
          <item>gaussian_blur</item> 
          <item>spatially_filter_image</item> 
          <item>spatially_filter_image_separable</item> 
+         <item>float_spatially_filter_image_separable</item> 
          <item>separable_3x3_filter_block_grayscale</item> 
          <item>separable_3x3_filter_block_rgb</item> 
          <item>sum_filter</item> 
@@ -169,9 +178,6 @@
          <name>Scaling and Rotating</name>
          <item>pyramid_up</item> 
          <item>pyramid_down</item> 
-         <item>pyramid_down_3_2</item> 
-         <item>pyramid_down_4_3</item> 
-         <item>pyramid_down_5_4</item> 
          <item>pyramid_disable</item> 
 
          <item>interpolate_nearest_neighbor</item> 
@@ -182,12 +188,14 @@
          <item>resize_image</item> 
          <item>flip_image_left_right</item> 
          <item>flip_image_up_down</item> 
+         <item>add_image_left_right_flips</item> 
       </section>
 
       <section>
          <name>Colormaps</name>
          <item>randomly_color_image</item>
          <item>heatmap</item>
+         <item>jet</item>
       </section>
  
       <section>
@@ -197,6 +205,7 @@
          <item>toMat</item>
 
          <item>draw_line</item> 
+         <item>draw_fhog</item> 
          <item>fill_rect</item> 
          <item>assign_image</item> 
          <item>assign_image_scaled</item> 
@@ -374,6 +383,29 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>extract_fhog_features</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/fhog_abstract.h</spec_file>
+         <description>
+              This function implements the HOG feature extraction method described in 
+              the paper:
+                <blockquote>
+                  Object Detection with Discriminatively Trained Part Based Models by
+                  P. Felzenszwalb, R. Girshick, D. McAllester, D. Ramanan
+                  in IEEE Transactions on Pattern Analysis and Machine Intelligence, Vol. 32, No. 9, Sep. 2010
+                </blockquote>
+              This means that it takes an input image and outputs Felzenszwalb's
+              31 dimensional version of HOG features.
+         </description>
+         <examples>
+            <example>fhog_ex.cpp.html</example>
+         </examples>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>fine_hog_image</name>
          <file>dlib/image_keypoint.h</file>
          <spec_file link="true">dlib/image_keypoint/fine_hog_image_abstract.h</spec_file>
@@ -425,6 +457,40 @@
             <example>train_object_detector.cpp.html</example>
          </examples>
                                  
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>binned_vector_feature_image</name>
+         <file>dlib/image_keypoint.h</file>
+         <spec_file link="true">dlib/image_keypoint/binned_vector_feature_image_abstract.h</spec_file>
+         <description>
+                This object is a tool for performing image feature extraction.  In
+                particular, it wraps another image feature extractor and converts the
+                wrapped image feature vectors into a high dimensional sparse vector.  For
+                example, if the lower level feature extractor outputs the vector [3,4,5]
+                and this vector is hashed into the second bin of four bins then the output
+                sparse vector is:
+                <blockquote>
+                    [0,0,0,0, 3,4,5,1, 0,0,0,0, 0,0,0,0]. 
+                </blockquote>
+                That is, the output vector has a dimensionality that is equal to the number
+                of hash bins times the dimensionality of the lower level vector plus one.
+                The value in the extra dimension concatenated onto the end of the vector is
+                always a constant value of of 1 and serves as a bias value.  This means
+                that, if there are N hash bins, these vectors are capable of representing N
+                different linear functions, each operating on the vectors that fall into
+                their corresponding hash bin.
+
+               <br/><br/>
+                The following feature extractors can be wrapped by the binned_vector_feature_image:
+               <ul style="margin-top:0em"> 
+                  <li><a href="#hog_image">hog_image</a></li>
+                  <li><a href="#fine_hog_image">fine_hog_image</a></li>
+                  <li><a href="#poly_image">poly_image</a></li>
+               </ul>
+         </description>
       </component>
 
    <!-- ************************************************************************* -->
@@ -643,11 +709,29 @@
          <spec_file link="true">dlib/image_transforms/colormaps_abstract.h</spec_file>
          <description>
             Converts a grayscale image into a heatmap.  This is useful if you want
-            to display a grayscale image with more than 256 values.   
+            to display a grayscale image with more than 256 values.  In particular,
+            this function uses the following color mapping:
+            <br/><img src="heatmap.png"/>
          </description>
          <examples>
             <example>image_ex.cpp.html</example>
          </examples>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>jet</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/colormaps_abstract.h</spec_file>
+         <description>
+            Converts a grayscale image into an image using the jet color
+            scheme.  This is useful if you want to display a grayscale image
+            with more than 256 values.   In particular, this function uses the
+            following color mapping:
+            <br/><img src="jet.png"/>
+         </description>
                                  
       </component>
             
@@ -798,9 +882,9 @@
             <p>
                This routine can save images containing any type of pixel.  However, the DNG format
                can natively store only the following pixel types: <b>rgb_pixel</b>, <b>hsi_pixel</b>,
-               <b>rgb_alpha_pixel</b>, <b>uint8</b>, and <b>uint16</b>.  All other pixel
-               types will be converted into one of these types as appropriate before being
-               saved to disk.
+               <b>rgb_alpha_pixel</b>, <b>uint8</b>, <b>uint16</b>, <b>float</b>, and <b>double</b>.  
+               All other pixel types will be converted
+               into one of these types as appropriate before being saved to disk.
             </p>
 
          </description>
@@ -916,6 +1000,26 @@
          <description>        
             This global function draws a line on an image.
          </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>draw_fhog</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/fhog_abstract.h</spec_file>
+         <description>        
+            This function takes a FHOG feature map which was created by 
+            <a href="#extract_fhog_features">extract_fhog_features</a> and
+              converts it into an image suitable for display on the screen.  In
+              particular, we draw all the hog cells into a grayscale image in a
+              way that shows the magnitude and orientation of the gradient
+              energy in each cell.  
+         </description>
+         <examples>
+            <example>fhog_ex.cpp.html</example>
+         </examples>
                                  
       </component>
             
@@ -1122,6 +1226,20 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>float_spatially_filter_image_separable</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/spatial_filtering_abstract.h</spec_file>
+         <description>        
+            This global function performs spatial filtering on an image with a user
+            supplied separable filter.  It is optimized to work only on float valued 
+            images with float valued filters. 
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>spatially_filter_image_separable_down</name>
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/spatial_filtering_abstract.h</spec_file>
@@ -1208,20 +1326,8 @@
          <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
          <description>        
                This is a simple function object to help create image pyramids.  It 
-               downsamples an image by half.
-         </description>
-                                 
-      </component>
-            
-   <!-- ************************************************************************* -->
-      
-      <component>
-         <name>pyramid_down_3_2</name>
-         <file>dlib/image_transforms.h</file>
-         <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
-         <description>        
-               This is a simple function object to help create image pyramids.  It 
-               downsamples an image by a ratio of 3 to 2.
+               downsamples an image by a ratio of N to N-1 where N is supplied by the
+               user as a template argument.
          </description>
                                  
       </component>
@@ -1243,32 +1349,6 @@
                                  
       </component>
             
-   <!-- ************************************************************************* -->
-      
-      <component>
-         <name>pyramid_down_4_3</name>
-         <file>dlib/image_transforms.h</file>
-         <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
-         <description>        
-               This is a simple function object to help create image pyramids.  It 
-               downsamples an image by a ratio of 4 to 3.
-         </description>
-                                 
-      </component>
-            
-   <!-- ************************************************************************* -->
-      
-      <component>
-         <name>pyramid_down_5_4</name>
-         <file>dlib/image_transforms.h</file>
-         <spec_file link="true">dlib/image_transforms/image_pyramid_abstract.h</spec_file>
-         <description>        
-               This is a simple function object to help create image pyramids.  It 
-               downsamples an image by a ratio of 5 to 4.
-         </description>
-                                 
-      </component>
-
    <!-- ************************************************************************* -->
       
       <component>
@@ -1338,10 +1418,10 @@
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
          <description>        
-            This routine upsamples an image.  In particular, it takes one of the
-            <a href="#pyramid_down">pyramid_down</a> objects as an argument and
-            performs an upsampling which is the inverse of the supplied pyramid_down
-            object.
+            This routine upsamples an image.  In particular, it takes a  
+            <a href="#pyramid_down">pyramid_down</a> object (or an object with a
+            compatible interface) as an argument and performs an upsampling
+            which is the inverse of the supplied pyramid_down object.
          </description>
       </component>
 
@@ -1353,6 +1433,21 @@
          <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
          <description>        
             This is a routine capable of resizing or stretching an image.
+         </description>
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>add_image_left_right_flips</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
+         <description>        
+            This routine takes a set of images and bounding boxes within those
+            images and doubles the size of the dataset by adding left/right
+            flipped copies of each image as well as the corresponding bounding
+            boxes.  Therefore, this function is useful if you are training and
+            object detector and your objects have a left/right symmetry.  
          </description>
       </component>
 
@@ -1430,6 +1525,28 @@
               <blockquote>
                Efficient Graph-Based Image Segmentation by Felzenszwalb and Huttenlocher.
               </blockquote>
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>find_candidate_object_locations</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/segment_image_abstract.h</spec_file>
+         <description>        
+              This function takes an input image and generates a set of candidate
+              rectangles which are expected to bound any objects in the image.  It does
+              this by running a version of the <a href="#segment_image">segment_image</a> routine on the image and
+              then reports rectangles containing each of the segments as well as rectangles
+              containing unions of adjacent segments.  The basic idea is described in the
+              paper: 
+              <blockquote>
+                  Segmentation as Selective Search for Object Recognition by Koen E. A. van de Sande, et al.
+              </blockquote>
+              Note that this function deviates from what is described in the paper slightly. 
+              See the code for details.
          </description>
                                  
       </component>
@@ -1598,6 +1715,7 @@
                The following feature extractors can be used with the scan_image_pyramid object:
                <ul style="margin-top:0em"> 
                   <li><a href="#hashed_feature_image">hashed_feature_image</a></li>
+                  <li><a href="#binned_vector_feature_image">binned_vector_feature_image</a></li>
                   <li><a href="#nearest_neighbor_feature_image">nearest_neighbor_feature_image</a></li>
                </ul>
          </description>
@@ -1605,6 +1723,101 @@
             <example>object_detector_ex.cpp.html</example>
             <example>object_detector_advanced_ex.cpp.html</example>
          </examples>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>scan_fhog_pyramid</name>
+         <file>dlib/image_processing.h</file>
+         <spec_file link="true">dlib/image_processing/scan_fhog_pyramid_abstract.h</spec_file>
+         <description>        
+
+                This object is a tool for running a fixed sized sliding window classifier
+                over an image pyramid.  In particular,  it slides a linear classifier over
+                a HOG pyramid as discussed in the paper:  
+                <blockquote>
+                    Histograms of Oriented Gradients for Human Detection by Navneet Dalal
+                    and Bill Triggs, CVPR 2005
+                </blockquote>
+                However, we augment the method slightly to use the version of HOG features 
+                from: 
+                <blockquote>
+                    Object Detection with Discriminatively Trained Part Based Models by
+                    P. Felzenszwalb, R. Girshick, D. McAllester, D. Ramanan
+                    IEEE Transactions on Pattern Analysis and Machine Intelligence, Vol. 32, No. 9, Sep. 2010
+                </blockquote>
+                Since these HOG features have been shown to give superior performance. 
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>scan_image_boxes</name>
+         <file>dlib/image_processing.h</file>
+         <spec_file link="true">dlib/image_processing/scan_image_boxes_abstract.h</spec_file>
+         <description>        
+            This object is a tool for running a classifier over an image with the goal
+            of localizing each object present.  The localization is in the form of the
+            bounding box around each object of interest.  
+
+            <p>
+            Unlike the <a href="#scan_image_pyramid">scan_image_pyramid</a> object which scans a
+            fixed sized window over an image pyramid, the scan_image_boxes tool allows you to
+            define your own list of "candidate object locations" which should be evaluated.
+            This is simply a list of rectangle objects which might contain objects of
+            interest.  The scan_image_boxes object will then evaluate the classifier at each
+            of these locations and return the subset of rectangles which appear to have
+            objects in them.    
+            </p>
+
+            This object can also be understood as a general tool for implementing the spatial
+            pyramid models described in the paper:
+            <blockquote>
+               Beyond Bags of Features: Spatial Pyramid Matching for Recognizing 
+               Natural Scene Categories by Svetlana Lazebnik, Cordelia Schmid, 
+               and Jean Ponce
+            </blockquote>
+
+            <br/><br/>
+            The following feature extractors can be used with the scan_image_boxes object:
+            <ul style="margin-top:0em"> 
+               <li><a href="#hashed_feature_image">hashed_feature_image</a></li>
+               <li><a href="#binned_vector_feature_image">binned_vector_feature_image</a></li>
+               <li><a href="#nearest_neighbor_feature_image">nearest_neighbor_feature_image</a></li>
+            </ul>
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>scan_image_custom</name>
+         <file>dlib/image_processing.h</file>
+         <spec_file link="true">dlib/image_processing/scan_image_custom_abstract.h</spec_file>
+         <description>        
+            This object is a tool for running a classifier over an image with the goal
+            of localizing each object present.  The localization is in the form of the
+            bounding box around each object of interest.  
+
+            <p>
+               Unlike the <a href="#scan_image_pyramid">scan_image_pyramid</a> 
+               and <a href="#scan_image_boxes">scan_image_boxes</a> objects, this image
+                scanner delegates all the work of constructing the object feature vector to
+                a user supplied feature extraction object.  That is, scan_image_custom
+                simply asks the supplied feature extractor what boxes in the image we
+                should investigate and then asks the feature extractor for the complete
+                feature vector for each box.  That is, scan_image_custom does not apply any
+                kind of pyramiding or other higher level processing to the features coming
+                out of the feature extractor.  That means that when you use
+                scan_image_custom it is completely up to you to define the feature vector
+                used with each image box.
+            </p>
+         </description>
                                  
       </component>
             
@@ -1628,13 +1841,17 @@
          <file>dlib/image_processing.h</file>
          <spec_file link="true">dlib/image_processing/object_detector_abstract.h</spec_file>
          <description>        
-                This object is a tool for detecting the positions of objects in 
-                an image.  In particular, it is a simple container to aggregate 
-                an instance of the <a href="#scan_image_pyramid">scan_image_pyramid</a> 
-                class, the weight vector needed by scan_image_pyramid, and  
-                an instance of <a href="#test_box_overlap">test_box_overlap</a>.  The test_box_overlap 
-                object is used to perform non-max suppression on the output of the 
-                scan_image_pyramid object.  
+                This object is a tool for detecting the positions of objects in an image.  In
+                particular, it is a simple container to aggregate an instance of an image
+                scanner object (either <a href="#scan_fhog_pyramid">scan_fhog_pyramid</a>,
+                <a href="#scan_image_pyramid">scan_image_pyramid</a>, <a
+                href="#scan_image_boxes">scan_image_boxes</a>, or 
+                <a href="#scan_image_custom">scan_image_custom</a>), the weight vector
+                needed by one of these image scanners, and finally an instance of
+                <a href="#test_box_overlap">test_box_overlap</a>.  The test_box_overlap object
+                is used to perform non-max suppression on the output of the image scanner
+                object.  
+
                 <p>
                    Note that you can use the 
                    <a href="ml.html#structural_object_detection_trainer">structural_object_detection_trainer</a>
@@ -1658,6 +1875,26 @@
          <description>        
             This object is a simple function object for determining if two 
             <a href="linear_algebra.html#rectangle">rectangles</a> overlap.  
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>remove_unobtainable_rectangles</name>
+         <file>dlib/image_processing.h</file>
+         <spec_file link="true">dlib/image_processing/remove_unobtainable_rectangles_abstract.h</spec_file>
+         <description>        
+            Recall that the <a href="#scan_image_pyramid">scan_image_pyramid</a> and 
+            <a href="#scan_image_boxes">scan_image_boxes</a> objects can't produce
+            all possible rectangles as object detections since they only
+            consider a limited subset of all possible object positions.
+            Therefore, when training an object detector that uses these tools
+            you must make sure the training data does not contain any object
+            locations that are unobtainable by the image scanning model.
+            The remove_unobtainable_rectangles() routine is a tool to filter out
+            these unobtainable rectangles from the training.
          </description>
                                  
       </component>
@@ -1776,9 +2013,10 @@
       <component>
          <name>setup_hashed_features</name>
          <file>dlib/image_processing.h</file>
-         <spec_file link="true">dlib/image_processing/scan_image_pyramid_tools_abstract.h</spec_file>
+         <spec_file link="true">dlib/image_processing/setup_hashed_features_abstract.h</spec_file>
          <description>        
-            This is a tool for configuring the <a href="#hashed_feature_image">hashed_feature_image</a> object
+            This is a tool for configuring the <a href="#hashed_feature_image">hashed_feature_image</a>
+            or <a href="#binned_vector_feature_image">binned_vector_feature_image</a> object
             with a random <a href="algorithms.html#projection_hash">projection hash</a>. 
          </description>
          <examples>
@@ -1788,6 +2026,20 @@
                                  
       </component>
             
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>randomly_sample_image_features</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/image_feature_sampling_abstract.h</spec_file>
+         <description>
+            Given a feature extractor such as the <a href="#hog_image">hog_image</a>,
+            this routine selects a random subsample of local image feature vectors 
+            from a set of images.  
+         </description>
+                                 
+      </component>
+      
    <!-- ************************************************************************* -->
 
    </components>

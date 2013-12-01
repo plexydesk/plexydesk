@@ -133,6 +133,117 @@ namespace
             }
         }
 
+        void test_running_cross_covariance ()
+        {
+            running_cross_covariance<matrix<double> > rcc1, rcc2;
+
+            matrix<double,0,1> xm, ym;
+            const int num = 40;
+
+            dlib::rand rnd;
+            for (int i = 0; i < num; ++i)
+            {
+                matrix<double,0,1> x = randm(4,1,rnd);
+                matrix<double,0,1> y = randm(4,1,rnd);
+
+                xm += x/num;
+                ym += y/num;
+
+                if (i < 15)
+                    rcc1.add(x,y);
+                else
+                    rcc2.add(x,y);
+            }
+
+            rnd.clear();
+            matrix<double> cov;
+            for (int i = 0; i < num; ++i)
+            {
+                matrix<double,0,1> x = randm(4,1,rnd);
+                matrix<double,0,1> y = randm(4,1,rnd);
+                cov += (x-xm)*trans(y-ym);
+            }
+            cov /= num-1;
+
+            running_cross_covariance<matrix<double> > rcc = rcc1 + rcc2;
+            DLIB_TEST(max(abs(rcc.covariance_xy()-cov)) < 1e-14);
+            DLIB_TEST(max(abs(rcc.mean_x()-xm)) < 1e-14);
+            DLIB_TEST(max(abs(rcc.mean_y()-ym)) < 1e-14);
+        }
+
+        std::map<unsigned long,double> dense_to_sparse ( 
+            const matrix<double,0,1>& x
+        )
+        {
+            std::map<unsigned long,double> temp;
+            for (long i = 0; i < x.size(); ++i)
+                temp[i] = x(i);
+            return temp;
+        }
+
+        void test_running_cross_covariance_sparse()
+        {
+            running_cross_covariance<matrix<double> > rcc1, rcc2;
+
+            running_covariance<matrix<double> > rc1, rc2;
+
+            matrix<double,0,1> xm, ym;
+            const int num = 40;
+
+            rc1.set_dimension(4);
+            rc2.set_dimension(4);
+
+            rcc1.set_dimensions(4,5);
+            rcc2.set_dimensions(4,5);
+
+            dlib::rand rnd;
+            for (int i = 0; i < num; ++i)
+            {
+                matrix<double,0,1> x = randm(4,1,rnd);
+                matrix<double,0,1> y = randm(5,1,rnd);
+
+                xm += x/num;
+                ym += y/num;
+
+                if (i < 15)
+                {
+                    rcc1.add(x,dense_to_sparse(y));
+                    rc1.add(x);
+                }
+                else if (i < 30)
+                {
+                    rcc2.add(dense_to_sparse(x),y);
+                    rc2.add(dense_to_sparse(x));
+                }
+                else
+                {
+                    rcc2.add(dense_to_sparse(x),dense_to_sparse(y));
+                    rc2.add(x);
+                }
+            }
+
+            rnd.clear();
+            matrix<double> cov, cov2;
+            for (int i = 0; i < num; ++i)
+            {
+                matrix<double,0,1> x = randm(4,1,rnd);
+                matrix<double,0,1> y = randm(5,1,rnd);
+                cov += (x-xm)*trans(y-ym);
+                cov2 += (x-xm)*trans(x-xm);
+            }
+            cov /= num-1;
+            cov2 /= num-1;
+
+            running_cross_covariance<matrix<double> > rcc = rcc1 + rcc2;
+            DLIB_TEST_MSG(max(abs(rcc.covariance_xy()-cov)) < 1e-14, max(abs(rcc.covariance_xy()-cov)));
+            DLIB_TEST(max(abs(rcc.mean_x()-xm)) < 1e-14);
+            DLIB_TEST(max(abs(rcc.mean_y()-ym)) < 1e-14);
+
+            running_covariance<matrix<double> > rc = rc1 + rc2;
+            DLIB_TEST(max(abs(rc.covariance()-cov2)) < 1e-14);
+            DLIB_TEST(max(abs(rc.mean()-xm)) < 1e-14);
+        }
+
         void test_running_covariance (
         )
         {
@@ -239,6 +350,15 @@ namespace
             DLIB_TEST(std::abs(rs2.variance() - rsc1.variance_y()) < 1e-10);
             DLIB_TEST(rs2.current_n() == rsc1.current_n());
 
+            rsc1.clear();
+            rsc1.add(1, -1);
+            rsc1.add(0, 0);
+            rsc1.add(1, -1);
+            rsc1.add(0, 0);
+            rsc1.add(1, -1);
+            rsc1.add(0, 0);
+
+            DLIB_TEST(std::abs(rsc1.covariance() - -0.3) < 1e-10);
         }
 
         void test_skewness_and_kurtosis_1()
@@ -258,7 +378,7 @@ namespace
             }   
 
             // check the unbiased skewness and excess kurtosis of one million Gaussian
-            // draws are both near zero.
+            // draws are both near_vects zero.
             DLIB_TEST(abs(rs1.skewness()) < 0.1);
             DLIB_TEST(abs(rs1.ex_kurtosis()) < 0.1);
         }
@@ -422,8 +542,6 @@ namespace
             DLIB_TEST(std::abs((rc1+rc2).covariance() - rc3.covariance()) < 1e-13);
             DLIB_TEST((rc1+rc2).current_n() == rc3.current_n());
 
-            rs1.set_max_n(50);
-            DLIB_TEST(rs1.max_n() == 50);
         }
 
         void test_average_precision()
@@ -448,14 +566,145 @@ namespace
             items.push_back(true);
 
             DLIB_TEST(std::abs(average_precision(items) - (2.0+3.0/4.0)/3.0) < 1e-14);
+
+            items.push_back(true);
+
+            DLIB_TEST(std::abs(average_precision(items)   - (2.0 + 4.0/5.0 + 4.0/5.0)/4.0) < 1e-14);
+            DLIB_TEST(std::abs(average_precision(items,1) - (2.0 + 4.0/5.0 + 4.0/5.0)/5.0) < 1e-14);
         }
+
+
+        template <typename sample_type>
+        void check_distance_metrics (
+            const std::vector<frobmetric_training_sample<sample_type> >& samples
+        )
+        {
+            running_stats<double> rs;
+            for (unsigned long i = 0; i < samples.size(); ++i)
+            {
+                for (unsigned long j = 0; j < samples[i].near_vects.size(); ++j)
+                {
+                    const double d1 = length_squared(samples[i].anchor_vect - samples[i].near_vects[j]);
+                    for (unsigned long k = 0; k < samples[i].far_vects.size(); ++k)
+                    {
+                        const double d2 = length_squared(samples[i].anchor_vect - samples[i].far_vects[k]);
+                        rs.add(d2-d1);
+                    }
+                }
+            }
+
+            dlog << LINFO << "dist gap max:    "<< rs.max();
+            dlog << LINFO << "dist gap min:    "<< rs.min();
+            dlog << LINFO << "dist gap mean:   "<< rs.mean();
+            dlog << LINFO << "dist gap stddev: "<< rs.stddev();
+            DLIB_TEST(rs.min() >= 0.99);
+            DLIB_TEST(rs.mean() >= 0.9999);
+        }
+
+        void test_vector_normalizer_frobmetric(dlib::rand& rnd)
+        { 
+            print_spinner();
+            typedef matrix<double,0,1> sample_type;
+            vector_normalizer_frobmetric<sample_type> normalizer;
+
+            std::vector<frobmetric_training_sample<sample_type> > samples;
+            frobmetric_training_sample<sample_type> samp;
+
+            const long key = 1;
+            const long dims = 5;
+            // Lets make some two class training data.  Each sample will have dims dimensions but
+            // only the one with index equal to key will be meaningful.  In particular, if the key
+            // dimension is > 0 then the sample is class +1 and -1 otherwise.  
+
+            long k = 0;
+            for (int i = 0; i < 50; ++i)
+            {
+                samp.clear();
+                samp.anchor_vect = gaussian_randm(dims,1,k++);
+                if (samp.anchor_vect(key) > 0)
+                    samp.anchor_vect(key) = rnd.get_random_double() + 5;
+                else
+                    samp.anchor_vect(key) = -(rnd.get_random_double() + 5);
+
+                matrix<double,0,1> temp;
+
+                for (int j = 0; j < 5; ++j)
+                {
+                    // Don't always put an equal number of near_vects and far_vects vectors into the
+                    // training samples.
+                    const int numa = rnd.get_random_32bit_number()%2 + 1;
+                    const int numb = rnd.get_random_32bit_number()%2 + 1;
+
+                    for (int num = 0; num < numa; ++num)
+                    {
+                        temp = gaussian_randm(dims,1,k++); temp(key) = 0.1;
+                        //temp = gaussian_randm(dims,1,k++); temp(key) = std::abs(temp(key));
+                        if (samp.anchor_vect(key) > 0) samp.near_vects.push_back(temp);
+                        else                    samp.far_vects.push_back(temp);
+                    }
+
+                    for (int num = 0; num < numb; ++num)
+                    {
+                        temp = gaussian_randm(dims,1,k++); temp(key) = -0.1;
+                        //temp = gaussian_randm(dims,1,k++); temp(key) = -std::abs(temp(key));
+                        if (samp.anchor_vect(key) < 0) samp.near_vects.push_back(temp);
+                        else                    samp.far_vects.push_back(temp);
+                    }
+                }
+                samples.push_back(samp);
+            }
+
+            normalizer.set_epsilon(0.0001);
+            normalizer.set_c(100);
+            normalizer.set_max_iterations(6000);
+            normalizer.train(samples);
+
+            dlog << LINFO << "learned transform: \n" << normalizer.transform();
+
+            matrix<double,0,1> total;
+
+            for (unsigned long i = 0; i < samples.size(); ++i)
+            {
+                samples[i].anchor_vect = normalizer(samples[i].anchor_vect);
+                total += samples[i].anchor_vect;
+                for (unsigned long j = 0; j < samples[i].near_vects.size(); ++j)
+                    samples[i].near_vects[j] = normalizer(samples[i].near_vects[j]);
+                for (unsigned long j = 0; j < samples[i].far_vects.size(); ++j)
+                    samples[i].far_vects[j] = normalizer(samples[i].far_vects[j]);
+            }
+            total /= samples.size();
+            dlog << LINFO << "sample transformed means: "<< trans(total);
+            DLIB_TEST(length(total) < 1e-9);
+            check_distance_metrics(samples);
+
+            // make sure serialization works
+            stringstream os;
+            serialize(normalizer, os);
+            vector_normalizer_frobmetric<sample_type> normalizer2;
+            deserialize(normalizer2, os);
+            DLIB_TEST(equal(normalizer.transform(), normalizer2.transform()));
+            DLIB_TEST(equal(normalizer.transformed_means(), normalizer2.transformed_means()));
+            DLIB_TEST(normalizer.in_vector_size() == normalizer2.in_vector_size());
+            DLIB_TEST(normalizer.out_vector_size() == normalizer2.out_vector_size());
+            DLIB_TEST(normalizer.get_max_iterations() == normalizer2.get_max_iterations());
+            DLIB_TEST(std::abs(normalizer.get_c() - normalizer2.get_c()) < 1e-14);
+            DLIB_TEST(std::abs(normalizer.get_epsilon() - normalizer2.get_epsilon()) < 1e-14);
+
+        }
+
 
         void perform_test (
         )
         {
+            dlib::rand rnd;
+            for (int i = 0; i < 5; ++i)
+                test_vector_normalizer_frobmetric(rnd);
+
             test_random_subset_selector();
             test_random_subset_selector2();
             test_running_covariance();
+            test_running_cross_covariance();
+            test_running_cross_covariance_sparse();
             test_running_stats();
             test_skewness_and_kurtosis_1();
             test_skewness_and_kurtosis_2();

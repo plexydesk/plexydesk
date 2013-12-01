@@ -24,16 +24,19 @@ namespace dlib
         typename image_type, 
         typename MM
         >
-    void load_image_dataset (
+    std::vector<std::vector<rectangle> > load_image_dataset (
         array<image_type,MM>& images,
         std::vector<std::vector<rectangle> >& object_locations,
         const std::string& filename,
-        const std::string& label 
+        const std::string& label,
+        bool skip_empty_images = false
     )
     {
         images.clear();
         object_locations.clear();
         const std::string old_working_dir = get_current_dir();
+
+        std::vector<std::vector<rectangle> > ignored_rects;
 
         // Set the current directory to be the one that contains the
         // metadata file. We do this because the file might contain
@@ -47,23 +50,34 @@ namespace dlib
         dataset data;
         load_image_dataset_metadata(data, filename);
 
-        images.resize(data.images.size());
-        std::vector<rectangle> rects;
+        image_type img;
+        std::vector<rectangle> rects, ignored;
         for (unsigned long i = 0; i < data.images.size(); ++i)
         {
-            load_image(images[i], data.images[i].filename);
             rects.clear();
+            ignored.clear();
             for (unsigned long j = 0; j < data.images[i].boxes.size(); ++j)
             {
                 if (label.size() == 0 || data.images[i].boxes[j].label == label)
                 {
-                    rects.push_back(data.images[i].boxes[j].rect);
+                    if (data.images[i].boxes[j].ignore)
+                        ignored.push_back(data.images[i].boxes[j].rect);
+                    else
+                        rects.push_back(data.images[i].boxes[j].rect);
                 }
             }
-            object_locations.push_back(rects);
+
+            if (!skip_empty_images || rects.size() != 0)
+            {
+                object_locations.push_back(rects);
+                ignored_rects.push_back(ignored);
+                load_image(img, data.images[i].filename);
+                images.push_back(img);
+            }
         }
 
         set_current_dir(old_working_dir);
+        return ignored_rects;
     }
 
 // ----------------------------------------------------------------------------------------
@@ -72,13 +86,13 @@ namespace dlib
         typename image_type, 
         typename MM
         >
-    void load_image_dataset (
+    std::vector<std::vector<rectangle> > load_image_dataset (
         array<image_type,MM>& images,
         std::vector<std::vector<rectangle> >& object_locations,
         const std::string& filename
     )
     {
-        load_image_dataset(images, object_locations, filename, "");
+        return load_image_dataset(images, object_locations, filename, "");
     }
 
 // ----------------------------------------------------------------------------------------
@@ -91,7 +105,8 @@ namespace dlib
         array<image_type,MM>& images,
         std::vector<std::vector<full_object_detection> >& object_locations,
         const std::string& filename,
-        const std::string& label 
+        const std::string& label,
+        bool skip_empty_images = false
     )
     {
         images.clear();
@@ -138,11 +153,10 @@ namespace dlib
             ret_parts_list.push_back(*i);
         }
 
-        images.resize(data.images.size());
+        image_type img;
         std::vector<full_object_detection> object_dets;
         for (unsigned long i = 0; i < data.images.size(); ++i)
         {
-            load_image(images[i], data.images[i].filename);
             object_dets.clear();
             for (unsigned long j = 0; j < data.images[i].boxes.size(); ++j)
             {
@@ -161,7 +175,13 @@ namespace dlib
                     object_dets.push_back(full_object_detection(data.images[i].boxes[j].rect, partlist));
                 }
             }
-            object_locations.push_back(object_dets);
+
+            if (!skip_empty_images || object_dets.size() != 0)
+            {
+                object_locations.push_back(object_dets);
+                load_image(img, data.images[i].filename);
+                images.push_back(img);
+            }
         }
 
         set_current_dir(old_working_dir);

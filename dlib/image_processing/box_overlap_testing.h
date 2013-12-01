@@ -16,12 +16,12 @@ namespace dlib
     {
     public:
         test_box_overlap (
-        ) : match_thresh(0.5), overlap_thresh(0.5)
+        ) : match_thresh(0.5), overlap_thresh(1.0)
         {}
 
-        test_box_overlap (
+        explicit test_box_overlap (
             double match_thresh_,
-            double overlap_thresh_
+            double overlap_thresh_ = 1.0
         ) : match_thresh(match_thresh_), overlap_thresh(overlap_thresh_) 
         {
             // make sure requires clause is not broken
@@ -42,6 +42,9 @@ namespace dlib
         ) const
         {
             const double inner = a.intersect(b).area();
+            if (inner == 0)
+                return false;
+
             const double outer = (a+b).area();
             if (inner/outer > match_thresh || 
                 inner/a.area() > overlap_thresh || 
@@ -122,6 +125,22 @@ namespace dlib
         }
 
         return test_box_overlap(max_match_score, max_overlap);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    inline bool overlaps_any_box (
+        const test_box_overlap& tester,
+        const std::vector<rectangle>& rects,
+        const rectangle& rect
+    )
+    {
+        for (unsigned long i = 0; i < rects.size(); ++i)
+        {
+            if (tester(rects[i],rect))
+                return true;
+        }
+        return false;
     }
 
 // ----------------------------------------------------------------------------------------

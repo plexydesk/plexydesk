@@ -9,25 +9,9 @@
    <body>
       <br/><br/>
 
-         <p>
-            This page documents all the machine learning algorithms present in
-            the library.  In particular, there are algorithms for performing 
-            classification, regression, clustering, sequence labeling, assignment learning,
-            rank learning, graph segmentation, object detection, anomaly detection, 
-            and feature ranking, as well as algorithms for doing more 
-            specialized computations.
-         </p>
-
-         <p> 
-            A good tutorial and introduction to the general concepts used by most of the
-            objects in this part of the library can be found in the <a href="svm_ex.cpp.html">svm example</a> program.
-            After reading this example another good one to consult would be the <a href="model_selection_ex.cpp.html">model selection</a>
-            example program.  Finally, if you came here looking for a binary classification or regression tool then I would
-            try the <a href="#krr_trainer">krr_trainer</a> first as it is generally the easiest method to use.
-         </p>
-
+         <a href="ml_guide.svg"><img src="ml_guide.svg" width="100%"/></a>
          <p>   
-            The major design goal of this portion of the library is to provide a highly modular and
+            A major design goal of this portion of the library is to provide a highly modular and
             simple architecture for dealing with kernel algorithms. Towards this end, dlib takes a generic
             programming approach using C++ templates. In particular, each algorithm is parameterized
             to allow a user to supply either one of the predefined dlib kernels (e.g. <a 
@@ -41,7 +25,6 @@
          </p>
 
 
-         <br/> 
          <h3>Paper Describing dlib Machine Learning</h3>
          <pre>
 Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09a.pdf">Dlib-ml: A Machine Learning Toolkit</a>. 
@@ -90,6 +73,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <item>krr_trainer</item> 
          <item>rr_trainer</item> 
          <item>svr_trainer</item> 
+         <item>svr_linear_trainer</item> 
          <item>rvm_regression_trainer</item> 
          <item>rbf_network_trainer</item> 
       </section>
@@ -115,6 +99,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          </item>
          <item>structural_object_detection_trainer</item> 
          <item>structural_sequence_labeling_trainer</item> 
+         <item>structural_sequence_segmentation_trainer</item> 
          <item>structural_assignment_trainer</item> 
          <item>structural_graph_labeling_trainer</item> 
          <item>svm_rank_trainer</item> 
@@ -140,9 +125,10 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <item>cca</item> 
       </section>
       <section>
-         <name>Semi-Supervised</name>
+         <name>Semi-Supervised/Metric Learning</name>
          <item>linear_manifold_regularizer</item>
          <item>discriminant_pca</item> 
+         <item>vector_normalizer_frobmetric</item> 
       </section>
       <section>
          <name>Feature Selection</name>
@@ -160,6 +146,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <item>cross_validate_multiclass_trainer</item> 
          <item>cross_validate_regression_trainer</item> 
          <item>cross_validate_sequence_labeler</item> 
+         <item>cross_validate_sequence_segmenter</item> 
          <item>cross_validate_assignment_trainer</item> 
          <item>cross_validate_graph_labeling_trainer</item> 
          <item>cross_validate_ranking_trainer</item> 
@@ -168,6 +155,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <item>test_regression_function</item> 
          <item>test_object_detection_function</item> 
          <item>test_sequence_labeler</item>
+         <item>test_sequence_segmenter</item>
          <item>test_assignment_function</item>
          <item>test_graph_labeling_function</item>
          <item>test_ranking_function</item>
@@ -217,6 +205,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <item>multiclass_linear_decision_function</item>
          <item>one_vs_all_decision_function</item>
          <item>sequence_labeler</item>
+         <item>sequence_segmenter</item>
          <item>assignment_function</item>
          <item>graph_labeler</item>
       </section>
@@ -238,6 +227,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <item>randomize_samples</item> 
          <item>is_binary_classification_problem</item> 
          <item>is_sequence_labeling_problem</item> 
+         <item>is_sequence_segmentation_problem</item> 
          <item>is_graph_labeling_problem</item> 
          <item>is_assignment_problem</item> 
          <item>is_forced_assignment_problem</item> 
@@ -357,6 +347,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          </description>
          <examples>
             <example>svm_rank_ex.cpp.html</example>
+            <example>svm_rank.py.html</example>
          </examples>
                                  
       </component>
@@ -464,6 +455,11 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
                 regression algorithm.  You give it samples (x,y) and it learns the function
                 f(x) == y.  For a detailed description of the algorithm read the above paper.
             </p>
+               <p>
+                  Note that if you want to use the linear kernel then you would
+                  be better off using the <a href="#rls">rls</a> object as it
+                  is optimized for this case.
+               </p>
          </description>
 
          <examples>
@@ -548,6 +544,10 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <description>
                 This is an implementation of a kernelized k-means clustering algorithm.  
                 It performs k-means clustering by using the <a href="#kcentroid">kcentroid</a> object.  
+                <p>
+                   If you want to use the linear kernel (i.e. do a normal k-means clustering) then you
+                   should use the <a href="#find_clusters_using_kmeans">find_clusters_using_kmeans</a> routine.
+                </p>
          </description>
 
          <examples>
@@ -577,6 +577,30 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
       
    <!-- ************************************************************************* -->
 
+      <component>
+         <name>vector_normalizer_frobmetric</name>
+         <file>dlib/statistics.h</file>
+         <spec_file link="true">dlib/statistics/vector_normalizer_frobmetric_abstract.h</spec_file>
+         <description>
+                This object is a tool for performing the FrobMetric distance metric
+                learning algorithm described in the following paper:
+                <blockquote>
+                    A Scalable Dual Approach to Semidefinite Metric Learning
+                    By Chunhua Shen, Junae Kim, Lei Wang, in CVPR 2011
+                </blockquote>
+                Therefore, this object is a tool that takes as input training triplets
+                (anchor, near, far) of vectors and attempts to learn a linear
+                transformation T such that:
+                <blockquote> <tt>length(T*anchor-T*near) + 1 &lt; length(T*anchor - T*far)</tt> </blockquote>
+                That is, you give a bunch of anchor vectors and for each anchor vector you
+                specify some vectors which should be near to it and some that should be far
+                form it.  This object then tries to find a transformation matrix that makes
+                the "near" vectors close to their anchors while the "far" vectors are
+                farther away.
+         </description>
+      </component>
+      
+   <!-- ************************************************************************* -->
       
       <component>
          <name>discriminant_pca</name>
@@ -1081,7 +1105,11 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <description>
             <p>
                 This object implements a trainer for performing epsilon-insensitive support 
-                vector regression.  It is implemented using the <a href="optimization.html#solve_qp3_using_smo">SMO</a> algorithm.
+                vector regression.  It is implemented using the <a href="optimization.html#solve_qp3_using_smo">SMO</a> algorithm, 
+                allowing the use of non-linear kernels.
+                If you are interested in performing support vector regression with a linear kernel and you
+                have a lot of training data then you should use the <a href="#svr_linear_trainer">svr_linear_trainer</a>
+                which is highly optimized for this case.
             </p>
                 The implementation of the eps-SVR training algorithm used by this object is based
                 on the following paper:
@@ -1095,6 +1123,21 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
             <example>svr_ex.cpp.html</example>
          </examples>
                                  
+      </component>
+      
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>svr_linear_trainer</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/svr_linear_trainer_abstract.h</spec_file>
+         <description>
+                This object implements a trainer for performing epsilon-insensitive support
+                vector regression.  It uses the <a href="optimization.html#oca">oca</a> 
+                optimizer so it is very efficient at solving this problem when
+                linear kernels are used, making it suitable for use with large
+                datasets. 
+         </description>
       </component>
       
    <!-- ************************************************************************* -->
@@ -1144,6 +1187,9 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
                      <a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm">http://www.csie.ntu.edu.tw/~cjlin/libsvm</a></li>
                </ul>
          </description>
+         <examples>
+            <example>one_class_classifiers_ex.cpp.html</example>
+         </examples>
                                  
       </component>
       
@@ -1192,6 +1238,9 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
                 Additionally, it can be warm-started from the solution to a previous
                 training run.
          </description>
+         <examples>
+            <example>one_class_classifiers_ex.cpp.html</example>
+         </examples>
       </component>
       
    <!-- ************************************************************************* -->
@@ -1243,6 +1292,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          </description>
          <examples>
             <example>svm_rank_ex.cpp.html</example>
+            <example>svm_rank.py.html</example>
          </examples>
                                  
       </component>
@@ -1370,7 +1420,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
       
       <component>
          <name>one_vs_one_trainer</name>
-         <file>dlib/svm.h</file>
+         <file>dlib/svm_threaded.h</file>
          <spec_file link="true">dlib/svm/one_vs_one_trainer_abstract.h</spec_file>
          <description>
                 This object is a tool for turning a bunch of binary classifiers
@@ -1430,6 +1480,34 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
    <!-- ************************************************************************* -->
       
       <component>
+         <name>sequence_segmenter</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/sequence_segmenter_abstract.h</spec_file>
+         <description>
+                This object is a tool for segmenting a sequence of objects into a set of
+                non-overlapping chunks.  An example sequence segmentation task is to take
+                English sentences and identify all the named entities.  In this example,
+                you would be using a sequence_segmenter to find all the chunks of
+                contiguous words which refer to proper names.
+
+               <p>
+                Internally, the sequence_segmenter uses the BIO (Begin, Inside, Outside) or
+                BILOU (Begin, Inside, Last, Outside, Unit) sequence tagging model.
+                Moreover, it is implemented using a <a href="#sequence_labeler">sequence_labeler</a>
+                object and therefore sequence_segmenter objects are examples of
+                chain structured conditional random field style sequence
+                taggers. 
+               </p>
+         </description>
+         <examples>
+            <example>sequence_segmenter.py.html</example>
+            <example>sequence_segmenter_ex.cpp.html</example>
+         </examples>
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>assignment_function</name>
          <file>dlib/svm.h</file>
          <spec_file link="true">dlib/svm/assignment_function_abstract.h</spec_file>
@@ -1482,7 +1560,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
       
       <component>
          <name>one_vs_all_trainer</name>
-         <file>dlib/svm.h</file>
+         <file>dlib/svm_threaded.h</file>
          <spec_file link="true">dlib/svm/one_vs_all_trainer_abstract.h</spec_file>
          <description>
                 This object is a tool for turning a bunch of binary classifiers
@@ -1498,7 +1576,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
       
       <component>
          <name>svm_multiclass_linear_trainer</name>
-         <file>dlib/svm.h</file>
+         <file>dlib/svm_threaded.h</file>
          <spec_file link="true">dlib/svm/svm_multiclass_linear_trainer_abstract.h</spec_file>
          <description>
                 This object represents a tool for training a multiclass support 
@@ -1704,6 +1782,19 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <description>
             This function takes a set of training data for a sequence labeling problem
             and reports back if it could possibly be a well formed sequence labeling problem.
+         </description>
+                                 
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>is_sequence_segmentation_problem</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/svm_abstract.h</spec_file>
+         <description>
+            This function takes a set of training data for a sequence segmentation problem
+            and reports back if it could possibly be a well formed sequence segmentation problem.
          </description>
                                  
       </component>
@@ -2340,6 +2431,23 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
    <!-- ************************************************************************* -->
       
       <component>
+         <name>cross_validate_sequence_segmenter</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/cross_validate_sequence_segmenter_abstract.h</spec_file>
+         <description>
+            Performs k-fold cross validation on a user supplied sequence segmentation trainer object such
+            as the <a href="#structural_sequence_segmentation_trainer">structural_sequence_segmentation_trainer</a>
+            and returns the resulting precision, recall, and F1-score. 
+         </description>
+         <examples>
+            <example>sequence_segmenter.py.html</example>
+            <example>sequence_segmenter_ex.cpp.html</example>
+         </examples>
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>cross_validate_assignment_trainer</name>
          <file>dlib/svm.h</file>
          <spec_file link="true">dlib/svm/cross_validate_assignment_trainer_abstract.h</spec_file>
@@ -2385,6 +2493,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          </description>
          <examples>
             <example>svm_rank_ex.cpp.html</example>
+            <example>svm_rank.py.html</example>
          </examples>
                                  
       </component>
@@ -2403,6 +2512,22 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
             <example>sequence_labeler_ex.cpp.html</example>
          </examples>
                                  
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>test_sequence_segmenter</name>
+         <file>dlib/svm.h</file>
+         <spec_file link="true">dlib/svm/cross_validate_sequence_segmenter_abstract.h</spec_file>
+         <description>
+            Tests a <a href="#sequence_segmenter">sequence_segmenter</a> on a set of data 
+            and returns the resulting precision, recall, and F1-score.
+         </description>
+         <examples>
+            <example>sequence_segmenter.py.html</example>
+            <example>sequence_segmenter_ex.cpp.html</example>
+         </examples>
       </component>
       
    <!-- ************************************************************************* -->
@@ -2457,6 +2582,7 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          </description>
          <examples>
             <example>svm_rank_ex.cpp.html</example>
+            <example>svm_rank.py.html</example>
          </examples>
                                  
       </component>
@@ -2523,19 +2649,14 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
                 for solving the optimization problem associated 
                 with a structural support vector machine.  A structural SVM is a supervised 
                 machine learning method for learning to predict complex outputs.  This is
-                contrasted with a binary classifier which makes only simple yes/no predictions.  
-                A structural SVM, on the other hand, can learn to predict outputs as complex
-                as entire parse trees.  To do this, it learns a function F(x,y) which measures 
-                how well a particular data sample x matches a label y.  When used for prediction,
-                the best label for a new x is given by the y which maximizes F(x,y).   
+                contrasted with a binary classifier which makes only simple yes/no
+                predictions.  A structural SVM, on the other hand, can learn to predict
+                complex outputs such as entire parse trees or DNA sequence alignments.  To
+                do this, it learns a function F(x,y) which measures how well a particular
+                data sample x matches a label y.  When used for prediction, the best label
+                for a new x is given by the y which maximizes F(x,y).   
 
-               <p>
-                  If you want to see example code that uses this object then take a look at
-                  the implementation of the 
-                  <a href="dlib/svm/svm_multiclass_linear_trainer.h.html">svm_multiclass_linear_trainer</a>
-                  object.
-               </p>
-
+                <br/>
                 <br/>
 
                 For an introduction to structured support vector machines you should consult 
@@ -2564,6 +2685,10 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
                 </blockquote>
 
          </description>
+         <examples>
+            <example>svm_struct.py.html</example>
+            <example>svm_struct_ex.cpp.html</example>
+         </examples>
                                  
       </component>
       
@@ -2580,6 +2705,9 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
             have multiple computers then you can use the <a href="#svm_struct_controller_node">svm_struct_controller_node</a>
             to distribute the work across many computers.
          </description>
+         <examples>
+            <example>svm_struct_ex.cpp.html</example>
+         </examples>
                                  
       </component>
       
@@ -2591,7 +2719,9 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
          <spec_file link="true">dlib/svm/structural_svm_object_detection_problem_abstract.h</spec_file>
          <description>
                This object is a tool for learning the parameter vector needed to use
-               a <a href="imaging.html#scan_image_pyramid">scan_image_pyramid</a> object.  
+               a <a href="imaging.html#scan_image_pyramid">scan_image_pyramid</a>,
+               <a href="imaging.html#scan_image_boxes">scan_image_boxes</a>, or
+               <a href="imaging.html#scan_image_custom">scan_image_custom</a> object.  
 
             <p>
                It learns the parameter vector by formulating the problem as a <a href="#structural_svm_problem">structural 
@@ -2707,6 +2837,28 @@ Davis E. King. <a href="http://jmlr.csail.mit.edu/papers/volume10/king09a/king09
             <example>sequence_labeler_ex.cpp.html</example>
          </examples>
                                  
+      </component>
+      
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>structural_sequence_segmentation_trainer</name>
+         <file>dlib/svm_threaded.h</file>
+         <spec_file link="true">dlib/svm/structural_sequence_segmentation_trainer_abstract.h</spec_file>
+         <description>
+                This object is a tool for learning to do sequence segmentation based on a
+                set of training data.  The training procedure produces a <a href="#sequence_segmenter">sequence_segmenter</a>
+                object which can be used to identify the sub-segments of new data sequences.
+               <p>
+                  This object internally uses the <a href="#structural_sequence_labeling_trainer">structural_sequence_labeling_trainer</a> 
+                  to solve the learning problem.  
+               </p>
+         </description>
+         <examples>
+            <example>sequence_segmenter.py.html</example>
+            <example>sequence_segmenter_ex.cpp.html</example>
+         </examples>
+
       </component>
       
    <!-- ************************************************************************* -->

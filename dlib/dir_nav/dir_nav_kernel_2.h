@@ -109,6 +109,9 @@ namespace dlib
         inline uint64 size (
         ) const { return state.file_size; }
 
+        operator std::string (
+        ) const { return full_name(); }
+
         bool operator == (
             const file& rhs
         ) const;
@@ -212,6 +215,22 @@ namespace dlib
             queue_of_dirs& dirs
         ) const;
 
+        std::vector<file> get_files (
+        ) const
+        {
+            std::vector<file> temp_vector;
+            get_files(temp_vector);
+            return temp_vector;
+        }
+
+        std::vector<directory> get_dirs (
+        ) const
+        {
+            std::vector<directory> temp_vector;
+            get_dirs(temp_vector);
+            return temp_vector;
+        }
+
         const directory get_parent (
         ) const;
        
@@ -223,6 +242,9 @@ namespace dlib
 
         inline const std::string& full_name (
         ) const { return state.full_name; }
+
+        operator std::string (
+        ) const { return full_name(); }
 
         bool operator == (
             const directory& rhs

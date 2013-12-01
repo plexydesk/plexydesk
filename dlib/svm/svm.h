@@ -109,9 +109,6 @@ namespace dlib
         const in_scalar_vector_type& y_test
     )
     {
-        typedef typename dec_funct_type::sample_type sample_type;
-        typedef typename dec_funct_type::mem_manager_type mem_manager_type;
-        typedef matrix<sample_type,0,1,mem_manager_type> sample_vector_type;
 
         // make sure requires clause is not broken
         DLIB_ASSERT( is_binary_classification_problem(x_test,y_test) == true,
@@ -191,6 +188,49 @@ namespace dlib
             {
                 if (samples[i].size() != labels[i].size())
                     return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename sequence_type 
+        >
+    bool is_sequence_segmentation_problem (
+        const std::vector<sequence_type>& samples,
+        const std::vector<std::vector<std::pair<unsigned long,unsigned long> > >& segments
+    )
+    {
+        if (is_learning_problem(samples, segments))
+        {
+            for (unsigned long i = 0; i < samples.size(); ++i)
+            {
+                // Make sure the segments are inside samples[i] and don't overlap with each
+                // other.
+                std::vector<bool> hits(samples[i].size(), false);
+                for (unsigned long j = 0; j < segments[i].size(); ++j)
+                {
+                    const unsigned long begin = segments[i][j].first;
+                    const unsigned long end = segments[i][j].second;
+                    // if the segment is outside the sequence
+                    if (end > samples[i].size())
+                        return false;
+
+                    if (begin >= end)
+                        return false;
+
+                    // check for overlap
+                    for (unsigned long k = begin; k < end; ++k)
+                    {
+                        if (hits[k])
+                            return false;
+                        hits[k] = true;
+                    }
+                }
             }
             return true;
         }
@@ -584,10 +624,10 @@ namespace dlib
             << "\n\t is_binary_classification_problem(scores,labels): " << is_binary_classification_problem(scores,labels)
             );
 
-        const T prior0 = sum(mat(labels)>0); 
-        const T prior1 = sum(mat(labels)<0);
-        const T hi_target = (prior1+1)/(prior1+2);
-        const T lo_target = 1.0/(prior0+2);
+        const T num_pos = sum(mat(labels)>0); 
+        const T num_neg = sum(mat(labels)<0);
+        const T hi_target = (num_pos+1)/(num_pos+2);
+        const T lo_target = 1.0/(num_neg+2);
 
         std::vector<T,alloc> target;
         for (unsigned long i = 0; i < labels.size(); ++i)
@@ -778,7 +818,7 @@ namespace dlib
     {
         typedef probabilistic_function<typename trainer_type::trained_function_type> trained_function_type;
 
-        const trainer_type& trainer;
+        const trainer_type trainer;
         const long folds;
 
         trainer_adapter_probabilistic (

@@ -44,6 +44,8 @@ set (tests
    entropy_coder.cpp
    entropy_encoder_model.cpp
    example_args.cpp
+   fft.cpp
+   fhog.cpp
    filtering.cpp
    find_max_factor_graph_nmplp.cpp
    find_max_factor_graph_viterbi.cpp
@@ -80,6 +82,7 @@ set (tests
    member_function_pointer.cpp
    metaprogramming.cpp
    multithreaded_object.cpp
+   numerical_integration.cpp
    object_detector.cpp
    oca.cpp
    one_vs_all_trainer.cpp
@@ -103,6 +106,7 @@ set (tests
    scan_image.cpp
    sequence.cpp
    sequence_labeler.cpp
+   sequence_segmenter.cpp
    serialize.cpp
    set.cpp
    sldf.cpp
@@ -123,15 +127,16 @@ set (tests
    svm.cpp
    svm_multiclass_linear.cpp
    svm_struct.cpp
+   svr_linear_trainer.cpp
    symmetric_matrix_cache.cpp
    thread_pool.cpp
    threads.cpp
    timer.cpp
    tokenizer.cpp
    trust_region.cpp
-   vectorstream.cpp
    tuple.cpp
    type_safe_union.cpp
+   vectorstream.cpp
    )
 
 # create a variable called target_name and set it to the string "test"
@@ -156,6 +161,7 @@ TARGET_LINK_LIBRARIES(${target_name} dlib )
 
 if (NOT DLIB_NO_GUI_SUPPORT)
    add_subdirectory(gui)
+   add_subdirectory(../../examples examples_build)
 endif()
 
 

@@ -91,9 +91,9 @@ row_vect.set_size(5);
       <!-- ****************************************** -->
 
       <question text="How does dlib interface with other libraries/tools?">
-         There shouldn't ever be anything in dlib that prevents you from using or 
-         interacting with other libraries.  However, there are some additional tools
-         in dlib to make some interactions easier.  
+         There should never be anything in dlib that prevents you from using or 
+         interacting with other libraries.  Moreover, there are some additional tools
+         in dlib to make some interactions easier:  
 
          <ul>
             <li><b>BLAS and LAPACK libraries</b> are used by the <a href="linear_algebra.html#matrix">matrix</a>
@@ -119,6 +119,9 @@ row_vect.set_size(5);
             You must also tell your compiler to link against these libraries to
             use them. However, CMake will try to link against them
             automatically if they are installed.</li><br/>
+
+            <li><b>FFTW</b> is used by the fft() and ifft() routines if you #define DLIB_USE_FFTW and
+            link to fftw3.  Otherwise dlib uses its own slower default implementation.  </li><br/>
 
             <li><b>SQLite</b> is used by the <a href="other.html#database">database</a> object.  In
             fact, it is just a wrapper around SQLite's C interface which simplifies its use (e.g. 

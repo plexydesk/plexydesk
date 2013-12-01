@@ -196,7 +196,7 @@ int main()
         make_simple_test_data(images, object_locations);
 
 
-        typedef scan_image_pyramid<pyramid_down_5_4, very_simple_feature_extractor> image_scanner_type;
+        typedef scan_image_pyramid<pyramid_down<5>, very_simple_feature_extractor> image_scanner_type;
         image_scanner_type scanner;
         // Instead of using setup_grid_detection_templates() like in object_detector_ex.cpp, lets manually
         // setup the sliding window box.  We use a window with the same shape as the white boxes we
@@ -247,12 +247,13 @@ int main()
 
         object_detector<image_scanner_type> detector = trainer.train(images, object_locations);
 
-        // We can easily test the new detector against our training data.  This print statement will indicate that it
-        // has perfect precision and recall on this simple task.
-        cout << "Test detector (precision,recall): " << test_object_detection_function(detector, images, object_locations) << endl;
+        // We can easily test the new detector against our training data.  This print
+        // statement will indicate that it has perfect precision and recall on this simple
+        // task.  It will also print the average precision (AP).
+        cout << "Test detector (precision,recall,AP): " << test_object_detection_function(detector, images, object_locations) << endl;
 
         // The cross validation should also indicate perfect precision and recall.
-        cout << "3-fold cross validation (precision,recall): "
+        cout << "3-fold cross validation (precision,recall,AP): "
              << cross_validate_object_detection_trainer(trainer, images, object_locations, 3) << endl;
 
 

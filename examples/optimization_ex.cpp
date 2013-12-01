@@ -4,11 +4,10 @@
     This is an example illustrating the use the general purpose non-linear 
     optimization routines from the dlib C++ Library.
 
-    The library provides implementations of the conjugate gradient,  
-    BFGS, L-BFGS, and BOBYQA optimization algorithms.  These algorithms allow 
-    you to find the minimum of a function of many input variables.  
-    This example walks though a few of the ways you might put these 
-    routines to use.
+    The library provides implementations of the conjugate gradient,  BFGS,
+    L-BFGS, and BOBYQA optimization algorithms.  These algorithms allow you to
+    find the minimum of a function of many input variables.  This example walks
+    though a few of the ways you might put these routines to use.
 
 */
 
@@ -22,7 +21,10 @@ using namespace dlib;
 
 // ----------------------------------------------------------------------------------------
 
-// Here we just make a typedef for a variable length column vector of doubles.  
+// In dlib, the general purpose solvers optimize functions that take a column
+// vector as input and return a double.  So here we make a typedef for a
+// variable length column vector of doubles.  This is the type we will use to
+// represent the input to our objective functions which we will be minimizing.
 typedef matrix<double,0,1> column_vector;
 
 // ----------------------------------------------------------------------------------------
@@ -30,7 +32,7 @@ typedef matrix<double,0,1> column_vector;
 // we can use the optimization algorithms to find the minimums of these functions.
 // ----------------------------------------------------------------------------------------
 
-double rosen ( const column_vector& m)
+double rosen (const column_vector& m)
 /*
     This function computes what is known as Rosenbrock's function.  It is 
     a function of two input variables and has a global minimum at (1,1).
@@ -46,7 +48,7 @@ double rosen ( const column_vector& m)
 }
 
 // This is a helper function used while optimizing the rosen() function.  
-const column_vector rosen_derivative ( const column_vector& m)
+const column_vector rosen_derivative (const column_vector& m)
 /*!
     ensures
         - returns the gradient vector for the rosen function
@@ -158,8 +160,7 @@ int main()
     try
     {
         // make a column vector of length 2
-        column_vector starting_point;
-        starting_point.set_size(2);
+        column_vector starting_point(2);
 
 
         // Set the starting point to (4,8).  This is the point the optimization algorithm
@@ -175,7 +176,7 @@ int main()
         // the results are similar.  If they are very different then you probably made a 
         // mistake.  So the first thing we do is compare the results at a test point: 
         cout << "Difference between analytic derivative and numerical approximation of derivative: " 
-              << length(derivative(&rosen)(starting_point) - rosen_derivative(starting_point)) << endl;
+              << length(derivative(rosen)(starting_point) - rosen_derivative(starting_point)) << endl;
 
 
         cout << "Find the minimum of the rosen function()" << endl;
@@ -194,7 +195,7 @@ int main()
 
         find_min(bfgs_search_strategy(),  // Use BFGS search algorithm
                  objective_delta_stop_strategy(1e-7), // Stop when the change in rosen() is less than 1e-7
-                 &rosen, &rosen_derivative, starting_point, -1);
+                 rosen, rosen_derivative, starting_point, -1);
         // Once the function ends the starting_point vector will contain the optimum point 
         // of (1,1).
         cout << "rosen solution:\n" << starting_point << endl;
@@ -207,7 +208,7 @@ int main()
         starting_point = -94, 5.2;
         find_min_using_approximate_derivatives(bfgs_search_strategy(),
                                                objective_delta_stop_strategy(1e-7),
-                                               &rosen, starting_point, -1);
+                                               rosen, starting_point, -1);
         // Again the correct minimum point is found and stored in starting_point
         cout << "rosen solution:\n" << starting_point << endl;
 
@@ -222,25 +223,50 @@ int main()
         find_min(lbfgs_search_strategy(10),  // The 10 here is basically a measure of how much memory L-BFGS will use.
                  objective_delta_stop_strategy(1e-7).be_verbose(),  // Adding be_verbose() causes a message to be 
                                                                     // printed for each iteration of optimization.
-                 &rosen, &rosen_derivative, starting_point, -1);
+                 rosen, rosen_derivative, starting_point, -1);
 
         cout << endl << "rosen solution: \n" << starting_point << endl;
 
         starting_point = -94, 5.2;
         find_min_using_approximate_derivatives(lbfgs_search_strategy(10),
                                                objective_delta_stop_strategy(1e-7),
-                                               &rosen, starting_point, -1);
+                                               rosen, starting_point, -1);
         cout << "rosen solution: \n"<< starting_point << endl;
+
+
+
+
+        // dlib also supports solving functions subject to bounds constraints on
+        // the variables.  So for example, if you wanted to find the minimizer
+        // of the rosen function where both input variables were in the range
+        // 0.1 to 0.8 you would do it like this:
+        starting_point = 0.1, 0.1; // Start with a valid point inside the constraint box.
+        find_min_box_constrained(lbfgs_search_strategy(10),  
+                                 objective_delta_stop_strategy(1e-9),  
+                                 rosen, rosen_derivative, starting_point, 0.1, 0.8);
+        // Here we put the same [0.1 0.8] range constraint on each variable, however, you
+        // can put different bounds on each variable by passing in column vectors of
+        // constraints for the last two arguments rather than scalars.  
+
+        cout << endl << "constrained rosen solution: \n" << starting_point << endl;
+
+        // You can also use an approximate derivative like so:
+        starting_point = 0.1, 0.1; 
+        find_min_box_constrained(bfgs_search_strategy(),  
+                                 objective_delta_stop_strategy(1e-9),  
+                                 rosen, derivative(rosen), starting_point, 0.1, 0.8);
+        cout << endl << "constrained rosen solution: \n" << starting_point << endl;
+
 
 
 
         // In many cases, it is useful if we also provide second derivative information
         // to the optimizers.  Two examples of how we can do that are shown below.  
         starting_point = 0.8, 1.3;
-        find_min(newton_search_strategy(&rosen_hessian),
+        find_min(newton_search_strategy(rosen_hessian),
                  objective_delta_stop_strategy(1e-7),
-                 &rosen,
-                 &rosen_derivative,
+                 rosen,
+                 rosen_derivative,
                  starting_point,
                  -1);
         cout << "rosen solution: \n"<< starting_point << endl;
@@ -263,8 +289,7 @@ int main()
         // functions.  
         cout << "\nFind the minimum of the test_function" << endl;
 
-        column_vector target;
-        target.set_size(4);
+        column_vector target(4);
         starting_point.set_size(4);
 
         // This variable will be used as the target of the test_function.   So,

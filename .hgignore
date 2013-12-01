@@ -5,6 +5,7 @@
 \.o$
 \.orig$
 \.obj$
+\.pyc$
 ^docs/release/
 ^docs/docs/web/
 ^docs/docs/chm/
@@ -14,3 +15,9 @@
 ^dlib/test/debug.txt$
 ^dlib/test/test$
 ^dlib/test/makefile.bak$
+python_examples/.*.so$
+python_examples/.*.pyd$
+python_examples/.*.dll$
+python_examples/.*.lib$
+docs/docs/python/classes.txt
+docs/docs/python/functions.txt

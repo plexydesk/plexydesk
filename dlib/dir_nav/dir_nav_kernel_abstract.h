@@ -139,6 +139,14 @@ namespace dlib
                 - returns the size of this file in bytes.
         !*/
 
+        operator std::string (
+        ) const; 
+        /*!
+            ensures
+                - returns full_name()
+                  (i.e. provides an implicit conversion to string from dlib::file)
+        !*/
+
         file& operator= (
             const file& rhs
         );
@@ -302,6 +310,13 @@ namespace dlib
                     no effect on *this and #files.size()==0.         
         !*/
 
+        std::vector<file> get_files (
+        ) const;
+        /*!
+            ensures
+                - This function simply calls get_files(temp_vector) and then returns temp_vector.
+        !*/
+
         template <
             typename queue_of_dirs
             >
@@ -328,6 +343,13 @@ namespace dlib
                     getting the contents of this directory.
                     If this exception is thrown then the call to get_dirs() has
                     no effect on *this and #dirs.size()==0.
+        !*/
+
+        std::vector<directory> get_dirs (
+        ) const;
+        /*!
+            ensures
+                - This function simply calls get_dirs(temp_vector) and then returns temp_vector.
         !*/
 
         bool is_root (
@@ -374,6 +396,14 @@ namespace dlib
                     - the last character of #full_name() is get_separator()
                 - else
                     - the last character of #full_name() is NOT get_separator()
+        !*/
+
+        operator std::string (
+        ) const; 
+        /*!
+            ensures
+                - returns full_name()
+                  (i.e. provides an implicit conversion to string from dlib::directory)
         !*/
 
         directory& operator= (

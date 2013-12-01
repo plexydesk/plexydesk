@@ -369,6 +369,33 @@ namespace
         DLIB_TEST(dm10 == m10);
         DLIB_TEST_MSG(sum(abs(sigmoid(dm10) -sigmoid(m10))) < 1e-10,sum(abs(sigmoid(dm10) -sigmoid(m10))) );
 
+        {
+            matrix<double,2,1> x, l, u, out;
+            x = 3,4;
+
+            l = 1,1;
+            u = 2,2.2;
+
+            out = 2, 2.2;
+            DLIB_TEST(equal(clamp(x, l, u) , out));
+            out = 3, 2.2;
+            DLIB_TEST(!equal(clamp(x, l, u) , out));
+            out = 2, 4.2;
+            DLIB_TEST(!equal(clamp(x, l, u) , out));
+
+            x = 1.5, 1.5;
+            out = x;
+            DLIB_TEST(equal(clamp(x, l, u) , out));
+
+            x = 0.5, 1.5;
+            out = 1, 1.5;
+            DLIB_TEST(equal(clamp(x, l, u) , out));
+
+            x = 1.5, 0.5;
+            out = 1.5, 1.0;
+            DLIB_TEST(equal(clamp(x, l, u) , out));
+
+        }
 
         matrix<double, 7, 7,MM,column_major_layout> m7;
         matrix<double> dm7(7,7);
@@ -640,7 +667,6 @@ namespace
             const long M = 3;
             const long N = 3;
 
-            typedef matrix<double,0,0> mat;
 
             matrix<double,0,0,default_memory_manager, column_major_layout> a(M,N);  
             for (long r = 0; r < a.nr(); ++r)

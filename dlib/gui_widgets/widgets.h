@@ -3292,24 +3292,25 @@ namespace dlib
 
         struct overlay_rect
         {
-            overlay_rect() { assign_pixel(color, 0);}
+            overlay_rect() :crossed_out(false) { assign_pixel(color, 0);}
 
             template <typename pixel_type>
             overlay_rect(const rectangle& r, pixel_type p) 
-                : rect(r) { assign_pixel(color, p); }
+                : rect(r),crossed_out(false) { assign_pixel(color, p); }
 
             template <typename pixel_type>
             overlay_rect(const rectangle& r, pixel_type p, const std::string& l) 
-                : rect(r),label(l) { assign_pixel(color, p); }
+                : rect(r),label(l),crossed_out(false) { assign_pixel(color, p); }
 
             template <typename pixel_type>
             overlay_rect(const rectangle& r, pixel_type p, const std::string& l, const std::map<std::string,point>& parts_) 
-                : rect(r),label(l),parts(parts_) { assign_pixel(color, p); }
+                : rect(r),label(l),parts(parts_),crossed_out(false) { assign_pixel(color, p); }
 
             rectangle rect;
             rgb_alpha_pixel color;
             std::string label;
             std::map<std::string,point> parts;
+            bool crossed_out;
         };
 
         struct overlay_line
@@ -3457,6 +3458,22 @@ namespace dlib
         void clear_labelable_part_names (
         );
 
+        void enable_overlay_editing (
+        ) { auto_mutex M(m); overlay_editing_enabled = true; }
+
+        void disable_overlay_editing (
+        ) 
+        { 
+            auto_mutex M(m); 
+            overlay_editing_enabled = false;  
+            rect_is_selected = false;
+            drawing_rect = false;
+            parent.invalidate_rectangle(rect);
+        }
+        
+        bool overlay_editing_is_enabled (
+        ) const { auto_mutex M(m); return overlay_editing_enabled; }
+
     private:
 
         void draw (
@@ -3537,6 +3554,7 @@ namespace dlib
         point last_right_click_pos;
         const int part_width;
         std::set<std::string> part_names;
+        bool overlay_editing_enabled;
 
         // restricted functions
         image_display(image_display&);        // copy constructor
@@ -3564,9 +3582,12 @@ namespace dlib
             window_has_closed(false),
             have_last_click(false),
             mouse_btn(0),
-            clicked_signaler(this->wm) 
+            clicked_signaler(this->wm),
+            have_last_keypress(false),
+            tie_input_events(false)
         {  
             gui_img.set_image_clicked_handler(*this, &image_window::on_image_clicked);
+            gui_img.disable_overlay_editing();
             set_image(img); 
             show(); 
         }
@@ -3580,9 +3601,12 @@ namespace dlib
             window_has_closed(false),
             have_last_click(false),
             mouse_btn(0),
-            clicked_signaler(this->wm) 
+            clicked_signaler(this->wm),
+            have_last_keypress(false),
+            tie_input_events(false)
         {  
             gui_img.set_image_clicked_handler(*this, &image_window::on_image_clicked);
+            gui_img.disable_overlay_editing();
             set_image(img); 
             set_title(title);
             show(); 
@@ -3750,12 +3774,36 @@ namespace dlib
             unsigned long& mouse_button
         ); 
 
+        void tie_events (
+        );
+
+        void untie_events (
+        );
+
+        bool events_tied (
+        ) const;
+
         bool get_next_double_click (
             point& p
         ) 
         {
             unsigned long mouse_button;
             return get_next_double_click(p, mouse_button);
+        }
+
+        bool get_next_keypress (
+            unsigned long& key,
+            bool& is_printable,
+            unsigned long& state
+        );
+
+        bool get_next_keypress (
+            unsigned long& key,
+            bool& is_printable
+        )
+        {
+            unsigned long state;
+            return get_next_keypress(key,is_printable,state);
         }
 
     private:
@@ -3772,6 +3820,12 @@ namespace dlib
             unsigned long btn
         );
 
+        virtual void on_keydown (
+            unsigned long key,
+            bool is_printable,
+            unsigned long state
+        );
+
         // restricted functions
         image_window(image_window&);
         image_window& operator= (image_window&);
@@ -3784,6 +3838,12 @@ namespace dlib
         point last_clicked_point;
         unsigned long mouse_btn;
         rsignaler clicked_signaler;
+
+        bool have_last_keypress;
+        unsigned long next_key;
+        bool next_is_printable;
+        unsigned long next_state;
+        bool tie_input_events;
     };
 
 // ----------------------------------------------------------------------------------------

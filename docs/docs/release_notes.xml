@@ -12,6 +12,199 @@
 
 <current>
 New Features:
+
+Non-Backwards Compatible Changes:
+   - The spatial filtering functions no longer zero the borders if you set the add_to 
+     parameter to true.  
+
+Bug fixes:
+
+Other:
+</current>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.5" date="Oct 22, 2013">
+New Features:
+   - Added routines for performing BFGS and L-BFGS optimization with box constraints.  
+     See the new find_min_box_constrained() and find_max_box_constrained() routines.
+   - Added vector_normalizer_frobmetric.  This is a tool for learning a
+     Mahalanobis distance metric.
+   - The user can now set different loss values for false alarming vs. getting a
+     correct detection when using the structural_sequence_segmentation_trainer.
+   - Added an overload of clamp() that lets you use matrix valued lower/upper bounds.
+   - New image processing tools:
+      - Added the scan_image_custom object, split_array(), and add_image_left_right_flips().
+      - Added extract_fhog_features(), this is a function for computing
+        Felzenszwalb's 31 channel HOG image representation.  
+
+Non-Backwards Compatible Changes:
+   - Refactored the image pyramid code. Now there is just one templated object called
+     pyramid_down and you give it the downsampling amount as a template argument.  To make
+     old code work with this change use the following substitutions:
+       change pyramid_down to pyramid_down&lt;2&gt;
+       change pyramid_down_3_2 to pyramid_down&lt;3&gt;
+       change pyramid_down_4_3 to pyramid_down&lt;4&gt;
+       change pyramid_down_5_4 to pyramid_down&lt;5&gt;
+
+Bug fixes:
+
+Other:
+   - Made the structural SVM solver slightly faster.
+   - Moved the python C++ utility headers from tools/python/src into dlib/python.
+   - The PNG loader is now able to load grayscale images with an alpha channel.
+   - Removed checks that prevented users from using references to functions with the
+     optimization code and forced the use of function pointers. This was to avoid
+     triggering a bug in gcc 4.0.  Since that compiler is no longer officially supported
+     by dlib I've removed these checks to increase usability.
+   - Made resize_image() use bilinear interpolation by default and also added a special
+     version of it that is optimized for this case.
+   - Dlib's cmake files will now automatically link to the Intel MKL on MS Windows
+     platforms if the MKL is installed.
+</old>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.4" date="Aug 14, 2013">
+New Features:
+   - Added Python interfaces to dlib's structural support vector machine solver and
+     Hungarian algorithm implementation.
+   - Added running_cross_covariance
+   - Added order_by_descending_distance()
+   - Added is_finite()
+   - Added the csv IO manipulator that lets you print a matrix in comma separated value
+     format.
+
+Non-Backwards Compatible Changes:
+   - Changed the object detector testing functions to output average precision instead of
+     mean average precision.
+   - Added an option to weight the features from a hashed_feature_image relative to the
+     number of times they occur in an image.  I also made it the default behavior to use
+     this relative weighting and changed the serialization format to accommodate this.
+
+Bug fixes:
+   - Fixed typo in learn_platt_scaling(). The method wasn't using the exact prior
+     suggested by Platt's paper.
+   - Fixed a bug in running_scalar_covariance that caused the covariance() and
+     correlation() methods to output the wrong answer if the covariance was negative.
+
+Other:
+   - Gave the image_window the ability to tie the mouse and keyboard events together such
+     that it is possible for a user to listen for both simultaneously.
+   - A number of changes were made to the structural_svm_problem's code which make it 
+     significantly faster in some cases.
+   - Added Steven Van Ingelgem's patch to the HTTP server which makes operations on HTTP
+     headers case-insensitive.
+
+</old>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.3" date="June 21, 2013">
+New Features:
+   - Machine Learning:
+      - Added the svr_linear_trainer, a tool for solving large scale support vector 
+        regression problems.
+      - Added a tool for working with BIO and BILOU style sequence taggers/segmenters.  
+        This is the new sequence_segmenter object and its associated 
+        structural_sequence_segmentation_trainer object.
+      - Added a python interface to some of the machine learning tools.  These
+        include the svm_c_trainer, svm_c_linear_trainer, svm_rank_trainer, and
+        structural_sequence_segmentation_trainer objects as well as the cca()
+        routine.  
+   - Added point_transform_projective and find_projective_transform().
+   - Added a function for numerically integrating arbitrary functions, this is the 
+     new integrate_function_adapt_simpson() routine which was contributed by 
+     Steve Taylor
+   - Added jet(), a routine for coloring images with the jet color scheme.
+
+Non-Backwards Compatible Changes:
+
+Bug fixes:
+   - Fixed a bug in hysteresis_threshold() that caused it to produce incorrect
+     outputs in some cases.
+   - Fixed a segmentation fault in the eigenvalue_decomposition object which
+     could occur when NaN valued inputs were given.
+
+Other:
+   - Made image saving routines work on matrix objects in addition to array2d objects.
+   - The machine learning page now contains a flow chart to help new users
+     select a machine learning tool appropriate for their task.
+
+</old>
+
+<!-- **************************************************************************************  -->
+
+
+<old name="18.2" date="May 30, 2013">
+New Features:
+   - Object Detection Tools:
+      - Added another image scanning tool similar to scan_image_pyramid.  This
+        is the new scan_image_boxes object.  It allows a user to easily specify
+        an arbitrary set of object boxes which should be checked by an object
+        detector rather than scanning a fixed sized window over the image as is
+        done by the scan_image_pyramid tool.  This allows more flexible scanning 
+        strategies.  For example, it is now possible to use the selective search 
+        method implemented by the new find_candidate_object_locations() routine.  
+      - Added the binned_vector_feature_image.
+      - Upgraded the object_detector so that you can use the adjust_threshold
+        argument for all versions of the operator() method.
+      - Added remove_unobtainable_rectangles()
+   - Hashing Tools:
+      - Added a set of new locality sensitive hashing functions meant for use
+        with larger vectors and higher bit sizes than the current LSH tools.
+        These are the new hash_similar_angles_xxx objects.
+      - Added find_k_nearest_neighbors_lsh() and hash_samples()
+      - Added create_max_margin_projection_hash()
+   - New Matrix Routines: linpiece(), fft(), and ifft()
+   - Added numeric constants and additional statistics to the running_stats
+     object.  This code was contributed by Steve Taylor.
+   - Added the image_window::get_next_keypress() routine.  This tool allows a
+     user to easily find out which keyboard key the user is pressing.
+
+Non-Backwards Compatible Changes:
+   - Changed the object_detector interface slightly.  In particular, it no
+     longer adds the adjust_threshold argument to the output scores.    
+   - The object detector testing functions now output mean average precision in
+     addition to precision and recall.
+   - Changed how dlib does serialization in a number of ways:
+      - The running_stats and scan_image_pyramid objects have had their
+        serialization format changed in a way that breaks backwards
+        compatibility.  This means serialized versions of these objects can't be
+        loaded by the new version of dlib.
+      - Changed the format dlib uses when it serializes floating point values.
+        Previously, we used an ASCII based format.  Dlib now uses a much more
+        efficient binary format. However, the deserialization routines have
+        been made backwards compatible with the previous format. So dlib can
+        still deserialize older data but older software won't be able to read
+        the new format.
+      - Changed the serialization formats for the matrix and array2d objects so
+        that either object can be deserialized into the other. This was done in a
+        way that is backwards compatible with previous versions of dlib. That is,
+        we can still load data serialized by previous dlib versions. However,
+        older versions of dlib can't load the new serialization format.
+
+Bug fixes:
+   - Fixed a bug in save_dng() that happened sometimes when saving images with
+     unsigned char pixels.
+   - The test_ranking_function() and cross_validate_ranking_trainer() routines
+     computed incorrect MAP scores when the learned function output a constant
+     value for all samples.  This has been fixed.
+
+Other:
+   - Gave load_image_dataset() the ability to skip images that don't have any
+     ground truth boxes.
+   - Changed average_precision() to use interpolated precision. So now it uses
+     the same metric as the one used by the Pascal VOC challenge.
+   - Upgraded the dng image format so it can natively store floating point
+     pixel types without any information loss.
+
+</old>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.1" date="Mar 25, 2013">
+New Features:
    - Added svd_fast(), a routine for computing a singular value decomposition of very 
      large matrices.
    - Added cca(), a routine for doing canonical correlation analysis on very large 
@@ -32,7 +225,7 @@ Non-Backwards Compatible Changes:
      in addition to just raw ranking accuracy. This changes their return types
      from double to matrix&lt;double,1,2&gt;.
    - Generalized segment_image() so it works on any pixel type or array of
-     vectors.  I also changed it's interface slightly.  In particular, I removed
+     vectors.  I also changed its interface slightly.  In particular, I removed
      the min_diff parameter and replaced it with an explicit min_size parameter.
    - Changed how the SURF descriptor is computed slightly to improve its
      accuracy.  The interface to the user has not been changed, however, the
@@ -59,6 +252,9 @@ Bug fixes:
      murmur_hash3() to avoid violation of the strict aliasing rule. In
      particular, the previous version didn't work correctly in gcc 4.7.2 when
      optimizations were enabled.
+   - Visual Studio 2012's iostreams library has a bug which caused the
+     iosockstream to crash on use.  This version of dlib has been changed to
+     avoid triggering this bug.
 
 Other:
    - Refactored the Platt scaling code a little. Now there is a function,
@@ -67,7 +263,7 @@ Other:
    - Optimized the oca and structural SVM solvers.  They are now a little bit faster 
      than in previous dlib releases.
 
-</current>
+</old>
 
 <!-- **************************************************************************************  -->
 
@@ -927,7 +1123,7 @@ Bug fixes:
   - Fixed a bug in scale_columns.  It said it didn't have any destructive aliasing 
     when in fact it destructively aliased its second argument.
   - Fixed a bug in the random number generator where setting the seed back to ""
-    didn't result in the object going back to it's initial state.
+    didn't result in the object going back to its initial state.
 
 Other:
   - Reorganized the matrix expression code.  It's now much simpler and the

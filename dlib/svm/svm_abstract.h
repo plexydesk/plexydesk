@@ -40,6 +40,8 @@ namespace dlib
                 - x.size() > 0
     !*/
 
+// ----------------------------------------------------------------------------------------
+
     template <
         typename T,
         typename U
@@ -62,6 +64,8 @@ namespace dlib
                     - x_labels(i) == -1 or +1
     !*/
 
+// ----------------------------------------------------------------------------------------
+
     template <
         typename sequence_type 
         >
@@ -78,6 +82,34 @@ namespace dlib
                       (i.e. The size of a label sequence need to match the size of 
                       its corresponding sample sequence)
     !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename sequence_type 
+        >
+    bool is_sequence_segmentation_problem (
+        const std::vector<sequence_type>& samples,
+        const std::vector<std::vector<std::pair<unsigned long,unsigned long> > >& segments
+    );
+    /*!
+        ensures
+            - Note that a sequence segmentation problem is a task where you are given a
+              sequence of objects (e.g. words in a sentence) and your task is to find
+              certain types of sub-sequences (e.g. proper names).
+            - returns true if all of the following are true and false otherwise:
+                - is_learning_problem(samples, segments) == true
+                - for all valid i and j:
+                    - We interpret segments[i][j] as defining a half open range starting
+                      with segments[i][j].first and ending just before segments[i][j].second.
+                    - segments[i][j].first < segments[i][j].second
+                    - segments[i][j].second <= samples[i].size()
+                      (i.e. Each segment must be contained within its associated sequence)
+                    - segments[i][j] does not overlap with any of the other ranges in
+                      segments[i].
+    !*/
+
+// ----------------------------------------------------------------------------------------
 
     template <
         typename lhs_type, 
@@ -105,6 +137,8 @@ namespace dlib
                       multiple elements of samples[i].first can't associate to the same element
                       in samples[i].second.
     !*/
+
+// ----------------------------------------------------------------------------------------
 
     template <
         typename lhs_type, 

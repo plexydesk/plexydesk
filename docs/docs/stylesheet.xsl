@@ -50,6 +50,10 @@
       <html>
          <head>
          <link rel="shortcut icon" href="dlib-icon.ico"/>
+         <xsl:if test="$is_chm != 'true'">
+            <meta property="og:image" content="http://dlib.net/dlib-logo-small.png"/>
+         </xsl:if>
+
 <!-- Verify with Google -->
 <meta name="verify-v1" content="{$google_verify_id}" />
 <meta name="google-site-verification" content="{$google_verify_id2}" />
@@ -61,20 +65,6 @@
 </title>
 
 
-<xsl:if test="$is_chm != 'true'">
-<!-- Piwik -->
-<script type="text/javascript">
-var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/dclib/" : "http://apps.sourceforge.net/piwik/dclib/");
-document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script><script type="text/javascript">
-piwik_action_name = '';
-piwik_idsite = 1;
-piwik_url = pkBaseURL + "piwik.php";
-piwik_log(piwik_action_name, piwik_idsite, piwik_url);
-</script>
-<object><noscript><p><img src="http://apps.sourceforge.net/piwik/dclib/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
-<!-- End Piwik Tag -->
-</xsl:if>
 
 
 
@@ -174,6 +164,8 @@ function BigToggle(node)
    ul.tree  { margin:0px; padding:0px; margin-left:5px; font-size:0.95em; }
    ul.tree  li ul { margin-left:10px; padding:0px; }
 
+   li#term { list-style: none; }
+
    div#component {
       background-color:white; 
       border: 2px solid rgb(102,102,102); 
@@ -222,6 +214,22 @@ function BigToggle(node)
       background-color:#c0c0c0; 
       border: double ; 
       margin: 0.5em;
+   }
+
+   div#name {
+      float: left;
+   }
+   div#line1 {
+      float:left;
+      width:100%;
+      background-color:#dfdfdf; 
+   }
+   div#line2 {
+      float:left;
+      width:100%;
+   }
+   div#inc {
+      float: right;
    }
 
 
@@ -335,6 +343,21 @@ function BigToggle(node)
                <xsl:apply-templates select="questions"/>
                   
             </div>
+
+            <xsl:if test="$is_chm != 'true'">
+               <!-- Piwik -->
+               <script type="text/javascript">
+               var pkBaseURL = (("https:" == document.location.protocol) ? "https://sourceforge.net/apps/piwik/dclib/" : "http://sourceforge.net/apps/piwik/dclib/");
+               document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+               </script><script type="text/javascript">
+               try {
+               var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+               piwikTracker.trackPageView();
+               piwikTracker.enableLinkTracking();
+               } catch( err ) {}
+               </script><noscript><p><img src="http://sourceforge.net/apps/piwik/dclib/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+               <!-- End Piwik Tag -->
+            </xsl:if>
          </body>
       </html>
    </xsl:template>
@@ -585,17 +608,55 @@ function BigToggle(node)
       </xsl:for-each>
    </xsl:template>      
 
-   <xsl:template match="examples">
-    <BR/>Example Programs: 
+   <!-- This template outputs a length 1 string if there is a python example program -->
+   <xsl:template name="has_python_example">
       <xsl:for-each select="example">
-         <xsl:choose>
-            <xsl:when test="position() = last()">
-               <a href="{.}"><xsl:value-of select="substring-before(.,'.html')"/></a>
-            </xsl:when>
-            <xsl:otherwise>
-               <a href="{.}"><xsl:value-of select="substring-before(.,'.html')"/></a>,
-            </xsl:otherwise>
-         </xsl:choose>              
+         <xsl:if test="substring-before(.,'.py.html') != ''">1</xsl:if>
+      </xsl:for-each>
+   </xsl:template>
+   <!-- This template outputs a length 1 string if there is a C++ example program -->
+   <xsl:template name="has_cpp_example">
+      <xsl:for-each select="example">
+         <xsl:if test="substring-before(.,'.cpp.html') != ''">1</xsl:if>
+      </xsl:for-each>
+   </xsl:template>
+
+   <xsl:template match="examples">
+      <xsl:variable name="has_python"><xsl:call-template name="has_python_example"/></xsl:variable>
+      <xsl:variable name="has_cpp"><xsl:call-template name="has_cpp_example"/></xsl:variable>
+      <xsl:variable name="numpy" select="string-length($has_python)"/>
+      <xsl:variable name="numcpp" select="string-length($has_cpp)"/>
+
+      <xsl:if test="$numcpp != 0"> <BR/>C++ Example Programs: </xsl:if>
+      <xsl:for-each select="example">
+         <xsl:variable name="fname" select="substring-before(.,'.cpp.html')"/>
+         <xsl:variable name="name" select="substring-before(.,'.html')"/>
+         <xsl:if test="$fname != ''">
+            <xsl:choose>
+               <xsl:when test="position() >= last()-$numpy">
+                  <a href="{.}"><xsl:value-of select="$name"/></a>
+               </xsl:when>
+               <xsl:otherwise>
+                  <a href="{.}"><xsl:value-of select="$name"/></a>,
+               </xsl:otherwise>
+            </xsl:choose>              
+         </xsl:if>
+      </xsl:for-each>
+
+      <xsl:if test="$numpy != 0"> <BR/>Python Example Programs: </xsl:if>
+      <xsl:for-each select="example">
+         <xsl:variable name="fname" select="substring-before(.,'.py.html')"/>
+         <xsl:variable name="name" select="substring-before(.,'.html')"/>
+         <xsl:if test="$fname != ''">
+            <xsl:choose>
+               <xsl:when test="position() >= last()-$numcpp">
+                  <a href="{.}"><xsl:value-of select="$name"/></a>
+               </xsl:when>
+               <xsl:otherwise>
+                  <a href="{.}"><xsl:value-of select="$name"/></a>,
+               </xsl:otherwise>
+            </xsl:choose>              
+         </xsl:if>
       </xsl:for-each>
    </xsl:template>
 
@@ -922,35 +983,47 @@ function BigToggle(node)
    <xsl:template name="term_list_go">
       <xsl:param name="num"/>
       <xsl:if test="$num &lt; 27">
-            <ul>
                <xsl:variable name="cur_letter" select="substring($ucletters, $num, 1)"/>
 
+               <div style="padding:1em"> 
+               <div style="display: inline-block;width:100% ">
                <a name="{$cur_letter}"/>
+               
                <h1><xsl:value-of select="$cur_letter"/></h1>
                <xsl:for-each select="term">
                <xsl:sort order="ascending" select="translate(@name,$lcletters, $ucletters)"/>
+               <xsl:variable name="alt" select="1+(position() mod 2)"/>
+               <xsl:variable name="line" select="concat('line',format-number($alt,'0'))"/>
                <xsl:if test="$cur_letter = substring(translate(@name,$lcletters, $ucletters),1,1)">
                <xsl:choose>
                   <xsl:when test="@link">
-                     <li><a href="{@link}"><xsl:value-of select="@name"/></a></li>
+                     <div id='{$line}'><div id='name'><a href="{@link}"><xsl:value-of select="@name"/></a></div>
+                     <div id='inc'><xsl:if test='@include'><b>#include &lt;<xsl:value-of select="@include"/>&gt;</b></xsl:if></div>
+                     </div>
                   </xsl:when>
                   <xsl:when test="@file">
-                     <li><a href="{@file}#{@name}"><xsl:value-of select="@name"/></a></li>
+                     <div id='{$line}'><div id='name'><a href="{@file}#{@name}"><xsl:value-of select="@name"/></a></div>
+                     <div id='inc'><xsl:if test='@include'><b>#include &lt;<xsl:value-of select="@include"/>&gt;</b></xsl:if></div>
+                     </div>
                   </xsl:when>
                   <xsl:otherwise>
-                     <li> <xsl:value-of select="@name"/>
-                        <ul>
+                      <xsl:value-of select="@name"/>
+                      <div style="padding-left: 50px;">
                         <xsl:for-each select="term">
                         <xsl:sort order="ascending" select="translate(@name,$lcletters, $ucletters)"/> 
-                           <li><a href="{@link}"><xsl:value-of select="@name"/></a></li>
+                        <xsl:variable name="alt2" select="1+(($alt+position()) mod 2)"/>
+                        <xsl:variable name="line2" select="concat('line',format-number($alt2,'0'))"/>
+                           <div id='{$line2}'><div id='name'><a href="{@link}"><xsl:value-of select="@name"/></a></div>
+                           <div id='inc'><xsl:if test='@include'><b>#include &lt;<xsl:value-of select="@include"/>&gt;</b></xsl:if></div>
+                           </div>
                         </xsl:for-each>
-                        </ul>
-                     </li>
+                      </div>
                   </xsl:otherwise>
                </xsl:choose>
                </xsl:if>
                </xsl:for-each>
-            </ul>
+               </div>
+               </div>
 
       <xsl:call-template name="term_list_go" >
          <xsl:with-param name="num" select="$num + 1"/>
@@ -1051,7 +1124,7 @@ function BigToggle(node)
 
    <!-- ************************************************************************* -->
    <!-- ************************************************************************* -->
-   <!-- *******    Subversion stylesheet stfuff   ******************** -->
+   <!-- *******    Subversion stylesheet stuff   ******************** -->
    <!-- ************************************************************************* -->
    <!-- ************************************************************************* -->
 

@@ -79,6 +79,7 @@
          <item>convert_unordered_to_ordered</item>
          <item>order_by_index</item>
          <item>order_by_distance</item>
+         <item>order_by_descending_distance</item>
          <item>order_by_distance_and_index</item>
          <item>contains_duplicate_pairs</item>
          <item>max_index_plus_one</item>
@@ -118,6 +119,20 @@
             This function provides a total ordering of <a href="#sample_pair">sample_pair</a> 
             or <a href="#ordered_sample_pair">ordered_sample_pair</a> objects that causes
             pairs with smallest distance to be the first in a sorted list.  This function
+            can be used with std::sort().
+         </description>
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>order_by_descending_distance</name>
+         <file>dlib/graph_utils.h</file>
+         <spec_file link="true">dlib/graph_utils/sample_pair_abstract.h</spec_file>
+         <description>
+            This function provides a total ordering of <a href="#sample_pair">sample_pair</a> 
+            or <a href="#ordered_sample_pair">ordered_sample_pair</a> objects that causes
+            pairs with largest distance to be the first in a sorted list.  This function
             can be used with std::sort().
          </description>
       </component>
@@ -223,7 +238,7 @@
          <spec_file link="true">dlib/graph_utils/edge_list_graphs_abstract.h</spec_file>
          <description>
             This is a function which finds all the k nearest neighbors of a set of points and outputs
-            the result as a vector of <a href="#sample_pair">sample_pair</a> objects.  It takes O(n^2) where
+            the result as a vector of <a href="#sample_pair">sample_pair</a> objects.  It takes O(n^2) time where
             n is the number of data samples.  A faster approximate version is provided by 
             <a href="#find_approximate_k_nearest_neighbors">find_approximate_k_nearest_neighbors</a> 
             and <a href="#find_k_nearest_neighbors_lsh">find_k_nearest_neighbors_lsh</a>.

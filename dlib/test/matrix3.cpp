@@ -634,7 +634,6 @@ namespace
             - runs tests on the matrix stuff compliance with the specs
     !*/
     {        
-        typedef memory_manager_stateless<char>::kernel_2_2a MM;
         print_spinner();
 
 
@@ -998,6 +997,21 @@ namespace
             DLIB_TEST(sum_rows(a) == c);
 
         }
+
+        {
+            matrix<int> m(3,4), s(3,4);
+            m = -2, 1, 5, -5,
+                5, 5, 5, 5,
+                9, 0, -4, -2;
+
+            s = -1, 1, 1, -1,
+                 1, 1, 1, 1, 
+                 1, 1, -1, -1;
+
+            DLIB_TEST(sign(m) == s);
+            DLIB_TEST(sign(matrix_cast<double>(m)) == matrix_cast<double>(s));
+        }
+
     }
 
 
@@ -1044,16 +1058,16 @@ namespace
         {
             istringstream sin(" 1 2\n3");
             matrix<double> m;
-            DLIB_TEST(sin);
+            DLIB_TEST(sin.good());
             sin >> m;
-            DLIB_TEST(!sin);
+            DLIB_TEST(!sin.good());
         }
         {
             istringstream sin("");
             matrix<double> m;
-            DLIB_TEST(sin);
+            DLIB_TEST(sin.good());
             sin >> m;
-            DLIB_TEST(!sin);
+            DLIB_TEST(!sin.good());
         }
     }
 

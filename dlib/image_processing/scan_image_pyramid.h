@@ -51,6 +51,9 @@ namespace dlib
             const scan_image_pyramid& item
         );
 
+        const Feature_extractor_type& get_feature_extractor (
+        ) const { return feats_config; }
+
         void add_detection_template (
             const rectangle& object_box,
             const std::vector<rectangle>& stationary_feature_extraction_regions,
@@ -176,7 +179,8 @@ namespace dlib
             rectangle& mapped_rect,
             detection_template& best_template,
             rectangle& object_box,
-            unsigned long& best_level
+            unsigned long& best_level,
+            unsigned long& detection_template_idx
         ) const;
 
         double get_match_score (
@@ -233,7 +237,7 @@ namespace dlib
         std::ostream& out
     )
     {
-        int version = 2;
+        int version = 3;
         serialize(version, out);
         serialize(item.feats_config, out);
         serialize(item.feats, out);
@@ -242,6 +246,7 @@ namespace dlib
         serialize(item.max_pyramid_levels, out);
         serialize(item.min_pyramid_layer_width, out);
         serialize(item.min_pyramid_layer_height, out);
+        serialize(item.get_num_dimensions(), out);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -254,7 +259,7 @@ namespace dlib
     {
         int version = 0;
         deserialize(version, in);
-        if (version != 2)
+        if (version != 3)
             throw serialization_error("Unsupported version found when deserializing a scan_image_pyramid object.");
 
         deserialize(item.feats_config, in);
@@ -264,6 +269,15 @@ namespace dlib
         deserialize(item.max_pyramid_levels, in);
         deserialize(item.min_pyramid_layer_width, in);
         deserialize(item.min_pyramid_layer_height, in);
+
+        // When developing some feature extractor, it's easy to accidentally change its
+        // number of dimensions and then try to deserialize data from an older version of
+        // your extractor into the current code.  This check is here to catch that kind of
+        // user error.
+        long dims;
+        deserialize(dims, in);
+        if (item.get_num_dimensions() != dims)
+            throw serialization_error("Number of dimensions in serialized scan_image_pyramid doesn't match the expected number.");
     }
 
 // ----------------------------------------------------------------------------------------
@@ -580,7 +594,7 @@ namespace dlib
             << "\n\t this: " << this
             );
 
-        return feats_config.get_num_dimensions()*get_num_components_per_detection_template();
+        return feats_config.get_num_dimensions()*get_num_components_per_detection_template() + get_num_detection_templates();
     }
 
 // ----------------------------------------------------------------------------------------
@@ -661,7 +675,7 @@ namespace dlib
             for (unsigned long i = 0; i < saliency_images.size(); ++i)
             {
                 saliency_images[i].set_size(feats[l].nr(), feats[l].nc());
-                const unsigned long offset = feats_config.get_num_dimensions()*i;
+                const unsigned long offset = get_num_detection_templates() + feats_config.get_num_dimensions()*i;
 
                 // build saliency images for pyramid level l 
                 for (long r = 0; r < feats[l].nr(); ++r)
@@ -702,14 +716,21 @@ namespace dlib
                 rectangle scaled_object_box = feats[l].image_to_feat_space(det_templates[i].object_box);
                 scaled_object_box = centered_rect(point(0,0),scaled_object_box.width(), scaled_object_box.height());
 
+                // Each detection template gets its own special threshold in addition to
+                // the global detection threshold.  This allows us to model the fact that
+                // some detection templates might be more prone to false alarming or since
+                // their size is different naturally require a larger or smaller threshold
+                // (since they integrate over a larger or smaller region of the image).
+                const double template_specific_thresh = w(i);
+
                 scan_image_movable_parts(point_dets, saliency_images, scaled_object_box,
                                          stationary_region_rects, movable_region_rects,
-                                         thresh, max_dets_per_template); 
+                                         thresh+template_specific_thresh, max_dets_per_template); 
 
                 // convert all the point detections into rectangles at the original image scale and coordinate system
                 for (unsigned long j = 0; j < point_dets.size(); ++j)
                 {
-                    const double score = point_dets[j].first;
+                    const double score = point_dets[j].first-template_specific_thresh;
                     point p = point_dets[j].second;
                     p = feats[l].feat_to_image_space(p);
                     rectangle rect = translate_rect(det_templates[i].object_box, p);
@@ -744,8 +765,8 @@ namespace dlib
 
         rectangle mapped_rect, object_box;
         detection_template best_template;
-        unsigned long best_level;
-        get_mapped_rect_and_metadata(max_pyramid_levels, rect, mapped_rect, best_template, object_box, best_level);
+        unsigned long best_level, junk;
+        get_mapped_rect_and_metadata(max_pyramid_levels, rect, mapped_rect, best_template, object_box, best_level, junk);
         return mapped_rect;
     }
 
@@ -762,7 +783,8 @@ namespace dlib
         rectangle& mapped_rect,
         detection_template& best_template,
         rectangle& object_box,
-        unsigned long& best_level
+        unsigned long& best_level,
+        unsigned long& detection_template_idx
     ) const
     {
         pyramid_type pyr;
@@ -772,33 +794,23 @@ namespace dlib
         double best_match_score = -1;
 
 
-        // for all the levels
+        // Find the best matching detection template for rect
         for (unsigned long l = 0; l < number_pyramid_levels; ++l)
         {
-            // Run the center point through the feature/image space transformation just to make
-            // sure we exactly replicate the procedure for shifting an object_box used elsewhere 
-            // in this file.
             const rectangle temp = pyr.rect_down(rect,l);
             if (temp.area() <= 1) 
                 break;
-            const point origin = feats_config.feat_to_image_space(feats_config.image_to_feat_space(center(temp)));
 
+            // At this pyramid level, what matches best?
             for (unsigned long t = 0; t < det_templates.size(); ++t)
             {
-                // Map this detection template into the normal image space and see how
-                // close it is to the rect we are looking for.  We do the translation here
-                // because the rect_up() routine takes place using integer arithmetic and
-                // could potentially give slightly different results with and without the
-                // translation.
-                rectangle temp2 = translate_rect(det_templates[t].object_box, origin);
-                temp2 = pyr.rect_up(temp2, l);
-
-                const double match_score = get_match_score(temp2, rect);
+                const double match_score = get_match_score(det_templates[t].object_box, temp);
                 if (match_score > best_match_score)
                 {
                     best_match_score = match_score;
                     best_level = l;
                     best_template = det_templates[t];
+                    detection_template_idx = t;
                 }
             }
         }
@@ -849,9 +861,9 @@ namespace dlib
 
         rectangle mapped_rect;
         detection_template best_template;
-        unsigned long best_level;
+        unsigned long best_level, junk;
         rectangle object_box;
-        get_mapped_rect_and_metadata(feats.size(), rect, mapped_rect, best_template, object_box, best_level);
+        get_mapped_rect_and_metadata(feats.size(), rect, mapped_rect, best_template, object_box, best_level, junk);
 
         Pyramid_type pyr;
 
@@ -873,7 +885,7 @@ namespace dlib
                                              part_rect.height()/2).intersect(get_rect(feats[best_level]));
 
             saliency_image.set_size(area.height(), area.width());
-            const unsigned long offset = feats_config.get_num_dimensions()*(i+get_num_stationary_components_per_detection_template());
+            const unsigned long offset = get_num_detection_templates() + feats_config.get_num_dimensions()*(i+get_num_stationary_components_per_detection_template());
 
             // build saliency image for pyramid level best_level 
             for (long r = area.top(); r <= area.bottom(); ++r)
@@ -978,9 +990,11 @@ namespace dlib
 
         rectangle mapped_rect;
         detection_template best_template;
-        unsigned long best_level;
+        unsigned long best_level, detection_template_idx;
         rectangle object_box;
-        get_mapped_rect_and_metadata (feats.size(), obj.get_rect(), mapped_rect, best_template, object_box, best_level);
+        get_mapped_rect_and_metadata(feats.size(), obj.get_rect(), mapped_rect, best_template, object_box, best_level, detection_template_idx);
+
+        psi(detection_template_idx) -= 1;
 
         Pyramid_type pyr;
 
@@ -1010,7 +1024,7 @@ namespace dlib
         {
             const rectangle rect = rects[j].intersect(get_rect(feats[best_level]));
             const unsigned long template_region_id = j;
-            const unsigned long offset = feats_config.get_num_dimensions()*template_region_id;
+            const unsigned long offset = get_num_detection_templates() + feats_config.get_num_dimensions()*template_region_id;
             for (long r = rect.top(); r <= rect.bottom(); ++r)
             {
                 for (long c = rect.left(); c <= rect.right(); ++c)

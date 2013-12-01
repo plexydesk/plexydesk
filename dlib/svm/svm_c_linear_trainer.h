@@ -48,8 +48,9 @@ namespace dlib
         ) :
             samples(samples_),
             labels(labels_),
-            Cpos(C_pos),
-            Cneg(C_neg),
+            C(std::min(C_pos,C_neg)),
+            Cpos(C_pos/C),
+            Cneg(C_neg/C),
             be_verbose(be_verbose_),
             eps(eps_),
             max_iterations(max_iter)
@@ -61,7 +62,7 @@ namespace dlib
         virtual scalar_type get_c (
         ) const 
         {
-            return 1;
+            return C;
         }
 
         virtual long get_num_dimensions (
@@ -292,6 +293,7 @@ namespace dlib
 
         const in_sample_vector_type& samples;
         const in_scalar_vector_type& labels;
+        const scalar_type C;
         const scalar_type Cpos;
         const scalar_type Cneg;
 
@@ -556,15 +558,25 @@ namespace dlib
         ) const
         {
             // make sure requires clause is not broken
-            DLIB_ASSERT(is_binary_classification_problem(x,y) == true,
+            DLIB_ASSERT(is_learning_problem(x,y) == true,
                 "\t decision_function svm_c_linear_trainer::train(x,y)"
                 << "\n\t invalid inputs were given to this function"
                 << "\n\t x.nr(): " << x.nr() 
                 << "\n\t y.nr(): " << y.nr() 
                 << "\n\t x.nc(): " << x.nc() 
                 << "\n\t y.nc(): " << y.nc() 
-                << "\n\t is_binary_classification_problem(x,y): " << is_binary_classification_problem(x,y)
+                << "\n\t is_learning_problem(x,y): " << is_learning_problem(x,y)
                 );
+#ifdef ENABLE_ASSERTS
+            for (long i = 0; i < x.size(); ++i)
+            {
+                DLIB_ASSERT(y(i) == +1 || y(i) == -1,
+                    "\t decision_function svm_c_linear_trainer::train(x,y)"
+                    << "\n\t invalid inputs were given to this function"
+                    << "\n\t y("<<i<<"): " << y(i)
+                );
+            }
+#endif
 
 
             typedef matrix<scalar_type,0,1> w_type;

@@ -27,10 +27,12 @@
       <section>
          <name>General Purpose Optimizers</name>
          <item>find_min</item> 
+         <item>find_min_box_constrained</item> 
          <item>find_min_single_variable</item> 
          <item>find_min_using_approximate_derivatives</item> 
          <item>find_min_bobyqa</item> 
          <item>find_max</item> 
+         <item>find_max_box_constrained</item> 
          <item>find_max_single_variable</item> 
          <item>find_max_using_approximate_derivatives</item> 
          <item>find_max_bobyqa</item> 
@@ -71,10 +73,12 @@
          <name>Helper Routines</name>
          <item>derivative</item> 
          <item>negate_function</item> 
+         <item>clamp_function</item> 
          <item>make_line_search_function</item> 
          <item>poly_min_extrap</item> 
          <item>lagrange_poly_min_extrap</item> 
          <item>line_search</item> 
+         <item>backtracking_line_search</item> 
          <item>graph_cut_score</item> 
          <item>potts_model_score</item> 
          <item>parse_tree_to_string</item> 
@@ -121,6 +125,21 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>clamp_function</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/optimization_abstract.h</spec_file>
+         <description>
+            This is a function that takes another function, f(x), as input and 
+            returns a new function object, g(x), such that  
+            <tt>g(x) == f(clamp(x,x_lower,x_upper))</tt> where x_lower and x_upper 
+            are vectors of box constraints which are applied to x.
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>make_line_search_function</name>
          <file>dlib/optimization.h</file>
          <spec_file link="true">dlib/optimization/optimization_line_search_abstract.h</spec_file>
@@ -128,7 +147,8 @@
             This is a function that takes another function f(x) as input and returns
             a function object l(z) = f(start + z*direction).   It is useful for
             turning multi-variable functions into single-variable functions for
-            use with the <a href="#line_search">line_search</a> routine.
+            use with the <a href="#line_search">line_search</a> or 
+            <a href="#backtracking_line_search">backtracking_line_search</a> routines.
          </description>
                                  
       </component>
@@ -141,8 +161,8 @@
          <file>dlib/optimization.h</file>
          <spec_file link="true">dlib/optimization/optimization_line_search_abstract.h</spec_file>
          <description>
-            This function finds the 3rd degree polynomial that interpolates a 
-            set of points and returns you the minimum of that polynomial.
+            This function finds the 2nd or 3rd degree polynomial that interpolates a 
+            set of points and returns the minimum of that polynomial.
          </description>
                                  
       </component>
@@ -155,7 +175,7 @@
          <spec_file link="true">dlib/optimization/optimization_line_search_abstract.h</spec_file>
          <description>
             This function finds the second order polynomial that interpolates a 
-            set of points and returns you the minimum of that polynomial.
+            set of points and returns the minimum of that polynomial.
          </description>
                                  
       </component>
@@ -168,11 +188,27 @@
          <spec_file link="true">dlib/optimization/optimization_line_search_abstract.h</spec_file>
          <description>
             Performs a gradient based line search on a given function and returns the input
-            that makes the function significantly smaller.
+            that makes the function significantly smaller.  This implements the classic
+            line search method using the strong Wolfe conditions with a bracketing and then
+            sectioning phase, both using polynomial interpolation. 
          </description>
                                  
       </component>
 
+
+   <!-- ************************************************************************* -->
+
+      <component>
+         <name>backtracking_line_search</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/optimization_line_search_abstract.h</spec_file>
+         <description>
+            Performs a line search on a given function and returns the input
+            that makes the function significantly smaller.  This implementation uses a
+            basic Armijo backtracking search with polynomial interpolation.
+         </description>
+                                 
+      </component>
 
    <!-- ************************************************************************* -->
 
@@ -328,6 +364,23 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>find_min_box_constrained</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/optimization_abstract.h</spec_file>
+         <description>
+             Performs a box constrained minimization of a nonlinear function using 
+             some search strategy (e.g. <a href="#bfgs_search_strategy">bfgs_search_strategy</a>).
+             This function uses a backtracking line search along with a gradient projection
+             step to handle the box constraints.
+         </description>
+         <examples>
+            <example>optimization_ex.cpp.html</example>
+         </examples>
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>find_min_single_variable</name>
          <file>dlib/optimization.h</file>
          <spec_file link="true">dlib/optimization/optimization_line_search_abstract.h</spec_file>
@@ -470,7 +523,8 @@ subject to the following constraint:
          <file>dlib/optimization.h</file>
          <spec_file link="true">dlib/optimization/max_cost_assignment_abstract.h</spec_file>
          <description>
-            This function is an implementation of the Hungarian algorithm (also know as the Kuhn-Munkres algorithm).
+            This function is an implementation of the Hungarian algorithm (also know as the Kuhn-Munkres algorithm) which
+            runs in O(N^3) time.
             It solves the optimal assignment problem. For example, suppose you have an equal number of workers
             and jobs and you need to decide which workers to assign to which jobs. Some workers are better at 
             certain jobs than others. So you would like to find out how to assign them all to jobs such that 
@@ -481,6 +535,9 @@ subject to the following constraint:
             </p>
 
          </description>
+         <examples>
+            <example>max_cost_assignment.py.html</example>
+         </examples>
                                  
       </component>
 
@@ -518,10 +575,14 @@ However, for graphs with cycles, the solution may be approximate.
 <br/>
 <br/>
             This function is an implementation of the NMPLP algorithm introduced in the 
-            following paper:
+            following papers:
                 <blockquote>
-                Fixing Max-Product: Convergent Message Passing Algorithms for MAP LP-Relaxations 
+                Fixing Max-Product: Convergent Message Passing Algorithms for MAP LP-Relaxations (2008)
                 by Amir Globerson and Tommi Jaakkola
+                </blockquote>
+                <blockquote>
+                Introduction to dual decomposition for inference (2011)
+                by David Sontag, Amir Globerson, and Tommi Jaakkola 
                 </blockquote>
 
          </description>
@@ -853,6 +914,21 @@ However, for graphs with cycles, the solution may be approximate.
          <description>
              Performs an unconstrained maximization of a nonlinear function using 
              some search strategy (e.g. <a href="#bfgs_search_strategy">bfgs_search_strategy</a>).
+         </description>
+                                 
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>find_max_box_constrained</name>
+         <file>dlib/optimization.h</file>
+         <spec_file link="true">dlib/optimization/optimization_abstract.h</spec_file>
+         <description>
+             Performs a box constrained maximization of a nonlinear function using 
+             some search strategy (e.g. <a href="#bfgs_search_strategy">bfgs_search_strategy</a>).
+             This function uses a backtracking line search along with a gradient projection
+             step to handle the box constraints.
          </description>
                                  
       </component>

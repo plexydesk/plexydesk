@@ -5689,7 +5689,8 @@ namespace dlib
         selected_rect(0),
         default_rect_color(255,0,0,255),
         parts_menu(w),
-        part_width(15) // width part circles are drawn on the screen
+        part_width(15), // width part circles are drawn on the screen
+        overlay_editing_enabled(true)
     { 
         enable_mouse_drag();
 
@@ -5977,6 +5978,20 @@ namespace dlib
                 mfont->draw_string(c, r, itr->first, overlay_rects[i].color, 0, 
                                    std::string::npos, area);
             }
+
+            if (overlay_rects[i].crossed_out)
+            {
+                if (rect_is_selected && selected_rect == i)
+                {
+                    draw_line(c, orect.tl_corner(), orect.br_corner(),invert_pixel(overlay_rects[i].color), area);
+                    draw_line(c, orect.bl_corner(), orect.tr_corner(),invert_pixel(overlay_rects[i].color), area);
+                }
+                else
+                {
+                    draw_line(c, orect.tl_corner(), orect.br_corner(),overlay_rects[i].color, area);
+                    draw_line(c, orect.bl_corner(), orect.tr_corner(),overlay_rects[i].color, area);
+                }
+            }
         }
 
         // now draw all the overlay lines 
@@ -6033,6 +6048,15 @@ namespace dlib
                 overlay_rects.erase(overlay_rects.begin() + selected_rect);
             else
                 overlay_rects[selected_rect].parts.erase(selected_part_name);
+            parent.invalidate_rectangle(rect);
+
+            if (event_handler.is_set())
+                event_handler();
+        }
+
+        if (is_printable && !hidden && enabled && rect_is_selected && (key == 'i'))
+        {
+            overlay_rects[selected_rect].crossed_out = !overlay_rects[selected_rect].crossed_out;
             parent.invalidate_rectangle(rect);
 
             if (event_handler.is_set())
@@ -6096,6 +6120,9 @@ namespace dlib
             if (dlib::get_rect(img).contains(p))
                 image_clicked_handler(p, is_double_click, btn);
         }
+
+        if (!overlay_editing_enabled)
+            return;
 
         if (btn == base_window::RIGHT && rect_is_selected)
         {
@@ -6449,10 +6476,12 @@ namespace dlib
         window_has_closed(false),
         have_last_click(false),
         mouse_btn(0),
-        clicked_signaler(this->wm)
+        clicked_signaler(this->wm),
+        tie_input_events(false)
     {
 
         gui_img.set_image_clicked_handler(*this, &image_window::on_image_clicked);
+        gui_img.disable_overlay_editing();
         // show this window on the screen
         show();
     } 
@@ -6483,13 +6512,15 @@ namespace dlib
 // ----------------------------------------------------------------------------------------
 
     bool image_window::
-    get_next_double_click (
-        point& p,
-        unsigned long& mouse_button 
+    get_next_keypress (
+        unsigned long& key,
+        bool& is_printable,
+        unsigned long& state
     ) 
     {
         auto_mutex lock(wm);
-        while (have_last_click == false && !window_has_closed)
+        while (have_last_keypress == false && !window_has_closed &&
+            (have_last_click == false || !tie_input_events))
         {
             clicked_signaler.wait();
         }
@@ -6497,12 +6528,105 @@ namespace dlib
         if (window_has_closed)
             return false;
 
-        // Mark that we are taking the point click so the next call to get_next_click()
-        // will have to wait for another click.
-        have_last_click = false;
-        mouse_button = mouse_btn;
-        p = last_clicked_point;
-        return true;
+        if (have_last_keypress)
+        {
+            // Mark that we are taking the key click so the next call to get_next_keypress()
+            // will have to wait for another click.
+            have_last_keypress = false;
+            key = next_key;
+            is_printable = next_is_printable;
+            state = next_state;
+            return true;
+        }
+        else
+        {
+            key = 0;
+            is_printable = true;
+            return false;
+        }
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    void image_window::
+    on_keydown (
+        unsigned long key,
+        bool is_printable,
+        unsigned long state
+    )
+    {
+        dlib::drawable_window::on_keydown(key,is_printable,state);
+
+        have_last_keypress = true;
+        next_key = key;
+        next_is_printable = is_printable;
+        next_state = state;
+        clicked_signaler.signal();
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    void image_window::
+    tie_events (
+    )
+    {
+        auto_mutex lock(wm);
+        tie_input_events = true;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    void image_window::
+    untie_events (
+    )
+    {
+        auto_mutex lock(wm);
+        tie_input_events = false;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    bool image_window::
+    events_tied (
+    ) const
+    {
+        auto_mutex lock(wm);
+        return tie_input_events;
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    bool image_window::
+    get_next_double_click (
+        point& p,
+        unsigned long& mouse_button 
+    ) 
+    {
+        p = point(-1,-1);
+
+        auto_mutex lock(wm);
+        while (have_last_click == false && !window_has_closed &&
+            (have_last_keypress==false || !tie_input_events))
+        {
+            clicked_signaler.wait();
+        }
+
+        if (window_has_closed)
+            return false;
+
+        if (have_last_click)
+        {
+            // Mark that we are taking the point click so the next call to
+            // get_next_double_click() will have to wait for another click.
+            have_last_click = false;
+            mouse_button = mouse_btn;
+            p = last_clicked_point;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 // ----------------------------------------------------------------------------------------

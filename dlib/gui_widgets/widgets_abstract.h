@@ -2324,6 +2324,7 @@ namespace dlib
                 - get_default_overlay_rect_label() == ""
                 - get_default_overlay_rect_color() == rgb_alpha_pixel(255,0,0,255) (i.e. RED)
                 - This object does not have any user labelable parts defined.
+                - overlay_editing_is_enabled() == true
 
             WHAT THIS OBJECT REPRESENTS
                 This object represents an image inside a scrollable region.  
@@ -2393,12 +2394,16 @@ namespace dlib
                     Moreover, the rectangle can have sub-parts. Each part is listed
                     in the parts member variable.  This variable maps the name of the
                     part to its position.
+
+                    Rectangles with crossed_out == true will be drawn with an X through
+                    them.
             !*/
 
             rectangle rect;
             rgb_alpha_pixel color;
             std::string label;
             std::map<std::string,point> parts;
+            bool crossed_out;
 
             overlay_rect(
             ); 
@@ -2407,6 +2412,7 @@ namespace dlib
                     - #color == rgb_alpha_pixel(0,0,0,0) 
                     - #rect == rectangle()
                     - #label.size() == 0
+                    - #crossed_out == false
             !*/
 
             template <typename pixel_type>
@@ -2419,6 +2425,7 @@ namespace dlib
                     - #rect == r
                     - performs assign_pixel(color, p) 
                     - #label.size() == 0
+                    - #crossed_out == false
             !*/
 
             template <typename pixel_type>
@@ -2432,6 +2439,7 @@ namespace dlib
                     - #rect == r
                     - performs assign_pixel(color, p)
                     - #label == l
+                    - #crossed_out == false
             !*/
 
             template <typename pixel_type>
@@ -2447,6 +2455,7 @@ namespace dlib
                     - performs assign_pixel(color, p)
                     - #label == l
                     - #parts == parts_
+                    - #crossed_out == false
             !*/
 
         };
@@ -2680,6 +2689,29 @@ namespace dlib
                     - R.tl_corner() == (0,0)
         !*/
 
+        void enable_overlay_editing (
+        ); 
+        /*!
+            ensures
+                - #overlay_editing_is_enabled() == true
+        !*/
+
+        void disable_overlay_editing (
+        );
+        /*!
+            ensures
+                - #overlay_editing_is_enabled() == false 
+        !*/
+        
+        bool overlay_editing_is_enabled (
+        ) const; 
+        /*!
+            ensures
+                - if this function returns true then it is possible for the user to add or
+                  remove overlay objects (e.g. rectangles) using the mouse and keyboard.
+                  If it returns false then the overlay is not user editable.
+        !*/
+
         template <
             typename T
             >
@@ -2802,6 +2834,7 @@ namespace dlib
         /*!
             INITIAL VALUE
                 - initially, this object is visible on the screen
+                - events_tied() == false
 
             WHAT THIS OBJECT REPRESENTS
                 This is a simple window that is just a container for an image_display.  
@@ -3019,15 +3052,50 @@ namespace dlib
                 - removes all overlays from this object.  
         !*/
 
+        void tie_events (
+        );
+        /*!
+            ensures
+                - #events_tied() == true
+        !*/
+
+        void untie_events (
+        );
+        /*!
+            ensures
+                - #events_tied() == false 
+        !*/
+
+        bool events_tied (
+        ) const;
+        /*!
+            ensures
+                - returns true if and only if the get_next_double_click() and
+                  get_next_keypress() events are tied together.  If they are tied it means
+                  that you can use a loop of the following form to listen for both events
+                  simultaneously:
+                    while (mywindow.get_next_double_click(p) || mywindow.get_next_keypress(key,printable))
+                    {
+                        if (p.x() < 0)
+                            // Do something with the keyboard event
+                        else
+                            // Do something with the mouse event
+                    }
+        !*/
+
         bool get_next_double_click (
             point& p
         ); 
         /*!
             ensures
                 - This function blocks until the user double clicks on the image or the
-                  window is closed by the user.
+                  window is closed by the user.  It will also unblock for a keyboard key
+                  press if events_tied() == true.
                 - if (this function returns true) then
+                    - This means the user double clicked the mouse.
                     - #p == the next image pixel the user clicked.  
+                - else
+                    - #p == point(-1,1)
         !*/
 
         bool get_next_double_click (
@@ -3037,12 +3105,48 @@ namespace dlib
         /*!
             ensures
                 - This function blocks until the user double clicks on the image or the
-                  window is closed by the user.
+                  window is closed by the user.  It will also unblock for a keyboard key
+                  press if events_tied() == true.
                 - if (this function returns true) then
+                    - This means the user double clicked the mouse.
                     - #p == the next image pixel the user clicked.  
                     - #mouse_button == the mouse button which was used to double click.
                       This will be either dlib::base_window::LEFT,
                       dlib::base_window::MIDDLE, or dlib::base_window::RIGHT
+                - else
+                    - #p == point(-1,1)
+                      (Note that this point is outside any possible image)
+        !*/
+
+        bool get_next_keypress (
+            unsigned long& key,
+            bool& is_printable,
+            unsigned long& state
+        );
+        /*!
+            ensures
+                - This function blocks until the user presses a keyboard key or the
+                  window is closed by the user.  It will also unblock for a mouse double
+                  click if events_tied() == true.
+                - if (this function returns true) then
+                    - This means the user pressed a keyboard key.
+                    - The keyboard button press is recorded into #key, #is_printable, and
+                      #state.  In particular, these variables are populated with the three
+                      identically named arguments to the base_window::on_keydown(key,is_printable,state) 
+                      event.
+        !*/
+
+        bool get_next_keypress (
+            unsigned long& key,
+            bool& is_printable
+        );
+        /*!
+            ensures
+                - This function blocks until the user presses a keyboard key or the
+                  window is closed by the user.  It will also unblock for a mouse double
+                  click if events_tied() == true.
+                - This function is the equivalent to calling get_next_keypress(key,is_printable,temp) 
+                  and then discarding temp.
         !*/
 
     private:

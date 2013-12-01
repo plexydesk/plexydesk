@@ -48,20 +48,19 @@
             </ul>
             </li>
 
-            <li><b>Portable Code</b>
+            <li><b>High Quality Portable Code</b>
                <ul>
+                  <li>Good unit test coverage.  The ratio of unit test lines of code to library lines of
+                     code is about 1 to 4.</li>
+                  <li>The library is tested regularly on MS Windows, Linux, and Mac OS X systems.  However, it should 
+                     work on any POSIX system and has been used on Solaris, HPUX, and the BSDs.</li>
+                  <li>No other packages are required to use the library.  Only APIs that are
+                     provided by an out of the box OS are needed. </li> 
                   <li>There is no installation or configure step needed before you can use the library.  See the
                      <a href="compile.html">How to compile</a> page for details.</li>
                   <li>All operating system specific code is isolated inside the OS abstraction layers which are 
                      kept as small as possible.   The rest of the library is either layered on top of the OS 
                      abstraction layers or is pure ISO standard C++.  </li>
-                  <li>Big/little endian agnostic</li>
-                  <li>No other packages are required to use the library.  Only APIs that are
-                     provided by an out of the box OS are needed. </li> 
-                  <li>Good unit test coverage.  The ratio of unit test lines of code to library lines of
-                     code is about 1 to 5.</li>
-                  <li>The library is tested regularly on MS Windows, Linux, and Mac OS X systems.  However, it should 
-                     work on any POSIX system and has been used on Solaris, HPUX, and the BSDs.</li>
                </ul>
             </li>
             <li><b>Threading</b>
@@ -69,7 +68,6 @@
                   <li>The library provides a portable and simple <a href="api.html#threads">threading API</a></li>
                   <li>A message passing <a href="other.html#pipe">pipe</a> for inter-thread and <a href="network.html#bridge">inter-process</a> communication</li>
                   <li>A <a href="other.html#timer">timer</a> object capable of generating events that are regularly spaced in time</li>
-                  <li><a href="api.html#thread_specific_data">Thread specific data</a></li>
                   <li><a href="api.html#threaded_object">Threaded objects</a></li>
                   <li><a href="api.html#thread_function">Threaded functions</a></li>
                   <li><a href="api.html#parallel_for">Parallel for loops</a></li>
@@ -150,6 +148,7 @@
                   <li>A large-scale <a href="ml.html#svm_rank_trainer">SVM-Rank</a> implementation</li>
                   <li>An online <a href="ml.html#krls">kernel RLS regression</a> algorithm</li>
                   <li>An online <a href="ml.html#svm_pegasos">SVM classification</a> algorithm</li>
+                  <li><a href="ml.html#vector_normalizer_frobmetric">Semidefinite Metric Learning</a></li>
                   <li>An online kernelized <a href="ml.html#kcentroid">centroid estimator</a>/novelty detector and
                      offline support vector <a href="ml.html#svm_one_class_trainer">one-class classification</a></li>
                   <li>Clustering algorithms: <a href="ml.html#find_clusters_using_kmeans">linear</a> 
@@ -180,8 +179,9 @@
                   <a href="imaging.html#save_bmp">writing</a> common image formats.  </li>
                   <li>Automatic color space conversion between various pixel types</li>  
                   <li>Common image operations such as edge finding and morphological operations</li>
-                  <li>Implementations of the <a href="imaging.html#get_surf_points">SURF</a>
-                  and <a href="imaging.html#hog_image">HOG</a> feature extraction algorithms.</li>
+                  <li>Implementations of the <a href="imaging.html#get_surf_points">SURF</a>,
+                   <a href="imaging.html#hog_image">HOG</a>, and <a href="imaging.html#extract_fhog_features">FHOG</a> 
+                   feature extraction algorithms.</li>
                   <li>Tools for <a href="imaging.html#object_detector">detecting objects</a> in images.</li>
                </ul>
             </li>

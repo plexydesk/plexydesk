@@ -31,6 +31,8 @@ namespace dlib
                 using operator<<.
 
             INITIAL VALUE
+                - get_num_threads() == 4 
+                - learns_nonnegative_weights() == false
                 - get_epsilon() == 0.001
                 - get_c() == 1
                 - this object will not be verbose unless be_verbose() is called
@@ -106,6 +108,23 @@ namespace dlib
                 - returns a copy of the optimizer used to solve the SVM problem.  
         !*/
 
+        void set_num_threads (
+            unsigned long num
+        );
+        /*!
+            ensures
+                - #get_num_threads() == num
+        !*/
+
+        unsigned long get_num_threads (
+        ) const;
+        /*!
+            ensures
+                - returns the number of threads used during training.  You should 
+                  usually set this equal to the number of processing cores on your
+                  machine.
+        !*/
+
         const kernel_type get_kernel (
         ) const;
         /*!
@@ -135,6 +154,26 @@ namespace dlib
                   generalization of the resulting classifier.  Larger values encourage 
                   exact fitting while smaller values of C may encourage better 
                   generalization. 
+        !*/
+
+        bool learns_nonnegative_weights (
+        ) const;
+        /*!
+            ensures
+                - The output of training is a set of weights and bias values that together
+                  define the behavior of a multiclass_linear_decision_function object.  If
+                  learns_nonnegative_weights() == true then the resulting weights and bias
+                  values will always have non-negative values.  That is, if this function
+                  returns true then all the numbers in the multiclass_linear_decision_function 
+                  objects output by train() will be non-negative.
+        !*/
+       
+        void set_learns_nonnegative_weights (
+            bool value
+        );
+        /*!
+            ensures
+                - #learns_nonnegative_weights() == value
         !*/
 
         trained_function_type train (

@@ -145,11 +145,12 @@ int main()
                       parameters yourself.  They are automatically populated by the 
                       structural_object_detection_trainer.
 
-                The sliding window classifiers described above are applied to every level of an image
-                pyramid.   So you need to tell scan_image_pyramid what kind of pyramid you want to
-                use.  In this case we are using pyramid_down which downsamples each pyramid layer by
-                half (dlib also contains other version of pyramid_down which result in finer grained
-                pyramids).
+                The sliding window classifiers described above are applied to every level of an
+                image pyramid.  So you need to tell scan_image_pyramid what kind of pyramid you want
+                to use.  In this case we are using pyramid_down<2> which downsamples each pyramid
+                layer by half (if you want to use a finer image pyramid then just change the
+                template argument to a larger value.  For example, using pyramid_down<5> would
+                downsample each layer by a ratio of 5 to 4).
 
                 Finally, some of the feature extraction zones are allowed to move freely within the
                 object box.  This means that when we are sliding the classifier over an image, some
@@ -168,14 +169,19 @@ int main()
                 feature extraction regions.
         */
         typedef hashed_feature_image<hog_image<3,3,1,4,hog_signed_gradient,hog_full_interpolation> > feature_extractor_type;
-        typedef scan_image_pyramid<pyramid_down, feature_extractor_type> image_scanner_type;
+        typedef scan_image_pyramid<pyramid_down<2>, feature_extractor_type> image_scanner_type;
         image_scanner_type scanner;
 
         // The hashed_feature_image in the scanner needs to be supplied with a hash function capable 
         // of hashing the outputs of the hog_image.  Calling this function will set it up for us.  The 
-        // 10 here indicates that it will hash hog vectors into the range [0, pow(2,10)).  Therefore,
+        // 10 here indicates that it will hash HOG vectors into the range [0, pow(2,10)).  Therefore,
         // the feature vectors output by the hashed_feature_image will have dimension pow(2,10).
         setup_hashed_features(scanner, images, 10);
+        // We should also tell the scanner to use the uniform feature weighting scheme
+        // since it works best on the data in this example.  If you don't call this
+        // function then it will use a slightly different weighting scheme which can give
+        // improved results on many normal image types.
+        use_uniform_feature_weights(scanner);
 
         // We also need to setup the detection templates the scanner will use.  It is important that 
         // we add detection templates which are capable of matching all the output boxes we want to learn.
@@ -207,11 +213,11 @@ int main()
         object_detector<image_scanner_type> detector = trainer.train(images, object_locations);
 
         // We can easily test the new detector against our training data.  This print statement will indicate that it
-        // has perfect precision and recall on this simple task.
-        cout << "Test detector (precision,recall): " << test_object_detection_function(detector, images, object_locations) << endl;
+        // has perfect precision and recall on this simple task.  It will also print the average precision (AP).
+        cout << "Test detector (precision,recall,AP): " << test_object_detection_function(detector, images, object_locations) << endl;
 
         // The cross validation should also indicate perfect precision and recall.
-        cout << "3-fold cross validation (precision,recall): "
+        cout << "3-fold cross validation (precision,recall,AP): "
              << cross_validate_object_detection_trainer(trainer, images, object_locations, 3) << endl;
 
 
