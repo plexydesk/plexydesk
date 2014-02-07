@@ -82,11 +82,53 @@ if (NOT TARGET dlib)
    option(DLIB_LINK_WITH_SQLITE3 ${DLIB_LINK_WITH_SQLITE3_STR} ON)
    option(DLIB_LINK_WITH_FFTW ${DLIB_LINK_WITH_FFTW_STR} ON)
 
+   set(source_files 
+         base64/base64_kernel_1.cpp
+         bigint/bigint_kernel_1.cpp
+         bigint/bigint_kernel_2.cpp
+         bit_stream/bit_stream_kernel_1.cpp
+         entropy_decoder/entropy_decoder_kernel_1.cpp
+         entropy_decoder/entropy_decoder_kernel_2.cpp
+         entropy_encoder/entropy_encoder_kernel_1.cpp
+         entropy_encoder/entropy_encoder_kernel_2.cpp
+         md5/md5_kernel_1.cpp
+         tokenizer/tokenizer_kernel_1.cpp
+         unicode/unicode.cpp
+         data_io/image_dataset_metadata.cpp)
 
-   add_library(dlib STATIC all/source.cpp )
+   if (DLIB_ISO_CPP_ONLY)
+      add_library(dlib STATIC ${source_files} )
+   else()
 
+      set(source_files ${source_files}
+         sockets/sockets_kernel_1.cpp
+         bsp/bsp.cpp
+         dir_nav/dir_nav_kernel_1.cpp
+         dir_nav/dir_nav_kernel_2.cpp
+         dir_nav/dir_nav_extensions.cpp
+         linker/linker_kernel_1.cpp
+         logger/extra_logger_headers.cpp
+         logger/logger_kernel_1.cpp
+         logger/logger_config_file.cpp
+         misc_api/misc_api_kernel_1.cpp
+         misc_api/misc_api_kernel_2.cpp
+         sockets/sockets_extensions.cpp
+         sockets/sockets_kernel_2.cpp
+         sockstreambuf/sockstreambuf.cpp
+         sockstreambuf/sockstreambuf_unbuffered.cpp
+         server/server_kernel.cpp
+         server/server_iostream.cpp
+         server/server_http.cpp
+         threads/multithreaded_object_extension.cpp
+         threads/threaded_object_extension.cpp
+         threads/threads_kernel_1.cpp
+         threads/threads_kernel_2.cpp
+         threads/threads_kernel_shared.cpp
+         threads/thread_pool_extension.cpp
+         timer/timer.cpp
+         stack_trace.cpp
+         )
 
-   if (NOT DLIB_ISO_CPP_ONLY)
       # we want to link to the right stuff depending on our platform.  
       if (WIN32 AND NOT CYGWIN) ###############################################################################
          if (DLIB_NO_GUI_SUPPORT)
@@ -153,6 +195,18 @@ if (NOT TARGET dlib)
          mark_as_advanced(nsllib pthreadlib socketlib)
       endif () ##################################################################################
 
+      if (NOT DLIB_NO_GUI_SUPPORT)
+         set(source_files ${source_files}
+            gui_widgets/fonts.cpp
+            gui_widgets/widgets.cpp
+            gui_widgets/drawable.cpp
+            gui_widgets/canvas_drawing.cpp
+            gui_widgets/style.cpp
+            gui_widgets/base_widgets.cpp
+            gui_core/gui_core_kernel_1.cpp
+            gui_core/gui_core_kernel_2.cpp
+            )
+      endif()
 
 
       if (DLIB_LINK_WITH_LIBPNG)
@@ -164,8 +218,45 @@ if (NOT TARGET dlib)
             include_directories(${PNG_INCLUDE_DIR})
             set (dlib_needed_libraries ${dlib_needed_libraries} ${PNG_LIBRARY})
          else()
-            set(DLIB_LINK_WITH_LIBPNG OFF CACHE STRING ${DLIB_LINK_WITH_LIBPNG_STR} FORCE )
+            # If we can't find libpng then statically compile it in.
+            include_directories(external/libpng external/zlib)
+            set(source_files ${source_files}
+               external/libpng/png.c
+               external/libpng/pngerror.c
+               external/libpng/pngget.c
+               external/libpng/pngmem.c
+               external/libpng/pngpread.c
+               external/libpng/pngread.c
+               external/libpng/pngrio.c
+               external/libpng/pngrtran.c
+               external/libpng/pngrutil.c
+               external/libpng/pngset.c
+               external/libpng/pngtrans.c
+               external/libpng/pngwio.c
+               external/libpng/pngwrite.c
+               external/libpng/pngwtran.c
+               external/libpng/pngwutil.c
+               external/zlib/adler32.c
+               external/zlib/compress.c
+               external/zlib/crc32.c
+               external/zlib/deflate.c
+               external/zlib/gzclose.c
+               external/zlib/gzlib.c
+               external/zlib/gzread.c
+               external/zlib/gzwrite.c
+               external/zlib/infback.c
+               external/zlib/inffast.c
+               external/zlib/inflate.c
+               external/zlib/inftrees.c
+               external/zlib/trees.c
+               external/zlib/uncompr.c
+               external/zlib/zutil.c
+               )
          endif()
+         set(source_files ${source_files}
+            image_loader/png_loader.cpp
+            image_saver/save_png.cpp
+            )
       endif()
 
       if (DLIB_LINK_WITH_LIBJPEG)
@@ -175,8 +266,39 @@ if (NOT TARGET dlib)
             include_directories(${JPEG_INCLUDE_DIR})
             set (dlib_needed_libraries ${dlib_needed_libraries} ${JPEG_LIBRARY})
          else()
-            set(DLIB_LINK_WITH_LIBJPEG OFF CACHE STRING ${DLIB_LINK_WITH_LIBJPEG_STR} FORCE )
+            # If we can't find libjpeg then statically compile it in.
+            include_directories(external/libjpeg)
+            set(source_files ${source_files}
+                  external/libjpeg/jcomapi.cpp
+                  external/libjpeg/jdapimin.cpp
+                  external/libjpeg/jdapistd.cpp
+                  external/libjpeg/jdatasrc.cpp
+                  external/libjpeg/jdcoefct.cpp
+                  external/libjpeg/jdcolor.cpp
+                  external/libjpeg/jddctmgr.cpp
+                  external/libjpeg/jdhuff.cpp
+                  external/libjpeg/jdinput.cpp
+                  external/libjpeg/jdmainct.cpp
+                  external/libjpeg/jdmarker.cpp
+                  external/libjpeg/jdmaster.cpp
+                  external/libjpeg/jdmerge.cpp
+                  external/libjpeg/jdphuff.cpp
+                  external/libjpeg/jdpostct.cpp
+                  external/libjpeg/jdsample.cpp
+                  external/libjpeg/jerror.cpp
+                  external/libjpeg/jidctflt.cpp
+                  external/libjpeg/jidctfst.cpp
+                  external/libjpeg/jidctint.cpp
+                  external/libjpeg/jidctred.cpp
+                  external/libjpeg/jmemmgr.cpp
+                  external/libjpeg/jmemnobs.cpp
+                  external/libjpeg/jquant1.cpp
+                  external/libjpeg/jquant2.cpp
+                  external/libjpeg/jutils.cpp  )
          endif()
+         set(source_files ${source_files}
+            image_loader/jpeg_loader.cpp
+            )
       endif()
 
 
@@ -234,6 +356,7 @@ if (NOT TARGET dlib)
       endif()
 
 
+      add_library(dlib STATIC ${source_files} )
       target_link_libraries(dlib ${dlib_needed_libraries} )
 
    endif ()  ##### end of if NOT DLIB_ISO_CPP_ONLY ##########################################################
