@@ -79,6 +79,7 @@
 
       <section>
          <name>Object Detection</name>
+         <item>get_frontal_face_detector</item>
          <item>object_detector</item>
          <item>full_object_detection</item>
          <item>scan_image</item>
@@ -189,6 +190,10 @@
          <item>flip_image_left_right</item> 
          <item>flip_image_up_down</item> 
          <item>add_image_left_right_flips</item> 
+         <item>upsample_image_dataset</item> 
+         <item>flip_image_dataset_left_right</item> 
+         <item>rotate_image_dataset</item> 
+         <item>extract_image_chips</item> 
       </section>
 
       <section>
@@ -205,6 +210,7 @@
          <item>toMat</item>
 
          <item>draw_line</item> 
+         <item>draw_rectangle</item> 
          <item>draw_fhog</item> 
          <item>fill_rect</item> 
          <item>assign_image</item> 
@@ -813,7 +819,7 @@
                Note that you must define DLIB_PNG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libpng library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically (assuming libpng is properly installed on your system).
+               automatically.
             </p>
          </description>
                                  
@@ -832,7 +838,7 @@
                Note that you must define DLIB_JPEG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libjpeg library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically (assuming libjpeg is properly installed in your system).
+               automatically.
             </p>
          </description>
                                  
@@ -851,7 +857,7 @@
                Note that you must define DLIB_JPEG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libjpeg library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically (assuming libjpeg is properly installed in your system).
+               automatically.
             </p>
          </description>
                                  
@@ -903,7 +909,7 @@
                Note that you must define DLIB_PNG_SUPPORT if you want to use this function.  You
                must also set your build environment to link to the libpng library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically (assuming libpng is properly installed in your system).
+               automatically.
             </p>
             <p>
                This routine can save images containing any type of pixel.  However, save_png() can
@@ -966,7 +972,7 @@
                Note that you must define DLIB_PNG_SUPPORT if you want to use this object.  You
                must also set your build environment to link to the libpng library.  However,
                if you use CMake and dlib's default CMakeLists.txt file then it will get setup
-               automatically (assuming libpng is properly installed on your system).
+               automatically.
             </p>
          </description>
 
@@ -1006,6 +1012,18 @@
    <!-- ************************************************************************* -->
       
       <component>
+         <name>draw_rectangle</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/draw_abstract.h</spec_file>
+         <description>        
+            This global function draws a rectangle on an image.
+         </description>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+      
+      <component>
          <name>draw_fhog</name>
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/fhog_abstract.h</spec_file>
@@ -1019,6 +1037,7 @@
          </description>
          <examples>
             <example>fhog_ex.cpp.html</example>
+            <example>fhog_object_detector_ex.cpp.html</example>
          </examples>
                                  
       </component>
@@ -1439,6 +1458,20 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>extract_image_chips</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
+         <description>        
+              This function extracts "chips" from an image.  That is, it takes a list of
+              rectangular sub-windows (i.e. chips) within an image and extracts those
+              sub-windows, storing each into its own image.  It also allows the user to
+              specify the scale and rotation for the chip.
+         </description>
+      </component>
+
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>add_image_left_right_flips</name>
          <file>dlib/image_transforms.h</file>
          <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
@@ -1448,6 +1481,51 @@
             flipped copies of each image as well as the corresponding bounding
             boxes.  Therefore, this function is useful if you are training and
             object detector and your objects have a left/right symmetry.  
+         </description>
+         <examples>
+            <example>fhog_object_detector_ex.cpp.html</example>
+         </examples>
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>rotate_image_dataset</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
+         <description>        
+            This routine takes a set of images and bounding boxes within those
+            images and rotates the entire dataset by a user specified angle.  
+            This means that all images are rotated and the bounding boxes are adjusted
+            so that they still sit on top of the same visual objects in the new rotated images.  
+         </description>
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>flip_image_dataset_left_right</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
+         <description>        
+            This routine takes a set of images and bounding boxes within those images and
+            mirrors the entire dataset left to right.  This means that all images are
+            flipped left to right and the bounding boxes are adjusted so that they still
+            sit on top of the same visual objects in the new flipped images.  
+         </description>
+      </component>
+
+   <!-- ************************************************************************* -->
+      
+      <component>
+         <name>upsample_image_dataset</name>
+         <file>dlib/image_transforms.h</file>
+         <spec_file link="true">dlib/image_transforms/interpolation_abstract.h</spec_file>
+         <description>        
+            This routine takes a set of images and bounding boxes within those images and
+            upsamples the entire dataset.  This means that all images are upsampled and the
+            bounding boxes are adjusted so that they still sit on top of the same visual
+            objects in the new images.  
          </description>
       </component>
 
@@ -1750,6 +1828,9 @@
                 </blockquote>
                 Since these HOG features have been shown to give superior performance. 
          </description>
+         <examples>
+            <example>fhog_object_detector_ex.cpp.html</example>
+         </examples>
                                  
       </component>
             
@@ -1837,6 +1918,24 @@
    <!-- ************************************************************************* -->
 
       <component>
+         <name>get_frontal_face_detector</name>
+         <file>dlib/image_processing/frontal_face_detector.h</file>
+         <spec_file link="true">dlib/image_processing/frontal_face_detector_abstract.h</spec_file>
+         <description>        
+            This function returns an <a href="#object_detector">object_detector</a> that is
+            configured to find human faces that are looking more or less towards the camera.  
+            It is created using the <a href="#scan_fhog_pyramid">scan_fhog_pyramid</a>
+            object.  
+         </description>
+         <examples>
+            <example>face_detection_ex.cpp.html</example>
+         </examples>
+                                 
+      </component>
+            
+   <!-- ************************************************************************* -->
+
+      <component>
          <name>object_detector</name>
          <file>dlib/image_processing.h</file>
          <spec_file link="true">dlib/image_processing/object_detector_abstract.h</spec_file>
@@ -1859,6 +1958,7 @@
                 </p>
          </description>
          <examples>
+            <example>fhog_object_detector_ex.cpp.html</example>
             <example>object_detector_ex.cpp.html</example>
             <example>object_detector_advanced_ex.cpp.html</example>
             <example>train_object_detector.cpp.html</example>
