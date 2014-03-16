@@ -658,8 +658,6 @@ namespace dlib
 
         unsigned long width, height;
         compute_fhog_window_size(width,height);
-        const point anchor((width+1)%2, 
-                           (height+1)%2);
 
         array2d<float> saliency_image;
         pyramid_type pyr;
@@ -677,7 +675,7 @@ namespace dlib
                     // if we found a detection
                     if (saliency_image[r][c] >= thresh)
                     {
-                        rectangle rect = fhog_to_image(centered_rect(point(c,r)+anchor,width-2*padding,height-2*padding), cell_size, height,width);
+                        rectangle rect = fhog_to_image(centered_rect(point(c,r),width-2*padding,height-2*padding), cell_size, height,width);
                         rect = pyr.rect_up(rect, l);
                         dets.push_back(std::make_pair(saliency_image[r][c], rect));
                     }
@@ -916,6 +914,70 @@ namespace dlib
 
         typename scan_fhog_pyramid<Pyramid_type>::fhog_filterbank fb = detector.get_scanner().build_fhog_filterbank(detector.get_w(weight_index));
         return fb.num_separable_filters();
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename Pyramid_type
+        >
+    object_detector<scan_fhog_pyramid<Pyramid_type> > threshold_filter_singular_values (
+        const object_detector<scan_fhog_pyramid<Pyramid_type> >& detector,
+        double thresh,
+        const unsigned long weight_index = 0
+    )
+    {
+        // make sure requires clause is not broken
+        DLIB_ASSERT(thresh >= 0 ,
+            "\t object_detector threshold_filter_singular_values()"
+            << "\n\t Invalid inputs were given to this function."
+            << "\n\t thresh: " << thresh 
+        );
+
+        DLIB_ASSERT(weight_index < detector.num_detectors(),
+            "\t object_detector threshold_filter_singular_values()"
+            << "\n\t Invalid arguments were given to this function. "
+            << "\n\t weight_index:             " << weight_index
+            << "\n\t detector.num_detectors(): " << detector.num_detectors()
+            );
+        DLIB_ASSERT(detector.get_w(weight_index).size() >= detector.get_scanner().get_num_dimensions() ,
+            "\t object_detector threshold_filter_singular_values()"
+            << "\n\t Invalid arguments were given to this function. "
+            << "\n\t detector.get_w(weight_index).size():         " << detector.get_w(weight_index).size()
+            << "\n\t detector.get_scanner().get_num_dimensions(): " << detector.get_scanner().get_num_dimensions()
+            );
+
+
+        const unsigned long width = detector.get_scanner().get_fhog_window_width();
+        const unsigned long height = detector.get_scanner().get_fhog_window_height();
+        const long size = width*height;
+
+        std::vector<matrix<double,0,1> > detector_weights;
+        for (unsigned long j = 0; j < detector.num_detectors(); ++j)
+        {
+            matrix<double,0,1> weights = detector.get_w(j);
+
+            if (j == weight_index)
+            {
+                matrix<double> u,v,w,f;
+                for (int i = 0; i < 31; ++i)
+                {
+                    f = reshape(rowm(weights, range(i*size, (i+1)*size-1)), height, width);
+
+                    svd3(f, u,w,v);
+                    const double scaled_thresh = std::max(1e-3, max(w)*thresh);
+                    w = round_zeros(w, scaled_thresh);
+                    f = u*diagm(w)*trans(v);
+
+                    set_rowm(weights,range(i*size, (i+1)*size-1)) = reshape_to_column_vector(f);
+                }
+            }
+            detector_weights.push_back(weights);
+        }
+        
+        return object_detector<scan_fhog_pyramid<Pyramid_type> >(detector.get_scanner(), 
+                                                                 detector.get_overlap_tester(),
+                                                                 detector_weights);
     }
 
 // ----------------------------------------------------------------------------------------

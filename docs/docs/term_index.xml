@@ -973,7 +973,11 @@
          <term file="dlib/gui_widgets/style_abstract.h.html" name="scroll_bar_style" include="dlib/gui_widgets.h"/>
          <term file="dlib/gui_widgets/style_abstract.h.html" name="scroll_bar_style_default" include="dlib/gui_widgets.h"/>
 
-         <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_rectangle" include="dlib/gui_widgets.h"/>
+         <term name="draw_rectangle">
+            <term link="dlib/gui_widgets/canvas_drawing_abstract.h.html#draw_rectangle" name="for the GUI canvas object" include="dlib/gui_widgets.h"/>
+            <term link="imaging.html#draw_rectangle" name="for image/array2d objects"    include="dlib/image_transforms.h"/>
+         </term>
+
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_circle" include="dlib/gui_widgets.h"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_pixel" include="dlib/gui_widgets.h"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_solid_circle" include="dlib/gui_widgets.h"/>
@@ -1229,8 +1233,15 @@
          <term file="imaging.html" name="transform_image"         include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="rotate_image"            include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="resize_image"            include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="extract_image_chips"     include="dlib/image_transforms.h"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="extract_image_chip"      include="dlib/image_transforms.h"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="chip_details"      include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="pyramid_up"              include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="add_image_left_right_flips" include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="flip_image_dataset_left_right" include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="upsample_image_dataset" include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="rotate_image_dataset" include="dlib/image_transforms.h"/>
+
          <term file="imaging.html" name="flip_image_left_right"   include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="flip_image_up_down"      include="dlib/image_transforms.h"/>
          <term file="dlib/image_transforms/interpolation_abstract.h.html" name="black_background" include="dlib/image_transforms.h"/>
@@ -1263,6 +1274,7 @@
          <term file="dlib/image_processing/box_overlap_testing_abstract.h.html" name="overlaps_any_box"        include="dlib/image_processing.h"/>
          <term file="imaging.html" name="test_box_overlap"        include="dlib/image_processing.h"/>
          <term file="imaging.html" name="remove_unobtainable_rectangles"        include="dlib/image_processing.h"/>
+         <term file="imaging.html" name="get_frontal_face_detector"         include="dlib/image_processing/frontal_face_detector.h"/>
          <term file="imaging.html" name="object_detector"         include="dlib/image_processing.h"/>
          <term file="imaging.html" name="full_object_detection"   include="dlib/image_processing.h"/>
          <term file="dlib/image_processing/full_object_detection_abstract.h.html" name="all_parts_in_rect" include="dlib/image_processing.h"/>
@@ -1271,6 +1283,7 @@
          <term file="imaging.html" name="find_points_above_thresh" include="dlib/image_processing.h"/>
 
          <term file="dlib/image_processing/scan_fhog_pyramid_abstract.h.html" name="num_separable_filters" include="dlib/image_processing.h"/>
+         <term file="dlib/image_processing/scan_fhog_pyramid_abstract.h.html" name="threshold_filter_singular_values" include="dlib/image_processing.h"/>
          <term file="imaging.html" name="scan_fhog_pyramid"                      include="dlib/image_processing.h"/>
 
          <term file="imaging.html" name="scan_image"                             include="dlib/image_processing.h"/>

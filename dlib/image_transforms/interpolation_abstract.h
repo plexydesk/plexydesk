@@ -406,7 +406,7 @@ namespace dlib
         typename image_type1,
         typename image_type2
         >
-    void flip_image_left_right (
+    point_transform_affine flip_image_left_right (
         const image_type1& in_img,
         image_type2& out_img
     );
@@ -422,6 +422,8 @@ namespace dlib
             - #out_img.nc() == in_img.nc()
             - #out_img == a copy of in_img which has been flipped from left to right.  
               (i.e. it is flipped as if viewed though a mirror)
+            - returns a transformation object that maps points in in_img into their
+              corresponding location in #out_img.
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -480,6 +482,185 @@ namespace dlib
             - #objects2.size() == objects2.size()*2
             - All the original elements of images, objects, and objects2 are left unmodified.
               That is, this function only appends new elements to each of these containers.
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type
+        >
+    void flip_image_dataset_left_right (
+        dlib::array<image_type>& images, 
+        std::vector<std::vector<rectangle> >& objects
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename image_type::type> is defined
+            - images.size() == objects.size()
+        ensures
+            - This function replaces each image in images with the left/right flipped
+              version of the image.  Therefore, #images[i] will contain the left/right
+              flipped version of images[i].  It also flips all the rectangles in objects so
+              that they still bound the same visual objects in each image.
+            - #images.size() == image.size()
+            - #objects.size() == objects.size()
+            - for all valid i:
+                #objects[i].size() == objects[i].size()
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type
+        >
+    void flip_image_dataset_left_right (
+        dlib::array<image_type>& images, 
+        std::vector<std::vector<rectangle> >& objects,
+        std::vector<std::vector<rectangle> >& objects2
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename image_type::type> is defined
+            - images.size() == objects.size()
+            - images.size() == objects2.size()
+        ensures
+            - This function replaces each image in images with the left/right flipped
+              version of the image.  Therefore, #images[i] will contain the left/right
+              flipped version of images[i].  It also flips all the rectangles in objects
+              and objects2 so that they still bound the same visual objects in each image.
+            - #images.size() == image.size()
+            - #objects.size() == objects.size()
+            - #objects2.size() == objects2.size()
+            - for all valid i:
+                #objects[i].size() == objects[i].size()
+            - for all valid i:
+                #objects2[i].size() == objects2[i].size()
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename pyramid_type,
+        typename image_type
+        >
+    void upsample_image_dataset (
+        dlib::array<image_type>& images,
+        std::vector<std::vector<rectangle> >& objects
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename image_type::type> is defined
+            - images.size() == objects.size()
+        ensures
+            - This function replaces each image in images with an upsampled version of that
+              image.  Each image is upsampled using pyramid_up() and the given
+              pyramid_type.  Therefore, #images[i] will contain the larger upsampled
+              version of images[i].  It also adjusts all the rectangles in objects so that
+              they still bound the same visual objects in each image.
+            - #images.size() == image.size()
+            - #objects.size() == objects.size()
+            - for all valid i:
+                #objects[i].size() == objects[i].size()
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename pyramid_type,
+        typename image_type
+        >
+    void upsample_image_dataset (
+        dlib::array<image_type>& images,
+        std::vector<std::vector<rectangle> >& objects,
+        std::vector<std::vector<rectangle> >& objects2 
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename image_type::type> is defined
+            - images.size() == objects.size()
+            - images.size() == objects2.size()
+        ensures
+            - This function replaces each image in images with an upsampled version of that
+              image.  Each image is upsampled using pyramid_up() and the given
+              pyramid_type.  Therefore, #images[i] will contain the larger upsampled
+              version of images[i].  It also adjusts all the rectangles in objects and
+              objects2 so that they still bound the same visual objects in each image.
+            - #images.size() == image.size()
+            - #objects.size() == objects.size()
+            - #objects2.size() == objects2.size()
+            - for all valid i:
+                #objects[i].size() == objects[i].size()
+            - for all valid i:
+                #objects2[i].size() == objects2[i].size()
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <typename image_type>
+    void rotate_image_dataset (
+        double angle,
+        dlib::array<image_type>& images,
+        std::vector<std::vector<rectangle> >& objects
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename image_type::type> is defined
+            - images.size() == objects.size()
+        ensures
+            - This function replaces each image in images with a rotated version of that
+              image.  In particular, each image is rotated using
+              rotate_image(original,rotated,angle).  Therefore, the images are rotated
+              angle radians counter clockwise around their centers. That is, #images[i]
+              will contain the rotated version of images[i].  It also adjusts all
+              the rectangles in objects so that they still bound the same visual objects in
+              each image.
+            - All the rectangles will still have the same sizes and aspect ratios after
+              rotation.  They will simply have had their positions adjusted so they still
+              fall on the same objects.
+            - #images.size() == image.size()
+            - #objects.size() == objects.size()
+            - for all valid i:
+                #objects[i].size() == objects[i].size()
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <typename image_type>
+    void rotate_image_dataset (
+        double angle,
+        dlib::array<image_type>& images,
+        std::vector<std::vector<rectangle> >& objects,
+        std::vector<std::vector<rectangle> >& objects2
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename image_type::type> is defined
+            - images.size() == objects.size()
+            - images.size() == objects2.size()
+        ensures
+            - This function replaces each image in images with a rotated version of that
+              image.  In particular, each image is rotated using
+              rotate_image(original,rotated,angle).  Therefore, the images are rotated
+              angle radians counter clockwise around their centers. That is, #images[i]
+              will contain the rotated version of images[i].  It also adjusts all
+              the rectangles in objects and objects2 so that they still bound the same
+              visual objects in each image.
+            - All the rectangles will still have the same sizes and aspect ratios after
+              rotation.  They will simply have had their positions adjusted so they still
+              fall on the same objects.
+            - #images.size() == image.size()
+            - #objects.size() == objects.size()
+            - #objects2.size() == objects2.size()
+            - for all valid i:
+                #objects[i].size() == objects[i].size()
+            - for all valid i:
+                #objects2[i].size() == objects2[i].size()
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -566,6 +747,163 @@ namespace dlib
             - performs: pyramid_up(in_img, out_img, pyr, interpolate_bilinear());
     !*/
 
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type,
+        typename pyramid_type
+        >
+    void pyramid_up (
+        image_type& img,
+        const pyramid_type& pyr
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pyramid_type == a type compatible with the image pyramid objects defined 
+              in dlib/image_transforms/image_pyramid_abstract.h
+        ensures
+            - Performs an in-place version of pyramid_up() on the given image.  In
+              particular, this function is equivalent to:
+                pyramid_up(img, temp, pyr); 
+                temp.swap(img);
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type
+        >
+    void pyramid_up (
+        image_type& img
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+        ensures
+            - performs: pyramid_up(img, pyramid_down<2>());
+              (i.e. it upsamples the given image and doubles it in size.)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+
+    struct chip_details
+    {
+        /*!
+            WHAT THIS OBJECT REPRESENTS
+                This object describes where an image chip is to be extracted from within
+                another image.  In particular, it specifies that the image chip is
+                contained within the rectangle this->rect and that prior to extraction the
+                image should be rotated counter-clockwise by this->angle radians.  Finally,
+                the extracted chip should have this->size pixels in it regardless of the
+                size of this->rect.
+
+        !*/
+
+        chip_details(
+        ); 
+        /*!
+            ensures
+                - #rect.is_empty() == true
+                - #size == 0
+                - #angle == 0
+        !*/
+
+        chip_details(
+            const rectangle& rect_, 
+            unsigned long size_
+        );
+        /*!
+            ensures
+                - #rect == rect_
+                - #size == size_
+                - #angle == 0
+        !*/
+
+        chip_details(
+            const rectangle& rect_, 
+            unsigned long size_,
+            double angle_
+        );
+        /*!
+            ensures
+                - #rect == rect_
+                - #size == size_
+                - #angle == angle_
+        !*/
+
+        rectangle rect;
+        unsigned long size;
+        double angle;
+    };
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type1,
+        typename image_type2
+        >
+    void extract_image_chips (
+        const image_type1& img,
+        const std::vector<chip_details>& chip_locations,
+        dlib::array<image_type2>& chips
+    );
+    /*!
+        requires
+            - image_type1 == is an implementation of array2d/array2d_kernel_abstract.h
+            - image_type2 == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<typename image_type1::type>::has_alpha == false
+            - pixel_traits<typename image_type2::type> is defined
+            - for all valid i: 
+                - chip_locations[i].rect.is_empty() == false
+                - chip_locations[i].size != 0
+        ensures
+            - This function extracts "chips" from an image.  That is, it takes a list of
+              rectangular sub-windows (i.e. chips) within an image and extracts those
+              sub-windows, storing each into its own image.  It also scales and rotates the
+              image chips according to the instructions inside each chip_details object.
+            - #chips == the extracted image chips
+            - #chips.size() == chip_locations.size()
+            - for all valid i:
+                - #chips[i] == The image chip extracted from the position
+                  chip_locations[i].rect in img.
+                - #chips[i].nr()/#chips[i].nc() is approximately equal to
+                  chip_locations[i].rect.height()/chip_locations[i].rect.width() (i.e. the
+                  aspect ratio of the chip is as similar as possible to the aspect ratio of
+                  the rectangle that defines the chip's location in the original image)
+                - #chips[i].size() is as close to chip_locations[i].size as possible given that 
+                  we attempt to keep the chip's aspect ratio similar to chip_locations[i].rect. 
+                - The image will have been rotated counter-clockwise by
+                  chip_locations[i].angle radians, around the center of
+                  chip_locations[i].rect, before the chip was extracted. 
+                - As long as chip_locations[i].size and the aspect ratio of of
+                  chip_locations[i].rect stays constant then the dimensions of #chips[i] is
+                  always the same.  This means that, for example, if you want all your
+                  chips to have the same dimensions then ensure that chip_location[i].size
+                  is always the same and also that chip_location[i].rect always has the
+                  same aspect ratio.
+            - Any pixels in an image chip that go outside img are set to 0 (i.e. black).
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type1,
+        typename image_type2
+        >
+    void extract_image_chip (
+        const image_type1& img,
+        const chip_details& chip_location,
+        image_type2& chip
+    );
+    /*!
+        ensures
+            - This function simply calls extract_image_chips() with a single chip location
+              and stores the single output chip into #chip.
+    !*/
+
+// ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
 
 }

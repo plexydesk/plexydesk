@@ -437,7 +437,7 @@ namespace dlib
                     simd4f v10 = vy1*vx0;
                     simd4f v00 = vy0*vx0;
 
-                    float _best_o[4]; best_o.store(_best_o);
+                    int32 _best_o[4]; simd4i(best_o).store(_best_o);
                     int32 _ixp[4];    ixp.store(_ixp);
                     float _v11[4];    v11.store(_v11);
                     float _v01[4];    v01.store(_v01);
@@ -653,6 +653,29 @@ namespace dlib
     ) 
     {
         return impl_fhog::impl_extract_fhog_features(img, hog, cell_size, filter_rows_padding, filter_cols_padding);
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type
+        >
+    matrix<double,0,1> extract_fhog_features(
+        const image_type& img, 
+        int cell_size = 8,
+        int filter_rows_padding = 1,
+        int filter_cols_padding = 1
+    )
+    {
+        dlib::array<array2d<double> > hog;
+        extract_fhog_features(img, hog, cell_size, filter_rows_padding, filter_cols_padding);
+        matrix<double,0,1> temp(hog.size()*hog[0].size());
+        for (unsigned long i = 0; i < hog.size(); ++i)
+        {
+            const long size = hog[i].size();
+            set_rowm(temp, range(i*size, (i+1)*size-1)) = reshape_to_column_vector(mat(hog[i]));
+        }
+        return temp;
     }
 
 // ----------------------------------------------------------------------------------------
