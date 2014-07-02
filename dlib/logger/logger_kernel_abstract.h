@@ -35,9 +35,21 @@ namespace dlib
                   is null terminated.
         !*/
 
+        bool operator< (const log_level& rhs) const { return priority <  rhs.priority; }
+        bool operator<=(const log_level& rhs) const { return priority <= rhs.priority; }
+        bool operator> (const log_level& rhs) const { return priority >  rhs.priority; }
+        bool operator>=(const log_level& rhs) const { return priority >= rhs.priority; }
+
         int priority;
         char name[20];
     };
+
+    inline std::ostream& operator<< (std::ostream& out, const log_level& item);
+    /*!
+        ensures
+            - performs out << item.name
+            - returns out
+    !*/
 
 // ----------------------------------------------------------------------------------------
 
@@ -59,7 +71,7 @@ namespace dlib
     );
     /*!
         ensures
-            - for all loggers L:
+            - for all loggers L (even loggers not yet constructed):
                 - #L.output_streambuf() == out.rdbuf() 
                 - Removes any previous output hook from L.  So now the logger
                   L will write all its messages to the given output stream.
@@ -81,12 +93,23 @@ namespace dlib
     );
     /*!
         ensures
-            - for all loggers L:
+            - for all loggers L (even loggers not yet constructed):
                 - #L.output_streambuf() == 0
                 - performs the equivalent to calling L.set_output_hook(object, hook);
                   (i.e. sets all loggers so that they will use the given hook function)
         throws
             - std::bad_alloc
+    !*/
+
+    template <
+        typename T
+        >
+    void set_all_logging_output_hooks (
+        T& object
+    );
+    /*!
+        ensures
+            - calls set_all_logging_output_hooks(object, &T::log);
     !*/
 
 // ----------------------------------------------------------------------------------------
@@ -96,7 +119,7 @@ namespace dlib
     );
     /*!
         ensures
-            - for all loggers L:
+            - for all loggers L (even loggers not yet constructed):
                 - #L.level() == new_level
         throws
             - std::bad_alloc

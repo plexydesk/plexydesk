@@ -43,6 +43,7 @@
          <term file="linear_algebra.html" name="resize_rect_width" include="dlib/geometry.h"/>
          <term file="linear_algebra.html" name="resize_rect_height" include="dlib/geometry.h"/>
          <term file="linear_algebra.html" name="centered_rect" include="dlib/geometry.h"/>
+         <term file="linear_algebra.html" name="set_aspect_ratio" include="dlib/geometry.h"/>
          <term file="linear_algebra.html" name="center" include="dlib/geometry.h"/>
          <term file="linear_algebra.html" name="nearest_point" include="dlib/geometry.h"/>
          <term file="linear_algebra.html" name="distance_to_rect_edge" include="dlib/geometry.h"/>
@@ -78,18 +79,26 @@
 
          <term file="ml.html" name="is_forced_assignment_problem"          include="dlib/svm.h"/>
          <term file="ml.html" name="is_assignment_problem"                 include="dlib/svm.h"/>
+         <term file="ml.html" name="is_track_association_problem"          include="dlib/svm.h"/>
          <term file="ml.html" name="is_graph_labeling_problem"             include="dlib/svm_threaded.h"/>
          <term file="dlib/svm/structural_svm_graph_labeling_problem_abstract.h.html" name="sizes_match"  include="dlib/svm_threaded.h"/>
          <term file="dlib/svm/structural_svm_graph_labeling_problem_abstract.h.html" name="all_values_are_nonnegative"  include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="assignment_function"                   include="dlib/svm.h"/>
+         <term file="ml.html" name="track_association_function"            include="dlib/svm.h"/>
+         <term file="dlib/svm/track_association_function_abstract.h.html" name="feature_extractor_track_association"
+               include="dlib/svm.h"/>
+         <term file="dlib/svm/svm_abstract.h.html" name="labeled_detection" include="dlib/svm.h"/>
          <term file="ml.html" name="graph_labeler"                         include="dlib/graph_cuts.h"/>
          <term file="ml.html" name="test_assignment_function"              include="dlib/svm.h"/>
+         <term file="ml.html" name="test_track_association_function"       include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="test_graph_labeling_function"          include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="cross_validate_assignment_trainer"     include="dlib/svm.h"/>
+         <term file="ml.html" name="cross_validate_track_association_trainer"     include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="cross_validate_graph_labeling_trainer" include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="structural_svm_assignment_problem"     include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="structural_svm_graph_labeling_problem" include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="structural_assignment_trainer"         include="dlib/svm_threaded.h"/>
+         <term file="ml.html" name="structural_track_association_trainer"  include="dlib/svm_threaded.h"/>
          <term file="ml.html" name="structural_graph_labeling_trainer"     include="dlib/svm_threaded.h"/>
 
          <term file="dlib/optimization/optimization_solve_qp2_using_smo_abstract.h.html" name="invalid_nu_error"  include="dlib/optimization.h"/>
@@ -261,6 +270,7 @@
          <term file="dlib/data_io/image_dataset_metadata.h.html" name="image"    include="dlib/data_io.h"/>
          <term file="dlib/data_io/image_dataset_metadata.h.html" name="box"      include="dlib/data_io.h"/>
          <term file="dlib/data_io/image_dataset_metadata.h.html" name="dataset"  include="dlib/data_io.h"/>
+         <term file="dlib/data_io/load_image_dataset_abstract.h.html" name="image_dataset_file"  include="dlib/data_io.h"/>
          <term link="ml.html#load_image_dataset_metadata" name="image_dataset_metadata"      include="dlib/data_io.h"/>
          <term file="ml.html" name="load_image_dataset_metadata"                 include="dlib/data_io.h"/>
          <term file="ml.html" name="load_image_dataset"                          include="dlib/data_io.h"/>
@@ -391,6 +401,7 @@
          <term file="dlib/statistics/dpca_abstract.h.html" name="discriminant_pca_error"  include="dlib/statistics.h"/>
          <term file="ml.html" name="kkmeans"                                        include="dlib/clustering.h"/>
          <term file="ml.html" name="find_clusters_using_kmeans"                     include="dlib/clustering.h"/>
+         <term file="ml.html" name="nearest_center"                                 include="dlib/clustering.h"/>
          <term file="ml.html" name="newman_cluster"                                 include="dlib/clustering.h"/>
          <term file="ml.html" name="chinese_whispers"                               include="dlib/clustering.h"/>
          <term file="ml.html" name="modularity"                                     include="dlib/clustering.h"/>
@@ -777,6 +788,7 @@
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="sleep"                   include="dlib/misc_api.h"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="get_current_dir"         include="dlib/misc_api.h"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="set_current_dir"         include="dlib/misc_api.h"/>
+         <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="locally_change_current_dir" include="dlib/misc_api.h"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="set_current_dir_error"   include="dlib/misc_api.h"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="dir_create_error"        include="dlib/misc_api.h"/>
          <term file="dlib/misc_api/misc_api_kernel_abstract.h.html" name="create_directory"        include="dlib/misc_api.h"/>
@@ -973,7 +985,12 @@
          <term file="dlib/gui_widgets/style_abstract.h.html" name="scroll_bar_style" include="dlib/gui_widgets.h"/>
          <term file="dlib/gui_widgets/style_abstract.h.html" name="scroll_bar_style_default" include="dlib/gui_widgets.h"/>
 
-         <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_rectangle" include="dlib/gui_widgets.h"/>
+         <term file="imaging.html" name="tile_images"    include="dlib/image_transforms.h"/>
+         <term name="draw_rectangle">
+            <term link="dlib/gui_widgets/canvas_drawing_abstract.h.html#draw_rectangle" name="for the GUI canvas object" include="dlib/gui_widgets.h"/>
+            <term link="imaging.html#draw_rectangle" name="for image/array2d objects"    include="dlib/image_transforms.h"/>
+         </term>
+
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_circle" include="dlib/gui_widgets.h"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_pixel" include="dlib/gui_widgets.h"/>
          <term file="dlib/gui_widgets/canvas_drawing_abstract.h.html" name="draw_solid_circle" include="dlib/gui_widgets.h"/>
@@ -1229,8 +1246,17 @@
          <term file="imaging.html" name="transform_image"         include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="rotate_image"            include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="resize_image"            include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="extract_image_chips"     include="dlib/image_transforms.h"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="extract_image_chip"      include="dlib/image_transforms.h"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="chip_details"      include="dlib/image_transforms.h"/>
+         <term file="dlib/image_transforms/interpolation_abstract.h.html" name="chip_dims"      include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="pyramid_up"              include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="add_image_left_right_flips" include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="add_image_rotations" include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="flip_image_dataset_left_right" include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="upsample_image_dataset" include="dlib/image_transforms.h"/>
+         <term file="imaging.html" name="rotate_image_dataset" include="dlib/image_transforms.h"/>
+
          <term file="imaging.html" name="flip_image_left_right"   include="dlib/image_transforms.h"/>
          <term file="imaging.html" name="flip_image_up_down"      include="dlib/image_transforms.h"/>
          <term file="dlib/image_transforms/interpolation_abstract.h.html" name="black_background" include="dlib/image_transforms.h"/>
@@ -1263,14 +1289,20 @@
          <term file="dlib/image_processing/box_overlap_testing_abstract.h.html" name="overlaps_any_box"        include="dlib/image_processing.h"/>
          <term file="imaging.html" name="test_box_overlap"        include="dlib/image_processing.h"/>
          <term file="imaging.html" name="remove_unobtainable_rectangles"        include="dlib/image_processing.h"/>
+         <term file="imaging.html" name="get_frontal_face_detector"         include="dlib/image_processing/frontal_face_detector.h"/>
          <term file="imaging.html" name="object_detector"         include="dlib/image_processing.h"/>
+         <term file="dlib/image_processing/object_detector_abstract.h.html" name="rect_detection"        include="dlib/image_processing.h"/>
+         <term file="dlib/image_processing/object_detector_abstract.h.html" name="full_detection"        include="dlib/image_processing.h"/>
          <term file="imaging.html" name="full_object_detection"   include="dlib/image_processing.h"/>
          <term file="dlib/image_processing/full_object_detection_abstract.h.html" name="all_parts_in_rect" include="dlib/image_processing.h"/>
 
          <term file="imaging.html" name="scan_image_movable_parts" include="dlib/image_processing.h"/>
          <term file="imaging.html" name="find_points_above_thresh" include="dlib/image_processing.h"/>
 
+         <term file="dlib/image_processing/scan_fhog_pyramid_abstract.h.html" name="default_fhog_feature_extractor" include="dlib/image_processing.h"/>
          <term file="dlib/image_processing/scan_fhog_pyramid_abstract.h.html" name="num_separable_filters" include="dlib/image_processing.h"/>
+         <term file="dlib/image_processing/scan_fhog_pyramid_abstract.h.html" name="threshold_filter_singular_values" include="dlib/image_processing.h"/>
+         <term file="dlib/image_processing/scan_fhog_pyramid_abstract.h.html" name="evaluate_detectors" include="dlib/image_processing.h"/>
          <term file="imaging.html" name="scan_fhog_pyramid"                      include="dlib/image_processing.h"/>
 
          <term file="imaging.html" name="scan_image"                             include="dlib/image_processing.h"/>
@@ -1400,6 +1432,8 @@
          <term file="parsing.html" name="left_substr"                include="dlib/string.h"/>
          <term file="parsing.html" name="right_substr"               include="dlib/string.h"/>
          <term file="parsing.html" name="split"                      include="dlib/string.h"/>
+         <term file="parsing.html" name="split_on_first"             include="dlib/string.h"/>
+         <term file="parsing.html" name="split_on_last"              include="dlib/string.h"/>
          <term file="parsing.html" name="unichar"                    include="dlib/unicode.h"/>
          <term file="parsing.html" name="ustring"                    include="dlib/unicode.h"/>
          <term file="parsing.html" name="convert_utf8_to_utf32"      include="dlib/unicode.h"/>

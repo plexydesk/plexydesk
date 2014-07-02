@@ -437,7 +437,7 @@ namespace dlib
                     simd4f v10 = vy1*vx0;
                     simd4f v00 = vy0*vx0;
 
-                    float _best_o[4]; best_o.store(_best_o);
+                    int32 _best_o[4]; simd4i(best_o).store(_best_o);
                     int32 _ixp[4];    ixp.store(_ixp);
                     float _v11[4];    v11.store(_v11);
                     float _v01[4];    v01.store(_v01);
@@ -656,6 +656,47 @@ namespace dlib
     }
 
 // ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type,
+        typename T
+        >
+    void extract_fhog_features(
+        const image_type& img, 
+        matrix<T,0,1>& feats,
+        int cell_size = 8,
+        int filter_rows_padding = 1,
+        int filter_cols_padding = 1
+    )
+    {
+        dlib::array<array2d<T> > hog;
+        extract_fhog_features(img, hog, cell_size, filter_rows_padding, filter_cols_padding);
+        feats.set_size(hog.size()*hog[0].size());
+        for (unsigned long i = 0; i < hog.size(); ++i)
+        {
+            const long size = hog[i].size();
+            set_rowm(feats, range(i*size, (i+1)*size-1)) = reshape_to_column_vector(mat(hog[i]));
+        }
+    }
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_type
+        >
+    matrix<double,0,1> extract_fhog_features(
+        const image_type& img, 
+        int cell_size = 8,
+        int filter_rows_padding = 1,
+        int filter_cols_padding = 1
+    )
+    {
+        matrix<double,0,1> feats;
+        extract_fhog_features(img, feats, cell_size, filter_rows_padding, filter_cols_padding);
+        return feats;
+    }
+
+// ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
 
     inline point image_to_fhog (
@@ -806,7 +847,10 @@ namespace dlib
         }
 
         const double thresh = mean(himg) + 4*stddev(himg);
-        return matrix_cast<unsigned char>(upperbound(round(himg*255/thresh),255));
+        if (thresh != 0)
+            return matrix_cast<unsigned char>(upperbound(round(himg*255/thresh),255));
+        else
+            return matrix_cast<unsigned char>(himg);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -886,7 +930,10 @@ namespace dlib
         }
 
         const double thresh = mean(himg) + 4*stddev(himg);
-        return matrix_cast<unsigned char>(upperbound(round(himg*255/thresh),255));
+        if (thresh != 0)
+            return matrix_cast<unsigned char>(upperbound(round(himg*255/thresh),255));
+        else
+            return matrix_cast<unsigned char>(himg);
     }
 
 // ----------------------------------------------------------------------------------------

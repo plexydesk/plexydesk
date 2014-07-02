@@ -47,7 +47,7 @@ int main()
     std::vector<sample_type> samples;
     std::vector<double> labels;
 
-    // Now lets put some data into our samples and labels objects.  We do this
+    // Now let's put some data into our samples and labels objects.  We do this
     // by looping over a bunch of points and labeling them according to their
     // distance from the origin.
     for (int r = -20; r <= 20; ++r)
@@ -103,6 +103,9 @@ int main()
     // stopping epsilon bigger.  However, this might make the outputs less
     // reliable.  But sometimes it works out well.  0.001 is the default.
     trainer.set_epsilon(0.001);
+    // You can also set an explicit limit on the number of iterations used by the numeric
+    // solver.  The default is 2000.
+    trainer.set_max_iterations(2000);
 
     // Now we loop over some different gamma values to see how good they are.  Note
     // that this is a very simple way to try out a few possible parameter choices.  You 
@@ -141,11 +144,11 @@ int main()
     learned_function.normalizer = normalizer;  // save normalization information
     learned_function.function = trainer.train(samples, labels); // perform the actual RVM training and save the results
 
-    // print out the number of relevance vectors in the resulting decision function
+    // Print out the number of relevance vectors in the resulting decision function.
     cout << "\nnumber of relevance vectors in our learned_function is " 
          << learned_function.function.basis_vectors.size() << endl;
 
-    // now lets try this decision_function on some samples we haven't seen before 
+    // Now let's try this decision_function on some samples we haven't seen before 
     sample_type sample;
 
     sample(0) = 3.123;
@@ -205,14 +208,10 @@ int main()
 
     // Another thing that is worth knowing is that just about everything in dlib is serializable.
     // So for example, you can save the learned_pfunct object to disk and recall it later like so:
-    ofstream fout("saved_function.dat",ios::binary);
-    serialize(learned_pfunct,fout);
-    fout.close();
+    serialize("saved_function.dat") << learned_pfunct;
 
-    // now lets open that file back up and load the function object it contains
-    ifstream fin("saved_function.dat",ios::binary);
-    deserialize(learned_pfunct, fin);
-
+    // Now let's open that file back up and load the function object it contains.
+    deserialize("saved_function.dat") >> learned_pfunct;
 
 }
 

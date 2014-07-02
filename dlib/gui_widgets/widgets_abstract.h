@@ -2340,6 +2340,8 @@ namespace dlib
                 by selecting an overlay rectangle with the mouse and then right clicking
                 on the part.
                 
+                Finally, if you hold Ctrl and left click an overlay rectangle it will 
+                change its label to get_default_overlay_rect_label().
 
                 The image is drawn such that:
                     - the pixel img[0][0] is the upper left corner of the image.
@@ -2723,8 +2725,8 @@ namespace dlib
             requires
                 - event_handler is a valid pointer to a member function in T 
             ensures
-                - the event_handler function is called on object when the user adds
-                  or removes an overlay rectangle.
+                - the event_handler function is called on object when the user adds,
+                  removes, or modifies an overlay rectangle.
                 - any previous calls to this function are overridden by this new call.  
                   (i.e. you can only have one event handler associated with this 
                   event at a time)

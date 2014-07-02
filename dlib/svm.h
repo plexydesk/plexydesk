@@ -45,10 +45,10 @@
 #include "svm/structural_svm_problem.h"
 #include "svm/sequence_labeler.h"
 #include "svm/assignment_function.h"
+#include "svm/track_association_function.h"
 #include "svm/active_learning.h"
 #include "svm/svr_linear_trainer.h"
 #include "svm/sequence_segmenter.h"
-#include "svm/structural_sequence_segmentation_trainer.h"
 
 #endif // DLIB_SVm_HEADER
 

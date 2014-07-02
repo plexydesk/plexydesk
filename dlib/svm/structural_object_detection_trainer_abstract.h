@@ -22,6 +22,8 @@ namespace dlib
         /*!
             REQUIREMENTS ON image_scanner_type
                 image_scanner_type must be an implementation of 
+                dlib/image_processing/scan_fhog_pyramid_abstract.h or
+                dlib/image_processing/scan_image_custom_abstract.h or
                 dlib/image_processing/scan_image_pyramid_abstract.h or
                 dlib/image_processing/scan_image_boxes_abstract.h
 
@@ -49,7 +51,7 @@ namespace dlib
             ensures
                 - #get_c() == 1
                 - this object isn't verbose
-                - #get_epsilon() == 0.3
+                - #get_epsilon() == 0.1
                 - #get_num_threads() == 2
                 - #get_max_cache_size() == 5
                 - #get_match_eps() == 0.5
@@ -346,7 +348,7 @@ namespace dlib
                       the optimizer doesn't care if the detector outputs a detection that
                       matches any of the ignore rectangles or if it fails to output a
                       detection for an ignore rectangle.  Therefore, if there are objects
-                      in your dataset that you are unsure you want to detect or otherwise
+                      in your dataset that you are unsure if you want to detect or otherwise
                       don't care if the detector gets or doesn't then you can mark them
                       with ignore rectangles and the optimizer will simply ignore them. 
                 - returns a function F with the following properties:

@@ -51,9 +51,12 @@ namespace dlib
                 - The filter is applied to each color channel independently.
             - if (use_abs == true) then
                 - pixel values after filtering that are < 0 are converted to their absolute values.
-            - The filter is applied such that it is centered over the pixel it writes its
+            - The filter is applied such that it's centered over the pixel it writes its
               output into.  For centering purposes, we consider the center element of the
-              filter to be filter((filter.nr()-1)/2,(filter.nc-1)/2).
+              filter to be filter(filter.nr()/2,filter.nc()/2).  This means that the filter
+              that writes its output to a pixel at location point(c,r) and is W by H (width
+              by height) pixels in size operates on exactly the pixels in the rectangle
+              centered_rect(point(c,r),W,H) within in_img.
             - Pixels close enough to the edge of in_img to not have the filter still fit 
               inside the image are always set to zero.
             - #out_img.nc() == in_img.nc()
@@ -115,9 +118,12 @@ namespace dlib
                 - The filter is applied to each color channel independently.
             - if (use_abs == true) then
                 - pixel values after filtering that are < 0 are converted to their absolute values
-            - The filter is applied such that it is centered over the pixel it writes its
+            - The filter is applied such that it's centered over the pixel it writes its
               output into.  For centering purposes, we consider the center element of the
-              filter to be FILT((col_filter.size()-1)/2,(row_filter.size()-1)/2).
+              filter to be FILT(col_filter.size()/2,row_filter.size()/2).  This means that
+              the filter that writes its output to a pixel at location point(c,r) and is W
+              by H (width by height) pixels in size operates on exactly the pixels in the
+              rectangle centered_rect(point(c,r),W,H) within in_img.
             - Pixels close enough to the edge of in_img to not have the filter still fit 
               inside the image are always set to zero.
             - #out_img.nc() == in_img.nc()
@@ -407,14 +413,14 @@ namespace dlib
     );
     /*!
         requires
-            - out.nr() == img.nr() 
-            - out.nc() == img.nc()
             - image_type1 == an implementation of array2d/array2d_kernel_abstract.h
               and it must contain a scalar type
             - image_type2 == an implementation of array2d/array2d_kernel_abstract.h
               and it must contain a scalar type
             - is_same_object(img,out) == false
         ensures
+            - #out.nr() == img.nr() 
+            - #out.nc() == img.nc()
             - for all valid r and c:
                 - let SUM(r,c) == sum of pixels from img which are inside the rectangle 
                   translate_rect(rect, point(c,r)).

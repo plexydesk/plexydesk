@@ -92,7 +92,7 @@ int main()
         // still be solved with the rbf_trainer.
         trainer.set_trainer(poly_trainer, 1, 2);
 
-        // Now lets do 5-fold cross-validation using the one_vs_one_trainer we just setup.
+        // Now let's do 5-fold cross-validation using the one_vs_one_trainer we just setup.
         // As an aside, always shuffle the order of the samples before doing cross validation.  
         // For a discussion of why this is a good idea see the svm_ex.cpp example.
         randomize_samples(samples, labels);
@@ -138,13 +138,10 @@ int main()
         // Put df into df2 and then save df2 to disk.  Note that we could have also said
         // df2 = trainer.train(samples, labels);  But doing it this way avoids retraining.
         df2 = df;
-        ofstream fout("df.dat", ios::binary);
-        serialize(df2, fout);
-        fout.close();
+        serialize("df.dat") << df2;
 
         // load the function back in from disk and store it in df3.  
-        ifstream fin("df.dat", ios::binary);
-        deserialize(df3, fin);
+        deserialize("df.dat") >> df3;
 
 
         // Test df3 to see that this worked.

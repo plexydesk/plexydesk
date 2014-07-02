@@ -1608,7 +1608,7 @@ namespace dlib
         typename visual_studio_sucks_cov_helper<EXP>::type cov(m(0).nr(),m(0).nr());
         set_all_elements(cov,0);
 
-        const matrix<double,EXP::type::NR,EXP::type::NC, typename EXP::mem_manager_type> avg = mean(m);
+        const typename EXP::type avg = mean(m);
 
         for (long r = 0; r < m.nr(); ++r)
         {
@@ -1677,7 +1677,7 @@ namespace dlib
         const T& val
     )
     {
-        DLIB_ASSERT(nr > 0 && nc > 0, 
+        DLIB_ASSERT(nr >= 0 && nc >= 0, 
             "\tconst matrix_exp uniform_matrix<T>(nr, nc, val)"
             << "\n\tnr and nc have to be bigger than 0"
             << "\n\tnr: " << nr
@@ -1697,9 +1697,9 @@ namespace dlib
         long nc
     )
     {
-        DLIB_ASSERT(nr > 0 && nc > 0, 
+        DLIB_ASSERT(nr >= 0 && nc >= 0, 
             "\tconst matrix_exp zeros_matrix<T>(nr, nc)"
-            << "\n\tnr and nc have to be bigger than 0"
+            << "\n\tnr and nc have to be >= 0"
             << "\n\tnr: " << nr
             << "\n\tnc: " << nc
             );
@@ -1716,9 +1716,9 @@ namespace dlib
         const matrix_exp<EXP>& mat
     )
     {
-        DLIB_ASSERT(mat.nr() > 0 && mat.nc() > 0, 
+        DLIB_ASSERT(mat.nr() >= 0 && mat.nc() >= 0, 
             "\tconst matrix_exp zeros_matrix(mat)"
-            << "\n\t nr and nc have to be bigger than 0"
+            << "\n\t nr and nc have to be >= 0"
             << "\n\t mat.nr(): " << mat.nr()
             << "\n\t mat.nc(): " << mat.nc()
             );
@@ -1737,9 +1737,9 @@ namespace dlib
         long nc
     )
     {
-        DLIB_ASSERT(nr > 0 && nc > 0, 
+        DLIB_ASSERT(nr >= 0 && nc >= 0, 
             "\tconst matrix_exp ones_matrix<T>(nr, nc)"
-            << "\n\tnr and nc have to be bigger than 0"
+            << "\n\tnr and nc have to be >= 0"
             << "\n\tnr: " << nr
             << "\n\tnc: " << nc
             );
@@ -1756,9 +1756,9 @@ namespace dlib
         const matrix_exp<EXP>& mat
     )
     {
-        DLIB_ASSERT(mat.nr() > 0 && mat.nc() > 0, 
+        DLIB_ASSERT(mat.nr() >= 0 && mat.nc() >= 0, 
             "\tconst matrix_exp ones_matrix(mat)"
-            << "\n\t nr and nc have to be bigger than 0"
+            << "\n\t nr and nc have to be >= 0"
             << "\n\t mat.nr(): " << mat.nr()
             << "\n\t mat.nc(): " << mat.nc()
             );
@@ -1945,12 +1945,16 @@ namespace dlib
     };
 
     template <
-        typename T
+        typename T,
+        typename U
         >
     const matrix_diag_op<op_identity_matrix_2<T> > identity_matrix (
-        const long& size 
+        const U& size 
     )
     {
+        // the size argument must be some scalar value, not a matrix!
+        COMPILE_TIME_ASSERT(is_matrix<U>::value == false);
+
         DLIB_ASSERT(size > 0, 
             "\tconst matrix_exp identity_matrix<T>(size)"
             << "\n\tsize must be bigger than 0"
@@ -3899,6 +3903,51 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    template <
+        typename T,
+        long NR_,
+        long NC_,
+        typename MM
+        >
+    struct op_mat_to_vect2
+    {
+        typedef matrix<T,NR_,NC_,MM,row_major_layout> M;
+        op_mat_to_vect2(const M& m_) : m(m_) {}
+        const M& m;
+
+        const static long cost = M::cost+2;
+        const static long NR = M::NC*M::NR;
+        const static long NC = 1;
+        typedef typename M::type type;
+        typedef typename M::const_ret_type const_ret_type;
+        typedef typename M::mem_manager_type mem_manager_type;
+        typedef typename M::layout_type layout_type;
+
+        const_ret_type apply ( long r, long ) const { return (&m(0,0))[r]; }
+
+        long nr () const { return m.size(); }
+        long nc () const { return 1; }
+
+        template <typename U> bool aliases               ( const matrix_exp<U>& item) const { return m.aliases(item); }
+        template <typename U> bool destructively_aliases ( const matrix_exp<U>& item) const { return m.aliases(item); }
+    }; 
+
+    template <
+        typename T,
+        long NR,
+        long NC,
+        typename MM
+        >
+    const matrix_op<op_mat_to_vect2<T,NR,NC,MM> > reshape_to_column_vector (
+        const matrix<T,NR,NC,MM,row_major_layout>& m
+    )
+    {
+        typedef op_mat_to_vect2<T,NR,NC,MM> op;
+        return matrix_op<op>(op(m.ref()));
+    }
+
+// ----------------------------------------------------------------------------------------
+
     template <typename M1, typename M2>
     struct op_join_rows 
     {
@@ -3958,11 +4007,13 @@ namespace dlib
         // don't have the same number of rows
         COMPILE_TIME_ASSERT(EXP1::NR == EXP2::NR || (EXP1::NR*EXP2::NR == 0));
 
-        DLIB_ASSERT(a.nr() == b.nr(),
+        DLIB_ASSERT(a.nr() == b.nr() || a.size() == 0 || b.size() == 0,
             "\tconst matrix_exp join_rows(const matrix_exp& a, const matrix_exp& b)"
             << "\n\tYou can only use join_rows() if both matrices have the same number of rows"
             << "\n\ta.nr(): " << a.nr()
             << "\n\tb.nr(): " << b.nr()
+            << "\n\ta.nc(): " << a.nc()
+            << "\n\tb.nc(): " << b.nc()
             );
 
         typedef op_join_rows<EXP1,EXP2> op;
@@ -4032,9 +4083,11 @@ namespace dlib
         // don't have the same number of columns 
         COMPILE_TIME_ASSERT(EXP1::NC == EXP2::NC || (EXP1::NC*EXP2::NC == 0));
 
-        DLIB_ASSERT(a.nc() == b.nc(),
+        DLIB_ASSERT(a.nc() == b.nc() || a.size() == 0 || b.size() == 0,
             "\tconst matrix_exp join_cols(const matrix_exp& a, const matrix_exp& b)"
             << "\n\tYou can only use join_cols() if both matrices have the same number of columns"
+            << "\n\ta.nr(): " << a.nr()
+            << "\n\tb.nr(): " << b.nr()
             << "\n\ta.nc(): " << a.nc()
             << "\n\tb.nc(): " << b.nc()
             );

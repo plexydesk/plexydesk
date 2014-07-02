@@ -64,6 +64,7 @@ set (tests
    kcentroid.cpp
    kernel_matrix.cpp
    kmeans.cpp
+   learning_to_track.cpp
    least_squares.cpp
    linear_manifold_regularizer.cpp
    lz77_buffer.cpp
@@ -139,13 +140,13 @@ set (tests
    vectorstream.cpp
    )
 
-# create a variable called target_name and set it to the string "test"
-set (target_name test)
+# create a variable called target_name and set it to the string "dtest"
+set (target_name dtest)
 
 PROJECT(${target_name})
 
 # add all the cpp files we want to compile to this list.  This tells
-# cmake that they are part of our target (which is the executable named test)
+# cmake that they are part of our target (which is the executable named dtest)
 ADD_EXECUTABLE(${target_name} main.cpp tester.cpp ${tests})
 
 # Turn on all warnings when using gcc.

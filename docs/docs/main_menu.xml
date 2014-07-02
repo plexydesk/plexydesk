@@ -91,6 +91,10 @@
                <name>Home</name>
                <link>http://dlib.net</link>
             </item>
+            <item>
+               <name>Dlib Blog</name>
+               <link>http://blog.dlib.net</link>
+            </item>
          </web>
 
          <item>
@@ -130,6 +134,14 @@
             <name>Examples: Python</name>
             <sub>
                <item>
+                  <name>Face_Detector</name>
+                  <link>face_detector.py.html</link>
+               </item>
+               <item>
+                  <name>Train_Object_Detector</name>
+                  <link>train_object_detector.py.html</link>
+               </item>
+               <item>
                   <name>Sequence_Segmenter</name>
                   <link>sequence_segmenter.py.html</link>
                </item>
@@ -150,6 +162,10 @@
          <item nolink="true">
             <name>Examples: C++</name>
             <sub>
+               <item>
+                  <name>Learning_to_Track</name>
+                  <link>learning_to_track_ex.cpp.html</link>
+               </item>
                <item>
                   <name>Structural_Support_Vector_Machines</name>
                   <link>svm_struct_ex.cpp.html</link>
@@ -263,6 +279,14 @@
                   <link>fhog_ex.cpp.html</link>
                </item>
                <item>
+                  <name>FHOG_Object_Detection</name>
+                  <link>fhog_object_detector_ex.cpp.html</link>
+               </item>
+               <item>
+                  <name>Face_Detection</name>
+                  <link>face_detection_ex.cpp.html</link>
+               </item>
+               <item>
                   <name>SURF</name>
                   <link>surf_ex.cpp.html</link>
                </item>
@@ -365,6 +389,10 @@
                <item>
                   <name>Logger_Advanced</name>
                   <link>logger_ex_2.cpp.html</link>
+               </item>
+               <item>
+                  <name>Logger_Custom_Output</name>
+                  <link>logger_custom_output_ex.cpp.html</link>
                </item>
                <item>
                   <name>XML_Parser</name>
@@ -470,7 +498,7 @@
             </item>
             <item>
                <name>Who uses dlib?</name>
-               <link>http://sourceforge.net/apps/mediawiki/dclib/index.php?title=Known_users</link>
+               <link>http://sourceforge.net/p/dclib/wiki/Known_users/</link>
             </item>
          </section>
 

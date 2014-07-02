@@ -77,6 +77,7 @@ namespace dlib
 
 
         typedef T type;
+        typedef T value_type;
         typedef mem_manager mem_manager_type;
 
         array (
@@ -176,6 +177,13 @@ namespace dlib
         void push_back (
             T& item
         );
+
+        typedef T* iterator;
+        typedef const T* const_iterator;
+        iterator                begin()                         { return array_elements; }
+        const_iterator          begin() const                   { return array_elements; }
+        iterator                end()                           { return array_elements+array_size; }
+        const_iterator          end() const                     { return array_elements+array_size; }
 
     private:
 
@@ -356,7 +364,7 @@ namespace dlib
     )
     {
         // make sure requires clause is not broken
-        DLIB_ASSERT(( size <= this->max_size() ),
+        DLIB_CASSERT(( size <= this->max_size() ),
             "\tvoid array::set_size"
             << "\n\tsize must be <= max_size()"
             << "\n\tsize: " << size 

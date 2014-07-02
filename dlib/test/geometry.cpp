@@ -648,6 +648,14 @@ namespace
             DLIB_TEST(length(t(tinv(from[i]))-from[i]) < 1e-14);
         }
 
+        ostringstream sout;
+        serialize(t, sout);
+        istringstream sin(sout.str());
+        point_transform_affine t2;
+        DLIB_TEST(length(t2(point(2,3)) - point(2,3)) < 1e-14);
+        deserialize(t2, sin);
+        DLIB_TEST(max(abs(t2.get_m()-t.get_m())) < 1e-14);
+        DLIB_TEST(max(abs(t2.get_b()-t.get_b())) < 1e-14);
     }
 
 // ----------------------------------------------------------------------------------------
@@ -682,8 +690,8 @@ namespace
                 dlib::vector<double,2> p = randm(2,1,rnd)*1000;
                 from_points.push_back(p);
                 to_points.push_back(tran(p) + (randm(2,1,rnd)-0.5)*error_rate);
-                DLIB_TEST(length(traninv(tran(p))-p) <= 1e-6);
-                DLIB_TEST(length(tran(traninv(p))-p) <= 1e-6);
+                DLIB_TEST(length(traninv(tran(p))-p) <= 1e-5);
+                DLIB_TEST(length(tran(traninv(p))-p) <= 1e-5);
             }
 
 
@@ -706,6 +714,14 @@ namespace
                 dlog << LINFO << " errors: mean/max: " << rs.mean() << "  " << rs.max();
                 pass_rate.add(0);
             }
+
+            ostringstream sout;
+            serialize(tran, sout);
+            istringstream sin(sout.str());
+            point_transform_projective tran3;
+            DLIB_TEST(length(tran3(point(2,3)) - point(2,3)) < 1e-14);
+            deserialize(tran3, sin);
+            DLIB_TEST(max(abs(tran3.get_m()-tran.get_m())) < 1e-14);
         }
 
         dlog << LINFO << " pass_rate.mean(): "<< pass_rate.mean();

@@ -14,13 +14,190 @@
 New Features:
 
 Non-Backwards Compatible Changes:
-   - The spatial filtering functions no longer zero the borders if you set the add_to 
-     parameter to true.  
 
 Bug fixes:
 
 Other:
+
 </current>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.9" date="Jun 16, 2014">
+New Features:
+
+Non-Backwards Compatible Changes:
+
+Bug fixes:
+   - The new simplified serialization API that works like serialize("filename")&lt;&lt;object 
+     was not opening files in binary mode and therefore didn't work properly on Windows.  
+     This has been fixed.
+
+Other:
+
+</old>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.8" date="Jun 02, 2014">
+New Features:
+   - Added the ability to set a previously trained function as a prior to the
+     svm_multiclass_linear_trainer, svm_c_linear_trainer, and svm_rank_trainer
+     objects.
+   - Added a user settable loss to the structural_assignment_trainer and
+     structural_track_association_trainer objects.  
+   - Added evaluate_detectors(), a function for efficiently running multiple fHOG
+     based object detectors.
+   - Added the new split_on_first() and split_on_last() string manipulation functions.
+   - Added locally_change_current_dir, a RAII tool for switching between directories.
+   - You can now make a 1x1 matrix containing a single value by calling mat() on a single
+     scalar value.
+   - The point transform functions and frobmetric_training_sample are now serializable.
+   - Added a simplified operator &lt;&lt; and &gt;&gt; based syntax for serializing to and
+     from files.  So now you can serialize to a file using a syntax of:
+       serialize("myfile.dat") &lt;&lt; myobject &lt;&lt; another_object;
+     and then load those objects from disk via:
+       deserialize("myfile.dat") &gt;&gt; myobject &gt;&gt; another_object;
+     An arbitrary number of objects can be serialized or deserialized by
+     chaining the &lt;&lt; and &gt;&gt; operators.
+
+Non-Backwards Compatible Changes:
+
+Bug fixes:
+   - Fixed a bug pointed out by Daniel Girardeau-Montaut. The covariance()
+     function didn't work on non-double valued matrices.
+   - Fixed a bug in the backtracking_line_search() function pointed out by
+     Ping-Chang Shih. The function ignored the max_iter parameter.
+   - Fixed a compiler error encountered when using clang 3.4 on Mac OS X 10.9.
+     Thanks to Martin Fergie for reporting this problem.
+   - Fixed a potential divide by zero in draw_fhog()
+
+Other:
+   - Added an example program showing how to set a custom logger output hook.
+   - Made linear decision_functions which use sparse vectors much faster.
+
+</old>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.7" date="Apr 09, 2014">
+New Features:
+   - Added a Python API for working with fHOG based object detectors.  See the
+     new python example programs train_object_detector.py and face_detector.py for
+     more details.
+   - Added the ability to use a user supplied fHOG style feature extractor with 
+     the scan_fhog_pyramid object.  So now you can define your own version of HOG
+     for use with these tools.
+   - The oca solver now supports taking a user supplied prior vector. That is,
+     it lets you use a regularizer like ||w-prior||^2 instead of the usual
+     ||w||^2 regularizer.
+   - Added the structural_track_association_trainer object.  It is a structural
+     SVM tool for creating multi-target tracking algorithms.  See the
+     learning_to_track_ex.cpp example program for an introduction.
+   - Added the following minor utility functions: nearest_center(),
+     add_image_rotations(), set_aspect_ratio(), and tile_images().
+
+Non-Backwards Compatible Changes:
+   - Refactored the load_image_dataset() routines so they are easier to use and
+     more flexible. This introduces a slight backwards incompatibility in that
+     the version that loads full_object_detection objects now returns an ignore
+     rectangle set instead of a parts name list.  Other than that the changes
+     are backwards compatible with previous versions of dlib.
+   - Added a bias term to the assignment_function's model so the user doesn't
+     need to remember, or even understand, that they should add it themselves.
+     However, this change breaks backwards compatibility with the previous
+     serialization format for assignment_function objects.
+
+Bug fixes:
+   - Fixed a number of compile time errors that could occur in rare cases.
+   - The stopping condition for the svr_linear_trainer was too tight, causing it
+     to take an excessive amount of time to converge in some cases. 
+   - Disabled use of XIM for X11 windowing since it makes programs hang on some
+     systems. However, this means the wide character input methods won't work on
+     X11 systems anymore.
+   - Fixed a bug in randomize_samples() which caused the outputs to be not as
+     random as they should be. 
+   - Fixed dlib's CMakeLists.txt file so that the "use FFTW" option actually
+     causes the build to use FFTW.
+   - Fixed a compile time error that triggered when trying to link with FFTW.
+   - mat() did not work correctly when used with std::vector&lt;bool&gt; objects.
+     This has been fixed.
+
+Other:
+
+</old>
+
+<!-- **************************************************************************************  -->
+
+<old name="18.6" date="Feb 03, 2014">
+New Features:
+   - Object Detection Tools:
+      - Added scan_fhog_pyramid, a tool for creating Histogram of Oriented Gradient (HOG)
+        based object detectors. 
+      - Added get_frontal_face_detector(), a HOG based face detector.  
+      - Added an option to include "ignore/don't care" truth boxes to the
+        structural_object_detection_trainer.  This allows a user to tell the trainer that
+        they don't care if certain objects are detected or not detected.  
+   - Image Processing Tools:
+      - Added extract_image_chips()
+      - Added a version of draw_rectangle() for drawing on images.
+      - The spatial filtering routines now support even sized filters.
+      - Added flip_image_dataset_left_right(), upsample_image_dataset(), and
+        rotate_image_dataset().
+   - Machine Learning Tools:
+      - Added a nuclear norm regularization option to the structural SVM solver.
+      - Added the option to learn only non-negative weights to the
+        svm_multiclass_linear_trainer.
+   - Speed Improvements:
+      - The svm_multiclass_linear_trainer, one_vs_one_trainer, and one_vs_all_trainer
+        objects are now multithreaded.  This also means you have to #include
+        dlib/svm_threaded.h instead of dlib/svm.h to use these tools. 
+      - A number of image processing tools can now optionally use SSE and AVX instructions
+        and are therefore considerably faster.  In particular, the following tools have been
+        accelerated: extract_fhog_features, resize_image, pyramid_down, pyramid_up,
+        spatially_filter_image_separable, and spatially_filter_image.
+   - Added an inv() routine that inverts point transformation functions.
+   - Added a sign() routine for matrix objects.
+
+Non-Backwards Compatible Changes:
+   - The spatial image filtering functions have the following changes:
+      - They no longer zero the image borders when you set the add_to parameter to true.  
+      - The spatially_filter_image_separable_down() routine now only allows grayscale
+        output images.
+   - Changed the default parameters of the test_box_overlap object. Now it defaults to
+     using exactly the PASCAL VOC match criterion.
+   - To use the svm_multiclass_linear_trainer, one_vs_one_trainer, or one_vs_all_trainer
+     objects you now have to #include dlib/svm_threaded.h instead of dlib/svm.h. 
+   - pyramid_up() no longer has a levels option.
+
+Bug fixes:
+   - Fixed a compile time bug that could occur when wide character strings were
+     serialized.
+   - Fixed a compile time bug occurring in gcc 4.7.1 on SUSE Linux.  Thanks to Volker
+     Härtel for finding this.
+   - Fixed compile time errors that occurred when using gcc on cygwin.
+   - Fixed a compile time bug that could occur when serializing mlp objects.
+   - Fixed a bug in the bigint object that caused division to sometimes produce incorrect
+     results.
+   - Fixed a bug which sometimes caused load_image_dataset() to erroneously report that
+     the dataset file could not be found.
+   - Fixed a bug in the structural_object_detection_trainer that caused it to erroneously
+     throw a impossible_labeling_error exception in certain rare cases.
+   - Updated find_max_factor_graph_nmplp() to use the improved version of the algorithm
+     from the 2011 paper Introduction to dual decomposition for inference by David Sontag,
+     Amir Globerson, and Tommi Jaakkola.  The original algorithm presented in their 2008
+     paper had an error that negatively affected its convergence.  Thanks to James Gunning
+     for pointing this out.
+
+Other:
+   - Fixed many compiler warnings in gcc 4.8.
+   - Made many of the mat() converters bind the resulting matrix expressions into BLAS
+     functions.
+   - libpng and libjpeg are now included in the dlib/external folder to enable easy static
+     linking to these libraries on platforms that typically don't have them (e.g. Windows).
+     Moreover, dlib's cmake files will automatically perform this static linking when no
+     copy of these libraries is found on the system. 
+</old>
 
 <!-- **************************************************************************************  -->
 

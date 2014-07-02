@@ -1,12 +1,15 @@
 // The contents of this file are in the public domain. See LICENSE_FOR_EXAMPLE_PROGRAMS.txt
 /*
 
-    This is an example illustrating the use of the dlib tools for
-    detecting objects in images.  In this example we will create
-    three simple images, each containing some white squares.  We
-    will then use the sliding window classifier tools to learn to 
-    detect these squares.
+    This is an example illustrating the use of dlib's bag-of-visual-word based
+    tools for detecting objects in images.  In this example we will create three
+    simple images, each containing some white squares.  We will then use the
+    sliding window classifier tools to learn to detect these squares.
 
+    If the objects you want to detect are somewhat rigid in appearance (e.g.
+    faces, pedestrians, etc.) then you should try the methods shown in the
+    fhog_object_detector_ex.cpp example program before trying to use the
+    bag-of-visual-word tools shown in this example.  
 */
 
 
@@ -223,7 +226,7 @@ int main()
 
 
 
-        // Lets display the output of the detector along with our training images.
+        // Let's display the output of the detector along with our training images.
         image_window win;
         for (unsigned long i = 0; i < images.size(); ++i)
         {
@@ -244,13 +247,10 @@ int main()
 
 
         // Finally, note that the detector can be serialized to disk just like other dlib objects.
-        ofstream fout("object_detector.dat", ios::binary);
-        serialize(detector, fout);
-        fout.close();
+        serialize("object_detector.dat") << detector;
 
         // Recall from disk.
-        ifstream fin("object_detector.dat", ios::binary);
-        deserialize(detector, fin);
+        deserialize("object_detector.dat") >> detector;
     }
     catch (exception& e)
     {

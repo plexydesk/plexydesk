@@ -208,6 +208,71 @@ on_window_resized(
 
 // ----------------------------------------------------------------------------------------
 
+void propagate_labels(
+    const std::string& label,
+    dlib::image_dataset_metadata::dataset& data,
+    unsigned long prev,
+    unsigned long next
+)
+{
+    if (prev == next || next >= data.images.size())
+        return;
+
+
+    for (unsigned long i = 0; i < data.images[prev].boxes.size(); ++i)
+    {
+        if (data.images[prev].boxes[i].label != label)
+            continue;
+
+        // figure out which box in the next image matches the current one the best
+        const rectangle cur = data.images[prev].boxes[i].rect;
+        double best_overlap = 0;
+        unsigned long best_idx = 0;
+        for (unsigned long j = 0; j < data.images[next].boxes.size(); ++j)
+        {
+            const rectangle next_box = data.images[next].boxes[j].rect;
+            const double overlap = cur.intersect(next_box).area()/(double)(cur+next_box).area();
+            if (overlap > best_overlap)
+            {
+                best_overlap = overlap;
+                best_idx = j;
+            }
+        }
+
+        // If we found a matching rectangle in the next image and the best match doesn't
+        // already have a label.
+        if (best_overlap > 0.5 && data.images[next].boxes[best_idx].label == "")
+        {
+            data.images[next].boxes[best_idx].label = label;
+        }
+    }
+
+}
+
+// ----------------------------------------------------------------------------------------
+
+bool has_label_or_all_boxes_labeled (
+    const std::string& label,
+    const dlib::image_dataset_metadata::image& img 
+)
+{
+    if (label.size() == 0)
+        return true;
+
+    bool all_boxes_labeled = true;
+    for (unsigned long i = 0; i < img.boxes.size(); ++i)
+    {
+        if (img.boxes[i].label == label)
+            return true;
+        if (img.boxes[i].label.size() == 0)
+            all_boxes_labeled = false;
+    }
+
+    return all_boxes_labeled;
+}
+
+// ----------------------------------------------------------------------------------------
+
 void metadata_editor::
 on_keydown (
     unsigned long key,
@@ -230,10 +295,36 @@ on_keydown (
 
     if (key == base_window::KEY_UP)
     {
+        if (state&base_window::KBD_MOD_CONTROL)
+        {
+            // If the label we are supposed to propagate doesn't exist in the current image
+            // then don't advance.
+            if (!has_label_or_all_boxes_labeled(display.get_default_overlay_rect_label(),metadata.images[image_pos]))
+                return;
+
+            // if the next image is going to be empty then fast forward to the next one
+            while (image_pos > 1 && metadata.images[image_pos-1].boxes.size() == 0)
+                --image_pos;
+
+            propagate_labels(display.get_default_overlay_rect_label(), metadata, image_pos, image_pos-1);
+        }
         select_image(image_pos-1);
     }
     else if (key == base_window::KEY_DOWN)
     {
+        if (state&base_window::KBD_MOD_CONTROL)
+        {
+            // If the label we are supposed to propagate doesn't exist in the current image
+            // then don't advance.
+            if (!has_label_or_all_boxes_labeled(display.get_default_overlay_rect_label(),metadata.images[image_pos]))
+                return;
+
+            // if the next image is going to be empty then fast forward to the next one
+            while (image_pos+1 < metadata.images.size() && metadata.images[image_pos+1].boxes.size() == 0)
+                ++image_pos;
+
+            propagate_labels(display.get_default_overlay_rect_label(), metadata, image_pos, image_pos+1);
+        }
         select_image(image_pos+1);
     }
 }
@@ -440,8 +531,11 @@ display_about(
                         "command line.  An example would be '--parts \"leye reye nose mouth\"'."
                         ,0,0) << endl << endl;
 
-    sout << wrap_string("Finally, hold ctrl and scroll the mouse wheel to zoom while normal left click "
-                        "and drag allows you to navigate around the image.",0,0) << endl;
+    sout << wrap_string("Additionally, you can hold ctrl and then scroll the mouse wheel to zoom.  A normal left click "
+                        "and drag allows you to navigate around the image.  Holding ctrl and "
+                        "left clicking a rectangle will give it the label from the Next Label field. "
+                        "Finally, holding ctrl and pressing the up or down keyboard keys will propagate "
+                        "rectangle labels from one image to the next and also skip empty images.",0,0) << endl;
 
     message_box("About Image Labeler",sout.str());
 }

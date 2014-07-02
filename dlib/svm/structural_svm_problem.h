@@ -438,7 +438,8 @@ namespace dlib
 
             if (converged)
             {
-                return current_risk_gap < std::max(cache_based_eps,cache_based_eps*current_risk_value);
+                return (current_risk_gap < std::max(cache_based_eps,cache_based_eps*current_risk_value)) || 
+                       (current_risk_gap == 0);
             }
 
             if (current_risk_gap < eps)
@@ -452,7 +453,8 @@ namespace dlib
                 {
                     converged = true;
                     skip_cache = false;
-                    return current_risk_gap < std::max(cache_based_eps,cache_based_eps*current_risk_value);
+                    return (current_risk_gap < std::max(cache_based_eps,cache_based_eps*current_risk_value)) ||
+                           (current_risk_gap == 0);
                 }
 
                 ++count_below_eps;
@@ -548,7 +550,7 @@ namespace dlib
         ) const
         {
             obj = 0;
-            grad.set_size(m.size());
+            grad.set_size(m.size(), 1);
             grad = 0;
 
             matrix<double> u,v,w,f;
@@ -564,14 +566,12 @@ namespace dlib
                 f = matrix_cast<double>(reshape(rowm(m, range(idx, idx+size-1)), nr, nc));
                 svd3(f, u,w,v);
 
-                w = round_zeros(w, std::max(1e-9,max(w)*1e-7)); 
 
                 const double norm = sum(w);
                 obj += strength*norm;
                 nuclear_norm_part += strength*norm/C;
 
-                w = w>0;
-                f = u*diagm(w)*trans(v);
+                f = u*trans(v);
 
                 set_rowm(grad, range(idx, idx+size-1)) = matrix_cast<double>(strength*reshape_to_column_vector(f));
             }

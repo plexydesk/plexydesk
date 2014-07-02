@@ -104,27 +104,6 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
-    template <typename funct>
-    class negate_function_object 
-    {
-    public:
-        negate_function_object(const funct& f_) : f(f_){}
-
-        template <typename T>
-        double operator()(const T& x) const
-        {
-            return -f(x);
-        }
-
-    private:
-        const funct& f;
-    };
-
-    template <typename funct>
-    const negate_function_object<funct> negate_function(const funct& f) { return negate_function_object<funct>(f); }
-
-// ----------------------------------------------------------------------------------------
-
     template <typename funct, typename EXP1, typename EXP2>
     struct clamped_function_object
     {
@@ -184,7 +163,7 @@ namespace dlib
         // The starting point (i.e. x) must be a column vector.  
         COMPILE_TIME_ASSERT(T::NC <= 1);
 
-        DLIB_ASSERT (
+        DLIB_CASSERT (
             is_col_vector(x),
             "\tdouble find_min()"
             << "\n\tYou have to supply column vectors to this function"
@@ -244,7 +223,7 @@ namespace dlib
         // The starting point (i.e. x) must be a column vector.  
         COMPILE_TIME_ASSERT(T::NC <= 1);
 
-        DLIB_ASSERT (
+        DLIB_CASSERT (
             is_col_vector(x),
             "\tdouble find_max()"
             << "\n\tYou have to supply column vectors to this function"
@@ -311,7 +290,7 @@ namespace dlib
         // The starting point (i.e. x) must be a column vector.  
         COMPILE_TIME_ASSERT(T::NC <= 1);
 
-        DLIB_ASSERT (
+        DLIB_CASSERT (
             is_col_vector(x) && derivative_eps > 0,
             "\tdouble find_min_using_approximate_derivatives()"
             << "\n\tYou have to supply column vectors to this function"
@@ -374,7 +353,7 @@ namespace dlib
         // The starting point (i.e. x) must be a column vector.  
         COMPILE_TIME_ASSERT(T::NC <= 1);
 
-        DLIB_ASSERT (
+        DLIB_CASSERT (
             is_col_vector(x) && derivative_eps > 0,
             "\tdouble find_max_using_approximate_derivatives()"
             << "\n\tYou have to supply column vectors to this function"
@@ -478,7 +457,7 @@ namespace dlib
         // The starting point (i.e. x) must be a column vector.  
         COMPILE_TIME_ASSERT(T::NC <= 1);
 
-        DLIB_ASSERT (
+        DLIB_CASSERT (
             is_col_vector(x) && is_col_vector(x_lower) && is_col_vector(x_upper) &&
             x.size() == x_lower.size() && x.size() == x_upper.size(),
             "\tdouble find_min_box_constrained()"
@@ -602,7 +581,7 @@ namespace dlib
         // The starting point (i.e. x) must be a column vector.  
         COMPILE_TIME_ASSERT(T::NC <= 1);
 
-        DLIB_ASSERT (
+        DLIB_CASSERT (
             is_col_vector(x) && is_col_vector(x_lower) && is_col_vector(x_upper) &&
             x.size() == x_lower.size() && x.size() == x_upper.size(),
             "\tdouble find_max_box_constrained()"

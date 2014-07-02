@@ -251,6 +251,22 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    template <
+        typename funct
+        >
+    const negate_function_object<funct> negate_function(
+        const funct& f
+    );
+    /*!
+        requires
+            - f == a function that returns a scalar
+        ensures
+            - returns a function that represents the negation of f.  That is,
+              the returned function object represents g(x) == -f(x)
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     class optimize_single_variable_failure : public error;
     /*!
         This is the exception class used by the functions defined below.
@@ -267,7 +283,8 @@ namespace dlib
         const double begin = -1e200,
         const double end = 1e200,
         const double eps = 1e-3,
-        const long max_iter = 100
+        const long max_iter = 100,
+        const double initial_search_radius = 1
     )
     /*!
         requires
@@ -276,13 +293,17 @@ namespace dlib
             - begin <= starting_point <= end
             - f must be a function of a double that returns a double
               (e.g. f(starting_point) should be a valid expression that evaluates to a double)
+            - initial_search_radius > 0
         ensures
             - Finds a point P such that:
                 - P is a local minimum of the function f().   
                 - begin <= P <= end
             - Evaluates f() no more than max_iter times
             - Stops searching when the window around the minimum point is smaller than eps.
-              The search will begin with the given starting_point.
+              The search will begin with the given starting_point and expand out to the
+              left and right by initial_search_radius sized steps.  So if you think the
+              minimum is likely to be found within X distance from the starting_point then
+              set initial_search_radius to X.
             - #starting_point == P
             - returns f(P)
         throws
@@ -302,7 +323,8 @@ namespace dlib
         const double begin = -1e200,
         const double end = 1e200,
         const double eps = 1e-3,
-        const long max_iter = 100
+        const long max_iter = 100,
+        const double initial_search_radius = 1
     )
     /*!
         requires
@@ -311,13 +333,17 @@ namespace dlib
             - begin <= starting_point <= end
             - f must be a function of a double that returns a double
               (e.g. f(starting_point) should be a valid expression that evaluates to a double)
+            - initial_search_radius > 0
         ensures
             - Finds a point P such that:
                 - P is a local maximum of the function f().   
                 - begin <= P <= end
             - Evaluates f() no more than max_iter times
-            - Stops searching when the window around the minimum point is smaller than eps.
-              The search will begin with the given starting_point.
+            - Stops searching when the window around the maximum point is smaller than eps.
+              The search will begin with the given starting_point and expand out to the
+              left and right by initial_search_radius sized steps.  So if you think the
+              maximum is likely to be found within X distance from the starting_point then
+              set initial_search_radius to X.
             - #starting_point == P
             - returns f(P)
         throws

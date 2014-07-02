@@ -37,6 +37,7 @@ namespace dlib
                 - get_c() == 1
                 - this object will not be verbose unless be_verbose() is called
                 - #get_oca() == oca() (i.e. an instance of oca with default parameters) 
+                - has_prior() == false
 
             WHAT THIS OBJECT REPRESENTS
                 This object represents a tool for training a multiclass support 
@@ -174,6 +175,33 @@ namespace dlib
         /*!
             ensures
                 - #learns_nonnegative_weights() == value
+                - if (value == true) then
+                    - #has_prior() == false
+        !*/
+
+        void set_prior (
+            const trained_function_type& prior
+        );
+        /*!
+            ensures
+                - Subsequent calls to train() will try to learn a function similar to the
+                  given prior.
+                - #has_prior() == true
+                - #learns_nonnegative_weights() == false
+        !*/
+
+        bool has_prior (
+        ) const
+        /*!
+            ensures
+                - returns true if a prior has been set and false otherwise.  Having a prior
+                  set means that you have called set_prior() and supplied a previously
+                  trained function as a reference.  In this case, any call to train() will
+                  try to learn a function that matches the behavior of the prior as close
+                  as possible but also fits the supplied training data.  In more technical
+                  detail, having a prior means we replace the ||w||^2 regularizer with one
+                  of the form ||w-prior||^2 where w is the set of parameters for a learned
+                  function.
         !*/
 
         trained_function_type train (
@@ -183,6 +211,10 @@ namespace dlib
         /*!
             requires
                 - is_learning_problem(all_samples, all_labels)
+                - All the vectors in all_samples must have the same dimensionality.
+                - if (has_prior()) then
+                    - The vectors in all_samples must have the same dimensionality as the
+                      vectors used to train the prior given to set_prior().  
             ensures
                 - trains a multiclass SVM to solve the given multiclass classification problem.  
                 - returns a multiclass_linear_decision_function F with the following properties:
@@ -200,6 +232,10 @@ namespace dlib
         /*!
             requires
                 - is_learning_problem(all_samples, all_labels)
+                - All the vectors in all_samples must have the same dimensionality.
+                - if (has_prior()) then
+                    - The vectors in all_samples must have the same dimensionality as the
+                      vectors used to train the prior given to set_prior().  
             ensures
                 - trains a multiclass SVM to solve the given multiclass classification problem.  
                 - returns a multiclass_linear_decision_function F with the following properties:

@@ -3,6 +3,7 @@
 #undef DLIB_DRAW_IMAGe_ABSTRACT
 #ifdef DLIB_DRAW_IMAGe_ABSTRACT
 
+#include "../matrix.h"
 
 namespace dlib
 {
@@ -59,6 +60,29 @@ namespace dlib
         typename image_type,
         typename pixel_type
         >
+    void draw_rectangle (
+        image_type& img,
+        const rectangle& rect,
+        const pixel_type& val,
+        unsigned int thickness = 1
+    );
+    /*!
+        requires
+            - image_type == is an implementation of array2d/array2d_kernel_abstract.h
+            - pixel_traits<pixel_type> is defined
+        ensures
+            - Draws the given rectangle onto the image img.  It does this by calling
+              draw_line() four times to draw the four sides of the rectangle.  
+            - The rectancle is drawn with the color given by val.
+            - The drawn rectangle will have edges that are thickness pixels wide.
+    !*/
+
+// ----------------------------------------------------------------------------------------
+    
+    template <
+        typename image_type,
+        typename pixel_type
+        >
     void fill_rect (
         image_type& img,
         const rectangle& rect,
@@ -69,6 +93,24 @@ namespace dlib
             - pixel_traits<pixel_type> is defined
         ensures
             - fills the area defined by rect in the given image with the given pixel value.
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    template <
+        typename image_array_type
+        >
+    matrix<typename image_array_type::value_type::type> tile_images (
+        const image_array_type& images
+    );
+    /*!
+        requires
+            - image_array_type is a dlib::array of array2d objects, each containing pixels
+              with a pixel_traits definition or any type with a compatible interface.
+        ensures
+            - This function takes the given images and tiles them into a single large
+              square image and returns this new big tiled image.  Therefore, it is a useful
+              method to visualize many small images at once.
     !*/
 
 // ----------------------------------------------------------------------------------------

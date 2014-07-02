@@ -47,11 +47,13 @@ namespace dlib
             ensures
                 - #get_c() == 100
                 - this object isn't verbose
-                - #get_epsilon() == 0.1
+                - #get_epsilon() == 0.01
                 - #get_num_threads() == 2
                 - #get_max_cache_size() == 5
                 - #get_feature_extractor() == a default initialized feature_extractor
                 - #forces_assignment() == false
+                - #get_loss_per_false_association() == 1
+                - #get_loss_per_missed_association() == 1
         !*/
 
         explicit structural_assignment_trainer (
@@ -61,11 +63,13 @@ namespace dlib
             ensures
                 - #get_c() == 100
                 - this object isn't verbose
-                - #get_epsilon() == 0.1
+                - #get_epsilon() == 0.01
                 - #get_num_threads() == 2
                 - #get_max_cache_size() == 40
                 - #get_feature_extractor() == fe 
                 - #forces_assignment() == false
+                - #get_loss_per_false_association() == 1
+                - #get_loss_per_missed_association() == 1
         !*/
 
         const feature_extractor& get_feature_extractor (
@@ -130,6 +134,46 @@ namespace dlib
                   cache the results of these invocations.  This function returns the number 
                   of cache elements per training sample kept in the cache.  Note that a value 
                   of 0 means caching is not used at all.  
+        !*/
+
+        void set_loss_per_false_association (
+            double loss
+        );
+        /*!
+            requires
+                - loss > 0
+            ensures
+                - #get_loss_per_false_association() == loss
+        !*/
+
+        double get_loss_per_false_association (
+        ) const;
+        /*!
+            ensures
+                - returns the amount of loss experienced for associating two objects
+                  together that shouldn't be associated.  If you care more about avoiding
+                  accidental associations than ensuring all possible associations are
+                  identified then then you can increase this value.
+        !*/
+
+        void set_loss_per_missed_association (
+            double loss
+        );
+        /*!
+            requires
+                - loss > 0
+            ensures
+                - #get_loss_per_missed_association() == loss
+        !*/
+
+        double get_loss_per_missed_association (
+        ) const;
+        /*!
+            ensures
+                - returns the amount of loss experienced for failing to associate two
+                  objects that are supposed to be associated.  If you care more about
+                  getting all the associations than avoiding accidentally associating
+                  objects that shouldn't be associated then you can increase this value.
         !*/
 
         void be_verbose (

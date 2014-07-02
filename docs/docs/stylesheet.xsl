@@ -290,7 +290,18 @@ function BigToggle(node)
       margin-right: auto;
    }
 </style>
-            
+         <xsl:if test="$is_chm != 'true'">
+            <script> <!-- Google Analytics -->
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-51919357-1', 'dlib.net');
+            ga('send', 'pageview');
+            </script>
+         </xsl:if>
+
          </head>
          <body bgcolor="{$background_color}">
             <a name="top" />
@@ -344,20 +355,6 @@ function BigToggle(node)
                   
             </div>
 
-            <xsl:if test="$is_chm != 'true'">
-               <!-- Piwik -->
-               <script type="text/javascript">
-               var pkBaseURL = (("https:" == document.location.protocol) ? "https://sourceforge.net/apps/piwik/dclib/" : "http://sourceforge.net/apps/piwik/dclib/");
-               document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-               </script><script type="text/javascript">
-               try {
-               var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-               piwikTracker.trackPageView();
-               piwikTracker.enableLinkTracking();
-               } catch( err ) {}
-               </script><noscript><p><img src="http://sourceforge.net/apps/piwik/dclib/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
-               <!-- End Piwik Tag -->
-            </xsl:if>
          </body>
       </html>
    </xsl:template>
@@ -649,7 +646,7 @@ function BigToggle(node)
          <xsl:variable name="name" select="substring-before(.,'.html')"/>
          <xsl:if test="$fname != ''">
             <xsl:choose>
-               <xsl:when test="position() >= last()-$numcpp">
+               <xsl:when test="position() >= last()">
                   <a href="{.}"><xsl:value-of select="$name"/></a>
                </xsl:when>
                <xsl:otherwise>

@@ -22,6 +22,10 @@
     function which is optimal, in a certain sense, for use with the Hungarian 
     algorithm.  To do this, we will make a simple dataset of example associations 
     and use them to train a supervised machine learning method. 
+
+    Finally, note that there is a whole example program dedicated to assignment learning
+    problems where you are trying to make an object tracker.  So if that is what you are
+    interested in then read the learning_to_track_ex.cpp example program.
 */
 
 
@@ -112,7 +116,7 @@ struct feature_extractor
     unsigned long num_features() const
     {
         // Return the dimensionality of feature vectors produced by get_features()
-        return num_dims + 1;
+        return num_dims;
     }
 
     void get_features (
@@ -128,12 +132,10 @@ struct feature_extractor
               is "good").
     !*/
     {
-        // We will have: 
-        //   - feats(i) == std::pow(left(i) - right(i), 2.0)
-        // Except for the last element of feats which will be equal to 1 and
-        // therefore function as a bias term.  Again, how you define this feature
-        // extractor is highly problem dependent.    
-        feats = join_cols(squared(left - right), ones_matrix<double>(1,1));
+        // Lets just use the squared difference between each vector as our features.
+        // However, it should be emphasized that how to compute the features here is very
+        // problem dependent.  
+        feats = squared(left - right);
     }
 
 };
@@ -193,13 +195,10 @@ int main()
 
 
         // Finally, the assigner can be serialized to disk just like most dlib objects.
-        ofstream fout("assigner.dat", ios::binary);
-        serialize(assigner, fout);
-        fout.close();
+        serialize("assigner.dat") << assigner;
 
         // recall from disk
-        ifstream fin("assigner.dat", ios::binary);
-        deserialize(assigner, fin);
+        deserialize("assigner.dat") >> assigner;
     }
     catch (std::exception& e)
     {

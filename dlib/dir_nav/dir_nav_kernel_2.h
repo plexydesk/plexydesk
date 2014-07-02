@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <libgen.h>
+#include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -281,6 +282,18 @@ namespace dlib
         !*/
 
     };
+
+// ----------------------------------------------------------------------------------------
+
+    inline std::ostream& operator<< (
+        std::ostream& out,
+        const directory& item
+    ) { out << (std::string)item; return out; }
+
+    inline std::ostream& operator<< (
+        std::ostream& out,
+        const file& item
+    ) { out << (std::string)item; return out; }
 
 // ----------------------------------------------------------------------------------------
 
