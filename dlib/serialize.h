@@ -1207,6 +1207,41 @@ namespace dlib
         }
     }
 
+    template <
+        size_t length
+        >
+    inline void serialize (
+        const char (&array)[length],
+        std::ostream& out
+    )
+    {
+        if (length != 0 && array[length-1] == '\0')
+        {
+            // If this is a null terminated string then don't serialize the trailing null.
+            // We do this so that the serialization format for C-strings is the same as
+            // std::string.
+            serialize(length-1, out);
+            out.write(array, length-1);
+            if (!out)
+                throw serialization_error("Error serializing a C-style string");
+        }
+        else 
+        {
+            try
+            {
+                serialize(length,out);
+            }
+            catch (serialization_error& e)
+            {
+                throw serialization_error(e.info + "\n   while serializing a C style array");
+            }
+            if (length != 0)
+                out.write(array, length);
+            if (!out)
+                throw serialization_error("Error serializing a C-style string");
+        }
+    }
+
 // ----------------------------------------------------------------------------------------
 
     template <
@@ -1235,6 +1270,45 @@ namespace dlib
 
         if (size != length)
             throw serialization_error("Error deserializing a C style array, lengths do not match");
+    }
+
+    template <
+        size_t length
+        >
+    inline void deserialize (
+        char (&array)[length],
+        std::istream& in
+    )
+    {
+        size_t size;
+        try
+        {
+            deserialize(size,in); 
+        }
+        catch (serialization_error& e)
+        {
+            throw serialization_error(e.info + "\n   while deserializing a C style array");
+        }
+
+        if (size == length)
+        {
+            in.read(array, size);
+            if (!in)
+                throw serialization_error("Error deserializing a C-style array");
+        }
+        else if (size+1 == length)
+        {
+            // In this case we are deserializing a C-style array so we need to add the null
+            // terminator.
+            in.read(array, size);
+            array[size] = '\0';
+            if (!in)
+                throw serialization_error("Error deserializing a C-style string");
+        }
+        else
+        {
+            throw serialization_error("Error deserializing a C style array, lengths do not match");
+        }
     }
 
 // ----------------------------------------------------------------------------------------
