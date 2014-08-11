@@ -1,8 +1,8 @@
 // Copyright (C) 2014 Massachusetts Institute of Technology, Lincoln Laboratory
 // License: Boost Software License   See LICENSE.txt for the full license.
 // Authors: Davis E. King (davis.king@ll.mit.edu)
-#ifndef MIT_LL_XTECH_CONLL_ToKENIZER_H__
-#define MIT_LL_XTECH_CONLL_ToKENIZER_H__
+#ifndef MIT_LL_XTECH_CONLL_ToKENIZER_H_
+#define MIT_LL_XTECH_CONLL_ToKENIZER_H_
 
 #include <string>
 #include <iostream>
@@ -176,6 +176,8 @@ namespace mitie
                     get_next_char();
                     if (token.size() != 0)
                         return true;
+                    else
+                        ++token_offset;
                 }
                 else
                 {
@@ -215,5 +217,5 @@ namespace mitie
 
 }
 
-#endif // MIT_LL_XTECH_CONLL_ToKENIZER_H__
+#endif // MIT_LL_XTECH_CONLL_ToKENIZER_H_
 
