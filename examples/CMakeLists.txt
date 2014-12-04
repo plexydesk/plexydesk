@@ -4,7 +4,7 @@
 #
 
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 PROJECT(examples)
 
@@ -33,6 +33,7 @@ add_example(custom_trainer_ex)
 add_example(dir_nav_ex)
 add_example(empirical_kernel_map_ex)
 add_example(face_detection_ex)
+add_example(face_landmark_detection_ex)
 add_example(fhog_ex)
 add_example(fhog_object_detector_ex)
 add_example(file_to_code_ex)
@@ -93,5 +94,18 @@ add_example(thread_pool_ex)
 add_example(threads_ex)
 add_example(timer_ex)
 add_example(train_object_detector)
+add_example(train_shape_predictor_ex)
 add_example(using_custom_kernels_ex)
 add_example(xml_parser_ex)
+
+
+find_package(OpenCV)
+if (OpenCV_FOUND)
+   include_directories(${OpenCV_INCLUDE_DIRS})
+
+   ADD_EXECUTABLE(webcam_face_pose_ex webcam_face_pose_ex.cpp)
+   TARGET_LINK_LIBRARIES(webcam_face_pose_ex dlib ${OpenCV_LIBS} )
+endif()
+
+
+
