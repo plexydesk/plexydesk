@@ -42,6 +42,7 @@ hg commit -u "Your Name &lt;your.email@host.com&gt;"
 hg bundle dlibchanges.hg
 </code_box>
 Then <a href="mailto:davis@dlib.net">email me</a> the dlibchanges.hg file and I'll review it and get back to you.
+Alternatively, you can submit a pull request to my clone of <a href="https://github.com/davisking/dlib">dlib on github</a>.
 
          <p> If you want to make a big change or feature addition, it's probably a good idea to talk to me about it first.  
             Additionally, you should read over the coding guidelines below
@@ -419,7 +420,7 @@ for (int i = 0; i &lt; my_std_vector.size(); ++i)
                   be able to easily find out what exception was thrown.  Additionally, exceptions typically contain a
                   message telling you all about the error.  Moreover, 
                   any debugger worth its
-                  salt will be able to show you a stack trace that let's you see exactly where the exception came from.
+                  salt will be able to show you a stack trace that lets you see exactly where the exception came from.
                    The exception <i>forces</i> you, the user, to 
                   be aware of this potential error and to add a catch block to deal with it. 
                   This is where the "hard to use wrong" comes from. 

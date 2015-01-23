@@ -1,7 +1,7 @@
 // Copyright (C) 2011  Davis E. King (davis@dlib.net)
 // License: Boost Software License   See LICENSE.txt for the full license.
-#ifndef DLIB_STRUCTURAL_SVM_PRObLEM_H__
-#define DLIB_STRUCTURAL_SVM_PRObLEM_H__
+#ifndef DLIB_STRUCTURAL_SVM_PRObLEM_Hh_
+#define DLIB_STRUCTURAL_SVM_PRObLEM_Hh_
 
 #include "structural_svm_problem_abstract.h"
 #include "../algs.h"
@@ -75,6 +75,12 @@ namespace dlib
                 psi = true_psi;
             else
                 prob->get_truth_joint_feature_vector(sample_idx, psi);
+
+            if (is_matrix<feature_vector_type>::value)
+            {
+                DLIB_CASSERT((long)psi.size() == prob->get_num_dimensions(),
+                    "The dimensionality of your PSI vector doesn't match get_num_dimensions()");
+            }
         }
 
         void separation_oracle_cached (
@@ -128,6 +134,11 @@ namespace dlib
 
 
             prob->separation_oracle(sample_idx, current_solution, out_loss, out_psi);
+            if (is_matrix<feature_vector_type>::value)
+            {
+                DLIB_CASSERT((long)out_psi.size() == prob->get_num_dimensions(),
+                    "The dimensionality of your PSI vector doesn't match get_num_dimensions()");
+            }
 
             if (!cache_enabled)
                 return;
@@ -618,5 +629,5 @@ namespace dlib
 
 }
 
-#endif // DLIB_STRUCTURAL_SVM_PRObLEM_H__
+#endif // DLIB_STRUCTURAL_SVM_PRObLEM_Hh_
 
