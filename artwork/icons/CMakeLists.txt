@@ -1,0 +1,9 @@
+#ADD_SUBDIRECTORY(oxygen)
+
+#FILE(GLOB PNGFILES *.png)
+
+#INSTALL(FILES ${PNGFILES} DESTINATION share/plexy/skins/default)
+
+IF (NOT APPLE)
+INSTALL(FILES "plexydesk.png" DESTINATION share/plexy)
+ENDIF (NOT APPLE)

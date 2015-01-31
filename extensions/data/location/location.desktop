@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Location Engine
+Type=Engine
+Comment=Provides geolocation service
+X-PLEXYDESK-Library=locationengine

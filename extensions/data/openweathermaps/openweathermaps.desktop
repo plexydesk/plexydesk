@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=openweathermaps
+Type=Engine
+Comment=Weather Data Engine to gather wather data from http://openweathermap.org/ 
+X-PLEXYDESK-Library=openweathermapsengine

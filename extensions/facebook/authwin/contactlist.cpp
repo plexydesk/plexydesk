@@ -1,0 +1,124 @@
+#include "contactlist.h"
+#include "contactlistitem.h"
+
+#include <desktopwidget.h>
+
+class ContactList::PrivateContactList {
+public:
+  PrivateContactList() {}
+  ~PrivateContactList() {}
+
+  QList<ContactListItem *> mContacts;
+  PlexyDesk::DesktopWidget *mFrame;
+};
+
+ContactList::ContactList(const QRectF &rect, QGraphicsObject *parent)
+    : PlexyDesk::ScrollWidget(rect, parent), d(new PrivateContactList) {
+  d->mFrame =
+      new PlexyDesk::DesktopWidget(QRectF(rect.x(), rect.y(), 0.0, 24), this);
+  d->mFrame->setWidgetFlag(PlexyDesk::DesktopWidget::SHADOW, false);
+  d->mFrame->setWidgetFlag(PlexyDesk::DesktopWidget::BACKGROUND, false);
+  d->mFrame->setFlag(QGraphicsItem::ItemIsMovable, false);
+  setFlag(QGraphicsItem::ItemIsMovable, false);
+
+  setViewport(d->mFrame);
+}
+
+ContactList::~ContactList() {
+  qDeleteAll(d->mContacts);
+  delete d;
+}
+
+void ContactList::addContact(const QString &id, const QString &contactName,
+                             const QString &statusMessage,
+                             const QPixmap &pixmap) {
+  Q_FOREACH(ContactListItem * contact, d->mContacts) {
+    if (contact->name() != contactName)
+      continue;
+
+    contact->setName(contactName);
+    contact->setStatusMessage(statusMessage);
+    contact->setPixmap(pixmap);
+    return;
+  }
+
+  ContactListItem *contact = new ContactListItem(d->mFrame);
+  contact->setName(contactName);
+  contact->setPixmap(pixmap);
+  contact->setStatusMessage(statusMessage);
+  contact->setID(id);
+  contact->setPos(0.0, d->mFrame->contentRect().height());
+  d->mFrame->setContentRect(QRectF(
+      0.0, boundingRect().y(), boundingRect().width(),
+      d->mFrame->contentRect().height() + contact->boundingRect().height()));
+  d->mContacts.append(contact);
+
+  connect(contact, SIGNAL(clicked(ContactListItem *)), this,
+          SLOT(onItemClicked(ContactListItem *)));
+}
+
+void ContactList::setStyle(StylePtr style) { Q_UNUSED(style) }
+
+void ContactList::clear() {
+  Q_FOREACH(ContactListItem * contact, d->mContacts) {
+    contact->hide();
+    d->mFrame->setContentRect(QRectF(
+        0.0, boundingRect().y(), boundingRect().width(),
+        d->mFrame->contentRect().height() - contact->boundingRect().height()));
+  }
+}
+
+void ContactList::filter(const QString &filterString) {
+  clear();
+  Q_FOREACH(ContactListItem * contact, d->mContacts) {
+
+    if (contact->name().toLower().contains(filterString)) {
+
+      qDebug() << Q_FUNC_INFO << "Show Contact"
+               << ": " << contact->name();
+
+      int frameHeight = contact->boundingRect().height();
+
+      if (!(d->mFrame->contentRect().height() < 0)) {
+        frameHeight = d->mFrame->contentRect().height() +
+                      contact->boundingRect().height();
+
+        contact->setPos(0.0,
+                        boundingRect().y() + d->mFrame->contentRect().height());
+      } else {
+        contact->setPos(0.0, boundingRect().y());
+      }
+
+      contact->show();
+
+      d->mFrame->setContentRect(
+          QRectF(0.0, boundingRect().y(), boundingRect().width(), frameHeight));
+      qDebug() << Q_FUNC_INFO << contact->pos() << ":" << contact->isVisible()
+               << ":" << contact->boundingRect();
+      qDebug() << Q_FUNC_INFO << d->mFrame->contentRect();
+    }
+  }
+}
+
+void ContactList::onItemClicked(ContactListItem *item) {
+  qDebug() << Q_FUNC_INFO << item->id();
+  Q_EMIT clicked(item->id());
+}
+
+void ContactList::paintFrontView(QPainter *painter, const QRectF &rect) {
+  QPainterPath backgroundPath;
+  backgroundPath.addRect(rect);
+  painter->fillPath(backgroundPath, QColor(235, 235, 235));
+}
+
+void ContactList::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+  qDebug() << Q_FUNC_INFO;
+}
+
+void ContactList::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+  qDebug() << Q_FUNC_INFO;
+}
+
+void ContactList::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+  qDebug() << Q_FUNC_INFO;
+}

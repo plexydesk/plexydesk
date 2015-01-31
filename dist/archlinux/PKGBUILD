@@ -1,0 +1,63 @@
+# This is the PlexyDesk PKGBUILD file.
+
+# See http://wiki.archlinux.org/index.php/VCS_PKGBUILD_Guidelines
+# for more information on packaging from GIT sources.
+
+# Contributors:
+#       Lukas Appelhans <l.appelhans@gmx.de>
+#       Tucos <baspape@gmail.com>
+
+# Maintainer: Tucos <baspape@gmail.com>
+
+pkgname=plexydesk-git
+pkgver=20110808
+pkgrel=1
+pkgdesc="A Desktop extension which lets you efficiently organize and use your Desktop"
+arch=('i686' 'x86_64')
+url="http://www.plexyplanet.org/"
+license=('LGPL3')
+groups=()
+depends=('qt' 'libxcomposite')
+makedepends=('git')
+provides=('plexydesk')
+conflicts=('plexydesk')
+replaces=()
+backup=()
+options=()
+install=
+source=()
+noextract=()
+md5sums=() #generate with 'makepkg -g'
+
+_gitroot="https://github.com/siraj/plexydesk.git"
+_gitname="plexydesk"
+debugbuild=false
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  mkdir "$srcdir/$_gitname-build" && cd $_
+
+  cmake -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DCMAKE_BUILD_TYPE=Release \
+        "$srcdir/plexydesk"
+  make
+}
+
+package() {
+  cd "$srcdir/$_gitname-build"
+  make DESTDIR="$pkgdir/" install
+}

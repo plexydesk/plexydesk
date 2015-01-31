@@ -1,0 +1,5 @@
+FILE(GLOB PNGFILES *.svg *.png )
+
+IF (NOT APPLE)
+INSTALL(FILES ${PNGFILES}  DESTINATION share/plexy/skins/default/flick)
+ENDIF (NOT APPLE)

@@ -1,0 +1,186 @@
+#UiKit
+#siraj@plexydesk.org
+
+cmake_policy(SET CMP0043 NEW)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+
+include (GenerateExportHeader)
+
+if(NOT CMAKE_INSTALL_LIBDIR)
+    include(GNUInstallDirs)
+endif(NOT CMAKE_INSTALL_LIBDIR)
+
+if(NOT QNX)
+    set(LIBRARY_PLATFORM_HEADERS
+                             widgets/webkitwebview.h)
+    set(LIBRARY_PLATFORM_SOURCE_CXX_FILES
+                          widgets/webkitwebview.cpp)
+endif (NOT QNX)
+
+#todo: check on mac and remove it.
+#if(APPLE)
+#    set(LIBRARY_PLATFORM_SOURCE_CXX_FILES qtscroller_mac.mm)
+#endif(APPLE)
+
+if(UNIX AND NOT APPLE)
+    include_directories(
+                        ${X11_INCLUDE_DIR}
+                        ${Qt5X11Extras_INCLUDE_DIRS}
+                        ${QT_QTGUI_INCLUDE_DIR}
+                        ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+endif(UNIX AND NOT APPLE)
+
+set(LIBRARY_WIDGET_SOURCE_CXX_FILES
+     widgets/button.cpp
+     widgets/scrollwidget.cpp
+     widgets/desktopwidget.cpp
+     widgets/imageview.cpp
+     widgets/label.cpp
+     widgets/progressbar.cpp
+     widgets/imagebutton.cpp
+     widgets/default_table_model.cpp
+     widgets/default_table_component.cpp
+     widgets/button.cpp
+     widgets/lineedit.cpp
+     widgets/texteditor.cpp
+     widgets/windowbutton.cpp
+     widgets/tableview.cpp
+     widgets/tableviewcellinterface.cpp
+     widgets/abstractcellcomponent.cpp
+     widgets/toolbar.cpp
+     widgets/desktopactivitymenu.cpp
+     widgets/modelview.cpp
+     widgets/menu.cpp
+     components/dialwidget.cpp
+     components/rangewidget.cpp
+     )
+
+set(LIBRARY_SOURCE_FILES
+    netwm.cpp
+    themepackloader.cpp
+    imagecache.cpp
+    svgprovider.cpp
+    plexyconfig.cpp
+    workspace.cpp
+    space.cpp
+    ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
+    ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
+
+set(LIBRARY_HEADER_FILES
+    workspace.h
+    netwm.h
+    netwm_def.h
+    netwm_p.h
+    themepackloader.h
+    imagecache.h
+    svgprovider.h
+    plexyconfig.h
+    widgets/button.h
+    widgets/lineedit.h
+    widgets/texteditor.h
+    widgets/windowbutton.h
+    widgets/tableview.h
+    widgets/desktopwidget.h
+    widgets/scrollwidget.h
+    widgets/imageview.h
+    widgets/label.h
+    widgets/progressbar.h
+    widgets/imagebutton.h
+    widgets/default_table_model.h
+    widgets/default_table_component.h
+    widgets/tableviewcellinterface.h
+    widgets/abstractcellcomponent.h
+    widgets/desktopactivitymenu.h
+    widgets/toolbar.h
+    widgets/modelview.h
+    widgets/menu.h
+    components/dialwidget.h
+    components/rangewidget.h
+    workspace.h
+    space.h
+    ${LIBRARY_PLATFORM_HEADERS}
+    )
+
+#Locate cococa framework on mac
+if(APPLE)
+    include_directories(/System/Library/Frameworks)
+
+    find_library(COCOA_LIBRARY Cocoa)
+    find_library(GLUT_LIBRARY GLUT)
+    find_library(OpenGL_LIBRARY OpenGL)
+
+    mark_as_advanced(COCOA_LIBRARY
+                     GLUT_LIBRARY
+                     OpenGL_LIBRARY)
+
+   set(LIBRARY_NATIVE_LINK_TARGETS
+                                  ${COCOA_LIBRARY}
+                                  ${GLUT_LIBRARY}
+                                  ${OpenGL_LIBRARY})
+endif(APPLE)
+
+set(LIBRARY_SOURCE_FILES
+    ${LIBRARY_SOURCE_FILES}
+    ${LIBRARY_HEADER_FILES}
+    )
+
+set(LIBRARY_LINK_TARGETS
+        ${OPENGL_LIBRARIES}
+        ${PLEXY_CORE_LIBRARY}
+        ${QUETZAL_DATA_KIT_LIBRARY}
+        ${QUETZAL_SOCIAL_KIT_LIBRARY})
+
+#qt5_wrap_ui(UI_FILES ${uiFiles})
+
+add_library(${PLEXY_UI_CORE_LIBRARY} SHARED
+                                           ${LIBRARY_SOURCE_FILES}
+                                           ${UI_FILES})
+
+if(APPLE)
+    set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES FRAMEWORK 1)
+endif(APPLE)
+
+generate_export_header(${PLEXY_UI_CORE_LIBRARY}
+                                               BASE_NAME ${PLEXY_UI_CORE_LIBRARY}
+                                               EXPORT_MACRO_NAME DECL_UI_KIT_EXPORT
+                                               EXPORT_FILE_NAME plexydesk_ui_exports.h
+                                               STATIC_DEFINE ${PLEXY_UI_CORE_LIBRARY}_BUILT_AS_STATIC)
+
+if(MINGW OR WIN32)
+    set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES
+                                                             IMPORT_SUFFIX ".lib"
+                                                             IMPORT_PREFIX ""
+                                                             PREFIX "")
+endif(MINGW OR WIN32)
+
+target_link_libraries(${PLEXY_UI_CORE_LIBRARY}
+                      ${LIBRARY_LINK_TARGETS}
+                      ${LIBRARY_NATIVE_LINK_TARGETS}
+                      ${PLEXY_CORE_LIBRARY})
+
+qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Widgets
+                                       Xml
+                                       OpenGL
+                                       Core
+                                       WebKitWidgets
+                                       Svg)
+
+if(UNIX AND NOT APPLE)
+   set_target_properties(${PLEXY_CORE_LIBRARY} PROPERTIES SOVERSION "1.0.0")
+   install(TARGETS ${PLEXY_UI_CORE_LIBRARY} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} NAMELINK_SKIP)
+endif()
+
+if (APPLE)
+   set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SKIP_BUILD_RPATH 1)
+   install(TARGETS ${PLEXY_UI_CORE_LIBRARY}
+                    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/
+                    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                    FRAMEWORK DESTINATION plexydesk.app/Contents/Frameworks)
+endif(APPLE)
+
+if(WIN32)
+  # installs to the same path as the binary
+  install(TARGETS ${PLEXY_UI_CORE_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX})
+endif()

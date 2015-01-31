@@ -1,0 +1,19 @@
+ADD_SUBDIRECTORY(icons)
+
+IF (QNX)
+ADD_SUBDIRECTORY(themepacks/bb10)
+ENDIF (QNX)
+
+IF (NOT QNX)
+#IF (NOT APPLE)
+ADD_SUBDIRECTORY(themepacks/default)
+#ENDIF (NOT APPLE)
+
+#IF (APPLE)
+#ADD_SUBDIRECTORY(themepacks/mac)
+#ENDIF (APPLE)
+ENDIF (NOT QNX)
+
+#IF (NOT APPLE)
+#ADD_SUBDIRECTORY(widgets/base-widget)
+#ENDIF (NOT APPLE)
