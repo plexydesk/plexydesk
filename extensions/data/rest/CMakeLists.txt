@@ -42,7 +42,7 @@ IF (NOT APPLE)
 ENDIF (NOT APPLE)
 
 IF (APPLE)
-   INSTALL(TARGETS restengine LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
-   INSTALL(FILES rest.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
+   INSTALL(TARGETS restengine LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(FILES rest.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 ENDIF(APPLE)
 

@@ -49,6 +49,13 @@ FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
 FIND_PACKAGE(Qt5Svg REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
 
+
+#plugins
+if (APPLE)
+    set (CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX "/Contents/PlugIns/plexydesk/")
+    set (CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR "/Contents/PlugIns/plexydesk/data")
+endif()
+
 set(QT_REQUIRED_VERSION 5.2.0)
 find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED Qml Quick Gui Core Svg Xml XmlPatterns LinguistTools)
 

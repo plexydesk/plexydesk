@@ -34,6 +34,6 @@ INSTALL(FILES photoframe.desktop DESTINATION share/plexy/ext/groups)
 ENDIF (NOT APPLE)
 
 IF (APPLE)
-   INSTALL(TARGETS photoframe LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
-   INSTALL(FILES photoframe.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
+   INSTALL(TARGETS photoframe LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(FILES photoframe.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 ENDIF (APPLE)

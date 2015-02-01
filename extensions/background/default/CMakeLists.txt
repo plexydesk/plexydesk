@@ -25,7 +25,7 @@ SET(sourceFiles
 
 ADD_LIBRARY(classicbackdrop SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-QT5_USE_MODULES(classicbackdrop Widgets Xml OpenGL Core WebKitWidgets) 
+QT5_USE_MODULES(classicbackdrop Widgets Xml OpenGL Core WebKitWidgets)
 
 IF(MINGW)
     SET_TARGET_PROPERTIES(classicbackdrop PROPERTIES
@@ -46,6 +46,6 @@ INSTALL(FILES classic.desktop DESTINATION share/plexy/ext/groups)
 ENDIF(NOT APPLE)
 
 IF (APPLE)
-   INSTALL(TARGETS classicbackdrop LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
-   INSTALL(FILES classic.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
+   INSTALL(TARGETS classicbackdrop LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(FILES classic.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 ENDIF(APPLE)

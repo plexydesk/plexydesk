@@ -51,8 +51,8 @@ INSTALL(FILES dock.desktop DESTINATION share/plexy/ext/groups)
 ENDIF (NOT APPLE)
 
 IF (APPLE)
-   INSTALL(TARGETS dockwidget LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
-   INSTALL(FILES dock.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
+   INSTALL(TARGETS dockwidget LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(FILES dock.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 ENDIF(APPLE)
 
 

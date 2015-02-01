@@ -268,6 +268,8 @@ void ExtensionManager::load(const QString &interface,
 }
 
 void ExtensionManager::scanForPlugins() {
+    qDebug() << Q_FUNC_INFO << d->mPluginInfoPrefix << " : "
+             << d->mPluginPrefix;
   if (d->mPluginInfoPrefix.isEmpty() || d->mPluginInfoPrefix.isNull()) {
     qWarning() << Q_FUNC_INFO << "Prefix undefined"
                << " try running PluginLoader::getInstanceWithPrefix with the "
