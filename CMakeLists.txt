@@ -52,8 +52,8 @@ FIND_PACKAGE(OpenGL REQUIRED)
 
 #plugins
 if (APPLE)
-    set (CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX "/Contents/PlugIns/plexydesk/")
-    set (CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR "/Contents/PlugIns/plexydesk/data")
+    set (CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX "plexydesk.app/Contents/PlugIns/plexydesk/")
+    set (CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR "plexydesk.app/Contents/PlugIns/plexydesk/data")
 endif()
 
 set(QT_REQUIRED_VERSION 5.2.0)

@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
     PlexyDesk::ExtensionManager *loader =
             PlexyDesk::ExtensionManager::instance(
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +
-                                         QLatin1String(K_PLEXYDESK_OSX_PLUGIN_DATA_DIR)),
+                                         QLatin1String("/Contents/PlugIns/plexydesk/data/")),
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +
-                                         QLatin1String(K_PLEXYDESK_OSX_PLUGIN_PREFIX)));
+                                         QLatin1String("/Contents/PlugIns/plexydesk/")));
     Q_UNUSED(loader);
 
 
