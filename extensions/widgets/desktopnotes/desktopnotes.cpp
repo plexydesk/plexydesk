@@ -104,11 +104,11 @@ void DesktopNotesControllerImpl::createNoteUI() {
   NoteWidget *note = new NoteWidget(0);
   note->resize(QSizeF(320, 320));
   note->setController(this);
-  addWidget(note);
+  insert(note);
 }
 
 void DesktopNotesControllerImpl::createReminderUI() {
   ReminderWidget *reminder = new ReminderWidget(0);
   reminder->setController(this);
-  addWidget(reminder);
+  insert(reminder);
 }

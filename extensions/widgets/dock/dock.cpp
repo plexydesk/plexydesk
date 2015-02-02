@@ -133,8 +133,8 @@ void DockControllerImpl::init() {
   connect(viewport(), SIGNAL(controllerAdded(QString)), this,
           SLOT(onControllerAdded(QString)));
 
-  Q_EMIT addWidget(d->m_navigation_dock);
-  Q_EMIT addWidget(d->m_preview_widget);
+  insert(d->m_navigation_dock);
+  insert(d->m_preview_widget);
 
   d->m_preview_widget->hide();
 }

@@ -35,7 +35,6 @@
 
 ClockWidget::ClockWidget(QGraphicsObject *parent) : PlexyDesk::UIWidget(parent) {
   setLabelName("Clock");
-  preRenderClockImages();
 }
 
 void ClockWidget::preRenderClockImages() {

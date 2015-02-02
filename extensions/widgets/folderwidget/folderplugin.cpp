@@ -99,7 +99,7 @@ void DirectoryController::requestAction(const QString &actionName,
 
     mFolderViewList.append(parent);
 
-    Q_EMIT addWidget(parent);
+    insert(parent);
   }
 }
 

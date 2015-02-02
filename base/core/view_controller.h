@@ -59,10 +59,10 @@ public:
       *
       */
   virtual ~ViewController();
-  /**
+    /**
       * @brief once the controller is loaded this method will be called by the
       * loader. initilisization of the controller has to be done here. by
-    *inheriting
+      * inheriting
       * this class.
       *
       */
@@ -83,11 +83,11 @@ public:
 
   /**
       * @brief This method returns the current viewport of the controller. this
-    *will be set
+      * will be set
       * when the controller is loaded by the loader or the desktopview.
       *
       * @return PlexyDesk::AbstractDesktopView return the current viewport of
-    *the controller
+      *  the controller
       */
   virtual DesktopViewport *viewport();
   /**
@@ -135,6 +135,8 @@ public:
       * @return bool
       */
   virtual bool removeWidget(Widget *widget);
+
+  virtual void insert(Widget *widget);
 
   /**
       * @brief
@@ -194,20 +196,6 @@ Q_SIGNALS:
       */
   void data(const DataSource *source);
 
-  /**
-      * @brief
-      *
-      * @param widget
-      */
-  void addWidget(Widget *widget);
-
-  /**
-      * @brief
-      *
-      * @param key
-      * @param value
-      */
-  void commitSessionData(const QString &key, const QString &value);
 
 private Q_SLOTS:
   /**

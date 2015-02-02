@@ -22,8 +22,6 @@ ViewController::~ViewController() { delete d; }
 
 void ViewController::setViewport(DesktopViewport *view) {
   d->mViewport = view;
-  connect(this, SIGNAL(addWidget(Widget *)), d->mViewport,
-          SLOT(addWidgetToView(Widget *)));
 }
 
 DesktopViewport *ViewController::viewport() { return d->mViewport; }
@@ -87,7 +85,15 @@ bool ViewController::connectToDataSource(const QString &source) {
 
 bool ViewController::removeWidget(Widget *widget) {
   // disconnect(d->mDataSource.data(), SIGNAL(sourceUpdated(QVariantMap)));
-  return false;
+    return false;
+}
+
+void ViewController::insert(Widget *widget)
+{
+    if (!d->mViewport)
+        return;
+
+    d->mViewport->addWidgetToView(widget);
 }
 
 void ViewController::onReady() {

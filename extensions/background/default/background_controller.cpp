@@ -91,7 +91,7 @@ void BackgroundController::init() {
   d->createAction(this, tr("Adjust"), "pd_adjust_frame_icon.png", 3);
   d->createAction(this, tr("Seamless"), "pd_eye_frame_icon.png", 4);
 
-  Q_EMIT addWidget(d->m_background_render_item);
+  insert(d->m_background_render_item);
 }
 
 void BackgroundController::revokeSession(const QVariantMap &args) {

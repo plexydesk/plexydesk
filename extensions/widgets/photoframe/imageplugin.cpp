@@ -80,7 +80,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args) {
       photoWidget->setContentImage(image);
     }
 
-    Q_EMIT addWidget(photoWidget);
+    insert(photoWidget);
   }
 }
 
@@ -170,7 +170,7 @@ void PhotoFrameController::requestAction(const QString &actionName,
     mPhotoList.append(photoWidget);
     photoWidget->setPhotoURL(QString("ID:%1").arg(mPhotoList.count()));
 
-    Q_EMIT addWidget(photoWidget);
+    insert(photoWidget);
   }
 }
 
