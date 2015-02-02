@@ -4,11 +4,11 @@
 #include <QtCore/QObject>
 #include <QtCore/QRectF>
 #include <QtGui/QPainter>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 namespace PlexyDesk {
 
-class CORE_DECL_EXPORT StyleFeatures {
+class DECL_UI_KIT_EXPORT StyleFeatures {
 
 public:
   typedef enum {

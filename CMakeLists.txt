@@ -78,7 +78,6 @@ SET(APPLICATION_MAIN_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
 #Library Names
 SET(APPLICATION_EXE_NAME plexydesk)
 SET(PLEXY_UI_CORE_LIBRARY PlexyDeskUICore)
-SET(PLEXY_CORE_LIBRARY PlexyDeskCore)
 SET(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKit)
 SET(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKit)
 
@@ -246,8 +245,8 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/base/uikit
     ${CMAKE_SOURCE_DIR}/base/uikit/widgets/
     ${CMAKE_BINARY_DIR}/base/uikit/widets/
-    ${CMAKE_SOURCE_DIR}/base/core
-    ${CMAKE_BINARY_DIR}/base/core
+    ${CMAKE_SOURCE_DIR}/base/uikit/core
+    ${CMAKE_BINARY_DIR}/base/uikit/core
     ${CMAKE_SOURCE_DIR}/base/social/lib
     ${CMAKE_BINARY_DIR}/base/social/lib
     ${CMAKE_SOURCE_DIR}/base/datastore/lib
@@ -264,7 +263,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 # *** ALL PLATFORMS ***
-ADD_SUBDIRECTORY(base/core)
+#ADD_SUBDIRECTORY(base/core)
 ADD_SUBDIRECTORY(base/uikit)
 
 if (NOT APPLE)

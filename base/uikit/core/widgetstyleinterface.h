@@ -2,11 +2,11 @@
 #define WIDGETSTYLEINTERFACE_H
 
 #include <style.h>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 namespace PlexyDesk {
 
-class CORE_DECL_EXPORT WidgetStyleInterface {
+class DECL_UI_KIT_EXPORT WidgetStyleInterface {
 public:
   WidgetStyleInterface() {}
   virtual QSharedPointer<PlexyDesk::Style> style() = 0;

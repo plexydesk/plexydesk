@@ -39,7 +39,6 @@ IF(MINGW)
 ENDIF(MINGW)
 
 TARGET_LINK_LIBRARIES(dockwidget
-    ${PLEXY_CORE_LIBRARY}
     ${libs}
     )
 

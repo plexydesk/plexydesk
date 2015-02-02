@@ -16,27 +16,31 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#ifndef DATA_PLUGININTERFACE_H
-#define DATA_PLUGININTERFACE_H
+#ifndef UI_STYLE_H
+#define UI_STYLE_H
 
-#include <QSharedPointer>
+#include <plexydesk_ui_exports.h>
+#include <stylefeatures.h>
+
+#include <QPainter>
 #include <QObject>
-
-#include <datasource.h>
-#include <plexy_core_exports.h>
 
 namespace PlexyDesk {
 
-class CORE_DECL_EXPORT DataPluginInterface {
+class DECL_UI_KIT_EXPORT Style {
 public:
-  DataPluginInterface() {}
+  Style();
 
-  virtual ~DataPluginInterface() {}
+  virtual ~Style();
 
-  virtual QSharedPointer<DataSource> model() = 0;
+  virtual QVariant attrbute(const QString &type, const QString &name) const;
+
+  virtual QVariantMap attributeMap(const QString &type) const = 0;
+
+  virtual void draw(const QString &type, const StyleFeatures &options,
+                    QPainter *painter) = 0;
 };
 }
 
-Q_DECLARE_INTERFACE(PlexyDesk::DataPluginInterface,
-                    "org.plexydesk.DataPluginInterface")
-#endif // DATA_PLUGININTERFACE_H
+typedef QSharedPointer<PlexyDesk::Style> StylePtr;
+#endif // STYLE_H

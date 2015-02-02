@@ -22,7 +22,7 @@
 #include <QObject>
 #include <desktopactivity.h>
 #include <style.h>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 #ifndef PLATFORM_GRAPHICS_SCENE
 #define PLATFORM_GRAPHICS_SCENE
@@ -35,7 +35,7 @@ class ViewController;
 
 typedef QSharedPointer<ViewController> ControllerPtr;
 
-class CORE_DECL_EXPORT DesktopViewport : public QObject {
+class DECL_UI_KIT_EXPORT DesktopViewport : public QObject {
   Q_OBJECT
 
 public:

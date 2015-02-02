@@ -31,7 +31,7 @@ IF(MINGW)
 ENDIF(MINGW)
 
 TARGET_LINK_LIBRARIES(timerengine
-    ${PLEXY_CORE_LIBRARY}
+    ${PLEXY_UI_CORE_LIBRARY}
     )
 
 QT5_USE_MODULES(timerengine Widgets Xml OpenGL Core WebKitWidgets Svg)

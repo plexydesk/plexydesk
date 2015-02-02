@@ -1,13 +1,13 @@
 #ifndef ACTIVITY_INTERFACE_H
 #define ACTIVITY_INTERFACE_H
 
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 namespace PlexyDesk {
 
 class DesktopActivity;
 
-class CORE_DECL_EXPORT ActivityInterface {
+class DECL_UI_KIT_EXPORT ActivityInterface {
 public:
   explicit ActivityInterface() {}
 

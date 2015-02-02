@@ -6,7 +6,7 @@
 
 #include <widget.h>
 
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 namespace PlexyDesk {
 
@@ -14,7 +14,7 @@ class ViewController;
 class DesktopViewport;
 typedef QSharedPointer<ViewController> ControllerPtr;
 
-class CORE_DECL_EXPORT DesktopActivity : public QObject {
+class DECL_UI_KIT_EXPORT DesktopActivity : public QObject {
   Q_OBJECT
 public:
   enum ResultType { kActivitySucess, mActivityCanceled };

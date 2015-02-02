@@ -36,7 +36,7 @@ IF(MINGW)
 ENDIF(MINGW)
 
 TARGET_LINK_LIBRARIES(flickrphotosearchengine
-    ${PLEXY_CORE_LIBRARY}
+    ${PLEXY_UI_CORE_LIBRARY}
     ${libs}
     )
 

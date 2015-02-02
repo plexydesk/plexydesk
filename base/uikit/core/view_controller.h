@@ -8,7 +8,7 @@
 #include <datasource.h>
 #include <desktopactivity.h>
 #include <desktop_viewport.h>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 #include <QAction>
 
 class QGraphicsItem;
@@ -50,7 +50,7 @@ namespace PlexyDesk {
 class Widget;
 typedef QList<QAction *> ActionList;
 
-class CORE_DECL_EXPORT ViewController : public QObject {
+class DECL_UI_KIT_EXPORT ViewController : public QObject {
   Q_OBJECT
 
 public:

@@ -21,7 +21,7 @@
 
 #include <plexy.h>
 #include <style.h>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
@@ -36,7 +36,7 @@ class ViewController;
     * @brief
     *
     */
-class CORE_DECL_EXPORT Widget : public QGraphicsObject,
+class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
                                 public QGraphicsLayoutItem {
   Q_OBJECT
 

@@ -44,7 +44,6 @@ IF(MINGW)
 ENDIF(MINGW)
 
 TARGET_LINK_LIBRARIES(datepickeractivity
-    ${PLEXY_CORE_LIBRARY}
     ${PLEXY_UI_CORE_LIBRARY}
     ${libs}
     )

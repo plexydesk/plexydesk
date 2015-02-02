@@ -7,11 +7,11 @@
 #include <QtCore/QObject>
 
 #include <view_controller.h>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 namespace PlexyDesk {
 
-class CORE_DECL_EXPORT ControllerPluginInterface {
+class DECL_UI_KIT_EXPORT ControllerPluginInterface {
 public:
   ControllerPluginInterface() {}
   virtual ~ControllerPluginInterface() {};

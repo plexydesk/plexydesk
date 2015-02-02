@@ -29,7 +29,7 @@
 #include <widgetstyleinterface.h>
 
 #include <desktopactivity.h>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 
 namespace PlexyDesk {
 /**
@@ -38,7 +38,7 @@ namespace PlexyDesk {
     * Supports loading and handling various plexydesk
     * extensions supported by the sytem
     */
-class CORE_DECL_EXPORT ExtensionManager : public QObject {
+class DECL_UI_KIT_EXPORT ExtensionManager : public QObject {
   Q_OBJECT
 public:
   /**

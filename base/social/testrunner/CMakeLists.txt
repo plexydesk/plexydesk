@@ -35,7 +35,6 @@ ENDIF(MSVC)
 
 TARGET_LINK_LIBRARIES(social_runtime
     ${PLEXY_UI_CORE_LIBRARY}
-    ${PLEXY_CORE_LIBRARY}
     ${QUETZAL_SOCIAL_KIT_LIBRARY}
     ${libs}
     )

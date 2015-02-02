@@ -21,7 +21,7 @@
 #define PLEXY_DATA_PLUGIN_H
 
 #include <plexy.h>
-#include <plexy_core_exports.h>
+#include <plexydesk_ui_exports.h>
 #include <QVariant>
 #include <QObject>
 
@@ -89,7 +89,7 @@ operation.
 define the protocol to be used.
 **/
 namespace PlexyDesk {
-class CORE_DECL_EXPORT DataSource : public QObject {
+class DECL_UI_KIT_EXPORT DataSource : public QObject {
   Q_OBJECT
 
 public:
