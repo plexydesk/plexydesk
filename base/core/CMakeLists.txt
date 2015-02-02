@@ -22,7 +22,6 @@ set(LIB_CXX_FILES
 set(LIBRARY_INTERFACE_FILES
                 controllerinterface.h
                 controllerplugininterface.h
-                desktopviewplugininterface.h
                 desktopinterface.h
                 dataplugininterface.h
                 activity_interface.h

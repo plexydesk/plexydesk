@@ -25,8 +25,6 @@
 #include "extensionmanager.h"
 #include "dataplugininterface.h"
 #include "controllerplugininterface.h"
-#include "desktopviewplugininterface.h"
-
 #include "activity_interface.h"
 
 namespace PlexyDesk {
@@ -36,7 +34,6 @@ class ExtensionManager::PrivateExtManager {
 public:
   typedef QHash<QString, DataPluginInterface *> EnginePlugins;
   typedef QHash<QString, ControllerPluginInterface *> ControllerPlugins;
-  typedef QHash<QString, DesktopViewPluginInterface *> DesktopViewPlugins;
   typedef QHash<QString, ActivityInterface *> ActivityPlugins;
   typedef QHash<QString, WidgetStyleInterface *> StylePlugins;
 
@@ -47,7 +44,6 @@ public:
 
   EnginePlugins m_engine_plugins;
   ControllerPlugins mControllers;
-  DesktopViewPlugins mDesktopViews;
   ActivityPlugins mActivities;
   StylePlugins mStyles;
 
@@ -208,22 +204,6 @@ void ExtensionManager::load(const QString &interface,
       ControllerPluginInterface *Iface = 0;
       Iface = qobject_cast<ControllerPluginInterface *>(plugin);
       d->mControllers[pluginName] = Iface;
-    } else {
-      qWarning() << Q_FUNC_INFO << loader->errorString();
-      loader->unload();
-      delete loader;
-      return;
-    }
-  }
-
-  if (interface.toLower() == "desktopview") {
-
-    QObject *plugin = loader->instance();
-
-    if (plugin) {
-      DesktopViewPluginInterface *Iface = 0;
-      Iface = qobject_cast<DesktopViewPluginInterface *>(plugin);
-      d->mDesktopViews[pluginName] = Iface;
     } else {
       qWarning() << Q_FUNC_INFO << loader->errorString();
       loader->unload();

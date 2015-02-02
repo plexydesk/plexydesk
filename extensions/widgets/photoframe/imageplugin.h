@@ -21,7 +21,6 @@
 
 #include <plexy.h>
 
-
 #include <controllerinterface.h>
 
 #include <themepackloader.h>

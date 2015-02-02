@@ -26,7 +26,6 @@
 
 #include <datasource.h>
 #include <controllerinterface.h>
-#include <desktopviewplugininterface.h>
 #include <widgetstyleinterface.h>
 #include <desktopviewplugin.h>
 
