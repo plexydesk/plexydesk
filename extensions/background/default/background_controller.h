@@ -21,7 +21,7 @@
 
 #include <plexy.h>
 #include <config.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #define QT_SHAREDPOINTER_TRACK_POINTERS 1
 #include <QSharedPointer>
 

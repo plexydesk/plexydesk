@@ -20,12 +20,12 @@
 #define PLEXY_WIDGET_CLOCK_H
 
 #include <plexy.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <datasource.h>
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public PlexyDesk::ControllerInterface {
+class Clock : public PlexyDesk::ViewController {
   Q_OBJECT
 
 public:

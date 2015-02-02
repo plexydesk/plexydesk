@@ -21,7 +21,7 @@
 
 #include <QtCore>
 #include <plexy.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <controllerplugininterface.h>
 
 class DesktopNotesInterface : public QObject,

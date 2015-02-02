@@ -23,7 +23,7 @@
 #include <QDebug>
 
 // uikit
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <extensionmanager.h>
 
 // Qt
@@ -37,7 +37,7 @@ public:
 };
 
 Clock::Clock(QObject *parent)
-    : PlexyDesk::ControllerInterface(parent), d(new PrivateClockController) {
+    : PlexyDesk::ViewController(parent), d(new PrivateClockController) {
   clock = 0;
 }
 

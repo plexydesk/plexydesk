@@ -19,7 +19,7 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 #include <QTimer>
-#include <controllerinterface.h>
+#include <view_controller.h>
 
 class SocialAuthActivity::PrivateSocialAuth {
 public:

@@ -23,7 +23,7 @@
 #include <QFileSystemModel>
 
 #include <plexyconfig.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <tableview.h>
 #include <default_table_component.h>
 #include <progressbar.h>

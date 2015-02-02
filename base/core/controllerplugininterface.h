@@ -6,7 +6,7 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QObject>
 
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <plexy_core_exports.h>
 
 namespace PlexyDesk {
@@ -16,7 +16,7 @@ public:
   ControllerPluginInterface() {}
   virtual ~ControllerPluginInterface() {};
 
-  virtual QSharedPointer<ControllerInterface> controller() = 0;
+  virtual QSharedPointer<ViewController> controller() = 0;
 };
 }
 

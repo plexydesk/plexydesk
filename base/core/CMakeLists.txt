@@ -12,7 +12,7 @@ include(GenerateExportHeader)
 set(LIB_CXX_FILES
                 widget.cpp
                 controller_action.cpp
-                controllerinterface.cpp
+		view_controller.cpp
                 datasource.cpp
                 desktopactivity.cpp
                 extensionmanager.cpp
@@ -20,7 +20,7 @@ set(LIB_CXX_FILES
                 desktop_viewport.cpp)
 
 set(LIBRARY_INTERFACE_FILES
-                controllerinterface.h
+	        view_controller.h
                 controllerplugininterface.h
                 desktopinterface.h
                 dataplugininterface.h

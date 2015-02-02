@@ -20,7 +20,7 @@
 #include <plexyconfig.h>
 #include <imagebutton.h>
 #include <QTimer>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <QGraphicsLinearLayout>
 #include <themepackloader.h>
 #include <QGraphicsWidget>

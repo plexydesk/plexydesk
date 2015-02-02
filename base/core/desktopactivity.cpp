@@ -3,7 +3,7 @@
 #include <QPropertyAnimation>
 #include <QGraphicsScene>
 
-#include "controllerinterface.h"
+#include "view_controller.h"
 #include "desktop_viewport.h"
 
 namespace PlexyDesk {

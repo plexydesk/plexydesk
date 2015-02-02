@@ -15,9 +15,9 @@ class QGraphicsItem;
 class QDropEvent;
 
 /*!
-\class PlexyDesk::ViewControllerPlugin
+\class PlexyDesk::ViewController
 
-\brief Base class for writing view plugins
+\brief Base class for implementing viewport controllers for PlexyDesk.
 
 \fn PlexyDesk::ViewControllerPlugin::actions
 
@@ -50,7 +50,7 @@ namespace PlexyDesk {
 class Widget;
 typedef QList<QAction *> ActionList;
 
-class CORE_DECL_EXPORT ControllerInterface : public QObject {
+class CORE_DECL_EXPORT ViewController : public QObject {
   Q_OBJECT
 
 public:
@@ -58,7 +58,7 @@ public:
       * @brief
       *
       */
-  virtual ~ControllerInterface();
+  virtual ~ViewController();
   /**
       * @brief once the controller is loaded this method will be called by the
       * loader. initilisization of the controller has to be done here. by
@@ -175,7 +175,7 @@ protected:
       *
       * @param parent
       */
-  explicit ControllerInterface(QObject *parent = 0);
+  explicit ViewController(QObject *parent = 0);
 
   /**
       * @brief
@@ -225,6 +225,6 @@ private:
     * @brief
     *
     */
-typedef QSharedPointer<ControllerInterface> ControllerPtr;
+typedef QSharedPointer<ViewController> ControllerPtr;
 }
 #endif

@@ -22,14 +22,14 @@
 #include <plexy.h>
 
 
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <themepackloader.h>
 #include "iconwidgetview.h"
 
 class QLineEdit;
 class QWidget;
 
-class DirectoryController : public PlexyDesk::ControllerInterface {
+class DirectoryController : public PlexyDesk::ViewController {
   Q_OBJECT
 
 public:

@@ -23,7 +23,7 @@
 #include <QObject>
 #include <plexy.h>
 #include <workspace.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 
 using namespace PlexyDesk;
 

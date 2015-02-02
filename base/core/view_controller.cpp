@@ -1,4 +1,4 @@
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <extensionmanager.h>
 #include <QDebug>
 

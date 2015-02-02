@@ -28,7 +28,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include "widget.h"
 
 /**

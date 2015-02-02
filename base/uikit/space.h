@@ -5,7 +5,7 @@
 #include <QObject>
 #include <desktopactivitymenu.h>
 
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <desktop_viewport.h>
 
 #include <plexydesk_ui_exports.h>

@@ -10,9 +10,9 @@
 
 namespace PlexyDesk {
 
-class ControllerInterface;
+class ViewController;
 class DesktopViewport;
-typedef QSharedPointer<ControllerInterface> ControllerPtr;
+typedef QSharedPointer<ViewController> ControllerPtr;
 
 class CORE_DECL_EXPORT DesktopActivity : public QObject {
   Q_OBJECT

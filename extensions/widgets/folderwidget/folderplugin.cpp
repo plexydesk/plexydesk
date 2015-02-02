@@ -29,7 +29,7 @@
 #define CREATE_DIR "createDirectory"
 
 DirectoryController::DirectoryController(QObject *object)
-    : PlexyDesk::ControllerInterface(object) {
+    : PlexyDesk::ViewController(object) {
   mThemePack = PlexyDesk::Theme::instance();
 
   PlexyDesk::UIWidget *parent = new PlexyDesk::UIWidget();

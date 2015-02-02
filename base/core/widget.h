@@ -28,7 +28,7 @@
 
 namespace PlexyDesk {
 
-class ControllerInterface;
+class ViewController;
 /**
     * @brief The Base Class for All types of Desktop Widgets.
     */
@@ -86,13 +86,13 @@ public:
       *
       * @param view_controller
       */
-  virtual void setController(ControllerInterface *view_controller);
+  virtual void setController(ViewController *view_controller);
   /**
       * @brief
       *
       * @return ControllerInterface
       */
-  virtual ControllerInterface *controller() const;
+  virtual ViewController *controller() const;
   /**
       * @brief
       *

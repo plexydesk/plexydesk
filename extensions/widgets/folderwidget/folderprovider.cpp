@@ -4,7 +4,7 @@
 #include <QFileSystemModel>
 
 #include <extensionmanager.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 
 #include "plexydesktopiconprovider.h"
 

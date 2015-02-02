@@ -19,7 +19,7 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 #include <QTimer>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <tableview.h>
 #include <default_table_model.h>
 #include <themepackloader.h>

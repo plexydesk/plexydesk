@@ -22,7 +22,7 @@
 
 #include <plexy.h>
 #include <plexy_core_exports.h>
-
+#include <QVariant>
 #include <QObject>
 
 /*!

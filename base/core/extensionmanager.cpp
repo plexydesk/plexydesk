@@ -121,7 +121,7 @@ ControllerPtr ExtensionManager::controller(const QString &name) {
     }
   }
 
-  return QSharedPointer<ControllerInterface>();
+  return QSharedPointer<ViewController>();
 }
 
 DesktopActivityPtr ExtensionManager::activity(const QString &name) {

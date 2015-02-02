@@ -30,7 +30,7 @@
 #include <QGraphicsProxyWidget>
 #include <QLineEdit>
 
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <style.h>
 #include <themepackloader.h>
 #include <button.h>

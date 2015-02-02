@@ -21,13 +21,13 @@
 
 #include <plexy.h>
 
-#include <controllerinterface.h>
+#include <view_controller.h>
 
 #include <themepackloader.h>
 #include "photowidget.h"
 #include "imageitem.h"
 
-class PhotoFrameController : public PlexyDesk::ControllerInterface {
+class PhotoFrameController : public PlexyDesk::ViewController {
   Q_OBJECT
 
 public:

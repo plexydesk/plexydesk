@@ -65,7 +65,7 @@ void Space::addController(const QString &controllerName) {
     return;
   }
 
-  QSharedPointer<ControllerInterface> _controller =
+  QSharedPointer<ViewController> _controller =
       (PlexyDesk::ExtensionManager::instance()->controller(controllerName));
 
   if (!_controller.data()) {

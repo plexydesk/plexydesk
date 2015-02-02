@@ -18,7 +18,7 @@
 #include "desktopclock.h"
 #include <desktopwidget.h>
 #include <plexyconfig.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <toolbar.h>
 
 #include <QGraphicsLinearLayout>

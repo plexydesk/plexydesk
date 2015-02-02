@@ -31,9 +31,9 @@ typedef void PlatformGraphicsScene;
 
 namespace PlexyDesk {
 
-class ControllerInterface;
+class ViewController;
 
-typedef QSharedPointer<ControllerInterface> ControllerPtr;
+typedef QSharedPointer<ViewController> ControllerPtr;
 
 class CORE_DECL_EXPORT DesktopViewport : public QObject {
   Q_OBJECT
