@@ -20,9 +20,9 @@
 #define EXTENSION_MANAGER_H
 
 #include <plexy.h>
-#include <abstractplugininterface.h>
-#include <QtCore/QHash>
-#include <QtCore/QSharedPointer>
+
+#include <QHash>
+#include <QSharedPointer>
 
 #include <datasource.h>
 #include <controllerinterface.h>

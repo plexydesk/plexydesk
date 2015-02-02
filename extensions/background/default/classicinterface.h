@@ -21,7 +21,7 @@
 
 #include <plexy.h>
 #include <extensionmanager.h>
-#include <abstractplugininterface.h>
+
 #include <controllerplugininterface.h>
 
 class ClassicBackdrop : public QObject,

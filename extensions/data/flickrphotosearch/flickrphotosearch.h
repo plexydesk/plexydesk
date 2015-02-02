@@ -21,7 +21,7 @@
 
 #include <QtCore>
 #include <plexy.h>
-#include <abstractplugininterface.h>
+
 #include <datasource.h>
 #include <QtNetwork>
 #include <webservice.h>

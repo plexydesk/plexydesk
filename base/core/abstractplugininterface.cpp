@@ -1,2 +1,0 @@
-
-#include "abstractplugininterface.h"

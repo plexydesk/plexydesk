@@ -21,7 +21,7 @@
 
 #include <plexy.h>
 
-#include <abstractplugininterface.h>
+
 #include <controllerinterface.h>
 #include <themepackloader.h>
 #include "iconwidgetview.h"

@@ -46,7 +46,6 @@ bool dockClickHandler(id self,SEL _cmd,...)
     return YES;
 }
 
-
 int main(int argc, char *argv[])
 {
 

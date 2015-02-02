@@ -21,7 +21,7 @@
 
 #include <QtCore>
 #include <plexy.h>
-#include <abstractplugininterface.h>
+
 #include <datasource.h>
 #include <QtNetwork>
 #include <desktopactivity.h>
@@ -40,18 +40,13 @@ public:
 
   void createWindow(const QRectF &window_geometry, const QString &window_title,
                     const QPointF &window_pos);
-
   QVariantMap result() const;
-
   Widget *window() const;
 
 private Q_SLOTS:
   void onWidgetClosed(PlexyDesk::Widget *widget);
-
   void onDiscard();
-
   void onClicked(TableViewItem *item);
-
   void onArgumentChanged();
 
 private:
