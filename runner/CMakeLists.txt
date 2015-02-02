@@ -1,162 +1,105 @@
-# Check if we use any Debug in the final release and if so compile the tests
-IF(CMAKE_BUILD_TYPE MATCHES ".*Deb.*")
-#    ADD_SUBDIRECTORY(test)
-ENDIF(CMAKE_BUILD_TYPE MATCHES ".*Deb.*")
+if(UNIX)
+	INCLUDE_DIRECTORIES(
+		${X11_INCLUDE_DIR}
+		${Qt5X11Extras_INCLUDE_DIRS}
+		${QT_QTGUI_INCLUDE_DIR}
+		${Qt5Gui_PRIVATE_INCLUDE_DIRS}
+		)
 
-IF (NOT APPLE)
-    IF(UNIX)
-        INCLUDE_DIRECTORIES(
-            ${X11_INCLUDE_DIR}
-            ${Qt5X11Extras_INCLUDE_DIRS}
-            ${QT_QTGUI_INCLUDE_DIR}
-            ${Qt5Gui_PRIVATE_INCLUDE_DIRS}
-            )
+	SET (extra_headers)
 
-        SET (extra_headers)
+	SET (extra_source)
 
-        SET (extra_source)
+	SET (extra_libs
+		Xcomposite
+		Xdamage
+		)
+endif(UNIX)
 
-        SET (extra_libs
-             Xcomposite
-             Xdamage
-             )
-    ENDIF(UNIX)
-    IF(WIN32)
-        INCLUDE_DIRECTORIES(
-            ${CMAKE_SOURCE_DIR}/dist/windows
-            ${CMAKE_BINARY_DIR}/dist/windows
-            )
-        SET(resourceFiles
-                ${CMAKE_BINARY_DIR}/dist/windows/${APPLICATION_EXE_NAME}_windres.rc
-                )
-    ENDIF(WIN32)
-ENDIF(NOT APPLE)
+if(WIN32)
+	INCLUDE_DIRECTORIES(
+		${CMAKE_SOURCE_DIR}/dist/windows
+		${CMAKE_BINARY_DIR}/dist/windows
+		)
+	SET(resourceFiles
+		${CMAKE_BINARY_DIR}/dist/windows/${APPLICATION_EXE_NAME}_windres.rc
+		)
+endif(WIN32)
 
 ########### Source files ###############
 SET(sourceFiles
-    ${extra_source}
-    )
+	${extra_source}
+	)
 
-
-if(APPLE)
-  SET(mainFiles main.mm)
-  set(OSX_ICON_FILES ${CMAKE_SOURCE_DIR}/artwork/icons/plexydesk.icns)
-  set(MACOSX_BUNDLE_ICON_FILE "plexydesk.icns")
-ENDIF(APPLE)
-
-IF (NOT APPLE)
-    SET(mainFiles main.cpp
-    )
-ENDIF(NOT APPLE)
-
-#IF (QNX)
-#    SET(mainFiles main_bb10.cpp bbmobileui.cpp)
-#ENDIF (QNX)
+SET(mainFiles main.cpp)
 
 SET(headerFiles desktopmanager.h
-    ${extra_headers}
-    )
+	${extra_headers}
+	)
 
 SET(QTMOC_SRCS desktopmanager.h
-    ${extra_headers}
-    )
+	${extra_headers}
+	)
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
 SET(sourceFiles
-    desktopmanager.cpp
-    ${sourceFiles}
-    ${headerFiles}
-    ${mainFiles}
-    )
+	desktopmanager.cpp
+	${sourceFiles}
+	${headerFiles}
+	${mainFiles}
+	)
 
-IF(WIN32)
-    SET(GUI_TYPE WIN32)
-    ADD_DEFINITIONS(-DNODEFAULTLIB:library)
-    SET(libs
-        ${QT_QTGUI_LIBRARY}
-        ${QT_QTCORE_LIBRARY}
-        ${QT_QTOPENGL_LIBRARY}
-        ${QT_QTMAIN_LIBRARY}
-        )
-ENDIF(WIN32)
+if(WIN32)
+	SET(GUI_TYPE WIN32)
+	ADD_DEFINITIONS(-DNODEFAULTLIB:library)
+	SET(libs
+		${QT_QTGUI_LIBRARY}
+		${QT_QTCORE_LIBRARY}
+		${QT_QTOPENGL_LIBRARY}
+		${QT_QTMAIN_LIBRARY}
+		)
+endif(WIN32)
 
-IF(UNIX)
-    SET(libs
-        ${QT_QTGUI_LIBRARY}
-        ${QT_QTCORE_LIBRARY}
-        ${QT_QTOPENGL_LIBRARY}
-        ${QT_QTSQL_LIBRARY}
-        ${Qt5X11Extras_LIBRARIES}
-        ${extra_libs}
-        )
-ENDIF(UNIX)
-
-#Locate cococa framework on mac
-IF (APPLE)
-   INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
-   FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-   FIND_LIBRARY(GLUT_LIBRARY GLUT)
-   FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
-   MARK_AS_ADVANCED (COCOA_LIBRARY
-                     GLUT_LIBRARY
-                     OpenGL_LIBRARY)
-   SET(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY})
-ENDIF(APPLE)
+if(UNIX)
+	SET(libs
+		${QT_QTGUI_LIBRARY}
+		${QT_QTCORE_LIBRARY}
+		${QT_QTOPENGL_LIBRARY}
+		${QT_QTSQL_LIBRARY}
+		${Qt5X11Extras_LIBRARIES}
+		${extra_libs}
+		)
+endif(UNIX)
 
 ########### Prepare files ###############
-
-IF (APPLE)
-    set (APP_TYPE MACOSX_BUNDLE)
-ENDIF(APPLE)
-
 ADD_EXECUTABLE(${APPLICATION_EXE_NAME} ${APP_TYPE} ${WIN_APPLICATION} ${sourceFiles} ${resourceFiles} ${QT_MOC_SRCS})
-IF(APPLE)
-   set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
-   SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES INSTALL_RPATH "@executable_path/../Frameworks/")
-   SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/cmakemodules/plexydesk-info.plist)
-   #rpath specific properties
-   message (${APPLICATION_EXE_NAME})
-   SET(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
 
-ENDIF(APPLE)
+if(MSVC)
+	MSVC_SET_PROPER_CONSOLE_HANDLING(${APPLICATION_EXE_NAME})
+endif(MSVC)
 
-IF(MSVC)
-    MSVC_SET_PROPER_CONSOLE_HANDLING(${APPLICATION_EXE_NAME})
-ENDIF(MSVC)
 SET_PROPERTY(TARGET ${APPLICATION_EXE_NAME} PROPERTY QT5_NO_LINK_QTMAIN ON)
+
 TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
-    ${QT_QTOPENGL_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTNETWORK_LIBRARY}
-    ${QT_QTDECLARATIVE_LIBRARY}
-    ${QT_QTSQL_LIBRARY}
-    ${QT_QTSCRIPT_LIBRARY}
-    ${QT_QTXML_LIBRARY}
-    ${PLEXY_UI_CORE_LIBRARY}
-    ${QT_QTXMLPATTERNS_LIBRARY}
-    ${Qt5X11Extras_LIBRARIES}
-    ${MAC_LIBS}
-    )
+	${QT_QTOPENGL_LIBRARY}
+	${QT_QTSVG_LIBRARY}
+	${QT_QTNETWORK_LIBRARY}
+	${QT_QTDECLARATIVE_LIBRARY}
+	${QT_QTSQL_LIBRARY}
+	${QT_QTSCRIPT_LIBRARY}
+	${QT_QTXML_LIBRARY}
+	${PLEXY_UI_CORE_LIBRARY}
+	${QT_QTXMLPATTERNS_LIBRARY}
+	${Qt5X11Extras_LIBRARIES}
+	${MAC_LIBS}
+	)
 
 QT5_USE_MODULES(${APPLICATION_EXE_NAME} Widgets Xml OpenGL Core WebKitWidgets Svg)
 
 ########### Install files ###############
-IF(NOT APPLE)
-INSTALL(TARGETS plexydesk DESTINATION bin)
-ENDIF(NOT APPLE)
+install(TARGETS plexydesk DESTINATION bin)
 
-IF (APPLE)
-   INSTALL(TARGETS plexydesk
-      BUNDLE DESTINATION . COMPONENT Runtime
-      RUNTIME DESTINATION bin COMPONENT Runtime)
-    INSTALL(FILES ${OSX_ICON_FILES}
-           DESTINATION plexydesk.app/Contents/Resources)
-ENDIF(APPLE)
-
-
-IF(UNIX)
-    iF (NOT APPLE)
-    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/plexydesk.desktop DESTINATION share/applications)
-    ENDIF(NOT APPLE)
-ENDIF(UNIX)
+if(UNIX)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plexydesk.desktop DESTINATION share/applications)
+endif(UNIX)
