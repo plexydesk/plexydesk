@@ -17,7 +17,6 @@ public:
 
 protected:
   virtual void mouseReleaseEvent(QMouseEvent *event);
-  virtual void mouseMoveEvent(QMouseEvent *event);
 
 private:
   class PrivateDesktopManager;
