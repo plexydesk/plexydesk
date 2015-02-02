@@ -5,9 +5,7 @@
 
 #include <QSharedPointer>
 #include <QObject>
-
 #include <abstractdesktopview.h>
-#include <desktopviewplugin.h>
 #include <plexy_core_exports.h>
 
 namespace PlexyDesk {

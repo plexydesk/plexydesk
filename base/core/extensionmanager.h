@@ -27,7 +27,6 @@
 #include <datasource.h>
 #include <view_controller.h>
 #include <widgetstyleinterface.h>
-#include <desktopviewplugin.h>
 
 #include <desktopactivity.h>
 #include <plexy_core_exports.h>
