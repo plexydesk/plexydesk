@@ -62,7 +62,7 @@ public:
 };
 
 DockControllerImpl::DockControllerImpl(QObject* object)
-    : PlexyDesk::ControllerInterface(object), d(new PrivateDock) {
+    : PlexyDesk::ViewController(object), d(new PrivateDock) {
   d->m_actions_map["ToggleDock"] = 1;
   d->m_actions_map["ShowDock"] = 2;
   d->m_actions_map["HideDock"] = 3;

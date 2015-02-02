@@ -20,9 +20,9 @@
 #include "interface.h"
 #include "folderplugin.h"
 
-QSharedPointer<PlexyDesk::ControllerInterface> Interface::controller() {
-  QSharedPointer<PlexyDesk::ControllerInterface> obj =
-      QSharedPointer<PlexyDesk::ControllerInterface>(
+QSharedPointer<PlexyDesk::ViewController> Interface::controller() {
+  QSharedPointer<PlexyDesk::ViewController> obj =
+      QSharedPointer<PlexyDesk::ViewController>(
           new DirectoryController(this), &QObject::deleteLater);
 
   return obj;

@@ -36,7 +36,7 @@ public:
 };
 
 DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
-    : PlexyDesk::ControllerInterface(object), d(new PrivateDesktopNotes) {
+    : PlexyDesk::ViewController(object), d(new PrivateDesktopNotes) {
   d->mNoteActions["Note"] = 1;
   d->mNoteActions["Task"] = 2;
   d->mNoteActions["Reminder"] = 3;

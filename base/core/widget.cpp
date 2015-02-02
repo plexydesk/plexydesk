@@ -114,7 +114,7 @@ public:
   RenderLevel m_current_layer_type;
   QString m_widget_name;
   QRectF m_minized_view_geometry;
-  ControllerInterface *m_widget_controller;
+  ViewController *m_widget_controller;
 };
 
 Widget::Widget(QGraphicsObject *parent)
@@ -271,11 +271,11 @@ void Widget::setChildWidetVisibility(bool show) {
   }
 }
 
-void Widget::setController(ControllerInterface *view_controller) {
+void Widget::setController(ViewController *view_controller) {
   d->m_widget_controller = view_controller;
 }
 
-ControllerInterface *Widget::controller() const {
+ViewController *Widget::controller() const {
   return d->m_widget_controller;
 }
 

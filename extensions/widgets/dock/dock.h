@@ -30,7 +30,7 @@
 
 using namespace PlexyDesk;
 
-class DockControllerImpl : public PlexyDesk::ControllerInterface {
+class DockControllerImpl : public PlexyDesk::ViewController {
   Q_OBJECT
 
 public:

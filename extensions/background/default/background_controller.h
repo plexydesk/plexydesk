@@ -28,7 +28,7 @@
 // self
 #include "classicbackgroundrender.h"
 
-class BackgroundController : public PlexyDesk::ControllerInterface {
+class BackgroundController : public PlexyDesk::ViewController {
   Q_OBJECT
 
 public:

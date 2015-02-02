@@ -65,7 +65,7 @@ public:
 };
 
 BackgroundController::BackgroundController(QObject *object)
-    : PlexyDesk::ControllerInterface(object),
+    : PlexyDesk::ViewController(object),
       d(new PrivateBackgroundController) {
   d->m_background_render_item = 0;
 }

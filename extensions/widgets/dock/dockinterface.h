@@ -34,7 +34,7 @@ public:
   virtual ~DockInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::ControllerInterface> controller();
+  QSharedPointer<PlexyDesk::ViewController> controller();
 };
 
 #endif

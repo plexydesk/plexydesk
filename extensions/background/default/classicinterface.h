@@ -34,7 +34,7 @@ public:
   ClassicBackdrop(QObject *parent = 0);
   virtual ~ClassicBackdrop();
 
-  QSharedPointer<PlexyDesk::ControllerInterface> controller();
+  QSharedPointer<PlexyDesk::ViewController> controller();
 };
 
 #endif

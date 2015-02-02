@@ -23,9 +23,9 @@
 #include "imageplugin.h"
 #include "imageplugin.h"
 
-QSharedPointer<PlexyDesk::ControllerInterface> Interface::controller() {
-  QSharedPointer<PlexyDesk::ControllerInterface> obj =
-      QSharedPointer<PlexyDesk::ControllerInterface>(
+QSharedPointer<PlexyDesk::ViewController> Interface::controller() {
+  QSharedPointer<PlexyDesk::ViewController> obj =
+      QSharedPointer<PlexyDesk::ViewController>(
           new PhotoFrameController(this), &QObject::deleteLater);
 
   return obj;

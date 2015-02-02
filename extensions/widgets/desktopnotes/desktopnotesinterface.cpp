@@ -21,10 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::ControllerInterface>
+QSharedPointer<PlexyDesk::ViewController>
 DesktopNotesInterface::controller() {
-  QSharedPointer<PlexyDesk::ControllerInterface> obj =
-      QSharedPointer<PlexyDesk::ControllerInterface>(
+  QSharedPointer<PlexyDesk::ViewController> obj =
+      QSharedPointer<PlexyDesk::ViewController>(
           new DesktopNotesControllerImpl(this), &QObject::deleteLater);
 
   return obj;

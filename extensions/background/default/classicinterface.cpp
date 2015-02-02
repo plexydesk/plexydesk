@@ -27,9 +27,9 @@ ClassicBackdrop::ClassicBackdrop(QObject* /*parent*/)
 
 ClassicBackdrop::~ClassicBackdrop() {}
 
-QSharedPointer<PlexyDesk::ControllerInterface> ClassicBackdrop::controller() {
-  QSharedPointer<PlexyDesk::ControllerInterface> obj =
-      QSharedPointer<PlexyDesk::ControllerInterface>(new BackgroundController(),
+QSharedPointer<PlexyDesk::ViewController> ClassicBackdrop::controller() {
+  QSharedPointer<PlexyDesk::ViewController> obj =
+      QSharedPointer<PlexyDesk::ViewController>(new BackgroundController(),
                                                      &QObject::deleteLater);
 
   return obj;

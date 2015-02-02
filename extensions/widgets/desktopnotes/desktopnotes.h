@@ -27,7 +27,7 @@
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl : public PlexyDesk::ControllerInterface {
+class DesktopNotesControllerImpl : public PlexyDesk::ViewController {
   Q_OBJECT
 
 public:
