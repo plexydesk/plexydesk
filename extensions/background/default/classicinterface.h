@@ -25,16 +25,16 @@
 #include <controllerplugininterface.h>
 
 class ClassicBackdrop : public QObject,
-                        public PlexyDesk::ControllerPluginInterface {
+                        public UI::ControllerPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ControllerPluginInterface)
+  Q_INTERFACES(UI::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.classicbackground")
 
 public:
   ClassicBackdrop(QObject *parent = 0);
   virtual ~ClassicBackdrop();
 
-  QSharedPointer<PlexyDesk::ViewController> controller();
+  QSharedPointer<UI::ViewController> controller();
 };
 
 #endif

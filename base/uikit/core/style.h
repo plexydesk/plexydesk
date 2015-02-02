@@ -25,7 +25,7 @@
 #include <QPainter>
 #include <QObject>
 
-namespace PlexyDesk {
+namespace UI {
 
 class DECL_UI_KIT_EXPORT Style {
 public:
@@ -42,5 +42,5 @@ public:
 };
 }
 
-typedef QSharedPointer<PlexyDesk::Style> StylePtr;
+typedef QSharedPointer<UI::Style> StylePtr;
 #endif // STYLE_H

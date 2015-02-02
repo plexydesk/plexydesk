@@ -4,7 +4,7 @@
 #include <tableviewcellinterface.h>
 #include <plexydesk_ui_exports.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
 class DECL_UI_KIT_EXPORT DefaultTableModel : public TableModel {
   Q_OBJECT

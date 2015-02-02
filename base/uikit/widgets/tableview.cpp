@@ -28,7 +28,7 @@
 #include <QDebug>
 #include <themepackloader.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class TableView::PrivateTableView {
 
@@ -106,8 +106,8 @@ void TableView::setModel(TableModel *iface) {
   }
 
   connect(iface, SIGNAL(cleared()), this, SLOT(onClear()));
-  connect(iface, SIGNAL(add(PlexyDesk::TableViewItem *)), this,
-          SLOT(onAddViewItem(PlexyDesk::TableViewItem *)));
+  connect(iface, SIGNAL(add(UI::TableViewItem *)), this,
+          SLOT(onAddViewItem(UI::TableViewItem *)));
 
   if (iface)
     iface->init();
@@ -202,7 +202,7 @@ void TableView::onItemClick(TableViewItem *component) {
   qDebug() << Q_FUNC_INFO << " Activated :";
 }
 
-void TableView::onAddViewItem(PlexyDesk::TableViewItem *item) {
+void TableView::onAddViewItem(UI::TableViewItem *item) {
   if (!d->m_table_delegate_ptr)
     return;
 

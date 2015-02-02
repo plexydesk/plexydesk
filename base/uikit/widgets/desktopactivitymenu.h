@@ -6,7 +6,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 class Space;
 
 class DECL_UI_KIT_EXPORT DesktopActivityMenu : public QObject {

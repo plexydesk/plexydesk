@@ -24,9 +24,9 @@
 #include <dataplugininterface.h>
 #include <QtNetwork>
 
-class RestInterface : public QObject, public PlexyDesk::DataPluginInterface {
+class RestInterface : public QObject, public UI::DataPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::DataPluginInterface)
+  Q_INTERFACES(UI::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.restengine")
 
 public:
@@ -34,7 +34,7 @@ public:
   virtual ~RestInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::DataSource> model();
+  QSharedPointer<UI::DataSource> model();
 };
 
 #endif

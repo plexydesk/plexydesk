@@ -32,7 +32,7 @@ public:
 };
 
 FlickrPhotoSearchData::FlickrPhotoSearchData(QObject *object)
-    : PlexyDesk::DataSource(object), d(new PrivateFlickrPhotoSearch) {}
+    : UI::DataSource(object), d(new PrivateFlickrPhotoSearch) {}
 
 void FlickrPhotoSearchData::init() {}
 

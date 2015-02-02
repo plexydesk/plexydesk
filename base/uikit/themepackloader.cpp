@@ -31,7 +31,7 @@
 
 #include "themepackloader.h"
 
-namespace PlexyDesk {
+namespace UI {
 
 Theme *Theme::s_theme_instance = 0;
 
@@ -63,7 +63,7 @@ public:
 Theme::Theme(const QString &themeName, QObject *parent)
     : QObject(parent), d(new ThemepackLoaderPrivate) {
   d->mThemePackPath = QDir::toNativeSeparators(
-      QString("%1/%2").arg(PlexyDesk::Config::getInstance()->prefix()).arg(
+      QString("%1/%2").arg(UI::Config::getInstance()->prefix()).arg(
           "/share/plexy/themepack"));
 
   d->mThemeName = themeName;
@@ -81,7 +81,7 @@ Theme::Theme(const QString &themeName, QObject *parent)
     }
   }
 
-  d->mStyle = PlexyDesk::ExtensionManager::instance()->style("cocoastyle");
+  d->mStyle = UI::ExtensionManager::instance()->style("cocoastyle");
 }
 
 Theme::~Theme() {
@@ -446,7 +446,7 @@ void Theme::onImageReady() {
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), PlexyDesk::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UI::Config::cacheDir(), true);
     imageSave->setCrop(QRectF(0.0, 0.0, 440, 440.0));
     imageSave->start();
 

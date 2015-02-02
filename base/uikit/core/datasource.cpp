@@ -1,7 +1,7 @@
 #include "datasource.h"
 #include <QVariantHash>
 
-namespace PlexyDesk {
+namespace UI {
 
 class DataSource::PrivateDataSource {
 public:

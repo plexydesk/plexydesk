@@ -28,7 +28,7 @@
 // self
 #include "classicbackgroundrender.h"
 
-class BackgroundController : public PlexyDesk::ViewController {
+class BackgroundController : public UI::ViewController {
   Q_OBJECT
 
 public:
@@ -40,11 +40,11 @@ public:
 
   void revokeSession(const QVariantMap &args);
 
-  PlexyDesk::ActionList actions() const;
+  UI::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &data);
 
-  void handleDropEvent(PlexyDesk::Widget *widget, QDropEvent *event);
+  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
 
   void setViewRect(const QRectF &rect);
 

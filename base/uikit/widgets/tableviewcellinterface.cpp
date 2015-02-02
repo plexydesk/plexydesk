@@ -19,7 +19,7 @@
 
 #include "tableviewcellinterface.h"
 
-namespace PlexyDesk {
+namespace UI {
 
 TableModel::TableModel(QObject *parent) : QObject(parent) {}
 

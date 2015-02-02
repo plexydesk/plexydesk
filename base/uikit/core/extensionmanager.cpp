@@ -27,7 +27,7 @@
 #include "controllerplugininterface.h"
 #include "activity_interface.h"
 
-namespace PlexyDesk {
+namespace UI {
 ExtensionManager *ExtensionManager::mInstance = 0;
 
 class ExtensionManager::PrivateExtManager {
@@ -78,6 +78,12 @@ ExtensionManager *ExtensionManager::instance(const QString &desktopPrefix,
     mInstance->scanForPlugins();
   }
   return mInstance;
+}
+
+ExtensionManager *ExtensionManager::init(const QString &desktopPrefix,
+                                         const QString &prefix)
+{
+   return instance(desktopPrefix, prefix);
 }
 
 ExtensionManager *ExtensionManager::instance() {

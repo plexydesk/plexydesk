@@ -6,7 +6,7 @@
 
 class FolderItem;
 
-class FolderProvider : public PlexyDesk::TableModel {
+class FolderProvider : public UI::TableModel {
   Q_OBJECT
 public:
   FolderProvider(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -14,7 +14,7 @@ public:
 
   virtual bool init();
 
-  QList<PlexyDesk::TableViewItem *> componentList();
+  QList<UI::TableViewItem *> componentList();
 
   float margin() const;
 
@@ -24,12 +24,12 @@ public:
 
   virtual float rightMargin() const;
 
-  PlexyDesk::UIWidget *loadWidgetControlllerByName(
+  UI::UIWidget *loadWidgetControlllerByName(
       const QString &controllerName) const;
 
-  PlexyDesk::DataSourcePtr loadDataSourceEngine(const QString &engine);
+  UI::DataSourcePtr loadDataSourceEngine(const QString &engine);
 
-  PlexyDesk::TableModel::TableRenderMode renderType() const;
+  UI::TableModel::TableRenderMode renderType() const;
 
   void setDirectoryPath(const QString &path);
 
@@ -42,7 +42,7 @@ public Q_SLOTS:
   void onLocationSourceUpdated(const QVariantMap &data);
 
 private:
-  QList<PlexyDesk::TableViewItem *> mFolderList;
+  QList<UI::TableViewItem *> mFolderList;
 
   class FolderProviderPrivate;
   FolderProviderPrivate *const d;

@@ -9,14 +9,14 @@ public:
   PrivateTableDelegate() {}
   ~PrivateTableDelegate() { m_data_map.clear(); }
 
-  QList<PlexyDesk::TableViewItem *> m_table_view_item_list;
+  QList<UI::TableViewItem *> m_table_view_item_list;
   QMap<QString, QPixmap> m_data_map;
   QSize m_current_item_size;
   bool m_current_item_label_visibility;
 };
 
 TimeZoneModel::TimeZoneModel(QGraphicsObject *parent)
-    : PlexyDesk::TableModel(parent), d(new PrivateTableDelegate) {
+    : UI::TableModel(parent), d(new PrivateTableDelegate) {
   d->m_current_item_label_visibility = false;
 }
 
@@ -39,7 +39,7 @@ bool TimeZoneModel::init() {
                   zone.comment() << ":" <<
                   QLocale::countryToString(zone.country());
       insertItem(QLocale::countryToString(zone.country()),
-                 PlexyDesk::Theme::instance()->drawable("clock.png", "mdpi"),
+                 UI::Theme::instance()->drawable("clock.png", "mdpi"),
                  false);
   }
   */
@@ -47,8 +47,8 @@ bool TimeZoneModel::init() {
   return true;
 }
 
-PlexyDesk::TableModel::TableRenderMode TimeZoneModel::renderType() const {
-  return PlexyDesk::TableModel::kRenderAsListView;
+UI::TableModel::TableRenderMode TimeZoneModel::renderType() const {
+  return UI::TableModel::kRenderAsListView;
 }
 
 void TimeZoneModel::insertItem(const QString &label, const QPixmap pixmap,

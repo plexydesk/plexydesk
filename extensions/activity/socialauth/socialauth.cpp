@@ -26,11 +26,11 @@ public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
 
-  PlexyDesk::UIWidget *mFrame;
+  UI::UIWidget *mFrame;
 };
 
 SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateSocialAuth) {}
+    : UI::DesktopActivity(object), d(new PrivateSocialAuth) {}
 
 SocialAuthActivity::~SocialAuthActivity() { delete d; }
 
@@ -39,30 +39,30 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
                                       const QPointF &window_pos) {
   setGeometry(window_geometry);
 
-  d->mFrame = new PlexyDesk::UIWidget();
+  d->mFrame = new UI::UIWidget();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
   d->mFrame->setWindowTitle(window_title);
 
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
   updateContentGeometry(d->mFrame);
   exec();
 
   showActivity();
-  connect(d->mFrame, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 }
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
-PlexyDesk::Widget *SocialAuthActivity::window() const { return d->mFrame; }
+UI::Widget *SocialAuthActivity::window() const { return d->mFrame; }
 
-void SocialAuthActivity::onWidgetClosed(PlexyDesk::Widget *widget) {}
+void SocialAuthActivity::onWidgetClosed(UI::Widget *widget) {}
 
 void SocialAuthActivity::onHideAnimationFinished() {}

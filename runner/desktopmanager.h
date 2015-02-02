@@ -25,9 +25,9 @@
 #include <workspace.h>
 #include <view_controller.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
-class DesktopManager : public PlexyDesk::WorkSpace {
+class DesktopManager : public UI::WorkSpace {
   Q_OBJECT
 public:
   explicit DesktopManager(QWidget *parent = 0);

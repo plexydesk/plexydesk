@@ -6,7 +6,7 @@
 #include <space.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 typedef QList<Space *> SpacesList;
 
 class DECL_UI_KIT_EXPORT WorkSpace : public QGraphicsView {

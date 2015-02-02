@@ -6,7 +6,7 @@
 
 #include <QScroller>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ModelView::PrivateModelView {
 public:

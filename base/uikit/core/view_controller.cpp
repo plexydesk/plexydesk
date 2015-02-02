@@ -2,14 +2,14 @@
 #include <extensionmanager.h>
 #include <QDebug>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ViewController::PrivateViewControllerPlugin {
 public:
   PrivateViewControllerPlugin() {}
   ~PrivateViewControllerPlugin() {}
   QSharedPointer<DataSource> mDataSource;
-  DesktopViewport *mViewport;
+  Space *mViewport;
   QString mName;
 };
 
@@ -20,11 +20,11 @@ ViewController::ViewController(QObject *parent)
 
 ViewController::~ViewController() { delete d; }
 
-void ViewController::setViewport(DesktopViewport *view) {
+void ViewController::setViewport(Space *view) {
   d->mViewport = view;
 }
 
-DesktopViewport *ViewController::viewport() { return d->mViewport; }
+Space *ViewController::viewport() { return d->mViewport; }
 
 ActionList ViewController::actions() const { return ActionList(); }
 
@@ -56,12 +56,7 @@ DesktopActivityPtr ViewController::activity(const QString &name,
   }
 
   if (viewport()) {
-    PlexyDesk::DesktopViewport *view =
-        qobject_cast<PlexyDesk::DesktopViewport *>(viewport());
-
-    if (view) {
-      view->addActivity(intent);
-    }
+      viewport()->addActivity(intent);
   }
   return intent;
 }

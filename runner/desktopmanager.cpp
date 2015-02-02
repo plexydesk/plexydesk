@@ -21,7 +21,6 @@
 
 #include <QDebug>
 
-#include <desktop_viewport.h>
 #include <space.h>
 #include <workspace.h>
 
@@ -32,7 +31,7 @@ public:
 };
 
 DesktopManager::DesktopManager(QWidget *parent)
-    : PlexyDesk::WorkSpace(new QGraphicsScene, parent),
+    : UI::WorkSpace(new QGraphicsScene, parent),
       d(new PrivateDesktopManager) {}
 
 DesktopManager::~DesktopManager() { delete d; }
@@ -52,5 +51,5 @@ void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
     }
   }
 
-  PlexyDesk::WorkSpace::mouseReleaseEvent(event);
+  UI::WorkSpace::mouseReleaseEvent(event);
 }

@@ -16,8 +16,8 @@ public:
       delete mIconProvider;
   }
 
-  QMap<QString, PlexyDesk::ControllerPtr> mControllerMap;
-  QMap<QString, PlexyDesk::DataSourcePtr> mEngines;
+  QMap<QString, UI::ControllerPtr> mControllerMap;
+  QMap<QString, UI::DataSourcePtr> mEngines;
   QFileSystemModel *mFileSystemModel;
   QFileIconProvider *mIconProvider;
 
@@ -25,7 +25,7 @@ public:
 };
 
 FolderProvider::FolderProvider(const QRectF &rect, QGraphicsObject *parent)
-    : PlexyDesk::TableModel(parent), d(new FolderProviderPrivate) {
+    : UI::TableModel(parent), d(new FolderProviderPrivate) {
 
   d->mIconProvider = new QFileIconProvider();
   d->mFileSystemModel = new QFileSystemModel(this);
@@ -75,11 +75,11 @@ float FolderProvider::rightMargin() const {
 }
 
 /*
-PlexyDesk::DesktopWidget *FolderProvider::loadWidgetControlllerByName(const
+UI::DesktopWidget *FolderProvider::loadWidgetControlllerByName(const
 QString &controllerName) const
 {
-    QSharedPointer<PlexyDesk::ControllerInterface> controller =
-            (PlexyDesk::PluginLoader::getInstance()->controller(controllerName));
+    QSharedPointer<UI::ControllerInterface> controller =
+            (UI::PluginLoader::getInstance()->controller(controllerName));
 
     if (!controller.data()) {
         qWarning() << Q_FUNC_INFO << "Error loading extension" <<
@@ -87,24 +87,24 @@ controllerName;
         return 0;
     }
 
-    PlexyDesk::DesktopWidget *defaultView =
-        qobject_cast<PlexyDesk::DesktopWidget*>(controller->init());
+    UI::DesktopWidget *defaultView =
+        qobject_cast<UI::DesktopWidget*>(controller->init());
 
     if (!defaultView)
         return 0;
 
     d->mControllerMap[controllerName] = controller;
-    defaultView->setWidgetFlag(PlexyDesk::DesktopWidget::BACKGROUND, false);
-    defaultView->setWidgetFlag(PlexyDesk::DesktopWidget::WINDOW, false);
+    defaultView->setWidgetFlag(UI::DesktopWidget::BACKGROUND, false);
+    defaultView->setWidgetFlag(UI::DesktopWidget::WINDOW, false);
 
     return defaultView;
 }
 */
 
-PlexyDesk::DataSourcePtr FolderProvider::loadDataSourceEngine(
+UI::DataSourcePtr FolderProvider::loadDataSourceEngine(
     const QString &engine) {
-  QSharedPointer<PlexyDesk::DataSource> dataSource =
-      PlexyDesk::ExtensionManager::instance()->dataEngine(engine);
+  QSharedPointer<UI::DataSource> dataSource =
+      UI::ExtensionManager::instance()->dataEngine(engine);
 
   // connect(d->mDataSource.data(), SIGNAL(ready()), this, SLOT(onReady()));
   d->mEngines[engine] = dataSource;
@@ -112,8 +112,8 @@ PlexyDesk::DataSourcePtr FolderProvider::loadDataSourceEngine(
   return dataSource;
 }
 
-PlexyDesk::TableModel::TableRenderMode FolderProvider::renderType() const {
-  return PlexyDesk::TableModel::kRenderAsGridView;
+UI::TableModel::TableRenderMode FolderProvider::renderType() const {
+  return UI::TableModel::kRenderAsGridView;
 }
 
 void FolderProvider::setDirectoryPath(const QString &path) {

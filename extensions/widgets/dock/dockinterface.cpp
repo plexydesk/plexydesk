@@ -21,9 +21,9 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::ViewController> DockInterface::controller() {
-  QSharedPointer<PlexyDesk::ViewController> obj =
-      QSharedPointer<PlexyDesk::ViewController>(new DockControllerImpl(0),
+QSharedPointer<UI::ViewController> DockInterface::controller() {
+  QSharedPointer<UI::ViewController> obj =
+      QSharedPointer<UI::ViewController>(new DockControllerImpl(0),
                                                      &QObject::deleteLater);
 
   return obj;

@@ -21,9 +21,9 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> TimerInterface::model() {
-  QSharedPointer<PlexyDesk::DataSource> obj =
-      QSharedPointer<PlexyDesk::DataSource>(new TimerData(),
+QSharedPointer<UI::DataSource> TimerInterface::model() {
+  QSharedPointer<UI::DataSource> obj =
+      QSharedPointer<UI::DataSource>(new TimerData(),
                                             &QObject::deleteLater);
 
   return obj;

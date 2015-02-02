@@ -37,34 +37,34 @@ public:
 
   ~PrivateDesktopClock() {}
 
-  PlexyDesk::UIWidget *m_main_window;
+  UI::UIWidget *m_main_window;
   QGraphicsWidget *m_layout_widget;
   QGraphicsLinearLayout *m_main_layout;
-  PlexyDesk::ToolBar *m_tool_bar;
-  PlexyDesk::Label *m_timezone_label;
+  UI::ToolBar *m_tool_bar;
+  UI::Label *m_timezone_label;
   ClockWidget *m_clock_widget;
-  PlexyDesk::TableView *m_timezone_table;
+  UI::TableView *m_timezone_table;
   TimeZoneModel *m_timezone_model;
   QString m_country;
   QString m_city;
 };
 
 DesktopClockActivity::DesktopClockActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateDesktopClock) {}
+    : UI::DesktopActivity(object), d(new PrivateDesktopClock) {}
 
 DesktopClockActivity::~DesktopClockActivity() { delete d; }
 
 void DesktopClockActivity::createFrameWindow(const QRectF &window_geometry,
                                              const QString &window_title) {
-  d->m_main_window = new PlexyDesk::UIWidget();
+  d->m_main_window = new UI::UIWidget();
   d->m_main_window->setGeometry(window_geometry);
 
   d->m_main_window->setWindowTitle(window_title);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
   setGeometry(window_geometry);
 }
@@ -80,8 +80,8 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   d->m_layout_widget = new QGraphicsWidget(d->m_main_window);
   d->m_main_layout = new QGraphicsLinearLayout(d->m_layout_widget);
 
-  if (PlexyDesk::Theme::style()) {
-    float _window_title_height = PlexyDesk::Theme::style()
+  if (UI::Theme::style()) {
+    float _window_title_height = UI::Theme::style()
                                      ->attrbute("frame", "window_title_height")
                                      .toFloat();
     _layout_geometry.setY(_window_title_height);
@@ -102,9 +102,9 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   d->m_main_layout->addItem(d->m_clock_widget);
 
   /* Add Toolbar Widget */
-  d->m_tool_bar = new PlexyDesk::ToolBar(d->m_layout_widget);
+  d->m_tool_bar = new UI::ToolBar(d->m_layout_widget);
 
-  d->m_timezone_label = new PlexyDesk::Label(d->m_tool_bar);
+  d->m_timezone_label = new UI::Label(d->m_tool_bar);
   d->m_timezone_label->setSize(QSizeF(window_geometry.width() - 64, 32.0));
   d->m_timezone_label->setLabel(tr("Time Zone"));
 
@@ -118,7 +118,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   /* Add table view */
   QRectF _timezone_table_rect(0.0, 0.0, window_geometry.width(), 128);
 
-  d->m_timezone_table = new PlexyDesk::TableView(d->m_layout_widget);
+  d->m_timezone_table = new UI::TableView(d->m_layout_widget);
   d->m_timezone_table->setGeometry(_timezone_table_rect);
 
   d->m_timezone_model = new TimeZoneModel(d->m_timezone_table);
@@ -130,19 +130,19 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
-PlexyDesk::Widget *DesktopClockActivity::window() const {
+UI::Widget *DesktopClockActivity::window() const {
   return d->m_main_window;
 }
 
-void DesktopClockActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
+void DesktopClockActivity::onWidgetClosed(UI::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
@@ -154,9 +154,9 @@ void DesktopClockActivity::onToolBarAction(const QString &str) {
     qDebug() << Q_FUNC_INFO << "Create timezone activity";
 
     if (viewport()) {
-      PlexyDesk::Space *_space = qobject_cast<PlexyDesk::Space *>(viewport());
+      UI::Space *_space = qobject_cast<UI::Space *>(viewport());
       if (_space) {
-        PlexyDesk::DesktopActivityPtr _timezone = viewport()->createActivity(
+        UI::DesktopActivityPtr _timezone = viewport()->createActivity(
             "timezone", tr("TimeZone"), _space->clickLocation(),
             QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
         _space->addActivity(_timezone);

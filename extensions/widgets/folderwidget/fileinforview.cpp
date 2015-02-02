@@ -48,19 +48,19 @@ public:
 
   // action buttons.
   QGraphicsWidget *mLayoutBase;
-  PlexyDesk::Button *mDeleteButton;
-  PlexyDesk::Button *mRenameButton;
-  PlexyDesk::WindowButton *mWindowButton;
-  // PlexyDesk::LineEdit *mRnameField;
+  UI::Button *mDeleteButton;
+  UI::Button *mRenameButton;
+  UI::WindowButton *mWindowButton;
+  // UI::LineEdit *mRnameField;
   QLineEdit *mLineEdit;
   QGraphicsProxyWidget *mLineEditProxy;
-  PlexyDesk::Style *mStyle;
+  UI::Style *mStyle;
 };
 
 FileInforView::FileInforView(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateFileInforView) {
+    : UI::UIWidget(parent), d(new PrivateFileInforView) {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, false);
+  this->setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
 
   d->mSlideAnimation = new QPropertyAnimation(this, "pos");
   d->mSlideAnimation->setDuration(500);
@@ -71,7 +71,7 @@ FileInforView::FileInforView(QGraphicsObject *parent)
   d->mGridLayout = new QGraphicsGridLayout(d->mLayoutBase);
 
   /* Window button */
-  d->mWindowButton = new PlexyDesk::WindowButton(this);
+  d->mWindowButton = new UI::WindowButton(this);
   // d->mWindowButton->setPos(rect.width() -
   // (d->mWindowButton->boundingRect().width() + 10.0), 10.0);
   d->mWindowButton->show();
@@ -79,13 +79,13 @@ FileInforView::FileInforView(QGraphicsObject *parent)
           SLOT(onCloseButtonClicked()));
 
   /* Delete Button */
-  d->mDeleteButton = new PlexyDesk::Button(d->mLayoutBase);
+  d->mDeleteButton = new UI::Button(d->mLayoutBase);
   d->mDeleteButton->setLabel(tr("Trash"));
   d->mDeleteButton->setSize(QSize(100, 25));
   d->mGridLayout->addItem(d->mDeleteButton, 0, 0);
 
   /* Rename Button */
-  d->mRenameButton = new PlexyDesk::Button(d->mLayoutBase);
+  d->mRenameButton = new UI::Button(d->mLayoutBase);
   d->mRenameButton->setLabel(tr("Rename"));
   d->mRenameButton->setSize(QSize(100, 25));
   d->mGridLayout->addItem(d->mRenameButton, 0, 1);
@@ -103,7 +103,7 @@ FileInforView::FileInforView(QGraphicsObject *parent)
   /* Connect to signals */
   connect(d->mRenameButton, SIGNAL(clicked()), this, SLOT(onClicked()));
 
-  d->mStyle = 0; // new PlexyDesk::NativeStyle(this);
+  d->mStyle = 0; // new UI::NativeStyle(this);
 }
 
 void FileInforView::setFileInfo(const QFileInfo &info) { d->mFileInfo = info; }
@@ -154,11 +154,11 @@ void FileInforView::onCloseButtonClicked() { push(); }
 void FileInforView::paintView(QPainter *painter, const QRectF &rect) {
   painter->fillRect(rect, QColor(236, 236, 236));
 
-  PlexyDesk::StyleFeatures feature;
+  UI::StyleFeatures feature;
   feature.geometry = QRectF(rect.topRight().x(), rect.topRight().y(),
                             rect.topLeft().x(), rect.topLeft().y());
 
-  // d->mStyle->paintControlElement(PlexyDesk::Style::CE_Seperator, feature,
+  // d->mStyle->paintControlElement(UI::Style::CE_Seperator, feature,
   // painter);
 
   /* Painter settings */

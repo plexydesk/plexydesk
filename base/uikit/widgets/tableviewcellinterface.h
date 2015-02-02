@@ -25,12 +25,12 @@
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 /**
     * \class this is a interface definition cell creators
     *
     * @brief Implement this class to build cells required by
-  *PlexyDesk::TableView
+  *UI::TableView
     */
 class DECL_UI_KIT_EXPORT TableModel : public QObject {
   Q_OBJECT
@@ -121,9 +121,9 @@ Q_SIGNALS:
       */
   void updated();
 
-  void add(PlexyDesk::TableViewItem *item);
+  void add(UI::TableViewItem *item);
 
-  void removed(PlexyDesk::TableViewItem *item);
+  void removed(UI::TableViewItem *item);
 
   void cleared();
 };

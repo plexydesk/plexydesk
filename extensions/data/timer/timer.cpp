@@ -28,7 +28,7 @@ public:
 };
 
 TimerData::TimerData(QObject *object)
-    : PlexyDesk::DataSource(object), d(new Private) {
+    : UI::DataSource(object), d(new Private) {
   startTimer(1000);
 }
 

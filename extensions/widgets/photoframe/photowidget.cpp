@@ -10,8 +10,8 @@ public:
 };
 
 PhotoWidget::PhotoWidget(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivatePhotoFrame) {
-  setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, true);
+    : UI::UIWidget(parent), d(new PrivatePhotoFrame) {
+  setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
   mValid = 0;
 }
 
@@ -70,10 +70,10 @@ void PhotoWidget::paintView(QPainter *painter, const QRectF &rect) {
   painter->setOpacity(1.0);
 
   if (mContentPixmap.isNull()) {
-    PlexyDesk::UIWidget::paintView(painter, rect);
+    UI::UIWidget::paintView(painter, rect);
     painter->drawText(QRect(0, 0, 190, 180), Qt::AlignCenter | Qt::AlignRight,
                       QLatin1String("Drag and Drop a Photo Here!"));
-    PlexyDesk::UIWidget::paintView(painter, rect);
+    UI::UIWidget::paintView(painter, rect);
   } else {
     // experimental photo frame around the image
     // painter->fillRect(rect.x(), rect.y(), rect.width(), rect.height(),

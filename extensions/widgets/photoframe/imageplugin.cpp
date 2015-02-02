@@ -60,10 +60,10 @@ void PhotoFrameController::revokeSession(const QVariantMap &args) {
 
   foreach(const QString & str, photoList) {
     PhotoWidget *photoWidget = new PhotoWidget();
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, true);
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType, true);
+    photoWidget->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
+    photoWidget->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+    photoWidget->setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
     photoWidget->setController(this);
     photoWidget->setLabelName("Photo");
     mPhotoList.append(photoWidget);
@@ -84,7 +84,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args) {
   }
 }
 
-void PhotoFrameController::handleDropEvent(PlexyDesk::Widget *widget,
+void PhotoFrameController::handleDropEvent(UI::Widget *widget,
                                            QDropEvent *event) {
   if (event->mimeData()->urls().count() >= 0) {
     const QString droppedFile =
@@ -103,7 +103,7 @@ void PhotoFrameController::handleDropEvent(PlexyDesk::Widget *widget,
         m_current_url_list << droppedFile;
 
       if (viewport()) {
-        PlexyDesk::Space *view = qobject_cast<PlexyDesk::Space *>(viewport());
+        UI::Space *view = qobject_cast<UI::Space *>(viewport());
         if (view) {
           view->updateSessionValue(controllerName(), "photos",
                                    m_current_url_list.join(","));
@@ -119,7 +119,7 @@ void PhotoFrameController::setViewRect(const QRectF &rect) {
     mFrameParentitem->setPos(rect.x(), rect.y());
 }
 
-bool PhotoFrameController::removeWidget(PlexyDesk::Widget *widget) {
+bool PhotoFrameController::removeWidget(UI::Widget *widget) {
   if (!widget)
     return 1;
 
@@ -134,14 +134,9 @@ bool PhotoFrameController::removeWidget(PlexyDesk::Widget *widget) {
 
   mPhotoList.removeAll(_widget_to_delete);
 
-  if (viewport()) {
-    PlexyDesk::DesktopViewport *view =
-        qobject_cast<PlexyDesk::DesktopViewport *>(viewport());
-    if (view)
-      view->updateSessionValue(controllerName(), "photos",
-                               m_current_url_list.join(","));
-  }
-
+  if (viewport())
+      viewport()->updateSessionValue(controllerName(), "photos",
+                                     m_current_url_list.join(","));
   if (widget) {
     if (widget->scene()) {
       widget->scene()->removeItem(widget);
@@ -153,7 +148,7 @@ bool PhotoFrameController::removeWidget(PlexyDesk::Widget *widget) {
   return 1;
 }
 
-PlexyDesk::ActionList PhotoFrameController::actions() const {
+UI::ActionList PhotoFrameController::actions() const {
   return m_supported_action_list;
 }
 
@@ -161,10 +156,10 @@ void PhotoFrameController::requestAction(const QString &actionName,
                                          const QVariantMap &args) {
   if (actionName == tr("Photo")) {
     PhotoWidget *photoWidget = new PhotoWidget();
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, true);
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-    photoWidget->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType, true);
+    photoWidget->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
+    photoWidget->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+    photoWidget->setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
     photoWidget->setController(this);
     photoWidget->setLabelName("Photo");
     mPhotoList.append(photoWidget);

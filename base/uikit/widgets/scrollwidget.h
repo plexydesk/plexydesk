@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtWidgets/QGraphicsObject>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class DECL_UI_KIT_EXPORT ScrollWidget : public Widget {
   Q_OBJECT

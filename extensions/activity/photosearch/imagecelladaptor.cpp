@@ -36,7 +36,7 @@ public:
 };
 
 ImageCellAdaptor::ImageCellAdaptor(QGraphicsObject *parent)
-    : PlexyDesk::TableModel(parent), d(new PrivateImageCellAdaptor) {
+    : UI::TableModel(parent), d(new PrivateImageCellAdaptor) {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
 }
@@ -139,7 +139,7 @@ void ImageCellAdaptor::getImageFromPath(const QString &str) {
           localPictureDir.absolutePath() + "/" + pictureName);
       QuetzalSocialKit::AsyncImageCreator *creator =
           new QuetzalSocialKit::AsyncImageCreator(this);
-      creator->setData(imageFile, PlexyDesk::Config::cacheDir());
+      creator->setData(imageFile, UI::Config::cacheDir());
       connect(creator, SIGNAL(ready()), this, SLOT(onImageRady()));
 
       d->mCreatorList << creator;

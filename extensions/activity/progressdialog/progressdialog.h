@@ -26,7 +26,7 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class ProgressDialogActivity : public PlexyDesk::DesktopActivity {
+class ProgressDialogActivity : public UI::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -41,10 +41,10 @@ public:
 
   virtual void updateAttribute(const QString &name, const QVariant &data);
 
-  PlexyDesk::Widget *window() const;
+  UI::Widget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(PlexyDesk::Widget *widget);
+  void onWidgetClosed(UI::Widget *widget);
 
   void onHideAnimationFinished();
 

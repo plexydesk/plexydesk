@@ -26,9 +26,9 @@
 #include <QtNetwork>
 #include <style.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
-class CocoaStyle : public PlexyDesk::Style {
+class CocoaStyle : public UI::Style {
 public:
   CocoaStyle();
 

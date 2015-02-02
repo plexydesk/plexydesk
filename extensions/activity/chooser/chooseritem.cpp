@@ -19,7 +19,7 @@ public:
   PrivateChooserItem() {}
   ~PrivateChooserItem() {}
 
-  // PlexyDesk::Button *mOptButton;
+  // UI::Button *mOptButton;
   QGraphicsWidget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
   QGraphicsGridLayout *mGridLayout;
@@ -29,8 +29,8 @@ public:
   // QPixmap mIconImage;
   bool mIsSelected;
 
-  PlexyDesk::Label *mLabelView;
-  PlexyDesk::ImageView *mImageView;
+  UI::Label *mLabelView;
+  UI::ImageView *mImageView;
 
   ItemLayout mType;
 
@@ -38,7 +38,7 @@ public:
 };
 
 GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : PlexyDesk::TableViewItem(rect, parent), d(new PrivateChooserItem) {
+    : UI::TableViewItem(rect, parent), d(new PrivateChooserItem) {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mType = type;
@@ -47,10 +47,10 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mLayout = new QGraphicsLinearLayout(this);
 
-  d->mImageView = new PlexyDesk::ImageView(d->mLayoutBase);
+  d->mImageView = new UI::ImageView(d->mLayoutBase);
   d->mImageView->setPixmap(
-      PlexyDesk::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
-  d->mLabelView = new PlexyDesk::Label(d->mLayoutBase);
+      UI::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+  d->mLabelView = new UI::Label(d->mLayoutBase);
   connect(d->mImageView, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->mLabelView, SIGNAL(clicked()), this, SLOT(onClicked()));
 

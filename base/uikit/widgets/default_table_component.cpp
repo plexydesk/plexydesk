@@ -19,9 +19,9 @@ public:
   ~PrivateTableComponent() {}
 
 public:
-  PlexyDesk::Button *mOptButton;
-  PlexyDesk::Label *m_label_widget;
-  PlexyDesk::ImageView *m_image_view_widget;
+  UI::Button *mOptButton;
+  UI::Label *m_label_widget;
+  UI::ImageView *m_image_view_widget;
 
   QGraphicsWidget *m_layout_base;
   QGraphicsLinearLayout *m_linear_layout;
@@ -39,7 +39,7 @@ public:
 DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
                                              LayoutType type,
                                              QGraphicsItem *parent)
-    : PlexyDesk::TableViewItem(rect, parent), d(new PrivateTableComponent) {
+    : UI::TableViewItem(rect, parent), d(new PrivateTableComponent) {
   d->m_current_geometry = rect;
   d->m_current_item_selection = false;
   d->m_current_item_visibility = true;
@@ -50,13 +50,13 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
 
   d->m_linear_layout = new QGraphicsLinearLayout(d->m_layout_base);
 
-  d->m_image_view_widget = new PlexyDesk::ImageView(d->m_layout_base);
+  d->m_image_view_widget = new UI::ImageView(d->m_layout_base);
   d->m_image_view_widget->setPixmap(
-      PlexyDesk::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+      UI::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
 
-  d->m_label_widget = new PlexyDesk::Label(d->m_layout_base);
+  d->m_label_widget = new UI::Label(d->m_layout_base);
 
-  d->mOptButton = new PlexyDesk::Button(d->m_layout_base);
+  d->mOptButton = new UI::Button(d->m_layout_base);
 
   connect(d->m_image_view_widget, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->m_label_widget, SIGNAL(clicked()), this, SLOT(onClicked()));
@@ -159,9 +159,9 @@ void DefaultTableComponent::paint(QPainter *painter,
   /* Painter settings */
   if (d->m_current_layout_type == kListLayout || d->m_current_item_selection) {
 
-    PlexyDesk::StyleFeatures features;
+    UI::StyleFeatures features;
 
-    features.render_state = PlexyDesk::StyleFeatures::kRenderElement;
+    features.render_state = UI::StyleFeatures::kRenderElement;
     features.geometry = boundingRect();
     features.text_data = d->m_current_label_str;
 
@@ -169,8 +169,8 @@ void DefaultTableComponent::paint(QPainter *painter,
     painter->setRenderHint(QPainter::TextAntialiasing, true);
     painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
-    if (PlexyDesk::Theme::style()) {
-      PlexyDesk::Theme::style()->draw("vertical_list_item", features, painter);
+    if (UI::Theme::style()) {
+      UI::Theme::style()->draw("vertical_list_item", features, painter);
     }
 
     /*

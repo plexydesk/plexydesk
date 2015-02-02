@@ -9,7 +9,7 @@
 #include <webservice.h>
 #include <desktopactivity.h>
 
-class NoteWidget : public PlexyDesk::UIWidget {
+class NoteWidget : public UI::UIWidget {
   Q_OBJECT
 public:
   explicit NoteWidget(QGraphicsObject *parent = 0);
@@ -68,7 +68,7 @@ private:
   void requestNoteSideImageFromWebService(const QString &key);
   void requestPhotoSizes(const QString &photoID);
   void initDataStore();
-  PlexyDesk::DesktopActivityPtr showCalendar(const QString &activity,
+  UI::DesktopActivityPtr showCalendar(const QString &activity,
                                              const QString &title,
                                              const QVariantMap &dataItem);
 };

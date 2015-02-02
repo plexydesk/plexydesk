@@ -6,7 +6,7 @@
 #include <QGraphicsObject>
 #include <widget.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class DECL_UI_KIT_EXPORT ImageButton : public Widget {
   Q_OBJECT

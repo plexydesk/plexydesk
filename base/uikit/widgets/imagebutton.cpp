@@ -9,7 +9,7 @@
 
 #include <QDebug>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ImageButton::PrivateImageButton {
 public:

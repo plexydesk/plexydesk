@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QTimer>
 
-namespace PlexyDesk {
+namespace UI {
 
 class Menu::PrivateMenu {
 public:
@@ -22,7 +22,7 @@ Menu::Menu(QObject *parent) : QObject(parent), d(new PrivateMenu) {
   d->m_current_visibility = false;
 }
 
-PlexyDesk::Menu::~Menu() {
+UI::Menu::~Menu() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }

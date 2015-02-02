@@ -5,8 +5,8 @@
 #include <widget.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
-class DECL_UI_KIT_EXPORT ToolBar : public PlexyDesk::Widget {
+namespace UI {
+class DECL_UI_KIT_EXPORT ToolBar : public UI::Widget {
   Q_OBJECT
 
 public:

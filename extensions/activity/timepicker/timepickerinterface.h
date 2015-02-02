@@ -25,16 +25,16 @@
 #include <desktopactivity.h>
 
 class TimePickerInterface : public QObject,
-                            public PlexyDesk::ActivityInterface {
+                            public UI::ActivityInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ActivityInterface)
+  Q_INTERFACES(UI::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.timepicker")
 
 public:
   virtual ~TimePickerInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::DesktopActivity> activity();
+  QSharedPointer<UI::DesktopActivity> activity();
 };
 
 #endif

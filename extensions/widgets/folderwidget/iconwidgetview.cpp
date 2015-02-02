@@ -17,15 +17,15 @@ public:
   ~PrivateIconWidgetView() { delete mInfoView; }
 
   FileInforView *mInfoView;
-  PlexyDesk::TableView *mTableView;
+  UI::TableView *mTableView;
   FolderProvider *mFolderViewSource;
 };
 
 IconWidgetView::IconWidgetView(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateIconWidgetView) {
+    : UI::UIWidget(parent), d(new PrivateIconWidgetView) {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, false);
-  this->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, false);
+  this->setWindowFlag(UI::UIWidget::kRenderBackground, false);
+  this->setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
 
   QRectF rect(0.0, 0.0, 200.0, 200.0);
   QRectF iconViewRect =
@@ -36,7 +36,7 @@ IconWidgetView::IconWidgetView(QGraphicsObject *parent)
 
   d->mInfoView = new FileInforView(this);
 
-  d->mTableView = new PlexyDesk::TableView(this);
+  d->mTableView = new UI::TableView(this);
 
   d->mFolderViewSource = new FolderProvider(iconViewRectTable, this);
   d->mTableView->setModel(d->mFolderViewSource);

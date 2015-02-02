@@ -15,7 +15,7 @@ public:
 };
 
 ChooserActionDelegate::ChooserActionDelegate(QGraphicsObject *parent)
-    : PlexyDesk::TableModel(parent), d(new PrivateChooserActionDelegate) {}
+    : UI::TableModel(parent), d(new PrivateChooserActionDelegate) {}
 
 ChooserActionDelegate::~ChooserActionDelegate() {
   qDebug() << Q_FUNC_INFO;

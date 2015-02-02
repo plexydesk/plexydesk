@@ -4,7 +4,7 @@
 #include <QTimer>
 #include <workspace.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class DesktopActivityMenu::PrivateActivityPopup {
 public:
@@ -23,7 +23,7 @@ DesktopActivityMenu::DesktopActivityMenu(QObject *parent)
   d->m_current_visibility = false;
 }
 
-PlexyDesk::DesktopActivityMenu::~DesktopActivityMenu() {
+UI::DesktopActivityMenu::~DesktopActivityMenu() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }

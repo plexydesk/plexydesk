@@ -31,7 +31,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-namespace PlexyDesk {
+namespace UI {
 
 class Config::Private {
 public:

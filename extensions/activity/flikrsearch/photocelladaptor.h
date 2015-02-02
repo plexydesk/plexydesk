@@ -5,7 +5,7 @@
 #include <tableviewcellinterface.h>
 #include <webservice.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
 class PhotoCellAdaptor : public TableModel {
   Q_OBJECT
@@ -14,7 +14,7 @@ public:
   PhotoCellAdaptor(QObject *parent = 0);
   virtual ~PhotoCellAdaptor();
 
-  QList<PlexyDesk::TableViewItem *> componentList();
+  QList<UI::TableViewItem *> componentList();
 
   float margin() const;
 

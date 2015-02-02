@@ -34,8 +34,8 @@ public:
   PrivateIconGrid() : mFrame(0) {}
   ~PrivateIconGrid() {}
 
-  PlexyDesk::UIWidget *mFrame;
-  PlexyDesk::TableView *mTable;
+  UI::UIWidget *mFrame;
+  UI::TableView *mTable;
   QRectF mBoundingRect;
   QString mSelection;
 
@@ -46,7 +46,7 @@ public:
 };
 
 IconGridActivity::IconGridActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateIconGrid) {}
+    : UI::DesktopActivity(object), d(new PrivateIconGrid) {}
 
 IconGridActivity::~IconGridActivity() {
   qDebug() << Q_FUNC_INFO;
@@ -62,33 +62,33 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->mBoundingRect = window_geometry;
   d->m_auto_scale_frame = false;
 
-  d->mFrame = new PlexyDesk::UIWidget();
+  d->mFrame = new UI::UIWidget();
   d->mFrame->setGeometry(window_geometry);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
   d->mFrame->setWindowTitle(window_title);
 
   setGeometry(window_geometry);
 
-  d->mTable = new PlexyDesk::TableView(d->mFrame);
+  d->mTable = new UI::TableView(d->mFrame);
   d->mTable->setGeometry(window_geometry);
   d->m_action_delegate = new ChooserActionDelegate(d->mFrame);
   d->mTable->setPos(0.0, 72.0);
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
   d->mTable->setModel(d->m_action_delegate);
-  connect(d->mFrame, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   if (hasAttribute("data")) {
     QVariantMap data = attributes()["data"].toMap();
 
     foreach(const QVariant & var, data.keys()) {
       d->m_action_delegate->addDataItem(
-          var.toString(), PlexyDesk::Theme::instance()->drawable(
+          var.toString(), UI::Theme::instance()->drawable(
                               data[var.toString()].toString(), "hdpi"),
           false);
     }
@@ -122,9 +122,9 @@ QVariantMap IconGridActivity::result() const {
   return d->m_activity_result;
 }
 
-PlexyDesk::Widget *IconGridActivity::window() const { return d->mFrame; }
+UI::Widget *IconGridActivity::window() const { return d->mFrame; }
 
-void IconGridActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
+void IconGridActivity::onWidgetClosed(UI::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discardActivity();
 }
@@ -163,7 +163,7 @@ void IconGridActivity::onArgumentChanged() {
     foreach(const QVariant & var, data.values()) {
       QVariantMap _item = var.toMap();
       d->m_action_delegate->addDataItem(_item["label"].toString(),
-                                        PlexyDesk::Theme::instance()->drawable(
+                                        UI::Theme::instance()->drawable(
                                             _item["icon"].toString(), "hdpi"),
                                         false, _item);
     }

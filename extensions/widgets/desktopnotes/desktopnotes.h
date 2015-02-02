@@ -27,7 +27,7 @@
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl : public PlexyDesk::ViewController {
+class DesktopNotesControllerImpl : public UI::ViewController {
   Q_OBJECT
 
 public:
@@ -40,11 +40,11 @@ public:
 
   void setViewRect(const QRectF &rect);
 
-  PlexyDesk::ActionList actions() const;
+  UI::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
-  void handleDropEvent(PlexyDesk::Widget *widget, QDropEvent *event);
+  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
 
   QString icon() const;
 

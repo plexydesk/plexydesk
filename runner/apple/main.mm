@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
     CFRelease(appUrlRef);
     CFRelease(macPath);
 
-    PlexyDesk::ExtensionManager *loader =
-            PlexyDesk::ExtensionManager::instance(
+    UI::ExtensionManager *loader =
+            UI::ExtensionManager::init(
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +
                                          QLatin1String("/Contents/PlugIns/plexydesk/data/")),
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +

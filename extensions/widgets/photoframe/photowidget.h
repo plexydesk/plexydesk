@@ -5,7 +5,7 @@
 #include <desktopwidget.h>
 #include <QGraphicsDropShadowEffect>
 
-class PhotoWidget : public PlexyDesk::UIWidget {
+class PhotoWidget : public UI::UIWidget {
   Q_OBJECT
 
 public:

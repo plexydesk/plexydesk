@@ -12,7 +12,7 @@
 #include <QDebug>
 #include <QApplication>
 
-namespace PlexyDesk {
+namespace UI {
 
 class TextEditor::PrivateTextEditor {
 public:
@@ -27,7 +27,7 @@ public:
 };
 
 TextEditor::TextEditor(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateTextEditor) {
+    : UI::UIWidget(parent), d(new PrivateTextEditor) {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
   d->mEditor->setReadOnly(false);
@@ -51,8 +51,8 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   d->mProxyWidget->setPos(0.0, 0.0);
 
   d->mTextScaleFactor = 1.0;
-  setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, false);
-  setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, false);
+  setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
+  setWindowFlag(UI::UIWidget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
   connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(onTextUpdated()));

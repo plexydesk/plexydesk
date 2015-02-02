@@ -10,7 +10,7 @@
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class DECL_UI_KIT_EXPORT Button : public Widget {
   Q_OBJECT

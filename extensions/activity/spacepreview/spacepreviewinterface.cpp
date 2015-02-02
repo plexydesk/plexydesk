@@ -21,9 +21,9 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DesktopActivity> SpacePreviewInterface::activity() {
-  QSharedPointer<PlexyDesk::DesktopActivity> obj =
-      QSharedPointer<PlexyDesk::DesktopActivity>(new SpacePreviewActivity(),
+QSharedPointer<UI::DesktopActivity> SpacePreviewInterface::activity() {
+  QSharedPointer<UI::DesktopActivity> obj =
+      QSharedPointer<UI::DesktopActivity>(new SpacePreviewActivity(),
                                                  &QObject::deleteLater);
 
   return obj;

@@ -4,7 +4,7 @@
 #include <plexy.h>
 #include <desktopwidget.h>
 
-class SnapFrame : public PlexyDesk::UIWidget {
+class SnapFrame : public UI::UIWidget {
   Q_OBJECT
 public:
   SnapFrame(QGraphicsObject *parent = 0);

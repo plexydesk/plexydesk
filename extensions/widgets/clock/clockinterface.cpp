@@ -1,9 +1,9 @@
 #include "clockinterface.h"
 #include "clock.h"
 
-QSharedPointer<PlexyDesk::ViewController> ClockInterface::controller() {
-  QSharedPointer<PlexyDesk::ViewController> obj =
-      QSharedPointer<PlexyDesk::ViewController>(new Clock(),
+QSharedPointer<UI::ViewController> ClockInterface::controller() {
+  QSharedPointer<UI::ViewController> obj =
+      QSharedPointer<UI::ViewController>(new Clock(),
                                                      &QObject::deleteLater);
 
   return obj;

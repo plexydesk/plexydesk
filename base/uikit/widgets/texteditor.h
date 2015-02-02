@@ -5,9 +5,9 @@
 #include <desktopwidget.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 
-class DECL_UI_KIT_EXPORT TextEditor : public PlexyDesk::UIWidget {
+class DECL_UI_KIT_EXPORT TextEditor : public UI::UIWidget {
   Q_OBJECT
 public:
   TextEditor(QGraphicsObject *parent = 0);

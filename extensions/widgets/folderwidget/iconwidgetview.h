@@ -4,7 +4,7 @@
 #include <scrollwidget.h>
 #include "folderitem.h"
 
-class IconWidgetView : public PlexyDesk::UIWidget {
+class IconWidgetView : public UI::UIWidget {
   Q_OBJECT
 public:
   explicit IconWidgetView(QGraphicsObject *parent = 0);

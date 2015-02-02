@@ -32,12 +32,12 @@
 #include "widget.h"
 
 /**
- * \class PlexyDesk::AbstractDesktopWidget
+ * \class UI::AbstractDesktopWidget
  *
  * \ingroup PlexyDesk
  *
  * \brief Base class for Visual Desktop Extensions
- * PlexyDesk::AbstractDesktopWidget defines all the common features of a visual
+ * UI::AbstractDesktopWidget defines all the common features of a visual
  *desktop extension.
  * When writing visual extensions, the user must inherit from this class. So
  *that it behaves the
@@ -45,24 +45,24 @@
  */
 
 /**
- * \fn PlexyDesk::AbstractDesktopWidget::boundingRect()
+ * \fn UI::AbstractDesktopWidget::boundingRect()
  * \breif Returns the Bounding rectangle of the Widget Content
  *
  * \paragraph This method returns the bounding Rectangle of the Widget Contents
  * it returns the user specificed content rectangle
- *(PlexyDesk::AbstractDesktopWidget::setContentRect())
+ *(UI::AbstractDesktopWidget::setContentRect())
  * And does not automatically calculate or adjust with the content changes, The
  *size of the content must be
  * manually set if the content changes and this widget needs to adjust to that
  *size.
  *
  * @returns The bounding Rectangle for this widget
- * \sa PlexyDesk::AbstractDesktopWidget::setContentRect()
- * \sa PlexyDesk::AbstractDesktopWidget::setDockRect()
+ * \sa UI::AbstractDesktopWidget::setContentRect()
+ * \sa UI::AbstractDesktopWidget::setDockRect()
  */
 
 /**
-* \fn PlexyDesk::AbstractDesktopWidget::setContentRect()
+* \fn UI::AbstractDesktopWidget::setContentRect()
 *\brief Set the content Rectangle of the Widget
 *
 * \paragraph Sets the content rectangle of the widget
@@ -75,7 +75,7 @@
 */
 
 /**
-* \fn PlexyDesk::AbstractDesktopWidget::setRect()
+* \fn UI::AbstractDesktopWidget::setRect()
 *\brief Set the bounding Rectangle of the Widget
 *
 * \paragraph Sets the bounding rectangle of the widget
@@ -86,7 +86,7 @@
 */
 
 /**
-  *\fn PlexyDesk::AbstractDesktopWidget::setChildWidetVisibility()
+  *\fn UI::AbstractDesktopWidget::setChildWidetVisibility()
   *
   * \brief Hides the child items of this widget
   *
@@ -96,7 +96,7 @@
   *
   */
 
-/** PlexyDesk::AbstractDesktopWidget::setLabel
+/** UI::AbstractDesktopWidget::setLabel
   * \fn
   * \brief Sets a label for the widget
   * \param name Name of the icon
@@ -104,7 +104,7 @@
   * Label to display when the widget is in dock mode
   */
 
-namespace PlexyDesk {
+namespace UI {
 
 class Widget::PrivateAbstractDesktopWidget {
 public:

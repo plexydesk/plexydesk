@@ -9,7 +9,7 @@ public:
   PrivateExtLaoderTestRunner() {}
   ~PrivateExtLaoderTestRunner() {}
 
-  PlexyDesk::DataSourcePtr mDataSource;
+  UI::DataSourcePtr mDataSource;
 };
 
 ExtLaoderTestRunner::ExtLaoderTestRunner(QObject *parent)
@@ -23,7 +23,7 @@ ExtLaoderTestRunner::~ExtLaoderTestRunner() {
 }
 
 bool ExtLaoderTestRunner::connectToDataSource(const QString &source) {
-  d->mDataSource = PlexyDesk::ExtensionManager::instance()->dataEngine(source);
+  d->mDataSource = UI::ExtensionManager::instance()->dataEngine(source);
 
   if (!d->mDataSource.data())
     return 0;
@@ -36,8 +36,8 @@ bool ExtLaoderTestRunner::connectToDataSource(const QString &source) {
 }
 
 void ExtLaoderTestRunner::loadtest(const QString &source) {
-  PlexyDesk::DataSourcePtr _source =
-      PlexyDesk::ExtensionManager::instance()->dataEngine(source);
+  UI::DataSourcePtr _source =
+      UI::ExtensionManager::instance()->dataEngine(source);
 
   if (!_source)
     return;

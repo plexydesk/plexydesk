@@ -32,11 +32,11 @@ public:
   ~PrivateDesktopNotes() {}
   QTimer *mDesktopNotes;
   QMap<QString, int> mNoteActions;
-  PlexyDesk::ActionList m_supported_action_list;
+  UI::ActionList m_supported_action_list;
 };
 
 DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
-    : PlexyDesk::ViewController(object), d(new PrivateDesktopNotes) {
+    : UI::ViewController(object), d(new PrivateDesktopNotes) {
   d->mNoteActions["Note"] = 1;
   d->mNoteActions["Task"] = 2;
   d->mNoteActions["Reminder"] = 3;
@@ -59,7 +59,7 @@ void DesktopNotesControllerImpl::revokeSession(const QVariantMap &args) {}
 
 void DesktopNotesControllerImpl::setViewRect(const QRectF &rect) {}
 
-PlexyDesk::ActionList DesktopNotesControllerImpl::actions() const {
+UI::ActionList DesktopNotesControllerImpl::actions() const {
   // return d->mNoteActions.keys();
   return d->m_supported_action_list;
 }
@@ -80,7 +80,7 @@ void DesktopNotesControllerImpl::requestAction(const QString &actionName,
   }
 }
 
-void DesktopNotesControllerImpl::handleDropEvent(PlexyDesk::Widget *widget,
+void DesktopNotesControllerImpl::handleDropEvent(UI::Widget *widget,
                                                  QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);

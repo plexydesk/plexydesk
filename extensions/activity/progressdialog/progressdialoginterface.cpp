@@ -21,9 +21,9 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DesktopActivity> ProgressDialogInterface::activity() {
-  QSharedPointer<PlexyDesk::DesktopActivity> obj =
-      QSharedPointer<PlexyDesk::DesktopActivity>(new ProgressDialogActivity(),
+QSharedPointer<UI::DesktopActivity> ProgressDialogInterface::activity() {
+  QSharedPointer<UI::DesktopActivity> obj =
+      QSharedPointer<UI::DesktopActivity>(new ProgressDialogActivity(),
                                                  &QObject::deleteLater);
 
   return obj;

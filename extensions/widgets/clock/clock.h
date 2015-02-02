@@ -25,7 +25,7 @@
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public PlexyDesk::ViewController {
+class Clock : public UI::ViewController {
   Q_OBJECT
 
 public:
@@ -38,9 +38,9 @@ public:
 
   void setViewRect(const QRectF &rect);
 
-  bool removeWidget(PlexyDesk::Widget *widget);
+  bool removeWidget(UI::Widget *widget);
 
-  PlexyDesk::ActionList actions() const;
+  UI::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
@@ -55,7 +55,7 @@ private:
   QTimer *mTimer;
   ClockWidget *clock;
   QList<ClockWidget *> mClocks;
-  PlexyDesk::ActionList m_supported_action_list;
+  UI::ActionList m_supported_action_list;
 
   class PrivateClockController;
   PrivateClockController *const d;

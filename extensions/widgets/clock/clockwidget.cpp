@@ -33,13 +33,13 @@
 #include <plexyconfig.h>
 #include <svgprovider.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : PlexyDesk::UIWidget(parent) {
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::UIWidget(parent) {
   setLabelName("Clock");
 }
 
 void ClockWidget::preRenderClockImages() {
   qDebug() << Q_FUNC_INFO << "Start";
-  PlexyDesk::SvgProvider *svg = new PlexyDesk::SvgProvider();
+  UI::SvgProvider *svg = new UI::SvgProvider();
 
   mClockBackFace = svg->get(QLatin1String("clock#ClockFace"));
   mClockSecondHand = svg->get(QLatin1String("clock#SecondHand"));

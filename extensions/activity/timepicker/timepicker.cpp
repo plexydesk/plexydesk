@@ -28,7 +28,7 @@ public:
 };
 
 TimePickerActivity::TimePickerActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateTimePicker) {}
+    : UI::DesktopActivity(object), d(new PrivateTimePicker) {}
 
 TimePickerActivity::~TimePickerActivity() { delete d; }
 
@@ -42,8 +42,8 @@ QRectF TimePickerActivity::geometry() const { return QRectF(); }
 
 QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
 
-PlexyDesk::Widget *TimePickerActivity::window() const { return 0; }
+UI::Widget *TimePickerActivity::window() const { return 0; }
 
-void TimePickerActivity::onWidgetClosed(PlexyDesk::Widget *widget) {}
+void TimePickerActivity::onWidgetClosed(UI::Widget *widget) {}
 
 void TimePickerActivity::onHideAnimationFinished() {}

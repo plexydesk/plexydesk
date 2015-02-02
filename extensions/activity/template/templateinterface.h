@@ -24,16 +24,16 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class TemplateInterface : public QObject, public PlexyDesk::ActivityInterface {
+class TemplateInterface : public QObject, public UI::ActivityInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ActivityInterface)
+  Q_INTERFACES(UI::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.template")
 
 public:
   virtual ~TemplateInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::DesktopActivity> activity();
+  QSharedPointer<UI::DesktopActivity> activity();
 };
 
 #endif

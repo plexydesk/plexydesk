@@ -15,7 +15,7 @@ public:
 };
 
 DefaultTableModel::DefaultTableModel(QGraphicsObject *parent)
-    : PlexyDesk::TableModel(parent), d(new PrivateTableDelegate) {
+    : UI::TableModel(parent), d(new PrivateTableDelegate) {
   d->m_current_item_label_visibility = false;
   setCellSize(QSize(96, 96));
 }

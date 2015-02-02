@@ -5,13 +5,12 @@
 #include <QGraphicsObject>
 
 #include <widget.h>
-
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ViewController;
-class DesktopViewport;
+class Space;
 typedef QSharedPointer<ViewController> ControllerPtr;
 
 class DECL_UI_KIT_EXPORT DesktopActivity : public QObject {
@@ -51,9 +50,9 @@ public:
 
   virtual ControllerPtr controller() const;
 
-  virtual void setViewport(DesktopViewport *viewport);
+  virtual void setViewport(Space *viewport);
 
-  virtual DesktopViewport *viewport() const;
+  virtual Space *viewport() const;
 
   // virtual void cleanup() = 0;
   virtual void cleanup() {};

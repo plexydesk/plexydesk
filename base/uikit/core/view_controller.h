@@ -7,7 +7,7 @@
 
 #include <datasource.h>
 #include <desktopactivity.h>
-#include <desktop_viewport.h>
+#include <space.h>
 #include <plexydesk_ui_exports.h>
 #include <QAction>
 
@@ -15,11 +15,11 @@ class QGraphicsItem;
 class QDropEvent;
 
 /*!
-\class PlexyDesk::ViewController
+\class UI::ViewController
 
 \brief Base class for implementing viewport controllers for PlexyDesk.
 
-\fn PlexyDesk::ViewControllerPlugin::actions
+\fn UI::ViewControllerPlugin::actions
 
 \brief Actions supported by the plugin
 
@@ -36,17 +36,17 @@ authors should not worry about overiding this method in their plugin class.
 \paragraph But if you plugin needs user actions such as adding a clock with a
 different
 Time Zone, then you can return the actions you want to perform by overiding
-PlexyDesk::ViewControllerPlugin::visibleActions method and returning the string
+UI::ViewControllerPlugin::visibleActions method and returning the string
 lables for your action.
 once you complete the user action remember to emit
-PlexyDesk::ViewControllerPlugin::actionCompleted signal
+UI::ViewControllerPlugin::actionCompleted signal
 so that the action requester can notify the user about what happened to the
 action.
 
 \returns A list of action label supported by the widget  plugin
 */
 
-namespace PlexyDesk {
+namespace UI {
 class Widget;
 typedef QList<QAction *> ActionList;
 
@@ -79,17 +79,17 @@ public:
       *
       * @param view
       */
-  void setViewport(DesktopViewport *view);
+  void setViewport(Space *view);
 
   /**
       * @brief This method returns the current viewport of the controller. this
       * will be set
       * when the controller is loaded by the loader or the desktopview.
       *
-      * @return PlexyDesk::AbstractDesktopView return the current viewport of
+      * @return UI::AbstractDesktopView return the current viewport of
       *  the controller
       */
-  virtual DesktopViewport *viewport();
+  virtual Space *viewport();
   /**
       * @brief
       *

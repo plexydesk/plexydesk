@@ -3,7 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-class TimeZoneModel : public PlexyDesk::TableModel {
+class TimeZoneModel : public UI::TableModel {
   Q_OBJECT
 
 public:

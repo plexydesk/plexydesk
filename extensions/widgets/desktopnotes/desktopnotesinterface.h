@@ -25,16 +25,16 @@
 #include <controllerplugininterface.h>
 
 class DesktopNotesInterface : public QObject,
-                              public PlexyDesk::ControllerPluginInterface {
+                              public UI::ControllerPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ControllerPluginInterface)
+  Q_INTERFACES(UI::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.desktopnotes")
 
 public:
   virtual ~DesktopNotesInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::ViewController> controller();
+  QSharedPointer<UI::ViewController> controller();
 };
 
 #endif

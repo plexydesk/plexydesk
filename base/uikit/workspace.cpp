@@ -13,7 +13,7 @@
 #include <imagebutton.h>
 #include <syncobject.h>
 
-namespace PlexyDesk {
+namespace UI {
 class WorkSpace::PrivateWorkSpace {
 public:
   PrivateWorkSpace() {}

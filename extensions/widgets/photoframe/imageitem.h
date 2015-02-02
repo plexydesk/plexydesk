@@ -22,7 +22,7 @@
 #include <plexy.h>
 #include <desktopwidget.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ImagePileWidget : public UIWidget {
   Q_OBJECT

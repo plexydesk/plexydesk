@@ -21,11 +21,11 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-static void destroyStyle(PlexyDesk::Style *style) { delete style; }
+static void destroyStyle(UI::Style *style) { delete style; }
 
-QSharedPointer<PlexyDesk::Style> CocoaInterface::style() {
-  QSharedPointer<PlexyDesk::Style> obj = QSharedPointer<PlexyDesk::Style>(
-      (PlexyDesk::Style *)new CocoaStyle(), &destroyStyle);
+QSharedPointer<UI::Style> CocoaInterface::style() {
+  QSharedPointer<UI::Style> obj = QSharedPointer<UI::Style>(
+      (UI::Style *)new CocoaStyle(), &destroyStyle);
 
   return obj;
 }

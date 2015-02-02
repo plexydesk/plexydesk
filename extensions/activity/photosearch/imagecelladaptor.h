@@ -5,7 +5,7 @@
 #include <tableviewcellinterface.h>
 #include <webservice.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
 class ImageCellAdaptor : public TableModel {
   Q_OBJECT

@@ -9,7 +9,7 @@
 #include <QFileInfo>
 #include <QIcon>
 
-class FolderItem : public PlexyDesk::TableViewItem {
+class FolderItem : public UI::TableViewItem {
   Q_OBJECT
 public:
   explicit FolderItem(const QRectF &rect, QGraphicsItem *parent = 0);

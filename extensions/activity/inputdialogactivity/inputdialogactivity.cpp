@@ -43,12 +43,12 @@ public:
 
   StylePtr mStyle;
 
-  PlexyDesk::UIWidget *mFrame;
+  UI::UIWidget *mFrame;
   QGraphicsBlurEffect *mBackgroundEffect;
 
   /*Widgets*/
-  PlexyDesk::Button *mOkButton;
-  PlexyDesk::Button *mCancelButton;
+  UI::Button *mOkButton;
+  UI::Button *mCancelButton;
 
   QGraphicsWidget *mLayoutBase;
   QGraphicsWidget *mHLayoutBase;
@@ -58,15 +58,15 @@ public:
 
   QLineEdit *mLineEdit;
   QGraphicsProxyWidget *mLineEditProxy;
-  PlexyDesk::TextEditor *mEditor;
+  UI::TextEditor *mEditor;
 
   QRectF mBoundingRect;
   QString mCurrentText;
 };
 
 InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateInputDialogActivity) {
-  d->mStyle = PlexyDesk::Theme::instance()->defaultDesktopStyle();
+    : UI::DesktopActivity(object), d(new PrivateInputDialogActivity) {
+  d->mStyle = UI::Theme::instance()->defaultDesktopStyle();
   d->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
 }
 
@@ -82,7 +82,7 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   }
 
   // todo: invoke UI
-  d->mFrame = new PlexyDesk::UIWidget();
+  d->mFrame = new UI::UIWidget();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
@@ -91,11 +91,11 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
     d->mFrame->setWindowTitle(attributes()["title"].toString());
   }
 
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
   d->mBackgroundEffect = new QGraphicsBlurEffect(this);
   d->mBackgroundEffect->setBlurHints(QGraphicsBlurEffect::PerformanceHint);
@@ -113,13 +113,13 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   d->mHLayoutBase = new QGraphicsWidget(d->mLayoutBase);
 
-  d->mOkButton = new PlexyDesk::Button(d->mHLayoutBase);
-  d->mCancelButton = new PlexyDesk::Button(d->mHLayoutBase);
+  d->mOkButton = new UI::Button(d->mHLayoutBase);
+  d->mCancelButton = new UI::Button(d->mHLayoutBase);
 
   QRectF _editorRect(0.0, 0.0, geometry().width(),
                      geometry().height() -
                          (96 + d->mOkButton->boundingRect().height()));
-  d->mEditor = new PlexyDesk::TextEditor(d->mLayoutBase);
+  d->mEditor = new UI::TextEditor(d->mLayoutBase);
   d->mVLayout->addItem(d->mEditor);
 
   d->mHLayout = new QGraphicsLinearLayout(d->mHLayoutBase);
@@ -137,8 +137,8 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   d->mEditor->setFocus();
 
-  connect(d->mFrame, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   connect(d->mCancelButton, SIGNAL(clicked()), this, SIGNAL(canceled()));
   connect(d->mOkButton, SIGNAL(clicked()), this, SLOT(onOkButtonPressed()));
@@ -159,9 +159,9 @@ QRectF InputDialogActivityData::geometry() const { return d->mBoundingRect; }
 
 QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
-PlexyDesk::Widget *InputDialogActivityData::window() const { return d->mFrame; }
+UI::Widget *InputDialogActivityData::window() const { return d->mFrame; }
 
-void InputDialogActivityData::onWidgetClosed(PlexyDesk::Widget *widget) {
+void InputDialogActivityData::onWidgetClosed(UI::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   discardActivity();
 }
@@ -180,10 +180,10 @@ void InputDialogActivityData::paint(QPainter *painter,
                                     QWidget *widget) {
   /*
   if (d->mStyle) {
-      PlexyDesk::StyleFeatures feature;
+      UI::StyleFeatures feature;
       feature.exposeRect = option->exposedRect;
-      feature.state = PlexyDesk::StyleFeatures::SF_FrontView;
-      d->mStyle->paintControlElement(PlexyDesk::Style::CE_Frame, feature,
+      feature.state = UI::StyleFeatures::SF_FrontView;
+      d->mStyle->paintControlElement(UI::Style::CE_Frame, feature,
   painter);
   }
   */

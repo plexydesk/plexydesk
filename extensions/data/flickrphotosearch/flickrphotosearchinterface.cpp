@@ -21,9 +21,9 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> FlickrPhotoSearchInterface::model() {
-  QSharedPointer<PlexyDesk::DataSource> obj =
-      QSharedPointer<PlexyDesk::DataSource>(new FlickrPhotoSearchData(),
+QSharedPointer<UI::DataSource> FlickrPhotoSearchInterface::model() {
+  QSharedPointer<UI::DataSource> obj =
+      QSharedPointer<UI::DataSource>(new FlickrPhotoSearchData(),
                                             &QObject::deleteLater);
 
   return obj;

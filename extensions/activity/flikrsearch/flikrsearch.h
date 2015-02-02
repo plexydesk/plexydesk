@@ -28,8 +28,8 @@
 #include <webservice.h>
 #include <abstractcellcomponent.h>
 
-using namespace PlexyDesk;
-class FlickrSearchActivity : public PlexyDesk::DesktopActivity {
+using namespace UI;
+class FlickrSearchActivity : public UI::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -52,9 +52,9 @@ public Q_SLOTS:
   void photoItemClicked(TableViewItem *item);
 
 private Q_SLOTS:
-  void onWidgetClosed(PlexyDesk::Widget *widget);
+  void onWidgetClosed(UI::Widget *widget);
 
-  // void onClicked(PlexyDesk::AbstractCellComponent *item);
+  // void onClicked(UI::AbstractCellComponent *item);
 
   void onButtonClicked();
 

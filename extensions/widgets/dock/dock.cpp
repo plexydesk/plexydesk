@@ -38,7 +38,7 @@
 #include <extensionmanager.h>
 #include <imageview.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
 class DockControllerImpl::PrivateDock {
 public:
@@ -48,21 +48,21 @@ public:
 
 public:
   QGraphicsLinearLayout* m_linear_layout;
-  PlexyDesk::ToolBar* m_navigation_dock;
+  UI::ToolBar* m_navigation_dock;
   QMap<QString, int> m_actions_map;
   QStringList m_controller_name_list;
   bool m_main_panel_is_hidden;
-  PlexyDesk::DesktopActivityPtr m_action_activity;
-  PlexyDesk::ImageButton* m_add_new_workspace_button_ptr;
-  QSharedPointer<PlexyDesk::DesktopActivityMenu> m_desktop_actions_popup;
-  PlexyDesk::ActionList m_supported_action_list;
+  UI::DesktopActivityPtr m_action_activity;
+  UI::ImageButton* m_add_new_workspace_button_ptr;
+  QSharedPointer<UI::DesktopActivityMenu> m_desktop_actions_popup;
+  UI::ActionList m_supported_action_list;
 
   //spaces preview
-  PlexyDesk::ModelView *m_preview_widget;
+  UI::ModelView *m_preview_widget;
 };
 
 DockControllerImpl::DockControllerImpl(QObject* object)
-    : PlexyDesk::ViewController(object), d(new PrivateDock) {
+    : UI::ViewController(object), d(new PrivateDock) {
   d->m_actions_map["ToggleDock"] = 1;
   d->m_actions_map["ShowDock"] = 2;
   d->m_actions_map["HideDock"] = 3;
@@ -71,7 +71,7 @@ DockControllerImpl::DockControllerImpl(QObject* object)
 
   d->m_main_panel_is_hidden = true;
   // navigation
-  d->m_navigation_dock = new PlexyDesk::ToolBar();
+  d->m_navigation_dock = new UI::ToolBar();
   d->m_navigation_dock->setController(this);
   d->m_navigation_dock->setOrientation(Qt::Vertical);
   d->m_navigation_dock->setIconResolution("mdpi");
@@ -90,11 +90,11 @@ DockControllerImpl::DockControllerImpl(QObject* object)
   connect(d->m_navigation_dock, SIGNAL(action(QString)), this,
           SLOT(onNavigationPanelClicked(QString)));
   // menu
-  d->m_preview_widget = new PlexyDesk::ModelView();
+  d->m_preview_widget = new UI::ModelView();
   d->m_preview_widget->hide();
 
-  d->m_desktop_actions_popup = QSharedPointer<PlexyDesk::DesktopActivityMenu>(
-      new PlexyDesk::DesktopActivityMenu(this));
+  d->m_desktop_actions_popup = QSharedPointer<UI::DesktopActivityMenu>(
+      new UI::DesktopActivityMenu(this));
 }
 
 DockControllerImpl::~DockControllerImpl() {
@@ -116,7 +116,7 @@ void DockControllerImpl::init() {
   if (!viewport())
     return;
 
-  PlexyDesk::Space* _space = qobject_cast<PlexyDesk::Space*>(viewport());
+  UI::Space* _space = qobject_cast<UI::Space*>(viewport());
   if (_space) {
     d->m_action_activity =
         createActivity("", "icongrid", "", QPoint(), QVariantMap());
@@ -147,7 +147,7 @@ void DockControllerImpl::setViewRect(const QRectF& rect) {
 
   d->m_navigation_dock->setPos(
       viewport()->center(d->m_navigation_dock->frameGeometry(),
-                         DesktopViewport::kCenterOnViewportLeft));
+                         Space::kCenterOnViewportLeft));
 
   d->m_preview_widget->setViewGeometry(
       QRectF(0.0, 0.0, 256, rect.height() - 24.0));
@@ -219,8 +219,8 @@ void DockControllerImpl::createActivityForController(const QString& name) {
 DesktopActivityPtr DockControllerImpl::createActivity(
     const QString& controllerName, const QString& activity,
     const QString& title, const QPoint& pos, const QVariantMap& dataItem) {
-  PlexyDesk::DesktopActivityPtr _intent =
-      PlexyDesk::ExtensionManager::instance()->activity(activity);
+  UI::DesktopActivityPtr _intent =
+      UI::ExtensionManager::instance()->activity(activity);
 
   if (!_intent) {
     qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
@@ -233,7 +233,7 @@ DesktopActivityPtr DockControllerImpl::createActivity(
   _intent->setActivityAttribute("data", QVariant(dataItem));
   _intent->setActivityAttribute("auto_scale", QVariant(1));
 
-  _intent->setController(PlexyDesk::ControllerPtr(this));
+  _intent->setController(UI::ControllerPtr(this));
 
   connect(_intent.data(), SIGNAL(showAnimationFinished()), this,
           SLOT(onActivityAnimationFinished()));
@@ -241,16 +241,16 @@ DesktopActivityPtr DockControllerImpl::createActivity(
   _intent->createWindow(QRectF(0.0, _activity_location.y(), 330.0, 320.0),
                         title, QPointF());
 
-  PlexyDesk::UIWidget* _activity_widget =
-      qobject_cast<PlexyDesk::UIWidget*>(_intent->window());
+  UI::UIWidget* _activity_widget =
+      qobject_cast<UI::UIWidget*>(_intent->window());
 
   if (_activity_widget) {
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, true);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType,
+    _activity_widget->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
+    _activity_widget->setWindowFlag(UI::UIWidget::kConvertToWindowType,
                                     false);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow, true);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, true);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle,
+    _activity_widget->setWindowFlag(UI::UIWidget::kTopLevelWindow, true);
+    _activity_widget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
+    _activity_widget->setWindowFlag(UI::UIWidget::kRenderWindowTitle,
                                     true);
   }
 
@@ -259,8 +259,8 @@ DesktopActivityPtr DockControllerImpl::createActivity(
 
 void DockControllerImpl::nextSpace() {
   if (this->viewport() && this->viewport()->workspace()) {
-    PlexyDesk::WorkSpace* _workspace =
-        qobject_cast<PlexyDesk::WorkSpace*>(viewport()->workspace());
+    UI::WorkSpace* _workspace =
+        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
 
     if (_workspace) {
       toggleDesktopPanel();
@@ -273,7 +273,7 @@ void DockControllerImpl::toggleSeamless() {
   if (!viewport())
     return;
 
-  PlexyDesk::ControllerPtr controller =
+  UI::ControllerPtr controller =
       viewport()->controller("classicbackdrop");
 
   if (!controller) {
@@ -308,8 +308,8 @@ void DockControllerImpl::prepareRemoval() {
 
 void DockControllerImpl::previousSpace() {
   if (this->viewport() && this->viewport()->workspace()) {
-    PlexyDesk::WorkSpace* _workspace =
-        qobject_cast<PlexyDesk::WorkSpace*>(viewport()->workspace());
+    UI::WorkSpace* _workspace =
+        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
 
     if (_workspace) {
       toggleDesktopPanel();
@@ -320,8 +320,8 @@ void DockControllerImpl::previousSpace() {
 
 void DockControllerImpl::toggleDesktopPanel() {
   if (this->viewport() && this->viewport()->workspace()) {
-    PlexyDesk::WorkSpace* _workspace =
-        qobject_cast<PlexyDesk::WorkSpace*>(viewport()->workspace());
+    UI::WorkSpace* _workspace =
+        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
 
     if (_workspace) {
       QRectF _work_area = viewport()->geometry();
@@ -342,7 +342,7 @@ void DockControllerImpl::onControllerAdded(const QString& name) {
   if (d->m_controller_name_list.contains(name) || !viewport())
     return;
 
-  PlexyDesk::ControllerPtr controller = viewport()->controller(name);
+  UI::ControllerPtr controller = viewport()->controller(name);
 
   if (!controller)
     return;
@@ -381,23 +381,23 @@ void DockControllerImpl::onActivityAnimationFinished() {
   if (!sender())
     return;
 
-  PlexyDesk::DesktopActivity* activity =
-      qobject_cast<PlexyDesk::DesktopActivity*>(sender());
+  UI::DesktopActivity* activity =
+      qobject_cast<UI::DesktopActivity*>(sender());
 
   if (!activity)
     return;
 
-  PlexyDesk::UIWidget* _activity_widget =
-      qobject_cast<PlexyDesk::UIWidget*>(activity->window());
+  UI::UIWidget* _activity_widget =
+      qobject_cast<UI::UIWidget*>(activity->window());
 
   if (_activity_widget) {
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow,
+    _activity_widget->setWindowFlag(UI::UIWidget::kRenderDropShadow,
                                     false);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType,
+    _activity_widget->setWindowFlag(UI::UIWidget::kConvertToWindowType,
                                     false);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow, false);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, true);
-    _activity_widget->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle,
+    _activity_widget->setWindowFlag(UI::UIWidget::kTopLevelWindow, false);
+    _activity_widget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
+    _activity_widget->setWindowFlag(UI::UIWidget::kRenderWindowTitle,
                                     true);
 
     _activity_widget->setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -406,13 +406,13 @@ void DockControllerImpl::onActivityAnimationFinished() {
 }
 
 void DockControllerImpl::onActivityFinished() {
-  PlexyDesk::DesktopActivity* _activity =
-      qobject_cast<PlexyDesk::DesktopActivity*>(sender());
+  UI::DesktopActivity* _activity =
+      qobject_cast<UI::DesktopActivity*>(sender());
 
   if (!_activity)
     return;
 
-  PlexyDesk::ControllerPtr _controller =
+  UI::ControllerPtr _controller =
       viewport()->controller(_activity->result()["controller"].toString());
 
   if (!_controller)
@@ -424,10 +424,10 @@ void DockControllerImpl::onActivityFinished() {
 
 void DockControllerImpl::removeSpace() {
   if (this->viewport() && this->viewport()->workspace()) {
-    PlexyDesk::WorkSpace* _workspace =
-        qobject_cast<PlexyDesk::WorkSpace*>(viewport()->workspace());
+    UI::WorkSpace* _workspace =
+        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
     if (_workspace) {
-      _workspace->removeSpace(qobject_cast<PlexyDesk::Space*>(viewport()));
+      _workspace->removeSpace(qobject_cast<UI::Space*>(viewport()));
     }
   }
 }
@@ -457,7 +457,7 @@ void DockControllerImpl::onNavigationPanelClicked(const QString& action) {
 
     QPointF _menu_pos =
         viewport()->center(d->m_action_activity->window()->boundingRect(),
-                           PlexyDesk::DesktopViewport::kCenterOnViewportLeft);
+                           UI::Space::kCenterOnViewportLeft);
     _menu_pos.setX(d->m_navigation_dock->frameGeometry().width() + 5);
     d->m_desktop_actions_popup->exec(_menu_pos);
   } else if (action == tr("Add")) {
@@ -467,8 +467,8 @@ void DockControllerImpl::onNavigationPanelClicked(const QString& action) {
 
 void DockControllerImpl::onAddSpaceButtonClicked() {
   if (this->viewport() && this->viewport()->workspace()) {
-    PlexyDesk::WorkSpace* _workspace =
-        qobject_cast<PlexyDesk::WorkSpace*>(viewport()->workspace());
+    UI::WorkSpace* _workspace =
+        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
 
     if (_workspace) {
       _workspace->addSpace();
@@ -492,14 +492,14 @@ void DockControllerImpl::updatePreview()
     d->m_preview_widget->clear();
 
     if (this->viewport() && this->viewport()->workspace()) {
-        PlexyDesk::WorkSpace* _workspace =
-                qobject_cast<PlexyDesk::WorkSpace*>(viewport()->workspace());
+        UI::WorkSpace* _workspace =
+                qobject_cast<UI::WorkSpace*>(viewport()->workspace());
 
         if (_workspace) {
-            foreach(PlexyDesk::Space * _space, _workspace->currentSpaces()) {
+            foreach(UI::Space * _space, _workspace->currentSpaces()) {
                 QPixmap _preview = _workspace->previewSpace(_space);
 
-                PlexyDesk::ImageView *p = new PlexyDesk::ImageView();
+                UI::ImageView *p = new UI::ImageView();
                 p->setMinimumSize(_preview.size());
                 p->setPixmap(_preview);
 
@@ -518,8 +518,8 @@ void DockControllerImpl::onPreviewItemClicked(TableViewItem* item) {
 
     if (_ok) {
       if (this->viewport() && this->viewport()->workspace()) {
-        PlexyDesk::WorkSpace* _workspace =
-            qobject_cast<PlexyDesk::WorkSpace*>(viewport()->workspace());
+        UI::WorkSpace* _workspace =
+            qobject_cast<UI::WorkSpace*>(viewport()->workspace());
 
         if (_workspace) {
           _workspace->exposeSpace(_space_id);

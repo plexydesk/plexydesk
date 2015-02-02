@@ -27,8 +27,8 @@
 #include <desktopactivity.h>
 #include <abstractcellcomponent.h>
 
-using namespace PlexyDesk;
-class PhotoSearchActivity : public PlexyDesk::DesktopActivity {
+using namespace UI;
+class PhotoSearchActivity : public UI::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -46,7 +46,7 @@ public:
   Widget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(PlexyDesk::Widget *widget);
+  void onWidgetClosed(UI::Widget *widget);
 
   void onHideAnimationFinished();
 

@@ -9,7 +9,7 @@
 #include <plexydesk_ui_exports.h>
 #include <desktopwidget.h>
 
-namespace PlexyDesk {
+namespace UI {
 class DECL_UI_KIT_EXPORT LineEdit : public UIWidget {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)

@@ -25,7 +25,7 @@
 
 #include <QTimer>
 
-class ClockWidget : public PlexyDesk::UIWidget {
+class ClockWidget : public UI::UIWidget {
   Q_OBJECT
 
 public:

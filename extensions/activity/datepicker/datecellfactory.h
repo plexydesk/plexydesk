@@ -3,7 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
 class DateCellFactory : public TableModel {
   Q_OBJECT
@@ -12,7 +12,7 @@ public:
   DateCellFactory(QGraphicsObject *parent = 0);
   virtual ~DateCellFactory();
 
-  QList<PlexyDesk::TableViewItem *> componentList();
+  QList<UI::TableViewItem *> componentList();
 
   float margin() const;
 
@@ -35,7 +35,7 @@ public:
 
   void setCellSize(const QSize &size);
 
-  PlexyDesk::TableViewItem *itemAt(int i);
+  UI::TableViewItem *itemAt(int i);
 
 private:
   class PrivateDateCellFactory;

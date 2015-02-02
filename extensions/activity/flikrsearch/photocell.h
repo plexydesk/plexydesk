@@ -3,7 +3,7 @@
 
 #include <abstractcellcomponent.h>
 
-class PhotoCell : public PlexyDesk::TableViewItem {
+class PhotoCell : public UI::TableViewItem {
   Q_OBJECT
 public:
   typedef enum { List = 0, Grid } ItemLayout;

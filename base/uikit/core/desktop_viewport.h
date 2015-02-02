@@ -29,7 +29,7 @@
 typedef void PlatformGraphicsScene;
 #endif
 
-namespace PlexyDesk {
+namespace UI {
 
 class ViewController;
 
@@ -104,7 +104,7 @@ public Q_SLOTS:
       *
       * @param
       */
-  virtual void onWidgetClosed(PlexyDesk::Widget *) = 0;
+  virtual void onWidgetClosed(UI::Widget *) = 0;
 
 protected:
   explicit DesktopViewport(QObject *parent = 0);

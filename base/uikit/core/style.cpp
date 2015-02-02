@@ -20,7 +20,7 @@
 #include <QVariant>
 #include <style.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 Style::Style() {}
 

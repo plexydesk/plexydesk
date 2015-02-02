@@ -26,7 +26,7 @@
 #include <QIcon>
 #include <QFileInfo>
 
-class FileInforView : public PlexyDesk::UIWidget {
+class FileInforView : public UI::UIWidget {
   Q_OBJECT
 public:
   FileInforView(QGraphicsObject *parent = 0);

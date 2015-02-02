@@ -37,7 +37,7 @@ public:
 };
 
 Clock::Clock(QObject *parent)
-    : PlexyDesk::ViewController(parent), d(new PrivateClockController) {
+    : UI::ViewController(parent), d(new PrivateClockController) {
   clock = 0;
 }
 
@@ -73,7 +73,7 @@ void Clock::setViewRect(const QRectF &rect) {
     clock->setPos(rect.x(), rect.y());
 }
 
-bool Clock::removeWidget(PlexyDesk::Widget *widget) {
+bool Clock::removeWidget(UI::Widget *widget) {
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
 
@@ -97,7 +97,7 @@ bool Clock::removeWidget(PlexyDesk::Widget *widget) {
   return 1;
 }
 
-PlexyDesk::ActionList Clock::actions() const { return m_supported_action_list; }
+UI::ActionList Clock::actions() const { return m_supported_action_list; }
 
 void Clock::requestAction(const QString &actionName, const QVariantMap &args) {
   if (!viewport())
@@ -106,8 +106,8 @@ void Clock::requestAction(const QString &actionName, const QVariantMap &args) {
   if (actionName == tr("Clock")) {
     QRectF _view_geomeetry(0.0, 0.0, 260.0, 512.0);
 
-    PlexyDesk::DesktopActivityPtr _clock_activity =
-        PlexyDesk::ExtensionManager::instance()->activity("desktopclock");
+    UI::DesktopActivityPtr _clock_activity =
+        UI::ExtensionManager::instance()->activity("desktopclock");
 
     _clock_activity->createWindow(_view_geomeetry, "Montreal",
                                   viewport()->center(_view_geomeetry));

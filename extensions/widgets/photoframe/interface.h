@@ -23,13 +23,13 @@
 
 #include <controllerplugininterface.h>
 
-class Interface : public QObject, public PlexyDesk::ControllerPluginInterface {
+class Interface : public QObject, public UI::ControllerPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ControllerPluginInterface)
+  Q_INTERFACES(UI::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.foo")
 
 public:
-  QSharedPointer<PlexyDesk::ViewController> controller();
+  QSharedPointer<UI::ViewController> controller();
 };
 
 #endif

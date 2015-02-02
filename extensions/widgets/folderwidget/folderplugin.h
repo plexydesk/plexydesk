@@ -29,7 +29,7 @@
 class QLineEdit;
 class QWidget;
 
-class DirectoryController : public PlexyDesk::ViewController {
+class DirectoryController : public UI::ViewController {
   Q_OBJECT
 
 public:
@@ -40,17 +40,17 @@ public:
 
   void revokeSession(const QVariantMap &args);
 
-  PlexyDesk::ActionList actions() const;
+  UI::ActionList actions() const;
   void requestAction(const QString &actionName, const QVariantMap &args);
-  void handleDropEvent(PlexyDesk::Widget *widget, QDropEvent *event);
+  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
   void setViewRect(const QRectF &rect);
 
   QString icon() const;
 
 private:
-  PlexyDesk::Theme *mThemePack;
-  QList<PlexyDesk::UIWidget *> mFolderViewList;
-  PlexyDesk::ActionList m_supported_action_list;
+  UI::Theme *mThemePack;
+  QList<UI::UIWidget *> mFolderViewList;
+  UI::ActionList m_supported_action_list;
 };
 
 #endif

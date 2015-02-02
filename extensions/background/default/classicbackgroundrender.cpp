@@ -8,7 +8,7 @@
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
                                                  QGraphicsObject *parent,
                                                  const QImage &background_image)
-    : PlexyDesk::Widget(parent) {
+    : UI::Widget(parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   mBackgroundImage = background_image;
@@ -62,7 +62,7 @@ void ClassicBackgroundRender::setBackgroundMode(
 }
 
 StylePtr ClassicBackgroundRender::style() const {
-  return PlexyDesk::Theme::style();
+  return UI::Theme::style();
 }
 
 void ClassicBackgroundRender::drawBackroundFrame(QPainter *painter,
@@ -91,7 +91,7 @@ void ClassicBackgroundRender::setSeamLessMode(bool value) {
 void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
   setFocus(Qt::MouseFocusReason);
-  PlexyDesk::Widget::mousePressEvent(event);
+  UI::Widget::mousePressEvent(event);
 }
 
 void ClassicBackgroundRender::paintView(QPainter *painter,

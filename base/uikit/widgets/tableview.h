@@ -29,7 +29,7 @@
 #include <tableviewcellinterface.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class TableModel;
 
@@ -62,7 +62,7 @@ public:
 
 private Q_SLOTS:
   virtual void onItemClick(TableViewItem *component);
-  virtual void onAddViewItem(PlexyDesk::TableViewItem *item);
+  virtual void onAddViewItem(UI::TableViewItem *item);
   virtual void onClear();
 
 Q_SIGNALS:

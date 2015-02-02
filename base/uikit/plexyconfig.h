@@ -32,7 +32,7 @@
 #include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 class DECL_UI_KIT_EXPORT Config : public QObject {
   Q_OBJECT
 

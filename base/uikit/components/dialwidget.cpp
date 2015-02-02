@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace PlexyDesk {
+namespace UI {
 class DialWidget::PrivateDialWidget {
 public:
   PrivateDialWidget() {}
@@ -22,12 +22,12 @@ public:
 };
 
 DialWidget::DialWidget(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateDialWidget) {
-  this->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  this->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow, false);
-  this->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType, false);
-  this->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle, false);
-  this->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, false);
+    : UI::UIWidget(parent), d(new PrivateDialWidget) {
+  this->setWindowFlag(UI::UIWidget::kRenderBackground);
+  this->setWindowFlag(UI::UIWidget::kTopLevelWindow, false);
+  this->setWindowFlag(UI::UIWidget::kConvertToWindowType, false);
+  this->setWindowFlag(UI::UIWidget::kRenderWindowTitle, false);
+  this->setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsSelectable, true);
 

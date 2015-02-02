@@ -9,7 +9,7 @@
 #include <style.h>
 #include <themepackloader.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class LineEdit::PrivateLineEdit {
 public:
@@ -185,8 +185,8 @@ void LineEdit::PrivateLineEdit::paintNormalEdit(
   feature.text_data = mText;
 
   painter->save();
-  if (PlexyDesk::Theme::style()) {
-    PlexyDesk::Theme::style()->draw("line_edit", feature, painter);
+  if (UI::Theme::style()) {
+    UI::Theme::style()->draw("line_edit", feature, painter);
   }
   painter->restore();
 }
@@ -199,8 +199,8 @@ void LineEdit::PrivateLineEdit::paintFocusedEdit(
   feature.text_data = mText;
 
   painter->save();
-  if (PlexyDesk::Theme::style()) {
-    PlexyDesk::Theme::style()->draw("line_edit", feature, painter);
+  if (UI::Theme::style()) {
+    UI::Theme::style()->draw("line_edit", feature, painter);
   }
   painter->restore();
 }

@@ -15,7 +15,7 @@
 
 #include "workspace.h"
 
-namespace PlexyDesk {
+namespace UI {
 
 typedef QWeakPointer<DesktopActivityMenu> ActivityPoupWeekPtr;
 
@@ -40,13 +40,13 @@ public:
   WorkSpace *mWorkSpace;
   QGraphicsScene *m_main_scene;
   QList<DesktopActivityPtr> m_activity_list;
-  std::list<PlexyDesk::Widget *> m_window_list;
+  std::list<UI::Widget *> m_window_list;
   QMap<QString, ControllerPtr> m_current_controller_map;
   QList<ActivityPoupWeekPtr> m_activity_popup_list;
   QList<ControllerPtr> m_controller_list;
 };
 
-Space::Space(QObject *parent) : DesktopViewport(parent), d(new PrivateSpace) {
+Space::Space(QObject *parent) : QObject(parent), d(new PrivateSpace) {
   d->mWorkSpace = 0;
   d->m_main_scene = 0;
   connect(this, SIGNAL(controllerAdded(QString)), this,
@@ -66,7 +66,7 @@ void Space::addController(const QString &controllerName) {
   }
 
   QSharedPointer<ViewController> _controller =
-      (PlexyDesk::ExtensionManager::instance()->controller(controllerName));
+      (UI::ExtensionManager::instance()->controller(controllerName));
 
   if (!_controller.data()) {
     qWarning() << Q_FUNC_INFO << "Error loading extension" << controllerName;
@@ -88,8 +88,8 @@ DesktopActivityPtr Space::createActivity(const QString &activity,
                                          const QString &title,
                                          const QPointF &pos, const QRectF &rect,
                                          const QVariantMap &dataItem) {
-  PlexyDesk::DesktopActivityPtr intent =
-      PlexyDesk::ExtensionManager::instance()->activity(activity);
+  UI::DesktopActivityPtr intent =
+      UI::ExtensionManager::instance()->activity(activity);
 
   if (!intent) {
     qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
@@ -191,8 +191,8 @@ void Space::addWidgetToView(Widget *widget) {
   d->m_main_scene->addItem(widget);
   widget->setPos(_widget_location);
 
-  connect(widget, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(widget, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   widget->show();
 
@@ -447,6 +447,45 @@ QPointF Space::clickLocation() const {
   return _view_parent->mapToScene(QCursor::pos());
 }
 
+QPointF Space::center(const QRectF &viewGeometry,
+                      const ViewportLocation &loc) const
+{
+  QPointF _rv;
+  float _x_location;
+  float _y_location;
+
+  switch (loc) {
+    case kCenterOnViewport:
+      _y_location = (geometry().height() / 2) - (viewGeometry.height() / 2);
+      _x_location = (geometry().width() / 2) - (viewGeometry.width() / 2);
+      break;
+    case kCenterOnViewportLeft:
+      _y_location = (geometry().height() / 2) - (viewGeometry.height() / 2);
+      _x_location = (geometry().topLeft().x());
+      break;
+    case kCenterOnViewportRight:
+      _y_location = (geometry().height() / 2) - (viewGeometry.height() / 2);
+      _x_location = (geometry().width() - (viewGeometry.width()));
+      break;
+    case kCenterOnViewportTop:
+      _y_location = (0.0);
+      _x_location = ((geometry().width() / 2) - (viewGeometry.width() / 2));
+      break;
+    case kCenterOnViewportBottom:
+      _y_location = (geometry().height() - (viewGeometry.height()));
+      _x_location = ((geometry().width() / 2) - (viewGeometry.width() / 2));
+      break;
+    default:
+      qWarning() << Q_FUNC_INFO << "Error : Unknown Viewprot Location Type:";
+  }
+
+  _rv.setY(geometry().y() + _y_location);
+  _rv.setX(_x_location);
+
+  return _rv;
+
+}
+
 ControllerPtr Space::controller(const QString &name) {
   if (!d->m_current_controller_map.keys().contains(name))
     return ControllerPtr();
@@ -492,8 +531,8 @@ void Space::setWorkspace(WorkSpace *workspace) { d->mWorkSpace = workspace; }
 
 void Space::restoreSession() { d->initSessionStorage(this); }
 
-void Space::setScene(PlatformGraphicsScene *scene) {
-  d->m_main_scene = (QGraphicsScene *)scene;
+void Space::setScene(QGraphicsScene *scene) {
+  d->m_main_scene = scene;
 }
 
 QRectF Space::geometry() const { return d->m_desktop_rect; }

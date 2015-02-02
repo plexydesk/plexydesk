@@ -24,7 +24,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-namespace PlexyDesk {
+namespace UI {
 
 class WindowButton::PrivateWindowButton {
 public:
@@ -35,7 +35,7 @@ public:
 };
 
 WindowButton::WindowButton(QGraphicsObject *parent)
-    : PlexyDesk::Button(parent), d(new PrivateWindowButton) {
+    : UI::Button(parent), d(new PrivateWindowButton) {
   setGeometry(boundingRect());
   d->mType = CLOSE;
 }
@@ -63,8 +63,8 @@ void WindowButton::paintNormalButton(QPainter *painter, const QRectF &rect) {
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (PlexyDesk::Theme::style()) {
-    PlexyDesk::Theme::style()->draw("window_button", feature, painter);
+  if (UI::Theme::style()) {
+    UI::Theme::style()->draw("window_button", feature, painter);
   }
 }
 
@@ -73,8 +73,8 @@ void WindowButton::paintSunkenButton(QPainter *painter, const QRectF &rect) {
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderRaised;
 
-  if (PlexyDesk::Theme::style()) {
-    PlexyDesk::Theme::style()->draw("window_button", feature, painter);
+  if (UI::Theme::style()) {
+    UI::Theme::style()->draw("window_button", feature, painter);
   }
 }
 }

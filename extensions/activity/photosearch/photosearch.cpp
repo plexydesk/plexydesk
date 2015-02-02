@@ -40,16 +40,16 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  PlexyDesk::UIWidget *mFrame;
-  PlexyDesk::ProgressBar *mProgressBar;
-  PlexyDesk::TableView *mTable;
+  UI::UIWidget *mFrame;
+  UI::ProgressBar *mProgressBar;
+  UI::TableView *mTable;
   ImageCellAdaptor *mFactory;
   QRectF m_frame_geometry;
   QVariantMap mResult;
 };
 
 PhotoSearchActivity::PhotoSearchActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivatePhotoSearch) {}
+    : UI::DesktopActivity(object), d(new PrivatePhotoSearch) {}
 
 PhotoSearchActivity::~PhotoSearchActivity() {
   qDebug() << Q_FUNC_INFO;
@@ -62,7 +62,7 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_frame_geometry = QRectF(0.0, 0.0, 600.0, 480.0);
 
   // todo: invoke UI
-  d->mFrame = new PlexyDesk::UIWidget();
+  d->mFrame = new UI::UIWidget();
   updateContentGeometry(d->mFrame);
   setGeometry(d->m_frame_geometry);
 
@@ -70,14 +70,14 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
 
   d->mFrame->setWindowTitle("Please Wait : Indexing...");
 
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
   // table
-  d->mTable = new PlexyDesk::TableView(d->mFrame);
+  d->mTable = new UI::TableView(d->mFrame);
 
   d->mFactory = new ImageCellAdaptor(d->mFrame);
 
@@ -87,8 +87,8 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
-  connect(d->mFrame, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
   connect(d->mFactory, SIGNAL(completed(int)), this,
           SLOT(onProgressValue(int)));
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
@@ -103,7 +103,7 @@ QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
 Widget *PhotoSearchActivity::window() const { return d->mFrame; }
 
-void PhotoSearchActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
+void PhotoSearchActivity::onWidgetClosed(UI::Widget *widget) {
   if (d->mFactory && d->mFactory->hasRunningThreads())
     return;
 
@@ -164,7 +164,7 @@ void PhotoSearchActivity::locateLocalFiles() const {
   pathList << url;
 #endif
 
-  pathList << PlexyDesk::Config::cacheDir("wallpaper");
+  pathList << UI::Config::cacheDir("wallpaper");
 
   d->mFactory->addPathList(pathList);
 }

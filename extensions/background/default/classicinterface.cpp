@@ -23,13 +23,13 @@
 #include <QtPlugin>
 
 ClassicBackdrop::ClassicBackdrop(QObject* /*parent*/)
-    : PlexyDesk::ControllerPluginInterface() {}
+    : UI::ControllerPluginInterface() {}
 
 ClassicBackdrop::~ClassicBackdrop() {}
 
-QSharedPointer<PlexyDesk::ViewController> ClassicBackdrop::controller() {
-  QSharedPointer<PlexyDesk::ViewController> obj =
-      QSharedPointer<PlexyDesk::ViewController>(new BackgroundController(),
+QSharedPointer<UI::ViewController> ClassicBackdrop::controller() {
+  QSharedPointer<UI::ViewController> obj =
+      QSharedPointer<UI::ViewController>(new BackgroundController(),
                                                      &QObject::deleteLater);
 
   return obj;

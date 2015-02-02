@@ -21,9 +21,9 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> HttpServerInterface::model() {
-  QSharedPointer<PlexyDesk::DataSource> obj =
-      QSharedPointer<PlexyDesk::DataSource>(new HttpServerData(),
+QSharedPointer<UI::DataSource> HttpServerInterface::model() {
+  QSharedPointer<UI::DataSource> obj =
+      QSharedPointer<UI::DataSource>(new HttpServerData(),
                                             &QObject::deleteLater);
 
   return obj;

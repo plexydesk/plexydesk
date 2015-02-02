@@ -1,6 +1,6 @@
 #include "controller_action.h"
 
-namespace PlexyDesk {
+namespace UI {
 
 class ControllerAction::PrivateControllerAction {
 public:
@@ -16,7 +16,7 @@ public:
 
 ControllerAction::ControllerAction() : d(new PrivateControllerAction) {}
 
-PlexyDesk::ControllerAction::~ControllerAction() { delete d; }
+UI::ControllerAction::~ControllerAction() { delete d; }
 
 std::string ControllerAction::name() const { return d->m_action_name; }
 

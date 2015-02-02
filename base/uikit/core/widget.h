@@ -26,7 +26,7 @@
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ViewController;
 /**
@@ -139,7 +139,7 @@ Q_SIGNALS:
       *
       * @param widget
       */
-  void closed(PlexyDesk::Widget *widget);
+  void closed(UI::Widget *widget);
   /**
       * @brief
       *

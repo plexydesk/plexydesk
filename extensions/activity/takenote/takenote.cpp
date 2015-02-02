@@ -31,19 +31,19 @@ public:
 
   ~PrivateTakeNote() {}
 
-  PlexyDesk::UIWidget *mFrame;
+  UI::UIWidget *mFrame;
   QGraphicsWidget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
-  PlexyDesk::ImageButton *mAddNoteBtn;
-  PlexyDesk::ImageButton *mAddTaskBtn;
-  PlexyDesk::ImageButton *mAddReminderBtn;
+  UI::ImageButton *mAddNoteBtn;
+  UI::ImageButton *mAddTaskBtn;
+  UI::ImageButton *mAddReminderBtn;
 
   QString mSelection;
 };
 
 TakeNoteActivity::TakeNoteActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateTakeNote) {
+    : UI::DesktopActivity(object), d(new PrivateTakeNote) {
   d->mFrame = 0;
 }
 
@@ -53,7 +53,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos) {
   // todo: invoke UI
-  d->mFrame = new PlexyDesk::UIWidget();
+  d->mFrame = new UI::UIWidget();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setVisible(true);
   setGeometry(window_geometry);
@@ -64,11 +64,11 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     d->mFrame->setWindowTitle(attributes()["title"].toString());
   }
 
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
   d->mLayoutBase = new QGraphicsWidget(0);
   d->mLayoutBase->setParentItem(d->mFrame);
@@ -77,16 +77,16 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   d->mLayoutBase->setGeometry(this->geometry());
   d->mLayoutBase->moveBy(0.0, 64.0);
 
-  d->mAddNoteBtn = new PlexyDesk::ImageButton(d->mLayoutBase);
-  d->mAddNoteBtn->setPixmap(PlexyDesk::Theme::instance()->drawable(
+  d->mAddNoteBtn = new UI::ImageButton(d->mLayoutBase);
+  d->mAddNoteBtn->setPixmap(UI::Theme::instance()->drawable(
       "pd_note_add_button_green.png", "hdpi"));
 
-  d->mAddTaskBtn = new PlexyDesk::ImageButton(d->mLayoutBase);
-  d->mAddTaskBtn->setPixmap(PlexyDesk::Theme::instance()->drawable(
+  d->mAddTaskBtn = new UI::ImageButton(d->mLayoutBase);
+  d->mAddTaskBtn->setPixmap(UI::Theme::instance()->drawable(
       "pd_note_add_button_blue.png", "hdpi"));
 
-  d->mAddReminderBtn = new PlexyDesk::ImageButton(d->mLayoutBase);
-  d->mAddReminderBtn->setPixmap(PlexyDesk::Theme::instance()->drawable(
+  d->mAddReminderBtn = new UI::ImageButton(d->mLayoutBase);
+  d->mAddReminderBtn->setPixmap(UI::Theme::instance()->drawable(
       "pd_note_add_button_orange.png", "hdpi"));
 
   d->mLayout->addItem(d->mAddNoteBtn);
@@ -100,8 +100,8 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  connect(d->mFrame, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
   // todo: invoke UI
 
   d->mAddNoteBtn->setLable(QLatin1String("Note"));
@@ -123,9 +123,9 @@ QVariantMap TakeNoteActivity::result() const {
   return rv;
 }
 
-PlexyDesk::Widget *TakeNoteActivity::window() const { return d->mFrame; }
+UI::Widget *TakeNoteActivity::window() const { return d->mFrame; }
 
-void TakeNoteActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
+void TakeNoteActivity::onWidgetClosed(UI::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
@@ -133,8 +133,8 @@ void TakeNoteActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
 void TakeNoteActivity::onHideAnimationFinished() { Q_EMIT finished(); }
 
 void TakeNoteActivity::onClicked() {
-  PlexyDesk::ImageButton *button =
-      qobject_cast<PlexyDesk::ImageButton *>(sender());
+  UI::ImageButton *button =
+      qobject_cast<UI::ImageButton *>(sender());
 
   if (button) {
     d->mSelection = button->label();

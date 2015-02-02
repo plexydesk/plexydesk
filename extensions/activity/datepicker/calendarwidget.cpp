@@ -18,20 +18,20 @@ public:
   QGraphicsWidget *mBaseTooloBarWidget;
   QGraphicsLinearLayout *mLayout;
 
-  PlexyDesk::ImageButton *mNextBtn;
-  PlexyDesk::ImageButton *mPrevBtn;
-  PlexyDesk::ImageButton *mOkBtn;
-  PlexyDesk::Label *mYearLable;
+  UI::ImageButton *mNextBtn;
+  UI::ImageButton *mPrevBtn;
+  UI::ImageButton *mOkBtn;
+  UI::Label *mYearLable;
 
-  PlexyDesk::UIWidget *mFrame;
-  PlexyDesk::TableView *mDayTable;
-  PlexyDesk::TableView *mHeaderTable;
+  UI::UIWidget *mFrame;
+  UI::TableView *mDayTable;
+  UI::TableView *mHeaderTable;
   QImage mBackgroundImage;
   QDate mCurrentDate;
 
-  PlexyDesk::DialWidget *mClockHourWidget;
-  PlexyDesk::DialWidget *mClockMinWidget;
-  PlexyDesk::Label *mTimeLable;
+  UI::DialWidget *mClockHourWidget;
+  UI::DialWidget *mClockMinWidget;
+  UI::Label *mTimeLable;
 
   int mHour;
   int mMin;
@@ -41,7 +41,7 @@ public:
 };
 
 CalendarWidget::CalendarWidget(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateCalendarWidget) {
+    : UI::UIWidget(parent), d(new PrivateCalendarWidget) {
 
   d->mHour = 0;
   d->mMin = 0;
@@ -57,21 +57,21 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mLayout = new QGraphicsLinearLayout(d->mBaseTooloBarWidget);
   d->mLayout->setOrientation(Qt::Horizontal);
 
-  d->mNextBtn = new PlexyDesk::ImageButton(d->mBaseTooloBarWidget);
-  d->mPrevBtn = new PlexyDesk::ImageButton(d->mBaseTooloBarWidget);
+  d->mNextBtn = new UI::ImageButton(d->mBaseTooloBarWidget);
+  d->mPrevBtn = new UI::ImageButton(d->mBaseTooloBarWidget);
 
   d->mNextBtn->setLable("Next");
   d->mNextBtn->setPixmap(
-      PlexyDesk::Theme::instance()->drawable("pd_next_icon_white.png", "mdpi"));
+      UI::Theme::instance()->drawable("pd_next_icon_white.png", "mdpi"));
 
   d->mPrevBtn->setLable("Previous");
   d->mPrevBtn->setPixmap(
-      PlexyDesk::Theme::instance()->drawable("pd_prev_icon_white.png", "mdpi"));
+      UI::Theme::instance()->drawable("pd_prev_icon_white.png", "mdpi"));
 
   d->mPrevBtn->setSize(QSize(24, 24));
   d->mNextBtn->setSize(QSize(24, 24));
 
-  d->mYearLable = new PlexyDesk::Label(d->mBaseTooloBarWidget);
+  d->mYearLable = new UI::Label(d->mBaseTooloBarWidget);
   d->mYearLable->setSize(QSize(258 - (d->mNextBtn->boundingRect().width() * 2),
                                d->mNextBtn->boundingRect().height()));
   d->mYearLable->setLabelStyle(Qt::transparent, Qt::white);
@@ -88,8 +88,8 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   connect(d->mNextBtn, SIGNAL(clicked()), this, SLOT(onNextClicked()));
   connect(d->mPrevBtn, SIGNAL(clicked()), this, SLOT(onPrevClicked()));
 
-  d->mFrame = new PlexyDesk::UIWidget(this);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, false);
+  d->mFrame = new UI::UIWidget(this);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground, false);
   d->mFrame->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
 
@@ -97,7 +97,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
                           QDate::currentDate().month(), 1);
 
   /*header */
-  d->mHeaderTable = new PlexyDesk::TableView(d->mFrame);
+  d->mHeaderTable = new UI::TableView(d->mFrame);
   DateCellFactory *headerList = new DateCellFactory(this);
   headerList->setHeaderMode(true);
   d->mHeaderTable->setModel(headerList);
@@ -114,7 +114,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   _day_table_geometry.setY(0.0);
   */
 
-  d->mDayTable = new PlexyDesk::TableView(d->mFrame);
+  d->mDayTable = new UI::TableView(d->mFrame);
   factory->setLabelVisibility(true);
 
   d->mDayTable->setModel(factory);
@@ -135,10 +135,10 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   this->changeDate(d->mCurrentDate);
 
-  d->mClockHourWidget = new PlexyDesk::DialWidget(this);
+  d->mClockHourWidget = new UI::DialWidget(this);
   d->mClockHourWidget->show();
 
-  d->mClockMinWidget = new PlexyDesk::DialWidget(this);
+  d->mClockMinWidget = new UI::DialWidget(this);
 
   d->mClockMinWidget->setPos(70, 70 + 48);
   d->mClockHourWidget->setPos(0.0, 48);
@@ -146,7 +146,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mClockMinWidget->setMaxValue(60);
   d->mClockMinWidget->show();
 
-  d->mTimeLable = new PlexyDesk::Label(this);
+  d->mTimeLable = new UI::Label(this);
   d->mTimeLable->setSize(QSizeF(300.0, 50));
   d->mTimeLable->setLabelStyle(Qt::white, QColor("#F28585"));
   // d->mTimeLable->setLabelStyle(Qt::white, QColor("#79BCD3"));
@@ -155,9 +155,9 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mTimeLable->setFontSize(32);
   d->mTimeLable->show();
 
-  d->mOkBtn = new PlexyDesk::ImageButton(this);
+  d->mOkBtn = new UI::ImageButton(this);
   d->mOkBtn->setPixmap(
-      PlexyDesk::Theme::instance()->drawable("pd_arrow_icon.png", "mdpi"));
+      UI::Theme::instance()->drawable("pd_arrow_icon.png", "mdpi"));
   d->mOkBtn->setSize(QSize(48, 48));
   d->mOkBtn->setPos(this->boundingRect().width() -
                         d->mOkBtn->boundingRect().width(),

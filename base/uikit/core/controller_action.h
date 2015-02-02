@@ -4,7 +4,7 @@
 #include <cstring>
 #include <string>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ControllerAction {
 public:

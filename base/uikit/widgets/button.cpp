@@ -8,7 +8,7 @@
 #include <extensionmanager.h>
 #include <themepackloader.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class Button::PrivateButton {
 public:
@@ -61,8 +61,8 @@ void Button::paintNormalButton(QPainter *painter, const QRectF &rect) {
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (PlexyDesk::Theme::instance()->defaultDesktopStyle()) {
-    PlexyDesk::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
+  if (UI::Theme::instance()->defaultDesktopStyle()) {
+    UI::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
                                                               painter);
   }
 }
@@ -74,14 +74,14 @@ void Button::paintSunkenButton(QPainter *painter, const QRectF &rect) {
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderPressed;
 
-  if (PlexyDesk::Theme::instance()->defaultDesktopStyle()) {
-    PlexyDesk::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
+  if (UI::Theme::instance()->defaultDesktopStyle()) {
+    UI::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
                                                               painter);
   }
 }
 
 StylePtr Button::style() const {
-  return PlexyDesk::Theme::instance()->defaultDesktopStyle();
+  return UI::Theme::instance()->defaultDesktopStyle();
 }
 
 void Button::setSize(const QSize &size) {

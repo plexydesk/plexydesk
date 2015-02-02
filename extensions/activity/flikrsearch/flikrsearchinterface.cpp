@@ -21,9 +21,9 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DesktopActivity> FlikrSearchInterface::activity() {
-  QSharedPointer<PlexyDesk::DesktopActivity> obj =
-      QSharedPointer<PlexyDesk::DesktopActivity>(new FlickrSearchActivity(),
+QSharedPointer<UI::DesktopActivity> FlikrSearchInterface::activity() {
+  QSharedPointer<UI::DesktopActivity> obj =
+      QSharedPointer<UI::DesktopActivity>(new FlickrSearchActivity(),
                                                  &QObject::deleteLater);
 
   return obj;

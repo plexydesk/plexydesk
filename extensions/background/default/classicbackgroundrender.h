@@ -7,7 +7,7 @@
 
 #include <widget.h>
 
-class ClassicBackgroundRender : public PlexyDesk::Widget {
+class ClassicBackgroundRender : public UI::Widget {
   Q_OBJECT
 public:
   typedef enum {

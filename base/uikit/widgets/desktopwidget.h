@@ -9,7 +9,7 @@
 
 #include <style.h>
 
-namespace PlexyDesk {
+namespace UI {
 class DECL_UI_KIT_EXPORT UIWidget : public Widget {
   Q_OBJECT
 

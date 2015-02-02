@@ -25,7 +25,7 @@
 
 #include <imagecache.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ImageCache::Private {
 public:

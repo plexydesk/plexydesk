@@ -6,7 +6,7 @@
 
 #include <functional>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ModelView : public UIWidget {
   Q_OBJECT

@@ -34,16 +34,16 @@ public:
 
   QString getContentText(const QString &data) const;
 
-  PlexyDesk::Style *mStyle;
+  UI::Style *mStyle;
   QString mNoteTitle;
   QString mStatusMessage;
   QPixmap mPixmap;
   QString mID;
   QPixmap mAvatar;
-  PlexyDesk::Button *mButton;
-  PlexyDesk::TextEditor *mTextEdit;
-  PlexyDesk::Label *mLable;
-  PlexyDesk::ImageButton *mCloseButton;
+  UI::Button *mButton;
+  UI::TextEditor *mTextEdit;
+  UI::Label *mLable;
+  UI::ImageButton *mCloseButton;
   QGraphicsWidget *mLayoutBase;
   QGraphicsWidget *mSubLayoutBase;
   QGraphicsLinearLayout *mMainVerticleLayout;
@@ -54,12 +54,12 @@ public:
   QuetzalKit::SyncObject *mNoteListObject; // contains the list of Notes.
   QuetzalKit::SyncObject *mCurrentNoteObject;
   QuetzalKit::SyncObject *getNoteObject();
-  PlexyDesk::ToolBar *mToolBar;
-  PlexyDesk::DesktopActivityPtr m_calendar_activity_dialog;
+  UI::ToolBar *mToolBar;
+  UI::DesktopActivityPtr m_calendar_activity_dialog;
 };
 
 void NoteWidget::createToolBar() {
-  d->mToolBar = new PlexyDesk::ToolBar(d->mSubLayoutBase);
+  d->mToolBar = new UI::ToolBar(d->mSubLayoutBase);
   d->mToolBar->addAction("contact", "pd_add_contact_icon", false);
   d->mToolBar->addAction("list", "pd_list_icon", false);
   d->mToolBar->addAction("date", "pd_calendar_icon", false);
@@ -72,12 +72,12 @@ void NoteWidget::createToolBar() {
 }
 
 NoteWidget::NoteWidget(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateNoteWidget) {
-  setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, true);
-  setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType, true);
-  setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle, true);
-  setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, true);
-  setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow, true);
+    : UI::UIWidget(parent), d(new PrivateNoteWidget) {
+  setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
+  setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
+  setWindowFlag(UI::UIWidget::kRenderWindowTitle, true);
+  setWindowFlag(UI::UIWidget::kRenderBackground, true);
+  setWindowFlag(UI::UIWidget::kTopLevelWindow, true);
 
   setWindowTitle("Note");
 
@@ -99,7 +99,7 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
   connect(d->mToolBar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 
-  d->mTextEdit = new PlexyDesk::TextEditor(d->mSubLayoutBase);
+  d->mTextEdit = new UI::TextEditor(d->mSubLayoutBase);
   d->mTextEdit->style(
       "border: 0; background: rgba(255,255,255,255); color: #4E4945");
 
@@ -109,9 +109,9 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
   d->mTextEdit->setPlaceholderText("Title :");
   d->mMainVerticleLayout->addItem(d->mSubLayoutBase);
 
-  d->mCloseButton = new PlexyDesk::ImageButton(this);
+  d->mCloseButton = new UI::ImageButton(this);
   d->mCloseButton->setPixmap(
-      PlexyDesk::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
+      UI::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
   d->mCloseButton->setSize(QSize(16, 16));
   d->mCloseButton->hide();
   d->mCloseButton->setBackgroundColor(Qt::white);
@@ -249,7 +249,7 @@ void NoteWidget::resize(const QSizeF &size) {
 void NoteWidget::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) {
-  PlexyDesk::UIWidget::paint(painter, option, widget);
+  UI::UIWidget::paint(painter, option, widget);
   painter->save();
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
   painter->drawPixmap(
@@ -318,14 +318,14 @@ void NoteWidget::onDocuemntTitleAvailable(const QString &title) {
   this->setTitle(title);
 }
 
-PlexyDesk::DesktopActivityPtr NoteWidget::showCalendar(
+UI::DesktopActivityPtr NoteWidget::showCalendar(
     const QString &activity, const QString &title,
     const QVariantMap &dataItem) {
   if (d->m_calendar_activity_dialog)
     return d->m_calendar_activity_dialog;
 
   d->m_calendar_activity_dialog =
-      PlexyDesk::ExtensionManager::instance()->activity(activity);
+      UI::ExtensionManager::instance()->activity(activity);
 
   if (!d->m_calendar_activity_dialog) {
     qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
@@ -356,7 +356,7 @@ void NoteWidget::onToolBarAction(const QString &action) {
       return;
     }
 
-    PlexyDesk::DesktopActivityPtr activity =
+    UI::DesktopActivityPtr activity =
         this->showCalendar("datepickeractivity", "Date/Time", QVariantMap());
 
     if (activity) {
@@ -445,7 +445,7 @@ void NoteWidget::onImageReady() {
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), PlexyDesk::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UI::Config::cacheDir(), true);
     imageSave->setCrop(QRectF(0.0, 0.0, 300.0, 300.0));
     imageSave->start();
 
@@ -494,8 +494,8 @@ void NoteWidget::deleteImageAttachment() {
 void NoteWidget::onDatePickerDone() {
   qDebug() << Q_FUNC_INFO;
   if (sender()) {
-    PlexyDesk::DesktopActivity *activity =
-        qobject_cast<PlexyDesk::DesktopActivity *>(sender());
+    UI::DesktopActivity *activity =
+        qobject_cast<UI::DesktopActivity *>(sender());
     if (activity) {
       qDebug() << Q_FUNC_INFO << activity->result();
       if (activity->window()) {
@@ -525,8 +525,8 @@ QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject() {
 
 void NoteWidget::onActivityClosed() {
   if (sender()) {
-    PlexyDesk::DesktopActivity *activity =
-        qobject_cast<PlexyDesk::DesktopActivity *>(sender());
+    UI::DesktopActivity *activity =
+        qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       if (activity->window()) {

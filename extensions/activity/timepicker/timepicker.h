@@ -26,7 +26,7 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class TimePickerActivity : public PlexyDesk::DesktopActivity {
+class TimePickerActivity : public UI::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -41,10 +41,10 @@ public:
 
   QVariantMap result() const;
 
-  PlexyDesk::Widget *window() const;
+  UI::Widget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(PlexyDesk::Widget *widget);
+  void onWidgetClosed(UI::Widget *widget);
 
   void onHideAnimationFinished();
 

@@ -24,16 +24,16 @@
 #include <dataplugininterface.h>
 
 class FlickrPhotoSearchInterface : public QObject,
-                                   public PlexyDesk::DataPluginInterface {
+                                   public UI::DataPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::DataPluginInterface)
+  Q_INTERFACES(UI::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.flickrphotosearch")
 
 public:
   virtual ~FlickrPhotoSearchInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::DataSource> model();
+  QSharedPointer<UI::DataSource> model();
 };
 
 #endif

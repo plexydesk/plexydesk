@@ -23,7 +23,7 @@
 
 #include "scrollwidget.h"
 
-namespace PlexyDesk {
+namespace UI {
 
 class ScrollWidget::Private {
 

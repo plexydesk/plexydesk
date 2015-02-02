@@ -25,7 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class RestData : public PlexyDesk::DataSource {
+class RestData : public UI::DataSource {
   Q_OBJECT
 
 public:

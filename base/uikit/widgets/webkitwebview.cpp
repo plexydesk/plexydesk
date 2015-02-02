@@ -4,7 +4,7 @@
 #include <QWebInspector>
 #include <QNetworkCookieJar>
 
-namespace PlexyDesk {
+namespace UI {
 
 class WebKitWebView::PrivateWebKitWebView {
 public:
@@ -16,7 +16,7 @@ public:
 };
 
 WebKitWebView::WebKitWebView(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateWebKitWebView) {
+    : UI::UIWidget(parent), d(new PrivateWebKitWebView) {
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
   d->mView = new QGraphicsWebView(this);
   QRectF rect(0.0, 0.0, 200.0, 200.0);

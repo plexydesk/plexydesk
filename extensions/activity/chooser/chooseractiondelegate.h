@@ -3,7 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
 class ChooserActionDelegate : public TableModel {
   Q_OBJECT

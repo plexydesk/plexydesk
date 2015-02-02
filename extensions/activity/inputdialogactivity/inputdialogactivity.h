@@ -27,7 +27,7 @@
 #include <desktopactivity.h>
 #include <widget.h>
 
-class InputDialogActivityData : public PlexyDesk::DesktopActivity {
+class InputDialogActivityData : public UI::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -49,10 +49,10 @@ public:
 
   QVariantMap result() const;
 
-  PlexyDesk::Widget *window() const;
+  UI::Widget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(PlexyDesk::Widget *widget);
+  void onWidgetClosed(UI::Widget *widget);
   void onMotionAnimFinished();
   void onOkButtonPressed();
 

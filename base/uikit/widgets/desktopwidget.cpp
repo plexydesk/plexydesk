@@ -18,7 +18,7 @@
 #include <windowbutton.h>
 #include <themepackloader.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class UIWidget::PrivateDesktopWidget {
 public:

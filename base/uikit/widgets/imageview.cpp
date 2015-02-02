@@ -7,7 +7,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <themepackloader.h>
 
-namespace PlexyDesk {
+namespace UI {
 class ImageView::PrivateImageView {
 public:
   PrivateImageView() {}

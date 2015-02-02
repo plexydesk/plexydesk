@@ -28,9 +28,9 @@
 #include <QtNetwork>
 #include <abstractcellcomponent.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
-class DockControllerImpl : public PlexyDesk::ViewController {
+class DockControllerImpl : public UI::ViewController {
   Q_OBJECT
 
 public:
@@ -44,7 +44,7 @@ public:
 
   void setViewRect(const QRectF &rect);
 
-  PlexyDesk::ActionList actions() const;
+  UI::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
@@ -87,7 +87,7 @@ private:
   class PrivateDock;
   PrivateDock *const d;
 
-  PlexyDesk::DesktopActivityPtr createActivity(const QString &controllerName,
+  UI::DesktopActivityPtr createActivity(const QString &controllerName,
                                                const QString &activity,
                                                const QString &title,
                                                const QPoint &pos,

@@ -5,7 +5,7 @@
 #include <desktopactivity.h>
 #include <desktopwidget.h>
 
-namespace PlexyDesk {
+namespace UI {
 class Space;
 
 /**

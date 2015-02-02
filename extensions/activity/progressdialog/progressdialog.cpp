@@ -27,15 +27,15 @@ public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
 
-  PlexyDesk::UIWidget *mFrame;
-  PlexyDesk::ProgressBar *m_progress_bar_widget;
+  UI::UIWidget *mFrame;
+  UI::ProgressBar *m_progress_bar_widget;
   int mMax;
   int mMin;
   bool m_task_completed;
 };
 
 ProgressDialogActivity::ProgressDialogActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateProgressDialog) {}
+    : UI::DesktopActivity(object), d(new PrivateProgressDialog) {}
 
 ProgressDialogActivity::~ProgressDialogActivity() {
   qDebug() << Q_FUNC_INFO;
@@ -48,21 +48,21 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  d->mFrame = new PlexyDesk::UIWidget();
+  d->mFrame = new UI::UIWidget();
   setGeometry(window_geometry);
 
   d->mFrame->setLabelName("Progress Dialog");
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground, true);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow, true);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType, true);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle, true);
-  d->mFrame->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, true);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground, true);
+  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow, true);
+  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle, true);
+  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
   d->mFrame->setWindowTitle(window_title);
 
   d->m_task_completed = 0;
 
-  connect(d->mFrame, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   d->mMax = 100.0;
   d->mMin = 0.0;
@@ -75,7 +75,7 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
     d->mMin = attributes()["min"].toFloat();
   }
 
-  d->m_progress_bar_widget = new PlexyDesk::ProgressBar(d->mFrame);
+  d->m_progress_bar_widget = new UI::ProgressBar(d->mFrame);
   d->m_progress_bar_widget->setRange(d->mMin, d->mMax);
   d->m_progress_bar_widget->setSize(QSize(window_geometry.width() - 10, 32));
   d->m_progress_bar_widget->setValue(0.0);
@@ -110,9 +110,9 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 }
 
-PlexyDesk::Widget *ProgressDialogActivity::window() const { return d->mFrame; }
+UI::Widget *ProgressDialogActivity::window() const { return d->mFrame; }
 
-void ProgressDialogActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
+void ProgressDialogActivity::onWidgetClosed(UI::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

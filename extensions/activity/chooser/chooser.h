@@ -28,9 +28,9 @@
 #include <widget.h>
 #include <abstractcellcomponent.h>
 
-using namespace PlexyDesk;
+using namespace UI;
 
-class IconGridActivity : public PlexyDesk::DesktopActivity {
+class IconGridActivity : public UI::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -44,7 +44,7 @@ public:
   Widget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(PlexyDesk::Widget *widget);
+  void onWidgetClosed(UI::Widget *widget);
   void onDiscard();
   void onClicked(TableViewItem *item);
   void onArgumentChanged();

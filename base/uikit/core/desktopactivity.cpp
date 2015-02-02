@@ -4,9 +4,9 @@
 #include <QGraphicsScene>
 
 #include "view_controller.h"
-#include "desktop_viewport.h"
+#include <space.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class DesktopActivity::PrivateDesktopActivity {
 public:
@@ -21,7 +21,7 @@ public:
   QRectF m_geometry;
   QVariantMap m_arguments;
   ControllerPtr m_controller_ptr;
-  DesktopViewport *m_current_viewport;
+  Space *m_current_viewport;
 };
 
 DesktopActivity::DesktopActivity(QGraphicsObject *parent)
@@ -103,14 +103,14 @@ ControllerPtr DesktopActivity::controller() const {
   return d->m_controller_ptr;
 }
 
-void DesktopActivity::setViewport(DesktopViewport *viewport) {
+void DesktopActivity::setViewport(Space *viewport) {
   if (d->m_current_viewport)
     return;
 
   d->m_current_viewport = viewport;
 }
 
-DesktopViewport *DesktopActivity::viewport() const {
+Space *DesktopActivity::viewport() const {
   return d->m_current_viewport;
 }
 

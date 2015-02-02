@@ -27,7 +27,7 @@
 #include "photowidget.h"
 #include "imageitem.h"
 
-class PhotoFrameController : public PlexyDesk::ViewController {
+class PhotoFrameController : public UI::ViewController {
   Q_OBJECT
 
 public:
@@ -38,13 +38,13 @@ public:
 
   virtual void revokeSession(const QVariantMap &args);
 
-  virtual void handleDropEvent(PlexyDesk::Widget *widget, QDropEvent *event);
+  virtual void handleDropEvent(UI::Widget *widget, QDropEvent *event);
 
   virtual void setViewRect(const QRectF &rect);
 
-  bool removeWidget(PlexyDesk::Widget *widget);
+  bool removeWidget(UI::Widget *widget);
 
-  PlexyDesk::ActionList actions() const;
+  UI::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
@@ -56,7 +56,7 @@ private:
   PhotoWidget *mFrameParentitem;
   QList<PhotoWidget *> mPhotoList;
   QString mImageSource;
-  PlexyDesk::ActionList m_supported_action_list;
+  UI::ActionList m_supported_action_list;
   QStringList m_current_url_list;
 };
 

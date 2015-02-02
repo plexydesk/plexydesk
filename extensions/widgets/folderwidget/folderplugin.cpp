@@ -29,16 +29,16 @@
 #define CREATE_DIR "createDirectory"
 
 DirectoryController::DirectoryController(QObject *object)
-    : PlexyDesk::ViewController(object) {
-  mThemePack = PlexyDesk::Theme::instance();
+    : UI::ViewController(object) {
+  mThemePack = UI::Theme::instance();
 
-  PlexyDesk::UIWidget *parent = new PlexyDesk::UIWidget();
+  UI::UIWidget *parent = new UI::UIWidget();
 
-  parent->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  parent->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  parent->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  parent->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  parent->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  parent->setWindowFlag(UI::UIWidget::kRenderBackground);
+  parent->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  parent->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  parent->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  parent->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
   IconWidgetView *view = new IconWidgetView(parent);
   view->setPos(0.0, 64.0);
@@ -68,7 +68,7 @@ void DirectoryController::init() {
 
 void DirectoryController::revokeSession(const QVariantMap &args) {}
 
-PlexyDesk::ActionList DirectoryController::actions() const {
+UI::ActionList DirectoryController::actions() const {
   return m_supported_action_list;
 }
 
@@ -78,13 +78,13 @@ void DirectoryController::requestAction(const QString &actionName,
     qDebug() << "Not supported yet";
   } else if (actionName == tr("Folder")) {
     qDebug() << Q_FUNC_INFO << "Request Add DIR";
-    PlexyDesk::UIWidget *parent = new PlexyDesk::UIWidget();
+    UI::UIWidget *parent = new UI::UIWidget();
 
-    parent->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-    parent->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-    parent->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-    parent->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-    parent->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+    parent->setWindowFlag(UI::UIWidget::kRenderBackground);
+    parent->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+    parent->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+    parent->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+    parent->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
     IconWidgetView *view = new IconWidgetView(parent);
     view->setPos(0.0, 64.0);
@@ -103,7 +103,7 @@ void DirectoryController::requestAction(const QString &actionName,
   }
 }
 
-void DirectoryController::handleDropEvent(PlexyDesk::Widget *widget,
+void DirectoryController::handleDropEvent(UI::Widget *widget,
                                           QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
@@ -120,7 +120,7 @@ void DirectoryController::handleDropEvent(PlexyDesk::Widget *widget,
 }
 
 void DirectoryController::setViewRect(const QRectF &rect) {
-  Q_FOREACH(PlexyDesk::UIWidget * view, mFolderViewList) {
+  Q_FOREACH(UI::UIWidget * view, mFolderViewList) {
     if (view)
       view->setPos(rect.x(), rect.y());
   }

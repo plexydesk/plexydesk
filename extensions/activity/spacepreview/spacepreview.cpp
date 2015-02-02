@@ -26,33 +26,33 @@ public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
 
-  PlexyDesk::UIWidget *m_main_window;
+  UI::UIWidget *m_main_window;
 };
 
 SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateSpacePreview) {}
+    : UI::DesktopActivity(object), d(new PrivateSpacePreview) {}
 
 SpacePreviewActivity::~SpacePreviewActivity() { delete d; }
 
 void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos) {
-  d->m_main_window = new PlexyDesk::UIWidget();
+  d->m_main_window = new UI::UIWidget();
 
   d->m_main_window->setWindowTitle(window_title);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kRenderBackground);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kTopLevelWindow);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kRenderWindowTitle);
-  d->m_main_window->setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kTopLevelWindow);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
+  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderDropShadow);
 
   setGeometry(window_geometry);
   updateContentGeometry(d->m_main_window);
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(PlexyDesk::Widget *)), this,
-          SLOT(onWidgetClosed(PlexyDesk::Widget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 }
 
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
@@ -60,9 +60,9 @@ QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 void SpacePreviewActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
-PlexyDesk::Widget *SpacePreviewActivity::window() const { return d->m_main_window; }
+UI::Widget *SpacePreviewActivity::window() const { return d->m_main_window; }
 
-void SpacePreviewActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
+void SpacePreviewActivity::onWidgetClosed(UI::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

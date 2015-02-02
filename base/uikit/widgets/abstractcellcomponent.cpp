@@ -1,7 +1,7 @@
 #include "abstractcellcomponent.h"
 #include <QDebug>
 
-namespace PlexyDesk {
+namespace UI {
 
 TableViewItem::TableViewItem(const QRectF &rect, QGraphicsItem *parent)
     : QGraphicsObject(parent), QGraphicsLayoutItem(0, false) {

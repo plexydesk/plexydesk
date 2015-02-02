@@ -27,13 +27,13 @@
 #include <controllerplugininterface.h>
 
 class ClockInterface : public QObject,
-                       public PlexyDesk::ControllerPluginInterface {
+                       public UI::ControllerPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ControllerPluginInterface)
+  Q_INTERFACES(UI::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.clock")
 
 public:
-  QSharedPointer<PlexyDesk::ViewController> controller();
+  QSharedPointer<UI::ViewController> controller();
 
 private:
   Clock *mClock;

@@ -3,20 +3,25 @@
 
 #include <QGraphicsItem>
 #include <QObject>
+
 #include <desktopactivitymenu.h>
-
 #include <view_controller.h>
-#include <desktop_viewport.h>
-
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class WorkSpace;
 
-class DECL_UI_KIT_EXPORT Space : public PlexyDesk::DesktopViewport {
+class DECL_UI_KIT_EXPORT Space : public QObject {
   Q_OBJECT
 public:
+ typedef enum {
+    kCenterOnViewport,
+    kCenterOnViewportLeft,
+    kCenterOnViewportRight,
+    kCenterOnViewportTop,
+    kCenterOnViewportBottom
+  } ViewportLocation;
   explicit Space(QObject *parent = 0);
 
   virtual ~Space();
@@ -37,7 +42,7 @@ public:
 
   virtual void restoreSession();
 
-  virtual void setScene(PlatformGraphicsScene *scene);
+  virtual void setScene(QGraphicsScene *scene);
 
   virtual void setSpaceGeometry(const QRectF &rectf);
 
@@ -87,9 +92,15 @@ public:
 
   virtual QPointF clickLocation() const;
 
+  virtual QPointF center(const QRectF &viewGeometry,
+                         const ViewportLocation &loc = kCenterOnViewport) const;
+
+Q_SIGNALS:
+  void controllerAdded(const QString &name);
+
 public Q_SLOTS:
   virtual void addWidgetToView(Widget *widget);
-  virtual void onWidgetClosed(PlexyDesk::Widget *widget);
+  virtual void onWidgetClosed(UI::Widget *widget);
   virtual void onActivityFinished();
 
 private Q_SLOTS:

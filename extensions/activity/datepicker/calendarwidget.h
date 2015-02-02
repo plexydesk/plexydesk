@@ -3,7 +3,7 @@
 
 #include <desktopwidget.h>
 
-class CalendarWidget : public PlexyDesk::UIWidget {
+class CalendarWidget : public UI::UIWidget {
   Q_OBJECT
 
 public:

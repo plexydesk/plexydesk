@@ -9,7 +9,7 @@
 #include <QVariantAnimation>
 #include <themepackloader.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class ProgressBar::PrivateProgressBar {
 public:
@@ -126,8 +126,8 @@ void ProgressBar::paint(QPainter *painter,
   features.render_state = StyleFeatures::kRenderBackground;
   features.geometry = option->exposedRect;
 
-  if (PlexyDesk::Theme::style()) {
-    PlexyDesk::Theme::style()->draw("linear_progress_bar", features, painter);
+  if (UI::Theme::style()) {
+    UI::Theme::style()->draw("linear_progress_bar", features, painter);
   }
 
   float percentage = (d->mValue / d->mMaxValue) * 100;
@@ -139,8 +139,8 @@ void ProgressBar::paint(QPainter *painter,
 
   progressFeatures.render_state = StyleFeatures::kRenderForground;
 
-  if (PlexyDesk::Theme::style()) {
-    PlexyDesk::Theme::style()->draw("linear_progress_bar", progressFeatures,
+  if (UI::Theme::style()) {
+    UI::Theme::style()->draw("linear_progress_bar", progressFeatures,
                                     painter);
   }
 

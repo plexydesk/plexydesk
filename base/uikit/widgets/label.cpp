@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QTextOption>
 
-namespace PlexyDesk {
+namespace UI {
 
 class Label::PrivateLabel {
 public:

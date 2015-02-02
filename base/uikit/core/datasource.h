@@ -26,7 +26,7 @@
 #include <QObject>
 
 /*!
-\class PlexyDesk::DataSource
+\class UI::DataSource
 
 \brief Class which abstracts a data source
 
@@ -49,8 +49,8 @@ illustrates how
 plugins can be used from a client application.
 
 @verbatim
-youtubeSource = qobject_cast<PlexyDesk::DataSource*>(
-PlexyDesk::PluginLoader::getInstance()->instance("utubeengine"));
+youtubeSource = qobject_cast<UI::DataSource*>(
+UI::PluginLoader::getInstance()->instance("utubeengine"));
 
 if (youtubeSource) {
 connect(youtubeSource, SIGNAL(ready()), this, SLOT(onReady()));
@@ -66,16 +66,16 @@ be used, and provide the data from readAll method. look at the numours examples
 shiped with
 plexydesk extenstions folder to get started with writting your own.
 
-\fn PlexyDesk::DataSource::readAll()
+\fn UI::DataSource::readAll()
 \brief Provides the data of the plugin as a QVariantMap
 \returns The data as a Map of QVariant's
 \sa dataReady()
 
-\fn PlexyDesk::DataSource::ready()
+\fn UI::DataSource::ready()
 \brief Signal emited when data is ready to be read
 \sa DataSource::readAll()
 
-\fn PlexyDesk::DataSource::setArguments();
+\fn UI::DataSource::setArguments();
 \brief Arguments to be suppied for the Data Source
 
 \paragraph This method essentially provides a way to send Data or arguments to
@@ -88,7 +88,7 @@ operation.
 \param args The argument to be passed to the data source, The data source should
 define the protocol to be used.
 **/
-namespace PlexyDesk {
+namespace UI {
 class DECL_UI_KIT_EXPORT DataSource : public QObject {
   Q_OBJECT
 

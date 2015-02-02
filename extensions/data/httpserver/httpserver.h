@@ -25,7 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class HttpServerData : public PlexyDesk::DataSource {
+class HttpServerData : public UI::DataSource {
   Q_OBJECT
 
 public:

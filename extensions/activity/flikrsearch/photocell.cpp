@@ -30,7 +30,7 @@ public:
 };
 
 PhotoCell::PhotoCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : PlexyDesk::TableViewItem(rect, parent), d(new PrivatePhotoCell) {
+    : UI::TableViewItem(rect, parent), d(new PrivatePhotoCell) {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mVisibility = true;

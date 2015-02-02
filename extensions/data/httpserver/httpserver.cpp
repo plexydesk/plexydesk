@@ -29,7 +29,7 @@ public:
 };
 
 HttpServerData::HttpServerData(QObject *object)
-    : PlexyDesk::DataSource(object), d(new PrivateHttpServer) {
+    : UI::DataSource(object), d(new PrivateHttpServer) {
   startTimer(1000);
 }
 

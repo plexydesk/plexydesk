@@ -32,7 +32,7 @@ public:
 };
 
 DateCell::DateCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : PlexyDesk::TableViewItem(rect, parent), d(new PrivateDateCell) {
+    : UI::TableViewItem(rect, parent), d(new PrivateDateCell) {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mVisibility = true;

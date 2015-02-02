@@ -57,15 +57,15 @@ public:
 
   void updateProgress(float progress);
 
-  PlexyDesk::DesktopActivityPtr mProgressDialog;
+  UI::DesktopActivityPtr mProgressDialog;
   QString mCurrentMode;
 
-  PlexyDesk::ActionList mActionList;
+  UI::ActionList mActionList;
   ClassicBackgroundRender *m_background_render_item;
 };
 
 BackgroundController::BackgroundController(QObject *object)
-    : PlexyDesk::ViewController(object),
+    : UI::ViewController(object),
       d(new PrivateBackgroundController) {
   d->m_background_render_item = 0;
 }
@@ -77,14 +77,14 @@ BackgroundController::~BackgroundController() {
 
 void BackgroundController::init() {
   QString wallpaperPath = QDir::toNativeSeparators(
-      PlexyDesk::Config::getInstance()->prefix() +
+      UI::Config::getInstance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
   d->m_background_render_item = new ClassicBackgroundRender(
       QRectF(0.0, 0.0, 0.0, 0.0), 0, QImage(wallpaperPath));
   d->m_background_render_item->setController(this);
   d->m_background_render_item->setLabelName("classic Backdrop");
   d->m_background_render_item->setLayerType(
-      PlexyDesk::Widget::kRenderAtBackgroundLevel);
+      UI::Widget::kRenderAtBackgroundLevel);
 
   d->createAction(this, tr("Desktop"), "pd_background_frame_icon.png", 1);
   d->createAction(this, tr("Search"), "pd_search_frame_icon.png", 2);
@@ -113,7 +113,7 @@ void BackgroundController::revokeSession(const QVariantMap &args) {
   }
 }
 
-PlexyDesk::ActionList BackgroundController::actions() const {
+UI::ActionList BackgroundController::actions() const {
   return d->mActionList;
 }
 
@@ -125,7 +125,7 @@ void BackgroundController::createSeamlessDesktop() {
           _is_seamless_set = d->m_background_render_item->isSeamlessModeSet();
       }
       if (viewport() && viewport()->workspace()) {
-          PlexyDesk::WorkSpace *_workspace = qobject_cast<PlexyDesk::WorkSpace*>
+          UI::WorkSpace *_workspace = qobject_cast<UI::WorkSpace*>
   (viewport()->workspace());
 
           if (_workspace) {
@@ -207,7 +207,7 @@ void BackgroundController::setScaleMode(
   }
 }
 
-void BackgroundController::handleDropEvent(PlexyDesk::Widget * /*widget*/,
+void BackgroundController::handleDropEvent(UI::Widget * /*widget*/,
                                            QDropEvent *event) {
   qDebug() << Q_FUNC_INFO;
 
@@ -216,7 +216,7 @@ void BackgroundController::handleDropEvent(PlexyDesk::Widget * /*widget*/,
 
     if (!image.isNull()) {
       qDebug() << Q_FUNC_INFO << "Request Save Image Locally";
-      saveImageLocally(image, PlexyDesk::Config::cacheDir("wallpaper"), true);
+      saveImageLocally(image, UI::Config::cacheDir("wallpaper"), true);
     }
     return;
   }
@@ -243,7 +243,7 @@ void BackgroundController::handleDropEvent(PlexyDesk::Widget * /*widget*/,
 
       // todo FIX!
       if (viewport()) {
-        PlexyDesk::DesktopViewport *space = viewport();
+        UI::Space *space = viewport();
         if (space)
           space->updateSessionValue(controllerName(), "background",
                                     fileUrl.toString());
@@ -271,7 +271,7 @@ void BackgroundController::saveImageLocally(const QByteArray &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, PlexyDesk::Config::cacheDir("wallpaper"),
+  imageSave->setData(data, UI::Config::cacheDir("wallpaper"),
                      saveLocally);
   imageSave->start();
 }
@@ -287,7 +287,7 @@ void BackgroundController::saveImageLocally(const QImage &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, PlexyDesk::Config::cacheDir("wallpaper"),
+  imageSave->setData(data, UI::Config::cacheDir("wallpaper"),
                      saveLocally);
   imageSave->start();
 }
@@ -318,19 +318,14 @@ void BackgroundController::onImageSaveReady() {
       d->m_background_render_item->setBackgroundImage(c->image());
 
     if (viewport()) {
-      PlexyDesk::DesktopViewport *view =
-          qobject_cast<PlexyDesk::DesktopViewport *>(viewport());
-      if (view) {
         if (!c->offline()) {
-          view->updateSessionValue(controllerName(), "background",
+          viewport()->updateSessionValue(controllerName(), "background",
                                    c->metaData()["url"].toString());
         } else {
-          qDebug() << Q_FUNC_INFO << "SESION --->" << c->imagePath();
-          view->updateSessionValue(
+          viewport()->updateSessionValue(
               controllerName(), "background",
               QDir::toNativeSeparators("file://" + c->imagePath()));
         }
-      }
     }
 
     if (d->mCurrentMode.isEmpty() || d->mCurrentMode.isNull()) {
@@ -374,8 +369,8 @@ QString BackgroundController::icon() const {
 QString BackgroundController::label() const { return QString(tr("Desktop")); }
 
 void BackgroundController::configure(const QPointF &pos) {
-  PlexyDesk::DesktopActivityPtr intent =
-      PlexyDesk::ExtensionManager::instance()->activity("icongrid");
+  UI::DesktopActivityPtr intent =
+      UI::ExtensionManager::instance()->activity("icongrid");
 
   if (!intent) {
     qWarning() << Q_FUNC_INFO << "No such Activity";
@@ -415,8 +410,8 @@ void BackgroundController::prepareRemoval() {
 // remove
 void BackgroundController::onModeActivityFinished() {
   if (sender()) {
-    PlexyDesk::DesktopActivity *activity =
-        qobject_cast<PlexyDesk::DesktopActivity *>(sender());
+    UI::DesktopActivity *activity =
+        qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -431,8 +426,8 @@ void BackgroundController::onModeActivityFinished() {
 // remove
 void BackgroundController::onWallpaperActivityFinished() {
   if (sender()) {
-    PlexyDesk::DesktopActivity *activity =
-        qobject_cast<PlexyDesk::DesktopActivity *>(sender());
+    UI::DesktopActivity *activity =
+        qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -445,8 +440,8 @@ void BackgroundController::onWallpaperActivityFinished() {
 
 void BackgroundController::onSearchFinished() {
   if (sender()) {
-    PlexyDesk::DesktopActivity *activity =
-        qobject_cast<PlexyDesk::DesktopActivity *>(sender());
+    UI::DesktopActivity *activity =
+        qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -463,8 +458,8 @@ void BackgroundController::onUpdateImageDownloadProgress(float progress) {
 
 void BackgroundController::onConfigureDone() {
   if (sender()) {
-    PlexyDesk::DesktopActivity *activity =
-        qobject_cast<PlexyDesk::DesktopActivity *>(sender());
+    UI::DesktopActivity *activity =
+        qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap result = activity->result();
@@ -489,8 +484,8 @@ void BackgroundController::onConfigureDone() {
 void BackgroundController::createModeActivity(const QString &activity,
                                               const QString &title,
                                               const QVariantMap &data) {
-  PlexyDesk::DesktopActivityPtr intent =
-      PlexyDesk::ExtensionManager::instance()->activity("icongrid");
+  UI::DesktopActivityPtr intent =
+      UI::ExtensionManager::instance()->activity("icongrid");
 
   if (!intent || !viewport()) {
     return;
@@ -510,8 +505,8 @@ void BackgroundController::createModeActivity(const QString &activity,
 void BackgroundController::createWallpaperActivity(const QString &activity,
                                                    const QString &title,
                                                    const QVariantMap &data) {
-  PlexyDesk::DesktopActivityPtr intent =
-      PlexyDesk::ExtensionManager::instance()->activity("photosearchactivity");
+  UI::DesktopActivityPtr intent =
+      UI::ExtensionManager::instance()->activity("photosearchactivity");
 
   if (!intent || !viewport()) {
     return;
@@ -530,8 +525,8 @@ void BackgroundController::createWallpaperActivity(const QString &activity,
 void BackgroundController::createSearchActivity(const QString &activity,
                                                 const QString &title,
                                                 const QVariantMap &data) {
-  PlexyDesk::DesktopActivityPtr intent =
-      PlexyDesk::ExtensionManager::instance()->activity("flikrsearchactivity");
+  UI::DesktopActivityPtr intent =
+      UI::ExtensionManager::instance()->activity("flikrsearchactivity");
 
   if (!intent || !viewport()) {
     return;
@@ -553,7 +548,7 @@ void BackgroundController::createProgressDialog() {
   _view_rect = QRectF(0.0, 0.0, 420.0, 128.0);
 
   if (!d->mProgressDialog)
-    d->mProgressDialog = PlexyDesk::ExtensionManager::instance()->activity(
+    d->mProgressDialog = UI::ExtensionManager::instance()->activity(
         "progressdialogactivity");
 
   if (!d->mProgressDialog || !viewport())
@@ -564,14 +559,14 @@ void BackgroundController::createProgressDialog() {
   d->mProgressDialog->createWindow(
       _view_rect, "Downlading Image",
       viewport()->center(_view_rect,
-                         PlexyDesk::DesktopViewport::kCenterOnViewportTop));
+                         UI::Space::kCenterOnViewportTop));
 
   viewport()->addActivity(d->mProgressDialog);
 }
 
 void BackgroundController::saveSession(const QString &key,
                                        const QVariant &value) {
-  PlexyDesk::DesktopViewport *view = viewport();
+  UI::Space *view = viewport();
 
   if (view) {
     view->updateSessionValue(controllerName(), key, value.toString());
@@ -579,11 +574,6 @@ void BackgroundController::saveSession(const QString &key,
 }
 
 QVariant BackgroundController::sessionValue(const QString &key) {
-  PlexyDesk::DesktopViewport *view = viewport();
-  if (view) {
-    // view->sessionDataForController(controllerName(), key, value.toString());
-  }
-
   return QVariant();
 }
 

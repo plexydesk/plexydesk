@@ -24,16 +24,16 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class TakeNoteInterface : public QObject, public PlexyDesk::ActivityInterface {
+class TakeNoteInterface : public QObject, public UI::ActivityInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ActivityInterface)
+  Q_INTERFACES(UI::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.takenote")
 
 public:
   virtual ~TakeNoteInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::DesktopActivity> activity();
+  QSharedPointer<UI::DesktopActivity> activity();
 };
 
 #endif

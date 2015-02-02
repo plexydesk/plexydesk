@@ -16,11 +16,11 @@ public:
 };
 
 DateCellFactory::DateCellFactory(QGraphicsObject *parent)
-    : PlexyDesk::TableModel(parent), d(new PrivateDateCellFactory) {
+    : UI::TableModel(parent), d(new PrivateDateCellFactory) {
   /*
   for (int i = 0 ; i < 10; i++) {
       addDataItem(QString("%1").arg(i),
-  PlexyDesk::ThemepackLoader::instance()->drawable("setup-wizard.png", "hdpi"),
+  UI::ThemepackLoader::instance()->drawable("setup-wizard.png", "hdpi"),
   false);
   }
   */
@@ -89,7 +89,7 @@ void DateCellFactory::setHeaderMode(bool mode) { d->mHeaderMode = mode; }
 
 void DateCellFactory::setCellSize(const QSize &size) { d->mCellSize = size; }
 
-PlexyDesk::TableViewItem *DateCellFactory::itemAt(int i) {
+UI::TableViewItem *DateCellFactory::itemAt(int i) {
   qDebug() << Q_FUNC_INFO << d->mListItems.count();
 
   return d->mListItems.at(i);

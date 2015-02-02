@@ -25,7 +25,7 @@
 
 #include <svgprovider.h>
 
-namespace PlexyDesk {
+namespace UI {
 
 class SvgProvider::Private {
 public:

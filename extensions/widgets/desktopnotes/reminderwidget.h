@@ -8,7 +8,7 @@
 #include <desktopwidget.h>
 #include <webservice.h>
 
-class ReminderWidget : public PlexyDesk::UIWidget {
+class ReminderWidget : public UI::UIWidget {
   Q_OBJECT
 public:
   explicit ReminderWidget(QGraphicsObject *parent = 0);

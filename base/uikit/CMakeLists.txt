@@ -40,8 +40,7 @@ set(CORE_LIB_CXX_FILES
     core/datasource.cpp
     core/desktopactivity.cpp
     core/extensionmanager.cpp
-    core/style.cpp
-    core/desktop_viewport.cpp)
+    core/style.cpp)
 
 set(CORE_LIBRARY_INTERFACE_FILES
     core/view_controller.h
@@ -57,7 +56,6 @@ set(CORE_LIBRARY_HEADER_FILES
     core/datasource.h
     core/stylefeatures.h
     core/desktopactivity.h
-    core/desktop_viewport.h
     core/extensionmanager.h
     core/controller_action.h)
 

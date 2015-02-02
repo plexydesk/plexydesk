@@ -31,7 +31,7 @@
 #include <desktopactivity.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 /**
     * @brief PlexyDesk Plugin Manager Class
     *
@@ -61,6 +61,11 @@ public:
       */
   static ExtensionManager *instance(const QString &desktopPrefix,
                                     const QString &prefix);
+
+
+  static ExtensionManager *init(const QString &desktopPrefix,
+                                    const QString &prefix);
+
   /**
       * @brief
       *

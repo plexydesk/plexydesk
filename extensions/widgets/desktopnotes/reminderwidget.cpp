@@ -28,16 +28,16 @@ public:
 
   QString getContentText(const QString &data) const;
 
-  PlexyDesk::Style *mStyle;
+  UI::Style *mStyle;
   QString mReminderTitle;
   QString mStatusMessage;
   QPixmap mPixmap;
   QString mID;
   QPixmap mAvatar;
 
-  PlexyDesk::Button *mButton;
-  PlexyDesk::TextEditor *mTextEdit;
-  PlexyDesk::Label *mLable;
+  UI::Button *mButton;
+  UI::TextEditor *mTextEdit;
+  UI::Label *mLable;
 
   QGraphicsWidget *mLayoutBase;
   QGraphicsWidget *mSubLayoutBase;
@@ -55,10 +55,10 @@ public:
 };
 
 ReminderWidget::ReminderWidget(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateReminderWidget) {
+    : UI::UIWidget(parent), d(new PrivateReminderWidget) {
   setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-  setWindowFlag(PlexyDesk::UIWidget::kRenderDropShadow, true);
-  setWindowFlag(PlexyDesk::UIWidget::kConvertToWindowType, true);
+  setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
+  setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
 
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mLayoutBase->setGeometry(this->boundingRect());
@@ -78,11 +78,11 @@ ReminderWidget::ReminderWidget(QGraphicsObject *parent)
   d->mSubLayout->setOrientation(Qt::Vertical);
   d->mSubLayout->setContentsMargins(64.0, 0.0, 0.0, 0.0);
 
-  d->mLable = new PlexyDesk::Label(d->mSubLayoutBase);
+  d->mLable = new UI::Label(d->mSubLayoutBase);
   d->mLable->setLabel(QDateTime::currentDateTime().toString());
   d->mLable->setSize(QSizeF(this->boundingRect().width() - 64.0, 24));
   d->mLable->setLabelStyle(QColor(254, 254, 254, 128), QColor(0, 0, 0));
-  d->mTextEdit = new PlexyDesk::TextEditor(d->mSubLayoutBase);
+  d->mTextEdit = new UI::TextEditor(d->mSubLayoutBase);
   d->mTextEdit->style(
       "border: 0; background: rgba(0,0,0,0); color: rgb(255, 255, 255)");
 
@@ -300,7 +300,7 @@ void ReminderWidget::onImageReady() {
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), PlexyDesk::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UI::Config::cacheDir(), true);
     imageSave->setCrop(QRectF(100, 0.0, 64.0, boundingRect().height()));
     imageSave->start();
 

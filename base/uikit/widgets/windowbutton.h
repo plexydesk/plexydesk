@@ -24,9 +24,9 @@
 #include <button.h>
 #include <plexydesk_ui_exports.h>
 
-namespace PlexyDesk {
+namespace UI {
 
-class DECL_UI_KIT_EXPORT WindowButton : public PlexyDesk::Button {
+class DECL_UI_KIT_EXPORT WindowButton : public UI::Button {
   Q_OBJECT
 public:
   typedef enum { CLOSE, ZOOM, MINIMIZE } WindowButtonType;

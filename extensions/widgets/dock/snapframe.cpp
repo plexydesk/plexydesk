@@ -11,7 +11,7 @@ public:
 };
 
 SnapFrame::SnapFrame(QGraphicsObject *parent)
-    : PlexyDesk::UIWidget(parent), d(new PrivateSnapFrame) {
+    : UI::UIWidget(parent), d(new PrivateSnapFrame) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
 
