@@ -21,8 +21,6 @@ protected:
 private:
   class PrivateDesktopManager;
   PrivateDesktopManager *const d;
-
-  PlexyDesk::ControllerPtr getController();
 };
 
 #endif // DESKTOPMANAGER_H
