@@ -55,14 +55,14 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
   exec();
 
   showActivity();
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
 }
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
-UI::Widget *SocialAuthActivity::window() const { return d->mFrame; }
+UI::UIWidget *SocialAuthActivity::window() const { return d->mFrame; }
 
-void SocialAuthActivity::onWidgetClosed(UI::Widget *widget) {}
+void SocialAuthActivity::onWidgetClosed(UI::UIWidget *widget) {}
 
 void SocialAuthActivity::onHideAnimationFinished() {}

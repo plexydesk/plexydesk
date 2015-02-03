@@ -5,13 +5,15 @@
 #include <QGraphicsObject>
 
 #include <widget.h>
+
 #include <plexydesk_ui_exports.h>
 
 namespace UI {
 
 class ViewController;
 class Space;
-typedef QSharedPointer<ViewController> ControllerPtr;
+class UIWidget;
+typedef QSharedPointer<ViewController> ViewControllerPtr;
 
 class DECL_UI_KIT_EXPORT DesktopActivity : public QObject {
   Q_OBJECT
@@ -26,7 +28,7 @@ public:
                             const QString &window_title,
                             const QPointF &window_pos) = 0;
 
-  virtual Widget *window() const = 0;
+  virtual UIWidget *window() const = 0;
 
   virtual void setActivityAttribute(const QString &name, const QVariant &data);
 
@@ -46,9 +48,9 @@ public:
 
   virtual void hide();
 
-  virtual void setController(const ControllerPtr &controller);
+  virtual void setController(const ViewControllerPtr &controller);
 
-  virtual ControllerPtr controller() const;
+  virtual ViewControllerPtr controller() const;
 
   virtual void setViewport(Space *viewport);
 
@@ -62,7 +64,7 @@ protected:
   virtual void discardActivity();
   virtual QRectF geometry() const;
   virtual void setGeometry(const QRectF &geometry);
-  virtual void updateContentGeometry(Widget *widget);
+  virtual void updateContentGeometry(UIWidget *widget);
   void setResult(ResultType type, const QVariantMap &data);
 
 Q_SIGNALS:

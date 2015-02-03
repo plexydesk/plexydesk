@@ -54,7 +54,7 @@ public:
 };
 
 TableView::TableView(QGraphicsObject *parent)
-    : Widget(parent), d(new PrivateTableView) {
+    : UIWidget(parent), d(new PrivateTableView) {
   d->m_table_delegate_ptr = 0;
   d->m_current_item_count = -1;
 
@@ -149,7 +149,7 @@ void TableView::setGeometry(const QRectF &rect) {
   d->m_table_view_geometry.setWidth(rect.width());
   d->m_table_view_geometry.setHeight(rect.height());
   setPos(rect.topLeft());
-  Widget::setGeometry(rect);
+  UIWidget::setGeometry(rect);
 }
 
 QSizeF TableView::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {

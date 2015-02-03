@@ -80,7 +80,7 @@ void DesktopNotesControllerImpl::requestAction(const QString &actionName,
   }
 }
 
-void DesktopNotesControllerImpl::handleDropEvent(UI::Widget *widget,
+void DesktopNotesControllerImpl::handleDropEvent(UI::UIWidget *widget,
                                                  QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);

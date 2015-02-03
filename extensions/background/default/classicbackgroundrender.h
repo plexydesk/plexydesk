@@ -6,8 +6,9 @@
 #include <QImage>
 
 #include <widget.h>
+#include <desktopwidget.h>
 
-class ClassicBackgroundRender : public UI::Widget {
+class ClassicBackgroundRender : public UI::UIWidget {
   Q_OBJECT
 public:
   typedef enum {

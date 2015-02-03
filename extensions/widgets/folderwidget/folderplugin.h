@@ -42,7 +42,7 @@ public:
 
   UI::ActionList actions() const;
   void requestAction(const QString &actionName, const QVariantMap &args);
-  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
+  void handleDropEvent(UI::UIWidget *widget, QDropEvent *event);
   void setViewRect(const QRectF &rect);
 
   QString icon() const;

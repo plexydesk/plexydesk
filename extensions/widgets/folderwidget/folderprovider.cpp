@@ -16,7 +16,7 @@ public:
       delete mIconProvider;
   }
 
-  QMap<QString, UI::ControllerPtr> mControllerMap;
+  QMap<QString, UI::ViewControllerPtr> mControllerMap;
   QMap<QString, UI::DataSourcePtr> mEngines;
   QFileSystemModel *mFileSystemModel;
   QFileIconProvider *mIconProvider;

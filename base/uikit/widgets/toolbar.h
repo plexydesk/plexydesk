@@ -6,7 +6,7 @@
 #include <plexydesk_ui_exports.h>
 
 namespace UI {
-class DECL_UI_KIT_EXPORT ToolBar : public UI::Widget {
+class DECL_UI_KIT_EXPORT ToolBar : public UI::UIWidget {
   Q_OBJECT
 
 public:

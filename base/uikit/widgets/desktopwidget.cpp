@@ -41,7 +41,7 @@ public:
 };
 
 UIWidget::UIWidget(QGraphicsObject *parent)
-    : Widget(parent), d(new PrivateDesktopWidget) {
+    : Window(parent), d(new PrivateDesktopWidget) {
   d->m_enable_edit_mode = false;
   d->m_enable_background_texture = false;
   d->m_current_widget_state = kRenderAsMinimizedWindow;
@@ -81,21 +81,23 @@ UIWidget::UIWidget(QGraphicsObject *parent)
   this->setGraphicsEffect(d->m_shadow_effect_ptr);
 
   // window buttons
-  d->m_window_close_button_widget_ptr = new WindowButton(this);
-  d->m_window_close_button_widget_ptr->hide();
+  //d->m_window_close_button_widget_ptr = new WindowButton(this);
+  //d->m_window_close_button_widget_ptr->hide();
 
   if (style()) {
     setMinimizedGeometry(
         QRect(0.0, 0.0,
               style()->attrbute("frame", "window_minimized_width").toFloat(),
               style()->attrbute("frame", "window_minimized_height").toFloat()));
+    /*
     d->m_window_close_button_widget_ptr->setPos(
         style()->attrbute("frame", "padding").toFloat(),
         style()->attrbute("frame", "padding").toFloat());
+        */
   }
 
-  connect(d->m_window_close_button_widget_ptr, SIGNAL(clicked()), this,
-          SLOT(windowCloseButtonClicked()));
+  //connect(d->m_window_close_button_widget_ptr, SIGNAL(clicked()), this,
+   //       SLOT(windowCloseButtonClicked()));
 }
 
 UIWidget::~UIWidget() {
@@ -187,16 +189,18 @@ void UIWidget::setWindowFlag(int flags, bool enable) {
 
   if (flags == kConvertToWindowType) {
     d->m_enable_window_type = enable;
+    /*
     if (enable)
       d->m_window_close_button_widget_ptr->show();
     else
       d->m_window_close_button_widget_ptr->hide();
+      */
     return;
   }
 }
 
 void UIWidget::updateWindowButton(int zValue) {
-  d->m_window_close_button_widget_ptr->setZValue(zValue + 1);
+  //d->m_window_close_button_widget_ptr->setZValue(zValue + 1);
 }
 
 UIWidget::WindowState UIWidget::state() { return d->m_current_widget_state; }
@@ -209,7 +213,7 @@ void UIWidget::setState(UIWidget::WindowState s) {
 void UIWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   d->m_press_hold_timer_ptr->stop();
   Q_EMIT clicked();
-  Widget::mouseReleaseEvent(event);
+  Window::mouseReleaseEvent(event);
 }
 
 StylePtr UIWidget::style() const { return Theme::style(); }
@@ -224,10 +228,10 @@ void UIWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
   if (event->buttons() == Qt::LeftButton && state() == kRenderAsWindow) {
     d->m_press_hold_timer_ptr->start(3000);
-    Widget::mousePressEvent(event);
+    Window::mousePressEvent(event);
     return;
   }
-  Widget::mousePressEvent(event);
+  Window::mousePressEvent(event);
 }
 
 void UIWidget::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
@@ -258,8 +262,10 @@ void UIWidget::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 
     d->m_property_animation_for_zoom_ptr->start();
     setChildWidetVisibility(true);
+    /*
     if (!d->m_enable_window_type)
       d->m_window_close_button_widget_ptr->hide();
+      */
 
   } else {
     prepareGeometryChange();

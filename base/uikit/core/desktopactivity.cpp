@@ -20,7 +20,7 @@ public:
 public:
   QRectF m_geometry;
   QVariantMap m_arguments;
-  ControllerPtr m_controller_ptr;
+  ViewControllerPtr m_controller_ptr;
   Space *m_current_viewport;
 };
 
@@ -95,11 +95,11 @@ void DesktopActivity::hide() {
   }
 }
 
-void DesktopActivity::setController(const ControllerPtr &controller) {
+void DesktopActivity::setController(const ViewControllerPtr &controller) {
   d->m_controller_ptr = controller;
 }
 
-ControllerPtr DesktopActivity::controller() const {
+ViewControllerPtr DesktopActivity::controller() const {
   return d->m_controller_ptr;
 }
 
@@ -124,7 +124,7 @@ void DesktopActivity::updateAction() {
 }
 
 // todo: remove this
-void DesktopActivity::updateContentGeometry(Widget *widget) {
+void DesktopActivity::updateContentGeometry(UIWidget *widget) {
   if (!widget)
     return;
 

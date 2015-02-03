@@ -21,12 +21,10 @@ public:
   QGraphicsLinearLayout *mLayout;
   QSize m_icon_size;
   QString m_icon_resolution;
-
-  QList<Widget *> m_widget_list;
 };
 
 ToolBar::ToolBar(QGraphicsObject *parent)
-    : Widget(parent), d(new PrivateToolBar) {
+    : UIWidget(parent), d(new PrivateToolBar) {
   d->mButtonCount = 0;
   d->m_icon_resolution = "mdpi";
   d->m_icon_size = QSize(24, 24);

@@ -39,10 +39,10 @@ public:
 
   QVariantMap result() const;
 
-  UI::Widget *window() const;
+  UI::UIWidget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Widget *widget);
+  void onWidgetClosed(UI::UIWidget *widget);
   void onHideAnimationFinished();
   void onToolBarAction(const QString &str);
 

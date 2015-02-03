@@ -126,7 +126,7 @@ void DockControllerImpl::init() {
   }
 
   // loads the controllers before dock was created;
-  Q_FOREACH(const QString & name, viewport()->currentDesktopControllers()) {
+  Q_FOREACH(const QString & name, viewport()->getSessionControllers()) {
     this->onControllerAdded(name);
   }
 
@@ -233,7 +233,7 @@ DesktopActivityPtr DockControllerImpl::createActivity(
   _intent->setActivityAttribute("data", QVariant(dataItem));
   _intent->setActivityAttribute("auto_scale", QVariant(1));
 
-  _intent->setController(UI::ControllerPtr(this));
+  _intent->setController(UI::ViewControllerPtr(this));
 
   connect(_intent.data(), SIGNAL(showAnimationFinished()), this,
           SLOT(onActivityAnimationFinished()));
@@ -273,7 +273,7 @@ void DockControllerImpl::toggleSeamless() {
   if (!viewport())
     return;
 
-  UI::ControllerPtr controller =
+  UI::ViewControllerPtr controller =
       viewport()->controller("classicbackdrop");
 
   if (!controller) {
@@ -342,7 +342,7 @@ void DockControllerImpl::onControllerAdded(const QString& name) {
   if (d->m_controller_name_list.contains(name) || !viewport())
     return;
 
-  UI::ControllerPtr controller = viewport()->controller(name);
+  UI::ViewControllerPtr controller = viewport()->controller(name);
 
   if (!controller)
     return;
@@ -412,7 +412,7 @@ void DockControllerImpl::onActivityFinished() {
   if (!_activity)
     return;
 
-  UI::ControllerPtr _controller =
+  UI::ViewControllerPtr _controller =
       viewport()->controller(_activity->result()["controller"].toString());
 
   if (!_controller)

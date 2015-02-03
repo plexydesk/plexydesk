@@ -4,11 +4,11 @@
 #include <plexydesk_ui_exports.h>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
-#include <widget.h>
+#include <desktopwidget.h>
 
 namespace UI {
 
-class DECL_UI_KIT_EXPORT ImageButton : public Widget {
+class DECL_UI_KIT_EXPORT ImageButton : public UIWidget {
   Q_OBJECT
 public:
   explicit ImageButton(QGraphicsObject *parent = 0);

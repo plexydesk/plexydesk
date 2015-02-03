@@ -45,7 +45,7 @@ ModelView::~ModelView() {
     delete d;
 }
 
-void ModelView::insert(Widget *widget) {
+void ModelView::insert(UIWidget *widget) {
     widget->setParentItem(d->m_scroll_frame);
     widget->setParent(d->m_scroll_frame);
     //widget->setFlag(QGraphicsItem::ItemIsMovable, false);

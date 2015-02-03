@@ -54,8 +54,8 @@ void TimeZoneActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
 }
 
 QVariantMap TimeZoneActivity::result() const { return QVariantMap(); }
@@ -63,9 +63,9 @@ QVariantMap TimeZoneActivity::result() const { return QVariantMap(); }
 void TimeZoneActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
-UI::Widget *TimeZoneActivity::window() const { return d->m_main_window; }
+UI::UIWidget *TimeZoneActivity::window() const { return d->m_main_window; }
 
-void TimeZoneActivity::onWidgetClosed(UI::Widget *widget) {
+void TimeZoneActivity::onWidgetClosed(UI::UIWidget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

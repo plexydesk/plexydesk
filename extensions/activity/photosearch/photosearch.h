@@ -43,10 +43,10 @@ public:
 
   QVariantMap result() const;
 
-  Widget *window() const;
+  UIWidget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Widget *widget);
+  void onWidgetClosed(UI::UIWidget *widget);
 
   void onHideAnimationFinished();
 

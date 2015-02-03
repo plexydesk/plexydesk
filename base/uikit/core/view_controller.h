@@ -47,7 +47,7 @@ action.
 */
 
 namespace UI {
-class Widget;
+class UIWidget;
 typedef QList<QAction *> ActionList;
 
 class DECL_UI_KIT_EXPORT ViewController : public QObject {
@@ -119,7 +119,7 @@ public:
       * @param widget
       * @param event
       */
-  virtual void handleDropEvent(Widget *widget, QDropEvent *event);
+  virtual void handleDropEvent(UIWidget *widget, QDropEvent *event);
 
   /**
       * @brief
@@ -134,9 +134,9 @@ public:
       * @param widget
       * @return bool
       */
-  virtual bool removeWidget(Widget *widget);
+  virtual bool removeWidget(UIWidget *widget);
 
-  virtual void insert(Widget *widget);
+  virtual void insert(UIWidget *widget);
 
   /**
       * @brief
@@ -158,7 +158,7 @@ public:
       * @param name The idenfier name of the desktop activity
       * @return DesktopActivityPtr Returns a Activity Pointer
       */
-  virtual DesktopActivityPtr activity(const QString &name,
+  virtual UI::DesktopActivityPtr activity(const QString &name,
                                       const QRectF &geometry = QRectF(),
                                       const QPointF &pos = QPoint(0.0, 0.0),
                                       const QString &window_title = QString());
@@ -213,6 +213,6 @@ private:
     * @brief
     *
     */
-typedef QSharedPointer<ViewController> ControllerPtr;
+typedef QSharedPointer<ViewController> ViewControllerPtr;
 }
 #endif

@@ -10,7 +10,7 @@
 #include <style.h>
 
 namespace UI {
-class DECL_UI_KIT_EXPORT UIWidget : public Widget {
+class DECL_UI_KIT_EXPORT UIWidget : public Window {
   Q_OBJECT
 
 public:
@@ -23,7 +23,9 @@ public:
     kRenderWindowTitle = 1ul << 5
   } WidgetFlags;
 
-  enum WindowState { kRenderAsWindow, kRenderAsMinimizedWindow };
+  enum WindowState { kRenderAsWindow, kRenderAsMinimizedWindow};
+
+  enum RenderLevel { kRenderAtBackgroundLevel, kRenderAtForgroundLevel};
 
   UIWidget(QGraphicsObject *parent = 0);
 
@@ -45,6 +47,7 @@ public:
 
 Q_SIGNALS:
   void clicked();
+  void closed(UI::UIWidget *widget);
 
 protected:
   virtual void paintView(QPainter *painter, const QRectF &rect);

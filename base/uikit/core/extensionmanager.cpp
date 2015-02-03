@@ -117,7 +117,7 @@ DataSourcePtr ExtensionManager::dataEngine(const QString &name) {
   return QSharedPointer<DataSource>();
 }
 
-ControllerPtr ExtensionManager::controller(const QString &name) {
+ViewControllerPtr ExtensionManager::controller(const QString &name) {
   if (d->mControllers[name]) {
     return d->mControllers[name]->controller();
   } else {

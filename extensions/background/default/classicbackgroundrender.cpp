@@ -8,7 +8,7 @@
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
                                                  QGraphicsObject *parent,
                                                  const QImage &background_image)
-    : UI::Widget(parent) {
+    : UI::UIWidget(parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   mBackgroundImage = background_image;
@@ -91,7 +91,7 @@ void ClassicBackgroundRender::setSeamLessMode(bool value) {
 void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
   setFocus(Qt::MouseFocusReason);
-  UI::Widget::mousePressEvent(event);
+  UI::UIWidget::mousePressEvent(event);
 }
 
 void ClassicBackgroundRender::paintView(QPainter *painter,

@@ -130,19 +130,19 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
-UI::Widget *DesktopClockActivity::window() const {
+UI::UIWidget *DesktopClockActivity::window() const {
   return d->m_main_window;
 }
 
-void DesktopClockActivity::onWidgetClosed(UI::Widget *widget) {
+void DesktopClockActivity::onWidgetClosed(UI::UIWidget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
@@ -157,7 +157,7 @@ void DesktopClockActivity::onToolBarAction(const QString &str) {
       UI::Space *_space = qobject_cast<UI::Space *>(viewport());
       if (_space) {
         UI::DesktopActivityPtr _timezone = viewport()->createActivity(
-            "timezone", tr("TimeZone"), _space->clickLocation(),
+            "timezone", tr("TimeZone"), _space->mousePointerPos(),
             QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
         _space->addActivity(_timezone);
       }

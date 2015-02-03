@@ -35,7 +35,7 @@ public:
 };
 
 WindowButton::WindowButton(QGraphicsObject *parent)
-    : UI::Button(parent), d(new PrivateWindowButton) {
+    : UI::UIWidget(parent), d(new PrivateWindowButton) {
   setGeometry(boundingRect());
   d->mType = CLOSE;
 }

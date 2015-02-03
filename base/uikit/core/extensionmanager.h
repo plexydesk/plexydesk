@@ -94,14 +94,14 @@ public:
       * @param name
       * @return ControllerPtr
       */
-  ControllerPtr controller(const QString &name);
+  ViewControllerPtr controller(const QString &name);
   /**
       * @brief
       *
       * @param name
       * @return DesktopActivityPtr
       */
-  DesktopActivityPtr activity(const QString &name);
+  UI::DesktopActivityPtr activity(const QString &name);
   /**
       * @brief
       *

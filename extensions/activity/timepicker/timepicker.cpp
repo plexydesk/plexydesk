@@ -42,8 +42,8 @@ QRectF TimePickerActivity::geometry() const { return QRectF(); }
 
 QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
 
-UI::Widget *TimePickerActivity::window() const { return 0; }
+UI::UIWidget *TimePickerActivity::window() const { return 0; }
 
-void TimePickerActivity::onWidgetClosed(UI::Widget *widget) {}
+void TimePickerActivity::onWidgetClosed(UI::UIWidget *widget) {}
 
 void TimePickerActivity::onHideAnimationFinished() {}

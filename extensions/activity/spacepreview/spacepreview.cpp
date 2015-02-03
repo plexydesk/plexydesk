@@ -51,8 +51,8 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
 }
 
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
@@ -60,9 +60,9 @@ QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 void SpacePreviewActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
-UI::Widget *SpacePreviewActivity::window() const { return d->m_main_window; }
+UI::UIWidget *SpacePreviewActivity::window() const { return d->m_main_window; }
 
-void SpacePreviewActivity::onWidgetClosed(UI::Widget *widget) {
+void SpacePreviewActivity::onWidgetClosed(UI::UIWidget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

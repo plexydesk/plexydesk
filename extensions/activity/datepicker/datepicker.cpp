@@ -80,16 +80,16 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
 
   d->mFrame->updateWindowButton(d->mCalendarWidget->zValue());
 
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
   connect(d->mCalendarWidget, SIGNAL(done()), this, SLOT(onCalendarReady()));
 }
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
-Widget *DatePickerActivity::window() const { return d->mFrame; }
+UI::UIWidget *DatePickerActivity::window() const { return d->mFrame; }
 
-void DatePickerActivity::onWidgetClosed(UI::Widget *widget) {
+void DatePickerActivity::onWidgetClosed(UI::UIWidget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

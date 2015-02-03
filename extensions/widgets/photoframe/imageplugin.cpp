@@ -84,7 +84,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args) {
   }
 }
 
-void PhotoFrameController::handleDropEvent(UI::Widget *widget,
+void PhotoFrameController::handleDropEvent(UI::UIWidget *widget,
                                            QDropEvent *event) {
   if (event->mimeData()->urls().count() >= 0) {
     const QString droppedFile =
@@ -119,7 +119,7 @@ void PhotoFrameController::setViewRect(const QRectF &rect) {
     mFrameParentitem->setPos(rect.x(), rect.y());
 }
 
-bool PhotoFrameController::removeWidget(UI::Widget *widget) {
+bool PhotoFrameController::removeWidget(UI::UIWidget *widget) {
   if (!widget)
     return 1;
 

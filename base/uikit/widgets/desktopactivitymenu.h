@@ -16,7 +16,7 @@ public:
 
   virtual ~DesktopActivityMenu();
 
-  virtual void setActivity(DesktopActivityPtr activity);
+  virtual void setActivity(UI::DesktopActivityPtr activity);
 
   virtual void setSpace(Space *space);
 

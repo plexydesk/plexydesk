@@ -61,8 +61,8 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
 
   d->m_task_completed = 0;
 
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
 
   d->mMax = 100.0;
   d->mMin = 0.0;
@@ -110,9 +110,9 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 }
 
-UI::Widget *ProgressDialogActivity::window() const { return d->mFrame; }
+UI::UIWidget *ProgressDialogActivity::window() const { return d->mFrame; }
 
-void ProgressDialogActivity::onWidgetClosed(UI::Widget *widget) {
+void ProgressDialogActivity::onWidgetClosed(UI::UIWidget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

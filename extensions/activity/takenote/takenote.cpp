@@ -100,8 +100,8 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
   // todo: invoke UI
 
   d->mAddNoteBtn->setLable(QLatin1String("Note"));
@@ -123,9 +123,9 @@ QVariantMap TakeNoteActivity::result() const {
   return rv;
 }
 
-UI::Widget *TakeNoteActivity::window() const { return d->mFrame; }
+UI::UIWidget *TakeNoteActivity::window() const { return d->mFrame; }
 
-void TakeNoteActivity::onWidgetClosed(UI::Widget *widget) {
+void TakeNoteActivity::onWidgetClosed(UI::UIWidget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

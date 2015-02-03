@@ -14,7 +14,7 @@ public:
       m_desktop_widget.clear();
   }
 
-  QSharedPointer<Widget> m_desktop_widget;
+  QSharedPointer<UIWidget> m_desktop_widget;
   bool m_current_visibility;
 };
 
@@ -27,7 +27,7 @@ UI::Menu::~Menu() {
   delete d;
 }
 
-void Menu::setContentWidget(QSharedPointer<Widget> widget) {
+void Menu::setContentWidget(QSharedPointer<UIWidget> widget) {
   d->m_desktop_widget = widget;
   widget->hide();
   connect(widget.data(), SIGNAL(focusLost()), this, SLOT(onFocusOutEvent()));

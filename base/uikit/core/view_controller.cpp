@@ -33,7 +33,7 @@ void ViewController::requestAction(const QString & /*actionName*/,
   // Q_EMIT actionComleted("none", false, QString("Invalid Action"));
 }
 
-void ViewController::handleDropEvent(Widget * /*widget*/,
+void ViewController::handleDropEvent(UIWidget * /*widget*/,
                                           QDropEvent * /*event*/) {}
 
 DataSource *ViewController::dataSource() { return d->mDataSource.data(); }
@@ -51,7 +51,7 @@ DesktopActivityPtr ViewController::activity(const QString &name,
   DesktopActivityPtr intent = ExtensionManager::instance()->activity(name);
 
   if (intent) {
-    intent->setController(ControllerPtr(this));
+    intent->setController(ViewControllerPtr(this));
     intent->createWindow(geometry, window_title, pos);
   }
 
@@ -78,12 +78,12 @@ bool ViewController::connectToDataSource(const QString &source) {
   return true;
 }
 
-bool ViewController::removeWidget(Widget *widget) {
+bool ViewController::removeWidget(UIWidget *widget) {
   // disconnect(d->mDataSource.data(), SIGNAL(sourceUpdated(QVariantMap)));
     return false;
 }
 
-void ViewController::insert(Widget *widget)
+void ViewController::insert(UIWidget *widget)
 {
     if (!d->mViewport)
         return;

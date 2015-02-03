@@ -45,7 +45,7 @@ StylePtr ImageButton::style() const {
 }
 
 ImageButton::ImageButton(QGraphicsObject *parent)
-    : Widget(parent), d(new PrivateImageButton) {
+    : UIWidget(parent), d(new PrivateImageButton) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   setAcceptHoverEvents(true);

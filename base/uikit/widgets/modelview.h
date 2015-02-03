@@ -21,7 +21,7 @@ public:
     ModelView(QGraphicsObject *parent = 0);
     virtual ~ModelView();
 
-    virtual void insert(Widget *widget);
+    virtual void insert(UIWidget *widget);
     virtual void remove(UIWidget *widget);
 
     virtual void clear();

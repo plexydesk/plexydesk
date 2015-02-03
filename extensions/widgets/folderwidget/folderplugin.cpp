@@ -103,7 +103,7 @@ void DirectoryController::requestAction(const QString &actionName,
   }
 }
 
-void DirectoryController::handleDropEvent(UI::Widget *widget,
+void DirectoryController::handleDropEvent(UI::UIWidget *widget,
                                           QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);

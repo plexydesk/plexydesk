@@ -36,7 +36,7 @@ class ViewController;
     * @brief
     *
     */
-class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
+class DECL_UI_KIT_EXPORT Window : public QGraphicsObject,
                                 public QGraphicsLayoutItem {
   Q_OBJECT
 
@@ -57,7 +57,7 @@ public:
       * @brief
       *
       */
-  virtual ~Widget();
+  virtual ~Window();
   /**
       * @brief Returns the bounding Area of the Widget
       *
@@ -139,7 +139,7 @@ Q_SIGNALS:
       *
       * @param widget
       */
-  void closed(UI::Widget *widget);
+  void closed(UI::Window *widget);
   /**
       * @brief
       *
@@ -172,7 +172,7 @@ protected:
       * @param rect
       * @param parent
       */
-  Widget(QGraphicsObject *parent = 0);
+  Window(QGraphicsObject *parent = 0);
   /**
       * @brief
       *

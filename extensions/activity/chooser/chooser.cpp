@@ -80,8 +80,8 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
   d->mTable->setModel(d->m_action_delegate);
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
 
   if (hasAttribute("data")) {
     QVariantMap data = attributes()["data"].toMap();
@@ -122,9 +122,9 @@ QVariantMap IconGridActivity::result() const {
   return d->m_activity_result;
 }
 
-UI::Widget *IconGridActivity::window() const { return d->mFrame; }
+UIWidget *IconGridActivity::window() const { return d->mFrame; }
 
-void IconGridActivity::onWidgetClosed(UI::Widget *widget) {
+void IconGridActivity::onWidgetClosed(UI::UIWidget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discardActivity();
 }

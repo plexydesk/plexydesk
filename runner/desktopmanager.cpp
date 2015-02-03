@@ -39,7 +39,7 @@ DesktopManager::~DesktopManager() { delete d; }
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
   if (event->button() == Qt::RightButton) {
     if (currentVisibleSpace()) {
-      ControllerPtr dock_controller =
+      ViewControllerPtr dock_controller =
               currentVisibleSpace()->controller("dockwidget");
 
       if (dock_controller) {

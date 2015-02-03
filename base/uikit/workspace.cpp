@@ -243,7 +243,7 @@ void WorkSpace::revokeSpace(const QString &name, int id) {
   _space_geometry.setHeight(this->geometry().height());
   _space_geometry.setWidth(geometry().width() + d->m_workspace_left_margine);
 
-  _space->setSpaceGeometry(_space_geometry);
+  _space->setGeometry(_space_geometry);
 
   d->m_desktop_space_list << _space;
 }
@@ -352,7 +352,7 @@ void WorkSpace::updateSpaceGeometry(Space *space, QRectF _deleted_geometry) {
       QRectF _move_geometry = _space->geometry();
       _move_geometry.setY(_move_geometry.y() - _deleted_geometry.height());
       _move_geometry.setHeight(this->geometry().height());
-      _space->setSpaceGeometry(_move_geometry);
+      _space->setGeometry(_move_geometry);
     }
   }
 }
@@ -482,7 +482,7 @@ void WorkSpace::addSpace() {
   _space_geometry.setHeight(geometry().height());
   _space_geometry.setWidth(geometry().width() + d->m_workspace_left_margine);
 
-  _space->setSpaceGeometry(_space_geometry);
+  _space->setGeometry(_space_geometry);
 
   this->exposeSubRegion(_space_geometry);
   d->m_current_activty_space_id = _space->id();

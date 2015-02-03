@@ -79,12 +79,15 @@ void BackgroundController::init() {
   QString wallpaperPath = QDir::toNativeSeparators(
       UI::Config::getInstance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
+
   d->m_background_render_item = new ClassicBackgroundRender(
       QRectF(0.0, 0.0, 0.0, 0.0), 0, QImage(wallpaperPath));
   d->m_background_render_item->setController(this);
   d->m_background_render_item->setLabelName("classic Backdrop");
+  /*
   d->m_background_render_item->setLayerType(
-      UI::Widget::kRenderAtBackgroundLevel);
+      UI::UIWidget::kRenderAtBackgroundLevel);
+  */
 
   d->createAction(this, tr("Desktop"), "pd_background_frame_icon.png", 1);
   d->createAction(this, tr("Search"), "pd_search_frame_icon.png", 2);
@@ -207,7 +210,7 @@ void BackgroundController::setScaleMode(
   }
 }
 
-void BackgroundController::handleDropEvent(UI::Widget * /*widget*/,
+void BackgroundController::handleDropEvent(UI::UIWidget * /*widget*/,
                                            QDropEvent *event) {
   qDebug() << Q_FUNC_INFO;
 

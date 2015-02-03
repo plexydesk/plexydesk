@@ -87,8 +87,8 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
+          SLOT(onWidgetClosed(UI::UIWidget *)));
   connect(d->mFactory, SIGNAL(completed(int)), this,
           SLOT(onProgressValue(int)));
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
@@ -101,9 +101,9 @@ QRectF PhotoSearchActivity::geometry() const { return d->m_frame_geometry; }
 
 QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
-Widget *PhotoSearchActivity::window() const { return d->mFrame; }
+UIWidget *PhotoSearchActivity::window() const { return d->mFrame; }
 
-void PhotoSearchActivity::onWidgetClosed(UI::Widget *widget) {
+void PhotoSearchActivity::onWidgetClosed(UI::UIWidget *widget) {
   if (d->mFactory && d->mFactory->hasRunningThreads())
     return;
 

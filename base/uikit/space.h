@@ -7,9 +7,9 @@
 #include <desktopactivitymenu.h>
 #include <view_controller.h>
 #include <plexydesk_ui_exports.h>
+#include <desktopwidget.h>
 
 namespace UI {
-
 class WorkSpace;
 
 class DECL_UI_KIT_EXPORT Space : public QObject {
@@ -22,89 +22,63 @@ public:
     kCenterOnViewportTop,
     kCenterOnViewportBottom
   } ViewportLocation;
-  explicit Space(QObject *parent = 0);
 
+  explicit Space(QObject *parent = 0);
   virtual ~Space();
 
-  virtual void addController(const QString &controllerName);
+  virtual void addController(const QString &aName);
+  virtual ViewControllerPtr controller(const QString &aName);
+  virtual QStringList getSessionControllers() const;
 
-  virtual void setName(const QString &name);
-
+  virtual void setName(const QString &aName);
   virtual QString name() const;
 
-  virtual void setId(int id);
-
+  virtual void setId(int aId);
   virtual int id() const;
 
   virtual QObject *workspace();
-
-  virtual void setWorkspace(WorkSpace *workspace);
+  virtual void setWorkspace(WorkSpace *aWorkspace);
 
   virtual void restoreSession();
 
-  virtual void setScene(QGraphicsScene *scene);
+  virtual void setScene(QGraphicsScene *aScenePtr);
 
-  virtual void setSpaceGeometry(const QRectF &rectf);
-
+  virtual void setGeometry(const QRectF &aRealRect);
   virtual QRectF geometry() const;
 
-  virtual void handleDropEvent(QDropEvent *event, const QPointF &event_pos);
-  /**
-      * @brief
-      *
-      * @param name
-      * @return ControllerPtr
-      */
-  virtual ControllerPtr controller(const QString &name);
-  /**
-      * @brief
-      *
-      * @return QStringList
-      */
-  virtual QStringList currentDesktopControllers() const;
-  /**
-      * @brief
-      *
-      * @param controllerName
-      * @param key
-      * @param value
-      */
-  virtual void updateSessionValue(const QString &controllerName,
-                                  const QString &key, const QString &value);
-  /**
-      * @brief
-      *
-      * @param activity
-      */
-  virtual void addActivity(DesktopActivityPtr activity);
+  QString sessionName() const;
+  virtual void updateSessionValue(const QString &aName,
+                                  const QString &aKey, const QString &aValue);
 
-  virtual void addActivityPoupToView(QSharedPointer<DesktopActivityMenu> menu);
+  virtual void addActivity(UI::DesktopActivityPtr activity);
 
-  DesktopActivityPtr createActivity(const QString &activity,
+  UI::DesktopActivityPtr createActivity(const QString &activity,
                                     const QString &title, const QPointF &pos,
                                     const QRectF &rect,
                                     const QVariantMap &dataItem);
-  QString sessionName() const;
 
-  virtual void clear();
+  virtual void addActivityPoupToView(QSharedPointer<DesktopActivityMenu> menu);
+  virtual void dismissActivityPopup();
 
-  virtual void closeMenu();
-
-  virtual QPointF clickLocation() const;
-
+  virtual QPointF mousePointerPos() const;
   virtual QPointF center(const QRectF &viewGeometry,
                          const ViewportLocation &loc = kCenterOnViewport) const;
+
+  virtual void handleDropEvent(QDropEvent *event, const QPointF &event_pos);
 
 Q_SIGNALS:
   void controllerAdded(const QString &name);
 
 public Q_SLOTS:
-  virtual void addWidgetToView(Widget *widget);
-  virtual void onWidgetClosed(UI::Widget *widget);
+  virtual void addWidgetToView(UIWidget *widget);
+  virtual void onWidgetClosed(UIWidget *widget);
   virtual void onActivityFinished();
 
 private Q_SLOTS:
-  void onControllerAdded(const QString &controllerName);
+  void registerController(const QString &controllerName);
+
+protected:
+  virtual void clear();
 
 private:
   class PrivateSpace;

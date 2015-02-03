@@ -33,7 +33,7 @@ namespace UI {
 
 class TableModel;
 
-class DECL_UI_KIT_EXPORT TableView : public Widget {
+class DECL_UI_KIT_EXPORT TableView : public UIWidget {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)
 
