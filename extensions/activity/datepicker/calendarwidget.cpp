@@ -24,7 +24,7 @@ public:
   UI::ImageButton *mOkBtn;
   UI::Label *mYearLable;
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
   UI::TableView *mDayTable;
   UI::TableView *mHeaderTable;
   QImage mBackgroundImage;
@@ -42,7 +42,7 @@ public:
 };
 
 CalendarWidget::CalendarWidget(QGraphicsObject *parent)
-  : UI::Window(parent), d(new PrivateCalendarWidget)
+  : UI::Widget(parent), d(new PrivateCalendarWidget)
 {
 
   d->mHour = 0;
@@ -90,8 +90,8 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   connect(d->mNextBtn, SIGNAL(clicked()), this, SLOT(onNextClicked()));
   connect(d->mPrevBtn, SIGNAL(clicked()), this, SLOT(onPrevClicked()));
 
-  d->mFrame = new UI::Window(this);
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground, false);
+  d->mFrame = new UI::Widget(this);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground, false);
   d->mFrame->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
 

@@ -11,7 +11,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT ProgressBar : public Window
+class DECL_UI_KIT_EXPORT ProgressBar : public Widget
 {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)

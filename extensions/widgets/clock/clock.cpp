@@ -80,7 +80,7 @@ void Clock::setViewRect(const QRectF &rect)
   }
 }
 
-bool Clock::removeWidget(UI::Window *widget)
+bool Clock::removeWidget(UI::Widget *widget)
 {
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;

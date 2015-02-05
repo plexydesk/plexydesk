@@ -45,7 +45,7 @@ public:
 
   void requestAction(const QString &actionName, const QVariantMap &data);
 
-  void handleDropEvent(UI::Window *widget, QDropEvent *event);
+  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
 
   void setViewRect(const QRectF &rect);
 

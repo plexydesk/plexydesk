@@ -18,7 +18,7 @@ public:
     }
   }
 
-  QSharedPointer<Window> m_desktop_widget;
+  QSharedPointer<Widget> m_desktop_widget;
   bool m_current_visibility;
 };
 
@@ -33,7 +33,7 @@ UI::Menu::~Menu()
   delete d;
 }
 
-void Menu::setContentWidget(QSharedPointer<Window> widget)
+void Menu::setContentWidget(QSharedPointer<Widget> widget)
 {
   d->m_desktop_widget = widget;
   widget->hide();

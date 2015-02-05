@@ -27,7 +27,7 @@ public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
 
-  UI::Window *m_main_window;
+  UI::Widget *m_main_window;
 };
 
 TemplateActivity::TemplateActivity(QGraphicsObject *object)
@@ -39,19 +39,19 @@ void TemplateActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
-  d->m_main_window = new UI::Window();
+  d->m_main_window = new UI::Widget();
 
-  d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
-  d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::Widget::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   setGeometry(window_geometry);
   updateContentGeometry(d->m_main_window);
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 }
 
 QVariantMap TemplateActivity::result() const { return QVariantMap(); }
@@ -59,9 +59,9 @@ QVariantMap TemplateActivity::result() const { return QVariantMap(); }
 void TemplateActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
-UI::Window *TemplateActivity::window() const { return d->m_main_window; }
+UI::Widget *TemplateActivity::window() const { return d->m_main_window; }
 
-void TemplateActivity::onWidgetClosed(UI::Window *widget)
+void TemplateActivity::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

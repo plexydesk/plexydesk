@@ -33,11 +33,11 @@ DirectoryController::DirectoryController(QObject *object)
 {
   mThemePack = UI::Theme::instance();
 
-  UI::Window *parent = new UI::Window();
+  UI::Widget *parent = new UI::Widget();
 
-  parent->setWindowFlag(UI::Window::kRenderBackground);
-  parent->setWindowFlag(UI::Window::kConvertToWindowType);
-  parent->setWindowFlag(UI::Window::kRenderDropShadow);
+  parent->setWindowFlag(UI::Widget::kRenderBackground);
+  parent->setWindowFlag(UI::Widget::kConvertToWindowType);
+  parent->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   IconWidgetView *view = new IconWidgetView(parent);
   view->setPos(0.0, 64.0);
@@ -80,11 +80,11 @@ void DirectoryController::requestAction(const QString &actionName,
     qDebug() << "Not supported yet";
   } else if (actionName == tr("Folder")) {
     qDebug() << Q_FUNC_INFO << "Request Add DIR";
-    UI::Window *parent = new UI::Window();
+    UI::Widget *parent = new UI::Widget();
 
-    parent->setWindowFlag(UI::Window::kRenderBackground);
-    parent->setWindowFlag(UI::Window::kConvertToWindowType);
-    parent->setWindowFlag(UI::Window::kRenderDropShadow);
+    parent->setWindowFlag(UI::Widget::kRenderBackground);
+    parent->setWindowFlag(UI::Widget::kConvertToWindowType);
+    parent->setWindowFlag(UI::Widget::kRenderDropShadow);
 
     IconWidgetView *view = new IconWidgetView(parent);
     view->setPos(0.0, 64.0);
@@ -102,7 +102,7 @@ void DirectoryController::requestAction(const QString &actionName,
   }
 }
 
-void DirectoryController::handleDropEvent(UI::Window *widget,
+void DirectoryController::handleDropEvent(UI::Widget *widget,
     QDropEvent *event)
 {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
@@ -121,7 +121,7 @@ void DirectoryController::handleDropEvent(UI::Window *widget,
 
 void DirectoryController::setViewRect(const QRectF &rect)
 {
-  Q_FOREACH(UI::Window * view, mFolderViewList) {
+  Q_FOREACH(UI::Widget * view, mFolderViewList) {
     if (view) {
       view->setPos(rect.x(), rect.y());
     }

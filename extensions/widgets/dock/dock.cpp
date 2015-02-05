@@ -254,14 +254,14 @@ DesktopActivityPtr DockControllerImpl::createActivity(
   _intent->createWindow(QRectF(0.0, _activity_location.y(), 330.0, 320.0),
                         title, QPointF());
 
-  UI::Window *_activity_widget =
-    qobject_cast<UI::Window *>(_intent->window());
+  UI::Widget *_activity_widget =
+    qobject_cast<UI::Widget *>(_intent->window());
 
   if (_activity_widget) {
-    _activity_widget->setWindowFlag(UI::Window::kRenderDropShadow, true);
-    _activity_widget->setWindowFlag(UI::Window::kConvertToWindowType,
+    _activity_widget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
+    _activity_widget->setWindowFlag(UI::Widget::kConvertToWindowType,
                                     false);
-    _activity_widget->setWindowFlag(UI::Window::kRenderBackground, true);
+    _activity_widget->setWindowFlag(UI::Widget::kRenderBackground, true);
   }
 
   return _intent;
@@ -413,15 +413,15 @@ void DockControllerImpl::onActivityAnimationFinished()
     return;
   }
 
-  UI::Window *_activity_widget =
-    qobject_cast<UI::Window *>(activity->window());
+  UI::Widget *_activity_widget =
+    qobject_cast<UI::Widget *>(activity->window());
 
   if (_activity_widget) {
-    _activity_widget->setWindowFlag(UI::Window::kRenderDropShadow,
+    _activity_widget->setWindowFlag(UI::Widget::kRenderDropShadow,
                                     false);
-    _activity_widget->setWindowFlag(UI::Window::kConvertToWindowType,
+    _activity_widget->setWindowFlag(UI::Widget::kConvertToWindowType,
                                     false);
-    _activity_widget->setWindowFlag(UI::Window::kRenderBackground, true);
+    _activity_widget->setWindowFlag(UI::Widget::kRenderBackground, true);
     _activity_widget->setFlag(QGraphicsItem::ItemIsMovable, false);
     _activity_widget->setPos(QPoint());
   }

@@ -108,7 +108,7 @@
 namespace UI
 {
 
-class Window::PrivateAbstractDesktopWidget
+class Widget::PrivateAbstractDesktopWidget
 {
 public:
   PrivateAbstractDesktopWidget() : m_widget_controller(0) {}
@@ -120,7 +120,7 @@ public:
   ViewController *m_widget_controller;
 };
 
-Window::Window(QGraphicsObject *parent)
+Widget::Widget(QGraphicsObject *parent)
   : QGraphicsObject(parent),
     QGraphicsLayoutItem(0),
     d(new PrivateAbstractDesktopWidget)
@@ -140,27 +140,27 @@ Window::Window(QGraphicsObject *parent)
   setGraphicsItem(this);
 }
 
-Window::~Window() { delete d; }
+Widget::~Widget() { delete d; }
 
-QRectF Window::boundingRect() const
+QRectF Widget::boundingRect() const
 {
     return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
 }
 
-void Window::setWindowFlag(int flags, bool enable)
+void Widget::setWindowFlag(int flags, bool enable)
 {
 }
 
-void Window::setMinimizedGeometry(const QRectF &rect)
+void Widget::setMinimizedGeometry(const QRectF &rect)
 {
   d->m_minized_view_geometry = rect;
 }
 
-QRectF Window::minimizedGeometry() const { return d->m_minized_view_geometry; }
+QRectF Widget::minimizedGeometry() const { return d->m_minized_view_geometry; }
 
-void Window::setLabelName(const QString &name) { d->m_widget_name = name; }
+void Widget::setLabelName(const QString &name) { d->m_widget_name = name; }
 
-QString Window::label() const { return d->m_widget_name; }
+QString Widget::label() const { return d->m_widget_name; }
 
 /*
 void Widget::setContentsRect(const QRectF &rect)
@@ -186,7 +186,7 @@ QRectF Widget::geometry() const
 }
 */
 
-QString Window::uuid() const
+QString Widget::uuid() const
 {
   QString rv;
 
@@ -196,22 +196,22 @@ QString Window::uuid() const
   return rv;
 }
 
-StylePtr Window::style() const
+StylePtr Widget::style() const
 {
     return Theme::style();
 }
 
-Window::RenderLevel Window::layerType() const
+Widget::RenderLevel Widget::layerType() const
 {
   return d->m_current_layer_type;
 }
 
-void Window::setLayerType(RenderLevel level) const
+void Widget::setLayerType(RenderLevel level) const
 {
   d->m_current_layer_type = level;
 }
 
-void Window::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+void Widget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                    QWidget * /*widget*/)
 {
   if (!painter->isActive()) {
@@ -225,7 +225,7 @@ void Window::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   paintView(painter, boundingRect());
 }
 
-void Window::setGeometry(const QRectF &rect)
+void Widget::setGeometry(const QRectF &rect)
 {
   // d->m_content_geometry = rect;
   prepareGeometryChange();
@@ -233,7 +233,7 @@ void Window::setGeometry(const QRectF &rect)
   setPos(rect.topLeft());
 }
 
-QSizeF Window::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF Widget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
 {
   // todo: ignoreing which for now. we will return based on
   // return geometry().size();
@@ -256,7 +256,7 @@ QSizeF Window::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
   return sh;
 }
 
-void Window::paintView(QPainter *painter, const QRectF &rect)
+void Widget::paintView(QPainter *painter, const QRectF &rect)
 {
   StyleFeatures feature;
   feature.geometry = rect;
@@ -267,12 +267,12 @@ void Window::paintView(QPainter *painter, const QRectF &rect)
 
 }
 
-void Window::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
   QGraphicsObject::mousePressEvent(event);
 }
 
-void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
   /*
   if (controller() && controller()->viewport()) {
@@ -288,35 +288,35 @@ void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
   QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void Window::focusOutEvent(QFocusEvent *event)
+void Widget::focusOutEvent(QFocusEvent *event)
 {
   event->accept();
   Q_EMIT focusLost();
 }
 
-float Window::scaleFactorForWidth() const
+float Widget::scaleFactorForWidth() const
 {
   return geometry().width() / boundingRect().width();
 }
 
-float Window::scaleFactorForHeight() const
+float Widget::scaleFactorForHeight() const
 {
   return geometry().height() / boundingRect().height();
 }
 
-void Window::setChildWidetVisibility(bool show)
+void Widget::setChildWidetVisibility(bool show)
 {
   Q_FOREACH(QGraphicsItem * item, this->childItems()) {
     (show) ? item->show() : item->hide();
   }
 }
 
-void Window::setController(ViewController *view_controller)
+void Widget::setController(ViewController *view_controller)
 {
   d->m_widget_controller = view_controller;
 }
 
-ViewController *Window::controller() const
+ViewController *Widget::controller() const
 {
   return d->m_widget_controller;
 }

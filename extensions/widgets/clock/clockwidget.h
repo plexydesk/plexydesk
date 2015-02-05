@@ -25,7 +25,7 @@
 
 #include <QTimer>
 
-class ClockWidget : public UI::Window
+class ClockWidget : public UI::Widget
 {
   Q_OBJECT
 

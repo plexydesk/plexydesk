@@ -10,7 +10,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT ImageView : public Window
+class DECL_UI_KIT_EXPORT ImageView : public Widget
 {
   Q_OBJECT
 public:

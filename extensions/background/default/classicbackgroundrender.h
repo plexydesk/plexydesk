@@ -8,7 +8,7 @@
 #include <widget.h>
 #include <widget.h>
 
-class ClassicBackgroundRender : public UI::Window
+class ClassicBackgroundRender : public UI::Widget
 {
   Q_OBJECT
 public:

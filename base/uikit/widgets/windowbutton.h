@@ -28,7 +28,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT WindowButton : public UI::Window
+class DECL_UI_KIT_EXPORT WindowButton : public UI::Widget
 {
   Q_OBJECT
 public:

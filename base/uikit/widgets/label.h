@@ -12,7 +12,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT Label : public Window
+class DECL_UI_KIT_EXPORT Label : public Widget
 {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)

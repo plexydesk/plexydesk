@@ -42,7 +42,7 @@ public:
   WorkSpace *mWorkSpace;
   QGraphicsScene *m_main_scene;
   QList<UI::DesktopActivityPtr> m_activity_list;
-  std::list<UI::Window *> m_window_list;
+  std::list<UI::Widget *> m_window_list;
   QMap<QString, ViewControllerPtr> m_current_controller_map;
   QList<ActivityPoupWeekPtr> m_activity_popup_list;
   QList<ViewControllerPtr> m_controller_list;
@@ -183,7 +183,7 @@ void Space::addActivityPoupToView(QSharedPointer<DesktopActivityMenu> menu)
   d->m_activity_popup_list.append(menu.toWeakRef());
 }
 
-void Space::addWidgetToView(Window *widget)
+void Space::addWidgetToView(Widget *widget)
 {
   if (!widget) {
     return;
@@ -205,8 +205,8 @@ void Space::addWidgetToView(Window *widget)
   d->m_main_scene->addItem(widget);
   widget->setPos(_widget_location);
 
-  connect(widget, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(widget, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   widget->show();
 
@@ -217,7 +217,7 @@ void Space::addWidgetToView(Window *widget)
   d->m_window_list.push_front(widget);
 }
 
-void Space::onWidgetClosed(Window *widget)
+void Space::onWidgetClosed(Widget *widget)
 {
   qDebug() << Q_FUNC_INFO << __LINE__;
   if (!d->m_main_scene) {
@@ -413,7 +413,7 @@ void Space::clear()
   foreach(DesktopActivityPtr _activity, d->m_activity_list) {
     qDebug() << Q_FUNC_INFO << "Remove Activity: ";
     if (_activity) {
-      Window *_widget = _activity->window();
+      Widget *_widget = _activity->window();
       if (_widget) {
         if (d->m_main_scene->items().contains(_widget)) {
           d->m_main_scene->removeItem(_widget);
@@ -427,7 +427,7 @@ void Space::clear()
   }
 
   // delete owner widgets
-  for (Window *_widget : d->m_window_list) {
+  for (Widget *_widget : d->m_window_list) {
     if (_widget) {
       if (d->m_main_scene->items().contains(_widget)) {
         d->m_main_scene->removeItem(_widget);
@@ -590,7 +590,7 @@ void Space::handleDropEvent(QDropEvent *event,
         continue;
       }
 
-      Window *widget = qobject_cast<Window *>(itemObject);
+      Widget *widget = qobject_cast<Widget *>(itemObject);
 
       if (!widget || !widget->controller()) {
         qDebug() << Q_FUNC_INFO << "Not a Valid Item";

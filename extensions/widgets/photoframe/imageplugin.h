@@ -38,11 +38,11 @@ public:
 
   virtual void revokeSession(const QVariantMap &args);
 
-  virtual void handleDropEvent(UI::Window *widget, QDropEvent *event);
+  virtual void handleDropEvent(UI::Widget *widget, QDropEvent *event);
 
   virtual void setViewRect(const QRectF &rect);
 
-  bool removeWidget(UI::Window *widget);
+  bool removeWidget(UI::Widget *widget);
 
   UI::ActionList actions() const;
 

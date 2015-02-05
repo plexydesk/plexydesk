@@ -32,7 +32,7 @@ public:
 
   ~PrivateTakeNote() {}
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
   QGraphicsWidget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
@@ -56,7 +56,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
                                     const QPointF &window_pos)
 {
   // todo: invoke UI
-  d->mFrame = new UI::Window();
+  d->mFrame = new UI::Widget();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setVisible(true);
   setGeometry(window_geometry);
@@ -66,9 +66,9 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   if (hasAttribute("title")) {
   }
 
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   d->mLayoutBase = new QGraphicsWidget(0);
   d->mLayoutBase->setParentItem(d->mFrame);
@@ -100,8 +100,8 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
   // todo: invoke UI
 
   d->mAddNoteBtn->setLable(QLatin1String("Note"));
@@ -125,9 +125,9 @@ QVariantMap TakeNoteActivity::result() const
   return rv;
 }
 
-UI::Window *TakeNoteActivity::window() const { return d->mFrame; }
+UI::Widget *TakeNoteActivity::window() const { return d->mFrame; }
 
-void TakeNoteActivity::onWidgetClosed(UI::Window *widget)
+void TakeNoteActivity::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

@@ -4,7 +4,7 @@
 #include <scrollwidget.h>
 #include "folderitem.h"
 
-class IconWidgetView : public UI::Window
+class IconWidgetView : public UI::Widget
 {
   Q_OBJECT
 public:

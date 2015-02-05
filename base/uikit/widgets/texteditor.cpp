@@ -31,7 +31,7 @@ public:
 };
 
 TextEditor::TextEditor(QGraphicsObject *parent)
-  : UI::Window(parent), d(new PrivateTextEditor)
+  : UI::Widget(parent), d(new PrivateTextEditor)
 {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
@@ -56,8 +56,8 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   d->mProxyWidget->setPos(0.0, 0.0);
 
   d->mTextScaleFactor = 1.0;
-  setWindowFlag(UI::Window::kRenderDropShadow, false);
-  setWindowFlag(UI::Window::kRenderBackground, false);
+  setWindowFlag(UI::Widget::kRenderDropShadow, false);
+  setWindowFlag(UI::Widget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
   connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(onTextUpdated()));
@@ -114,7 +114,7 @@ void TextEditor::setGeometry(const QRectF &rect)
   d->mProxyWidget->resize(rect.size());
   d->mEditor->move(0.0, 0.0);
 
-  Window::setGeometry(rect);
+  Widget::setGeometry(rect);
 }
 
 void TextEditor::updateTextScale()

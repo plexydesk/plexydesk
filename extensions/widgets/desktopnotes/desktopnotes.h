@@ -45,7 +45,7 @@ public:
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
-  void handleDropEvent(UI::Window *widget, QDropEvent *event);
+  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
 
   QString icon() const;
 

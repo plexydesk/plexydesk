@@ -45,7 +45,7 @@ public:
 
   QVariantMap result() const;
 
-  Window *window() const;
+  Widget *window() const;
 
   void cleanup();
 
@@ -53,7 +53,7 @@ public Q_SLOTS:
   void photoItemClicked(TableViewItem *item);
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Window *widget);
+  void onWidgetClosed(UI::Widget *widget);
 
   // void onClicked(UI::AbstractCellComponent *item);
 

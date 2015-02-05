@@ -11,7 +11,7 @@
 
 namespace UI
 {
-class DECL_UI_KIT_EXPORT LineEdit : public Window
+class DECL_UI_KIT_EXPORT LineEdit : public Widget
 {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)

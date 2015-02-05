@@ -13,7 +13,7 @@ namespace UI
 
 class ViewController;
 class Space;
-class Window;
+class Widget;
 typedef QSharedPointer<ViewController> ViewControllerPtr;
 
 class DECL_UI_KIT_EXPORT DesktopActivity : public QObject
@@ -30,7 +30,7 @@ public:
                             const QString &window_title,
                             const QPointF &window_pos) = 0;
 
-  virtual Window *window() const = 0;
+  virtual Widget *window() const = 0;
 
   virtual void setActivityAttribute(const QString &name, const QVariant &data);
 
@@ -66,7 +66,7 @@ protected:
   virtual void discardActivity();
   virtual QRectF geometry() const;
   virtual void setGeometry(const QRectF &geometry);
-  virtual void updateContentGeometry(Window *widget);
+  virtual void updateContentGeometry(Widget *widget);
   void setResult(ResultType type, const QVariantMap &data);
 
 Q_SIGNALS:

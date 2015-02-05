@@ -7,7 +7,7 @@
 
 namespace UI
 {
-class DECL_UI_KIT_EXPORT ToolBar : public UI::Window
+class DECL_UI_KIT_EXPORT ToolBar : public UI::Widget
 {
   Q_OBJECT
 
@@ -19,7 +19,7 @@ public:
   virtual void addAction(const QString &lable, const QString &icon,
                          bool togleAction = false);
 
-  virtual void insertWidget(Window *widget);
+  virtual void insertWidget(Widget *widget);
 
   virtual void setOrientation(Qt::Orientation orientation);
 

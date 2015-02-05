@@ -9,7 +9,7 @@
 namespace UI
 {
 
-class ModelView : public Window
+class ModelView : public Widget
 {
   Q_OBJECT
 
@@ -23,8 +23,8 @@ public:
   ModelView(QGraphicsObject *parent = 0);
   virtual ~ModelView();
 
-  virtual void insert(Window *widget);
-  virtual void remove(Window *widget);
+  virtual void insert(Widget *widget);
+  virtual void remove(Widget *widget);
 
   virtual void clear();
 

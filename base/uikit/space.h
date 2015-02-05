@@ -72,8 +72,8 @@ Q_SIGNALS:
   void controllerAdded(const QString &name);
 
 public Q_SLOTS:
-  virtual void addWidgetToView(Window *widget);
-  virtual void onWidgetClosed(Window *widget);
+  virtual void addWidgetToView(Widget *widget);
+  virtual void onWidgetClosed(Widget *widget);
   virtual void onActivityFinished();
 
 private Q_SLOTS:

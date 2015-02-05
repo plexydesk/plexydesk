@@ -23,11 +23,11 @@ public:
 };
 
 IconWidgetView::IconWidgetView(QGraphicsObject *parent)
-  : UI::Window(parent), d(new PrivateIconWidgetView)
+  : UI::Widget(parent), d(new PrivateIconWidgetView)
 {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setWindowFlag(UI::Window::kRenderBackground, false);
-  this->setWindowFlag(UI::Window::kRenderDropShadow, false);
+  this->setWindowFlag(UI::Widget::kRenderBackground, false);
+  this->setWindowFlag(UI::Widget::kRenderDropShadow, false);
 
   QRectF rect(0.0, 0.0, 200.0, 200.0);
   QRectF iconViewRect =

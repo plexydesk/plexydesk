@@ -222,7 +222,7 @@ void BackgroundController::setScaleMode(
   }
 }
 
-void BackgroundController::handleDropEvent(UI::Window * /*widget*/,
+void BackgroundController::handleDropEvent(UI::Widget * /*widget*/,
     QDropEvent *event)
 {
   qDebug() << Q_FUNC_INFO;

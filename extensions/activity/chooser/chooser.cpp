@@ -35,7 +35,7 @@ public:
   PrivateIconGrid() : mFrame(0) {}
   ~PrivateIconGrid() {}
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
   UI::TableView *mTable;
   QRectF mBoundingRect;
   QString mSelection;
@@ -66,11 +66,11 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->mBoundingRect = window_geometry;
   d->m_auto_scale_frame = false;
 
-  d->mFrame = new UI::Window();
+  d->mFrame = new UI::Widget();
   d->mFrame->setGeometry(window_geometry);
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   setGeometry(window_geometry);
 
@@ -81,8 +81,8 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
   d->mTable->setModel(d->m_action_delegate);
-  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   if (hasAttribute("data")) {
     QVariantMap data = attributes()["data"].toMap();
@@ -124,9 +124,9 @@ QVariantMap IconGridActivity::result() const
   return d->m_activity_result;
 }
 
-Window *IconGridActivity::window() const { return d->mFrame; }
+Widget *IconGridActivity::window() const { return d->mFrame; }
 
-void IconGridActivity::onWidgetClosed(UI::Window *widget)
+void IconGridActivity::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discardActivity();

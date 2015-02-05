@@ -74,11 +74,11 @@ void NoteWidget::createToolBar()
 }
 
 NoteWidget::NoteWidget(QGraphicsObject *parent)
-  : UI::Window(parent), d(new PrivateNoteWidget)
+  : UI::Widget(parent), d(new PrivateNoteWidget)
 {
-  setWindowFlag(UI::Window::kRenderDropShadow, true);
-  setWindowFlag(UI::Window::kConvertToWindowType, true);
-  setWindowFlag(UI::Window::kRenderBackground, true);
+  setWindowFlag(UI::Widget::kRenderDropShadow, true);
+  setWindowFlag(UI::Widget::kConvertToWindowType, true);
+  setWindowFlag(UI::Widget::kRenderBackground, true);
 
 
   d->mLayoutBase = new QGraphicsWidget(this);
@@ -257,7 +257,7 @@ void NoteWidget::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget)
 {
-  UI::Window::paint(painter, option, widget);
+  UI::Widget::paint(painter, option, widget);
   painter->save();
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
   painter->drawPixmap(

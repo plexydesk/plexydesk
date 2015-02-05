@@ -42,10 +42,10 @@ public:
 
   virtual void updateAttribute(const QString &name, const QVariant &data);
 
-  UI::Window *window() const;
+  UI::Widget *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Window *widget);
+  void onWidgetClosed(UI::Widget *widget);
   void onHideAnimationFinished();
 
 private:

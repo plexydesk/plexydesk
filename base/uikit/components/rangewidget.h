@@ -9,7 +9,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT RangeWidget : public UI::Window
+class DECL_UI_KIT_EXPORT RangeWidget : public UI::Widget
 {
   Q_OBJECT
 public:

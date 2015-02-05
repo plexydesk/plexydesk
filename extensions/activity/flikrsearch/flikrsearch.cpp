@@ -51,7 +51,7 @@ public:
   UI::ToolBar *m_top_toolbar;
   UI::ToolBar *m_bottom_toolbar;
 
-  UI::Window *m_view_delegate_window;
+  UI::Widget *m_view_delegate_window;
 
   UI::TableView *m_image_grid_view;
   PhotoCellAdaptor *m_image_cell_model;
@@ -85,14 +85,14 @@ void FlickrSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_is_new_search = true;
   d->m_bounding_geometry = window_geometry;
 
-  d->m_view_delegate_window = new UI::Window();
+  d->m_view_delegate_window = new UI::Widget();
   d->m_view_delegate_window->setGeometry(window_geometry);
   d->m_view_delegate_window->setWindowFlag(
-    UI::Window::kRenderBackground);
+    UI::Widget::kRenderBackground);
   d->m_view_delegate_window->setWindowFlag(
-    UI::Window::kConvertToWindowType);
+    UI::Widget::kConvertToWindowType);
   d->m_view_delegate_window->setWindowFlag(
-    UI::Window::kRenderDropShadow);
+    UI::Widget::kRenderDropShadow);
 
   float _window_title_height = 64.0;
   float _size_attribute = 1.0;
@@ -167,8 +167,8 @@ void FlickrSearchActivity::createWindow(const QRectF &window_geometry,
 
   d->m_image_cell_model->setSearchQuery("nature");
 
-  connect(d->m_view_delegate_window, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->m_view_delegate_window, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 }
 
 QVariantMap FlickrSearchActivity::result() const
@@ -176,7 +176,7 @@ QVariantMap FlickrSearchActivity::result() const
   return d->m_activity_result_map;
 }
 
-Window *FlickrSearchActivity::window() const
+Widget *FlickrSearchActivity::window() const
 {
   return d->m_view_delegate_window;
 }
@@ -191,7 +191,7 @@ void FlickrSearchActivity::cleanup()
   d->m_view_delegate_window = 0;
 }
 
-void FlickrSearchActivity::onWidgetClosed(UI::Window *widget)
+void FlickrSearchActivity::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

@@ -9,7 +9,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT ImageButton : public Window
+class DECL_UI_KIT_EXPORT ImageButton : public Widget
 {
   Q_OBJECT
 public:

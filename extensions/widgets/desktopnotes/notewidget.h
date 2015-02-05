@@ -9,7 +9,7 @@
 #include <webservice.h>
 #include <desktopactivity.h>
 
-class NoteWidget : public UI::Window
+class NoteWidget : public UI::Widget
 {
   Q_OBJECT
 public:

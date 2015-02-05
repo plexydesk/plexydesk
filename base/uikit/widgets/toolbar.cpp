@@ -26,7 +26,7 @@ public:
 };
 
 ToolBar::ToolBar(QGraphicsObject *parent)
-  : Window(parent), d(new PrivateToolBar)
+  : Widget(parent), d(new PrivateToolBar)
 {
   d->mButtonCount = 0;
   d->m_icon_resolution = "mdpi";
@@ -71,7 +71,7 @@ void ToolBar::addAction(const QString &lable, const QString &icon,
   d->mLayout->activate();
 }
 
-void ToolBar::insertWidget(Window *widget)
+void ToolBar::insertWidget(Widget *widget)
 {
   if (d->mLayout->count() != 0) {
     d->mLayout->addStretch();

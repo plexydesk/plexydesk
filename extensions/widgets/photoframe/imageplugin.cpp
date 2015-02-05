@@ -64,8 +64,8 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
 
   foreach(const QString & str, photoList) {
     PhotoWidget *photoWidget = new PhotoWidget();
-    photoWidget->setWindowFlag(UI::Window::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UI::Window::kConvertToWindowType, true);
+    photoWidget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UI::Widget::kConvertToWindowType, true);
     photoWidget->setController(this);
     photoWidget->setLabelName("Photo");
     mPhotoList.append(photoWidget);
@@ -86,7 +86,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   }
 }
 
-void PhotoFrameController::handleDropEvent(UI::Window *widget,
+void PhotoFrameController::handleDropEvent(UI::Widget *widget,
     QDropEvent *event)
 {
   if (event->mimeData()->urls().count() >= 0) {
@@ -126,7 +126,7 @@ void PhotoFrameController::setViewRect(const QRectF &rect)
   }
 }
 
-bool PhotoFrameController::removeWidget(UI::Window *widget)
+bool PhotoFrameController::removeWidget(UI::Widget *widget)
 {
   if (!widget) {
     return 1;
@@ -168,8 +168,8 @@ void PhotoFrameController::requestAction(const QString &actionName,
 {
   if (actionName == tr("Photo")) {
     PhotoWidget *photoWidget = new PhotoWidget();
-    photoWidget->setWindowFlag(UI::Window::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UI::Window::kConvertToWindowType, true);
+    photoWidget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UI::Widget::kConvertToWindowType, true);
     photoWidget->setController(this);
     photoWidget->setLabelName("Photo");
     mPhotoList.append(photoWidget);

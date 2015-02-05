@@ -44,7 +44,7 @@ public:
 
   StylePtr mStyle;
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
   QGraphicsBlurEffect *mBackgroundEffect;
 
   /*Widgets*/
@@ -85,14 +85,14 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   }
 
   // todo: invoke UI
-  d->mFrame = new UI::Window();
+  d->mFrame = new UI::Widget();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
 
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   d->mBackgroundEffect = new QGraphicsBlurEffect(this);
   d->mBackgroundEffect->setBlurHints(QGraphicsBlurEffect::PerformanceHint);
@@ -134,8 +134,8 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   d->mEditor->setFocus();
 
-  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   connect(d->mCancelButton, SIGNAL(clicked()), this, SIGNAL(canceled()));
   connect(d->mOkButton, SIGNAL(clicked()), this, SLOT(onOkButtonPressed()));
@@ -157,9 +157,9 @@ QRectF InputDialogActivityData::geometry() const { return d->mBoundingRect; }
 
 QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
-UI::Window *InputDialogActivityData::window() const { return d->mFrame; }
+UI::Widget *InputDialogActivityData::window() const { return d->mFrame; }
 
-void InputDialogActivityData::onWidgetClosed(UI::Window *widget)
+void InputDialogActivityData::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   discardActivity();

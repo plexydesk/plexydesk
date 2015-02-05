@@ -38,7 +38,7 @@ public:
 
   ~PrivateDesktopClock() {}
 
-  UI::Window *m_main_window;
+  UI::Widget *m_main_window;
   QGraphicsWidget *m_layout_widget;
   QGraphicsLinearLayout *m_main_layout;
   UI::ToolBar *m_tool_bar;
@@ -58,12 +58,12 @@ DesktopClockActivity::~DesktopClockActivity() { delete d; }
 void DesktopClockActivity::createFrameWindow(const QRectF &window_geometry,
     const QString &window_title)
 {
-  d->m_main_window = new UI::Window();
+  d->m_main_window = new UI::Widget();
   d->m_main_window->setGeometry(window_geometry);
 
-  d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
-  d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::Widget::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   setGeometry(window_geometry);
 }
@@ -130,20 +130,20 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
-UI::Window *DesktopClockActivity::window() const
+UI::Widget *DesktopClockActivity::window() const
 {
   return d->m_main_window;
 }
 
-void DesktopClockActivity::onWidgetClosed(UI::Window *widget)
+void DesktopClockActivity::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

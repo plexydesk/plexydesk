@@ -4,7 +4,7 @@
 #include <plexy.h>
 #include <widget.h>
 
-class SnapFrame : public UI::Window
+class SnapFrame : public UI::Widget
 {
   Q_OBJECT
 public:

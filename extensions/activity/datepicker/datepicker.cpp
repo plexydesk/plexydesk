@@ -33,7 +33,7 @@ public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
   DateCellFactory *mFactory;
   UI::TableView *mTable;
   QRectF mBoundingRect;
@@ -54,14 +54,14 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
                                       const QString &window_title,
                                       const QPointF &window_pos)
 {
-  d->mFrame = new UI::Window();
+  d->mFrame = new UI::Widget();
 
   updateContentGeometry(d->mFrame);
   setGeometry(window_geometry);
 
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground, false);
-  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground, false);
+  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   d->mCalendarWidget = new CalendarWidget(d->mFrame);
 
@@ -76,16 +76,16 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
   connect(d->mLoader, SIGNAL(imageSearchDone(QImage)), this,
           SLOT(onImageReady(QImage)));
 
-  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
   connect(d->mCalendarWidget, SIGNAL(done()), this, SLOT(onCalendarReady()));
 }
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
-UI::Window *DatePickerActivity::window() const { return d->mFrame; }
+UI::Widget *DatePickerActivity::window() const { return d->mFrame; }
 
-void DatePickerActivity::onWidgetClosed(UI::Window *widget)
+void DatePickerActivity::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

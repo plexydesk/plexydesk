@@ -8,7 +8,7 @@
 #include <widget.h>
 #include <webservice.h>
 
-class ReminderWidget : public UI::Window
+class ReminderWidget : public UI::Widget
 {
   Q_OBJECT
 public:

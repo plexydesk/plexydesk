@@ -28,7 +28,7 @@ public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
   UI::ProgressBar *m_progress_bar_widget;
   int mMax;
   int mMin;
@@ -51,18 +51,18 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  d->mFrame = new UI::Window();
+  d->mFrame = new UI::Widget();
   setGeometry(window_geometry);
 
   d->mFrame->setLabelName("Progress Dialog");
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground, true);
-  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType, true);
-  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow, true);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground, true);
+  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType, true);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow, true);
 
   d->m_task_completed = 0;
 
-  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 
   d->mMax = 100.0;
   d->mMin = 0.0;
@@ -114,9 +114,9 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 }
 
-UI::Window *ProgressDialogActivity::window() const { return d->mFrame; }
+UI::Widget *ProgressDialogActivity::window() const { return d->mFrame; }
 
-void ProgressDialogActivity::onWidgetClosed(UI::Window *widget)
+void ProgressDialogActivity::onWidgetClosed(UI::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

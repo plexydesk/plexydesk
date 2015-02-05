@@ -56,11 +56,11 @@ public:
 };
 
 ReminderWidget::ReminderWidget(QGraphicsObject *parent)
-  : UI::Window(parent), d(new PrivateReminderWidget)
+  : UI::Widget(parent), d(new PrivateReminderWidget)
 {
   setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-  setWindowFlag(UI::Window::kRenderDropShadow, true);
-  setWindowFlag(UI::Window::kConvertToWindowType, true);
+  setWindowFlag(UI::Widget::kRenderDropShadow, true);
+  setWindowFlag(UI::Widget::kConvertToWindowType, true);
 
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mLayoutBase->setGeometry(this->boundingRect());

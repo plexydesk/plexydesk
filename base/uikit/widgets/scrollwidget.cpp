@@ -38,7 +38,7 @@ public:
 };
 
 ScrollWidget::ScrollWidget(const QRectF &rect, QGraphicsObject *parent)
-  : Window(parent), d(new Private)
+  : Widget(parent), d(new Private)
 {
   d->m_viewport = 0;
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
@@ -96,12 +96,12 @@ void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *event)
   event->accept();
 
   //?
-  Window::wheelEvent(event);
+  Widget::wheelEvent(event);
 }
 
 void ScrollWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-  Window::dragMoveEvent(event);
+  Widget::dragMoveEvent(event);
 }
 
 bool ScrollWidget::event(QEvent *e)

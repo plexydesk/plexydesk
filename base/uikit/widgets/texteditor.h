@@ -8,7 +8,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT TextEditor : public UI::Window
+class DECL_UI_KIT_EXPORT TextEditor : public UI::Widget
 {
   Q_OBJECT
 public:

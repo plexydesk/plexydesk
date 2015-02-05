@@ -33,14 +33,14 @@ namespace UI
   */
 class ViewController;
 
-class DECL_UI_KIT_EXPORT Window : public QGraphicsObject,
+class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
   public QGraphicsLayoutItem
 {
   Q_OBJECT
 
   Q_ENUMS(RenderLevel)
   Q_ENUMS(WidgetFlags)
-  Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+  //Q_PROPERTY(QPointF pos READ pos WRITE setPos)
 
   Q_INTERFACES(QGraphicsLayoutItem)
 public:
@@ -55,8 +55,8 @@ public:
 
   enum RenderLevel { kRenderAtBackgroundLevel, kRenderAtForgroundLevel };
 
-  Window(QGraphicsObject *parent = 0);
-  virtual ~Window();
+  Widget(QGraphicsObject *parent = 0);
+  virtual ~Widget();
 
   void setGeometry(const QRectF &rect);
   virtual QRectF boundingRect() const;

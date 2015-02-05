@@ -14,7 +14,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT Button : public Window
+class DECL_UI_KIT_EXPORT Button : public Widget
 {
   Q_OBJECT
 

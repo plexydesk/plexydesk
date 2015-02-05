@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT ScrollWidget : public Window
+class DECL_UI_KIT_EXPORT ScrollWidget : public Widget
 {
   Q_OBJECT
 public:

@@ -41,7 +41,7 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
   UI::ProgressBar *mProgressBar;
   UI::TableView *mTable;
   ImageCellAdaptor *mFactory;
@@ -65,15 +65,15 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_frame_geometry = QRectF(0.0, 0.0, 600.0, 480.0);
 
   // todo: invoke UI
-  d->mFrame = new UI::Window();
+  d->mFrame = new UI::Widget();
   updateContentGeometry(d->mFrame);
   setGeometry(d->m_frame_geometry);
 
   d->mFrame->setLabelName("WallPaper");
 
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   // table
   d->mTable = new UI::TableView(d->mFrame);
@@ -86,8 +86,8 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
-  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
   connect(d->mFactory, SIGNAL(completed(int)), this,
           SLOT(onProgressValue(int)));
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
@@ -100,9 +100,9 @@ QRectF PhotoSearchActivity::geometry() const { return d->m_frame_geometry; }
 
 QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
-Window *PhotoSearchActivity::window() const { return d->mFrame; }
+Widget *PhotoSearchActivity::window() const { return d->mFrame; }
 
-void PhotoSearchActivity::onWidgetClosed(UI::Window *widget)
+void PhotoSearchActivity::onWidgetClosed(UI::Widget *widget)
 {
   if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;

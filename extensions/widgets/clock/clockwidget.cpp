@@ -33,7 +33,7 @@
 #include <plexyconfig.h>
 #include <svgprovider.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::Window(parent)
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::Widget(parent)
 {
   setLabelName("Clock");
 }

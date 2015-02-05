@@ -25,7 +25,7 @@ public:
 
   virtual float rightMargin() const;
 
-  UI::Window *loadWidgetControlllerByName(
+  UI::Widget *loadWidgetControlllerByName(
     const QString &controllerName) const;
 
   UI::DataSourcePtr loadDataSourceEngine(const QString &engine);

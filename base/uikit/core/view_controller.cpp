@@ -38,7 +38,7 @@ void ViewController::requestAction(const QString & /*actionName*/,
   // Q_EMIT actionComleted("none", false, QString("Invalid Action"));
 }
 
-void ViewController::handleDropEvent(Window * /*widget*/,
+void ViewController::handleDropEvent(Widget * /*widget*/,
                                      QDropEvent * /*event*/) {}
 
 DataSource *ViewController::dataSource() { return d->mDataSource.data(); }
@@ -87,13 +87,13 @@ bool ViewController::connectToDataSource(const QString &source)
   return true;
 }
 
-bool ViewController::removeWidget(Window *widget)
+bool ViewController::removeWidget(Widget *widget)
 {
   // disconnect(d->mDataSource.data(), SIGNAL(sourceUpdated(QVariantMap)));
   return false;
 }
 
-void ViewController::insert(Window *widget)
+void ViewController::insert(Widget *widget)
 {
   if (!d->mViewport) {
     return;

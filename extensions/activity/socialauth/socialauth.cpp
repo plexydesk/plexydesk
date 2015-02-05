@@ -27,7 +27,7 @@ public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
 
-  UI::Window *mFrame;
+  UI::Widget *mFrame;
 };
 
 SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
@@ -41,27 +41,27 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
 {
   setGeometry(window_geometry);
 
-  d->mFrame = new UI::Window();
+  d->mFrame = new UI::Widget();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
 
-  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
 
   updateContentGeometry(d->mFrame);
   exec();
 
   showActivity();
-  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
-          SLOT(onWidgetClosed(UI::Window *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
+          SLOT(onWidgetClosed(UI::Widget *)));
 }
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
-UI::Window *SocialAuthActivity::window() const { return d->mFrame; }
+UI::Widget *SocialAuthActivity::window() const { return d->mFrame; }
 
-void SocialAuthActivity::onWidgetClosed(UI::Window *widget) {}
+void SocialAuthActivity::onWidgetClosed(UI::Widget *widget) {}
 
 void SocialAuthActivity::onHideAnimationFinished() {}

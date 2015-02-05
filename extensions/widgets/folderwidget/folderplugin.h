@@ -43,14 +43,14 @@ public:
 
   UI::ActionList actions() const;
   void requestAction(const QString &actionName, const QVariantMap &args);
-  void handleDropEvent(UI::Window *widget, QDropEvent *event);
+  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
   void setViewRect(const QRectF &rect);
 
   QString icon() const;
 
 private:
   UI::Theme *mThemePack;
-  QList<UI::Window *> mFolderViewList;
+  QList<UI::Widget *> mFolderViewList;
   UI::ActionList m_supported_action_list;
 };
 

@@ -24,11 +24,11 @@ public:
 };
 
 DialWidget::DialWidget(QGraphicsObject *parent)
-  : UI::Window(parent), d(new PrivateDialWidget)
+  : UI::Widget(parent), d(new PrivateDialWidget)
 {
-  this->setWindowFlag(UI::Window::kRenderBackground);
-  this->setWindowFlag(UI::Window::kConvertToWindowType, false);
-  this->setWindowFlag(UI::Window::kRenderDropShadow, false);
+  this->setWindowFlag(UI::Widget::kRenderBackground);
+  this->setWindowFlag(UI::Widget::kConvertToWindowType, false);
+  this->setWindowFlag(UI::Widget::kRenderDropShadow, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsSelectable, true);
 

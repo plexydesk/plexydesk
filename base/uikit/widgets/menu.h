@@ -37,7 +37,7 @@ public:
    *
    * @param widget a Valid Window class to.
    */
-  virtual void setContentWidget(QSharedPointer<Window> widget);
+  virtual void setContentWidget(QSharedPointer<Widget> widget);
   /**
    * @brief Invoke the menu on a given location
    *
