@@ -13,8 +13,10 @@
 #include <imagebutton.h>
 #include <syncobject.h>
 
-namespace UI {
-class WorkSpace::PrivateWorkSpace {
+namespace UI
+{
+class WorkSpace::PrivateWorkSpace
+{
 public:
   PrivateWorkSpace() {}
   ~PrivateWorkSpace() {}
@@ -28,7 +30,8 @@ public:
   bool m_opengl_on;
 };
 
-void WorkSpace::setWorkspaceGeometry() {
+void WorkSpace::setWorkspaceGeometry()
+{
   QRect _current_desktop_geometry = QApplication::desktop()->screenGeometry();
 
 #ifdef Q_OS_LINUX
@@ -37,7 +40,7 @@ void WorkSpace::setWorkspaceGeometry() {
 
 #ifdef Q_OS_MAC
   _current_desktop_geometry.setY(
-      QApplication::desktop()->availableGeometry().topLeft().y());
+    QApplication::desktop()->availableGeometry().topLeft().y());
 #endif
 
 #ifdef Q_OS_WIN
@@ -48,7 +51,8 @@ void WorkSpace::setWorkspaceGeometry() {
 }
 
 WorkSpace::WorkSpace(QGraphicsScene *scene, QWidget *parent)
-    : QGraphicsView(scene, parent), d(new PrivateWorkSpace) {
+  : QGraphicsView(scene, parent), d(new PrivateWorkSpace)
+{
   d->m_opengl_on = false;
   setAttribute(Qt::WA_AcceptTouchEvents);
   setAttribute(Qt::WA_TranslucentBackground);
@@ -77,15 +81,17 @@ WorkSpace::WorkSpace(QGraphicsScene *scene, QWidget *parent)
 
 WorkSpace::~WorkSpace() { delete d; }
 
-void WorkSpace::addDefaultController(const QString &name) {
+void WorkSpace::addDefaultController(const QString &name)
+{
   d->m_default_controller_name_list << name;
 }
 
-void WorkSpace::restoreSession() {
+void WorkSpace::restoreSession()
+{
   QuetzalKit::DataStore *_data_store =
-      new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
+    new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
   QuetzalKit::DiskSyncEngine *_engine =
-      new QuetzalKit::DiskSyncEngine(_data_store);
+    new QuetzalKit::DiskSyncEngine(_data_store);
 
   _data_store->setSyncEngine(_engine);
 
@@ -94,8 +100,9 @@ void WorkSpace::restoreSession() {
   if (_session_list_ptr) {
     Q_FOREACH(const QuetzalKit::SyncObject * _object,
               _session_list_ptr->childObjects()) {
-      if (!_object)
+      if (!_object) {
         continue;
+      }
       QString _space_name = _object->attributeValue("name").toString();
 
       qDebug() << Q_FUNC_INFO << "Adding Space : " << _space_name;
@@ -108,12 +115,14 @@ void WorkSpace::restoreSession() {
 
 uint WorkSpace::spaceCount() const { return d->m_desktop_space_list.count(); }
 
-Space *WorkSpace::currentVisibleSpace() const {
-  if (d->m_desktop_space_list.count() <= 0)
+Space *WorkSpace::currentVisibleSpace() const
+{
+  if (d->m_desktop_space_list.count() <= 0) {
     return 0;
+  }
 
   Space *_current_space =
-      d->m_desktop_space_list.at(d->m_current_activty_space_id);
+    d->m_desktop_space_list.at(d->m_current_activty_space_id);
 
   if (!_current_space) {
     qWarning() << Q_FUNC_INFO << "Error: Invalid Space Found.";
@@ -123,13 +132,14 @@ Space *WorkSpace::currentVisibleSpace() const {
   return _current_space;
 }
 
-void WorkSpace::setAcceleratedRendering(bool on) {
+void WorkSpace::setAcceleratedRendering(bool on)
+{
   d->m_opengl_on = on;
 
   if (d->m_opengl_on) {
     setViewport(new QGLWidget(
-        QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
-                  QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
+                  QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
+                            QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
     setCacheMode(QGraphicsView::CacheNone);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setOptimizationFlag(QGraphicsView::DontClipPainter);
@@ -143,7 +153,8 @@ void WorkSpace::setAcceleratedRendering(bool on) {
 
 bool WorkSpace::isAcceleratedRenderingOn() const { return d->m_opengl_on; }
 
-void WorkSpace::switchSpace() {
+void WorkSpace::switchSpace()
+{
   QScroller::grabGesture(this, QScroller::TouchGesture);
 
   if (QScroller::hasScroller(this)) {
@@ -162,7 +173,8 @@ void WorkSpace::switchSpace() {
   QScroller::ungrabGesture(this);
 }
 
-void WorkSpace::exposeSubRegion(const QRectF &rect) {
+void WorkSpace::exposeSubRegion(const QRectF &rect)
+{
   QScroller::grabGesture(this, QScroller::TouchGesture);
   if (QScroller::hasScroller(this)) {
     QScroller *_active_scroller = QScroller::scroller(this);
@@ -176,7 +188,8 @@ void WorkSpace::exposeSubRegion(const QRectF &rect) {
   QScroller::ungrabGesture(this);
 }
 
-void WorkSpace::paintEvent(QPaintEvent *event) {
+void WorkSpace::paintEvent(QPaintEvent *event)
+{
   if (!d->m_opengl_on) {
     QPainter p;
     p.begin(viewport());
@@ -192,7 +205,8 @@ void WorkSpace::paintEvent(QPaintEvent *event) {
   QGraphicsView::paintEvent(event);
 }
 
-void WorkSpace::dragEnterEvent(QDragEnterEvent *event) {
+void WorkSpace::dragEnterEvent(QDragEnterEvent *event)
+{
   QPoint _global_drop_pos = event->pos();
   QPoint _scene_drop_pos = mapFromGlobal(_global_drop_pos);
 
@@ -204,14 +218,16 @@ void WorkSpace::dragEnterEvent(QDragEnterEvent *event) {
 
 void WorkSpace::dragMoveEvent(QDragMoveEvent *event) { event->accept(); }
 
-void WorkSpace::dropEvent(QDropEvent *event) {
+void WorkSpace::dropEvent(QDropEvent *event)
+{
   QPoint _global_drop_pos = event->pos();
   QPointF _scene_drop_pos = mapToScene(mapFromGlobal(_global_drop_pos));
 
   for (int i = 0; i < d->m_desktop_space_list.count(); i++) {
     Space *_space = d->m_desktop_space_list.at(i);
-    if (!_space)
+    if (!_space) {
       continue;
+    }
 
     if (_space->geometry().contains(_scene_drop_pos)) {
       _space->handleDropEvent(event, _scene_drop_pos);
@@ -222,12 +238,14 @@ void WorkSpace::dropEvent(QDropEvent *event) {
   event->accept();
 }
 
-void WorkSpace::wheelEvent(QWheelEvent *event) {
+void WorkSpace::wheelEvent(QWheelEvent *event)
+{
   // ignore scroll wheel events.
   event->accept();
 }
 
-void WorkSpace::revokeSpace(const QString &name, int id) {
+void WorkSpace::revokeSpace(const QString &name, int id)
+{
   Space *_space = createEmptySpace();
 
   _space->setWorkspace(this);
@@ -248,7 +266,8 @@ void WorkSpace::revokeSpace(const QString &name, int id) {
   d->m_desktop_space_list << _space;
 }
 
-Space *WorkSpace::createEmptySpace() {
+Space *WorkSpace::createEmptySpace()
+{
   Space *_space = new Space(this);
 
   _space->setWorkspace(this);
@@ -268,7 +287,8 @@ Space *WorkSpace::createEmptySpace() {
 
 QRectF WorkSpace::workspaceGeometry() const { return d->m_workspace_geometry; }
 
-void WorkSpace::exposeSpace(uint id) {
+void WorkSpace::exposeSpace(uint id)
+{
   uint _current_space_count = d->m_desktop_space_list.count();
 
   if (id > _current_space_count) {
@@ -284,7 +304,8 @@ void WorkSpace::exposeSpace(uint id) {
   }
 }
 
-Space *WorkSpace::exposeNextSpace() {
+Space *WorkSpace::exposeNextSpace()
+{
   if (d->m_current_activty_space_id == d->m_desktop_space_list.count()) {
     qDebug() << Q_FUNC_INFO << "Maximum Space Count Reached";
     return 0;
@@ -299,7 +320,7 @@ Space *WorkSpace::exposeNextSpace() {
   }
 
   Space *_next_space =
-      d->m_desktop_space_list.at(d->m_current_activty_space_id);
+    d->m_desktop_space_list.at(d->m_current_activty_space_id);
 
   if (!_next_space) {
     qDebug() << Q_FUNC_INFO << "Invalid Space";
@@ -314,19 +335,22 @@ Space *WorkSpace::exposeNextSpace() {
   return _next_space;
 }
 
-Space *WorkSpace::exposePreviousSpace() {
+Space *WorkSpace::exposePreviousSpace()
+{
   QRectF _space_geometry;
 
   d->m_current_activty_space_id = d->m_current_activty_space_id - 1;
 
-  if (d->m_current_activty_space_id < 0)
+  if (d->m_current_activty_space_id < 0) {
     d->m_current_activty_space_id = 0;
+  }
 
   Space *_prev_space =
-      d->m_desktop_space_list.at(d->m_current_activty_space_id);
+    d->m_desktop_space_list.at(d->m_current_activty_space_id);
 
-  if (!_prev_space)
+  if (!_prev_space) {
     return 0;
+  }
 
   _space_geometry = _prev_space->geometry();
   _space_geometry.setX(_space_geometry.width() - d->m_workspace_left_margine);
@@ -335,19 +359,22 @@ Space *WorkSpace::exposePreviousSpace() {
   return _prev_space;
 }
 
-void WorkSpace::updateSpaceGeometry(Space *space, QRectF _deleted_geometry) {
+void WorkSpace::updateSpaceGeometry(Space *space, QRectF _deleted_geometry)
+{
   for (int i = 0; i < d->m_desktop_space_list.count(); i++) {
     Space *__space = d->m_desktop_space_list.at(i);
-    if (!__space)
+    if (!__space) {
       continue;
+    }
     if (__space == space) {
       d->m_desktop_space_list.removeAt(i);
     }
   }
 
   foreach(Space * _space, d->m_desktop_space_list) {
-    if (!_space)
+    if (!_space) {
       continue;
+    }
     if (_deleted_geometry.y() < _space->geometry().y()) {
       QRectF _move_geometry = _space->geometry();
       _move_geometry.setY(_move_geometry.y() - _deleted_geometry.height());
@@ -357,11 +384,12 @@ void WorkSpace::updateSpaceGeometry(Space *space, QRectF _deleted_geometry) {
   }
 }
 
-void WorkSpace::saveSpaceRemovalSessionData(QString _space_ref) {
+void WorkSpace::saveSpaceRemovalSessionData(QString _space_ref)
+{
   QuetzalKit::DataStore *_data_store =
-      new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
+    new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
   QuetzalKit::DiskSyncEngine *_engine =
-      new QuetzalKit::DiskSyncEngine(_data_store);
+    new QuetzalKit::DiskSyncEngine(_data_store);
 
   _data_store->setSyncEngine(_engine);
 
@@ -370,8 +398,9 @@ void WorkSpace::saveSpaceRemovalSessionData(QString _space_ref) {
   if (_session_list_ptr) {
     Q_FOREACH(QuetzalKit::SyncObject * _object,
               _session_list_ptr->childObjects()) {
-      if (!_object)
+      if (!_object) {
         continue;
+      }
       QString _space_name = _object->attributeValue("ref").toString();
 
       if (_space_name == _space_ref) {
@@ -383,9 +412,11 @@ void WorkSpace::saveSpaceRemovalSessionData(QString _space_ref) {
   delete _data_store;
 }
 
-void WorkSpace::removeSpace(Space *space) {
-  if (!space)
+void WorkSpace::removeSpace(Space *space)
+{
+  if (!space) {
     return;
+  }
 
   QRectF _deleted_geometry = space->geometry();
   QString _space_ref = space->sessionName();
@@ -397,8 +428,9 @@ void WorkSpace::removeSpace(Space *space) {
 
   d->m_current_activty_space_id = d->m_current_activty_space_id - 1;
 
-  if (d->m_current_activty_space_id < 0)
+  if (d->m_current_activty_space_id < 0) {
     d->m_current_activty_space_id = 0;
+  }
 
   d->m_space_count = d->m_space_count - 1;
 
@@ -411,9 +443,11 @@ void WorkSpace::removeSpace(Space *space) {
   saveSpaceRemovalSessionData(_space_ref);
 }
 
-QPixmap WorkSpace::previewSpace(Space *space, int scaleFactor) {
-  if (!space)
+QPixmap WorkSpace::previewSpace(Space *space, int scaleFactor)
+{
+  if (!space) {
     return QPixmap();
+  }
 
   QImage _thumbnail(geometry().width() / scaleFactor,
                     geometry().height() / scaleFactor,
@@ -438,12 +472,12 @@ QPixmap WorkSpace::previewSpace(Space *space, int scaleFactor) {
   QPainterPath _frame_path;
   _desktop_preview.save();
   _frame_path.addRoundedRect(
-      QRectF(0, 0, _thumbnail.width(), _thumbnail.height()), 16.0, 16.0);
+    QRectF(0, 0, _thumbnail.width(), _thumbnail.height()), 16.0, 16.0);
 
   _desktop_preview.setClipPath(_frame_path);
 
   _desktop_preview.fillRect(
-      QRectF(0.0, 0.0, _thumbnail.width(), _thumbnail.height()), Qt::white);
+    QRectF(0.0, 0.0, _thumbnail.width(), _thumbnail.height()), Qt::white);
 
   scene()->render(&_desktop_preview,
                   QRectF(0.0, 0.0, _thumbnail.width(), _thumbnail.height()),
@@ -463,7 +497,8 @@ QPixmap WorkSpace::previewSpace(Space *space, int scaleFactor) {
 
 SpacesList WorkSpace::currentSpaces() { return d->m_desktop_space_list; }
 
-void WorkSpace::addSpace() {
+void WorkSpace::addSpace()
+{
   Space *_space = createEmptySpace();
 
   _space->setName("default");
@@ -489,15 +524,15 @@ void WorkSpace::addSpace() {
 
   // Add this space to Session
   QuetzalKit::DataStore *_data_store =
-      new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
+    new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
   QuetzalKit::DiskSyncEngine *_engine =
-      new QuetzalKit::DiskSyncEngine(_data_store);
+    new QuetzalKit::DiskSyncEngine(_data_store);
 
   _data_store->setSyncEngine(_engine);
 
   QuetzalKit::SyncObject *_session_list_ptr = _data_store->begin("SpaceList");
   QuetzalKit::SyncObject *_new_space_ptr =
-      _session_list_ptr->createNewObject("Space");
+    _session_list_ptr->createNewObject("Space");
 
   _new_space_ptr->setObjectAttribute("ref", _space->sessionName());
   _new_space_ptr->setObjectAttribute("name", _space->name());

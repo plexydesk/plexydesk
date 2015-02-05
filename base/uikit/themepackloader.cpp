@@ -31,19 +31,24 @@
 
 #include "themepackloader.h"
 
-namespace UI {
+namespace UI
+{
 
 Theme *Theme::s_theme_instance = 0;
 
-class Theme::ThemepackLoaderPrivate {
+class Theme::ThemepackLoaderPrivate
+{
 public:
   ThemepackLoaderPrivate() {}
-  ~ThemepackLoaderPrivate() {
-    if (mXmlRawFile)
+  ~ThemepackLoaderPrivate()
+  {
+    if (mXmlRawFile) {
       delete mXmlRawFile;
+    }
 
-    if (mStyle)
+    if (mStyle) {
       mStyle.clear();
+    }
   }
 
   QString mThemeName;
@@ -61,14 +66,15 @@ public:
 };
 
 Theme::Theme(const QString &themeName, QObject *parent)
-    : QObject(parent), d(new ThemepackLoaderPrivate) {
+  : QObject(parent), d(new ThemepackLoaderPrivate)
+{
   d->mThemePackPath = QDir::toNativeSeparators(
-      QString("%1/%2").arg(UI::Config::getInstance()->prefix()).arg(
-          "/share/plexy/themepack"));
+                        QString("%1/%2").arg(UI::Config::getInstance()->prefix()).arg(
+                          "/share/plexy/themepack"));
 
   d->mThemeName = themeName;
   QDir mainConfig(QDir::toNativeSeparators(
-      QString("%1/%2/").arg(d->mThemePackPath).arg(themeName)));
+                    QString("%1/%2/").arg(d->mThemePackPath).arg(themeName)));
 
   d->mXmlConfigFile = mainConfig.absoluteFilePath("layout.xml");
   d->mXmlRawFile = new QFile(d->mXmlConfigFile);
@@ -84,7 +90,8 @@ Theme::Theme(const QString &themeName, QObject *parent)
   d->mStyle = UI::ExtensionManager::instance()->style("cocoastyle");
 }
 
-Theme::~Theme() {
+Theme::~Theme()
+{
 
   /*
   if (staticLoader) {
@@ -100,7 +107,8 @@ StylePtr Theme::defaultDesktopStyle() { return d->mStyle; }
 
 StylePtr Theme::style() { return instance()->defaultDesktopStyle(); }
 
-Theme *Theme::instance() {
+Theme *Theme::instance()
+{
   if (!s_theme_instance) {
     s_theme_instance = new Theme("default", 0);
     return s_theme_instance;
@@ -109,11 +117,13 @@ Theme *Theme::instance() {
   }
 }
 
-QPixmap Theme::icon(const QString &name, const QString &resolution) {
+QPixmap Theme::icon(const QString &name, const QString &resolution)
+{
   return instance()->drawable(name, resolution);
 }
 
-QString Theme::desktopSessionData() const {
+QString Theme::desktopSessionData() const
+{
   QString homePath = QDir::homePath();
   QString result;
 
@@ -140,16 +150,17 @@ QString Theme::desktopSessionData() const {
   return result;
 }
 
-void Theme::commitSessionData(const QString &data) {
+void Theme::commitSessionData(const QString &data)
+{
   QString homePath =
-      QDir::toNativeSeparators(QDir::homePath() + "/.plexydesk/");
+    QDir::toNativeSeparators(QDir::homePath() + "/.plexydesk/");
   QFileInfo fileInfo(homePath);
 
   if (!fileInfo.exists()) {
     QDir::home().mkpath(homePath);
   }
   QFile file(
-      QDir::toNativeSeparators(QDir::homePath() + "/.plexydesk/session.xml"));
+    QDir::toNativeSeparators(QDir::homePath() + "/.plexydesk/session.xml"));
 
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
     qDebug() << Q_FUNC_INFO
@@ -163,12 +174,13 @@ void Theme::commitSessionData(const QString &data) {
   file.close();
 }
 
-QPixmap Theme::drawable(const QString &fileName, const QString &resoution) {
+QPixmap Theme::drawable(const QString &fileName, const QString &resoution)
+{
   QPixmap rv;
 
   QString iconThemePath =
-      QDir::toNativeSeparators(d->mThemePackPath + "/" + d->mThemeName +
-                               "/resources/" + resoution + "/" + fileName);
+    QDir::toNativeSeparators(d->mThemePackPath + "/" + d->mThemeName +
+                             "/resources/" + resoution + "/" + fileName);
 
   QFileInfo fileInfo(iconThemePath);
 
@@ -189,13 +201,15 @@ QPixmap Theme::drawable(const QString &fileName, const QString &resoution) {
 
 void Theme::setThemeName(const QString &name) { Q_UNUSED(name); }
 
-QStringList Theme::desktopWidgets() const {
+QStringList Theme::desktopWidgets() const
+{
   QStringList rv;
-  if (!d->mXmlDocumentRoot.hasChildNodes())
+  if (!d->mXmlDocumentRoot.hasChildNodes()) {
     return rv;
+  }
 
   QDomNodeList widgetNodeList =
-      d->mXmlDocumentRoot.documentElement().elementsByTagName("widget");
+    d->mXmlDocumentRoot.documentElement().elementsByTagName("widget");
 
   for (int index = 0; index < widgetNodeList.count(); index++) {
     QDomElement widgetElement = widgetNodeList.at(index).toElement();
@@ -207,16 +221,19 @@ QStringList Theme::desktopWidgets() const {
   return rv;
 }
 
-QString Theme::desktopBackgroundController() const {
+QString Theme::desktopBackgroundController() const
+{
   QString rv;
-  if (!d->mXmlDocumentRoot.hasChildNodes())
+  if (!d->mXmlDocumentRoot.hasChildNodes()) {
     return rv;
+  }
 
   QDomNodeList widgetNodeList =
-      d->mXmlDocumentRoot.documentElement().elementsByTagName("background");
+    d->mXmlDocumentRoot.documentElement().elementsByTagName("background");
 
-  if (widgetNodeList.count() <= 0)
+  if (widgetNodeList.count() <= 0) {
     return rv;
+  }
 
   QDomElement widgetElement = widgetNodeList.at(0).toElement();
 
@@ -226,16 +243,18 @@ QString Theme::desktopBackgroundController() const {
 
 // TODO:
 // Refactor these two methods
-QRectF Theme::widgetPos(const QString &name, const QRectF &screen_rect) {
+QRectF Theme::widgetPos(const QString &name, const QRectF &screen_rect)
+{
   QDomNodeList widgetNodeList =
-      d->mXmlDocumentRoot.documentElement().elementsByTagName("widget");
+    d->mXmlDocumentRoot.documentElement().elementsByTagName("widget");
   QRectF rect;
 
   for (int index = 0; index < widgetNodeList.count(); index++) {
     QDomElement widgetElement = widgetNodeList.at(index).toElement();
 
-    if (widgetElement.attribute("name") != name)
+    if (widgetElement.attribute("name") != name) {
       continue;
+    }
 
     if (widgetElement.hasChildNodes()) {
       QDomElement rectElement = widgetElement.firstChildElement("rect");
@@ -256,13 +275,15 @@ QRectF Theme::widgetPos(const QString &name, const QRectF &screen_rect) {
 
       if (widthString.contains("%")) {
         width = toScreenValue(widthString, screen_rect.width());
-      } else
+      } else {
         x_coord = x.value().toFloat();
+      }
 
       if (heightString.contains("%")) {
         height = toScreenValue(heightString, screen_rect.height());
-      } else
+      } else {
         y_coord = x.value().toFloat();
+      }
 
       if (x.value().contains("%")) {
         x_coord = toScreenValue(x.value(), screen_rect.width());
@@ -288,16 +309,18 @@ QRectF Theme::widgetPos(const QString &name, const QRectF &screen_rect) {
   return rect;
 }
 
-QRectF Theme::backgroundPos(const QString &name, const QRectF &screen_rect) {
+QRectF Theme::backgroundPos(const QString &name, const QRectF &screen_rect)
+{
   QDomNodeList widgetNodeList =
-      d->mXmlDocumentRoot.documentElement().elementsByTagName("background");
+    d->mXmlDocumentRoot.documentElement().elementsByTagName("background");
   QRectF rect;
 
   for (int index = 0; index < widgetNodeList.count(); index++) {
     QDomElement widgetElement = widgetNodeList.at(index).toElement();
 
-    if (widgetElement.attribute("name") != name)
+    if (widgetElement.attribute("name") != name) {
       continue;
+    }
 
     if (widgetElement.hasChildNodes()) {
       QDomElement rectElement = widgetElement.firstChildElement("rect");
@@ -318,13 +341,15 @@ QRectF Theme::backgroundPos(const QString &name, const QRectF &screen_rect) {
 
       if (widthString.contains("%")) {
         width = toScreenValue(widthString, screen_rect.width());
-      } else
+      } else {
         x_coord = x.value().toFloat();
+      }
 
       if (heightString.contains("%")) {
         height = toScreenValue(heightString, screen_rect.height());
-      } else
+      } else {
         y_coord = x.value().toFloat();
+      }
 
       if (x.value().contains("%")) {
         x_coord = toScreenValue(x.value(), screen_rect.width());
@@ -350,7 +375,8 @@ QRectF Theme::backgroundPos(const QString &name, const QRectF &screen_rect) {
   return rect;
 }
 
-int Theme::toScreenValue(const QString &val, int max_distance) {
+int Theme::toScreenValue(const QString &val, int max_distance)
+{
   QRegExp rx("(\\d+)");
 
   rx.indexIn(val, 0);
@@ -360,9 +386,10 @@ int Theme::toScreenValue(const QString &val, int max_distance) {
   return _x;
 }
 
-void Theme::requestNoteSideImageFromWebService(const QString &key) {
+void Theme::requestNoteSideImageFromWebService(const QString &key)
+{
   QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+    new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -381,9 +408,10 @@ void Theme::requestNoteSideImageFromWebService(const QString &key) {
           SLOT(onServiceCompleteJson(QuetzalSocialKit::WebService *)));
 }
 
-void Theme::requestPhotoSizes(const QString &photoID) {
+void Theme::requestPhotoSizes(const QString &photoID)
+{
   QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+    new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -397,7 +425,8 @@ void Theme::requestPhotoSizes(const QString &photoID) {
           SLOT(onSizeServiceCompleteJson(QuetzalSocialKit::WebService *)));
 }
 
-void Theme::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+void Theme::onServiceCompleteJson(QuetzalSocialKit::WebService *service)
+{
   QList<QVariantMap> photoList = service->methodData("photo");
 
   Q_FOREACH(const QVariantMap & map, photoList) {
@@ -408,7 +437,8 @@ void Theme::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   ;
 }
 
-void Theme::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+void Theme::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service)
+{
   Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -416,12 +446,12 @@ void Theme::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
       QuetzalSocialKit::AsyncDataDownloader *downloader =
-          new QuetzalSocialKit::AsyncDataDownloader(this);
+        new QuetzalSocialKit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
       metaData["method"] = service->methodName();
       metaData["id"] =
-          service->inputArgumentForMethod(service->methodName())["photo_id"];
+        service->inputArgumentForMethod(service->methodName())["photo_id"];
       metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
@@ -435,13 +465,14 @@ void Theme::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
 
 void Theme::onDownloadCompleteJson(QuetzalSocialKit::WebService *service) {}
 
-void Theme::onImageReady() {
+void Theme::onImageReady()
+{
   QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
     QuetzalSocialKit::AsyncImageCreator *imageSave =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+      new QuetzalSocialKit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
@@ -454,10 +485,11 @@ void Theme::onImageReady() {
   }
 }
 
-void Theme::onImageSaveReadyJson() {
+void Theme::onImageSaveReadyJson()
+{
   qDebug() << Q_FUNC_INFO;
   QuetzalSocialKit::AsyncImageCreator *c =
-      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
   if (c) {
     // d->mBackgroundPixmap = c->image();
@@ -467,7 +499,8 @@ void Theme::onImageSaveReadyJson() {
   }
 }
 
-void Theme::onImageReadyJson(const QString &fileName) {
+void Theme::onImageReadyJson(const QString &fileName)
+{
   qDebug() << Q_FUNC_INFO << fileName;
 }
 

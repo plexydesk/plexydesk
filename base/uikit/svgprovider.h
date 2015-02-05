@@ -27,8 +27,10 @@
 #include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
-class DECL_UI_KIT_EXPORT SvgProvider {
+namespace UI
+{
+class DECL_UI_KIT_EXPORT SvgProvider
+{
 public:
   SvgProvider();
   virtual ~SvgProvider();

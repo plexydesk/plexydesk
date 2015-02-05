@@ -31,9 +31,11 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-namespace UI {
+namespace UI
+{
 
-class Config::Private {
+class Config::Private
+{
 public:
   Private() {}
   ~Private() {}
@@ -42,10 +44,11 @@ public:
 Config *Config::config = 0;
 QNetworkAccessManager *Config::networkaccessmanager = 0;
 
-Config *Config::getInstance() {
+Config *Config::getInstance()
+{
   if (config == 0) {
     config =
-        new Config(QLatin1String("plexydesk"), QLatin1String("plexydesktop"));
+      new Config(QLatin1String("plexydesk"), QLatin1String("plexydesktop"));
     return config;
   } else {
     return config;
@@ -54,11 +57,12 @@ Config *Config::getInstance() {
 
 Config::Config(const QString &organization, const QString &application,
                QObject *parent)
-    : QObject(parent), d(new Private) {}
+  : QObject(parent), d(new Private) {}
 
 Config::~Config() { delete d; }
 
-QString Config::prefix() {
+QString Config::prefix()
+{
 #ifndef Q_OS_LINUX
   QDir binaryPath(QCoreApplication::applicationDirPath());
   if (binaryPath.cdUp()) {
@@ -78,9 +82,9 @@ QString Config::prefix() {
 #ifdef Q_OS_MAC
   CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
   CFStringRef macPath =
-      CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
+    CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
   const char *pathPtr =
-      CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+    CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
   CFRelease(appUrlRef);
   CFRelease(macPath);
   return QLatin1String(pathPtr) + QString("/Contents/");
@@ -89,14 +93,16 @@ QString Config::prefix() {
   return QString();
 }
 
-QString Config::cacheDir(const QString &folder) {
+QString Config::cacheDir(const QString &folder)
+{
   QString rv = QDir::toNativeSeparators(QDir::homePath() + "/" +
                                         ".plexydesk/cache/" + folder);
   QDir(QDir::homePath()).mkpath(rv);
   return rv;
 }
 
-QNetworkAccessManager *Config::getNetworkAccessManager() {
+QNetworkAccessManager *Config::getNetworkAccessManager()
+{
   if (networkaccessmanager == 0) {
     networkaccessmanager = new QNetworkAccessManager(getInstance());
     // networkaccessmanager->setCookieJar(getCookieJar());

@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class GooglePlacesEngineData : public PlexyDesk::DataSource {
+class GooglePlacesEngineData : public PlexyDesk::DataSource
+{
   Q_OBJECT
 
 public:

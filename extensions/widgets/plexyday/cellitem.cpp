@@ -6,7 +6,8 @@
 #include <QGraphicsDropShadowEffect>
 #include <QDebug>
 
-class CellItem::PrivateCellItem {
+class CellItem::PrivateCellItem
+{
 public:
   PrivateCellItem() {}
   ~PrivateCellItem() {}
@@ -14,7 +15,8 @@ public:
 };
 
 CellItem::CellItem(const QRectF &rect, QGraphicsItem *parent)
-    : PlexyDesk::TableViewItem(rect, parent), d(new PrivateCellItem) {
+  : PlexyDesk::TableViewItem(rect, parent), d(new PrivateCellItem)
+{
   this->setCacheMode(DeviceCoordinateCache);
   d->mRect = rect;
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -26,7 +28,8 @@ CellItem::CellItem(const QRectF &rect, QGraphicsItem *parent)
   setGraphicsItem(this);
 }
 
-QRectF CellItem::boundingRect() const {
+QRectF CellItem::boundingRect() const
+{
 #ifdef Q_WS_QPA
   return QRectF(0.0, 0.0, d->mRect.width() - 80, 250);
 #endif
@@ -34,7 +37,8 @@ QRectF CellItem::boundingRect() const {
   return QRectF(0, 0, d->mRect.width() - 20, 250);
 }
 
-QSizeF CellItem::sizeHint(Qt::SizeHint hint, const QSizeF &size) const {
+QSizeF CellItem::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
+{
   return boundingRect().size();
 }
 
@@ -43,11 +47,14 @@ void CellItem::setSelected() {}
 void CellItem::clearSelection() {}
 
 void CellItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                     QWidget *widget) {
-  if (!painter->isActive())
+                     QWidget *widget)
+{
+  if (!painter->isActive()) {
     return;
-  if (isObscured())
+  }
+  if (isObscured()) {
     return;
+  }
 
   /* Painter settings */
   painter->setRenderHint(QPainter::Antialiasing, true);

@@ -25,7 +25,8 @@
 #include "cpu.h"
 #include "cpuwidget.h"
 
-class CpuInterface : public PlexyDesk::WidgetInterface {
+class CpuInterface : public PlexyDesk::WidgetInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

@@ -33,8 +33,10 @@
 class QPixmap;
 class QString;
 
-namespace PlexyDesk {
-class PLEXYDESKUICORE_EXPORT BaseRender : public QGLWidget {
+namespace PlexyDesk
+{
+class PLEXYDESKUICORE_EXPORT BaseRender : public QGLWidget
+{
   Q_OBJECT
 public:
   typedef QMap<QString, QPixmap *> CacheDict;

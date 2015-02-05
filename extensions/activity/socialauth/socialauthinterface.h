@@ -25,7 +25,8 @@
 #include <desktopactivity.h>
 
 class SocialAuthInterface : public QObject,
-                            public UI::ActivityInterface {
+  public UI::ActivityInterface
+{
   Q_OBJECT
   Q_INTERFACES(UI::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.socialauth")

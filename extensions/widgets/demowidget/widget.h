@@ -23,7 +23,8 @@
 #include <plexy.h>
 #include <widgetinterface.h>
 
-class VISIBLE_SYM WidgetDemo : public PlexyDesk::WidgetInterface {
+class VISIBLE_SYM WidgetDemo : public PlexyDesk::WidgetInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::WidgetInterface)
 

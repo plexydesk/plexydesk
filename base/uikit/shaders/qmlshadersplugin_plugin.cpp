@@ -45,10 +45,11 @@
 
 #include <QtDeclarative/qdeclarative.h>
 
-void qmlshaderspluginPlugin::registerTypes(const char *uri) {
+void qmlshaderspluginPlugin::registerTypes(const char *uri)
+{
   qmlRegisterType<PlexyDesk::ShaderEffectItem>(uri, 1, 0, "ShaderEffectItem");
   qmlRegisterType<PlexyDesk::ShaderEffectSource>(uri, 1, 0,
-                                                 "ShaderEffectSource");
+      "ShaderEffectSource");
 }
 
 Q_EXPORT_PLUGIN2(qmlshadersplugin, qmlshaderspluginPlugin)

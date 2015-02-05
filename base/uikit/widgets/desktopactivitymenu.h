@@ -6,10 +6,12 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 class Space;
 
-class DECL_UI_KIT_EXPORT DesktopActivityMenu : public QObject {
+class DECL_UI_KIT_EXPORT DesktopActivityMenu : public QObject
+{
   Q_OBJECT
 public:
   explicit DesktopActivityMenu(QObject *parent = 0);

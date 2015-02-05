@@ -76,7 +76,8 @@ class QtFlickGestureRecognizer;
 
 class QScrollTimer;
 
-class QtScrollerPrivate : public QObject {
+class QtScrollerPrivate : public QObject
+{
   Q_OBJECT
   Q_DECLARE_PUBLIC(QtScroller)
 
@@ -169,7 +170,7 @@ public:
   QRectF contentPosRange;
   QPointF contentPosition;
   QPointF overshootPosition; // the number of pixels we are overshooting (before
-                             // overshootDragResistanceFactor)
+  // overshootDragResistanceFactor)
 
   // state
 

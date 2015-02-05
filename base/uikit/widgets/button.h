@@ -11,9 +11,11 @@
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 
-class DECL_UI_KIT_EXPORT Button : public UIWidget {
+class DECL_UI_KIT_EXPORT Button : public UIWidget
+{
   Q_OBJECT
 
 public:

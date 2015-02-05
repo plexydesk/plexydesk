@@ -5,7 +5,8 @@
 
 #include <syncobject.h>
 
-class DataSyncRuntime : public QObject {
+class DataSyncRuntime : public QObject
+{
   Q_OBJECT
 
 public:

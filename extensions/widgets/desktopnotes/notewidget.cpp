@@ -25,7 +25,8 @@
 #include <plexyconfig.h>
 #include <toolbar.h>
 
-class NoteWidget::PrivateNoteWidget {
+class NoteWidget::PrivateNoteWidget
+{
 public:
   PrivateNoteWidget() {}
   ~PrivateNoteWidget() {}
@@ -58,7 +59,8 @@ public:
   UI::DesktopActivityPtr m_calendar_activity_dialog;
 };
 
-void NoteWidget::createToolBar() {
+void NoteWidget::createToolBar()
+{
   d->mToolBar = new UI::ToolBar(d->mSubLayoutBase);
   d->mToolBar->addAction("contact", "pd_add_contact_icon", false);
   d->mToolBar->addAction("list", "pd_list_icon", false);
@@ -72,14 +74,12 @@ void NoteWidget::createToolBar() {
 }
 
 NoteWidget::NoteWidget(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateNoteWidget) {
-  setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
-  setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
-  setWindowFlag(UI::UIWidget::kRenderWindowTitle, true);
-  setWindowFlag(UI::UIWidget::kRenderBackground, true);
-  setWindowFlag(UI::UIWidget::kTopLevelWindow, true);
+  : UI::UIWidget(parent), d(new PrivateNoteWidget)
+{
+  setWindowFlag(UI::Window::kRenderDropShadow, true);
+  setWindowFlag(UI::Window::kConvertToWindowType, true);
+  setWindowFlag(UI::Window::kRenderBackground, true);
 
-  setWindowTitle("Note");
 
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mSubLayoutBase = new QGraphicsWidget(d->mLayoutBase);
@@ -101,7 +101,7 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
 
   d->mTextEdit = new UI::TextEditor(d->mSubLayoutBase);
   d->mTextEdit->style(
-      "border: 0; background: rgba(255,255,255,255); color: #4E4945");
+    "border: 0; background: rgba(255,255,255,255); color: #4E4945");
 
   d->mSubLayout->addItem(d->mTextEdit);
   d->mSubLayout->addItem(d->mToolBar);
@@ -111,7 +111,7 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
 
   d->mCloseButton = new UI::ImageButton(this);
   d->mCloseButton->setPixmap(
-      UI::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
+    UI::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
   d->mCloseButton->setSize(QSize(16, 16));
   d->mCloseButton->hide();
   d->mCloseButton->setBackgroundColor(Qt::white);
@@ -129,7 +129,8 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
 
 NoteWidget::~NoteWidget() { delete d; }
 
-void NoteWidget::setTitle(const QString &name) {
+void NoteWidget::setTitle(const QString &name)
+{
   d->mNoteTitle = name;
   update();
 
@@ -139,10 +140,11 @@ void NoteWidget::setTitle(const QString &name) {
   // requestNoteSideImageFromWebService(d->mNoteTitle);
 }
 
-void NoteWidget::initDataStore() {
+void NoteWidget::initDataStore()
+{
   d->mDataStore = new QuetzalKit::DataStore("desktopnotes", this);
   QuetzalKit::DiskSyncEngine *engine =
-      new QuetzalKit::DiskSyncEngine(d->mDataStore);
+    new QuetzalKit::DiskSyncEngine(d->mDataStore);
 
   d->mDataStore->setSyncEngine(engine);
 
@@ -153,7 +155,8 @@ void NoteWidget::initDataStore() {
   d->mDataStore->insert(d->mCurrentNoteObject);
 }
 
-void NoteWidget::setNoteWidgetContent(const QString &status) {
+void NoteWidget::setNoteWidgetContent(const QString &status)
+{
   d->mStatusMessage = status;
   update();
 }
@@ -166,7 +169,8 @@ QString NoteWidget::id() { return d->mID; }
 
 QString NoteWidget::noteContent() const { return d->mStatusMessage; }
 
-void NoteWidget::setPixmap(const QPixmap &pixmap) {
+void NoteWidget::setPixmap(const QPixmap &pixmap)
+{
   this->prepareGeometryChange();
   this->setGeometry(QRectF(0.0, 0.0, this->boundingRect().width(), 600));
 
@@ -181,7 +185,8 @@ void NoteWidget::setPixmap(const QPixmap &pixmap) {
   update();
 }
 
-void NoteWidget::saveNoteToStore() {
+void NoteWidget::saveNoteToStore()
+{
   QuetzalKit::DataStore *store = new QuetzalKit::DataStore("deskopnotes", this);
 
   QuetzalKit::DiskSyncEngine *diskEngine = new QuetzalKit::DiskSyncEngine(this);
@@ -212,13 +217,15 @@ void NoteWidget::saveNoteToStore() {
   metaData.setObjectAttribute("location", "Colomobo, Sri Lanka");
 
   noteObject.addChildObject(&metaData);
-  if (!newObject)
+  if (!newObject) {
     object->addChildObject(&noteObject);
+  }
 
   store->addObject(object);
 }
 
-void NoteWidget::resize(const QSizeF &size) {
+void NoteWidget::resize(const QSizeF &size)
+{
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 
   d->mLayoutBase->setGeometry(geometry());
@@ -228,7 +235,7 @@ void NoteWidget::resize(const QSizeF &size) {
                                         boundingRect().height() - 64.0));
   d->mTextEdit->setMaximumSize(geometry().size());
   d->mMainVerticleLayout->setGeometry(
-      QRectF(0.0, 0.0, size.width(), size.height()));
+    QRectF(0.0, 0.0, size.width(), size.height()));
   /*
   d->mSubLayout->setGeometry(QRectF(0, 0,
                                     boundingRect().width(),
@@ -248,24 +255,27 @@ void NoteWidget::resize(const QSizeF &size) {
 
 void NoteWidget::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
-                       QWidget *widget) {
+                       QWidget *widget)
+{
   UI::UIWidget::paint(painter, option, widget);
   painter->save();
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
   painter->drawPixmap(
-      QRectF(0.0, 64.0, option->exposedRect.width(), 300.0), d->mPixmap,
-      QRectF((d->mPixmap.width() - option->exposedRect.width()) / 2, 0.0,
-             option->exposedRect.width(), 300));
+    QRectF(0.0, 64.0, option->exposedRect.width(), 300.0), d->mPixmap,
+    QRectF((d->mPixmap.width() - option->exposedRect.width()) / 2, 0.0,
+           option->exposedRect.width(), 300));
   painter->restore();
 }
 
-void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event) {
+void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event)
+{
   qDebug() << Q_FUNC_INFO << event->mimeData();
 }
 
-void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
+void NoteWidget::requestNoteSideImageFromWebService(const QString &key)
+{
   QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+    new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -284,9 +294,10 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
           SLOT(onServiceCompleteJson(QuetzalSocialKit::WebService *)));
 }
 
-void NoteWidget::requestPhotoSizes(const QString &photoID) {
+void NoteWidget::requestPhotoSizes(const QString &photoID)
+{
   QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+    new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -302,7 +313,8 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
 
 void NoteWidget::onClicked() { Q_EMIT clicked(this); }
 
-void NoteWidget::onTextUpdated(const QString &text) {
+void NoteWidget::onTextUpdated(const QString &text)
+{
   QString save;
   if (d->mNoteTitle.isEmpty()) {
     save = text;
@@ -314,18 +326,21 @@ void NoteWidget::onTextUpdated(const QString &text) {
   d->mDataStore->updateNode(d->mCurrentNoteObject);
 }
 
-void NoteWidget::onDocuemntTitleAvailable(const QString &title) {
+void NoteWidget::onDocuemntTitleAvailable(const QString &title)
+{
   this->setTitle(title);
 }
 
 UI::DesktopActivityPtr NoteWidget::showCalendar(
-    const QString &activity, const QString &title,
-    const QVariantMap &dataItem) {
-  if (d->m_calendar_activity_dialog)
+  const QString &activity, const QString &title,
+  const QVariantMap &dataItem)
+{
+  if (d->m_calendar_activity_dialog) {
     return d->m_calendar_activity_dialog;
+  }
 
   d->m_calendar_activity_dialog =
-      UI::ExtensionManager::instance()->activity(activity);
+    UI::ExtensionManager::instance()->activity(activity);
 
   if (!d->m_calendar_activity_dialog) {
     qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
@@ -336,10 +351,10 @@ UI::DesktopActivityPtr NoteWidget::showCalendar(
   _activity_pos.setY(y());
 
   d->m_calendar_activity_dialog->createWindow(QRectF(0.0, 0.0, 600.0, 440.0),
-                                              title, _activity_pos);
+      title, _activity_pos);
 
   QGraphicsItem *child =
-      (QGraphicsItem *)d->m_calendar_activity_dialog->window();
+    (QGraphicsItem *)d->m_calendar_activity_dialog->window();
 
   if (this->scene()) {
     this->scene()->addItem(child);
@@ -348,7 +363,8 @@ UI::DesktopActivityPtr NoteWidget::showCalendar(
 
   return d->m_calendar_activity_dialog;
 }
-void NoteWidget::onToolBarAction(const QString &action) {
+void NoteWidget::onToolBarAction(const QString &action)
+{
   qDebug() << Q_FUNC_INFO << action;
   if (action == tr("date")) {
     if (d->m_calendar_activity_dialog) {
@@ -357,7 +373,7 @@ void NoteWidget::onToolBarAction(const QString &action) {
     }
 
     UI::DesktopActivityPtr activity =
-        this->showCalendar("datepickeractivity", "Date/Time", QVariantMap());
+      this->showCalendar("datepickeractivity", "Date/Time", QVariantMap());
 
     if (activity) {
       connect(activity.data(), SIGNAL(finished()), this,
@@ -394,7 +410,8 @@ void NoteWidget::onToolBarAction(const QString &action) {
   }
 }
 
-void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service)
+{
   QList<QVariantMap> photoList = service->methodData("photo");
 
   Q_FOREACH(const QVariantMap & map, photoList) {
@@ -406,7 +423,8 @@ void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
 }
 
 void NoteWidget::onSizeServiceCompleteJson(
-    QuetzalSocialKit::WebService *service) {
+  QuetzalSocialKit::WebService *service)
+{
   Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -414,12 +432,12 @@ void NoteWidget::onSizeServiceCompleteJson(
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
       QuetzalSocialKit::AsyncDataDownloader *downloader =
-          new QuetzalSocialKit::AsyncDataDownloader(this);
+        new QuetzalSocialKit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
       metaData["method"] = service->methodName();
       metaData["id"] =
-          service->inputArgumentForMethod(service->methodName())["photo_id"];
+        service->inputArgumentForMethod(service->methodName())["photo_id"];
       metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
@@ -431,16 +449,18 @@ void NoteWidget::onSizeServiceCompleteJson(
   service->deleteLater();
 }
 
-void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service) {
+void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service)
+{
 }
 
-void NoteWidget::onImageReady() {
+void NoteWidget::onImageReady()
+{
   QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
     QuetzalSocialKit::AsyncImageCreator *imageSave =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+      new QuetzalSocialKit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
@@ -453,16 +473,18 @@ void NoteWidget::onImageReady() {
   }
 }
 
-void NoteWidget::onImageSaveReadyJson() {
+void NoteWidget::onImageSaveReadyJson()
+{
   qDebug() << Q_FUNC_INFO;
   QuetzalSocialKit::AsyncImageCreator *c =
-      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
   if (c) {
     d->mBackgroundPixmap = c->image();
 
-    if (d->mLayoutBase)
+    if (d->mLayoutBase) {
       d->mLayoutBase->setPos(0.0, 300.0);
+    }
 
     update();
     c->quit();
@@ -470,11 +492,13 @@ void NoteWidget::onImageSaveReadyJson() {
   }
 }
 
-void NoteWidget::onImageReadyJson(const QString &fileName) {
+void NoteWidget::onImageReadyJson(const QString &fileName)
+{
   qDebug() << Q_FUNC_INFO << fileName;
 }
 
-void NoteWidget::deleteImageAttachment() {
+void NoteWidget::deleteImageAttachment()
+{
   d->mPixmap = QPixmap();
 
   this->prepareGeometryChange();
@@ -491,11 +515,12 @@ void NoteWidget::deleteImageAttachment() {
   update();
 }
 
-void NoteWidget::onDatePickerDone() {
+void NoteWidget::onDatePickerDone()
+{
   qDebug() << Q_FUNC_INFO;
   if (sender()) {
     UI::DesktopActivity *activity =
-        qobject_cast<UI::DesktopActivity *>(sender());
+      qobject_cast<UI::DesktopActivity *>(sender());
     if (activity) {
       qDebug() << Q_FUNC_INFO << activity->result();
       if (activity->window()) {
@@ -508,7 +533,8 @@ void NoteWidget::onDatePickerDone() {
 }
 
 QString NoteWidget::PrivateNoteWidget::getContentText(
-    const QString &data) const {
+  const QString &data) const
+{
   QStringList dataList = data.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
 
   QString rv;
@@ -519,14 +545,16 @@ QString NoteWidget::PrivateNoteWidget::getContentText(
   return rv;
 }
 
-QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject() {
+QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject()
+{
   return 0;
 }
 
-void NoteWidget::onActivityClosed() {
+void NoteWidget::onActivityClosed()
+{
   if (sender()) {
     UI::DesktopActivity *activity =
-        qobject_cast<UI::DesktopActivity *>(sender());
+      qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       if (activity->window()) {

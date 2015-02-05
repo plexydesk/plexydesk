@@ -65,8 +65,8 @@
 typedef void(APIENTRYP type_glActiveTexture)(GLenum texture);
 typedef void(APIENTRYP type_glGenerateMipmap)(GLenum target);
 typedef void(APIENTRYP type_glVertexAttribPointer)(GLuint, GLint, GLenum,
-                                                   GLboolean, GLsizei,
-                                                   const GLvoid *);
+    GLboolean, GLsizei,
+    const GLvoid *);
 
 #define glActiveTexture                                                        \
   ((type_glActiveTexture)QGLContext::currentContext()->getProcAddress(         \

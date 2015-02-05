@@ -27,7 +27,8 @@
 #include "calendarwidget.h"
 #include "datecellfactory.h"
 
-class DatePickerActivity::PrivateDatePicker {
+class DatePickerActivity::PrivateDatePicker
+{
 public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
@@ -45,29 +46,26 @@ public:
 };
 
 DatePickerActivity::DatePickerActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateDatePicker) {}
+  : UI::DesktopActivity(object), d(new PrivateDatePicker) {}
 
 DatePickerActivity::~DatePickerActivity() { delete d; }
 
 void DatePickerActivity::createWindow(const QRectF &window_geometry,
                                       const QString &window_title,
-                                      const QPointF &window_pos) {
+                                      const QPointF &window_pos)
+{
   d->mFrame = new UI::UIWidget();
 
   updateContentGeometry(d->mFrame);
   setGeometry(window_geometry);
 
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground, false);
-  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle, false);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Window::kRenderBackground, false);
+  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
 
   d->mCalendarWidget = new CalendarWidget(d->mFrame);
 
   d->mCalendarWidget->setPos(0.0, 0.0);
-
-  d->mFrame->setWindowTitle(window_title);
 
   exec(window_pos);
 
@@ -78,8 +76,6 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
   connect(d->mLoader, SIGNAL(imageSearchDone(QImage)), this,
           SLOT(onImageReady(QImage)));
 
-  d->mFrame->updateWindowButton(d->mCalendarWidget->zValue());
-
   connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
           SLOT(onWidgetClosed(UI::UIWidget *)));
   connect(d->mCalendarWidget, SIGNAL(done()), this, SLOT(onCalendarReady()));
@@ -89,18 +85,21 @@ QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
 UI::UIWidget *DatePickerActivity::window() const { return d->mFrame; }
 
-void DatePickerActivity::onWidgetClosed(UI::UIWidget *widget) {
+void DatePickerActivity::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
 
 void DatePickerActivity::onHideAnimationFinished() { Q_EMIT finished(); }
 
-void DatePickerActivity::onImageReady(const QImage &img) {
+void DatePickerActivity::onImageReady(const QImage &img)
+{
   d->mCalendarWidget->setBackgroundImage(img);
 }
 
-void DatePickerActivity::onCalendarReady() {
+void DatePickerActivity::onCalendarReady()
+{
   if (!d->mCalendarWidget) {
     d->m_result_data["date"] = QVariant(QDate::currentDate().toString());
     d->m_result_data["hour"] = QVariant(0);

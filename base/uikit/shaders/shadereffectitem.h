@@ -50,19 +50,21 @@
 
 #include "shaders_global.h"
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
-class SHADERSSHARED_EXPORT ShaderEffectItem : public QDeclarativeItem {
+class SHADERSSHARED_EXPORT ShaderEffectItem : public QDeclarativeItem
+{
   Q_OBJECT
   Q_INTERFACES(QDeclarativeParserStatus)
   Q_PROPERTY(QString fragmentShader READ fragmentShader WRITE setFragmentShader
-                 NOTIFY fragmentShaderChanged)
+             NOTIFY fragmentShaderChanged)
   Q_PROPERTY(QString vertexShader READ vertexShader WRITE setVertexShader NOTIFY
-                 vertexShaderChanged)
+             vertexShaderChanged)
   Q_PROPERTY(bool blending READ blending WRITE setBlending NOTIFY
-                 blendingChanged)
+             blendingChanged)
   Q_PROPERTY(QSize meshResolution READ meshResolution WRITE setMeshResolution
-                 NOTIFY meshResolutionChanged)
+             NOTIFY meshResolutionChanged)
 
 public:
   ShaderEffectItem(QDeclarativeItem *parent = 0);

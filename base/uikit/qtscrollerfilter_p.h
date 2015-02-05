@@ -68,7 +68,8 @@ class QWebFrame;
 #define QTSCROLLER_NO_WEBKIT 1
 #endif
 
-class QtScrollerFilter : public QObject {
+class QtScrollerFilter : public QObject
+{
   Q_OBJECT
 
 public:
@@ -94,7 +95,7 @@ protected:
   bool eventFilter_QAbstractScrollArea(QAbstractScrollArea *area,
                                        QEvent *event);
   bool canStartScrollingAt_QAbstractScrollArea(QAbstractScrollArea *area,
-                                               const QPoint &pos) const;
+      const QPoint &pos) const;
   QMap<QAbstractScrollArea *, QPoint> overshoot;
   bool ignoreMove;
 

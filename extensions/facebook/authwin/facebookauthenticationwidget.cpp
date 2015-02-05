@@ -9,7 +9,8 @@
 #include <cookiejar.h>
 #include <QNetworkAccessManager>
 
-class FacebookAuthenticationWidget::PrivateFacebookAuthenticationWidget {
+class FacebookAuthenticationWidget::PrivateFacebookAuthenticationWidget
+{
 public:
   PrivateFacebookAuthenticationWidget() {}
   ~PrivateFacebookAuthenticationWidget() {}
@@ -21,9 +22,10 @@ public:
 };
 
 FacebookAuthenticationWidget::FacebookAuthenticationWidget(
-    const QRectF &rect, QGraphicsObject *parent)
-    : PlexyDesk::DesktopWidget(rect, parent),
-      d(new PrivateFacebookAuthenticationWidget) {
+  const QRectF &rect, QGraphicsObject *parent)
+  : PlexyDesk::DesktopWidget(rect, parent),
+    d(new PrivateFacebookAuthenticationWidget)
+{
 
   d->mNm = new QNetworkAccessManager(this);
   d->mCookieJar = new CookieJar(this);
@@ -57,19 +59,23 @@ FacebookAuthenticationWidget::FacebookAuthenticationWidget(
 
 FacebookAuthenticationWidget::~FacebookAuthenticationWidget() { delete d; }
 
-QString FacebookAuthenticationWidget::permissions() const {
+QString FacebookAuthenticationWidget::permissions() const
+{
   return d->mPermissions;
 }
 
-void FacebookAuthenticationWidget::addPermissions(const QString &perm) {
+void FacebookAuthenticationWidget::addPermissions(const QString &perm)
+{
   d->mPermissions += "," + perm;
 }
 
-void FacebookAuthenticationWidget::onLoadFinished(bool ok) {
+void FacebookAuthenticationWidget::onLoadFinished(bool ok)
+{
   this->setContentRect(d->mWebView->geometry());
 }
 
-void FacebookAuthenticationWidget::onUrlChanged(const QUrl &url) {
+void FacebookAuthenticationWidget::onUrlChanged(const QUrl &url)
+{
   QString stringUrl = url.toString().replace("#", "?");
   qDebug() << stringUrl;
   QUrl newUrl(stringUrl);
@@ -81,8 +87,8 @@ void FacebookAuthenticationWidget::onUrlChanged(const QUrl &url) {
     /* save the auth token */
     if (controller() && controller()->viewport()) {
       PlexyDesk::AbstractDesktopView *view =
-          qobject_cast<PlexyDesk::AbstractDesktopView *>(
-              controller()->viewport());
+        qobject_cast<PlexyDesk::AbstractDesktopView *>(
+          controller()->viewport());
 
       if (view) {
         qDebug() << Q_FUNC_INFO << "Saving Session Token for Facebook : "

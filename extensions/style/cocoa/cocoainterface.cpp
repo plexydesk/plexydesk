@@ -23,9 +23,10 @@
 
 static void destroyStyle(UI::Style *style) { delete style; }
 
-QSharedPointer<UI::Style> CocoaInterface::style() {
+QSharedPointer<UI::Style> CocoaInterface::style()
+{
   QSharedPointer<UI::Style> obj = QSharedPointer<UI::Style>(
-      (UI::Style *)new CocoaStyle(), &destroyStyle);
+                                    (UI::Style *)new CocoaStyle(), &destroyStyle);
 
   return obj;
 }

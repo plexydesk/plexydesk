@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <datainterface.h>
 
-class VISIBLE_SYM ExampleData : public PlexyDesk::DataPlugin {
+class VISIBLE_SYM ExampleData : public PlexyDesk::DataPlugin
+{
   Q_OBJECT
 
 public:

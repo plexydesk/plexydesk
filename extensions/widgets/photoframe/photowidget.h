@@ -5,7 +5,8 @@
 #include <desktopwidget.h>
 #include <QGraphicsDropShadowEffect>
 
-class PhotoWidget : public UI::UIWidget {
+class PhotoWidget : public UI::UIWidget
+{
   Q_OBJECT
 
 public:

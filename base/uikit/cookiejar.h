@@ -56,17 +56,18 @@ class QKeyEvent;
 
 class AutoSaver;
 
-class PlexyDeskUICore_EXPORT CookieJar : public QNetworkCookieJar {
+class PlexyDeskUICore_EXPORT CookieJar : public QNetworkCookieJar
+{
   friend class CookieModel;
   Q_OBJECT
   Q_PROPERTY(AcceptPolicy acceptPolicy READ acceptPolicy WRITE setAcceptPolicy)
   Q_PROPERTY(KeepPolicy keepPolicy READ keepPolicy WRITE setKeepPolicy)
   Q_PROPERTY(QStringList blockedCookies READ blockedCookies WRITE
-                 setBlockedCookies)
+             setBlockedCookies)
   Q_PROPERTY(QStringList allowedCookies READ allowedCookies WRITE
-                 setAllowedCookies)
+             setAllowedCookies)
   Q_PROPERTY(QStringList allowForSessionCookies READ allowForSessionCookies
-                 WRITE setAllowForSessionCookies)
+             WRITE setAllowForSessionCookies)
   Q_ENUMS(KeepPolicy)
   Q_ENUMS(AcceptPolicy)
 
@@ -124,7 +125,8 @@ private:
   QStringList m_exceptions_allowForSession;
 };
 
-class CookieModel : public QAbstractTableModel {
+class CookieModel : public QAbstractTableModel
+{
   Q_OBJECT
 
 public:
@@ -143,7 +145,8 @@ private:
   CookieJar *m_cookieJar;
 };
 
-class CookiesDialog : public QDialog, public Ui_CookiesDialog {
+class CookiesDialog : public QDialog, public Ui_CookiesDialog
+{
   Q_OBJECT
 
 public:
@@ -153,7 +156,8 @@ private:
   QSortFilterProxyModel *m_proxyModel;
 };
 
-class CookieExceptionsModel : public QAbstractTableModel {
+class CookieExceptionsModel : public QAbstractTableModel
+{
   Q_OBJECT
   friend class CookiesExceptionsDialog;
 
@@ -176,7 +180,8 @@ private:
 };
 
 class CookiesExceptionsDialog : public QDialog,
-                                public Ui_CookiesExceptionsDialog {
+  public Ui_CookiesExceptionsDialog
+{
   Q_OBJECT
 
 public:

@@ -5,9 +5,11 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 
-class QuetzalSocialKit_EXPORT AsyncImageLoader : public QThread {
+class QuetzalSocialKit_EXPORT AsyncImageLoader : public QThread
+{
   Q_OBJECT
 public:
   AsyncImageLoader(QObject *parent = 0);

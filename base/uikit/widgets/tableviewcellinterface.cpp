@@ -19,7 +19,8 @@
 
 #include "tableviewcellinterface.h"
 
-namespace UI {
+namespace UI
+{
 
 TableModel::TableModel(QObject *parent) : QObject(parent) {}
 
@@ -31,7 +32,8 @@ float TableModel::leftMargin() const { return 0.0; }
 
 float TableModel::rightMargin() const { return 0.0; }
 
-TableModel::TableRenderMode TableModel::renderType() const {
+TableModel::TableRenderMode TableModel::renderType() const
+{
   return kRenderAsListView;
 }
 

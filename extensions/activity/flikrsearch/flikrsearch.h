@@ -29,7 +29,8 @@
 #include <abstractcellcomponent.h>
 
 using namespace UI;
-class FlickrSearchActivity : public UI::DesktopActivity {
+class FlickrSearchActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

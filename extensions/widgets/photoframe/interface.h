@@ -23,7 +23,8 @@
 
 #include <controllerplugininterface.h>
 
-class Interface : public QObject, public UI::ControllerPluginInterface {
+class Interface : public QObject, public UI::ControllerPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(UI::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.foo")

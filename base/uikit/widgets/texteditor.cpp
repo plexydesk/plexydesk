@@ -12,9 +12,13 @@
 #include <QDebug>
 #include <QApplication>
 
-namespace UI {
+#include <widget.h>
 
-class TextEditor::PrivateTextEditor {
+namespace UI
+{
+
+class TextEditor::PrivateTextEditor
+{
 public:
   PrivateTextEditor() {}
   ~PrivateTextEditor() {}
@@ -27,7 +31,8 @@ public:
 };
 
 TextEditor::TextEditor(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateTextEditor) {
+  : UI::UIWidget(parent), d(new PrivateTextEditor)
+{
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
   d->mEditor->setReadOnly(false);
@@ -51,8 +56,8 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   d->mProxyWidget->setPos(0.0, 0.0);
 
   d->mTextScaleFactor = 1.0;
-  setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
-  setWindowFlag(UI::UIWidget::kRenderBackground, false);
+  setWindowFlag(UI::Window::kRenderDropShadow, false);
+  setWindowFlag(UI::Window::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
   connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(onTextUpdated()));
@@ -64,17 +69,21 @@ TextEditor::~TextEditor() { delete d; }
 
 void TextEditor::setText(const QString &text) { d->mEditor->setText(text); }
 
-void TextEditor::setPlaceholderText(const QString &placeholderText) {
+void TextEditor::setPlaceholderText(const QString &placeholderText)
+{
   // if (d->mEditor)
   //   d->mEditor->setPlaceholderText(placeholderText);
 }
 
-void TextEditor::setFontPointSize(qreal s) {
-  if (d->mEditor)
+void TextEditor::setFontPointSize(qreal s)
+{
+  if (d->mEditor) {
     d->mEditor->setFontPointSize(s);
+  }
 }
 
-QString TextEditor::text() const {
+QString TextEditor::text() const
+{
   if (d->mEditor) {
     return d->mEditor->toPlainText();
   }
@@ -82,18 +91,21 @@ QString TextEditor::text() const {
   return QString();
 }
 
-void TextEditor::style(const QString &style) {
+void TextEditor::style(const QString &style)
+{
   if (d->mEditor) {
     d->mEditor->setStyleSheet(style);
   }
 }
 
 QSizeF TextEditor::sizeHint(Qt::SizeHint which,
-                            const QSizeF &constraint) const {
+                            const QSizeF &constraint) const
+{
   return d->mEditor->size();
 }
 
-void TextEditor::setGeometry(const QRectF &rect) {
+void TextEditor::setGeometry(const QRectF &rect)
+{
   qDebug() << Q_FUNC_INFO << "=========================================" << rect
            << "=========================================";
 
@@ -105,7 +117,8 @@ void TextEditor::setGeometry(const QRectF &rect) {
   UIWidget::setGeometry(rect);
 }
 
-void TextEditor::updateTextScale() {
+void TextEditor::updateTextScale()
+{
   QRectF bounds = boundingRect();
   const QRectF newBounds(bounds.x(), bounds.y(),
                          bounds.width() / d->mTextScaleFactor,
@@ -121,9 +134,11 @@ void TextEditor::updateTextScale() {
   setScale(d->mTextScaleFactor);
 }
 
-void TextEditor::beginList() {
-  if (!d->mEditor)
+void TextEditor::beginList()
+{
+  if (!d->mEditor) {
     return;
+  }
 
   QTextCursor cursor = d->mEditor->textCursor();
 
@@ -133,14 +148,18 @@ void TextEditor::beginList() {
   cursor.endEditBlock();
 }
 
-void TextEditor::endList() {
-  if (!d->mEditor)
+void TextEditor::endList()
+{
+  if (!d->mEditor) {
     return;
+  }
 }
 
-void TextEditor::convertToLink() {
-  if (!d->mEditor)
+void TextEditor::convertToLink()
+{
+  if (!d->mEditor) {
     return;
+  }
 
   QTextCursor cursor = d->mEditor->textCursor();
 
@@ -152,8 +171,8 @@ void TextEditor::convertToLink() {
       qDebug() << Q_FUNC_INFO << url;
       cursor.beginEditBlock();
       cursor.insertFragment(QTextDocumentFragment::fromHtml(
-          QString("<a href=\"%1\"> %2</a> <p> </p>").arg(url.toString()).arg(
-              url.toString())));
+                              QString("<a href=\"%1\"> %2</a> <p> </p>").arg(url.toString()).arg(
+                                url.toString())));
       cursor.endEditBlock();
     }
   } else if (mimeData->hasText()) {
@@ -164,19 +183,21 @@ void TextEditor::convertToLink() {
     if (proto == "http:" || proto == "https" || proto == "ftp:/") {
       cursor.beginEditBlock();
       cursor.insertFragment(QTextDocumentFragment::fromHtml(
-          QString("<a href=\"%1\">%2</a> <p> </p>").arg(testUrl.toString()).arg(
-              testUrl.toString())));
+                              QString("<a href=\"%1\">%2</a> <p> </p>").arg(testUrl.toString()).arg(
+                                testUrl.toString())));
       cursor.endEditBlock();
     }
   }
 }
 
-void TextEditor::onTextUpdated() {
+void TextEditor::onTextUpdated()
+{
   QTextDocument *doc = d->mEditor->document();
   Q_EMIT textUpdated(this->text());
 }
 
-void TextEditor::onBlockCountChanged(int count) {
+void TextEditor::onBlockCountChanged(int count)
+{
   if (count == 2) {
     QTextDocument *document = d->mEditor->document();
     QTextCursor cursor(document);
@@ -193,7 +214,8 @@ void TextEditor::onBlockCountChanged(int count) {
   }
 }
 
-void TextEditor::setTextScaleFactor(qreal scaleFactor) {
+void TextEditor::setTextScaleFactor(qreal scaleFactor)
+{
   d->mTextScaleFactor = scaleFactor;
   updateTextScale();
 }
@@ -201,7 +223,8 @@ void TextEditor::setTextScaleFactor(qreal scaleFactor) {
 qreal TextEditor::textScaleFactor() const { return d->mTextScaleFactor; }
 
 QString TextEditor::PrivateTextEditor::extractHeader(
-    const QString &headerText) {
+  const QString &headerText)
+{
   QString headerString = QString("<h1><b>" + headerText + "</b></h1>");
 
   return headerString;

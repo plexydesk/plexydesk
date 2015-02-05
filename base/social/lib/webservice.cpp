@@ -13,13 +13,16 @@
 
 #include "servicedefinition.h"
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 
-class WebService::PrivateWebService {
+class WebService::PrivateWebService
+{
 
 public:
   PrivateWebService() {}
-  ~PrivateWebService() {
+  ~PrivateWebService()
+  {
     // qDebug() << Q_FUNC_INFO;
   }
 
@@ -37,21 +40,23 @@ public:
 };
 
 WebService::WebService(QObject *parent)
-    : QObject(parent), d(new PrivateWebService) {
+  : QObject(parent), d(new PrivateWebService)
+{
   d->mNetworkManager = new QNetworkAccessManager(this);
   connect(d->mNetworkManager, SIGNAL(finished(QNetworkReply *)), this,
           SLOT(onNetworkRequestFinished(QNetworkReply *)));
 
   d->mSocialDefPrefix = QDir::toNativeSeparators(
-      QString("%1/%2").arg(installPrefix()).arg("/share/social/"));
+                          QString("%1/%2").arg(installPrefix()).arg("/share/social/"));
 }
 
 WebService::~WebService() { delete d; }
 
-void WebService::create(const QString &serviceName) {
+void WebService::create(const QString &serviceName)
+{
   d->mServiceName = serviceName;
   d->mSocialDefPath = QDir::toNativeSeparators(
-      QString("%1/%2.xml").arg(d->mSocialDefPrefix).arg(serviceName));
+                        QString("%1/%2.xml").arg(d->mSocialDefPrefix).arg(serviceName));
   // qDebug() << Q_FUNC_INFO << d->mSocialDefPath;
 
   d->mServiceDef = new ServiceDefinition(d->mSocialDefPath, this);
@@ -63,7 +68,8 @@ void WebService::queryService(const QString &method,
                               const QVariantMap &arguments,
                               QHttpMultiPart *data,
                               const QByteArray &headerName,
-                              const QByteArray &headerValue) {
+                              const QByteArray &headerValue)
+{
   if (d->mServiceDef) {
     QUrl url = d->mServiceDef->queryURL(method, arguments);
     uint requestType = d->mServiceDef->requestType(method);
@@ -87,11 +93,13 @@ void WebService::queryService(const QString &method,
   }
 }
 
-QVariantMap WebService::inputArgumentForMethod(const QString &str) {
+QVariantMap WebService::inputArgumentForMethod(const QString &str)
+{
   return d->mInputArguments[str];
 }
 
-QVariantMap WebService::serviceData() const {
+QVariantMap WebService::serviceData() const
+{
   QVariantMap rv;
 
   return rv;
@@ -101,10 +109,11 @@ QByteArray WebService::rawServiceData() const { return d->mServiceData; }
 
 QString WebService::methodName() const { return d->mMethodName; }
 
-QList<QVariantMap> WebService::methodData(const QString &methodName) const {
+QList<QVariantMap> WebService::methodData(const QString &methodName) const
+{
   QList<QVariantMap> rv;
   QMultiMap<QString, QVariantMap>::iterator i =
-      d->mProcessedData.find(methodName);
+    d->mProcessedData.find(methodName);
   while (i != d->mProcessedData.end() && i.key() == methodName) {
     rv.append(i.value());
     ++i;
@@ -113,22 +122,25 @@ QList<QVariantMap> WebService::methodData(const QString &methodName) const {
   return rv;
 }
 
-QStringList WebService::availableData() const {
+QStringList WebService::availableData() const
+{
   return d->mProcessedData.keys();
 }
 
-void WebService::onNetworkRequestFinished(QNetworkReply *reply) {
+void WebService::onNetworkRequestFinished(QNetworkReply *reply)
+{
   if (reply) {
     d->mServiceData = reply->readAll();
     reply->deleteLater();
     d->mProcessedData =
-        d->mServiceDef->queryResult(d->mMethodName, d->mServiceData);
+      d->mServiceDef->queryResult(d->mMethodName, d->mServiceData);
   }
 
   Q_EMIT finished(this);
 }
 
-void WebService::onDownloadRequestComplete() {
+void WebService::onDownloadRequestComplete()
+{
   QNetworkReply *request = qobject_cast<QNetworkReply *>(sender());
 
   if (request) {
@@ -138,7 +150,8 @@ void WebService::onDownloadRequestComplete() {
   }
 }
 
-QString WebService::installPrefix() const {
+QString WebService::installPrefix() const
+{
 #ifndef Q_OS_WINDOWS
   QDir binaryPath(QCoreApplication::applicationDirPath());
   if (binaryPath.cdUp()) {
@@ -158,9 +171,9 @@ QString WebService::installPrefix() const {
 #ifdef Q_OS_MAC
   CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
   CFStringRef macPath =
-      CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
+    CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
   const char *pathPtr =
-      CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+    CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
   CFRelease(appUrlRef);
   CFRelease(macPath);
   return QLatin1String(pathPtr) + QString("/Contents/");

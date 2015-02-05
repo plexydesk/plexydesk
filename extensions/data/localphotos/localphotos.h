@@ -25,7 +25,8 @@
 #include <abstractplugininterface.h>
 #include <datainterface.h>
 
-class VISIBLE_SYM LPhotoData : public PlexyDesk::DataPlugin {
+class VISIBLE_SYM LPhotoData : public PlexyDesk::DataPlugin
+{
   Q_OBJECT
 
 public:

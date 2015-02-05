@@ -20,8 +20,10 @@
 #include <QtDeclarative/QDeclarativeComponent>
 #include <plexyqmlglue.h>
 
-namespace PlexyDesk {
-class QmlDesktopWidget::PrivateQmlDesktopWidget {
+namespace PlexyDesk
+{
+class QmlDesktopWidget::PrivateQmlDesktopWidget
+{
 public:
   PrivateQmlDesktopWidget() {}
   ~PrivateQmlDesktopWidget() {}
@@ -33,7 +35,8 @@ public:
 
 QmlDesktopWidget::QmlDesktopWidget(const QRectF &rect, QWidget * /*widget*/,
                                    QGraphicsObject *parent)
-    : DesktopWidget(rect, parent), d(new PrivateQmlDesktopWidget) {
+  : DesktopWidget(rect, parent), d(new PrivateQmlDesktopWidget)
+{
   d->mQmlEngine = PlexyQmlGlue::qmlEngine();
   d->mQmlChild = 0;
 }
@@ -42,7 +45,8 @@ QmlDesktopWidget::~QmlDesktopWidget() { delete d; }
 
 QDeclarativeEngine *QmlDesktopWidget::engine() const { return d->mQmlEngine; }
 
-void QmlDesktopWidget::setSourceUrl(const QUrl &url) {
+void QmlDesktopWidget::setSourceUrl(const QUrl &url)
+{
   d->mQmlUrl = url;
   qDebug() << Q_FUNC_INFO << url;
 
@@ -51,8 +55,8 @@ void QmlDesktopWidget::setSourceUrl(const QUrl &url) {
   }
 
   QDeclarativeComponent component(
-      d->mQmlEngine, QDir::cleanPath(url.toString(QUrl::StripTrailingSlash |
-                                                  QUrl::RemoveScheme)));
+    d->mQmlEngine, QDir::cleanPath(url.toString(QUrl::StripTrailingSlash |
+                                   QUrl::RemoveScheme)));
 
   if (!component.isReady()) {
     if (component.isError()) {
@@ -64,7 +68,7 @@ void QmlDesktopWidget::setSourceUrl(const QUrl &url) {
   }
 
   d->mQmlChild = qobject_cast<QGraphicsObject *>(
-      component.create(d->mQmlEngine->rootContext()));
+                   component.create(d->mQmlEngine->rootContext()));
   QRectF objectRect = d->mQmlChild->boundingRect();
 
   setContentRect(objectRect);
@@ -81,32 +85,37 @@ void QmlDesktopWidget::setSourceUrl(const QUrl &url) {
 
 bool QmlDesktopWidget::hasBackground() const { return d->mHasBackground; }
 
-void QmlDesktopWidget::setHasBackground(bool background) {
+void QmlDesktopWidget::setHasBackground(bool background)
+{
   setWidgetFlag(PlexyDesk::DesktopWidget::kRenderBackground, true);
   d->mHasBackground = background;
 }
 
-void QmlDesktopWidget::onQuit() {
+void QmlDesktopWidget::onQuit()
+{
   d->mQmlChild->hide();
   scene()->removeItem(d->mQmlChild);
   d->mQmlChild->setParentItem(0);
   Q_EMIT closed(this);
 }
 
-void QmlDesktopWidget::onStateChanged() {
+void QmlDesktopWidget::onStateChanged()
+{
   if (d->mQmlChild) {
     if (state() == ROTATED) {
       d->mQmlChild->hide();
       setWidgetFlag(PlexyDesk::DesktopWidget::kRenderBackground, true);
     } else if (state() == NORMAL) {
       d->mQmlChild->show();
-      if (!hasBackground())
+      if (!hasBackground()) {
         setWidgetFlag(PlexyDesk::DesktopWidget::kRenderBackground, false);
+      }
     }
   }
 }
 
-void QmlDesktopWidget::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+void QmlDesktopWidget::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
   /* When the user clicks the widget is in NORMAL mode
    * So we hide the child widget and when he clicks
    * We show the qml Child of the widget

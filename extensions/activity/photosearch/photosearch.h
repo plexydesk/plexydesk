@@ -28,7 +28,8 @@
 #include <abstractcellcomponent.h>
 
 using namespace UI;
-class PhotoSearchActivity : public UI::DesktopActivity {
+class PhotoSearchActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

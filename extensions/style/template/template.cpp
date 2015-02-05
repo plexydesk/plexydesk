@@ -21,25 +21,26 @@
 #include <QTimer>
 #include <controllerinterface.h>
 
-class TemplateStyle::PrivateTemplate {
+class TemplateStyle::PrivateTemplate
+{
 public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
 };
 
 TemplateStyle::TemplateStyle(QObject *parent)
-    : PlexyDesk::Style(parent), d(new PrivateTemplate) {}
+  : PlexyDesk::Style(parent), d(new PrivateTemplate) {}
 
 TemplateStyle::~TemplateStyle() { delete d; }
 
 void TemplateStyle::paintControlElement(
-    PlexyDesk::Style::ControlElement element,
-    const PlexyDesk::StyleFeatures &feature, QPainter *painter) {}
+  PlexyDesk::Style::ControlElement element,
+  const PlexyDesk::StyleFeatures &feature, QPainter *painter) {}
 
 void TemplateStyle::paintControlElementText(
-    PlexyDesk::Style::ControlElement element,
-    const PlexyDesk::StyleFeatures &feature, const QString &text,
-    QPainter *painter) {}
+  PlexyDesk::Style::ControlElement element,
+  const PlexyDesk::StyleFeatures &feature, const QString &text,
+  QPainter *painter) {}
 
 PlexyDesk::StyleFeatures TemplateStyle::controlElementFeatures(
-    PlexyDesk::Style::ControlElement element) {}
+  PlexyDesk::Style::ControlElement element) {}

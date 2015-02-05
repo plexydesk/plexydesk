@@ -24,9 +24,11 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-namespace UI {
+namespace UI
+{
 
-class WindowButton::PrivateWindowButton {
+class WindowButton::PrivateWindowButton
+{
 public:
   PrivateWindowButton() {}
   ~PrivateWindowButton() {}
@@ -35,30 +37,35 @@ public:
 };
 
 WindowButton::WindowButton(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateWindowButton) {
+  : UI::UIWidget(parent), d(new PrivateWindowButton)
+{
   setGeometry(boundingRect());
   d->mType = CLOSE;
 }
 
 WindowButton::~WindowButton() { delete d; }
 
-void WindowButton::setButtonType(WindowButton::WindowButtonType type) {
+void WindowButton::setButtonType(WindowButton::WindowButtonType type)
+{
   d->mType = type;
 }
 
-QRectF WindowButton::boundingRect() const {
-  if (!Theme::style())
+QRectF WindowButton::boundingRect() const
+{
+  if (!Theme::style()) {
     return QRectF();
+  }
 
   return QRectF(
-      0.0, 0.0,
-      Theme::style()->attrbute("frame", "window_close_button_width").toFloat(),
-      Theme::style()
-          ->attrbute("frame", "window_close_button_height")
-          .toFloat());
+           0.0, 0.0,
+           Theme::style()->attrbute("frame", "window_close_button_width").toFloat(),
+           Theme::style()
+           ->attrbute("frame", "window_close_button_height")
+           .toFloat());
 }
 
-void WindowButton::paintNormalButton(QPainter *painter, const QRectF &rect) {
+void WindowButton::paintNormalButton(QPainter *painter, const QRectF &rect)
+{
   StyleFeatures feature;
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderElement;
@@ -68,7 +75,8 @@ void WindowButton::paintNormalButton(QPainter *painter, const QRectF &rect) {
   }
 }
 
-void WindowButton::paintSunkenButton(QPainter *painter, const QRectF &rect) {
+void WindowButton::paintSunkenButton(QPainter *painter, const QRectF &rect)
+{
   StyleFeatures feature;
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderRaised;

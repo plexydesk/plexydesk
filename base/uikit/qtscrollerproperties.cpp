@@ -53,7 +53,8 @@
 static QtScrollerPropertiesPrivate *userDefaults = 0;
 static QtScrollerPropertiesPrivate *systemDefaults = 0;
 
-QtScrollerPropertiesPrivate *QtScrollerPropertiesPrivate::defaults() {
+QtScrollerPropertiesPrivate *QtScrollerPropertiesPrivate::defaults()
+{
   if (!systemDefaults) {
     QtScrollerPropertiesPrivate spp;
 #if defined(Q_WS_MAEMO_5)
@@ -117,8 +118,9 @@ QtScrollerPropertiesPrivate *QtScrollerPropertiesPrivate::defaults() {
     spp.overshootScrollTime = qreal(0.7);
     spp.frameRate = QtScrollerProperties::Fps30;
 #ifdef Q_WS_WIN
-    if (QLibrary::resolve(QLatin1String("UxTheme"), "BeginPanningFeedback"))
+    if (QLibrary::resolve(QLatin1String("UxTheme"), "BeginPanningFeedback")) {
       spp.overshootScrollTime = qreal(0.35);
+    }
 #endif
     spp.hOvershootPolicy = QtScrollerProperties::OvershootWhenScrollable;
     spp.vOvershootPolicy = QtScrollerProperties::OvershootWhenScrollable;
@@ -127,7 +129,7 @@ QtScrollerPropertiesPrivate *QtScrollerPropertiesPrivate::defaults() {
     systemDefaults = new QtScrollerPropertiesPrivate(spp);
   }
   return new QtScrollerPropertiesPrivate(userDefaults ? *userDefaults
-                                                      : *systemDefaults);
+                                         : *systemDefaults);
 }
 
 /*!
@@ -150,20 +152,21 @@ QtScrollerPropertiesPrivate *QtScrollerPropertiesPrivate::defaults() {
     Constructs new scroller properties.
 */
 QtScrollerProperties::QtScrollerProperties()
-    : d(QtScrollerPropertiesPrivate::defaults()) {}
+  : d(QtScrollerPropertiesPrivate::defaults()) {}
 
 /*!
     Constructs a copy of \a sp.
 */
 QtScrollerProperties::QtScrollerProperties(const QtScrollerProperties &sp)
-    : d(new QtScrollerPropertiesPrivate(*sp.d)) {}
+  : d(new QtScrollerPropertiesPrivate(*sp.d)) {}
 
 /*!
     Assigns \a sp to these scroller properties and returns a reference to these
    scroller properties.
 */
 QtScrollerProperties &QtScrollerProperties::operator=(
-    const QtScrollerProperties &sp) {
+  const QtScrollerProperties &sp)
+{
   *d.data() = *sp.d.data();
   return *this;
 }
@@ -177,7 +180,8 @@ QtScrollerProperties::~QtScrollerProperties() {}
     Returns true if these scroller properties are equal to \a sp; otherwise
    returns false.
 */
-bool QtScrollerProperties::operator==(const QtScrollerProperties &sp) const {
+bool QtScrollerProperties::operator==(const QtScrollerProperties &sp) const
+{
   return *d.data() == *sp.d.data();
 }
 
@@ -185,12 +189,14 @@ bool QtScrollerProperties::operator==(const QtScrollerProperties &sp) const {
     Returns true if these scroller properties are different from \a sp;
    otherwise returns false.
 */
-bool QtScrollerProperties::operator!=(const QtScrollerProperties &sp) const {
+bool QtScrollerProperties::operator!=(const QtScrollerProperties &sp) const
+{
   return !(*d.data() == *sp.d.data());
 }
 
 bool QtScrollerPropertiesPrivate::operator==(
-    const QtScrollerPropertiesPrivate &p) const {
+  const QtScrollerPropertiesPrivate &p) const
+{
   bool same = true;
   same &= (mousePressEventDelay == p.mousePressEventDelay);
   same &= (dragStartDistance == p.dragStartDistance);
@@ -231,11 +237,13 @@ bool QtScrollerPropertiesPrivate::operator==(
      \sa unsetDefaultScrollerProperties()
 */
 void QtScrollerProperties::setDefaultScrollerProperties(
-    const QtScrollerProperties &sp) {
-  if (!userDefaults)
+  const QtScrollerProperties &sp)
+{
+  if (!userDefaults) {
     userDefaults = new QtScrollerPropertiesPrivate(*sp.d);
-  else
+  } else {
     *userDefaults = *sp.d;
+  }
 }
 
 /*!
@@ -245,7 +253,8 @@ void QtScrollerProperties::setDefaultScrollerProperties(
 
      \sa setDefaultScrollerProperties()
 */
-void QtScrollerProperties::unsetDefaultScrollerProperties() {
+void QtScrollerProperties::unsetDefaultScrollerProperties()
+{
   delete userDefaults;
   userDefaults = 0;
 }
@@ -255,50 +264,51 @@ void QtScrollerProperties::unsetDefaultScrollerProperties() {
 
     \sa setScrollMetric(), ScrollMetric
 */
-QVariant QtScrollerProperties::scrollMetric(ScrollMetric metric) const {
+QVariant QtScrollerProperties::scrollMetric(ScrollMetric metric) const
+{
   switch (metric) {
-    case MousePressEventDelay:
-      return d->mousePressEventDelay;
-    case DragStartDistance:
-      return d->dragStartDistance;
-    case DragVelocitySmoothingFactor:
-      return d->dragVelocitySmoothingFactor;
-    case AxisLockThreshold:
-      return d->axisLockThreshold;
-    case ScrollingCurve:
-      return QVariant::fromValue(d->scrollingCurve);
-    case DecelerationFactor:
-      return d->decelerationFactor;
-    case MinimumVelocity:
-      return d->minimumVelocity;
-    case MaximumVelocity:
-      return d->maximumVelocity;
-    case MaximumClickThroughVelocity:
-      return d->maximumClickThroughVelocity;
-    case AcceleratingFlickMaximumTime:
-      return d->acceleratingFlickMaximumTime;
-    case AcceleratingFlickSpeedupFactor:
-      return d->acceleratingFlickSpeedupFactor;
-    case SnapPositionRatio:
-      return d->snapPositionRatio;
-    case SnapTime:
-      return d->snapTime;
-    case OvershootDragResistanceFactor:
-      return d->overshootDragResistanceFactor;
-    case OvershootDragDistanceFactor:
-      return d->overshootDragDistanceFactor;
-    case OvershootScrollDistanceFactor:
-      return d->overshootScrollDistanceFactor;
-    case OvershootScrollTime:
-      return d->overshootScrollTime;
-    case HorizontalOvershootPolicy:
-      return QVariant::fromValue(d->hOvershootPolicy);
-    case VerticalOvershootPolicy:
-      return QVariant::fromValue(d->vOvershootPolicy);
-    case FrameRate:
-      return QVariant::fromValue(d->frameRate);
-    case ScrollMetricCount:
-      break;
+  case MousePressEventDelay:
+    return d->mousePressEventDelay;
+  case DragStartDistance:
+    return d->dragStartDistance;
+  case DragVelocitySmoothingFactor:
+    return d->dragVelocitySmoothingFactor;
+  case AxisLockThreshold:
+    return d->axisLockThreshold;
+  case ScrollingCurve:
+    return QVariant::fromValue(d->scrollingCurve);
+  case DecelerationFactor:
+    return d->decelerationFactor;
+  case MinimumVelocity:
+    return d->minimumVelocity;
+  case MaximumVelocity:
+    return d->maximumVelocity;
+  case MaximumClickThroughVelocity:
+    return d->maximumClickThroughVelocity;
+  case AcceleratingFlickMaximumTime:
+    return d->acceleratingFlickMaximumTime;
+  case AcceleratingFlickSpeedupFactor:
+    return d->acceleratingFlickSpeedupFactor;
+  case SnapPositionRatio:
+    return d->snapPositionRatio;
+  case SnapTime:
+    return d->snapTime;
+  case OvershootDragResistanceFactor:
+    return d->overshootDragResistanceFactor;
+  case OvershootDragDistanceFactor:
+    return d->overshootDragDistanceFactor;
+  case OvershootScrollDistanceFactor:
+    return d->overshootScrollDistanceFactor;
+  case OvershootScrollTime:
+    return d->overshootScrollTime;
+  case HorizontalOvershootPolicy:
+    return QVariant::fromValue(d->hOvershootPolicy);
+  case VerticalOvershootPolicy:
+    return QVariant::fromValue(d->vOvershootPolicy);
+  case FrameRate:
+    return QVariant::fromValue(d->frameRate);
+  case ScrollMetricCount:
+    break;
   }
   return QVariant();
 }
@@ -309,75 +319,76 @@ QVariant QtScrollerProperties::scrollMetric(ScrollMetric metric) const {
     \sa scrollMetric(), ScrollMetric
 */
 void QtScrollerProperties::setScrollMetric(ScrollMetric metric,
-                                           const QVariant &value) {
+    const QVariant &value)
+{
   switch (metric) {
-    case MousePressEventDelay:
-      d->mousePressEventDelay = value.toReal();
-      break;
-    case DragStartDistance:
-      d->dragStartDistance = value.toReal();
-      break;
-    case DragVelocitySmoothingFactor:
-      d->dragVelocitySmoothingFactor =
-          qBound(qreal(0), value.toReal(), qreal(1));
-      break;
-    case AxisLockThreshold:
-      d->axisLockThreshold = qBound(qreal(0), value.toReal(), qreal(1));
-      break;
-    case ScrollingCurve:
-      d->scrollingCurve = value.value<QEasingCurve>();
-      break;
-    case DecelerationFactor:
-      d->decelerationFactor = value.toReal();
-      break;
-    case MinimumVelocity:
-      d->minimumVelocity = value.toReal();
-      break;
-    case MaximumVelocity:
-      d->maximumVelocity = value.toReal();
-      break;
-    case MaximumClickThroughVelocity:
-      d->maximumClickThroughVelocity = value.toReal();
-      break;
-    case AcceleratingFlickMaximumTime:
-      d->acceleratingFlickMaximumTime = value.toReal();
-      break;
-    case AcceleratingFlickSpeedupFactor:
-      d->acceleratingFlickSpeedupFactor = value.toReal();
-      break;
-    case SnapPositionRatio:
-      d->snapPositionRatio = qBound(qreal(0), value.toReal(), qreal(1));
-      break;
-    case SnapTime:
-      d->snapTime = value.toReal();
-      break;
-    case OvershootDragResistanceFactor:
-      d->overshootDragResistanceFactor = value.toReal();
-      break;
-    case OvershootDragDistanceFactor:
-      d->overshootDragDistanceFactor =
-          qBound(qreal(0), value.toReal(), qreal(1));
-      break;
-    case OvershootScrollDistanceFactor:
-      d->overshootScrollDistanceFactor =
-          qBound(qreal(0), value.toReal(), qreal(1));
-      break;
-    case OvershootScrollTime:
-      d->overshootScrollTime = value.toReal();
-      break;
-    case HorizontalOvershootPolicy:
-      d->hOvershootPolicy =
-          value.value<QtScrollerProperties::OvershootPolicy>();
-      break;
-    case VerticalOvershootPolicy:
-      d->vOvershootPolicy =
-          value.value<QtScrollerProperties::OvershootPolicy>();
-      break;
-    case FrameRate:
-      d->frameRate = value.value<QtScrollerProperties::FrameRates>();
-      break;
-    case ScrollMetricCount:
-      break;
+  case MousePressEventDelay:
+    d->mousePressEventDelay = value.toReal();
+    break;
+  case DragStartDistance:
+    d->dragStartDistance = value.toReal();
+    break;
+  case DragVelocitySmoothingFactor:
+    d->dragVelocitySmoothingFactor =
+      qBound(qreal(0), value.toReal(), qreal(1));
+    break;
+  case AxisLockThreshold:
+    d->axisLockThreshold = qBound(qreal(0), value.toReal(), qreal(1));
+    break;
+  case ScrollingCurve:
+    d->scrollingCurve = value.value<QEasingCurve>();
+    break;
+  case DecelerationFactor:
+    d->decelerationFactor = value.toReal();
+    break;
+  case MinimumVelocity:
+    d->minimumVelocity = value.toReal();
+    break;
+  case MaximumVelocity:
+    d->maximumVelocity = value.toReal();
+    break;
+  case MaximumClickThroughVelocity:
+    d->maximumClickThroughVelocity = value.toReal();
+    break;
+  case AcceleratingFlickMaximumTime:
+    d->acceleratingFlickMaximumTime = value.toReal();
+    break;
+  case AcceleratingFlickSpeedupFactor:
+    d->acceleratingFlickSpeedupFactor = value.toReal();
+    break;
+  case SnapPositionRatio:
+    d->snapPositionRatio = qBound(qreal(0), value.toReal(), qreal(1));
+    break;
+  case SnapTime:
+    d->snapTime = value.toReal();
+    break;
+  case OvershootDragResistanceFactor:
+    d->overshootDragResistanceFactor = value.toReal();
+    break;
+  case OvershootDragDistanceFactor:
+    d->overshootDragDistanceFactor =
+      qBound(qreal(0), value.toReal(), qreal(1));
+    break;
+  case OvershootScrollDistanceFactor:
+    d->overshootScrollDistanceFactor =
+      qBound(qreal(0), value.toReal(), qreal(1));
+    break;
+  case OvershootScrollTime:
+    d->overshootScrollTime = value.toReal();
+    break;
+  case HorizontalOvershootPolicy:
+    d->hOvershootPolicy =
+      value.value<QtScrollerProperties::OvershootPolicy>();
+    break;
+  case VerticalOvershootPolicy:
+    d->vOvershootPolicy =
+      value.value<QtScrollerProperties::OvershootPolicy>();
+    break;
+  case FrameRate:
+    d->frameRate = value.value<QtScrollerProperties::FrameRates>();
+    break;
+  case ScrollMetricCount:
+    break;
   }
 }
 

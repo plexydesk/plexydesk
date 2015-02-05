@@ -26,7 +26,8 @@
 #include <widgetplugin.h>
 #include "videoitem.h"
 
-class VISIBLE_SYM VideoPlugin : public PlexyDesk::WidgetPlugin {
+class VISIBLE_SYM VideoPlugin : public PlexyDesk::WidgetPlugin
+{
   Q_OBJECT
 
 public:

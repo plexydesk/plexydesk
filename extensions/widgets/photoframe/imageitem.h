@@ -22,9 +22,11 @@
 #include <plexy.h>
 #include <desktopwidget.h>
 
-namespace UI {
+namespace UI
+{
 
-class ImagePileWidget : public UIWidget {
+class ImagePileWidget : public UIWidget
+{
   Q_OBJECT
 public:
   ImagePileWidget(const QRectF &rect, QGraphicsObject *embeddedWidget = 0);

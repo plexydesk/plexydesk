@@ -25,9 +25,11 @@
 #include <QPainter>
 #include <QObject>
 
-namespace UI {
+namespace UI
+{
 
-class DECL_UI_KIT_EXPORT Style {
+class DECL_UI_KIT_EXPORT Style
+{
 public:
   Style();
 

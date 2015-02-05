@@ -51,11 +51,12 @@ class QtScrollerPrivate;
 class QtScrollerProperties;
 class QtFlickGestureRecognizer;
 
-class QtScroller : public QObject {
+class QtScroller : public QObject
+{
   Q_OBJECT
   Q_PROPERTY(State state READ state NOTIFY stateChanged)
   Q_PROPERTY(QtScrollerProperties scrollerProperties READ scrollerProperties
-                 WRITE setScrollerProperties NOTIFY scrollerPropertiesChanged)
+             WRITE setScrollerProperties NOTIFY scrollerPropertiesChanged)
   Q_ENUMS(State)
 
 public:
@@ -76,7 +77,7 @@ public:
   static const QtScroller *scroller(const QObject *target);
 
   static Qt::GestureType grabGesture(
-      QObject *target, ScrollerGestureType gestureType = TouchGesture);
+    QObject *target, ScrollerGestureType gestureType = TouchGesture);
   static Qt::GestureType grabbedGesture(QObject *target);
   static void ungrabGesture(QObject *target);
 

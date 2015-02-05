@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class SocialAuthActivity : public UI::DesktopActivity {
+class SocialAuthActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

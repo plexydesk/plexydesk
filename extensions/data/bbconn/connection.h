@@ -49,7 +49,8 @@
 
 static const int MaxBufferSize = 1024000;
 
-class Connection : public QTcpSocket {
+class Connection : public QTcpSocket
+{
   Q_OBJECT
 
 public:

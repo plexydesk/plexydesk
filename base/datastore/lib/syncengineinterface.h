@@ -5,9 +5,11 @@
 #include <QStringList>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit {
+namespace QuetzalKit
+{
 
-class QuetzalDataKit_EXPORT SyncEngineInterface : public QObject {
+class QuetzalDataKit_EXPORT SyncEngineInterface : public QObject
+{
   Q_OBJECT
 public:
   explicit SyncEngineInterface(QObject *parent = 0);

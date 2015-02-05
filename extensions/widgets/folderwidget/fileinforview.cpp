@@ -32,13 +32,16 @@
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneMouseEvent>
 
-class FileInforView::PrivateFileInforView {
+class FileInforView::PrivateFileInforView
+{
 public:
   PrivateFileInforView() {}
 
-  ~PrivateFileInforView() {
-    if (mGridLayout)
+  ~PrivateFileInforView()
+  {
+    if (mGridLayout) {
       delete mGridLayout;
+    }
   }
 
   QFileInfo mFileInfo;
@@ -58,9 +61,10 @@ public:
 };
 
 FileInforView::FileInforView(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateFileInforView) {
+  : UI::UIWidget(parent), d(new PrivateFileInforView)
+{
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
+  this->setWindowFlag(UI::Window::kRenderDropShadow, false);
 
   d->mSlideAnimation = new QPropertyAnimation(this, "pos");
   d->mSlideAnimation->setDuration(500);
@@ -110,34 +114,36 @@ void FileInforView::setFileInfo(const QFileInfo &info) { d->mFileInfo = info; }
 
 void FileInforView::setIcon(const QIcon &icon) { d->mIcon = icon; }
 
-void FileInforView::pop() {
+void FileInforView::pop()
+{
   update();
   show();
   d->mSlideAnimation->setDirection(QAbstractAnimation::Forward);
   d->mSlideAnimation->start();
 }
 
-void FileInforView::push() {
+void FileInforView::push()
+{
   d->mSlideAnimation->setDirection(QAbstractAnimation::Backward);
   d->mSlideAnimation->start();
 }
 
-void FileInforView::setSliderPos(const QPointF &start, const QPointF &end) {
+void FileInforView::setSliderPos(const QPointF &start, const QPointF &end)
+{
   setPos(start);
   d->mSlideAnimation->setStartValue(start);
   d->mSlideAnimation->setEndValue(end);
 }
 
-void FileInforView::windowButtonAction() { push(); }
-
-void FileInforView::onClicked() {
+void FileInforView::onClicked()
+{
   if (d->mLineEditProxy->isVisible()) {
     d->mRenameButton->setLabel(tr("Rename"));
     d->mLineEditProxy->hide();
 
     QString fileName = QDir::fromNativeSeparators(d->mFileInfo.filePath());
     QString newFileName = QDir::fromNativeSeparators(
-        d->mFileInfo.absolutePath() + "/" + d->mLineEdit->text());
+                            d->mFileInfo.absolutePath() + "/" + d->mLineEdit->text());
 
     if (!QFile::rename(fileName, newFileName)) {
       qWarning() << "File Rename Failed : " << newFileName;
@@ -151,7 +157,8 @@ void FileInforView::onClicked() {
 
 void FileInforView::onCloseButtonClicked() { push(); }
 
-void FileInforView::paintView(QPainter *painter, const QRectF &rect) {
+void FileInforView::paintView(QPainter *painter, const QRectF &rect)
+{
   painter->fillRect(rect, QColor(236, 236, 236));
 
   UI::StyleFeatures feature;
@@ -180,12 +187,14 @@ void FileInforView::paintView(QPainter *painter, const QRectF &rect) {
   txtOption.setAlignment(Qt::AlignVCenter);
   float fileSize = 0.0;
 
-  if (d->mFileInfo.size() != 0)
+  if (d->mFileInfo.size() != 0) {
     fileSize = d->mFileInfo.size() / 1024;
+  }
 
   painter->drawText(sizeLabel, QString("Size: %1 KB").arg(fileSize), txtOption);
 }
 
-void FileInforView::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void FileInforView::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   event->accept();
 }

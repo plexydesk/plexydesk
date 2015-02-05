@@ -11,7 +11,8 @@
 #include <imageview.h>
 #include <themepackloader.h>
 
-class DefaultTableComponent::PrivateTableComponent {
+class DefaultTableComponent::PrivateTableComponent
+{
 
 public:
   PrivateTableComponent() {}
@@ -37,9 +38,10 @@ public:
 };
 
 DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
-                                             LayoutType type,
-                                             QGraphicsItem *parent)
-    : UI::TableViewItem(rect, parent), d(new PrivateTableComponent) {
+    LayoutType type,
+    QGraphicsItem *parent)
+  : UI::TableViewItem(rect, parent), d(new PrivateTableComponent)
+{
   d->m_current_geometry = rect;
   d->m_current_item_selection = false;
   d->m_current_item_visibility = true;
@@ -52,7 +54,7 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
 
   d->m_image_view_widget = new UI::ImageView(d->m_layout_base);
   d->m_image_view_widget->setPixmap(
-      UI::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+    UI::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
 
   d->m_label_widget = new UI::Label(d->m_layout_base);
 
@@ -90,7 +92,8 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
 
 DefaultTableComponent::~DefaultTableComponent() { delete d; }
 
-QRectF DefaultTableComponent::boundingRect() const {
+QRectF DefaultTableComponent::boundingRect() const
+{
   QRectF rect;
   if (d->m_current_layout_type == kListLayout) {
     rect = QRectF(0.0, 0.0, d->m_current_geometry.width(), 64);
@@ -101,16 +104,19 @@ QRectF DefaultTableComponent::boundingRect() const {
 }
 
 QSizeF DefaultTableComponent::sizeHint(Qt::SizeHint hint,
-                                       const QSizeF &size) const {
+                                       const QSizeF &size) const
+{
   return boundingRect().size();
 }
 
-void DefaultTableComponent::setSelected() {
+void DefaultTableComponent::setSelected()
+{
   d->m_current_item_selection = true;
   update();
 }
 
-void DefaultTableComponent::setLabelVisibility(bool visible) {
+void DefaultTableComponent::setLabelVisibility(bool visible)
+{
   d->m_current_item_visibility = visible;
 
   if (visible) {
@@ -120,25 +126,29 @@ void DefaultTableComponent::setLabelVisibility(bool visible) {
   }
 }
 
-void DefaultTableComponent::clearSelection() {
+void DefaultTableComponent::clearSelection()
+{
   d->m_current_item_selection = false;
 }
 
-void DefaultTableComponent::setLabel(const QString &txt) {
+void DefaultTableComponent::setLabel(const QString &txt)
+{
   d->mOptButton->setLabel("+");
   d->m_current_label_str = txt;
   d->m_label_widget->setLabel(txt);
   update();
 }
 
-void DefaultTableComponent::setIcon(const QPixmap &pixmap) {
+void DefaultTableComponent::setIcon(const QPixmap &pixmap)
+{
   d->m_icon_pixmap = pixmap;
   d->m_image_view_widget->setPixmap(pixmap);
 }
 
 QPixmap DefaultTableComponent::icon() { return d->m_icon_pixmap; }
 
-void DefaultTableComponent::setSelected(bool selection) {
+void DefaultTableComponent::setSelected(bool selection)
+{
   d->m_current_item_selection = selection;
 }
 
@@ -147,7 +157,8 @@ QString DefaultTableComponent::label() const { return d->m_current_label_str; }
 QString DefaultTableComponent::name() { return d->m_current_label_str; }
 
 void DefaultTableComponent::setData(const QPixmap &pixmap,
-                                    const QString &label) {
+                                    const QString &label)
+{
   d->m_image_view_widget->setPixmap(pixmap);
   d->m_label_widget->setLabel(label);
   d->m_current_label_str = label;
@@ -155,7 +166,8 @@ void DefaultTableComponent::setData(const QPixmap &pixmap,
 
 void DefaultTableComponent::paint(QPainter *painter,
                                   const QStyleOptionGraphicsItem *option,
-                                  QWidget *widget) {
+                                  QWidget *widget)
+{
   /* Painter settings */
   if (d->m_current_layout_type == kListLayout || d->m_current_item_selection) {
 

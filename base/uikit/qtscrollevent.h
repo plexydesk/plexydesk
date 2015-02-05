@@ -49,7 +49,8 @@
 #include <QScopedPointer>
 
 class QtScrollPrepareEventPrivate;
-class QtScrollPrepareEvent : public QEvent {
+class QtScrollPrepareEvent : public QEvent
+{
 public:
   enum { ScrollPrepare = 15056 }; // random number
 
@@ -71,7 +72,8 @@ private:
 };
 
 class QtScrollEventPrivate;
-class QtScrollEvent : public QEvent {
+class QtScrollEvent : public QEvent
+{
 public:
   enum { Scroll = 15057 }; // random number
 

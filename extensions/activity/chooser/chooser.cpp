@@ -29,7 +29,8 @@
 #include "chooseritem.h"
 #include "chooseractiondelegate.h"
 
-class IconGridActivity::PrivateIconGrid {
+class IconGridActivity::PrivateIconGrid
+{
 public:
   PrivateIconGrid() : mFrame(0) {}
   ~PrivateIconGrid() {}
@@ -46,30 +47,30 @@ public:
 };
 
 IconGridActivity::IconGridActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateIconGrid) {}
+  : UI::DesktopActivity(object), d(new PrivateIconGrid) {}
 
-IconGridActivity::~IconGridActivity() {
+IconGridActivity::~IconGridActivity()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void IconGridActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
-                                    const QPointF &window_pos) {
-  if (d->mFrame)
+                                    const QPointF &window_pos)
+{
+  if (d->mFrame) {
     return;
+  }
 
   d->mBoundingRect = window_geometry;
   d->m_auto_scale_frame = false;
 
   d->mFrame = new UI::UIWidget();
   d->mFrame->setGeometry(window_geometry);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
-  d->mFrame->setWindowTitle(window_title);
+  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
 
   setGeometry(window_geometry);
 
@@ -88,9 +89,9 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
 
     foreach(const QVariant & var, data.keys()) {
       d->m_action_delegate->addDataItem(
-          var.toString(), UI::Theme::instance()->drawable(
-                              data[var.toString()].toString(), "hdpi"),
-          false);
+        var.toString(), UI::Theme::instance()->drawable(
+          data[var.toString()].toString(), "hdpi"),
+        false);
     }
   }
 
@@ -117,21 +118,24 @@ QRectF IconGridActivity::geometry() const
 }
 */
 
-QVariantMap IconGridActivity::result() const {
+QVariantMap IconGridActivity::result() const
+{
   d->m_activity_result["action"] = d->mSelection;
   return d->m_activity_result;
 }
 
 UIWidget *IconGridActivity::window() const { return d->mFrame; }
 
-void IconGridActivity::onWidgetClosed(UI::UIWidget *widget) {
+void IconGridActivity::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discardActivity();
 }
 
 void IconGridActivity::onDiscard() { Q_EMIT finished(); }
 
-void IconGridActivity::onClicked(TableViewItem *item) {
+void IconGridActivity::onClicked(TableViewItem *item)
+{
   if (item) {
     GridIcon *i = qobject_cast<GridIcon *>(item);
     if (i) {
@@ -145,17 +149,20 @@ void IconGridActivity::onClicked(TableViewItem *item) {
         d->m_activity_result[key] = i->itemProperties()[key];
       }
 
-      if (d->mTable)
+      if (d->mTable) {
         d->mTable->clearSelection();
+      }
 
       updateAction();
     }
   }
 }
 
-void IconGridActivity::onArgumentChanged() {
-  if (!d->m_action_delegate)
+void IconGridActivity::onArgumentChanged()
+{
+  if (!d->m_action_delegate) {
     return;
+  }
 
   if (hasAttribute("data")) {
     QVariantMap data = attributes()["data"].toMap();
@@ -164,7 +171,7 @@ void IconGridActivity::onArgumentChanged() {
       QVariantMap _item = var.toMap();
       d->m_action_delegate->addDataItem(_item["label"].toString(),
                                         UI::Theme::instance()->drawable(
-                                            _item["icon"].toString(), "hdpi"),
+                                          _item["icon"].toString(), "hdpi"),
                                         false, _item);
     }
   }

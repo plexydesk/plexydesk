@@ -11,15 +11,18 @@
 #include <qmlsvgprovider.h>
 #include <qmlpixmapprovider.h>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 QDeclarativeEngine *PlexyQmlGlue::engine = 0;
 
-class PlexyQmlGlueData : public QSharedData {
+class PlexyQmlGlueData : public QSharedData
+{
 public:
 };
 
-QDeclarativeEngine *PlexyQmlGlue::qmlEngine() {
+QDeclarativeEngine *PlexyQmlGlue::qmlEngine()
+{
   if (engine == 0) {
     engine = newQmlEngine();
     return engine;
@@ -28,15 +31,16 @@ QDeclarativeEngine *PlexyQmlGlue::qmlEngine() {
   }
 }
 
-QDeclarativeEngine *PlexyQmlGlue::newQmlEngine() {
+QDeclarativeEngine *PlexyQmlGlue::newQmlEngine()
+{
   engine = new QDeclarativeEngine;
   engine->addImportPath(QDir::toNativeSeparators(
-      Config::getInstance()->prefix() + "/" + PLEXYQTIMPORTSDIR + "/"));
+                          Config::getInstance()->prefix() + "/" + PLEXYQTIMPORTSDIR + "/"));
   engine->addImageProvider(QLatin1String("plexydesk"), new QmlPixmapProvider);
   engine->addImageProvider(QLatin1String("plexydesk_svgprovider"),
                            new QmlSvgProvider);
   engine->rootContext()->setContextProperty("plexydeskconfig",
-                                            Config::getInstance());
+      Config::getInstance());
   return engine;
 }
 
@@ -44,14 +48,18 @@ PlexyQmlGlue::PlexyQmlGlue() : data(new PlexyQmlGlueData) {}
 
 PlexyQmlGlue::PlexyQmlGlue(const PlexyQmlGlue &rhs) : data(rhs.data) {}
 
-PlexyQmlGlue &PlexyQmlGlue::operator=(const PlexyQmlGlue &rhs) {
-  if (this != &rhs)
-    data.operator=(rhs.data);
+PlexyQmlGlue &PlexyQmlGlue::operator=(const PlexyQmlGlue &rhs)
+{
+  if (this != &rhs) {
+    data.operator = (rhs.data);
+  }
   return *this;
 }
 
-PlexyQmlGlue::~PlexyQmlGlue() {
-  if (engine)
+PlexyQmlGlue::~PlexyQmlGlue()
+{
+  if (engine) {
     delete engine;
+  }
 }
 }

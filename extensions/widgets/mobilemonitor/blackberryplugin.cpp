@@ -19,7 +19,8 @@
 
 using namespace bb::cascades;
 
-class BlackBerryPlugin::BlackBerryPluginPrivate {
+class BlackBerryPlugin::BlackBerryPluginPrivate
+{
 public:
   BlackBerryPluginPrivate() {}
   ~BlackBerryPluginPrivate() {}
@@ -59,7 +60,8 @@ public:
 };
 
 BlackBerryPlugin::BlackBerryPlugin(QObject *parent)
-    : PlexyDesk::ControllerInterface(parent), d(new BlackBerryPluginPrivate) {
+  : PlexyDesk::ControllerInterface(parent), d(new BlackBerryPluginPrivate)
+{
 
   if (connectToDataSource("bbconnengine")) {
     connect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)), this,
@@ -82,7 +84,8 @@ BlackBerryPlugin::BlackBerryPlugin(QObject *parent)
 
 BlackBerryPlugin::~BlackBerryPlugin() { delete d; }
 
-void BlackBerryPlugin::createAuthWidget() {
+void BlackBerryPlugin::createAuthWidget()
+{
   d->mPinPage = Page::create();
 
   d->mPinTitle = new TitleBar();
@@ -112,7 +115,8 @@ void BlackBerryPlugin::createAuthWidget() {
   connect(d->mPinOkButton, SIGNAL(clicked()), this, SLOT(onSetClicked()));
 }
 
-void BlackBerryPlugin::createMainPage() {
+void BlackBerryPlugin::createMainPage()
+{
   d->mMainPage = Page::create();
 
   d->mMainTitleBar = new TitleBar();
@@ -123,18 +127,19 @@ void BlackBerryPlugin::createMainPage() {
   d->mMainPage->setContent(d->mMainContainer);
 
   d->mMainPinAction =
-      ActionItem::create().title("Authorize").image(Image("asset:///back.png"));
+    ActionItem::create().title("Authorize").image(Image("asset:///back.png"));
   d->mMainPage->addAction(d->mMainPinAction, ActionBarPlacement::OnBar);
   connect(d->mMainPinAction, SIGNAL(triggered()), this, SLOT(onActionSetPin()));
 
   d->mMainAddNoteAction =
-      ActionItem::create().title("Add Note").image(Image("asset:///back.png"));
+    ActionItem::create().title("Add Note").image(Image("asset:///back.png"));
   d->mMainPage->addAction(d->mMainAddNoteAction, ActionBarPlacement::OnBar);
   connect(d->mMainAddNoteAction, SIGNAL(triggered()), this,
           SLOT(onAddNoteAction()));
 }
 
-void BlackBerryPlugin::createNoteEditor() {
+void BlackBerryPlugin::createNoteEditor()
+{
   d->mNoteEditor = Page::create();
   d->mNoteContainer = Container::create();
   d->mNoteEditor->setContent(d->mNoteContainer);
@@ -151,12 +156,12 @@ void BlackBerryPlugin::createNoteEditor() {
   d->mNoteEditor->setTitleBar(d->mNoteTitleBar);
 
   d->mNoteBack =
-      ActionItem::create().title("Note List").image(Image("asset:///back.png"));
+    ActionItem::create().title("Note List").image(Image("asset:///back.png"));
   d->mNoteEditor->addAction(d->mNoteBack, ActionBarPlacement::OnBar);
   connect(d->mNoteBack, SIGNAL(triggered()), this, SLOT(onEditorActionBack()));
 
   d->mNoteSave =
-      ActionItem::create().title("Save Note").image(Image("asset:///back.png"));
+    ActionItem::create().title("Save Note").image(Image("asset:///back.png"));
   d->mNoteEditor->addAction(d->mNoteSave, ActionBarPlacement::OnBar);
   connect(d->mNoteSave, SIGNAL(triggered()), this, SLOT(onNoteSave()));
 }
@@ -165,7 +170,8 @@ void BlackBerryPlugin::onPinCanceled() { d->mPaneView->pop(); }
 
 void BlackBerryPlugin::onActionSetPin() { d->mPaneView->push(d->mPinPage); }
 
-void BlackBerryPlugin::onSetClicked() {
+void BlackBerryPlugin::onSetClicked()
+{
   if (dataSource()) {
     PlexyDesk::DataSource *source = dataSource();
 
@@ -180,18 +186,21 @@ void BlackBerryPlugin::onSetClicked() {
   }
 }
 
-void BlackBerryPlugin::onEditorActionBack() {
+void BlackBerryPlugin::onEditorActionBack()
+{
   d->mPaneView->pop();
   d->mPaneView->push(d->mMainPage);
 }
 
-void BlackBerryPlugin::onAddNoteAction() {
+void BlackBerryPlugin::onAddNoteAction()
+{
   d->mPaneView->pop();
   d->mPaneView->push(d->mNoteEditor);
   d->mPaneView->push(d->mMainPage);
 }
 
-void BlackBerryPlugin::onNoteSave() {
+void BlackBerryPlugin::onNoteSave()
+{
   if (d->mNoteTextSubject->text().isEmpty()) {
     d->mDialog->setTitle("Error : Empty Subject");
     d->mDialog->setBody("Missing Subject: Add a subject to save the note");

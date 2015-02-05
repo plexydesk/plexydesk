@@ -23,7 +23,8 @@
 #include <widgetinterface.h>
 #include <widgetplugin.h>
 
-class Cpu : public PlexyDesk::WidgetPlugin {
+class Cpu : public PlexyDesk::WidgetPlugin
+{
   Q_OBJECT
 
 public:

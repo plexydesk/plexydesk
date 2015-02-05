@@ -66,22 +66,26 @@
 static const unsigned int JAR_VERSION = 23;
 
 QDataStream &operator<<(QDataStream &stream,
-                        const QList<QNetworkCookie> &list) {
+                        const QList<QNetworkCookie> &list)
+{
   stream << JAR_VERSION;
   stream << quint32(list.size());
-  for (int i = 0; i < list.size(); ++i)
+  for (int i = 0; i < list.size(); ++i) {
     stream << list.at(i).toRawForm();
+  }
   return stream;
 }
 
-QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list) {
+QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
+{
   list.clear();
 
   quint32 version;
   stream >> version;
 
-  if (version != JAR_VERSION)
+  if (version != JAR_VERSION) {
     return stream;
+  }
 
   quint32 count;
   stream >> count;
@@ -92,54 +96,61 @@ QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list) {
     if (newCookies.count() == 0 && value.length() != 0) {
       qWarning() << "CookieJar: Unable to parse saved cookie:" << value;
     }
-    for (int j = 0; j < newCookies.count(); ++j)
+    for (int j = 0; j < newCookies.count(); ++j) {
       list.append(newCookies.at(j));
-    if (stream.atEnd())
+    }
+    if (stream.atEnd()) {
       break;
+    }
   }
   return stream;
 }
 
 CookieJar::CookieJar(QObject *parent)
-    : QNetworkCookieJar(parent),
-      m_loaded(false),
-      m_saveTimer(new AutoSaver(this)),
-      m_acceptCookies(AcceptOnlyFromSitesNavigatedTo) {}
+  : QNetworkCookieJar(parent),
+    m_loaded(false),
+    m_saveTimer(new AutoSaver(this)),
+    m_acceptCookies(AcceptOnlyFromSitesNavigatedTo) {}
 
-CookieJar::~CookieJar() {
-  if (m_keepCookies == KeepUntilExit)
+CookieJar::~CookieJar()
+{
+  if (m_keepCookies == KeepUntilExit) {
     clear();
+  }
   m_saveTimer->saveIfNeccessary();
 }
 
-void CookieJar::clear() {
+void CookieJar::clear()
+{
   setAllCookies(QList<QNetworkCookie>());
   m_saveTimer->changeOccurred();
   emit cookiesChanged();
 }
 
-void CookieJar::load() {
-  if (m_loaded)
+void CookieJar::load()
+{
+  if (m_loaded) {
     return;
+  }
   // load cookies and exceptions
   qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >(
-      "QList<QNetworkCookie>");
+    "QList<QNetworkCookie>");
   QSettings cookieSettings(
-      QStandardPaths::writableLocation(QStandardPaths::DataLocation) +
-          QLatin1String("/cookies.ini"),
-      QSettings::IniFormat);
+    QStandardPaths::writableLocation(QStandardPaths::DataLocation) +
+    QLatin1String("/cookies.ini"),
+    QSettings::IniFormat);
   setAllCookies(qvariant_cast<QList<QNetworkCookie> >(
-      cookieSettings.value(QLatin1String("cookies"))));
+                  cookieSettings.value(QLatin1String("cookies"))));
   cookieSettings.beginGroup(QLatin1String("Exceptions"));
   QStringList list;
   list << "facebook.com";
   cookieSettings.setValue("allow", QVariant(list));
   m_exceptions_block =
-      cookieSettings.value(QLatin1String("block")).toStringList();
+    cookieSettings.value(QLatin1String("block")).toStringList();
   m_exceptions_allow =
-      cookieSettings.value(QLatin1String("allow")).toStringList();
+    cookieSettings.value(QLatin1String("allow")).toStringList();
   m_exceptions_allowForSession =
-      cookieSettings.value(QLatin1String("allowForSession")).toStringList();
+    cookieSettings.value(QLatin1String("allowForSession")).toStringList();
   qSort(m_exceptions_block.begin(), m_exceptions_block.end());
   qSort(m_exceptions_allow.begin(), m_exceptions_allow.end());
   qSort(m_exceptions_allowForSession.begin(),
@@ -148,42 +159,46 @@ void CookieJar::load() {
   loadSettings();
 }
 
-void CookieJar::loadSettings() {
+void CookieJar::loadSettings()
+{
   QSettings settings;
   settings.beginGroup(QLatin1String("cookies"));
   QByteArray value =
-      settings.value(QLatin1String("acceptCookies"),
-                     QLatin1String("AcceptOnlyFromSitesNavigatedTo"))
-          .toByteArray();
+    settings.value(QLatin1String("acceptCookies"),
+                   QLatin1String("AcceptOnlyFromSitesNavigatedTo"))
+    .toByteArray();
   QMetaEnum acceptPolicyEnum = staticMetaObject.enumerator(
-      staticMetaObject.indexOfEnumerator("AcceptPolicy"));
+                                 staticMetaObject.indexOfEnumerator("AcceptPolicy"));
   m_acceptCookies =
-      acceptPolicyEnum.keyToValue(value) == -1
-          ? AcceptOnlyFromSitesNavigatedTo
-          : static_cast<AcceptPolicy>(acceptPolicyEnum.keyToValue(value));
+    acceptPolicyEnum.keyToValue(value) == -1
+    ? AcceptOnlyFromSitesNavigatedTo
+    : static_cast<AcceptPolicy>(acceptPolicyEnum.keyToValue(value));
 
   value = settings.value(QLatin1String("keepCookiesUntil"),
                          QLatin1String("KeepUntilExpire")).toByteArray();
   QMetaEnum keepPolicyEnum = staticMetaObject.enumerator(
-      staticMetaObject.indexOfEnumerator("KeepPolicy"));
+                               staticMetaObject.indexOfEnumerator("KeepPolicy"));
   m_keepCookies =
-      keepPolicyEnum.keyToValue(value) == -1
-          ? KeepUntilExpire
-          : static_cast<KeepPolicy>(keepPolicyEnum.keyToValue(value));
+    keepPolicyEnum.keyToValue(value) == -1
+    ? KeepUntilExpire
+    : static_cast<KeepPolicy>(keepPolicyEnum.keyToValue(value));
 
-  if (m_keepCookies == KeepUntilExit)
+  if (m_keepCookies == KeepUntilExit) {
     setAllCookies(QList<QNetworkCookie>());
+  }
 
   m_loaded = true;
   emit cookiesChanged();
 }
 
-void CookieJar::save() {
-  if (!m_loaded)
+void CookieJar::save()
+{
+  if (!m_loaded) {
     return;
+  }
   purgeOldCookies();
   QString directory =
-      QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    QStandardPaths::writableLocation(QStandardPaths::DataLocation);
   if (directory.isEmpty())
     directory = QDir::homePath() + QLatin1String("/.") +
                 QCoreApplication::applicationName();
@@ -195,8 +210,9 @@ void CookieJar::save() {
                            QSettings::IniFormat);
   QList<QNetworkCookie> cookies = allCookies();
   for (int i = cookies.count() - 1; i >= 0; --i) {
-    if (cookies.at(i).isSessionCookie())
+    if (cookies.at(i).isSessionCookie()) {
       cookies.removeAt(i);
+    }
   }
   cookieSettings.setValue(QLatin1String("cookies"),
                           QVariant::fromValue<QList<QNetworkCookie> >(cookies));
@@ -210,38 +226,44 @@ void CookieJar::save() {
   QSettings settings;
   settings.beginGroup(QLatin1String("cookies"));
   QMetaEnum acceptPolicyEnum = staticMetaObject.enumerator(
-      staticMetaObject.indexOfEnumerator("AcceptPolicy"));
+                                 staticMetaObject.indexOfEnumerator("AcceptPolicy"));
   settings.setValue(
-      QLatin1String("acceptCookies"),
-      QLatin1String(acceptPolicyEnum.valueToKey(m_acceptCookies)));
+    QLatin1String("acceptCookies"),
+    QLatin1String(acceptPolicyEnum.valueToKey(m_acceptCookies)));
 
   QMetaEnum keepPolicyEnum = staticMetaObject.enumerator(
-      staticMetaObject.indexOfEnumerator("KeepPolicy"));
+                               staticMetaObject.indexOfEnumerator("KeepPolicy"));
   settings.setValue(QLatin1String("keepCookiesUntil"),
                     QLatin1String(keepPolicyEnum.valueToKey(m_keepCookies)));
 }
 
-void CookieJar::purgeOldCookies() {
+void CookieJar::purgeOldCookies()
+{
   QList<QNetworkCookie> cookies = allCookies();
-  if (cookies.isEmpty())
+  if (cookies.isEmpty()) {
     return;
+  }
   int oldCount = cookies.count();
   QDateTime now = QDateTime::currentDateTime();
   for (int i = cookies.count() - 1; i >= 0; --i) {
     if (!cookies.at(i).isSessionCookie() &&
-        cookies.at(i).expirationDate() < now)
+        cookies.at(i).expirationDate() < now) {
       cookies.removeAt(i);
+    }
   }
-  if (oldCount == cookies.count())
+  if (oldCount == cookies.count()) {
     return;
+  }
   setAllCookies(cookies);
   emit cookiesChanged();
 }
 
-QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const {
+QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const
+{
   CookieJar *that = const_cast<CookieJar *>(this);
-  if (!m_loaded)
+  if (!m_loaded) {
     that->load();
+  }
 
   QWebSettings *globalSettings = QWebSettings::globalSettings();
   if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled)) {
@@ -253,21 +275,24 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const {
 }
 
 bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList,
-                                  const QUrl &url) {
-  if (!m_loaded)
+                                  const QUrl &url)
+{
+  if (!m_loaded) {
     load();
+  }
 
   QWebSettings *globalSettings = QWebSettings::globalSettings();
-  if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+  if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled)) {
     return false;
+  }
 
   QString host = url.host();
   bool eBlock =
-      qBinaryFind(m_exceptions_block.begin(), m_exceptions_block.end(), host) !=
-      m_exceptions_block.end();
+    qBinaryFind(m_exceptions_block.begin(), m_exceptions_block.end(), host) !=
+    m_exceptions_block.end();
   bool eAllow =
-      qBinaryFind(m_exceptions_allow.begin(), m_exceptions_allow.end(), host) !=
-      m_exceptions_allow.end();
+    qBinaryFind(m_exceptions_allow.begin(), m_exceptions_allow.end(), host) !=
+    m_exceptions_allow.end();
   bool eAllowSession = qBinaryFind(m_exceptions_allowForSession.begin(),
                                    m_exceptions_allowForSession.end(),
                                    host) != m_exceptions_allowForSession.end();
@@ -298,8 +323,9 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList,
           addedCookies = true;
         }
 #if 0
-                else
-                    qWarning() << "setCookiesFromUrl failed" << url << cookieList.value(0).toRawForm();
+        else {
+          qWarning() << "setCookiesFromUrl failed" << url << cookieList.value(0).toRawForm();
+        }
 #endif
       }
     }
@@ -312,73 +338,95 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList,
   return addedCookies;
 }
 
-CookieJar::AcceptPolicy CookieJar::acceptPolicy() const {
-  if (!m_loaded)
+CookieJar::AcceptPolicy CookieJar::acceptPolicy() const
+{
+  if (!m_loaded) {
     (const_cast<CookieJar *>(this))->load();
+  }
   return m_acceptCookies;
 }
 
-void CookieJar::setAcceptPolicy(AcceptPolicy policy) {
-  if (!m_loaded)
+void CookieJar::setAcceptPolicy(AcceptPolicy policy)
+{
+  if (!m_loaded) {
     load();
-  if (policy == m_acceptCookies)
+  }
+  if (policy == m_acceptCookies) {
     return;
+  }
   m_acceptCookies = policy;
   m_saveTimer->changeOccurred();
 }
 
-CookieJar::KeepPolicy CookieJar::keepPolicy() const {
-  if (!m_loaded)
+CookieJar::KeepPolicy CookieJar::keepPolicy() const
+{
+  if (!m_loaded) {
     (const_cast<CookieJar *>(this))->load();
+  }
   return m_keepCookies;
 }
 
-void CookieJar::setKeepPolicy(KeepPolicy policy) {
-  if (!m_loaded)
+void CookieJar::setKeepPolicy(KeepPolicy policy)
+{
+  if (!m_loaded) {
     load();
-  if (policy == m_keepCookies)
+  }
+  if (policy == m_keepCookies) {
     return;
+  }
   m_keepCookies = policy;
   m_saveTimer->changeOccurred();
 }
 
-QStringList CookieJar::blockedCookies() const {
-  if (!m_loaded)
+QStringList CookieJar::blockedCookies() const
+{
+  if (!m_loaded) {
     (const_cast<CookieJar *>(this))->load();
+  }
   return m_exceptions_block;
 }
 
-QStringList CookieJar::allowedCookies() const {
-  if (!m_loaded)
+QStringList CookieJar::allowedCookies() const
+{
+  if (!m_loaded) {
     (const_cast<CookieJar *>(this))->load();
+  }
   return m_exceptions_allow;
 }
 
-QStringList CookieJar::allowForSessionCookies() const {
-  if (!m_loaded)
+QStringList CookieJar::allowForSessionCookies() const
+{
+  if (!m_loaded) {
     (const_cast<CookieJar *>(this))->load();
+  }
   return m_exceptions_allowForSession;
 }
 
-void CookieJar::setBlockedCookies(const QStringList &list) {
-  if (!m_loaded)
+void CookieJar::setBlockedCookies(const QStringList &list)
+{
+  if (!m_loaded) {
     load();
+  }
   m_exceptions_block = list;
   qSort(m_exceptions_block.begin(), m_exceptions_block.end());
   m_saveTimer->changeOccurred();
 }
 
-void CookieJar::setAllowedCookies(const QStringList &list) {
-  if (!m_loaded)
+void CookieJar::setAllowedCookies(const QStringList &list)
+{
+  if (!m_loaded) {
     load();
+  }
   m_exceptions_allow = list;
   qSort(m_exceptions_allow.begin(), m_exceptions_allow.end());
   m_saveTimer->changeOccurred();
 }
 
-void CookieJar::setAllowForSessionCookies(const QStringList &list) {
-  if (!m_loaded)
+void CookieJar::setAllowForSessionCookies(const QStringList &list)
+{
+  if (!m_loaded) {
     load();
+  }
   m_exceptions_allowForSession = list;
   qSort(m_exceptions_allowForSession.begin(),
         m_exceptions_allowForSession.end());
@@ -386,95 +434,105 @@ void CookieJar::setAllowForSessionCookies(const QStringList &list) {
 }
 
 CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)
-    : QAbstractTableModel(parent), m_cookieJar(cookieJar) {
+  : QAbstractTableModel(parent), m_cookieJar(cookieJar)
+{
   connect(m_cookieJar, SIGNAL(cookiesChanged()), this, SLOT(cookiesChanged()));
   m_cookieJar->load();
 }
 
 QVariant CookieModel::headerData(int section, Qt::Orientation orientation,
-                                 int role) const {
+                                 int role) const
+{
   if (role == Qt::SizeHintRole) {
     QFont font;
     font.setPointSize(10);
     QFontMetrics fm(font);
     int height = fm.height() + fm.height() / 3;
     int width =
-        fm.width(headerData(section, orientation, Qt::DisplayRole).toString());
+      fm.width(headerData(section, orientation, Qt::DisplayRole).toString());
     return QSize(width, height);
   }
 
   if (orientation == Qt::Horizontal) {
-    if (role != Qt::DisplayRole)
+    if (role != Qt::DisplayRole) {
       return QVariant();
+    }
 
     switch (section) {
-      case 0:
-        return tr("Website");
-      case 1:
-        return tr("Name");
-      case 2:
-        return tr("Path");
-      case 3:
-        return tr("Secure");
-      case 4:
-        return tr("Expires");
-      case 5:
-        return tr("Contents");
-      default:
-        return QVariant();
+    case 0:
+      return tr("Website");
+    case 1:
+      return tr("Name");
+    case 2:
+      return tr("Path");
+    case 3:
+      return tr("Secure");
+    case 4:
+      return tr("Expires");
+    case 5:
+      return tr("Contents");
+    default:
+      return QVariant();
     }
   }
   return QAbstractTableModel::headerData(section, orientation, role);
 }
 
-QVariant CookieModel::data(const QModelIndex &index, int role) const {
+QVariant CookieModel::data(const QModelIndex &index, int role) const
+{
   QList<QNetworkCookie> lst;
-  if (m_cookieJar)
+  if (m_cookieJar) {
     lst = m_cookieJar->allCookies();
-  if (index.row() < 0 || index.row() >= lst.size())
+  }
+  if (index.row() < 0 || index.row() >= lst.size()) {
     return QVariant();
+  }
 
   switch (role) {
-    case Qt::DisplayRole:
-    case Qt::EditRole: {
-      QNetworkCookie cookie = lst.at(index.row());
-      switch (index.column()) {
-        case 0:
-          return cookie.domain();
-        case 1:
-          return cookie.name();
-        case 2:
-          return cookie.path();
-        case 3:
-          return cookie.isSecure();
-        case 4:
-          return cookie.expirationDate();
-        case 5:
-          return cookie.value();
-      }
+  case Qt::DisplayRole:
+  case Qt::EditRole: {
+    QNetworkCookie cookie = lst.at(index.row());
+    switch (index.column()) {
+    case 0:
+      return cookie.domain();
+    case 1:
+      return cookie.name();
+    case 2:
+      return cookie.path();
+    case 3:
+      return cookie.isSecure();
+    case 4:
+      return cookie.expirationDate();
+    case 5:
+      return cookie.value();
     }
-    case Qt::FontRole: {
-      QFont font;
-      font.setPointSize(10);
-      return font;
-    }
+  }
+  case Qt::FontRole: {
+    QFont font;
+    font.setPointSize(10);
+    return font;
+  }
   }
 
   return QVariant();
 }
 
-int CookieModel::columnCount(const QModelIndex &parent) const {
+int CookieModel::columnCount(const QModelIndex &parent) const
+{
   return (parent.isValid()) ? 0 : 6;
 }
 
-int CookieModel::rowCount(const QModelIndex &parent) const {
+int CookieModel::rowCount(const QModelIndex &parent) const
+{
   return (parent.isValid() || !m_cookieJar) ? 0
-                                            : m_cookieJar->allCookies().count();
+         : m_cookieJar->allCookies().count();
 }
 
-bool CookieModel::removeRows(int row, int count, const QModelIndex &parent) {
-  if (parent.isValid() || !m_cookieJar)
+bool CookieModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+  if (parent.isValid() || !m_cookieJar) {
     return false;
+  }
   int lastRow = row + count - 1;
   beginRemoveRows(parent, row, lastRow);
   QList<QNetworkCookie> lst = m_cookieJar->allCookies();
@@ -486,13 +544,15 @@ bool CookieModel::removeRows(int row, int count, const QModelIndex &parent) {
   return true;
 }
 
-void CookieModel::cookiesChanged() {
+void CookieModel::cookiesChanged()
+{
   beginResetModel();
   endResetModel();
 }
 
 CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
-    : QDialog(parent) {
+  : QDialog(parent)
+{
   /*
   setupUi(this);
   setWindowFlags(Qt::Sheet);
@@ -539,95 +599,103 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
 }
 
 CookieExceptionsModel::CookieExceptionsModel(CookieJar *cookiejar,
-                                             QObject *parent)
-    : QAbstractTableModel(parent), m_cookieJar(cookiejar) {
+    QObject *parent)
+  : QAbstractTableModel(parent), m_cookieJar(cookiejar)
+{
   m_allowedCookies = m_cookieJar->allowedCookies();
   m_blockedCookies = m_cookieJar->blockedCookies();
   m_sessionCookies = m_cookieJar->allowForSessionCookies();
 }
 
 QVariant CookieExceptionsModel::headerData(int section,
-                                           Qt::Orientation orientation,
-                                           int role) const {
+    Qt::Orientation orientation,
+    int role) const
+{
   if (role == Qt::SizeHintRole) {
     QFont font;
     font.setPointSize(10);
     QFontMetrics fm(font);
     int height = fm.height() + fm.height() / 3;
     int width =
-        fm.width(headerData(section, orientation, Qt::DisplayRole).toString());
+      fm.width(headerData(section, orientation, Qt::DisplayRole).toString());
     return QSize(width, height);
   }
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     switch (section) {
-      case 0:
-        return tr("Website");
-      case 1:
-        return tr("Status");
+    case 0:
+      return tr("Website");
+    case 1:
+      return tr("Status");
     }
   }
   return QAbstractTableModel::headerData(section, orientation, role);
 }
 
-QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const {
-  if (index.row() < 0 || index.row() >= rowCount())
+QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const
+{
+  if (index.row() < 0 || index.row() >= rowCount()) {
     return QVariant();
+  }
 
   switch (role) {
-    case Qt::DisplayRole:
-    case Qt::EditRole: {
-      int row = index.row();
-      if (row < m_allowedCookies.count()) {
-        switch (index.column()) {
-          case 0:
-            return m_allowedCookies.at(row);
-          case 1:
-            return tr("Allow");
-        }
-      }
-      row = row - m_allowedCookies.count();
-      if (row < m_blockedCookies.count()) {
-        switch (index.column()) {
-          case 0:
-            return m_blockedCookies.at(row);
-          case 1:
-            return tr("Block");
-        }
-      }
-      row = row - m_blockedCookies.count();
-      if (row < m_sessionCookies.count()) {
-        switch (index.column()) {
-          case 0:
-            return m_sessionCookies.at(row);
-          case 1:
-            return tr("Allow For Session");
-        }
+  case Qt::DisplayRole:
+  case Qt::EditRole: {
+    int row = index.row();
+    if (row < m_allowedCookies.count()) {
+      switch (index.column()) {
+      case 0:
+        return m_allowedCookies.at(row);
+      case 1:
+        return tr("Allow");
       }
     }
-    case Qt::FontRole: {
-      QFont font;
-      font.setPointSize(10);
-      return font;
+    row = row - m_allowedCookies.count();
+    if (row < m_blockedCookies.count()) {
+      switch (index.column()) {
+      case 0:
+        return m_blockedCookies.at(row);
+      case 1:
+        return tr("Block");
+      }
     }
+    row = row - m_blockedCookies.count();
+    if (row < m_sessionCookies.count()) {
+      switch (index.column()) {
+      case 0:
+        return m_sessionCookies.at(row);
+      case 1:
+        return tr("Allow For Session");
+      }
+    }
+  }
+  case Qt::FontRole: {
+    QFont font;
+    font.setPointSize(10);
+    return font;
+  }
   }
   return QVariant();
 }
 
-int CookieExceptionsModel::columnCount(const QModelIndex &parent) const {
+int CookieExceptionsModel::columnCount(const QModelIndex &parent) const
+{
   return (parent.isValid()) ? 0 : 2;
 }
 
-int CookieExceptionsModel::rowCount(const QModelIndex &parent) const {
+int CookieExceptionsModel::rowCount(const QModelIndex &parent) const
+{
   return (parent.isValid() || !m_cookieJar) ? 0 : m_allowedCookies.count() +
-                                                      m_blockedCookies.count() +
-                                                      m_sessionCookies.count();
+         m_blockedCookies.count() +
+         m_sessionCookies.count();
 }
 
 bool CookieExceptionsModel::removeRows(int row, int count,
-                                       const QModelIndex &parent) {
-  if (parent.isValid() || !m_cookieJar)
+                                       const QModelIndex &parent)
+{
+  if (parent.isValid() || !m_cookieJar) {
     return false;
+  }
 
   int lastRow = row + count - 1;
   beginRemoveRows(parent, row, lastRow);
@@ -655,8 +723,9 @@ bool CookieExceptionsModel::removeRows(int row, int count,
 }
 
 CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar,
-                                                 QWidget *parent)
-    : QDialog(parent), m_cookieJar(cookieJar) {
+    QWidget *parent)
+  : QDialog(parent), m_cookieJar(cookieJar)
+{
   /*
   setupUi(this);
   setWindowFlags(Qt::Sheet);
@@ -709,34 +778,41 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar,
   */
 }
 
-void CookiesExceptionsDialog::textChanged(const QString &text) {
+void CookiesExceptionsDialog::textChanged(const QString &text)
+{
   bool enabled = !text.isEmpty();
   blockButton->setEnabled(enabled);
   allowButton->setEnabled(enabled);
   allowForSessionButton->setEnabled(enabled);
 }
 
-void CookiesExceptionsDialog::block() {
-  if (domainLineEdit->text().isEmpty())
+void CookiesExceptionsDialog::block()
+{
+  if (domainLineEdit->text().isEmpty()) {
     return;
+  }
   m_exceptionsModel->m_blockedCookies.append(domainLineEdit->text());
   m_cookieJar->setBlockedCookies(m_exceptionsModel->m_blockedCookies);
   m_exceptionsModel->beginResetModel();
   m_exceptionsModel->endResetModel();
 }
 
-void CookiesExceptionsDialog::allow() {
-  if (domainLineEdit->text().isEmpty())
+void CookiesExceptionsDialog::allow()
+{
+  if (domainLineEdit->text().isEmpty()) {
     return;
+  }
   m_exceptionsModel->m_allowedCookies.append(domainLineEdit->text());
   m_cookieJar->setAllowedCookies(m_exceptionsModel->m_allowedCookies);
   m_exceptionsModel->beginResetModel();
   m_exceptionsModel->endResetModel();
 }
 
-void CookiesExceptionsDialog::allowForSession() {
-  if (domainLineEdit->text().isEmpty())
+void CookiesExceptionsDialog::allowForSession()
+{
+  if (domainLineEdit->text().isEmpty()) {
     return;
+  }
   m_exceptionsModel->m_sessionCookies.append(domainLineEdit->text());
   m_cookieJar->setAllowForSessionCookies(m_exceptionsModel->m_sessionCookies);
   m_exceptionsModel->beginResetModel();

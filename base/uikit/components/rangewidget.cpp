@@ -2,8 +2,10 @@
 
 #include <QDebug>
 
-namespace UI {
-class RangeWidget::PrivateRangeWidget {
+namespace UI
+{
+class RangeWidget::PrivateRangeWidget
+{
 public:
   PrivateRangeWidget() {}
   ~PrivateRangeWidget() {}
@@ -22,12 +24,11 @@ public:
 };
 
 RangeWidget::RangeWidget(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateRangeWidget) {
-  this->setWindowFlag(UI::UIWidget::kRenderBackground);
-  this->setWindowFlag(UI::UIWidget::kTopLevelWindow, false);
-  this->setWindowFlag(UI::UIWidget::kConvertToWindowType, false);
-  this->setWindowFlag(UI::UIWidget::kRenderWindowTitle, false);
-  this->setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
+  : UI::UIWidget(parent), d(new PrivateRangeWidget)
+{
+  this->setWindowFlag(UI::Window::kRenderBackground);
+  this->setWindowFlag(UI::Window::kConvertToWindowType, false);
+  this->setWindowFlag(UI::Window::kRenderDropShadow, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsSelectable, true);
 
@@ -46,52 +47,62 @@ float RangeWidget::maxValue() const { return d->mMaxValue; }
 
 float RangeWidget::currentValue() const { return d->mProgressValue; }
 
-void RangeWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
+void RangeWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
+{
   qDebug() << Q_FUNC_INFO << event->pos();
 }
 
-void RangeWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void RangeWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   d->mInitPos = mapToScene(event->pos());
   event->accept();
   QGraphicsItem::mousePressEvent(event);
 }
 
-void RangeWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void RangeWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   event->accept();
   // QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void RangeWidget::PrivateRangeWidget::calculateValue() {
+void RangeWidget::PrivateRangeWidget::calculateValue()
+{
   //
   float decimalValue = (mAngle - mStartAngle) / (mMaxAngle / mMaxValue);
-  if (decimalValue < 0)
+  if (decimalValue < 0) {
     decimalValue += mMaxValue;
+  }
 
   int hours = (int)decimalValue;
 
-  if (hours == mMaxValue)
+  if (hours == mMaxValue) {
     hours = 0;
+  }
 
   mProgressValue = hours;
 }
 
-QString RangeWidget::PrivateRangeWidget::convertAngleToTimeString(float angle) {
+QString RangeWidget::PrivateRangeWidget::convertAngleToTimeString(float angle)
+{
   QString time = "";
   float decimalValue = (angle - mStartAngle) / 15.0;
-  if (decimalValue < 0)
+  if (decimalValue < 0) {
     decimalValue += mMaxValue;
+  }
 
   int hours = (int)decimalValue;
 
-  if (hours == mMaxValue)
+  if (hours == mMaxValue) {
     hours = 0;
+  }
 
   float minutes = ((int)angle % (int)15) / 0.25;
 
   return QString("%1:%2").arg(hours).arg(minutes); // time;
 }
 
-void RangeWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+void RangeWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
   /*
   QPointF pos = mapToScene(event->pos());
 
@@ -112,7 +123,8 @@ void RangeWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
   */
 }
 
-void RangeWidget::paintView(QPainter *painter, const QRectF &rect) {
+void RangeWidget::paintView(QPainter *painter, const QRectF &rect)
+{
   QPen pen;
   pen.setColor(QColor("#F28585"));
   pen.setWidth(10);
@@ -135,14 +147,14 @@ void RangeWidget::paintView(QPainter *painter, const QRectF &rect) {
   // painter->drawEllipse(borderRect);
 
   painter->drawLine(
-      QPointF(0.0, this->boundingRect().height() / 2),
-      QPointF(this->boundingRect().width(), this->boundingRect().height() / 2));
+    QPointF(0.0, this->boundingRect().height() / 2),
+    QPointF(this->boundingRect().width(), this->boundingRect().height() / 2));
   painter->restore();
 
   /*
   QPainterPath clockInisde;
   clockInisde.addEllipse(QRectF(borderRect.x() + 2, borderRect.y() + 2,
- borderRect.width() - 4 , borderRect.height() - 4));
+  borderRect.width() - 4 , borderRect.height() - 4));
 
   //painter->fillPath(clockInisde, QColor("#F28585"));
   painter->fillPath(clockInisde, QColor(Qt::white));
@@ -152,8 +164,8 @@ void RangeWidget::paintView(QPainter *painter, const QRectF &rect) {
   font.setPixelSize(32);
   painter->save();
   painter->setFont(font);
- // painter->drawText(borderRect, Qt::AlignCenter,
- d->convertAngleToTimeString(d->mAngle));
+  // painter->drawText(borderRect, Qt::AlignCenter,
+  d->convertAngleToTimeString(d->mAngle));
   painter->restore();
 
   painter->save();
@@ -166,7 +178,7 @@ void RangeWidget::paintView(QPainter *painter, const QRectF &rect) {
   painter->setTransform(xform);
 
   QLineF line(handle.center(), QPointF(boundingRect().width() - 48,
- (boundingRect().height() / 2) - 48));
+  (boundingRect().height() / 2) - 48));
   //
   QRectF ctrRect(line.x2(), line.y2(), 10, 10);
   QRectF ctrFrameRect(line.x2(), line.y2(), 32, 32);
@@ -179,7 +191,7 @@ void RangeWidget::paintView(QPainter *painter, const QRectF &rect) {
   whitePen.setColor(Qt::white);
   painter->setPen(whitePen);
   painter->drawText(ctrFrameRect, Qt::AlignCenter,
- QString("%1").arg((int)d->mProgressValue));
+  QString("%1").arg((int)d->mProgressValue));
 
   painter->restore();
   */

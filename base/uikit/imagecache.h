@@ -30,8 +30,10 @@
 #include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
-class DECL_UI_KIT_EXPORT ImageCache : public QObject {
+namespace UI
+{
+class DECL_UI_KIT_EXPORT ImageCache : public QObject
+{
   Q_OBJECT
 
 public:

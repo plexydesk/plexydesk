@@ -3,7 +3,8 @@
 #include <themepackloader.h>
 #include <QHash>
 
-class DateCellFactory::PrivateDateCellFactory {
+class DateCellFactory::PrivateDateCellFactory
+{
 public:
   PrivateDateCellFactory() {}
   ~PrivateDateCellFactory() { mData.clear(); }
@@ -16,7 +17,8 @@ public:
 };
 
 DateCellFactory::DateCellFactory(QGraphicsObject *parent)
-    : UI::TableModel(parent), d(new PrivateDateCellFactory) {
+  : UI::TableModel(parent), d(new PrivateDateCellFactory)
+{
   /*
   for (int i = 0 ; i < 10; i++) {
       addDataItem(QString("%1").arg(i),
@@ -31,12 +33,13 @@ DateCellFactory::DateCellFactory(QGraphicsObject *parent)
 
 DateCellFactory::~DateCellFactory() { delete d; }
 
-QList<TableViewItem *> DateCellFactory::componentList() {
+QList<TableViewItem *> DateCellFactory::componentList()
+{
   QList<TableViewItem *> list;
   Q_FOREACH(TableViewItem * copyItem, d->mListItems) {
     DateCell *item = new DateCell(
-        QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
-        DateCell::Grid, 0);
+      QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
+      DateCell::Grid, 0);
     DateCell *cell = qobject_cast<DateCell *>(copyItem);
 
     item->setHeaderMode(d->mHeaderMode);
@@ -56,21 +59,24 @@ float DateCellFactory::leftMargin() const { return 0.0; }
 
 float DateCellFactory::rightMargin() const { return 0.0; }
 
-bool DateCellFactory::init() {
+bool DateCellFactory::init()
+{
   Q_EMIT updated();
 
   return true;
 }
 
-TableModel::TableRenderMode DateCellFactory::renderType() const {
+TableModel::TableRenderMode DateCellFactory::renderType() const
+{
   return DateCellFactory::kRenderAsGridView;
 }
 
 void DateCellFactory::addDataItem(const QString &label, const QPixmap pixmap,
-                                  bool selected) {
+                                  bool selected)
+{
   DateCell *item = new DateCell(
-      QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
-      DateCell::Grid, 0);
+    QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
+    DateCell::Grid, 0);
 
   item->setLabelVisibility(d->mLablelVisibility);
   item->addDataItem(pixmap, label);
@@ -81,7 +87,8 @@ void DateCellFactory::addDataItem(const QString &label, const QPixmap pixmap,
   Q_EMIT add(item);
 }
 
-void DateCellFactory::setLabelVisibility(bool visibility) {
+void DateCellFactory::setLabelVisibility(bool visibility)
+{
   d->mLablelVisibility = visibility;
 }
 
@@ -89,7 +96,8 @@ void DateCellFactory::setHeaderMode(bool mode) { d->mHeaderMode = mode; }
 
 void DateCellFactory::setCellSize(const QSize &size) { d->mCellSize = size; }
 
-UI::TableViewItem *DateCellFactory::itemAt(int i) {
+UI::TableViewItem *DateCellFactory::itemAt(int i)
+{
   qDebug() << Q_FUNC_INFO << d->mListItems.count();
 
   return d->mListItems.at(i);

@@ -25,9 +25,11 @@
 #include <desktopwidget.h>
 #include "vplayer.h"
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
-class VideoItem : public DesktopWidget {
+class VideoItem : public DesktopWidget
+{
 
   Q_OBJECT
 public:

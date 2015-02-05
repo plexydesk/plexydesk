@@ -26,7 +26,8 @@
 #include "welcomewidget.h"
 #include "frameitem.h"
 
-class Welcome : public PlexyDesk::WidgetPlugin {
+class Welcome : public PlexyDesk::WidgetPlugin
+{
   Q_OBJECT
 public:
   Welcome(QObject *object = 0);

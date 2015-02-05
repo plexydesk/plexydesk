@@ -31,7 +31,8 @@
 #include "clockwidget.h"
 #include "timezone_model.h"
 
-class DesktopClockActivity::PrivateDesktopClock {
+class DesktopClockActivity::PrivateDesktopClock
+{
 public:
   PrivateDesktopClock() {}
 
@@ -50,28 +51,27 @@ public:
 };
 
 DesktopClockActivity::DesktopClockActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateDesktopClock) {}
+  : UI::DesktopActivity(object), d(new PrivateDesktopClock) {}
 
 DesktopClockActivity::~DesktopClockActivity() { delete d; }
 
 void DesktopClockActivity::createFrameWindow(const QRectF &window_geometry,
-                                             const QString &window_title) {
+    const QString &window_title)
+{
   d->m_main_window = new UI::UIWidget();
   d->m_main_window->setGeometry(window_geometry);
 
-  d->m_main_window->setWindowTitle(window_title);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderDropShadow);
 
   setGeometry(window_geometry);
 }
 
 void DesktopClockActivity::createWindow(const QRectF &window_geometry,
                                         const QString &window_title,
-                                        const QPointF &window_pos) {
+                                        const QPointF &window_pos)
+{
   QRectF _layout_geometry = window_geometry;
   QRectF _clock_geometry(0.0, 0.0, 240, 240);
 
@@ -82,8 +82,8 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   if (UI::Theme::style()) {
     float _window_title_height = UI::Theme::style()
-                                     ->attrbute("frame", "window_title_height")
-                                     .toFloat();
+                                 ->attrbute("frame", "window_title_height")
+                                 .toFloat();
     _layout_geometry.setY(_window_title_height);
     _layout_geometry.setHeight(window_geometry.height() - _window_title_height);
   }
@@ -138,18 +138,21 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
-UI::UIWidget *DesktopClockActivity::window() const {
+UI::UIWidget *DesktopClockActivity::window() const
+{
   return d->m_main_window;
 }
 
-void DesktopClockActivity::onWidgetClosed(UI::UIWidget *widget) {
+void DesktopClockActivity::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
 
 void DesktopClockActivity::onHideAnimationFinished() { Q_EMIT finished(); }
 
-void DesktopClockActivity::onToolBarAction(const QString &str) {
+void DesktopClockActivity::onToolBarAction(const QString &str)
+{
   if (str.toLower() == "timezone") {
     qDebug() << Q_FUNC_INFO << "Create timezone activity";
 
@@ -157,8 +160,8 @@ void DesktopClockActivity::onToolBarAction(const QString &str) {
       UI::Space *_space = qobject_cast<UI::Space *>(viewport());
       if (_space) {
         UI::DesktopActivityPtr _timezone = viewport()->createActivity(
-            "timezone", tr("TimeZone"), _space->mousePointerPos(),
-            QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
+                                             "timezone", tr("TimeZone"), _space->mousePointerPos(),
+                                             QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
         _space->addActivity(_timezone);
       }
     } else {

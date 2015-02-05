@@ -28,7 +28,8 @@
 
 using namespace UI;
 
-class CocoaStyle : public UI::Style {
+class CocoaStyle : public UI::Style
+{
 public:
   CocoaStyle();
 

@@ -21,7 +21,8 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class SocialAuthActivity::PrivateSocialAuth {
+class SocialAuthActivity::PrivateSocialAuth
+{
 public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
@@ -30,26 +31,24 @@ public:
 };
 
 SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateSocialAuth) {}
+  : UI::DesktopActivity(object), d(new PrivateSocialAuth) {}
 
 SocialAuthActivity::~SocialAuthActivity() { delete d; }
 
 void SocialAuthActivity::createWindow(const QRectF &window_geometry,
                                       const QString &window_title,
-                                      const QPointF &window_pos) {
+                                      const QPointF &window_pos)
+{
   setGeometry(window_geometry);
 
   d->mFrame = new UI::UIWidget();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
-  d->mFrame->setWindowTitle(window_title);
 
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
 
   updateContentGeometry(d->mFrame);
   exec();

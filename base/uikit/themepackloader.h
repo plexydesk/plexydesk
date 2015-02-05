@@ -12,8 +12,10 @@
 #include <datastore.h>
 #include <webservice.h>
 
-namespace UI {
-class DECL_UI_KIT_EXPORT Theme : public QObject {
+namespace UI
+{
+class DECL_UI_KIT_EXPORT Theme : public QObject
+{
   Q_OBJECT
   Q_PROPERTY(QString themeName READ QString WRITE setThemeName)
 

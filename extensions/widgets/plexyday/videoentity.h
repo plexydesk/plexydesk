@@ -22,8 +22,10 @@
 
 #include <QtCore/QString>
 
-namespace PlexyDesk {
-class VideoEntity {
+namespace PlexyDesk
+{
+class VideoEntity
+{
 
 public:
   VideoEntity();

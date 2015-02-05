@@ -25,7 +25,8 @@
 #include <datainterface.h>
 #include <dataplugin.h>
 
-class PresenceInterface : public PlexyDesk::DataInterface {
+class PresenceInterface : public PlexyDesk::DataInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

@@ -25,8 +25,10 @@
 #include <QtDeclarative/QDeclarativeEngine>
 #include <PlexyDeskUICore_export.h>
 
-namespace PlexyDesk {
-class PlexyDeskUICore_EXPORT QmlDesktopWidget : public DesktopWidget {
+namespace PlexyDesk
+{
+class PlexyDeskUICore_EXPORT QmlDesktopWidget : public DesktopWidget
+{
   Q_OBJECT
 
 public:

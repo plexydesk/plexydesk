@@ -27,7 +27,8 @@
 #include <widgetinterface.h>
 #include "videoitem.h"
 
-class VISIBLE_SYM VideoInterface : public PlexyDesk::WidgetInterface {
+class VISIBLE_SYM VideoInterface : public PlexyDesk::WidgetInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::WidgetInterface)
 

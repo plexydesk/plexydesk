@@ -37,33 +37,36 @@
 #include <QtGui/QTextBrowser>
 #include <QtGui/QWidget>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 SocioTwitterwidget::SocioTwitterwidget(const QRectF &rect, QWidget *widget)
-    : DesktopWidget(rect, widget) {
+  : DesktopWidget(rect, widget)
+{
 
-  if (SocioTwitterwidget->objectName().isEmpty())
+  if (SocioTwitterwidget->objectName().isEmpty()) {
     SocioTwitterwidget->setObjectName(QString::fromUtf8("SocioTwitterClass"));
+  }
   SocioTwitterwidget->resize(272, 415);
   QSizePolicy sizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
   sizePolicy.setHorizontalStretch(0);
   sizePolicy.setVerticalStretch(0);
   sizePolicy.setHeightForWidth(
-      SocioTwitterClass->sizePolicy().hasHeightForWidth());
+    SocioTwitterClass->sizePolicy().hasHeightForWidth());
   SocioTwitterwidget->setSizePolicy(sizePolicy);
   SocioTwitterwidget->setCursor(QCursor(Qt::ArrowCursor));
   SocioTwitterwidget->setAcceptDrops(true);
   SocioTwitterwidget->setWindowTitle(QString::fromUtf8("SocioTwitter"));
   SocioTwitterwidget->setAutoFillBackground(false);
   SocioTwitterwidget->setStyleSheet(QString::fromUtf8(
-      "QWidget{   \n"
-      "background:transparent;\n"
-      "transparent-color:black;\n"
-      "background-color:qlineargradient(spread:pad, x1:0.604, y1:0.409, "
-      "x2:0.193, y2:0.938, stop:0.233503 rgba(1, 0,         0,255))\n"
-      "\n"
-      "\n"
-      "  }"));
+                                      "QWidget{   \n"
+                                      "background:transparent;\n"
+                                      "transparent-color:black;\n"
+                                      "background-color:qlineargradient(spread:pad, x1:0.604, y1:0.409, "
+                                      "x2:0.193, y2:0.938, stop:0.233503 rgba(1, 0,         0,255))\n"
+                                      "\n"
+                                      "\n"
+                                      "  }"));
 
   lineEdit = new QLineEdit(SocioTwitterwidget);
   lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
@@ -76,13 +79,13 @@ SocioTwitterwidget::SocioTwitterwidget(const QRectF &rect, QWidget *widget)
   lineEdit->setSizePolicy(sizePolicy1);
   lineEdit->setFocusPolicy(Qt::StrongFocus);
   lineEdit->setStyleSheet(
-      QString::fromUtf8("QLineEdit {     \n"
-                        " border: 1px solid gray;     \n"
-                        " border-radius: 5px;     \n"
-                        " padding: 0 8px;     \n"
-                        " background: beige;     \n"
-                        " selection-background-color: darkgray;\n"
-                        "  }"));
+    QString::fromUtf8("QLineEdit {     \n"
+                      " border: 1px solid gray;     \n"
+                      " border-radius: 5px;     \n"
+                      " padding: 0 8px;     \n"
+                      " background: beige;     \n"
+                      " selection-background-color: darkgray;\n"
+                      "  }"));
 
   scrollArea = new QScrollArea(SocioTwitterwidget);
   scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
@@ -105,7 +108,7 @@ SocioTwitterwidget::SocioTwitterwidget(const QRectF &rect, QWidget *widget)
 
   scrollAreaWidgetContents = new QWidget();
   scrollAreaWidgetContents->setObjectName(
-      QString::fromUtf8("scrollAreaWidgetContents"));
+    QString::fromUtf8("scrollAreaWidgetContents"));
   scrollAreaWidgetContents->setGeometry(QRect(0, 0, 267, 327));
 
   graphicsView = new QGraphicsView(scrollAreaWidgetContents);

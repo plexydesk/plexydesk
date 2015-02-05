@@ -9,8 +9,10 @@
 #include "plexydeskuicore_global.h"
 #include <PlexyDeskUICore_export.h>
 
-namespace PlexyDesk {
-class PlexyDeskUICore_EXPORT ViewLayer : public QObject {
+namespace PlexyDesk
+{
+class PlexyDeskUICore_EXPORT ViewLayer : public QObject
+{
   Q_OBJECT
 public:
   ViewLayer(QObject *object = 0);

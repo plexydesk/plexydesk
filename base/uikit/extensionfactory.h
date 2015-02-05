@@ -27,10 +27,13 @@
 #include "plexydeskuicore_global.h"
 #include <PlexyDeskUICore_export.h>
 
-namespace PlexyDesk {
-template <class T> class PlexyDeskUICore_EXPORT ExtensionProducer {
+namespace PlexyDesk
+{
+template <class T> class PlexyDeskUICore_EXPORT ExtensionProducer
+{
 public:
-  T *instance(const QString &name, QObject *obj) {
+  T *instance(const QString &name, QObject *obj)
+  {
     return qobject_cast<T *>(obj);
   }
 };

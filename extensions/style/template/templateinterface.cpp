@@ -21,7 +21,8 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::Style> TemplateInterface::style() {
+QSharedPointer<PlexyDesk::Style> TemplateInterface::style()
+{
   QSharedPointer<PlexyDesk::Style> obj = QSharedPointer<PlexyDesk::Style>(
       new TemplateStyle(), &QObject::deleteLater);
 

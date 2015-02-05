@@ -8,12 +8,15 @@
 
 #include "plexydesktopiconprovider.h"
 
-class FolderProvider::FolderProviderPrivate {
+class FolderProvider::FolderProviderPrivate
+{
 public:
   FolderProviderPrivate() {}
-  ~FolderProviderPrivate() {
-    if (mIconProvider)
+  ~FolderProviderPrivate()
+  {
+    if (mIconProvider) {
       delete mIconProvider;
+    }
   }
 
   QMap<QString, UI::ViewControllerPtr> mControllerMap;
@@ -25,7 +28,8 @@ public:
 };
 
 FolderProvider::FolderProvider(const QRectF &rect, QGraphicsObject *parent)
-    : UI::TableModel(parent), d(new FolderProviderPrivate) {
+  : UI::TableModel(parent), d(new FolderProviderPrivate)
+{
 
   d->mIconProvider = new QFileIconProvider();
   d->mFileSystemModel = new QFileSystemModel(this);
@@ -36,13 +40,15 @@ FolderProvider::FolderProvider(const QRectF &rect, QGraphicsObject *parent)
 
 FolderProvider::~FolderProvider() { delete d; }
 
-bool FolderProvider::init() {
+bool FolderProvider::init()
+{
   // Q_EMIT updated()
 
   return true;
 }
 
-float FolderProvider::margin() const {
+float FolderProvider::margin() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -50,7 +56,8 @@ float FolderProvider::margin() const {
   return 5.0;
 }
 
-float FolderProvider::padding() const {
+float FolderProvider::padding() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -58,7 +65,8 @@ float FolderProvider::padding() const {
   return 5.0;
 }
 
-float FolderProvider::leftMargin() const {
+float FolderProvider::leftMargin() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -66,7 +74,8 @@ float FolderProvider::leftMargin() const {
   return 5.0;
 }
 
-float FolderProvider::rightMargin() const {
+float FolderProvider::rightMargin() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -102,9 +111,10 @@ controllerName;
 */
 
 UI::DataSourcePtr FolderProvider::loadDataSourceEngine(
-    const QString &engine) {
+  const QString &engine)
+{
   QSharedPointer<UI::DataSource> dataSource =
-      UI::ExtensionManager::instance()->dataEngine(engine);
+    UI::ExtensionManager::instance()->dataEngine(engine);
 
   // connect(d->mDataSource.data(), SIGNAL(ready()), this, SLOT(onReady()));
   d->mEngines[engine] = dataSource;
@@ -112,17 +122,20 @@ UI::DataSourcePtr FolderProvider::loadDataSourceEngine(
   return dataSource;
 }
 
-UI::TableModel::TableRenderMode FolderProvider::renderType() const {
+UI::TableModel::TableRenderMode FolderProvider::renderType() const
+{
   return UI::TableModel::kRenderAsGridView;
 }
 
-void FolderProvider::setDirectoryPath(const QString &path) {
+void FolderProvider::setDirectoryPath(const QString &path)
+{
   d->mFileSystemModel->setFilter(QDir::NoDotAndDotDot | QDir::Files |
                                  QDir::Dirs);
   d->mFileSystemModel->setRootPath(path);
 }
 
-void FolderProvider::onDirectoryReady(const QString &path) {
+void FolderProvider::onDirectoryReady(const QString &path)
+{
   QModelIndex idx = d->mFileSystemModel->index(d->mFileSystemModel->rootPath());
 
   mFolderList.clear();
@@ -144,7 +157,8 @@ void FolderProvider::onDirectoryReady(const QString &path) {
   Q_EMIT updated();
 }
 
-void FolderProvider::onLocationSourceUpdated(const QVariantMap &data) {
+void FolderProvider::onLocationSourceUpdated(const QVariantMap &data)
+{
 
   Q_EMIT updated();
 }

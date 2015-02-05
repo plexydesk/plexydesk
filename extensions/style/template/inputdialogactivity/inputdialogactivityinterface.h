@@ -25,7 +25,8 @@
 #include <desktopactivity.h>
 
 class InputDialogActivityInterface : public QObject,
-                                     public PlexyDesk::ActivityInterface {
+  public PlexyDesk::ActivityInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.inputdialogactivity")

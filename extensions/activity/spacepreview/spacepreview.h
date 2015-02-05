@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class SpacePreviewActivity : public UI::DesktopActivity {
+class SpacePreviewActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

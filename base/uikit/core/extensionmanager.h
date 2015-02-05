@@ -31,14 +31,16 @@
 #include <desktopactivity.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 /**
     * @brief PlexyDesk Plugin Manager Class
     *
     * Supports loading and handling various plexydesk
     * extensions supported by the sytem
     */
-class DECL_UI_KIT_EXPORT ExtensionManager : public QObject {
+class DECL_UI_KIT_EXPORT ExtensionManager : public QObject
+{
   Q_OBJECT
 public:
   /**
@@ -64,7 +66,7 @@ public:
 
 
   static ExtensionManager *init(const QString &desktopPrefix,
-                                    const QString &prefix);
+                                const QString &prefix);
 
   /**
       * @brief

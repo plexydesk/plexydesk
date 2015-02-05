@@ -3,7 +3,8 @@
 
 #include <QThread>
 
-class LocalWallPapers : public QThread {
+class LocalWallPapers : public QThread
+{
   Q_OBJECT
 public:
   explicit LocalWallPapers(QObject *parent = 0);

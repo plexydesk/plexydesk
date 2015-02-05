@@ -25,14 +25,16 @@
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 /**
     * \class this is a interface definition cell creators
     *
     * @brief Implement this class to build cells required by
   *UI::TableView
     */
-class DECL_UI_KIT_EXPORT TableModel : public QObject {
+class DECL_UI_KIT_EXPORT TableModel : public QObject
+{
   Q_OBJECT
 
 public:

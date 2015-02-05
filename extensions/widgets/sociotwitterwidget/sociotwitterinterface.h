@@ -8,7 +8,8 @@
 #include <widgetinterface.h>
 
 class VISIBLE_SYM SocioTwitterInterface
-    : public PlexyDesk::AbstractPluginInterface {
+  : public PlexyDesk::AbstractPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

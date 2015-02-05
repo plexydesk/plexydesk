@@ -25,7 +25,8 @@
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public UI::ViewController {
+class Clock : public UI::ViewController
+{
   Q_OBJECT
 
 public:

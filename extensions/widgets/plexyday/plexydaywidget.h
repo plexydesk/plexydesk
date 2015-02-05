@@ -38,9 +38,11 @@
 
 class QTimer;
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
-class PlexyDayWidget : public PlexyDesk::Widget {
+class PlexyDayWidget : public PlexyDesk::Widget
+{
   Q_OBJECT
 
 public:

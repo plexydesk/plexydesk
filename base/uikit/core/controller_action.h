@@ -4,9 +4,11 @@
 #include <cstring>
 #include <string>
 
-namespace UI {
+namespace UI
+{
 
-class ControllerAction {
+class ControllerAction
+{
 public:
   ControllerAction();
 

@@ -22,7 +22,8 @@ VideoWidget::VideoWidget(QObject *object) {}
 
 VideoWidget::~VideoWidget() {}
 
-QGraphicsItem *VideoWidget::item() {
+QGraphicsItem *VideoWidget::item()
+{
 
   return new PlexyDesk::VideoItem(QRectF(0, 0, 380, 300), 0);
 }

@@ -12,7 +12,8 @@
 #include <label.h>
 #include <themepackloader.h>
 
-class PhotoCell::PrivatePhotoCell {
+class PhotoCell::PrivatePhotoCell
+{
 
 public:
   PrivatePhotoCell() {}
@@ -30,7 +31,8 @@ public:
 };
 
 PhotoCell::PhotoCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : UI::TableViewItem(rect, parent), d(new PrivatePhotoCell) {
+  : UI::TableViewItem(rect, parent), d(new PrivatePhotoCell)
+{
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mVisibility = true;
@@ -45,7 +47,8 @@ PhotoCell::PhotoCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
   setAcceptHoverEvents(true);
 }
 
-PhotoCell::~PhotoCell() {
+PhotoCell::~PhotoCell()
+{
 #ifdef PD_MEM_LEAK
   qDebug() << Q_FUNC_INFO;
 #endif
@@ -54,11 +57,13 @@ PhotoCell::~PhotoCell() {
 
 QRectF PhotoCell::boundingRect() const { return QRectF(0.0, 0.0, 138, 138); }
 
-QSizeF PhotoCell::sizeHint(Qt::SizeHint hint, const QSizeF &size) const {
+QSizeF PhotoCell::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
+{
   return boundingRect().size();
 }
 
-void PhotoCell::setSelected() {
+void PhotoCell::setSelected()
+{
   d->mIsSelected = true;
   update();
 }
@@ -67,7 +72,8 @@ void PhotoCell::setLabelVisibility(bool visible) { d->mVisibility = visible; }
 
 void PhotoCell::clearSelection() { d->mIsSelected = false; }
 
-void PhotoCell::setLabel(const QString &txt) {
+void PhotoCell::setLabel(const QString &txt)
+{
   d->mLabel = txt;
   update();
 }
@@ -79,7 +85,8 @@ void PhotoCell::setDefault(bool selection) { d->mIsSelected = selection; }
 QString PhotoCell::label() const { return d->mLabel; }
 
 void PhotoCell::addDataItem(const QImage &img, const QString &label,
-                            const QVariantMap &metaData) {
+                            const QVariantMap &metaData)
+{
   /*
   d->mImageView->setPixmap(img);
   d->mLabelView->setLabel(label);
@@ -90,7 +97,8 @@ void PhotoCell::addDataItem(const QImage &img, const QString &label,
 }
 
 void PhotoCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                      QWidget *widget) {
+                      QWidget *widget)
+{
   /* Painter settings */
   if (d->mType == List || d->mIsSelected) {
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -110,7 +118,7 @@ void PhotoCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   painter->fillRect(option->exposedRect, Qt::black);
   painter->drawImage(option->exposedRect, d->mImage, source,
                      Qt::ColorOnly | Qt::DiffuseDither |
-                         Qt::DiffuseAlphaDither);
+                     Qt::DiffuseAlphaDither);
 
   painter->save();
   painter->setPen(QColor(0, 0, 0));
@@ -118,14 +126,16 @@ void PhotoCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   painter->restore();
 }
 
-void PhotoCell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void PhotoCell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   qDebug() << Q_FUNC_INFO << "Item Clicked";
   Q_EMIT clicked(this);
 }
 
 void PhotoCell::mousePressEvent(QGraphicsSceneMouseEvent *event) {}
 
-void PhotoCell::onClicked() {
+void PhotoCell::onClicked()
+{
 
   qDebug() << Q_FUNC_INFO << "Item Clicked";
   Q_EMIT clicked(this);

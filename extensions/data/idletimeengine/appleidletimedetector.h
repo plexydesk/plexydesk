@@ -4,7 +4,8 @@
 #include <QDateTime>
 #include <QObject>
 
-class AppleIdleTimeDetector : public QObject {
+class AppleIdleTimeDetector : public QObject
+{
   Q_OBJECT
 
 public:

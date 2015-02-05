@@ -6,9 +6,11 @@
 #include <QGraphicsObject>
 #include <desktopwidget.h>
 
-namespace UI {
+namespace UI
+{
 
-class DECL_UI_KIT_EXPORT ImageButton : public UIWidget {
+class DECL_UI_KIT_EXPORT ImageButton : public UIWidget
+{
   Q_OBJECT
 public:
   explicit ImageButton(QGraphicsObject *parent = 0);

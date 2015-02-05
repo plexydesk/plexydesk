@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QVariantMap>
 
-class ExtLaoderTestRunner : public QObject {
+class ExtLaoderTestRunner : public QObject
+{
   Q_OBJECT
 public:
   explicit ExtLaoderTestRunner(QObject *parent = 0);

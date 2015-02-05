@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class ProgressDialogActivity : public UI::DesktopActivity {
+class ProgressDialogActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

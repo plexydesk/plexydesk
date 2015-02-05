@@ -27,7 +27,8 @@
 #include <abstractplugininterface.h>
 #include <datainterface.h>
 
-class VIDEOENGINE_EXPORT VideoData : public PlexyDesk::DataPlugin {
+class VIDEOENGINE_EXPORT VideoData : public PlexyDesk::DataPlugin
+{
   Q_OBJECT
 
 public:

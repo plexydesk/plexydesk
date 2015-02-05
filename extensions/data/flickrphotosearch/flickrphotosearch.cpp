@@ -23,7 +23,8 @@
 #include <QNetworkAccessManager>
 #include <webservice.h>
 
-class FlickrPhotoSearchData::PrivateFlickrPhotoSearch {
+class FlickrPhotoSearchData::PrivateFlickrPhotoSearch
+{
 public:
   PrivateFlickrPhotoSearch() {}
   ~PrivateFlickrPhotoSearch() {}
@@ -32,16 +33,17 @@ public:
 };
 
 FlickrPhotoSearchData::FlickrPhotoSearchData(QObject *object)
-    : UI::DataSource(object), d(new PrivateFlickrPhotoSearch) {}
+  : UI::DataSource(object), d(new PrivateFlickrPhotoSearch) {}
 
 void FlickrPhotoSearchData::init() {}
 
 FlickrPhotoSearchData::~FlickrPhotoSearchData() { delete d; }
 
-void FlickrPhotoSearchData::setArguments(QVariant arg) {
+void FlickrPhotoSearchData::setArguments(QVariant arg)
+{
   QVariantMap data = arg.toMap();
   QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+    new QuetzalSocialKit::WebService(this);
 
   service->create("com.flikr.api");
   service->queryService("flickr.photos.search", data);
@@ -51,7 +53,8 @@ void FlickrPhotoSearchData::setArguments(QVariant arg) {
 }
 
 void FlickrPhotoSearchData::onServiceComplete(
-    QuetzalSocialKit::WebService *service) {
+  QuetzalSocialKit::WebService *service)
+{
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO
@@ -62,7 +65,8 @@ void FlickrPhotoSearchData::onServiceComplete(
   delete service;
 }
 
-QVariantMap FlickrPhotoSearchData::readAll() {
+QVariantMap FlickrPhotoSearchData::readAll()
+{
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -72,6 +76,7 @@ QVariantMap FlickrPhotoSearchData::readAll() {
   return dataMap;
 }
 
-void FlickrPhotoSearchData::timerEvent(QTimerEvent *event) {
+void FlickrPhotoSearchData::timerEvent(QTimerEvent *event)
+{
   // Q_EMIT sourceUpdated(readAll());
 }

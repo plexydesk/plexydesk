@@ -4,14 +4,16 @@
 #include <QGraphicsScene>
 #include <toolbar.h>
 
-class SnapFrame::PrivateSnapFrame {
+class SnapFrame::PrivateSnapFrame
+{
 public:
   PrivateSnapFrame() {}
   ~PrivateSnapFrame() {}
 };
 
 SnapFrame::SnapFrame(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateSnapFrame) {
+  : UI::UIWidget(parent), d(new PrivateSnapFrame)
+{
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
 

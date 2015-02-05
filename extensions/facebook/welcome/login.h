@@ -3,11 +3,13 @@
 
 #include <QWidget>
 
-namespace Ui {
+namespace Ui
+{
 class Login;
 }
 
-class Login : public QWidget {
+class Login : public QWidget
+{
   Q_OBJECT
 public:
   Login(QWidget *parent = 0);

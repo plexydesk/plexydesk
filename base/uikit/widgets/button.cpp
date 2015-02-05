@@ -8,9 +8,11 @@
 #include <extensionmanager.h>
 #include <themepackloader.h>
 
-namespace UI {
+namespace UI
+{
 
-class Button::PrivateButton {
+class Button::PrivateButton
+{
 public:
   typedef enum { NORMAL, PRESS, HOVER } ButtonState;
 
@@ -23,7 +25,8 @@ public:
 };
 
 Button::Button(QGraphicsObject *parent) : UIWidget(parent),
-    d(new PrivateButton) {
+  d(new PrivateButton)
+{
   d->mState = PrivateButton::NORMAL;
 
   if (Theme::style()) {
@@ -42,20 +45,23 @@ Button::~Button() { delete d; }
 
 void Button::setLabel(const QString &txt) { d->mLabel = txt; }
 
-void Button::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   d->mState = PrivateButton::PRESS;
   update();
   // QGraphicsObject::mousePressEvent(event);
 }
 
-void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   d->mState = PrivateButton::NORMAL;
   update();
   Q_EMIT clicked();
   // QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void Button::paintNormalButton(QPainter *painter, const QRectF &rect) {
+void Button::paintNormalButton(QPainter *painter, const QRectF &rect)
+{
   StyleFeatures feature;
 
   feature.text_data = d->mLabel;
@@ -64,11 +70,12 @@ void Button::paintNormalButton(QPainter *painter, const QRectF &rect) {
 
   if (UI::Theme::instance()->defaultDesktopStyle()) {
     UI::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
-                                                              painter);
+        painter);
   }
 }
 
-void Button::paintSunkenButton(QPainter *painter, const QRectF &rect) {
+void Button::paintSunkenButton(QPainter *painter, const QRectF &rect)
+{
   StyleFeatures feature;
 
   feature.text_data = d->mLabel;
@@ -77,19 +84,22 @@ void Button::paintSunkenButton(QPainter *painter, const QRectF &rect) {
 
   if (UI::Theme::instance()->defaultDesktopStyle()) {
     UI::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
-                                                              painter);
+        painter);
   }
 }
 
-StylePtr Button::style() const {
+StylePtr Button::style() const
+{
   return UI::Theme::instance()->defaultDesktopStyle();
 }
 
-void Button::setSize(const QSize &size) {
+void Button::setSize(const QSize &size)
+{
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 }
 
-QSizeF Button::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
+QSizeF Button::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+{
   return boundingRect().size();
 }
 
@@ -97,16 +107,17 @@ void Button::setActionData(const QVariant &data) { d->mData = data; }
 
 QVariant Button::actionData() const { return d->mData; }
 
-void Button::paintView(QPainter *painter, const QRectF &rect) {
+void Button::paintView(QPainter *painter, const QRectF &rect)
+{
   switch (d->mState) {
-    case PrivateButton::NORMAL:
-      paintNormalButton(painter, rect);
-      break;
-    case PrivateButton::PRESS:
-      paintSunkenButton(painter, rect);
-      break;
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown Button State";
+  case PrivateButton::NORMAL:
+    paintNormalButton(painter, rect);
+    break;
+  case PrivateButton::PRESS:
+    paintSunkenButton(painter, rect);
+    break;
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown Button State";
   }
 }
 

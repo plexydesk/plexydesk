@@ -47,7 +47,8 @@
 static const qint32 BroadcastInterval = 2000;
 static const unsigned broadcastPort = 45000;
 
-PeerManager::PeerManager(Client *client) : QObject(client) {
+PeerManager::PeerManager(Client *client) : QObject(client)
+{
   this->client = client;
 
   QStringList envVariables;
@@ -95,46 +96,55 @@ QByteArray PeerManager::userName() const { return username; }
 
 void PeerManager::startBroadcasting() { broadcastTimer.start(); }
 
-bool PeerManager::isLocalHostAddress(const QHostAddress &address) {
+bool PeerManager::isLocalHostAddress(const QHostAddress &address)
+{
   foreach(QHostAddress localAddress, ipAddresses) {
-    if (address == localAddress)
+    if (address == localAddress) {
       return true;
+    }
   }
   return false;
 }
 
-void PeerManager::sendBroadcastDatagram() {
+void PeerManager::sendBroadcastDatagram()
+{
   QByteArray datagram(username);
   datagram.append('@');
   datagram.append(QByteArray::number(serverPort));
 
   bool validBroadcastAddresses = true;
   foreach(QHostAddress address, broadcastAddresses) {
-    if (broadcastSocket.writeDatagram(datagram, address, broadcastPort) == -1)
+    if (broadcastSocket.writeDatagram(datagram, address, broadcastPort) == -1) {
       validBroadcastAddresses = false;
+    }
   }
 
-  if (!validBroadcastAddresses)
+  if (!validBroadcastAddresses) {
     updateAddresses();
+  }
 }
 
-void PeerManager::readBroadcastDatagram() {
+void PeerManager::readBroadcastDatagram()
+{
   while (broadcastSocket.hasPendingDatagrams()) {
     QHostAddress senderIp;
     quint16 senderPort;
     QByteArray datagram;
     datagram.resize(broadcastSocket.pendingDatagramSize());
     if (broadcastSocket.readDatagram(datagram.data(), datagram.size(),
-                                     &senderIp, &senderPort) == -1)
+                                     &senderIp, &senderPort) == -1) {
       continue;
+    }
 
     QList<QByteArray> list = datagram.split('@');
-    if (list.size() != 2)
+    if (list.size() != 2) {
       continue;
+    }
 
     int senderServerPort = list.at(1).toInt();
-    if (isLocalHostAddress(senderIp) && senderServerPort == serverPort)
+    if (isLocalHostAddress(senderIp) && senderServerPort == serverPort) {
       continue;
+    }
 
     if (!client->hasConnection(senderIp)) {
       Connection *connection = new Connection(this);
@@ -144,7 +154,8 @@ void PeerManager::readBroadcastDatagram() {
   }
 }
 
-void PeerManager::updateAddresses() {
+void PeerManager::updateAddresses()
+{
   broadcastAddresses.clear();
   ipAddresses.clear();
 

@@ -30,7 +30,8 @@
 
 using namespace UI;
 
-class IconGridActivity : public UI::DesktopActivity {
+class IconGridActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

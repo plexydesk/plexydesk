@@ -27,7 +27,8 @@
 #include <desktopactivity.h>
 #include <widget.h>
 
-class FBPostDialogActivity : public PlexyDesk::DesktopActivity {
+class FBPostDialogActivity : public PlexyDesk::DesktopActivity
+{
   Q_OBJECT
 
 public:

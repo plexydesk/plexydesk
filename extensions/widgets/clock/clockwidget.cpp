@@ -33,11 +33,13 @@
 #include <plexyconfig.h>
 #include <svgprovider.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::UIWidget(parent) {
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::UIWidget(parent)
+{
   setLabelName("Clock");
 }
 
-void ClockWidget::preRenderClockImages() {
+void ClockWidget::preRenderClockImages()
+{
   qDebug() << Q_FUNC_INFO << "Start";
   UI::SvgProvider *svg = new UI::SvgProvider();
 
@@ -55,7 +57,8 @@ void ClockWidget::preRenderClockImages() {
   delete svg;
 }
 
-void ClockWidget::updateTime(const QVariantMap &data) {
+void ClockWidget::updateTime(const QVariantMap &data)
+{
   QTime time = data["currentTime"].toTime();
   mSecondValue = 6.0 * time.second();
   mMinutesValue = 6.0 * time.minute();
@@ -66,7 +69,8 @@ void ClockWidget::updateTime(const QVariantMap &data) {
 
 ClockWidget::~ClockWidget() {}
 
-void ClockWidget::paintView(QPainter *p, const QRectF &r) {
+void ClockWidget::paintView(QPainter *p, const QRectF &r)
+{
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);
   p->setCompositionMode(QPainter::CompositionMode_Source);

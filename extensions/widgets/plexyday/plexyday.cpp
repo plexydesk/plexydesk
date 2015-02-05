@@ -19,7 +19,8 @@
 #include "plexyday.h"
 #include "plexydaywidget.h"
 
-PlexyDayController::PlexyDayController(QObject *object) {
+PlexyDayController::PlexyDayController(QObject *object)
+{
 #ifdef Q_WS_QPA
   mWidget = new PlexyDesk::PlexyDayWidget(QRectF(0, 0, 768, 1280));
 #else
@@ -31,18 +32,22 @@ PlexyDayController::PlexyDayController(QObject *object) {
   mWidget->setWidgetFlag(PlexyDesk::Widget::kTopLevelWindow);
 }
 
-PlexyDayController::~PlexyDayController() {
-  if (mWidget)
+PlexyDayController::~PlexyDayController()
+{
+  if (mWidget) {
     delete mWidget;
+  }
 }
 
 void PlexyDayController::init() {}
 
 void PlexyDayController::revokeSession(const QVariantMap &args) {}
 
-void PlexyDayController::setViewRect(const QRectF &rect) {
-  if (mWidget)
+void PlexyDayController::setViewRect(const QRectF &rect)
+{
+  if (mWidget) {
     mWidget->setPos(rect.x(), rect.y());
+  }
 }
 
 QString PlexyDayController::icon() const { return QString("pd_day_icon.png"); }

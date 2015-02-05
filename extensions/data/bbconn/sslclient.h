@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QSslSocket>
 
-class SSLClient : public QObject {
+class SSLClient : public QObject
+{
   Q_OBJECT
 public:
   explicit SSLClient(QObject *parent = 0);

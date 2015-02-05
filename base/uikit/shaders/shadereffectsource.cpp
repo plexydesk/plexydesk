@@ -71,30 +71,33 @@
 
 */
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 ShaderEffectSource::ShaderEffectSource(QDeclarativeItem *parent)
-    : QDeclarativeItem(parent),
-      m_sourceItem(0),
-      m_wrapMode(ClampToEdge),
-      m_sourceRect(0, 0, 0, 0),
-      m_textureSize(0, 0),
-      m_format(RGBA),
-      m_size(0, 0),
-      m_fbo(0),
-      m_multisampledFbo(0),
-      m_refs(0),
-      m_dirtyTexture(true),
-      m_dirtySceneGraph(true),
-      m_multisamplingSupported(false),
-      m_checkedForMultisamplingSupport(false),
-      m_live(true),
-      m_hideSource(false),
-      m_mirrored(false) {}
+  : QDeclarativeItem(parent),
+    m_sourceItem(0),
+    m_wrapMode(ClampToEdge),
+    m_sourceRect(0, 0, 0, 0),
+    m_textureSize(0, 0),
+    m_format(RGBA),
+    m_size(0, 0),
+    m_fbo(0),
+    m_multisampledFbo(0),
+    m_refs(0),
+    m_dirtyTexture(true),
+    m_dirtySceneGraph(true),
+    m_multisamplingSupported(false),
+    m_checkedForMultisamplingSupport(false),
+    m_live(true),
+    m_hideSource(false),
+    m_mirrored(false) {}
 
-ShaderEffectSource::~ShaderEffectSource() {
-  if (m_refs && m_sourceItem)
+ShaderEffectSource::~ShaderEffectSource()
+{
+  if (m_refs && m_sourceItem) {
     detachSourceItem();
+  }
 
   delete m_fbo;
   delete m_multisampledFbo;
@@ -116,9 +119,11 @@ ShaderEffectSource::~ShaderEffectSource() {
     \brief the Item which is the source for the effect.
 */
 
-void ShaderEffectSource::setSourceItem(QDeclarativeItem *item) {
-  if (item == m_sourceItem)
+void ShaderEffectSource::setSourceItem(QDeclarativeItem *item)
+{
+  if (item == m_sourceItem) {
     return;
+  }
 
   if (m_sourceItem) {
     disconnect(m_sourceItem, SIGNAL(widthChanged()), this,
@@ -126,8 +131,9 @@ void ShaderEffectSource::setSourceItem(QDeclarativeItem *item) {
     disconnect(m_sourceItem, SIGNAL(heightChanged()), this,
                SLOT(markSourceSizeDirty()));
 
-    if (m_refs)
+    if (m_refs) {
       detachSourceItem();
+    }
   }
 
   m_sourceItem = item;
@@ -135,11 +141,13 @@ void ShaderEffectSource::setSourceItem(QDeclarativeItem *item) {
   if (m_sourceItem) {
 
     // Must have some item as parent
-    if (m_sourceItem->parentItem() == 0)
+    if (m_sourceItem->parentItem() == 0) {
       m_sourceItem->setParentItem(this);
+    }
 
-    if (m_refs)
+    if (m_refs) {
       attachSourceItem();
+    }
 
     connect(m_sourceItem, SIGNAL(widthChanged()), this,
             SLOT(markSourceSizeDirty()));
@@ -176,9 +184,11 @@ void ShaderEffectSource::setSourceItem(QDeclarativeItem *item) {
     \brief the relative sourceRect for the source.
 */
 
-void ShaderEffectSource::setSourceRect(const QRectF &rect) {
-  if (rect == m_sourceRect)
+void ShaderEffectSource::setSourceRect(const QRectF &rect)
+{
+  if (rect == m_sourceRect) {
     return;
+  }
   m_sourceRect = rect;
   updateSizeAndTexture();
   updateBackbuffer();
@@ -187,9 +197,10 @@ void ShaderEffectSource::setSourceRect(const QRectF &rect) {
 
   if (m_sourceItem) {
     ShaderEffect *effect =
-        qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
-    if (effect)
+      qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
+    if (effect) {
       effect->m_changed = true;
+    }
   }
 }
 
@@ -209,9 +220,11 @@ void ShaderEffectSource::setSourceRect(const QRectF &rect) {
     \brief the texture size for the source.
 */
 
-void ShaderEffectSource::setTextureSize(const QSize &size) {
-  if (size == m_textureSize)
+void ShaderEffectSource::setTextureSize(const QSize &size)
+{
+  if (size == m_textureSize) {
     return;
+  }
 
   m_textureSize = size;
   updateSizeAndTexture();
@@ -220,9 +233,10 @@ void ShaderEffectSource::setTextureSize(const QSize &size) {
 
   if (m_sourceItem) {
     ShaderEffect *effect =
-        qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
-    if (effect)
+      qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
+    if (effect) {
       effect->m_changed = true;
+    }
   }
 }
 
@@ -249,9 +263,11 @@ void ShaderEffectSource::setTextureSize(const QSize &size) {
    frames.
 */
 
-void ShaderEffectSource::setLive(bool s) {
-  if (s == m_live)
+void ShaderEffectSource::setLive(bool s)
+{
+  if (s == m_live) {
     return;
+  }
 
   m_live = s;
 
@@ -272,9 +288,11 @@ void ShaderEffectSource::setLive(bool s) {
     \brief the flag tells whether original source item content should be hidden.
 */
 
-void ShaderEffectSource::setHideSource(bool hide) {
-  if (hide == m_hideSource)
+void ShaderEffectSource::setHideSource(bool hide)
+{
+  if (hide == m_hideSource) {
     return;
+  }
 
   m_hideSource = hide;
 
@@ -312,9 +330,11 @@ void ShaderEffectSource::setHideSource(bool hide) {
    texture.
 */
 
-void ShaderEffectSource::setWrapMode(WrapMode mode) {
-  if (mode == m_wrapMode)
+void ShaderEffectSource::setWrapMode(WrapMode mode)
+{
+  if (mode == m_wrapMode) {
     return;
+  }
 
   m_wrapMode = mode;
   updateBackbuffer();
@@ -333,19 +353,21 @@ void ShaderEffectSource::setWrapMode(WrapMode mode) {
 
 */
 
-void ShaderEffectSource::grab() {
+void ShaderEffectSource::grab()
+{
   m_dirtyTexture = true;
   emit repaintRequired();
 }
 
-void ShaderEffectSource::bind() const {
+void ShaderEffectSource::bind() const
+{
   GLint filtering = smooth() ? GL_LINEAR : GL_NEAREST;
   GLuint hwrap = (m_wrapMode == Repeat || m_wrapMode == RepeatHorizontally)
-                     ? GL_REPEAT
-                     : GL_CLAMP_TO_EDGE;
+                 ? GL_REPEAT
+                 : GL_CLAMP_TO_EDGE;
   GLuint vwrap = (m_wrapMode == Repeat || m_wrapMode == RepeatVertically)
-                     ? GL_REPEAT
-                     : GL_CLAMP_TO_EDGE;
+                 ? GL_REPEAT
+                 : GL_CLAMP_TO_EDGE;
 
 #if !defined(QT_OPENGL_ES_2)
   glEnable(GL_TEXTURE_2D);
@@ -363,14 +385,16 @@ void ShaderEffectSource::bind() const {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, vwrap);
 }
 
-void ShaderEffectSource::refFromEffectItem() {
+void ShaderEffectSource::refFromEffectItem()
+{
   if (m_refs++ == 0) {
     attachSourceItem();
     emit activeChanged();
   }
 }
 
-void ShaderEffectSource::derefFromEffectItem() {
+void ShaderEffectSource::derefFromEffectItem()
+{
   if (--m_refs == 0) {
     detachSourceItem();
     emit activeChanged();
@@ -378,14 +402,17 @@ void ShaderEffectSource::derefFromEffectItem() {
   Q_ASSERT(m_refs >= 0);
 }
 
-void ShaderEffectSource::updateBackbuffer() {
-  if (!m_sourceItem)
+void ShaderEffectSource::updateBackbuffer()
+{
+  if (!m_sourceItem) {
     return;
+  }
 
   // Multisampling is not (for now) supported.
   QSize size = QSize(m_sourceItem->width(), m_sourceItem->height());
-  if (!m_textureSize.isEmpty())
+  if (!m_textureSize.isEmpty()) {
     size = m_textureSize;
+  }
 
   if (size.height() > 0 && size.width() > 0) {
     QGLFramebufferObjectFormat format;
@@ -408,28 +435,36 @@ void ShaderEffectSource::updateBackbuffer() {
   m_dirtyTexture = false;
 }
 
-void ShaderEffectSource::markSceneGraphDirty() {
+void ShaderEffectSource::markSceneGraphDirty()
+{
   m_dirtySceneGraph = true;
   emit repaintRequired();
 }
 
-void ShaderEffectSource::markSourceSizeDirty() {
+void ShaderEffectSource::markSourceSizeDirty()
+{
   Q_ASSERT(m_sourceItem);
-  if (m_textureSize.isEmpty())
+  if (m_textureSize.isEmpty()) {
     updateSizeAndTexture();
-  if (m_refs)
+  }
+  if (m_refs) {
     emit repaintRequired();
+  }
 }
 
-void ShaderEffectSource::updateSizeAndTexture() {
+void ShaderEffectSource::updateSizeAndTexture()
+{
   if (m_sourceItem) {
     QSize size = m_textureSize;
-    if (size.isEmpty())
+    if (size.isEmpty()) {
       size = QSize(m_sourceItem->width(), m_sourceItem->height());
-    if (size.width() < 1)
+    }
+    if (size.width() < 1) {
       size.setWidth(1);
-    if (size.height() < 1)
+    }
+    if (size.height() < 1) {
       size.setHeight(1);
+    }
     if (m_fbo && m_fbo->size() != size) {
       delete m_fbo;
       m_fbo = 0;
@@ -457,33 +492,39 @@ void ShaderEffectSource::updateSizeAndTexture() {
   }
 }
 
-void ShaderEffectSource::attachSourceItem() {
-  if (!m_sourceItem)
+void ShaderEffectSource::attachSourceItem()
+{
+  if (!m_sourceItem) {
     return;
+  }
 
   ShaderEffect *effect =
-      qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
+    qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
 
   if (!effect) {
     effect = new ShaderEffect();
     m_sourceItem->setGraphicsEffect(effect);
   }
 
-  if (effect)
+  if (effect) {
     effect->addRenderTarget(this);
+  }
 
   m_sourceItem->update();
 }
 
-void ShaderEffectSource::detachSourceItem() {
-  if (!m_sourceItem)
+void ShaderEffectSource::detachSourceItem()
+{
+  if (!m_sourceItem) {
     return;
+  }
 
   ShaderEffect *effect =
-      qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
+    qobject_cast<ShaderEffect *>(m_sourceItem->graphicsEffect());
 
-  if (effect)
+  if (effect) {
     effect->removeRenderTarget(this);
+  }
 
   delete m_fbo;
   m_fbo = 0;

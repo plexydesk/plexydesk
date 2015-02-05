@@ -30,14 +30,16 @@
 #include <QAction>
 
 PhotoFrameController::PhotoFrameController(QObject * /*object*/)
-    : mFrameParentitem(0) {}
+  : mFrameParentitem(0) {}
 
-PhotoFrameController::~PhotoFrameController() {
+PhotoFrameController::~PhotoFrameController()
+{
   mPhotoList.clear();
   qDeleteAll(mPhotoList);
 }
 
-void PhotoFrameController::init() {
+void PhotoFrameController::init()
+{
   QAction *_add_dir_action = new QAction(this);
   _add_dir_action->setText(tr("Photo"));
 
@@ -47,11 +49,13 @@ void PhotoFrameController::init() {
   m_supported_action_list << _add_dir_action;
 }
 
-void PhotoFrameController::revokeSession(const QVariantMap &args) {
+void PhotoFrameController::revokeSession(const QVariantMap &args)
+{
   QStringList photoList = args["photos"].toString().split(",");
 
-  if (args["photos"].toString().isEmpty())
+  if (args["photos"].toString().isEmpty()) {
     return;
+  }
 
   if (mFrameParentitem && !mFrameParentitem->validPhotoFrame()) {
     delete mFrameParentitem;
@@ -60,10 +64,8 @@ void PhotoFrameController::revokeSession(const QVariantMap &args) {
 
   foreach(const QString & str, photoList) {
     PhotoWidget *photoWidget = new PhotoWidget();
-    photoWidget->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
-    photoWidget->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-    photoWidget->setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
+    photoWidget->setWindowFlag(UI::Window::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UI::Window::kConvertToWindowType, true);
     photoWidget->setController(this);
     photoWidget->setLabelName("Photo");
     mPhotoList.append(photoWidget);
@@ -85,10 +87,11 @@ void PhotoFrameController::revokeSession(const QVariantMap &args) {
 }
 
 void PhotoFrameController::handleDropEvent(UI::UIWidget *widget,
-                                           QDropEvent *event) {
+    QDropEvent *event)
+{
   if (event->mimeData()->urls().count() >= 0) {
     const QString droppedFile =
-        event->mimeData()->urls().value(0).toLocalFile();
+      event->mimeData()->urls().value(0).toLocalFile();
 
     QFileInfo info(droppedFile);
     QPixmap droppedPixmap(droppedFile);
@@ -99,8 +102,9 @@ void PhotoFrameController::handleDropEvent(UI::UIWidget *widget,
       handler->setPhotoURL(droppedFile);
       handler->setLabelName(info.baseName());
 
-      if (!m_current_url_list.contains(droppedFile))
+      if (!m_current_url_list.contains(droppedFile)) {
         m_current_url_list << droppedFile;
+      }
 
       if (viewport()) {
         UI::Space *view = qobject_cast<UI::Space *>(viewport());
@@ -108,35 +112,41 @@ void PhotoFrameController::handleDropEvent(UI::UIWidget *widget,
           view->updateSessionValue(controllerName(), "photos",
                                    m_current_url_list.join(","));
         }
-      } else
+      } else {
         qDebug() << Q_FUNC_INFO << "Saving session Failed";
+      }
     }
   }
 }
 
-void PhotoFrameController::setViewRect(const QRectF &rect) {
-  if (mFrameParentitem)
+void PhotoFrameController::setViewRect(const QRectF &rect)
+{
+  if (mFrameParentitem) {
     mFrameParentitem->setPos(rect.x(), rect.y());
+  }
 }
 
-bool PhotoFrameController::removeWidget(UI::UIWidget *widget) {
-  if (!widget)
+bool PhotoFrameController::removeWidget(UI::UIWidget *widget)
+{
+  if (!widget) {
     return 1;
+  }
 
   QStringList rv;
 
   PhotoWidget *_widget_to_delete = qobject_cast<PhotoWidget *>(widget);
 
-  if (!_widget_to_delete)
+  if (!_widget_to_delete) {
     return false;
+  }
 
   m_current_url_list.removeOne(_widget_to_delete->photoURL());
 
   mPhotoList.removeAll(_widget_to_delete);
 
   if (viewport())
-      viewport()->updateSessionValue(controllerName(), "photos",
-                                     m_current_url_list.join(","));
+    viewport()->updateSessionValue(controllerName(), "photos",
+                                   m_current_url_list.join(","));
   if (widget) {
     if (widget->scene()) {
       widget->scene()->removeItem(widget);
@@ -148,18 +158,18 @@ bool PhotoFrameController::removeWidget(UI::UIWidget *widget) {
   return 1;
 }
 
-UI::ActionList PhotoFrameController::actions() const {
+UI::ActionList PhotoFrameController::actions() const
+{
   return m_supported_action_list;
 }
 
 void PhotoFrameController::requestAction(const QString &actionName,
-                                         const QVariantMap &args) {
+    const QVariantMap &args)
+{
   if (actionName == tr("Photo")) {
     PhotoWidget *photoWidget = new PhotoWidget();
-    photoWidget->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
-    photoWidget->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-    photoWidget->setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
+    photoWidget->setWindowFlag(UI::Window::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UI::Window::kConvertToWindowType, true);
     photoWidget->setController(this);
     photoWidget->setLabelName("Photo");
     mPhotoList.append(photoWidget);
@@ -169,10 +179,12 @@ void PhotoFrameController::requestAction(const QString &actionName,
   }
 }
 
-QString PhotoFrameController::icon() const {
+QString PhotoFrameController::icon() const
+{
   return QString("pd_image_icon.png");
 }
 
-void PhotoFrameController::prepareRemoval() {
+void PhotoFrameController::prepareRemoval()
+{
   foreach(PhotoWidget * _widget, mPhotoList) { this->removeWidget(_widget); }
 }

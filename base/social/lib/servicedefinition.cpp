@@ -16,13 +16,16 @@
 
 #include <QDebug>
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 typedef QMap<QString, QDomNode> DefinitionMapType;
 
-class PrivateResultQuery {
+class PrivateResultQuery
+{
 public:
   PrivateResultQuery() {}
-  ~PrivateResultQuery() {
+  ~PrivateResultQuery()
+  {
     // qDebug() << Q_FUNC_INFO;
   }
 
@@ -36,10 +39,12 @@ public:
   QString identifier;
 };
 
-class ServiceDefinition::PrivateServiceDefinition {
+class ServiceDefinition::PrivateServiceDefinition
+{
 public:
   PrivateServiceDefinition() {}
-  ~PrivateServiceDefinition() {
+  ~PrivateServiceDefinition()
+  {
     // qDebug() << Q_FUNC_INFO;
   }
 
@@ -78,7 +83,8 @@ public:
 };
 
 ServiceDefinition::ServiceDefinition(const QString &input, QObject *parent)
-    : QObject(parent), d(new PrivateServiceDefinition) {
+  : QObject(parent), d(new PrivateServiceDefinition)
+{
   QFile inputFile(input);
 
   if (inputFile.exists() && inputFile.open(QIODevice::ReadOnly)) {
@@ -100,43 +106,51 @@ ServiceDefinition::ServiceDefinition(const QString &input, QObject *parent)
 
 ServiceDefinition::~ServiceDefinition() { delete d; }
 
-QStringList ServiceDefinition::knownServices() const {
+QStringList ServiceDefinition::knownServices() const
+{
   return d->mSeriviceMap.keys();
 }
 
 // fetch the url from the <input> tag
-QString ServiceDefinition::endpoint(const QString &name) const {
+QString ServiceDefinition::endpoint(const QString &name) const
+{
   QDomNode node = d->definitionsOfServiceName(name)["input"];
   QDomAttr attr = d->getAttributeFromNode(node, "url");
 
   return attr.nodeValue();
 }
 
-uint ServiceDefinition::requestType(const QString &name) const {
+uint ServiceDefinition::requestType(const QString &name) const
+{
   QDomNode node = d->definitionsOfServiceName(name)["input"];
   QDomAttr attr = d->getAttributeFromNode(node, "type");
 
   QString value = attr.nodeValue();
 
-  if (value.toLower() == "get")
+  if (value.toLower() == "get") {
     return 0;
+  }
 
-  if (value.toLower() == "post")
+  if (value.toLower() == "post") {
     return 1;
+  }
 
   return -1;
 }
 
-QStringList ServiceDefinition::arguments(const QString &name) const {
+QStringList ServiceDefinition::arguments(const QString &name) const
+{
   return d->mInputArguments[name].keys();
 }
 
-QStringList ServiceDefinition::optionalArguments(const QString &name) const {
+QStringList ServiceDefinition::optionalArguments(const QString &name) const
+{
   return d->mOptionalInputArgument[name].keys();
 }
 
 QString ServiceDefinition::argumentType(const QString &serviceName,
-                                        const QString &argument) const {
+                                        const QString &argument) const
+{
   QDomNode node = d->mInputArguments[serviceName][argument];
 
   if (node.hasAttributes()) {
@@ -148,7 +162,8 @@ QString ServiceDefinition::argumentType(const QString &serviceName,
 }
 
 QUrl ServiceDefinition::queryURL(const QString &method,
-                                 const QVariantMap &data) const {
+                                 const QVariantMap &data) const
+{
   QUrl url;
   QString sUrl = endpoint(method);
   QUrl serviceURL = QUrl(sUrl);
@@ -186,7 +201,8 @@ QUrl ServiceDefinition::queryURL(const QString &method,
 }
 
 QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
-    const QString &method, const QString &data) const {
+  const QString &method, const QString &data) const
+{
   // QVariantMap rv;
 
   QHash<QString, PrivateResultQuery> result = d->queryForMethod(method);
@@ -203,7 +219,7 @@ QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
     if (dataRoot.setContent(data)) {
       Q_FOREACH(const QString & keyString, queries) {
         QDomNodeList filteredNodeList =
-            dataRoot.elementsByTagName(result[keyString].tagName);
+          dataRoot.elementsByTagName(result[keyString].tagName);
 
         for (int i = 0; i < filteredNodeList.count(); i++) {
           QDomNode dataNode = filteredNodeList.at(i);
@@ -212,7 +228,7 @@ QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
 
           Q_FOREACH(const QString & attrString, result[keyString].attributes) {
             attributeData[attrString] =
-                dataNodeAttributes.namedItem(attrString).nodeValue();
+              dataNodeAttributes.namedItem(attrString).nodeValue();
           }
           if (dataNode.isText()) {
             QVariant textValue = d->getTextValueFromNode(dataNode);
@@ -231,7 +247,7 @@ QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
     // qDebug() << Q_FUNC_INFO << "JSON Data" << data;
     QJsonParseError error;
     QJsonDocument jsonDoc =
-        QJsonDocument::fromJson(QByteArray(data.toLatin1()), &error);
+      QJsonDocument::fromJson(QByteArray(data.toLatin1()), &error);
 
     if (error.error == QJsonParseError::NoError) {
       qDebug() << Q_FUNC_INFO << "No Error";
@@ -249,7 +265,7 @@ QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
 
             Q_FOREACH(const QString & attrKey, o.toObject().keys()) {
               attributeData[attrKey] =
-                  d->JsonValueToVariant(o.toObject()[attrKey]);
+                d->JsonValueToVariant(o.toObject()[attrKey]);
             }
 
             tagData.insert(result[keyString].identifier, attributeData);
@@ -269,7 +285,7 @@ QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
                    << " --> Object Type: " << v.type();
           Q_FOREACH(const QString & attrKey, v.toObject().keys()) {
             attributeData[attrKey] = d->JsonValueToVariant(
-                v.toObject()[attrKey]); // v.toObject()[attrKey].toString();
+                                       v.toObject()[attrKey]); // v.toObject()[attrKey].toString();
           }
 
           qDebug() << Q_FUNC_INFO << "Data: -> " << attributeData;
@@ -288,20 +304,21 @@ QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
 }
 
 QVariant ServiceDefinition::PrivateServiceDefinition::JsonValueToVariant(
-    const QJsonValue &object) {
+  const QJsonValue &object)
+{
   QVariant rv;
 
   switch (object.type()) {
-    case QJsonValue::Double:
-      rv = object.toDouble();
-      break;
-    case QJsonValue::String:
-      rv = object.toString();
-      break;
-    case QJsonValue::Bool:
-      rv = object.toBool();
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown Type Found";
+  case QJsonValue::Double:
+    rv = object.toDouble();
+    break;
+  case QJsonValue::String:
+    rv = object.toString();
+    break;
+  case QJsonValue::Bool:
+    rv = object.toBool();
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown Type Found";
   }
 
   qDebug() << Q_FUNC_INFO << rv;
@@ -309,11 +326,13 @@ QVariant ServiceDefinition::PrivateServiceDefinition::JsonValueToVariant(
 }
 
 QJsonValue ServiceDefinition::PrivateServiceDefinition::findJsonObject(
-    const QJsonObject &root, const QString &key) {
+  const QJsonObject &root, const QString &key)
+{
   QJsonValue rv;
 
-  if (root.keys().contains(key))
+  if (root.keys().contains(key)) {
     return root[key];
+  }
 
   Q_FOREACH(const QString & subKey, root.keys()) {
     if (root[subKey].isObject()) {
@@ -325,7 +344,8 @@ QJsonValue ServiceDefinition::PrivateServiceDefinition::findJsonObject(
   return rv;
 }
 
-void ServiceDefinition::buildServiceDefs() {
+void ServiceDefinition::buildServiceDefs()
+{
   QDomNodeList serviceNodes = d->mRootDoc.elementsByTagName("service");
 
   for (int i = 0; i < serviceNodes.count(); i++) {
@@ -357,18 +377,21 @@ void ServiceDefinition::buildServiceDefs() {
 
 DefinitionMapType
 ServiceDefinition::PrivateServiceDefinition::definitionsOfServiceName(
-    const QString &name) {
+  const QString &name)
+{
   return mDefMap[name];
 }
 
 QDomAttr ServiceDefinition::PrivateServiceDefinition::getAttributeFromNode(
-    const QDomNode &node, const QString &key) const {
+  const QDomNode &node, const QString &key) const
+{
   QDomNamedNodeMap attrMap = node.attributes();
   return attrMap.namedItem(key).toAttr();
 }
 
 QString ServiceDefinition::PrivateServiceDefinition::getTextValueFromNode(
-    const QDomNode &node) const {
+  const QDomNode &node) const
+{
   QString rv;
 
   if (node.hasChildNodes()) {
@@ -382,7 +405,8 @@ QString ServiceDefinition::PrivateServiceDefinition::getTextValueFromNode(
 }
 
 void ServiceDefinition::PrivateServiceDefinition::buildServiceInputDefs(
-    const QString &name) {
+  const QString &name)
+{
   QDomNode node = definitionsOfServiceName(name)["input"];
   QDomNodeList childNodes = node.childNodes();
 
@@ -414,12 +438,14 @@ void ServiceDefinition::PrivateServiceDefinition::buildServiceInputDefs(
 }
 
 bool ServiceDefinition::PrivateServiceDefinition::hasDefaultValue(
-    const QString &service, const QString &key) const {
+  const QString &service, const QString &key) const
+{
   return mDefaultInputArgument[service].keys().contains(key);
 }
 
 QString ServiceDefinition::PrivateServiceDefinition::defaultValue(
-    const QString &service, const QString &key) const {
+  const QString &service, const QString &key) const
+{
   if (hasDefaultValue(service, key)) {
     QDomNode node = mDefaultInputArgument[service][key];
     QDomAttr defaultValue = getAttributeFromNode(node, "default");
@@ -432,11 +458,13 @@ QString ServiceDefinition::PrivateServiceDefinition::defaultValue(
 }
 
 int ServiceDefinition::PrivateServiceDefinition::nativeType(
-    const QString &type) {
+  const QString &type)
+{
   return mTypeMap[type];
 }
 
-void ServiceDefinition::PrivateServiceDefinition::buildArgTypes() {
+void ServiceDefinition::PrivateServiceDefinition::buildArgTypes()
+{
   mTypeMap["string"] = 1;
   mTypeMap["int"] = 2;
   mTypeMap["flaot"] = 3;
@@ -445,7 +473,8 @@ void ServiceDefinition::PrivateServiceDefinition::buildArgTypes() {
 }
 
 uint ServiceDefinition::PrivateServiceDefinition::documentType(
-    const QString &method) {
+  const QString &method)
+{
   QDomNode resultNode = definitionsOfServiceName(method)["result"];
   QDomNodeList queryNodeList = resultNode.childNodes();
 
@@ -453,8 +482,9 @@ uint ServiceDefinition::PrivateServiceDefinition::documentType(
 
   if (!typeAttr.isNull()) {
     QString resultType = typeAttr.value();
-    if (resultType == "json")
+    if (resultType == "json") {
       return 1;
+    }
   }
 
   return 0;
@@ -462,7 +492,8 @@ uint ServiceDefinition::PrivateServiceDefinition::documentType(
 
 QHash<QString, PrivateResultQuery>
 ServiceDefinition::PrivateServiceDefinition::queryForMethod(
-    const QString &method) {
+  const QString &method)
+{
   QHash<QString, PrivateResultQuery> mQueryData;
   QDomNode resultNode = definitionsOfServiceName(method)["result"];
   QDomNodeList queryNodeList = resultNode.childNodes();

@@ -28,7 +28,8 @@
 
 class QGraphicsItem;
 
-class WALLPAPERCHANGE_EXPORT WallpaperChange : public PlexyDesk::WidgetPlugin {
+class WALLPAPERCHANGE_EXPORT WallpaperChange : public PlexyDesk::WidgetPlugin
+{
   Q_OBJECT
 
 public:

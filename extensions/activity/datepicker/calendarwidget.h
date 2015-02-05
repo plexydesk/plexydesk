@@ -3,7 +3,8 @@
 
 #include <desktopwidget.h>
 
-class CalendarWidget : public UI::UIWidget {
+class CalendarWidget : public UI::UIWidget
+{
   Q_OBJECT
 
 public:

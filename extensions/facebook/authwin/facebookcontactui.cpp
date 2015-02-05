@@ -4,7 +4,8 @@
 #include <lineedit.h>
 #include "contactlist.h"
 
-class FacebookContactUI::PrivateFacebookContactUI {
+class FacebookContactUI::PrivateFacebookContactUI
+{
 public:
   PrivateFacebookContactUI() {}
   ~PrivateFacebookContactUI() {}
@@ -16,7 +17,8 @@ public:
 };
 
 FacebookContactUI::FacebookContactUI(const QRectF &rect)
-    : PlexyDesk::DesktopWidget(rect), d(new PrivateFacebookContactUI) {
+  : PlexyDesk::DesktopWidget(rect), d(new PrivateFacebookContactUI)
+{
   this->setWidgetFlag(PlexyDesk::DesktopWidget::WINDOW, true);
   this->setWidgetFlag(PlexyDesk::DesktopWidget::BACKGROUND, true);
   setWidgetFlag(PlexyDesk::DesktopWidget::SHADOW);
@@ -33,7 +35,7 @@ FacebookContactUI::FacebookContactUI(const QRectF &rect)
   d->mSearchBox->setSize(QSizeF(rect.width() - 40, 32));
   d->mSearchBox->show();
   d->mSearchBox->setPos((rect.width() / 2) -
-                            (d->mSearchBox->boundingRect().width() / 2),
+                        (d->mSearchBox->boundingRect().width() / 2),
                         38 + d->mScrollView->boundingRect().height());
 
   connect(d->mSearchBox, SIGNAL(text(QString)), d->mScrollView,
@@ -44,12 +46,14 @@ FacebookContactUI::FacebookContactUI(const QRectF &rect)
   setCacheMode(QGraphicsItem::ItemCoordinateCache);
 }
 
-FacebookContactUI::~FacebookContactUI() {
+FacebookContactUI::~FacebookContactUI()
+{
   d->mData.clear();
   delete d;
 }
 
-void FacebookContactUI::setFacebookContactData(QHash<QString, QVariant> data) {
+void FacebookContactUI::setFacebookContactData(QHash<QString, QVariant> data)
+{
   d->mData = data;
 
   Q_FOREACH(const QString & name, data.keys()) {
@@ -57,19 +61,22 @@ void FacebookContactUI::setFacebookContactData(QHash<QString, QVariant> data) {
   }
 }
 
-void FacebookContactUI::addContact(const QVariantMap &data) {
+void FacebookContactUI::addContact(const QVariantMap &data)
+{
   if (d->mScrollView)
     d->mScrollView->addContact(data["id"].toString(), data["name"].toString(),
                                data["message"].toString(),
                                data["picture"].value<QPixmap>());
 }
 
-void FacebookContactUI::onViewClicked(QString id) {
+void FacebookContactUI::onViewClicked(QString id)
+{
   qDebug() << Q_FUNC_INFO << id;
   Q_EMIT addContactCard(id);
 }
 
-void FacebookContactUI::paintFrontView(QPainter *painter, const QRectF &rect) {
+void FacebookContactUI::paintFrontView(QPainter *painter, const QRectF &rect)
+{
   QPainterPath backgroundPath;
   backgroundPath.addRoundedRect(rect, 6.0, 6.0);
   painter->fillPath(backgroundPath, QColor(235, 235, 235));
@@ -80,12 +87,12 @@ void FacebookContactUI::paintFrontView(QPainter *painter, const QRectF &rect) {
 
   if (d->mSearchBox) {
     QRectF searchBoxRect = QRectF(
-        0.0, d->mScrollView->boundingRect().bottomRight().y() + 5, rect.width(),
-        (rect.height() - d->mScrollView->boundingRect().height() + 10));
+                             0.0, d->mScrollView->boundingRect().bottomRight().y() + 5, rect.width(),
+                             (rect.height() - d->mScrollView->boundingRect().height() + 10));
 
     QRectF searchBoxLineRect =
-        QRectF(0.0, d->mScrollView->boundingRect().height() + 29, rect.width(),
-               rect.height());
+      QRectF(0.0, d->mScrollView->boundingRect().height() + 29, rect.width(),
+             rect.height());
 
     QPen pen = QPen(QColor(220, 220, 220), 1, Qt::SolidLine, Qt::RoundCap,
                     Qt::RoundJoin);
@@ -103,7 +110,7 @@ void FacebookContactUI::paintFrontView(QPainter *painter, const QRectF &rect) {
     painter->fillRect(searchBoxRect, linearGrad);
     painter->drawLine(searchBoxRect.topRight(), searchBoxRect.topLeft());
     pen =
-        QPen(QColor(88, 88, 88), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      QPen(QColor(88, 88, 88), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawLine(searchBoxLineRect.topRight(),
                       searchBoxLineRect.topLeft());

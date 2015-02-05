@@ -9,9 +9,11 @@
 #include <QVariantAnimation>
 #include <themepackloader.h>
 
-namespace UI {
+namespace UI
+{
 
-class ProgressBar::PrivateProgressBar {
+class ProgressBar::PrivateProgressBar
+{
 public:
   PrivateProgressBar() {}
   ~PrivateProgressBar() {}
@@ -27,7 +29,8 @@ public:
 };
 
 ProgressBar::ProgressBar(QGraphicsObject *parent)
-    : UIWidget(parent), d(new PrivateProgressBar) {
+  : UIWidget(parent), d(new PrivateProgressBar)
+{
   d->mMaxValue = 100.0;
   d->mMinValue = 1.0;
   d->mValue = (float)0.01;
@@ -38,8 +41,8 @@ ProgressBar::ProgressBar(QGraphicsObject *parent)
   d->mProgressAnimation->setEndValue(d->mMaxValue);
 
   setSize(
-      QSize(Theme::style()->attrbute("widget", "line_edit_width").toInt(),
-            Theme::style()->attrbute("widget", "line_edit_height").toInt()));
+    QSize(Theme::style()->attrbute("widget", "line_edit_width").toInt(),
+          Theme::style()->attrbute("widget", "line_edit_height").toInt()));
 
   connect(d->mProgressAnimation, SIGNAL(valueChanged(QVariant)), this,
           SLOT(valueChanged(QVariant)));
@@ -47,12 +50,14 @@ ProgressBar::ProgressBar(QGraphicsObject *parent)
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
 
-ProgressBar::~ProgressBar() {
+ProgressBar::~ProgressBar()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-void ProgressBar::setLabel(const QString &txt) {
+void ProgressBar::setLabel(const QString &txt)
+{
   d->mString = txt;
   Q_EMIT contentBoundingRectChaned();
 }
@@ -63,12 +68,14 @@ void ProgressBar::setLabel(const QString &txt) {
 
 QString ProgressBar::label() const { return d->mString; }
 
-void ProgressBar::setSize(const QSizeF &size) {
+void ProgressBar::setSize(const QSizeF &size)
+{
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 }
 
 QSizeF ProgressBar::sizeHint(Qt::SizeHint which,
-                             const QSizeF &constraint) const {
+                             const QSizeF &constraint) const
+{
   return boundingRect().size();
 }
 
@@ -76,7 +83,8 @@ int ProgressBar::maxRange() { return d->mMaxValue; }
 
 int ProgressBar::minRange() { return d->mMinValue; }
 
-void ProgressBar::setRange(int min, int max) {
+void ProgressBar::setRange(int min, int max)
+{
   d->mMinValue = min;
   d->mMaxValue = max;
 
@@ -86,7 +94,8 @@ void ProgressBar::setRange(int min, int max) {
   update();
 }
 
-void ProgressBar::setValue(int value) {
+void ProgressBar::setValue(int value)
+{
   if (value > d->mMaxValue) {
     d->mValue = d->mMaxValue;
     d->mProgressAnimation->setEndValue(d->mValue);
@@ -109,18 +118,21 @@ void ProgressBar::setValue(int value) {
   update();
 }
 
-void ProgressBar::onValueChanged(const QVariant &value) {
+void ProgressBar::onValueChanged(const QVariant &value)
+{
   d->mValue = value.toFloat();
   update();
 }
 
-void ProgressBar::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void ProgressBar::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   Q_EMIT clicked();
 }
 
 void ProgressBar::paint(QPainter *painter,
                         const QStyleOptionGraphicsItem *option,
-                        QWidget *widget) {
+                        QWidget *widget)
+{
   painter->save();
   StyleFeatures features;
   features.render_state = StyleFeatures::kRenderBackground;
@@ -135,19 +147,20 @@ void ProgressBar::paint(QPainter *painter,
 
   StyleFeatures progressFeatures;
   progressFeatures.geometry =
-      QRectF(0.0, 0.0, progressLevel, option->exposedRect.height());
+    QRectF(0.0, 0.0, progressLevel, option->exposedRect.height());
 
   progressFeatures.render_state = StyleFeatures::kRenderForground;
 
   if (UI::Theme::style()) {
     UI::Theme::style()->draw("linear_progress_bar", progressFeatures,
-                                    painter);
+                             painter);
   }
 
   painter->restore();
 }
 
-QSizeF ProgressBar::PrivateProgressBar::pixelSizeOfText(const QString &txt) {
+QSizeF ProgressBar::PrivateProgressBar::pixelSizeOfText(const QString &txt)
+{
   QFont font("Times", 20, QFont::Bold);
   QFontMetrics metic(font);
   QRectF rect = metic.boundingRect(txt);

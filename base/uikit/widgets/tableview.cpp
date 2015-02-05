@@ -28,19 +28,24 @@
 #include <QDebug>
 #include <themepackloader.h>
 
-namespace UI {
+namespace UI
+{
 
-class TableView::PrivateTableView {
+class TableView::PrivateTableView
+{
 
 public:
   PrivateTableView() {}
 
-  ~PrivateTableView() {
-    if (m_base_list_layout)
+  ~PrivateTableView()
+  {
+    if (m_base_list_layout) {
       delete m_table_delegate_ptr;
+    }
 
-    if (m_table_viewport)
+    if (m_table_viewport) {
       delete m_table_viewport;
+    }
   }
 
 public:
@@ -54,7 +59,8 @@ public:
 };
 
 TableView::TableView(QGraphicsObject *parent)
-    : UIWidget(parent), d(new PrivateTableView) {
+  : UIWidget(parent), d(new PrivateTableView)
+{
   d->m_table_delegate_ptr = 0;
   d->m_current_item_count = -1;
 
@@ -76,17 +82,21 @@ TableView::TableView(QGraphicsObject *parent)
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
 }
 
-TableView::~TableView() {
+TableView::~TableView()
+{
   QScroller::ungrabGesture(this);
   delete d;
 }
 
-void TableView::setModel(TableModel *iface) {
-  if (d->m_table_delegate_ptr)
+void TableView::setModel(TableModel *iface)
+{
+  if (d->m_table_delegate_ptr) {
     delete d->m_table_delegate_ptr;
+  }
 
-  if (!iface)
+  if (!iface) {
     return;
+  }
 
   d->m_table_delegate_ptr = iface;
 
@@ -101,23 +111,26 @@ void TableView::setModel(TableModel *iface) {
     d->m_base_grid_layout = new QGraphicsGridLayout(d->m_table_viewport);
     d->m_base_grid_layout->setSpacing(d->m_table_delegate_ptr->padding());
     d->m_base_grid_layout->setContentsMargins(
-        d->m_table_delegate_ptr->leftMargin(), 0.0,
-        d->m_table_delegate_ptr->rightMargin(), 0.0);
+      d->m_table_delegate_ptr->leftMargin(), 0.0,
+      d->m_table_delegate_ptr->rightMargin(), 0.0);
   }
 
   connect(iface, SIGNAL(cleared()), this, SLOT(onClear()));
   connect(iface, SIGNAL(add(UI::TableViewItem *)), this,
           SLOT(onAddViewItem(UI::TableViewItem *)));
 
-  if (iface)
+  if (iface) {
     iface->init();
+  }
 }
 
 TableModel *TableView::model() { return d->m_table_delegate_ptr; }
 
-void TableView::clearSelection() {
-  if (!d->m_table_delegate_ptr)
+void TableView::clearSelection()
+{
+  if (!d->m_table_delegate_ptr) {
     return;
+  }
 
   if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsListView) {
     // todo
@@ -126,7 +139,7 @@ void TableView::clearSelection() {
     for (int i = 0; i < d->m_base_grid_layout->rowCount(); i++) {
       for (int j = 0; j < d->m_base_grid_layout->columnCount(); j++) {
         TableViewItem *cell =
-            (TableViewItem *)d->m_base_grid_layout->itemAt(i, j);
+          (TableViewItem *)d->m_base_grid_layout->itemAt(i, j);
         if (cell) {
           cell->clearSelection();
         }
@@ -135,14 +148,16 @@ void TableView::clearSelection() {
   }
 }
 
-QRectF TableView::boundingRect() const {
+QRectF TableView::boundingRect() const
+{
   QRectF rv;
   rv.setWidth(d->m_table_view_geometry.width());
   rv.setHeight(d->m_table_view_geometry.height());
   return rv;
 }
 
-void TableView::setGeometry(const QRectF &rect) {
+void TableView::setGeometry(const QRectF &rect)
+{
   qDebug() << Q_FUNC_INFO << rect;
   d->m_table_viewport->setGeometry(rect);
   d->m_table_viewport->setPos(QPointF());
@@ -152,38 +167,46 @@ void TableView::setGeometry(const QRectF &rect) {
   UIWidget::setGeometry(rect);
 }
 
-QSizeF TableView::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
+QSizeF TableView::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+{
   return d->m_table_view_geometry.size();
 }
 
-void TableView::scrollBy(int x, int y) {
+void TableView::scrollBy(int x, int y)
+{
   // todo: manual scrolling probably with scrollbars ?
 }
 
 void TableView::paintView(QPainter *painter, const QRectF &exposeRect) {}
 
-TableViewItem *TableView::itemAt(uint i) {
-  if (i >= (uint)d->m_current_table_view_item_list.count())
+TableViewItem *TableView::itemAt(uint i)
+{
+  if (i >= (uint)d->m_current_table_view_item_list.count()) {
     return 0;
+  }
 
   return d->m_current_table_view_item_list.at(i);
 }
 
 StylePtr TableView::style() const { return Theme::style(); }
 
-uint TableView::count() const {
-  if (!d->m_table_delegate_ptr)
+uint TableView::count() const
+{
+  if (!d->m_table_delegate_ptr) {
     return 0;
+  }
 
   if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsGridView) {
-    if (!d->m_base_grid_layout)
+    if (!d->m_base_grid_layout) {
       return 0;
+    }
 
     return d->m_base_grid_layout->count();
   } else if (d->m_table_delegate_ptr->renderType() ==
              TableModel::kRenderAsListView) {
-    if (!d->m_base_list_layout)
+    if (!d->m_base_list_layout) {
       return 0;
+    }
 
     return d->m_base_list_layout->count();
   }
@@ -191,20 +214,24 @@ uint TableView::count() const {
   return 0;
 }
 
-void TableView::onItemClick(TableViewItem *component) {
+void TableView::onItemClick(TableViewItem *component)
+{
   clearSelection();
 
-  if (component)
+  if (component) {
     component->setSelected();
+  }
 
   Q_EMIT activated(component);
 
   qDebug() << Q_FUNC_INFO << " Activated :";
 }
 
-void TableView::onAddViewItem(UI::TableViewItem *item) {
-  if (!d->m_table_delegate_ptr)
+void TableView::onAddViewItem(UI::TableViewItem *item)
+{
+  if (!d->m_table_delegate_ptr) {
     return;
+  }
 
   d->m_current_item_count++;
 
@@ -229,8 +256,9 @@ void TableView::onAddViewItem(UI::TableViewItem *item) {
                           d->m_table_delegate_ptr->rightMargin())) /
                         item->boundingRect().width();
 
-    if (_item_per_row <= 0)
+    if (_item_per_row <= 0) {
       _item_per_row = 1;
+    }
 
     int totalSpace = ((_item_per_row - 1) * d->m_table_delegate_ptr->padding());
 
@@ -239,8 +267,9 @@ void TableView::onAddViewItem(UI::TableViewItem *item) {
                       d->m_table_delegate_ptr->rightMargin())) /
                     item->boundingRect().width();
 
-    if (_item_per_row <= 0)
+    if (_item_per_row <= 0) {
       _item_per_row = 1;
+    }
 
     d->m_base_grid_layout->addItem(item,
                                    d->m_current_item_count / _item_per_row,
@@ -254,18 +283,21 @@ void TableView::onAddViewItem(UI::TableViewItem *item) {
   }
 }
 
-void TableView::onClear() {
+void TableView::onClear()
+{
   if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsListView) {
     for (int i = 0; i < d->m_base_list_layout->count(); i++) {
       QGraphicsLayoutItem *item = d->m_base_list_layout->itemAt(i);
 
-      if (!item)
+      if (!item) {
         continue;
+      }
 
       QGraphicsItem *_graphics_item = item->graphicsItem();
 
-      if (!_graphics_item)
+      if (!_graphics_item) {
         continue;
+      }
 
       _graphics_item->hide();
 
@@ -285,13 +317,15 @@ void TableView::onClear() {
       for (int j = 0; j < d->m_base_grid_layout->columnCount(); j++) {
         QGraphicsLayoutItem *item = d->m_base_grid_layout->itemAt(i, j);
 
-        if (!item)
+        if (!item) {
           continue;
+        }
 
         QGraphicsItem *_graphics_item = item->graphicsItem();
 
-        if (!_graphics_item)
+        if (!_graphics_item) {
           continue;
+        }
 
         _graphics_item->hide();
         d->m_base_grid_layout->removeItem(item);
@@ -310,9 +344,11 @@ void TableView::onClear() {
   d->m_current_item_count = -1;
 }
 
-void TableView::wheelEvent(QGraphicsSceneWheelEvent *event) {
-  if (!d->m_table_viewport)
+void TableView::wheelEvent(QGraphicsSceneWheelEvent *event)
+{
+  if (!d->m_table_viewport) {
     return;
+  }
 
   QPointF scrollToPos(0.0, 0.0);
 
@@ -334,76 +370,82 @@ void TableView::wheelEvent(QGraphicsSceneWheelEvent *event) {
   }
 }
 
-bool TableView::event(QEvent *e) {
+bool TableView::event(QEvent *e)
+{
   switch (e->type()) {
-    case QEvent::GraphicsSceneMouseDoubleClick: {
-      return QGraphicsObject::event(e);
-    }
-    case QScrollPrepareEvent::ScrollPrepare: {
-      if (!d->m_table_viewport)
-        return false;
-
-      QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(e);
-      se->setViewportSize(d->m_table_view_geometry.size());
-      QRectF br = d->m_table_viewport->boundingRect();
-
-      qDebug() << Q_FUNC_INFO << " Content Range : Width"
-               << qMax(qreal(0), br.width() - d->m_table_view_geometry.size().width())
-               << " Height : "
-               <<  qMax(qreal(0), br.height() - d->m_table_view_geometry.size().height())
-               << "Content Pos : " << d->m_table_viewport->pos();
-
-      se->setContentPosRange(QRectF(
-          0, 0,
-          qMax(qreal(0), br.width() - d->m_table_view_geometry.size().width()),
-          qMax(qreal(0), br.height() - d->m_table_view_geometry.size().height())));
-      se->setContentPos(-d->m_table_viewport->pos());
-
-      se->accept();
-      return QGraphicsObject::event(e);
-    }
-    case QScrollEvent::Scroll: {
-      if (!d->m_table_viewport)
-        return false;
-      QScrollEvent *se = static_cast<QScrollEvent *>(e);
-      d->m_table_viewport->setPos(-se->contentPos() - se->overshootDistance());
-      return true;
+  case QEvent::GraphicsSceneMouseDoubleClick: {
+    return QGraphicsObject::event(e);
+  }
+  case QScrollPrepareEvent::ScrollPrepare: {
+    if (!d->m_table_viewport) {
+      return false;
     }
 
-    default:
-      break;
+    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(e);
+    se->setViewportSize(d->m_table_view_geometry.size());
+    QRectF br = d->m_table_viewport->boundingRect();
+
+    qDebug() << Q_FUNC_INFO << " Content Range : Width"
+             << qMax(qreal(0), br.width() - d->m_table_view_geometry.size().width())
+             << " Height : "
+             <<  qMax(qreal(0), br.height() - d->m_table_view_geometry.size().height())
+             << "Content Pos : " << d->m_table_viewport->pos();
+
+    se->setContentPosRange(QRectF(
+                             0, 0,
+                             qMax(qreal(0), br.width() - d->m_table_view_geometry.size().width()),
+                             qMax(qreal(0), br.height() - d->m_table_view_geometry.size().height())));
+    se->setContentPos(-d->m_table_viewport->pos());
+
+    se->accept();
+    return QGraphicsObject::event(e);
+  }
+  case QScrollEvent::Scroll: {
+    if (!d->m_table_viewport) {
+      return false;
+    }
+    QScrollEvent *se = static_cast<QScrollEvent *>(e);
+    d->m_table_viewport->setPos(-se->contentPos() - se->overshootDistance());
+    return true;
+  }
+
+  default:
+    break;
   }
   return QGraphicsObject::event(e);
 }
 
-bool TableView::sceneEvent(QEvent *e) {
+bool TableView::sceneEvent(QEvent *e)
+{
   switch (e->type()) {
-    case QEvent::TouchBegin: {
-      // We need to return true for the TouchBegin here in the
-      // top-most graphics object - otherwise gestures in our parent
-      // objects will NOT work at all (the accept() flag is already
-      // set due to our setAcceptTouchEvents(true) call in the c'tor
-      return true;
-    }
-    case QEvent::GraphicsSceneMousePress: {
-      // We need to return true for the MousePress here in the
-      // top-most graphics object - otherwise gestures in our parent
-      // objects will NOT work at all (the accept() flag is already
-      // set to true by Qt)
-      return true;
-    }
-    default:
-      break;
+  case QEvent::TouchBegin: {
+    // We need to return true for the TouchBegin here in the
+    // top-most graphics object - otherwise gestures in our parent
+    // objects will NOT work at all (the accept() flag is already
+    // set due to our setAcceptTouchEvents(true) call in the c'tor
+    return true;
+  }
+  case QEvent::GraphicsSceneMousePress: {
+    // We need to return true for the MousePress here in the
+    // top-most graphics object - otherwise gestures in our parent
+    // objects will NOT work at all (the accept() flag is already
+    // set to true by Qt)
+    return true;
+  }
+  default:
+    break;
   }
   return QGraphicsObject::sceneEvent(e);
 }
 
-void TableView::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void TableView::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   clearSelection();
   QGraphicsItem::mousePressEvent(event);
 }
 
-void TableView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void TableView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   QGraphicsObject::mouseReleaseEvent(event);
 }
 }

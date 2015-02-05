@@ -21,10 +21,11 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UI::DesktopActivity> TakeNoteInterface::activity() {
+QSharedPointer<UI::DesktopActivity> TakeNoteInterface::activity()
+{
   QSharedPointer<UI::DesktopActivity> obj =
-      QSharedPointer<UI::DesktopActivity>(new TakeNoteActivity(),
-                                                 &QObject::deleteLater);
+    QSharedPointer<UI::DesktopActivity>(new TakeNoteActivity(),
+                                        &QObject::deleteLater);
 
   return obj;
 }

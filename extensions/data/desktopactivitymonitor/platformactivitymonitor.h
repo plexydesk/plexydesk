@@ -5,7 +5,8 @@
 
 class WindowObject;
 
-class PlatformActivityMonitor : public QObject {
+class PlatformActivityMonitor : public QObject
+{
   Q_OBJECT
 public:
   explicit PlatformActivityMonitor(QObject *parent = 0);

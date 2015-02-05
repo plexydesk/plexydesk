@@ -173,18 +173,18 @@ struct NETExtendedStrut {
   Constructor to initialize this struct to 0,0,0,0
   **/
   NETExtendedStrut()
-      : left_width(0),
-        left_start(0),
-        left_end(0),
-        right_width(0),
-        right_start(0),
-        right_end(0),
-        top_width(0),
-        top_start(0),
-        top_end(0),
-        bottom_width(0),
-        bottom_start(0),
-        bottom_end(0) {}
+    : left_width(0),
+      left_start(0),
+      left_end(0),
+      right_width(0),
+      right_start(0),
+      right_end(0),
+      top_width(0),
+      top_start(0),
+      top_end(0),
+      bottom_width(0),
+      bottom_start(0),
+      bottom_end(0) {}
 
   /**
   Left border of the strut, width and range.
@@ -257,7 +257,8 @@ the namespace relatively clean, all enums are defined here.
 @see http://www.freedesktop.org/standards/wm-spec/
 **/
 
-class DECL_UI_KIT_EXPORT NET {
+class DECL_UI_KIT_EXPORT NET
+{
 public:
   /**
   Application role.  This is used internally to determine how several action

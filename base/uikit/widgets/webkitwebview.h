@@ -6,8 +6,10 @@
 #include <QGraphicsWebView>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
-class DECL_UI_KIT_EXPORT WebKitWebView : public UI::UIWidget {
+namespace UI
+{
+class DECL_UI_KIT_EXPORT WebKitWebView : public UI::UIWidget
+{
   Q_OBJECT
 public:
   WebKitWebView(QGraphicsObject *parent = 0);

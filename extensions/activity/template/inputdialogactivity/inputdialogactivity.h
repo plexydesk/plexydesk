@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class InputDialogActivityData : public PlexyDesk::DesktopActivity {
+class InputDialogActivityData : public PlexyDesk::DesktopActivity
+{
   Q_OBJECT
 
 public:

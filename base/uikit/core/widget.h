@@ -26,7 +26,8 @@
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 
-namespace UI {
+namespace UI
+{
 
 class ViewController;
 /**
@@ -37,14 +38,25 @@ class ViewController;
     *
     */
 class DECL_UI_KIT_EXPORT Window : public QGraphicsObject,
-                                public QGraphicsLayoutItem {
+  public QGraphicsLayoutItem
+{
   Q_OBJECT
 
   Q_ENUMS(RenderLevel)
+  Q_ENUMS(WidgetFlags)
   Q_PROPERTY(QPointF pos READ pos WRITE setPos)
 
   Q_INTERFACES(QGraphicsLayoutItem)
 public:
+  typedef enum {
+    kRenderBackground = 1ul << 0,
+    kRenderDropShadow = 1ul << 1,
+    kDockWindowType = 1ul << 2,
+    kTopLevelWindow = 1ul << 3,
+    kConvertToWindowType = 1ul << 4,
+    kRenderWindowTitle = 1ul << 5
+  } WidgetFlags;
+
   /**
       * @brief
       *
@@ -63,12 +75,9 @@ public:
       *
       * @return Bounding rectangle as a QRectF
       */
-  /**
-      * @brief
-      *
-      * @return QRectF
-      */
   virtual QRectF boundingRect() const;
+
+  virtual void setWindowFlag(int flags, bool enable = true);
   /**
        * @brief
        *
@@ -191,7 +200,7 @@ protected:
       * @param painter
       * @param rect
       */
-  virtual void paintView(QPainter *painter, const QRectF &rect) = 0;
+  virtual void paintView(QPainter *painter, const QRectF &rect);
   /**
     * @brief
     *

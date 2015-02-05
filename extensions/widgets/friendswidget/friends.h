@@ -44,7 +44,8 @@
 #include <QtCore>
 #include <abstractplugininterface.h>
 
-class VISIBLE_SYM Friends : public PlexyDesk::AbstractPluginInterface {
+class VISIBLE_SYM Friends : public PlexyDesk::AbstractPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

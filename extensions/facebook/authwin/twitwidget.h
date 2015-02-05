@@ -29,9 +29,11 @@
 #include <listview.h>
 
 class QTimer;
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
-class TwitWidget : public PlexyDesk::ListView {
+class TwitWidget : public PlexyDesk::ListView
+{
   Q_OBJECT
 public:
   TwitWidget(const QRectF &rect, QWidget *widget = 0);

@@ -7,7 +7,8 @@
 
 using namespace UI;
 
-class ImageCellAdaptor : public TableModel {
+class ImageCellAdaptor : public TableModel
+{
   Q_OBJECT
 
 public:

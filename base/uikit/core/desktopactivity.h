@@ -8,14 +8,16 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 
 class ViewController;
 class Space;
 class UIWidget;
 typedef QSharedPointer<ViewController> ViewControllerPtr;
 
-class DECL_UI_KIT_EXPORT DesktopActivity : public QObject {
+class DECL_UI_KIT_EXPORT DesktopActivity : public QObject
+{
   Q_OBJECT
 public:
   enum ResultType { kActivitySucess, mActivityCanceled };

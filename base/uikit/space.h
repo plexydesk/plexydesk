@@ -9,13 +9,15 @@
 #include <plexydesk_ui_exports.h>
 #include <desktopwidget.h>
 
-namespace UI {
+namespace UI
+{
 class WorkSpace;
 
-class DECL_UI_KIT_EXPORT Space : public QObject {
+class DECL_UI_KIT_EXPORT Space : public QObject
+{
   Q_OBJECT
 public:
- typedef enum {
+  typedef enum {
     kCenterOnViewport,
     kCenterOnViewportLeft,
     kCenterOnViewportRight,
@@ -53,9 +55,9 @@ public:
   virtual void addActivity(UI::DesktopActivityPtr activity);
 
   UI::DesktopActivityPtr createActivity(const QString &activity,
-                                    const QString &title, const QPointF &pos,
-                                    const QRectF &rect,
-                                    const QVariantMap &dataItem);
+                                        const QString &title, const QPointF &pos,
+                                        const QRectF &rect,
+                                        const QVariantMap &dataItem);
 
   virtual void addActivityPoupToView(QSharedPointer<DesktopActivityMenu> menu);
   virtual void dismissActivityPopup();

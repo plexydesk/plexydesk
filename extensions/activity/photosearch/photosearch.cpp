@@ -35,7 +35,8 @@
 
 #include "localwallpapers.h"
 
-class PhotoSearchActivity::PrivatePhotoSearch {
+class PhotoSearchActivity::PrivatePhotoSearch
+{
 public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
@@ -49,16 +50,18 @@ public:
 };
 
 PhotoSearchActivity::PhotoSearchActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivatePhotoSearch) {}
+  : UI::DesktopActivity(object), d(new PrivatePhotoSearch) {}
 
-PhotoSearchActivity::~PhotoSearchActivity() {
+PhotoSearchActivity::~PhotoSearchActivity()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
                                        const QString &window_title,
-                                       const QPointF &window_pos) {
+                                       const QPointF &window_pos)
+{
   d->m_frame_geometry = QRectF(0.0, 0.0, 600.0, 480.0);
 
   // todo: invoke UI
@@ -68,13 +71,9 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
 
   d->mFrame->setLabelName("WallPaper");
 
-  d->mFrame->setWindowTitle("Please Wait : Indexing...");
-
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
 
   // table
   d->mTable = new UI::TableView(d->mFrame);
@@ -103,25 +102,31 @@ QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
 UIWidget *PhotoSearchActivity::window() const { return d->mFrame; }
 
-void PhotoSearchActivity::onWidgetClosed(UI::UIWidget *widget) {
-  if (d->mFactory && d->mFactory->hasRunningThreads())
+void PhotoSearchActivity::onWidgetClosed(UI::UIWidget *widget)
+{
+  if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;
+  }
 
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
 
-void PhotoSearchActivity::onHideAnimationFinished() {
+void PhotoSearchActivity::onHideAnimationFinished()
+{
   // Q_EMIT finished();
 }
 
-void PhotoSearchActivity::onShowAnimationFinished() {
+void PhotoSearchActivity::onShowAnimationFinished()
+{
   this->locateLocalFiles();
 }
 
-void PhotoSearchActivity::onClicked(TableViewItem *item) {
-  if (d->mFactory && d->mFactory->hasRunningThreads())
+void PhotoSearchActivity::onClicked(TableViewItem *item)
+{
+  if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;
+  }
 
   ImageCell *i = qobject_cast<ImageCell *>(item);
   if (i) {
@@ -138,19 +143,18 @@ void PhotoSearchActivity::onClicked(TableViewItem *item) {
   }
 }
 
-void PhotoSearchActivity::onProgressValue(int value) {
+void PhotoSearchActivity::onProgressValue(int value)
+{
   if (value == 100) {
-    // d->mProgressBar->setValue(100);
-    // d->mProgressBar->hide();
     if (d->mFrame) {
       if (hasAttribute("title")) {
-        d->mFrame->setWindowTitle(attributes()["title"].toString());
       }
     }
   }
 }
 
-void PhotoSearchActivity::locateLocalFiles() const {
+void PhotoSearchActivity::locateLocalFiles() const
+{
   QString url;
   QStringList pathList;
 #ifdef Q_OS_LINUX

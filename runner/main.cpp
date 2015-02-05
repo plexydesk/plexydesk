@@ -58,7 +58,8 @@ WNDPROC wpOrigEditProc;
 
 // Subclass procedure
 LRESULT APIENTRY
-EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
   if (uMsg == WM_WINDOWPOSCHANGING) {
 
     if (!SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
@@ -70,8 +71,8 @@ EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
   if (uMsg == WM_WINDOWPOSCHANGED) {
     /*
-if (!SetWindowPos( hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER |
-SWP_NOACTIVATE)) {
+    if (!SetWindowPos( hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER |
+    SWP_NOACTIVATE)) {
             qDebug() << Q_FUNC_INFO << "Error maintaining native z order";
     }
     */
@@ -97,9 +98,9 @@ SWP_NOACTIVATE)) {
 //     CHAR msgText[256];
 //     getLastErrorText(msgText,sizeof(msgText));
 static CHAR *          //   return error message
-    getLastErrorText(  // converts "Lasr Error" code into text
-        CHAR *pBuf,    //   message buffer
-        ULONG bufSize) //   buffer size
+getLastErrorText(  // converts "Lasr Error" code into text
+  CHAR *pBuf,    //   message buffer
+  ULONG bufSize) //   buffer size
 {
   DWORD retSize;
   LPTSTR pTemp = NULL;
@@ -111,9 +112,9 @@ static CHAR *          //   return error message
     return (pBuf);
   }
   retSize = FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-          FORMAT_MESSAGE_ARGUMENT_ARRAY,
-      NULL, GetLastError(), LANG_NEUTRAL, (LPTSTR) & pTemp, 0, NULL);
+              FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+              FORMAT_MESSAGE_ARGUMENT_ARRAY,
+              NULL, GetLastError(), LANG_NEUTRAL, (LPTSTR) & pTemp, 0, NULL);
   if (!retSize || pTemp == NULL) {
     pBuf[0] = '\0';
   } else {
@@ -125,19 +126,20 @@ static CHAR *          //   return error message
 }
 #endif
 
-Q_DECL_EXPORT int main(int argc, char *argv[]) {
+Q_DECL_EXPORT int main(int argc, char *argv[])
+{
   QApplication app(argc, argv);
   PlexyDesk::ExtensionManager *loader = 0;
 
   loader = PlexyDesk::ExtensionManager::instance(
-      QDir::toNativeSeparators(PlexyDesk::Config::getInstance()->prefix() +
-                               QLatin1String("/share/plexy/ext/groups/")),
-      QDir::toNativeSeparators(PlexyDesk::Config::getInstance()->prefix() +
-                               QLatin1String("/lib/plexyext/")));
+             QDir::toNativeSeparators(PlexyDesk::Config::getInstance()->prefix() +
+                                      QLatin1String("/share/plexy/ext/groups/")),
+             QDir::toNativeSeparators(PlexyDesk::Config::getInstance()->prefix() +
+                                      QLatin1String("/lib/plexyext/")));
 
 #ifndef Q_WS_QPA
   QString appIconPath =
-      PlexyDesk::Config::getInstance()->prefix() + "/share/plexy/plexydesk.png";
+    PlexyDesk::Config::getInstance()->prefix() + "/share/plexy/plexydesk.png";
   QIcon appIcon = QIcon(QDir::toNativeSeparators(appIconPath));
   app.setWindowIcon(appIcon);
   app.setApplicationName(QString(PLEXYNAME));
@@ -163,7 +165,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
   if (native) {
     Display *display = static_cast<Display *>(
-        native->nativeResourceForWindow("display", NULL));
+                         native->nativeResourceForWindow("display", NULL));
 
     NETWinInfo info(display, workspace.winId(), RootWindow(display, 0),
                     NET::WMDesktop);

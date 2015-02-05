@@ -27,7 +27,8 @@
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl : public UI::ViewController {
+class DesktopNotesControllerImpl : public UI::ViewController
+{
   Q_OBJECT
 
 public:

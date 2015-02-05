@@ -5,7 +5,8 @@
 
 SocioTwitterInterface::SocioTwitterInterface(QObject *object) {}
 
-PlexyDesk::BasePlugin *SocioTwitterInterface::instance() {
+PlexyDesk::BasePlugin *SocioTwitterInterface::instance()
+{
   return new SocioTwitter(this);
 }
 

@@ -19,7 +19,8 @@
 #include <syncobject.h>
 #include <plexyconfig.h>
 
-class ReminderWidget::PrivateReminderWidget {
+class ReminderWidget::PrivateReminderWidget
+{
 public:
   PrivateReminderWidget() {}
   ~PrivateReminderWidget() {}
@@ -48,31 +49,32 @@ public:
   // datastore
   QuetzalKit::DataStore *mDataStore;           // main data store.
   QuetzalKit::SyncObject *mReminderListObject; // contains the list of
-                                               // Reminders.
+  // Reminders.
   QuetzalKit::SyncObject *mCurrentReminderObject;
 
   QuetzalKit::SyncObject *getReminderObject();
 };
 
 ReminderWidget::ReminderWidget(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateReminderWidget) {
+  : UI::UIWidget(parent), d(new PrivateReminderWidget)
+{
   setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-  setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
-  setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
+  setWindowFlag(UI::Window::kRenderDropShadow, true);
+  setWindowFlag(UI::Window::kConvertToWindowType, true);
 
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mLayoutBase->setGeometry(this->boundingRect());
 
   d->mSubLayoutBase = new QGraphicsWidget(d->mLayoutBase);
   d->mSubLayoutBase->setGeometry(
-      QRectF(64.0, 0.0, boundingRect().width(), boundingRect().height()));
+    QRectF(64.0, 0.0, boundingRect().width(), boundingRect().height()));
 
   d->mMainVerticleLayout = new QGraphicsLinearLayout(d->mLayoutBase);
   d->mMainVerticleLayout->setOrientation(Qt::Horizontal);
   d->mMainVerticleLayout->setContentsMargins(0.0, 0.0, 0.0, 0.0);
   d->mLayoutBase->setPos(0.0, 0.0);
   d->mMainVerticleLayout->setGeometry(QRectF(
-      0.0, 0.0, this->boundingRect().width(), this->boundingRect().height()));
+                                        0.0, 0.0, this->boundingRect().width(), this->boundingRect().height()));
 
   d->mSubLayout = new QGraphicsLinearLayout(d->mSubLayoutBase);
   d->mSubLayout->setOrientation(Qt::Vertical);
@@ -84,7 +86,7 @@ ReminderWidget::ReminderWidget(QGraphicsObject *parent)
   d->mLable->setLabelStyle(QColor(254, 254, 254, 128), QColor(0, 0, 0));
   d->mTextEdit = new UI::TextEditor(d->mSubLayoutBase);
   d->mTextEdit->style(
-      "border: 0; background: rgba(0,0,0,0); color: rgb(255, 255, 255)");
+    "border: 0; background: rgba(0,0,0,0); color: rgb(255, 255, 255)");
 
   d->mSubLayout->addItem(d->mTextEdit);
   d->mSubLayout->addItem(d->mLable);
@@ -102,7 +104,8 @@ ReminderWidget::ReminderWidget(QGraphicsObject *parent)
 
 ReminderWidget::~ReminderWidget() { delete d; }
 
-void ReminderWidget::setTitle(const QString &name) {
+void ReminderWidget::setTitle(const QString &name)
+{
   d->mReminderTitle = name;
   update();
 
@@ -112,22 +115,24 @@ void ReminderWidget::setTitle(const QString &name) {
   requestReminderSideImageFromWebService(d->mReminderTitle);
 }
 
-void ReminderWidget::initDataStore() {
+void ReminderWidget::initDataStore()
+{
   d->mDataStore = new QuetzalKit::DataStore("desktopreminders", this);
   QuetzalKit::DiskSyncEngine *engine =
-      new QuetzalKit::DiskSyncEngine(d->mDataStore);
+    new QuetzalKit::DiskSyncEngine(d->mDataStore);
 
   d->mDataStore->setSyncEngine(engine);
 
   d->mReminderListObject = d->mDataStore->begin("ReminderList");
   d->mCurrentReminderObject =
-      d->mReminderListObject->createNewObject("Reminder");
+    d->mReminderListObject->createNewObject("Reminder");
   d->mCurrentReminderObject->setObjectAttribute("title", "");
 
   d->mDataStore->insert(d->mCurrentReminderObject);
 }
 
-void ReminderWidget::setReminderWidgetContent(const QString &status) {
+void ReminderWidget::setReminderWidgetContent(const QString &status)
+{
   d->mStatusMessage = status;
   update();
 }
@@ -140,14 +145,16 @@ QString ReminderWidget::id() { return d->mID; }
 
 QString ReminderWidget::reminderContent() const { return d->mStatusMessage; }
 
-void ReminderWidget::setPixmap(const QPixmap &pixmap) {
+void ReminderWidget::setPixmap(const QPixmap &pixmap)
+{
   d->mPixmap = pixmap;
   update();
 }
 
-void ReminderWidget::saveReminderToStore() {
+void ReminderWidget::saveReminderToStore()
+{
   QuetzalKit::DataStore *store =
-      new QuetzalKit::DataStore("deskopreminders", this);
+    new QuetzalKit::DataStore("deskopreminders", this);
 
   QuetzalKit::DiskSyncEngine *diskEngine = new QuetzalKit::DiskSyncEngine(this);
   store->setSyncEngine(diskEngine);
@@ -177,15 +184,17 @@ void ReminderWidget::saveReminderToStore() {
   metaData.setObjectAttribute("location", "Colomobo, Sri Lanka");
 
   reminderObject.addChildObject(&metaData);
-  if (!newObject)
+  if (!newObject) {
     object->addChildObject(&reminderObject);
+  }
 
   store->addObject(object);
 }
 
 void ReminderWidget::paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
-                           QWidget *widget) {
+                           QWidget *widget)
+{
   painter->save();
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
   // painter->fillRect(option->exposedRect, QColor(10, 172, 240));
@@ -196,9 +205,10 @@ void ReminderWidget::paint(QPainter *painter,
 }
 
 void ReminderWidget::requestReminderSideImageFromWebService(
-    const QString &key) {
+  const QString &key)
+{
   QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+    new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -217,9 +227,10 @@ void ReminderWidget::requestReminderSideImageFromWebService(
           SLOT(onServiceCompleteJson(QuetzalSocialKit::WebService *)));
 }
 
-void ReminderWidget::requestPhotoSizes(const QString &photoID) {
+void ReminderWidget::requestPhotoSizes(const QString &photoID)
+{
   QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+    new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -235,21 +246,25 @@ void ReminderWidget::requestPhotoSizes(const QString &photoID) {
 
 void ReminderWidget::onClicked() { Q_EMIT clicked(this); }
 
-void ReminderWidget::onTextUpdated(const QString &text) {
-  if (d->mReminderTitle.isEmpty())
+void ReminderWidget::onTextUpdated(const QString &text)
+{
+  if (d->mReminderTitle.isEmpty()) {
     return;
+  }
 
   d->getContentText(text);
   d->mCurrentReminderObject->setTextData(d->getContentText(text));
   d->mDataStore->updateNode(d->mCurrentReminderObject);
 }
 
-void ReminderWidget::onDocuemntTitleAvailable(const QString &title) {
+void ReminderWidget::onDocuemntTitleAvailable(const QString &title)
+{
   this->setTitle(title);
 }
 
 void ReminderWidget::onServiceCompleteJson(
-    QuetzalSocialKit::WebService *service) {
+  QuetzalSocialKit::WebService *service)
+{
   QList<QVariantMap> photoList = service->methodData("photo");
 
   Q_FOREACH(const QVariantMap & map, photoList) {
@@ -261,7 +276,8 @@ void ReminderWidget::onServiceCompleteJson(
 }
 
 void ReminderWidget::onSizeServiceCompleteJson(
-    QuetzalSocialKit::WebService *service) {
+  QuetzalSocialKit::WebService *service)
+{
   Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -269,12 +285,12 @@ void ReminderWidget::onSizeServiceCompleteJson(
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
       QuetzalSocialKit::AsyncDataDownloader *downloader =
-          new QuetzalSocialKit::AsyncDataDownloader(this);
+        new QuetzalSocialKit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
       metaData["method"] = service->methodName();
       metaData["id"] =
-          service->inputArgumentForMethod(service->methodName())["photo_id"];
+        service->inputArgumentForMethod(service->methodName())["photo_id"];
       metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
@@ -287,15 +303,16 @@ void ReminderWidget::onSizeServiceCompleteJson(
 }
 
 void ReminderWidget::onDownloadCompleteJson(
-    QuetzalSocialKit::WebService *service) {}
+  QuetzalSocialKit::WebService *service) {}
 
-void ReminderWidget::onImageReady() {
+void ReminderWidget::onImageReady()
+{
   QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
     QuetzalSocialKit::AsyncImageCreator *imageSave =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+      new QuetzalSocialKit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
@@ -308,10 +325,11 @@ void ReminderWidget::onImageReady() {
   }
 }
 
-void ReminderWidget::onImageSaveReadyJson() {
+void ReminderWidget::onImageSaveReadyJson()
+{
   qDebug() << Q_FUNC_INFO;
   QuetzalSocialKit::AsyncImageCreator *c =
-      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
   if (c) {
     d->mBackgroundPixmap = c->image();
@@ -321,12 +339,14 @@ void ReminderWidget::onImageSaveReadyJson() {
   }
 }
 
-void ReminderWidget::onImageReadyJson(const QString &fileName) {
+void ReminderWidget::onImageReadyJson(const QString &fileName)
+{
   qDebug() << Q_FUNC_INFO << fileName;
 }
 
 QString ReminderWidget::PrivateReminderWidget::getContentText(
-    const QString &data) const {
+  const QString &data) const
+{
   QStringList dataList = data.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
 
   QString rv;
@@ -338,6 +358,7 @@ QString ReminderWidget::PrivateReminderWidget::getContentText(
 }
 
 QuetzalKit::SyncObject *
-ReminderWidget::PrivateReminderWidget::getReminderObject() {
+ReminderWidget::PrivateReminderWidget::getReminderObject()
+{
   return 0;
 }

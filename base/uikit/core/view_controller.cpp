@@ -2,9 +2,11 @@
 #include <extensionmanager.h>
 #include <QDebug>
 
-namespace UI {
+namespace UI
+{
 
-class ViewController::PrivateViewControllerPlugin {
+class ViewController::PrivateViewControllerPlugin
+{
 public:
   PrivateViewControllerPlugin() {}
   ~PrivateViewControllerPlugin() {}
@@ -14,13 +16,15 @@ public:
 };
 
 ViewController::ViewController(QObject *parent)
-    : QObject(parent), d(new PrivateViewControllerPlugin) {
+  : QObject(parent), d(new PrivateViewControllerPlugin)
+{
   d->mViewport = 0;
 }
 
 ViewController::~ViewController() { delete d; }
 
-void ViewController::setViewport(Space *view) {
+void ViewController::setViewport(Space *view)
+{
   d->mViewport = view;
 }
 
@@ -29,25 +33,28 @@ Space *ViewController::viewport() { return d->mViewport; }
 ActionList ViewController::actions() const { return ActionList(); }
 
 void ViewController::requestAction(const QString & /*actionName*/,
-                                        const QVariantMap & /*args*/) {
+                                   const QVariantMap & /*args*/)
+{
   // Q_EMIT actionComleted("none", false, QString("Invalid Action"));
 }
 
 void ViewController::handleDropEvent(UIWidget * /*widget*/,
-                                          QDropEvent * /*event*/) {}
+                                     QDropEvent * /*event*/) {}
 
 DataSource *ViewController::dataSource() { return d->mDataSource.data(); }
 
-void ViewController::setControllerName(const QString &name) {
+void ViewController::setControllerName(const QString &name)
+{
   d->mName = name;
 }
 
 QString ViewController::controllerName() const { return d->mName; }
 
 DesktopActivityPtr ViewController::activity(const QString &name,
-                                                 const QRectF &geometry,
-                                                 const QPointF &pos,
-                                                 const QString &window_title) {
+    const QRectF &geometry,
+    const QPointF &pos,
+    const QString &window_title)
+{
   DesktopActivityPtr intent = ExtensionManager::instance()->activity(name);
 
   if (intent) {
@@ -56,7 +63,7 @@ DesktopActivityPtr ViewController::activity(const QString &name,
   }
 
   if (viewport()) {
-      viewport()->addActivity(intent);
+    viewport()->addActivity(intent);
   }
   return intent;
 }
@@ -67,32 +74,38 @@ void ViewController::configure(const QPointF &pos) { Q_UNUSED(pos) }
 
 void ViewController::prepareRemoval() { d->mDataSource.clear(); }
 
-bool ViewController::connectToDataSource(const QString &source) {
+bool ViewController::connectToDataSource(const QString &source)
+{
   d->mDataSource = ExtensionManager::instance()->dataEngine(source);
 
-  if (!d->mDataSource.data())
+  if (!d->mDataSource.data()) {
     return 0;
+  }
 
   connect(d->mDataSource.data(), SIGNAL(ready()), this, SLOT(onReady()));
 
   return true;
 }
 
-bool ViewController::removeWidget(UIWidget *widget) {
+bool ViewController::removeWidget(UIWidget *widget)
+{
   // disconnect(d->mDataSource.data(), SIGNAL(sourceUpdated(QVariantMap)));
-    return false;
+  return false;
 }
 
 void ViewController::insert(UIWidget *widget)
 {
-    if (!d->mViewport)
-        return;
+  if (!d->mViewport) {
+    return;
+  }
 
-    d->mViewport->addWidgetToView(widget);
+  d->mViewport->addWidgetToView(widget);
 }
 
-void ViewController::onReady() {
-  if (d->mDataSource)
+void ViewController::onReady()
+{
+  if (d->mDataSource) {
     Q_EMIT data(d->mDataSource.data());
+  }
 }
 }

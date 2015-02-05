@@ -47,9 +47,11 @@
 
 #include "../shaders_global.h"
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
-class SHADERSSHARED_EXPORT QSGGeometry {
+class SHADERSSHARED_EXPORT QSGGeometry
+{
 public:
   struct Attribute {
     int position;
@@ -137,27 +139,32 @@ private:
   float m_prealloc[16];
 };
 
-inline uint *QSGGeometry::indexDataAsUInt() {
+inline uint *QSGGeometry::indexDataAsUInt()
+{
   Q_ASSERT(m_index_type == GL_UNSIGNED_INT);
   return (uint *)indexData();
 }
 
-inline quint16 *QSGGeometry::indexDataAsUShort() {
+inline quint16 *QSGGeometry::indexDataAsUShort()
+{
   Q_ASSERT(m_index_type == GL_UNSIGNED_SHORT);
   return (quint16 *)indexData();
 }
 
-inline const uint *QSGGeometry::indexDataAsUInt() const {
+inline const uint *QSGGeometry::indexDataAsUInt() const
+{
   Q_ASSERT(m_index_type == GL_UNSIGNED_INT);
   return (uint *)indexData();
 }
 
-inline const quint16 *QSGGeometry::indexDataAsUShort() const {
+inline const quint16 *QSGGeometry::indexDataAsUShort() const
+{
   Q_ASSERT(m_index_type == GL_UNSIGNED_SHORT);
   return (quint16 *)indexData();
 }
 
-inline QSGGeometry::Point2D *QSGGeometry::vertexDataAsPoint2D() {
+inline QSGGeometry::Point2D *QSGGeometry::vertexDataAsPoint2D()
+{
   Q_ASSERT(m_attributes.count == 1);
   Q_ASSERT(m_attributes.stride == 2 * sizeof(float));
   Q_ASSERT(m_attributes.attributes[0].tupleSize == 2);
@@ -167,7 +174,8 @@ inline QSGGeometry::Point2D *QSGGeometry::vertexDataAsPoint2D() {
 }
 
 inline QSGGeometry::TexturedPoint2D *
-QSGGeometry::vertexDataAsTexturedPoint2D() {
+QSGGeometry::vertexDataAsTexturedPoint2D()
+{
   Q_ASSERT(m_attributes.count == 2);
   Q_ASSERT(m_attributes.stride == 4 * sizeof(float));
   Q_ASSERT(m_attributes.attributes[0].position == 0);
@@ -179,7 +187,8 @@ QSGGeometry::vertexDataAsTexturedPoint2D() {
   return (TexturedPoint2D *)m_data;
 }
 
-inline QSGGeometry::ColoredPoint2D *QSGGeometry::vertexDataAsColoredPoint2D() {
+inline QSGGeometry::ColoredPoint2D *QSGGeometry::vertexDataAsColoredPoint2D()
+{
   Q_ASSERT(m_attributes.count == 2);
   Q_ASSERT(m_attributes.stride == 2 * sizeof(float) + 4 * sizeof(char));
   Q_ASSERT(m_attributes.attributes[0].position == 0);
@@ -191,7 +200,8 @@ inline QSGGeometry::ColoredPoint2D *QSGGeometry::vertexDataAsColoredPoint2D() {
   return (ColoredPoint2D *)m_data;
 }
 
-inline const QSGGeometry::Point2D *QSGGeometry::vertexDataAsPoint2D() const {
+inline const QSGGeometry::Point2D *QSGGeometry::vertexDataAsPoint2D() const
+{
   Q_ASSERT(m_attributes.count == 1);
   Q_ASSERT(m_attributes.stride == 2 * sizeof(float));
   Q_ASSERT(m_attributes.attributes[0].tupleSize == 2);
@@ -201,7 +211,8 @@ inline const QSGGeometry::Point2D *QSGGeometry::vertexDataAsPoint2D() const {
 }
 
 inline const QSGGeometry::TexturedPoint2D *
-QSGGeometry::vertexDataAsTexturedPoint2D() const {
+QSGGeometry::vertexDataAsTexturedPoint2D() const
+{
   Q_ASSERT(m_attributes.count == 2);
   Q_ASSERT(m_attributes.stride == 4 * sizeof(float));
   Q_ASSERT(m_attributes.attributes[0].position == 0);
@@ -214,7 +225,8 @@ QSGGeometry::vertexDataAsTexturedPoint2D() const {
 }
 
 inline const QSGGeometry::ColoredPoint2D *
-QSGGeometry::vertexDataAsColoredPoint2D() const {
+QSGGeometry::vertexDataAsColoredPoint2D() const
+{
   Q_ASSERT(m_attributes.count == 2);
   Q_ASSERT(m_attributes.stride == 2 * sizeof(float) + 4 * sizeof(char));
   Q_ASSERT(m_attributes.attributes[0].position == 0);

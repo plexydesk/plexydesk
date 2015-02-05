@@ -25,7 +25,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class TemplateActivity : public UI::DesktopActivity {
+class TemplateActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

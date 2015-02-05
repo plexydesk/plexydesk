@@ -2,7 +2,8 @@
 
 #include <imagecache.h>
 
-class QmlPixmapProvider::Private {
+class QmlPixmapProvider::Private
+{
 public:
   Private() {}
   ~Private() {}
@@ -10,16 +11,19 @@ public:
 };
 
 QmlPixmapProvider::QmlPixmapProvider(ImageType type)
-    : QDeclarativeImageProvider(type), d(new Private) {
+  : QDeclarativeImageProvider(type), d(new Private)
+{
   d->mPixmapource = new PlexyDesk::ImageCache();
 }
 
 QmlPixmapProvider::~QmlPixmapProvider() { delete d; }
 
 QPixmap QmlPixmapProvider::requestPixmap(const QString &id, QSize *size,
-                                         const QSize &requestedSize) {
-  if (d->mPixmapource)
+    const QSize &requestedSize)
+{
+  if (d->mPixmapource) {
     return d->mPixmapource->requestPixmap(id, size, requestedSize);
+  }
 
   return QPixmap();
 }

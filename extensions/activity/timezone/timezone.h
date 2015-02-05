@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class TimeZoneActivity : public UI::DesktopActivity {
+class TimeZoneActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

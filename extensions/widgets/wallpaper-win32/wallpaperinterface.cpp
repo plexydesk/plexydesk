@@ -7,7 +7,8 @@ WallpaperInterface::WallpaperInterface(QObject *parent) {}
 
 WallpaperInterface::~WallpaperInterface() {}
 
-PlexyDesk::WidgetPlugin *WallpaperInterface::instance() {
+PlexyDesk::WidgetPlugin *WallpaperInterface::instance()
+{
   return new WallpaperChange(this);
 }
 

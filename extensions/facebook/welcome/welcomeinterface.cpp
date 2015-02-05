@@ -23,7 +23,8 @@
 
 WelcomeInterface::WelcomeInterface(QObject *object) {}
 
-PlexyDesk::BasePlugin *WelcomeInterface::instance() {
+PlexyDesk::BasePlugin *WelcomeInterface::instance()
+{
   // return new Clock(this);
   return new Welcome(this);
 }

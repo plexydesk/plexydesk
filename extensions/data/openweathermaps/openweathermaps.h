@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class openweathermapsData : public PlexyDesk::DataSource {
+class openweathermapsData : public PlexyDesk::DataSource
+{
   Q_OBJECT
 
 public:

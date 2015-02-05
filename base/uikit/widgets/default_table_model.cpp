@@ -3,7 +3,8 @@
 #include <themepackloader.h>
 #include <QHash>
 
-class DefaultTableModel::PrivateTableDelegate {
+class DefaultTableModel::PrivateTableDelegate
+{
 public:
   PrivateTableDelegate() {}
   ~PrivateTableDelegate() { m_data_map.clear(); }
@@ -15,7 +16,8 @@ public:
 };
 
 DefaultTableModel::DefaultTableModel(QGraphicsObject *parent)
-    : UI::TableModel(parent), d(new PrivateTableDelegate) {
+  : UI::TableModel(parent), d(new PrivateTableDelegate)
+{
   d->m_current_item_label_visibility = false;
   setCellSize(QSize(96, 96));
 }
@@ -32,16 +34,18 @@ float DefaultTableModel::rightMargin() const { return 0.0; }
 
 bool DefaultTableModel::init() { return true; }
 
-TableModel::TableRenderMode DefaultTableModel::renderType() const {
+TableModel::TableRenderMode DefaultTableModel::renderType() const
+{
   return TableModel::kRenderAsGridView;
 }
 
 void DefaultTableModel::insertItem(const QString &label, const QPixmap pixmap,
-                                   bool selected) {
+                                   bool selected)
+{
   DefaultTableComponent *item =
-      new DefaultTableComponent(QRectF(0.0, 0.0, d->m_current_item_size.width(),
-                                       d->m_current_item_size.height()),
-                                DefaultTableComponent::kGridLayout, 0);
+    new DefaultTableComponent(QRectF(0.0, 0.0, d->m_current_item_size.width(),
+                                     d->m_current_item_size.height()),
+                              DefaultTableComponent::kGridLayout, 0);
 
   item->setLabelVisibility(d->m_current_item_label_visibility);
   item->setData(pixmap, label);
@@ -49,11 +53,13 @@ void DefaultTableModel::insertItem(const QString &label, const QPixmap pixmap,
   Q_EMIT add(item);
 }
 
-void DefaultTableModel::setLabelVisibility(bool visibility) {
+void DefaultTableModel::setLabelVisibility(bool visibility)
+{
   d->m_current_item_label_visibility = visibility;
 }
 
-void DefaultTableModel::setCellSize(const QSize &size) {
+void DefaultTableModel::setCellSize(const QSize &size)
+{
   d->m_current_item_size = size;
 }
 

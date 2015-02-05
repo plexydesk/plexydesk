@@ -27,7 +27,8 @@
 #include <datainterface.h>
 #include <dataplugin.h>
 
-class IRCInterface : public PlexyDesk::DataInterface {
+class IRCInterface : public PlexyDesk::DataInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

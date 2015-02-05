@@ -9,7 +9,8 @@
 
 class WindowObjectData;
 
-class WindowObject {
+class WindowObject
+{
 public:
   WindowObject();
   WindowObject(const WindowObject &);

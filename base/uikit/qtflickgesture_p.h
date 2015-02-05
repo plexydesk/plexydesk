@@ -64,7 +64,8 @@
 
 class PressDelayHandler;
 
-class QtFlickGesture : public QGesture {
+class QtFlickGesture : public QGesture
+{
   Q_OBJECT
 
 public:
@@ -90,7 +91,8 @@ private:
   friend class QtFlickGestureRecognizer;
 };
 
-class QtFlickGestureRecognizer : public QGestureRecognizer {
+class QtFlickGestureRecognizer : public QGestureRecognizer
+{
 public:
   QtFlickGestureRecognizer(Qt::MouseButton button);
 

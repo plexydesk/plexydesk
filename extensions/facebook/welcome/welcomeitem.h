@@ -10,7 +10,8 @@
 #include <QtCore>
 #include <qimageblitz.h>
 
-class WelcomeItem : public QObject, public QGraphicsRectItem {
+class WelcomeItem : public QObject, public QGraphicsRectItem
+{
   Q_OBJECT
 public:
   typedef enum { REGULAR, OVER, PRESSED } MouseState;

@@ -7,8 +7,10 @@
 
 #include "plexydeskuicore_global.h"
 
-namespace PlexyDesk {
-class PLEXYDESKUICORE_EXPORT SocialPlugin : public AbstractSource {
+namespace PlexyDesk
+{
+class PLEXYDESKUICORE_EXPORT SocialPlugin : public AbstractSource
+{
   Q_OBJECT
 public:
   SocialPlugin(QObject *object = 0) { Q_UNUSED(object); }

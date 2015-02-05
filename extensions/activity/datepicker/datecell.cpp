@@ -12,7 +12,8 @@
 #include <label.h>
 #include <themepackloader.h>
 
-class DateCell::PrivateDateCell {
+class DateCell::PrivateDateCell
+{
 
 public:
   PrivateDateCell() {}
@@ -32,7 +33,8 @@ public:
 };
 
 DateCell::DateCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : UI::TableViewItem(rect, parent), d(new PrivateDateCell) {
+  : UI::TableViewItem(rect, parent), d(new PrivateDateCell)
+{
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mVisibility = true;
@@ -48,12 +50,14 @@ DateCell::DateCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
   setAcceptHoverEvents(true);
 }
 
-DateCell::~DateCell() {
+DateCell::~DateCell()
+{
   // qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-QRectF DateCell::boundingRect() const {
+QRectF DateCell::boundingRect() const
+{
   QRectF rect;
   if (d->mType == List) {
     rect = QRectF(0.0, 0.0, d->mBoundingRect.width(), 64);
@@ -63,11 +67,13 @@ QRectF DateCell::boundingRect() const {
   return rect;
 }
 
-QSizeF DateCell::sizeHint(Qt::SizeHint hint, const QSizeF &size) const {
+QSizeF DateCell::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
+{
   return boundingRect().size();
 }
 
-void DateCell::setSelected() {
+void DateCell::setSelected()
+{
   d->mIsSelected = true;
   update();
 }
@@ -76,7 +82,8 @@ void DateCell::setLabelVisibility(bool visible) { d->mVisibility = visible; }
 
 void DateCell::clearSelection() { d->mIsSelected = false; }
 
-void DateCell::setLabel(const QString &txt) {
+void DateCell::setLabel(const QString &txt)
+{
   d->mLabel = txt;
   update();
 }
@@ -93,12 +100,14 @@ QString DateCell::name() { return d->mLabel; }
 
 void DateCell::setHeaderMode(bool header) { d->mHeaderMode = header; }
 
-void DateCell::addDataItem(const QPixmap &pixmap, const QString &label) {
+void DateCell::addDataItem(const QPixmap &pixmap, const QString &label)
+{
   d->mLabel = label;
 }
 
 void DateCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                     QWidget *widget) {
+                     QWidget *widget)
+{
   painter->save();
   painter->setRenderHint(QPainter::Antialiasing);
   painter->setRenderHint(QPainter::HighQualityAntialiasing);
@@ -145,7 +154,8 @@ void DateCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 void DateCell::mousePressEvent(QGraphicsSceneMouseEvent *event) {}
 
-void DateCell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void DateCell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   Q_EMIT clicked(this);
 }
 

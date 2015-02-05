@@ -1,7 +1,8 @@
 #include "idletimedetector.h"
 
 IdleTimeDetector::IdleTimeDetector(QObject *parent)
-    : QObject(parent), d(new AppleIdleTimeDetector) {
+  : QObject(parent), d(new AppleIdleTimeDetector)
+{
   d->init();
   connect(d, SIGNAL(hardwareAwake()), this, SIGNAL(awake()));
 }

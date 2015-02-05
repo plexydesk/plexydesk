@@ -23,7 +23,8 @@
 
 WebCamInterface::WebCamInterface(QObject *object) {}
 
-PlexyDesk::DataPlugin *WebCamInterface::instance() {
+PlexyDesk::DataPlugin *WebCamInterface::instance()
+{
   /* this is the plugin we are returning since plexy core
      or other plugins will expect this pointer
    */

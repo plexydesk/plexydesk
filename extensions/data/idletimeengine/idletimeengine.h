@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class IdleTimeEngineData : public PlexyDesk::DataSource {
+class IdleTimeEngineData : public PlexyDesk::DataSource
+{
   Q_OBJECT
 
 public:

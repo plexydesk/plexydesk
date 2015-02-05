@@ -8,7 +8,8 @@
 #include <widget.h>
 #include <desktopwidget.h>
 
-class ClassicBackgroundRender : public UI::UIWidget {
+class ClassicBackgroundRender : public UI::UIWidget
+{
   Q_OBJECT
 public:
   typedef enum {

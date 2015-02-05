@@ -4,9 +4,11 @@
 #include <QTimer>
 #include <workspace.h>
 
-namespace UI {
+namespace UI
+{
 
-class DesktopActivityMenu::PrivateActivityPopup {
+class DesktopActivityMenu::PrivateActivityPopup
+{
 public:
   PrivateActivityPopup() {}
 
@@ -18,31 +20,37 @@ public:
 };
 
 DesktopActivityMenu::DesktopActivityMenu(QObject *parent)
-    : QObject(parent), d(new PrivateActivityPopup) {
+  : QObject(parent), d(new PrivateActivityPopup)
+{
   d->m_owner_space = 0;
   d->m_current_visibility = false;
 }
 
-UI::DesktopActivityMenu::~DesktopActivityMenu() {
+UI::DesktopActivityMenu::~DesktopActivityMenu()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-void DesktopActivityMenu::setActivity(DesktopActivityPtr activity) {
+void DesktopActivityMenu::setActivity(DesktopActivityPtr activity)
+{
   d->m_desktop_activity = activity;
   connect(activity->window(), SIGNAL(focusLost()), this,
           SLOT(onFocusOutEvent()));
 }
 
-void DesktopActivityMenu::setSpace(Space *space) {
+void DesktopActivityMenu::setSpace(Space *space)
+{
   // if we have a space we will not rest this.
   // create a popup for each space. sharing between
   // spaces are not possible at the moment.
-  if (!d->m_owner_space)
+  if (!d->m_owner_space) {
     d->m_owner_space = space;
+  }
 }
 
-void DesktopActivityMenu::show() {
+void DesktopActivityMenu::show()
+{
   if (d->m_desktop_activity) {
     if (d->m_owner_space) {
       d->m_owner_space->addActivity(d->m_desktop_activity);
@@ -73,7 +81,8 @@ void DesktopActivityMenu::show() {
   }
 }
 
-void DesktopActivityMenu::hide() {
+void DesktopActivityMenu::hide()
+{
   if (d->m_desktop_activity) {
     d->m_desktop_activity->window()->hide();
     d->m_current_visibility = false;
@@ -81,7 +90,8 @@ void DesktopActivityMenu::hide() {
   }
 }
 
-void DesktopActivityMenu::exec(const QPointF &pos) {
+void DesktopActivityMenu::exec(const QPointF &pos)
+{
   if (d->m_desktop_activity) {
     d->m_desktop_activity->exec(pos);
     d->m_current_visibility = true;
@@ -89,7 +99,8 @@ void DesktopActivityMenu::exec(const QPointF &pos) {
   }
 }
 
-void DesktopActivityMenu::onFocusOutEvent() {
+void DesktopActivityMenu::onFocusOutEvent()
+{
   QTimer::singleShot(250, this, SLOT(lateHide()));
 }
 

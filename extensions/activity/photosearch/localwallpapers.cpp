@@ -5,10 +5,12 @@
 #include <QImage>
 #include <QString>
 
-class LocalWallPapers::PrivateLocalWallPapers {
+class LocalWallPapers::PrivateLocalWallPapers
+{
 public:
   PrivateLocalWallPapers() {}
-  ~PrivateLocalWallPapers() {
+  ~PrivateLocalWallPapers()
+  {
     mData.clear();
     mThumbData.clear();
     mPathData.clear();
@@ -20,9 +22,10 @@ public:
 };
 
 LocalWallPapers::LocalWallPapers(QObject *parent)
-    : QThread(parent), d(new PrivateLocalWallPapers) {}
+  : QThread(parent), d(new PrivateLocalWallPapers) {}
 
-LocalWallPapers::~LocalWallPapers() {
+LocalWallPapers::~LocalWallPapers()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
@@ -31,19 +34,23 @@ QList<QImage> LocalWallPapers::thumbNails() const { return d->mData.values(); }
 
 QList<QImage> LocalWallPapers::allImages() { return d->mData.values(); }
 
-QImage LocalWallPapers::imageByName(const QString &key) const {
+QImage LocalWallPapers::imageByName(const QString &key) const
+{
   return d->mData[key];
 }
 
-QImage LocalWallPapers::imageThumbByName(const QString &key) const {
+QImage LocalWallPapers::imageThumbByName(const QString &key) const
+{
   return d->mThumbData[key];
 }
 
-QString LocalWallPapers::filePathFromName(const QString &key) const {
+QString LocalWallPapers::filePathFromName(const QString &key) const
+{
   return d->mPathData[key];
 }
 
-void LocalWallPapers::run() {
+void LocalWallPapers::run()
+{
   qDebug() << Q_FUNC_INFO << "New Thread";
   QList<QPixmap> rv;
 #ifdef Q_OS_MAC
@@ -55,29 +62,29 @@ void LocalWallPapers::run() {
 #endif
 
 #ifdef Q_OS_WINDOWS
-    QDir localPictureDir(QDir::toNativeSeparators(QDir::rootPath() + QString("Web\Wallpaper"));
+  QDir localPictureDir(QDir::toNativeSeparators(QDir::rootPath() + QString("Web\Wallpaper"));
 #endif
 
-    QStringList filters;
-    filters << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.svg";
+                       QStringList filters;
+                       filters << "*.png" << "*.jpg" << "*.jpeg" << "*.tiff" << "*.svg";
 
-    localPictureDir.setNameFilters(filters);
+                       localPictureDir.setNameFilters(filters);
 
-    QStringList localPictureList = localPictureDir.entryList();
+                       QStringList localPictureList = localPictureDir.entryList();
 
-    Q_FOREACH(const QString &pictureName, localPictureList) {
+  Q_FOREACH(const QString & pictureName, localPictureList) {
     QImage *wallpaperImage = new QImage(QDir::toNativeSeparators(
-        localPictureDir.absolutePath() + "/" + pictureName));
+                                          localPictureDir.absolutePath() + "/" + pictureName));
     if (!wallpaperImage->isNull()) {
       // d->mData[pictureName] = wallpaperImage;
       d->mThumbData[pictureName] = wallpaperImage->scaledToWidth(72);
       d->mPathData[pictureName] = QDir::toNativeSeparators(
-          localPictureDir.absolutePath() + "/" + pictureName);
+                                    localPictureDir.absolutePath() + "/" + pictureName);
       delete wallpaperImage;
       Q_EMIT ready(pictureName);
     }
-    }
-    Q_EMIT ready();
+  }
+  Q_EMIT ready();
 }
 
 void LocalWallPapers::onDirectoryReady(const QString &) {}

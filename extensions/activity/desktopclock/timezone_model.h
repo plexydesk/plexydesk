@@ -3,7 +3,8 @@
 
 #include <tableviewcellinterface.h>
 
-class TimeZoneModel : public UI::TableModel {
+class TimeZoneModel : public UI::TableModel
+{
   Q_OBJECT
 
 public:

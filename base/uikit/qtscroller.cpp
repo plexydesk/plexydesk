@@ -89,10 +89,11 @@ bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
 #else
 #define qScrollerDebug                                                         \
   while (false)                                                                \
-  qDebug
+    qDebug
 #endif
 
-QDebug &operator<<(QDebug &dbg, const QtScrollerPrivate::ScrollSegment &s) {
+QDebug &operator<<(QDebug &dbg, const QtScrollerPrivate::ScrollSegment &s)
+{
   dbg << "\n  Time: start:" << s.startTime << " duration:" << s.deltaTime
       << " stop progress:" << s.stopProgress;
   dbg << "\n  Pos: start:" << s.startPos << " delta:" << s.deltaPos
@@ -106,44 +107,52 @@ QDebug &operator<<(QDebug &dbg, const QtScrollerPrivate::ScrollSegment &s) {
 // and y coordinate separately.
 
 // returns true only if the abs. value of BOTH x and y are <= f
-inline bool operator<=(const QPointF &p, qreal f) {
+inline bool operator<=(const QPointF &p, qreal f)
+{
   return (qAbs(p.x()) <= f) && (qAbs(p.y()) <= f);
 }
 
 // returns true only if the abs. value of BOTH x and y are < f
-inline bool operator<(const QPointF &p, qreal f) {
+inline bool operator<(const QPointF &p, qreal f)
+{
   return (qAbs(p.x()) < f) && (qAbs(p.y()) < f);
 }
 
 // returns true if the abs. value of EITHER x or y are >= f
-inline bool operator>=(const QPointF &p, qreal f) {
+inline bool operator>=(const QPointF &p, qreal f)
+{
   return (qAbs(p.x()) >= f) || (qAbs(p.y()) >= f);
 }
 
 // returns true if the abs. value of EITHER x or y are > f
-inline bool operator>(const QPointF &p, qreal f) {
+inline bool operator>(const QPointF &p, qreal f)
+{
   return (qAbs(p.x()) > f) || (qAbs(p.y()) > f);
 }
 
 // returns a new point with both coordinates having the abs. value of the
 // original one
-inline QPointF qAbs(const QPointF &p) {
+inline QPointF qAbs(const QPointF &p)
+{
   return QPointF(qAbs(p.x()), qAbs(p.y()));
 }
 
 // returns a new point with all components of p1 multiplied by the corresponding
 // components of p2
-inline QPointF operator*(const QPointF &p1, const QPointF &p2) {
+inline QPointF operator*(const QPointF &p1, const QPointF &p2)
+{
   return QPointF(p1.x() * p2.x(), p1.y() * p2.y());
 }
 
 // returns a new point with all components of p1 divided by the corresponding
 // components of p2
-inline QPointF operator/(const QPointF &p1, const QPointF &p2) {
+inline QPointF operator/(const QPointF &p1, const QPointF &p2)
+{
   return QPointF(p1.x() / p2.x(), p1.y() / p2.y());
 }
 
-inline QPointF clampToRect(const QPointF &p, const QRectF &rect) {
+inline QPointF clampToRect(const QPointF &p, const QRectF &rect)
+{
   qreal x = qBound(rect.left(), p.x(), rect.right());
   qreal y = qBound(rect.top(), p.y(), rect.bottom());
   return QPointF(x, y);
@@ -155,7 +164,8 @@ inline int qSign(qreal r) { return (r < 0) ? -1 : ((r > 0) ? 1 : 0); }
 // this version is not mathematically exact, but it just works for every
 // easing curve type (even custom ones)
 
-static qreal differentialForProgress(const QEasingCurve &curve, qreal pos) {
+static qreal differentialForProgress(const QEasingCurve &curve, qreal pos)
+{
   const qreal dx = 0.01;
   qreal left = (pos < qreal(0.5)) ? pos : pos - qreal(dx);
   qreal right = (pos >= qreal(0.5)) ? pos : pos + qreal(dx);
@@ -171,7 +181,8 @@ static qreal differentialForProgress(const QEasingCurve &curve, qreal pos) {
 // this version is not mathematically exact, but it just works for every
 // easing curve type (even custom ones)
 
-static qreal progressForValue(const QEasingCurve &curve, qreal value) {
+static qreal progressForValue(const QEasingCurve &curve, qreal value)
+{
   if (curve.type() >= QEasingCurve::InElastic &&
       curve.type() < QEasingCurve::Custom) {
     qWarning("progressForValue(): QEasingCurves of type %d do not have an "
@@ -179,30 +190,34 @@ static qreal progressForValue(const QEasingCurve &curve, qreal value) {
              curve.type());
     return value;
   }
-  if (value < qreal(0) || value > qreal(1))
+  if (value < qreal(0) || value > qreal(1)) {
     return value;
+  }
 
   qreal progress = value, left(0), right(1);
   for (int iterations = 6; iterations; --iterations) {
     qreal v = curve.valueForProgress(progress);
-    if (v < value)
+    if (v < value) {
       left = progress;
-    else if (v > value)
+    } else if (v > value) {
       right = progress;
-    else
+    } else {
       break;
+    }
     progress = (left + right) / qreal(2);
   }
   return progress;
 }
 
-class QScrollTimer : public QAbstractAnimation {
+class QScrollTimer : public QAbstractAnimation
+{
 public:
   QScrollTimer(QtScrollerPrivate *_d) : d(_d), ignoreUpdate(false), skip(0) {}
 
   int duration() const { return -1; }
 
-  void start() {
+  void start()
+  {
     // QAbstractAnimation::start() will immediately call
     // updateCurrentTime(), but our state is not set correctly yet
     ignoreUpdate = true;
@@ -212,7 +227,8 @@ public:
   }
 
 protected:
-  void updateCurrentTime(int /*currentTime*/) {
+  void updateCurrentTime(int /*currentTime*/)
+  {
     if (!ignoreUpdate) {
       if (++skip >= d->frameRateSkip()) {
         skip = 0;
@@ -292,7 +308,8 @@ QSet<QtScroller *> QtScrollerPrivate::activeScrollers;
 
     \sa scroller()
 */
-bool QtScroller::hasScroller(QObject *target) {
+bool QtScroller::hasScroller(QObject *target)
+{
   return (QtScrollerPrivate::allScrollers.value(target));
 }
 
@@ -305,14 +322,16 @@ bool QtScroller::hasScroller(QObject *target) {
 
     \sa hasScroller(), target()
 */
-QtScroller *QtScroller::scroller(QObject *target) {
+QtScroller *QtScroller::scroller(QObject *target)
+{
   if (!target) {
     qWarning("QtScroller::scroller() was called with a null target.");
     return 0;
   }
 
-  if (QtScrollerPrivate::allScrollers.contains(target))
+  if (QtScrollerPrivate::allScrollers.contains(target)) {
     return QtScrollerPrivate::allScrollers.value(target);
+  }
 
   QtScroller *s = new QtScroller(target);
   QtScrollerPrivate::allScrollers.insert(target, s);
@@ -323,7 +342,8 @@ QtScroller *QtScroller::scroller(QObject *target) {
     \overload
     This is the const version of scroller().
 */
-const QtScroller *QtScroller::scroller(const QObject *target) {
+const QtScroller *QtScroller::scroller(const QObject *target)
+{
   return scroller(const_cast<QObject *>(target));
 }
 
@@ -332,7 +352,8 @@ const QtScroller *QtScroller::scroller(const QObject *target) {
     Active QtScroller objects are in a state() that is not QtScroller::Inactive.
     This function is useful when writing your own gesture recognizer.
 */
-QList<QtScroller *> QtScroller::activeScrollers() {
+QList<QtScroller *> QtScroller::activeScrollers()
+{
   return QtScrollerPrivate::activeScrollers.toList();
 }
 
@@ -340,7 +361,8 @@ QList<QtScroller *> QtScroller::activeScrollers() {
     Returns the target object of this scroller.
     \sa hasScroller(), scroller()
  */
-QObject *QtScroller::target() const {
+QObject *QtScroller::target() const
+{
   Q_D(const QtScroller);
   return d->target;
 }
@@ -360,12 +382,14 @@ QObject *QtScroller::target() const {
     The properties are used by the QtScroller to determine its scrolling
    behavior.
 */
-QtScrollerProperties QtScroller::scrollerProperties() const {
+QtScrollerProperties QtScroller::scrollerProperties() const
+{
   Q_D(const QtScroller);
   return d->properties;
 }
 
-void QtScroller::setScrollerProperties(const QtScrollerProperties &sp) {
+void QtScroller::setScrollerProperties(const QtScrollerProperties &sp)
+{
   Q_D(QtScroller);
   if (d->properties != sp) {
     d->properties = sp;
@@ -400,31 +424,34 @@ void QtScroller::setScrollerProperties(const QtScrollerProperties &sp) {
     \sa ungrabGesture, grabbedGesture
 */
 Qt::GestureType QtScroller::grabGesture(QObject *target,
-                                        ScrollerGestureType scrollGestureType) {
+                                        ScrollerGestureType scrollGestureType)
+{
   // ensure that a scroller for target is created
   QtScroller *s = scroller(target);
-  if (!s)
+  if (!s) {
     return Qt::GestureType(0);
+  }
 
   QtScrollerPrivate *sp = s->d_ptr;
-  if (sp->recognizer)
-    ungrabGesture(target); // ungrab the old gesture
+  if (sp->recognizer) {
+    ungrabGesture(target);  // ungrab the old gesture
+  }
 
   Qt::MouseButton button;
   switch (scrollGestureType) {
-    case LeftMouseButtonGesture:
-      button = Qt::LeftButton;
-      break;
-    case RightMouseButtonGesture:
-      button = Qt::RightButton;
-      break;
-    case MiddleMouseButtonGesture:
-      button = Qt::MidButton;
-      break;
-    default:
-    case TouchGesture:
-      button = Qt::NoButton;
-      break; // NoButton == Touch
+  case LeftMouseButtonGesture:
+    button = Qt::LeftButton;
+    break;
+  case RightMouseButtonGesture:
+    button = Qt::RightButton;
+    break;
+  case MiddleMouseButtonGesture:
+    button = Qt::MidButton;
+    break;
+  default:
+  case TouchGesture:
+    button = Qt::NoButton;
+    break; // NoButton == Touch
   }
 
   sp->recognizer = new QtFlickGestureRecognizer(button);
@@ -432,8 +459,9 @@ Qt::GestureType QtScroller::grabGesture(QObject *target,
   if (target->isWidgetType()) {
     QWidget *widget = static_cast<QWidget *>(target);
     widget->grabGesture(sp->recognizerType);
-    if (scrollGestureType == TouchGesture)
+    if (scrollGestureType == TouchGesture) {
       widget->setAttribute(Qt::WA_AcceptTouchEvents);
+    }
 #if ITEMVIEW_SCROLLMODE_WARNING
     QAbstractItemView *view = 0;
     if ((view = qobject_cast<QAbstractItemView *>(widget->parentWidget())) &&
@@ -447,8 +475,9 @@ Qt::GestureType QtScroller::grabGesture(QObject *target,
     }
 #endif // ITEMVIEW_SCROLLMODE_WARNING
   } else if (QGraphicsObject *go = qobject_cast<QGraphicsObject *>(target)) {
-    if (scrollGestureType == TouchGesture)
+    if (scrollGestureType == TouchGesture) {
       go->setAcceptTouchEvents(true);
+    }
     go->grabGesture(sp->recognizerType);
   }
 
@@ -465,12 +494,14 @@ Qt::GestureType QtScroller::grabGesture(QObject *target,
 
     \sa grabGesture, ungrabGesture
 */
-Qt::GestureType QtScroller::grabbedGesture(QObject *target) {
+Qt::GestureType QtScroller::grabbedGesture(QObject *target)
+{
   QtScroller *s = scroller(target);
-  if (s && s->d_ptr)
+  if (s && s->d_ptr) {
     return s->d_ptr->recognizerType;
-  else
+  } else {
     return Qt::GestureType(0);
+  }
 }
 
 /*!
@@ -479,14 +510,17 @@ Qt::GestureType QtScroller::grabbedGesture(QObject *target) {
 
     \sa grabGesture, grabbedGesture
 */
-void QtScroller::ungrabGesture(QObject *target) {
+void QtScroller::ungrabGesture(QObject *target)
+{
   QtScroller *s = scroller(target);
-  if (!s)
+  if (!s) {
     return;
+  }
 
   QtScrollerPrivate *sp = s->d_ptr;
-  if (!sp->recognizer)
-    return; // nothing to do
+  if (!sp->recognizer) {
+    return;  // nothing to do
+  }
 
   if (target->isWidgetType()) {
     QWidget *widget = static_cast<QWidget *>(target);
@@ -509,9 +543,10 @@ void QtScroller::ungrabGesture(QObject *target) {
     \internal
 */
 QtScroller::QtScroller(QObject *target)
-    : d_ptr(new QtScrollerPrivate(this, target)) {
+  : d_ptr(new QtScrollerPrivate(this, target))
+{
   Q_ASSERT(
-      target); // you can't create a scroller without a target in any normal way
+    target); // you can't create a scroller without a target in any normal way
   Q_D(QtScroller);
   d->init();
 }
@@ -519,7 +554,8 @@ QtScroller::QtScroller(QObject *target)
 /*!
     \internal
 */
-QtScroller::~QtScroller() {
+QtScroller::~QtScroller()
+{
   Q_D(QtScroller);
   QGestureRecognizer::unregisterRecognizer(d->recognizerType);
   // do not delete the recognizer. The QGestureManager is doing this.
@@ -545,7 +581,8 @@ QtScroller::~QtScroller() {
 
     \sa QtScroller::State
 */
-QtScroller::State QtScroller::state() const {
+QtScroller::State QtScroller::state() const
+{
   Q_D(const QtScroller);
   return d->state;
 }
@@ -553,17 +590,20 @@ QtScroller::State QtScroller::state() const {
 /*!
     Stops the scroller and resets its state back to Inactive.
 */
-void QtScroller::stop() {
+void QtScroller::stop()
+{
   Q_D(QtScroller);
   if (d->state != Inactive) {
     QPointF here = clampToRect(d->contentPosition, d->contentPosRange);
     qreal snapX = d->nextSnapPos(here.x(), 0, Qt::Horizontal);
     qreal snapY = d->nextSnapPos(here.y(), 0, Qt::Vertical);
     QPointF snap = here;
-    if (!qIsNaN(snapX))
+    if (!qIsNaN(snapX)) {
       snap.setX(snapX);
-    if (!qIsNaN(snapY))
+    }
+    if (!qIsNaN(snapY)) {
       snap.setY(snapY);
+    }
     d->contentPosition = snap;
     d->overshootPosition = QPointF(0, 0);
 
@@ -583,7 +623,8 @@ void QtScroller::stop() {
    underlying
     windowing system, for example on Mac OS X or Maemo 5.
 */
-QPointF QtScroller::pixelPerMeter() const {
+QPointF QtScroller::pixelPerMeter() const
+{
   Q_D(const QtScroller);
   QPointF ppm = d->pixelPerMeter;
 
@@ -591,8 +632,9 @@ QPointF QtScroller::pixelPerMeter() const {
     QTransform viewtr;
     // TODO: the first view isn't really correct - maybe use an additional field
     // in the prepare event?
-    if (go->scene() && !go->scene()->views().isEmpty())
+    if (go->scene() && !go->scene()->views().isEmpty()) {
       viewtr = go->scene()->views().first()->viewportTransform();
+    }
     QTransform tr = go->deviceTransform(viewtr);
     if (tr.isScaling()) {
       QPointF p0 = tr.map(QPointF(0, 0));
@@ -615,38 +657,39 @@ QPointF QtScroller::pixelPerMeter() const {
 
     \sa pixelPerMeter()
 */
-QPointF QtScroller::velocity() const {
+QPointF QtScroller::velocity() const
+{
   Q_D(const QtScroller);
   const QtScrollerPropertiesPrivate *sp = d->properties.d.data();
 
   switch (state()) {
-    case Dragging:
-      return d->releaseVelocity;
-    case Scrolling: {
-      QPointF vel;
-      qint64 now = d->monotonicTimer.elapsed();
+  case Dragging:
+    return d->releaseVelocity;
+  case Scrolling: {
+    QPointF vel;
+    qint64 now = d->monotonicTimer.elapsed();
 
-      if (!d->xSegments.isEmpty()) {
-        const QtScrollerPrivate::ScrollSegment &s = d->xSegments.head();
-        qreal progress = qreal(now - s.startTime) / qreal(s.deltaTime);
-        qreal v = qSign(s.deltaPos) * qreal(s.deltaTime) / qreal(1000) *
-                  sp->decelerationFactor * qreal(0.5) *
-                  differentialForProgress(s.curve, progress);
-        vel.setX(v);
-      }
-
-      if (!d->ySegments.isEmpty()) {
-        const QtScrollerPrivate::ScrollSegment &s = d->ySegments.head();
-        qreal progress = qreal(now - s.startTime) / qreal(s.deltaTime);
-        qreal v = qSign(s.deltaPos) * qreal(s.deltaTime) / qreal(1000) *
-                  sp->decelerationFactor * qreal(0.5) *
-                  differentialForProgress(s.curve, progress);
-        vel.setY(v);
-      }
-      return vel;
+    if (!d->xSegments.isEmpty()) {
+      const QtScrollerPrivate::ScrollSegment &s = d->xSegments.head();
+      qreal progress = qreal(now - s.startTime) / qreal(s.deltaTime);
+      qreal v = qSign(s.deltaPos) * qreal(s.deltaTime) / qreal(1000) *
+                sp->decelerationFactor * qreal(0.5) *
+                differentialForProgress(s.curve, progress);
+      vel.setX(v);
     }
-    default:
-      return QPointF(0, 0);
+
+    if (!d->ySegments.isEmpty()) {
+      const QtScrollerPrivate::ScrollSegment &s = d->ySegments.head();
+      qreal progress = qreal(now - s.startTime) / qreal(s.deltaTime);
+      qreal v = qSign(s.deltaPos) * qreal(s.deltaTime) / qreal(1000) *
+                sp->decelerationFactor * qreal(0.5) *
+                differentialForProgress(s.curve, progress);
+      vel.setY(v);
+    }
+    return vel;
+  }
+  default:
+    return QPointF(0, 0);
   }
 }
 
@@ -659,7 +702,8 @@ QPointF QtScroller::velocity() const {
 
     \sa pixelPerMeter(), scrollTo()
 */
-QPointF QtScroller::finalPosition() const {
+QPointF QtScroller::finalPosition() const
+{
   Q_D(const QtScroller);
   return QPointF(d->scrollingSegmentsEndPos(Qt::Horizontal),
                  d->scrollingSegmentsEndPos(Qt::Vertical));
@@ -680,7 +724,8 @@ QPointF QtScroller::finalPosition() const {
 
     \sa ensureVisible()
 */
-void QtScroller::scrollTo(const QPointF &pos) {
+void QtScroller::scrollTo(const QPointF &pos)
+{
   // we could make this adjustable via QtScrollerProperties
   scrollTo(pos, 300);
 }
@@ -690,35 +735,42 @@ void QtScroller::scrollTo(const QPointF &pos) {
     This version will reach its destination position in \a scrollTime
    milliseconds.
 */
-void QtScroller::scrollTo(const QPointF &pos, int scrollTime) {
+void QtScroller::scrollTo(const QPointF &pos, int scrollTime)
+{
   Q_D(QtScroller);
 
-  if (d->state == Pressed || d->state == Dragging)
+  if (d->state == Pressed || d->state == Dragging) {
     return;
+  }
 
   // no need to resend a prepare event if we are already scrolling
-  if (d->state == Inactive && !d->prepareScrolling(QPointF()))
+  if (d->state == Inactive && !d->prepareScrolling(QPointF())) {
     return;
+  }
 
   QPointF newpos = clampToRect(pos, d->contentPosRange);
   qreal snapX = d->nextSnapPos(newpos.x(), 0, Qt::Horizontal);
   qreal snapY = d->nextSnapPos(newpos.y(), 0, Qt::Vertical);
-  if (!qIsNaN(snapX))
+  if (!qIsNaN(snapX)) {
     newpos.setX(snapX);
-  if (!qIsNaN(snapY))
+  }
+  if (!qIsNaN(snapY)) {
     newpos.setY(snapY);
+  }
 
   qScrollerDebug() << "QtScroller::scrollTo(req:" << pos
                    << " [pix] / snap:" << newpos << ", " << scrollTime
                    << " [ms])";
 
-  if (newpos == d->contentPosition + d->overshootPosition)
+  if (newpos == d->contentPosition + d->overshootPosition) {
     return;
+  }
 
   QPointF vel = velocity();
 
-  if (scrollTime < 0)
+  if (scrollTime < 0) {
     scrollTime = 0;
+  }
   qreal time = qreal(scrollTime) / 1000;
 
   d->createScrollToSegments(vel.x(), time, newpos.x(), Qt::Horizontal,
@@ -726,8 +778,9 @@ void QtScroller::scrollTo(const QPointF &pos, int scrollTime) {
   d->createScrollToSegments(vel.y(), time, newpos.y(), Qt::Vertical,
                             QtScrollerPrivate::ScrollTypeScrollTo);
 
-  if (!scrollTime)
+  if (!scrollTime) {
     d->setContentPositionHelperScrolling();
+  }
   d->setState(scrollTime ? Scrolling : Inactive);
 }
 
@@ -750,7 +803,8 @@ void QtScroller::scrollTo(const QPointF &pos, int scrollTime) {
     \sa scrollTo
 */
 void QtScroller::ensureVisible(const QRectF &rect, qreal xmargin,
-                               qreal ymargin) {
+                               qreal ymargin)
+{
   // we could make this adjustable via QtScrollerProperties
   ensureVisible(rect, xmargin, ymargin, 1000);
 }
@@ -761,14 +815,17 @@ void QtScroller::ensureVisible(const QRectF &rect, qreal xmargin,
    milliseconds.
 */
 void QtScroller::ensureVisible(const QRectF &rect, qreal xmargin, qreal ymargin,
-                               int scrollTime) {
+                               int scrollTime)
+{
   Q_D(QtScroller);
 
-  if (d->state == Pressed || d->state == Dragging)
+  if (d->state == Pressed || d->state == Dragging) {
     return;
+  }
 
-  if (d->state == Inactive && !d->prepareScrolling(QPointF()))
+  if (d->state == Inactive && !d->prepareScrolling(QPointF())) {
     return;
+  }
 
   // -- calculate the current pos (or the position after the current scroll)
   QPointF startPos = d->contentPosition + d->overshootPosition;
@@ -786,17 +843,19 @@ void QtScroller::ensureVisible(const QRectF &rect, qreal xmargin, qreal ymargin,
                    << scrollTime << "[ms])";
   qScrollerDebug() << "  --> content position:" << d->contentPosition;
 
-  if (visibleRect.contains(marginRect))
+  if (visibleRect.contains(marginRect)) {
     return;
+  }
 
   QPointF newPos = startPos;
 
   if (visibleRect.width() < rect.width()) {
     // at least try to move the rect into view
-    if (rect.left() > visibleRect.left())
+    if (rect.left() > visibleRect.left()) {
       newPos.setX(rect.left());
-    else if (rect.right() < visibleRect.right())
+    } else if (rect.right() < visibleRect.right()) {
       newPos.setX(rect.right() - visible.width());
+    }
 
   } else if (visibleRect.width() < marginRect.width()) {
     newPos.setX(rect.center().x() - visibleRect.width() / 2);
@@ -808,10 +867,11 @@ void QtScroller::ensureVisible(const QRectF &rect, qreal xmargin, qreal ymargin,
 
   if (visibleRect.height() < rect.height()) {
     // at least try to move the rect into view
-    if (rect.top() > visibleRect.top())
+    if (rect.top() > visibleRect.top()) {
       newPos.setX(rect.top());
-    else if (rect.bottom() < visibleRect.bottom())
+    } else if (rect.bottom() < visibleRect.bottom()) {
       newPos.setX(rect.bottom() - visible.height());
+    }
 
   } else if (visibleRect.height() < marginRect.height()) {
     newPos.setY(rect.center().y() - visibleRect.height() / 2);
@@ -823,8 +883,9 @@ void QtScroller::ensureVisible(const QRectF &rect, qreal xmargin, qreal ymargin,
 
   // clamp to maximum content position
   newPos = clampToRect(newPos, d->contentPosRange);
-  if (newPos == startPos)
+  if (newPos == startPos) {
     return;
+  }
 
   scrollTo(newPos, scrollTime);
 }
@@ -837,7 +898,8 @@ void QtScroller::ensureVisible(const QRectF &rect, qreal xmargin, qreal ymargin,
    event
     is sent again before scrolling starts.
  */
-void QtScroller::resendPrepareEvent() {
+void QtScroller::resendPrepareEvent()
+{
   Q_D(QtScroller);
   d->prepareScrolling(d->pressPosition);
 }
@@ -847,7 +909,8 @@ void QtScroller::resendPrepareEvent() {
     set snapping interval.
     Snapping can be deactivated by setting an empty list of positions.
  */
-void QtScroller::setSnapPositionsX(const QList<qreal> &positions) {
+void QtScroller::setSnapPositionsX(const QList<qreal> &positions)
+{
   Q_D(QtScroller);
   d->snapPositionsX = positions;
   d->snapIntervalX = 0.0;
@@ -862,7 +925,8 @@ void QtScroller::setSnapPositionsX(const QList<qreal> &positions) {
     set snapping interval.
     Snapping can be deactivated by setting an interval of 0.0
  */
-void QtScroller::setSnapPositionsX(qreal first, qreal interval) {
+void QtScroller::setSnapPositionsX(qreal first, qreal interval)
+{
   Q_D(QtScroller);
   d->snapFirstX = first;
   d->snapIntervalX = interval;
@@ -876,7 +940,8 @@ void QtScroller::setSnapPositionsX(qreal first, qreal interval) {
     set snapping interval.
     Snapping can be deactivated by setting an empty list of positions.
  */
-void QtScroller::setSnapPositionsY(const QList<qreal> &positions) {
+void QtScroller::setSnapPositionsY(const QList<qreal> &positions)
+{
   Q_D(QtScroller);
   d->snapPositionsY = positions;
   d->snapIntervalY = 0.0;
@@ -890,7 +955,8 @@ void QtScroller::setSnapPositionsY(const QList<qreal> &positions) {
     set snapping interval.
     Snapping can be deactivated by setting an interval of 0.0
  */
-void QtScroller::setSnapPositionsY(qreal first, qreal interval) {
+void QtScroller::setSnapPositionsY(qreal first, qreal interval)
+{
   Q_D(QtScroller);
   d->snapFirstY = first;
   d->snapIntervalY = interval;
@@ -902,65 +968,72 @@ void QtScroller::setSnapPositionsY(qreal first, qreal interval) {
 // -------------- private ------------
 
 QtScrollerPrivate::QtScrollerPrivate(QtScroller *q, QObject *_target)
-    : target(_target),
-      recognizer(0),
-      recognizerType(Qt::CustomGesture),
-      state(QtScroller::Inactive),
-      firstScroll(true),
-      pressTimestamp(0),
-      lastTimestamp(0),
-      snapFirstX(-1.0),
-      snapIntervalX(0.0),
-      snapFirstY(-1.0),
-      snapIntervalY(0.0),
-      scrollTimer(new QScrollTimer(this)),
-      q_ptr(q) {
+  : target(_target),
+    recognizer(0),
+    recognizerType(Qt::CustomGesture),
+    state(QtScroller::Inactive),
+    firstScroll(true),
+    pressTimestamp(0),
+    lastTimestamp(0),
+    snapFirstX(-1.0),
+    snapIntervalX(0.0),
+    snapFirstY(-1.0),
+    snapIntervalY(0.0),
+    scrollTimer(new QScrollTimer(this)),
+    q_ptr(q)
+{
   connect(target, SIGNAL(destroyed(QObject *)), this, SLOT(targetDestroyed()));
 }
 
-void QtScrollerPrivate::init() {
+void QtScrollerPrivate::init()
+{
   setDpiFromWidget(0);
   monotonicTimer.start();
 }
 
-void QtScrollerPrivate::sendEvent(QObject *o, QEvent *e) {
+void QtScrollerPrivate::sendEvent(QObject *o, QEvent *e)
+{
   qt_sendSpontaneousEvent(o, e);
 }
 
-const char *QtScrollerPrivate::stateName(QtScroller::State state) {
+const char *QtScrollerPrivate::stateName(QtScroller::State state)
+{
   switch (state) {
-    case QtScroller::Inactive:
-      return "inactive";
-    case QtScroller::Pressed:
-      return "pressed";
-    case QtScroller::Dragging:
-      return "dragging";
-    case QtScroller::Scrolling:
-      return "scrolling";
-    default:
-      return "(invalid)";
+  case QtScroller::Inactive:
+    return "inactive";
+  case QtScroller::Pressed:
+    return "pressed";
+  case QtScroller::Dragging:
+    return "dragging";
+  case QtScroller::Scrolling:
+    return "scrolling";
+  default:
+    return "(invalid)";
   }
 }
 
-const char *QtScrollerPrivate::inputName(QtScroller::Input input) {
+const char *QtScrollerPrivate::inputName(QtScroller::Input input)
+{
   switch (input) {
-    case QtScroller::InputPress:
-      return "press";
-    case QtScroller::InputMove:
-      return "move";
-    case QtScroller::InputRelease:
-      return "release";
-    default:
-      return "(invalid)";
+  case QtScroller::InputPress:
+    return "press";
+  case QtScroller::InputMove:
+    return "move";
+  case QtScroller::InputRelease:
+    return "release";
+  default:
+    return "(invalid)";
   }
 }
 
-void QtScrollerPrivate::targetDestroyed() {
+void QtScrollerPrivate::targetDestroyed()
+{
   scrollTimer->stop();
   delete q_ptr;
 }
 
-void QtScrollerPrivate::timerTick() {
+void QtScrollerPrivate::timerTick()
+{
   struct timerevent {
     QtScroller::State state;
     typedef void (QtScrollerPrivate::*timerhandler_t)();
@@ -1003,7 +1076,8 @@ void QtScrollerPrivate::timerTick() {
     \note Using grabGesture() should be sufficient for most use cases.
 */
 bool QtScroller::handleInput(Input input, const QPointF &position,
-                             qint64 timestamp) {
+                             qint64 timestamp)
+{
   Q_D(QtScroller);
 
   qScrollerDebug() << "QtScroller::handleInput(" << input << ", "
@@ -1013,28 +1087,37 @@ bool QtScroller::handleInput(Input input, const QPointF &position,
     State state;
     Input input;
     typedef bool (QtScrollerPrivate::*inputhandler_t)(const QPointF &position,
-                                                      qint64 timestamp);
+        qint64 timestamp);
     inputhandler_t handler;
   };
 
   statechange statechanges[] = {
-    { QtScroller::Inactive, InputPress,
-      &QtScrollerPrivate::pressWhileInactive },
+    {
+      QtScroller::Inactive, InputPress,
+      &QtScrollerPrivate::pressWhileInactive
+    },
     { QtScroller::Pressed, InputMove, &QtScrollerPrivate::moveWhilePressed },
-    { QtScroller::Pressed, InputRelease,
-      &QtScrollerPrivate::releaseWhilePressed },
+    {
+      QtScroller::Pressed, InputRelease,
+      &QtScrollerPrivate::releaseWhilePressed
+    },
     { QtScroller::Dragging, InputMove, &QtScrollerPrivate::moveWhileDragging },
-    { QtScroller::Dragging, InputRelease,
-      &QtScrollerPrivate::releaseWhileDragging },
-    { QtScroller::Scrolling, InputPress,
-      &QtScrollerPrivate::pressWhileScrolling }
+    {
+      QtScroller::Dragging, InputRelease,
+      &QtScrollerPrivate::releaseWhileDragging
+    },
+    {
+      QtScroller::Scrolling, InputPress,
+      &QtScrollerPrivate::pressWhileScrolling
+    }
   };
 
   for (int i = 0; i < int(sizeof(statechanges) / sizeof(*statechanges)); ++i) {
     statechange *sc = statechanges + i;
 
-    if (d->state == sc->state && input == sc->input)
+    if (d->state == sc->state && input == sc->input) {
       return (d->*sc->handler)(position - d->overshootPosition, timestamp);
+    }
   }
   return false;
 }
@@ -1042,7 +1125,8 @@ bool QtScroller::handleInput(Input input, const QPointF &position,
 #if !defined(Q_WS_MAC)
 // the Mac version is implemented in qtscroller_mac.mm
 
-QPointF QtScrollerPrivate::realDpi(int screen) {
+QPointF QtScrollerPrivate::realDpi(int screen)
+{
 #ifdef Q_WS_MAEMO_5
   Q_UNUSED(screen);
 
@@ -1073,7 +1157,7 @@ QPointF QtScrollerPrivate::realDpi(int screen) {
     if (xrandrLib.isLoaded()) {
       ptrXRRSizes = (PtrXRRSizes)xrandrLib.resolve("XRRSizes");
       ptrXRRRootToScreen =
-          (PtrXRRRootToScreen)xrandrLib.resolve("XRRRootToScreen");
+        (PtrXRRRootToScreen)xrandrLib.resolve("XRRRootToScreen");
     }
     resolvedXRR = true;
   }
@@ -1087,23 +1171,23 @@ QPointF QtScrollerPrivate::realDpi(int screen) {
     // Additionally, libXrandr will simply crash when calling XRRSizes
     // for (the non-existant) screen 1 in this scenario.
     Qt::HANDLE root =
-        QX11Info::appRootWindow(screen == -1 ? QX11Info::appScreen() : screen);
+      QX11Info::appRootWindow(screen == -1 ? QX11Info::appScreen() : screen);
     int randrscreen =
-        (root != 0) ? ptrXRRRootToScreen(QX11Info::display(), root) : -1;
+      (root != 0) ? ptrXRRRootToScreen(QX11Info::display(), root) : -1;
 
     structXRRScreenSize *sizes = ptrXRRSizes(
-        QX11Info::display(), randrscreen == -1 ? 0 : randrscreen, &nsizes);
+                                   QX11Info::display(), randrscreen == -1 ? 0 : randrscreen, &nsizes);
 
     if (nsizes > 0 && sizes && sizes->width && sizes->height && sizes->mwidth &&
         sizes->mheight) {
       qScrollerDebug() << "XRandR DPI:"
                        << QPointF(qreal(25.4) * qreal(sizes->width) /
-                                      qreal(sizes->mwidth),
+                                  qreal(sizes->mwidth),
                                   qreal(25.4) * qreal(sizes->height) /
-                                      qreal(sizes->mheight));
+                                  qreal(sizes->mheight));
       return QPointF(qreal(25.4) * qreal(sizes->width) / qreal(sizes->mwidth),
                      qreal(25.4) * qreal(sizes->height) /
-                         qreal(sizes->mheight));
+                     qreal(sizes->mheight));
     }
   }
 #endif
@@ -1124,14 +1208,16 @@ QPointF QtScrollerPrivate::dpi() const { return pixelPerMeter * qreal(0.0254); }
     then the scroller will behave quite different as a lot of the values are
     given in physical distances (millimeter).
 */
-void QtScrollerPrivate::setDpi(const QPointF &dpi) {
+void QtScrollerPrivate::setDpi(const QPointF &dpi)
+{
   pixelPerMeter = dpi / qreal(0.0254);
 }
 
 /*! \internal
     Sets the dpi used for scrolling to the value of the widget.
 */
-void QtScrollerPrivate::setDpiFromWidget(QWidget *widget) {
+void QtScrollerPrivate::setDpiFromWidget(QWidget *widget)
+{
   QDesktopWidget *dw = QApplication::desktop();
   setDpi(realDpi(widget ? dw->screenNumber(widget) : dw->primaryScreen()));
 }
@@ -1141,9 +1227,11 @@ void QtScrollerPrivate::setDpiFromWidget(QWidget *widget) {
     Sets releaseVelocity.
 */
 void QtScrollerPrivate::updateVelocity(const QPointF &deltaPixelRaw,
-                                       qint64 deltaTime) {
-  if (deltaTime <= 0)
+                                       qint64 deltaTime)
+{
+  if (deltaTime <= 0) {
     return;
+  }
 
   Q_Q(QtScroller);
   QPointF ppm = q->pixelPerMeter();
@@ -1170,8 +1258,8 @@ void QtScrollerPrivate::updateVelocity(const QPointF &deltaPixelRaw,
   // user hasn't stopped to move his finger for more than 100ms
   if ((releaseVelocity != QPointF(0, 0)) && (deltaTime < 100)) {
     qScrollerDebug() << "SMOOTHED from " << newv << " to "
-                     << newv * smoothing +
-                            releaseVelocity * (qreal(1) - smoothing);
+                     << newv *smoothing +
+                     releaseVelocity * (qreal(1) - smoothing);
     // smooth x or y only if the new velocity is either 0 or at least in
     // the same direction of the release velocity
     if (!newv.x() || (qSign(releaseVelocity.x()) == qSign(newv.x())))
@@ -1180,13 +1268,14 @@ void QtScrollerPrivate::updateVelocity(const QPointF &deltaPixelRaw,
     if (!newv.y() || (qSign(releaseVelocity.y()) == qSign(newv.y())))
       newv.setY(newv.y() * smoothing +
                 releaseVelocity.y() * (qreal(1) - smoothing));
-  } else
+  } else {
     qScrollerDebug() << "NO SMOOTHING to " << newv;
+  }
 
   releaseVelocity.setX(
-      qBound(-sp->maximumVelocity, newv.x(), sp->maximumVelocity));
+    qBound(-sp->maximumVelocity, newv.x(), sp->maximumVelocity));
   releaseVelocity.setY(
-      qBound(-sp->maximumVelocity, newv.y(), sp->maximumVelocity));
+    qBound(-sp->maximumVelocity, newv.y(), sp->maximumVelocity));
 
   qScrollerDebug() << "  --> new velocity:" << releaseVelocity;
 }
@@ -1195,9 +1284,11 @@ void QtScrollerPrivate::pushSegment(ScrollType type, qreal deltaTime,
                                     qreal stopProgress, qreal startPos,
                                     qreal deltaPos, qreal stopPos,
                                     QEasingCurve::Type curve,
-                                    Qt::Orientation orientation) {
-  if (startPos == stopPos || deltaPos == 0)
+                                    Qt::Orientation orientation)
+{
+  if (startPos == stopPos || deltaPos == 0) {
     return;
+  }
 
   ScrollSegment s;
   if (orientation == Qt::Horizontal && !xSegments.isEmpty())
@@ -1206,8 +1297,9 @@ void QtScrollerPrivate::pushSegment(ScrollType type, qreal deltaTime,
   else if (orientation == Qt::Vertical && !ySegments.isEmpty())
     s.startTime = ySegments.last().startTime +
                   ySegments.last().deltaTime * ySegments.last().stopProgress;
-  else
+  else {
     s.startTime = monotonicTimer.elapsed();
+  }
 
   s.startPos = startPos;
   s.deltaPos = deltaPos;
@@ -1217,10 +1309,11 @@ void QtScrollerPrivate::pushSegment(ScrollType type, qreal deltaTime,
   s.curve.setType(curve);
   s.type = type;
 
-  if (orientation == Qt::Horizontal)
+  if (orientation == Qt::Horizontal) {
     xSegments.enqueue(s);
-  else
+  } else {
     ySegments.enqueue(s);
+  }
 
   qScrollerDebug() << "+++ Added a new ScrollSegment: " << s;
 }
@@ -1229,7 +1322,8 @@ void QtScrollerPrivate::pushSegment(ScrollType type, qreal deltaTime,
     Clears the old segments and recalculates them if the current segments are
    not longer valid
 */
-void QtScrollerPrivate::recalcScrollingSegments(bool forceRecalc) {
+void QtScrollerPrivate::recalcScrollingSegments(bool forceRecalc)
+{
   Q_Q(QtScroller);
   QPointF ppm = q->pixelPerMeter();
 
@@ -1250,24 +1344,28 @@ void QtScrollerPrivate::recalcScrollingSegments(bool forceRecalc) {
     Returns the end position after the current scroll has finished.
 */
 qreal QtScrollerPrivate::scrollingSegmentsEndPos(
-    Qt::Orientation orientation) const {
+  Qt::Orientation orientation) const
+{
   if (orientation == Qt::Horizontal) {
-    if (xSegments.isEmpty())
+    if (xSegments.isEmpty()) {
       return contentPosition.x() + overshootPosition.x();
-    else
+    } else {
       return xSegments.last().stopPos;
+    }
   } else {
-    if (ySegments.isEmpty())
+    if (ySegments.isEmpty()) {
       return contentPosition.y() + overshootPosition.y();
-    else
+    } else {
       return ySegments.last().stopPos;
+    }
   }
 }
 
 /*! \internal
     Checks if the scroller segment end in a valid position.
 */
-bool QtScrollerPrivate::scrollingSegmentsValid(Qt::Orientation orientation) {
+bool QtScrollerPrivate::scrollingSegmentsValid(Qt::Orientation orientation)
+{
   QQueue<ScrollSegment> *segments;
   qreal minPos;
   qreal maxPos;
@@ -1282,29 +1380,35 @@ bool QtScrollerPrivate::scrollingSegmentsValid(Qt::Orientation orientation) {
     maxPos = contentPosRange.bottom();
   }
 
-  if (segments->isEmpty())
+  if (segments->isEmpty()) {
     return true;
+  }
 
   const ScrollSegment &last = segments->last();
   qreal stopPos = last.stopPos;
 
-  if (last.type == ScrollTypeScrollTo)
-    return true; // scrollTo is always valid
+  if (last.type == ScrollTypeScrollTo) {
+    return true;  // scrollTo is always valid
+  }
 
   if (last.type == ScrollTypeOvershoot &&
-      (stopPos != minPos && stopPos != maxPos))
+      (stopPos != minPos && stopPos != maxPos)) {
     return false;
+  }
 
-  if (stopPos < minPos || stopPos > maxPos)
+  if (stopPos < minPos || stopPos > maxPos) {
     return false;
+  }
 
   if (stopPos == minPos ||
-      stopPos == maxPos) // the begin and the end of the list are always ok
+      stopPos == maxPos) { // the begin and the end of the list are always ok
     return true;
+  }
 
   qreal nextSnap = nextSnapPos(stopPos, 0, orientation);
-  if (!qIsNaN(nextSnap) && stopPos != nextSnap)
+  if (!qIsNaN(nextSnap) && stopPos != nextSnap) {
     return false;
+  }
 
   return true;
 }
@@ -1314,15 +1418,17 @@ bool QtScrollerPrivate::scrollingSegmentsValid(Qt::Orientation orientation) {
    segments queue.
 */
 void QtScrollerPrivate::createScrollToSegments(qreal v, qreal deltaTime,
-                                               qreal endPos,
-                                               Qt::Orientation orientation,
-                                               ScrollType type) {
+    qreal endPos,
+    Qt::Orientation orientation,
+    ScrollType type)
+{
   Q_UNUSED(v);
 
-  if (orientation == Qt::Horizontal)
+  if (orientation == Qt::Horizontal) {
     xSegments.clear();
-  else
+  } else {
     ySegments.clear();
+  }
 
   qScrollerDebug() << "+++ createScrollToSegments: t:" << deltaTime
                    << "ep:" << endPos << "o:" << int(orientation);
@@ -1330,8 +1436,8 @@ void QtScrollerPrivate::createScrollToSegments(qreal v, qreal deltaTime,
   const QtScrollerPropertiesPrivate *sp = properties.d.data();
 
   qreal startPos = (orientation == Qt::Horizontal)
-                       ? contentPosition.x() + overshootPosition.x()
-                       : contentPosition.y() + overshootPosition.y();
+                   ? contentPosition.x() + overshootPosition.x()
+                   : contentPosition.y() + overshootPosition.y();
   qreal deltaPos = (endPos - startPos) / 2;
 
   pushSegment(type, deltaTime * qreal(0.3), qreal(1.0), startPos, deltaPos,
@@ -1343,8 +1449,9 @@ void QtScrollerPrivate::createScrollToSegments(qreal v, qreal deltaTime,
 /*! \internal
 */
 void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
-                                                qreal ppm,
-                                                Qt::Orientation orientation) {
+    qreal ppm,
+    Qt::Orientation orientation)
+{
   const QtScrollerPropertiesPrivate *sp = properties.d.data();
 
   QtScrollerProperties::OvershootPolicy policy;
@@ -1393,8 +1500,8 @@ void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
   // deltaPos = pos(deltaTime)
 
   qreal deltaTime =
-      (qreal(2) * qAbs(v)) /
-      (sp->decelerationFactor * differentialForProgress(sp->scrollingCurve, 0));
+    (qreal(2) * qAbs(v)) /
+    (sp->decelerationFactor * differentialForProgress(sp->scrollingCurve, 0));
   qreal deltaPos = qSign(v) * deltaTime * deltaTime * qreal(0.5) *
                    sp->decelerationFactor * ppm;
   qreal endPos = startPos + deltaPos;
@@ -1410,10 +1517,12 @@ void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
                    << higherSnapPos;
 
   // - check if we can reach another snap point
-  if (nextSnap > higherSnapPos || qIsNaN(higherSnapPos))
+  if (nextSnap > higherSnapPos || qIsNaN(higherSnapPos)) {
     higherSnapPos = nextSnap;
-  if (nextSnap < lowerSnapPos || qIsNaN(lowerSnapPos))
+  }
+  if (nextSnap < lowerSnapPos || qIsNaN(lowerSnapPos)) {
     lowerSnapPos = nextSnap;
+  }
 
   // -- check if are in overshoot and end in overshoot
   if ((startPos < minPos && endPos < minPos) ||
@@ -1432,25 +1541,27 @@ void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
     qScrollerDebug() << "### below minimum Vel" << orientation;
 
     // - no snap points or already at one
-    if (qIsNaN(nextSnap) || nextSnap == startPos)
-      return; // nothing to do, no scrolling needed.
+    if (qIsNaN(nextSnap) || nextSnap == startPos) {
+      return;  // nothing to do, no scrolling needed.
+    }
 
     // - decide which point to use
 
     qreal snapDistance = higherSnapPos - lowerSnapPos;
 
     qreal pressDistance = (orientation == Qt::Horizontal)
-                              ? lastPosition.x() - pressPosition.x()
-                              : lastPosition.y() - pressPosition.y();
+                          ? lastPosition.x() - pressPosition.x()
+                          : lastPosition.y() - pressPosition.y();
 
     // if not dragged far enough, pick the next snap point.
     if (sp->snapPositionRatio == 0.0 ||
-        qAbs(pressDistance / sp->snapPositionRatio) > snapDistance)
+        qAbs(pressDistance / sp->snapPositionRatio) > snapDistance) {
       endPos = nextSnap;
-    else if (pressDistance < 0.0)
+    } else if (pressDistance < 0.0) {
       endPos = lowerSnapPos;
-    else
+    } else {
       endPos = higherSnapPos;
+    }
 
     deltaPos = endPos - startPos;
     qreal midPos = startPos + deltaPos * qreal(0.3);
@@ -1466,18 +1577,22 @@ void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
   // - go to the next snappoint if there is one
   if (v > 0 && !qIsNaN(higherSnapPos)) {
     // change the time in relation to the changed end position
-    if (endPos - startPos)
+    if (endPos - startPos) {
       deltaTime *= qAbs((higherSnapPos - startPos) / (endPos - startPos));
-    if (deltaTime > sp->snapTime)
+    }
+    if (deltaTime > sp->snapTime) {
       deltaTime = sp->snapTime;
+    }
     endPos = higherSnapPos;
 
   } else if (v < 0 && !qIsNaN(lowerSnapPos)) {
     // change the time in relation to the changed end position
-    if (endPos - startPos)
+    if (endPos - startPos) {
       deltaTime *= qAbs((lowerSnapPos - startPos) / (endPos - startPos));
-    if (deltaTime > sp->snapTime)
+    }
+    if (deltaTime > sp->snapTime) {
       deltaTime = sp->snapTime;
+    }
     endPos = lowerSnapPos;
 
     // -- check if we are overshooting
@@ -1487,7 +1602,7 @@ void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
     qScrollerDebug() << "Overshoot: delta:" << (stopPos - startPos);
 
     qreal stopProgress = progressForValue(
-        sp->scrollingCurve, qAbs((stopPos - startPos) / deltaPos));
+                           sp->scrollingCurve, qAbs((stopPos - startPos) / deltaPos));
 
     if (!canOvershoot) {
       qScrollerDebug() << "Overshoot stopp:" << stopProgress;
@@ -1497,21 +1612,21 @@ void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
     } else {
       qreal oDeltaTime = sp->overshootScrollTime;
       qreal oStopProgress =
-          qMin(stopProgress + oDeltaTime * qreal(0.3) / deltaTime, qreal(1));
+        qMin(stopProgress + oDeltaTime * qreal(0.3) / deltaTime, qreal(1));
       qreal oDistance =
-          startPos +
-          deltaPos * sp->scrollingCurve.valueForProgress(oStopProgress) -
-          stopPos;
+        startPos +
+        deltaPos * sp->scrollingCurve.valueForProgress(oStopProgress) -
+        stopPos;
       qreal oMaxDistance =
-          qSign(oDistance) * (viewSize * sp->overshootScrollDistanceFactor);
+        qSign(oDistance) * (viewSize * sp->overshootScrollDistanceFactor);
 
       qScrollerDebug() << "1 oDistance:" << oDistance << "Max:" << oMaxDistance
                        << "stopP/oStopP" << stopProgress << oStopProgress;
 
       if (qAbs(oDistance) > qAbs(oMaxDistance)) {
         oStopProgress = progressForValue(
-            sp->scrollingCurve,
-            qAbs((stopPos + oMaxDistance - startPos) / deltaPos));
+                          sp->scrollingCurve,
+                          qAbs((stopPos + oMaxDistance - startPos) / deltaPos));
         oDistance = oMaxDistance;
         qScrollerDebug() << "2 oDistance:" << oDistance
                          << "Max:" << oMaxDistance << "stopP/oStopP"
@@ -1535,7 +1650,8 @@ void QtScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
     Prepares scrolling by sending a QScrollPrepareEvent to the receiver widget.
     Returns true if the scrolling was accepted and a target was returned.
 */
-bool QtScrollerPrivate::prepareScrolling(const QPointF &position) {
+bool QtScrollerPrivate::prepareScrolling(const QPointF &position)
+{
   QtScrollPrepareEvent spe(position);
   spe.ignore();
   sendEvent(target, &spe);
@@ -1549,30 +1665,36 @@ bool QtScrollerPrivate::prepareScrolling(const QPointF &position) {
 
     viewportSize = spe.viewportSize();
     contentPosRange = spe.contentPosRange();
-    if (contentPosRange.width() < 0)
+    if (contentPosRange.width() < 0) {
       contentPosRange.setWidth(0);
-    if (contentPosRange.height() < 0)
+    }
+    if (contentPosRange.height() < 0) {
       contentPosRange.setHeight(0);
+    }
     contentPosition = clampToRect(spe.contentPos(), contentPosRange);
     overshootPosition = spe.contentPos() - contentPosition;
 
     // - check if the content position was moved
     if (contentDelta != QPointF(0, 0)) {
       // need to correct all segments
-      for (int i = 0; i < xSegments.count(); i++)
+      for (int i = 0; i < xSegments.count(); i++) {
         xSegments[i].startPos -= contentDelta.x();
+      }
 
-      for (int i = 0; i < ySegments.count(); i++)
+      for (int i = 0; i < ySegments.count(); i++) {
         ySegments[i].startPos -= contentDelta.y();
+      }
     }
 
-    if (QWidget *w = qobject_cast<QWidget *>(target))
+    if (QWidget *w = qobject_cast<QWidget *>(target)) {
       setDpiFromWidget(w);
+    }
     if (QGraphicsObject *go = qobject_cast<QGraphicsObject *>(target)) {
       // TODO: the first view isn't really correct - maybe use an additional
       // field in the prepare event?
-      if (go->scene() && !go->scene()->views().isEmpty())
+      if (go->scene() && !go->scene()->views().isEmpty()) {
         setDpiFromWidget(go->scene()->views().first());
+      }
     }
 
     if (state == QtScroller::Scrolling) {
@@ -1584,7 +1706,8 @@ bool QtScrollerPrivate::prepareScrolling(const QPointF &position) {
   return false;
 }
 
-void QtScrollerPrivate::handleDrag(const QPointF &position, qint64 timestamp) {
+void QtScrollerPrivate::handleDrag(const QPointF &position, qint64 timestamp)
+{
   const QtScrollerPropertiesPrivate *sp = properties.d.data();
 
   QPointF deltaPixel = position - lastPosition;
@@ -1600,10 +1723,11 @@ void QtScrollerPrivate::handleDrag(const QPointF &position, qint64 timestamp) {
       // << " / " << axisLockThreshold << "- isvertical:" << vertical << "- dx:"
       // << dx << "- dy:" << dy;
       if (alpha <= sp->axisLockThreshold) {
-        if (vertical)
+        if (vertical) {
           deltaPixel.setX(0);
-        else
+        } else {
           deltaPixel.setY(0);
+        }
       }
     }
   }
@@ -1614,11 +1738,11 @@ void QtScrollerPrivate::handleDrag(const QPointF &position, qint64 timestamp) {
   // restrict velocity, if content is not scrollable
   QRectF max = contentPosRange;
   bool canScrollX =
-      (max.width() > 0) ||
-      (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
+    (max.width() > 0) ||
+    (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
   bool canScrollY =
-      (max.height() > 0) ||
-      (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
+    (max.height() > 0) ||
+    (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
 
   if (!canScrollX) {
     deltaPixel.setX(0);
@@ -1639,15 +1763,18 @@ void QtScrollerPrivate::handleDrag(const QPointF &position, qint64 timestamp) {
   //    }
   qDebug() << "######################" << deltaPixel << position.y()
            << lastPosition.y();
-  if (canScrollX)
+  if (canScrollX) {
     lastPosition.setX(position.x());
-  if (canScrollY)
+  }
+  if (canScrollY) {
     lastPosition.setY(position.y());
+  }
   lastTimestamp = timestamp;
 }
 
 bool QtScrollerPrivate::pressWhileInactive(const QPointF &position,
-                                           qint64 timestamp) {
+    qint64 timestamp)
+{
   if (prepareScrolling(position)) {
     const QtScrollerPropertiesPrivate *sp = properties.d.data();
 
@@ -1663,7 +1790,8 @@ bool QtScrollerPrivate::pressWhileInactive(const QPointF &position,
   return false;
 }
 
-bool QtScrollerPrivate::releaseWhilePressed(const QPointF &, qint64) {
+bool QtScrollerPrivate::releaseWhilePressed(const QPointF &, qint64)
+{
   if (overshootPosition != QPointF(0.0, 0.0)) {
     setState(QtScroller::Scrolling);
     return true;
@@ -1674,7 +1802,8 @@ bool QtScrollerPrivate::releaseWhilePressed(const QPointF &, qint64) {
 }
 
 bool QtScrollerPrivate::moveWhilePressed(const QPointF &position,
-                                         qint64 timestamp) {
+    qint64 timestamp)
+{
   Q_Q(QtScroller);
   const QtScrollerPropertiesPrivate *sp = properties.d.data();
   QPointF ppm = q->pixelPerMeter();
@@ -1683,7 +1812,7 @@ bool QtScrollerPrivate::moveWhilePressed(const QPointF &position,
 
   bool moveAborted = false;
   bool moveStarted =
-      (((deltaPixel / ppm).manhattanLength()) > sp->dragStartDistance);
+    (((deltaPixel / ppm).manhattanLength()) > sp->dragStartDistance);
 
   // check the direction of the mouse drag and abort if it's too much in the
   // wrong direction.
@@ -1692,17 +1821,21 @@ bool QtScrollerPrivate::moveWhilePressed(const QPointF &position,
     bool canScrollX = (max.width() > 0);
     bool canScrollY = (max.height() > 0);
 
-    if (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn)
+    if (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn) {
       canScrollX = true;
-    if (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn)
+    }
+    if (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn) {
       canScrollY = true;
+    }
 
     if (qAbs(deltaPixel.x() / ppm.x()) < qAbs(deltaPixel.y() / ppm.y())) {
-      if (!canScrollY)
+      if (!canScrollY) {
         moveAborted = true;
+      }
     } else {
-      if (!canScrollX)
+      if (!canScrollX) {
         moveAborted = true;
+      }
     }
   }
 
@@ -1726,13 +1859,15 @@ bool QtScrollerPrivate::moveWhilePressed(const QPointF &position,
 }
 
 bool QtScrollerPrivate::moveWhileDragging(const QPointF &position,
-                                          qint64 timestamp) {
+    qint64 timestamp)
+{
   // handleDrag updates lastPosition, lastTimestamp and velocity
   handleDrag(position, timestamp);
   return true;
 }
 
-void QtScrollerPrivate::timerEventWhileDragging() {
+void QtScrollerPrivate::timerEventWhileDragging()
+{
   if (dragDistance != QPointF(0, 0)) {
     qScrollerDebug() << "QtScroller::timerEventWhileDragging() -- dragDistance:"
                      << dragDistance;
@@ -1743,7 +1878,8 @@ void QtScrollerPrivate::timerEventWhileDragging() {
 }
 
 bool QtScrollerPrivate::releaseWhileDragging(const QPointF &position,
-                                             qint64 timestamp) {
+    qint64 timestamp)
+{
   Q_Q(QtScroller);
   const QtScrollerPropertiesPrivate *sp = properties.d.data();
 
@@ -1763,21 +1899,23 @@ bool QtScrollerPrivate::releaseWhileDragging(const QPointF &position,
 
       // - determine if the direction was changed
       int signX = 0, signY = 0;
-      if (releaseVelocity.x())
+      if (releaseVelocity.x()) {
         signX = (releaseVelocity.x() > 0) == (oldVelocity.x() > 0) ? 1 : -1;
-      if (releaseVelocity.y())
+      }
+      if (releaseVelocity.y()) {
         signY = (releaseVelocity.y() > 0) == (oldVelocity.y() > 0) ? 1 : -1;
+      }
 
       if (signX > 0)
         releaseVelocity.setX(
-            qBound(-sp->maximumVelocity,
-                   oldVelocity.x() * sp->acceleratingFlickSpeedupFactor,
-                   sp->maximumVelocity));
+          qBound(-sp->maximumVelocity,
+                 oldVelocity.x() * sp->acceleratingFlickSpeedupFactor,
+                 sp->maximumVelocity));
       if (signY > 0)
         releaseVelocity.setY(
-            qBound(-sp->maximumVelocity,
-                   oldVelocity.y() * sp->acceleratingFlickSpeedupFactor,
-                   sp->maximumVelocity));
+          qBound(-sp->maximumVelocity,
+                 oldVelocity.y() * sp->acceleratingFlickSpeedupFactor,
+                 sp->maximumVelocity));
     }
   }
 
@@ -1794,24 +1932,28 @@ bool QtScrollerPrivate::releaseWhileDragging(const QPointF &position,
                    << "-- minimum velocity:" << sp->minimumVelocity
                    << "overshoot" << overshootPosition;
 
-  if (xSegments.isEmpty() && ySegments.isEmpty())
+  if (xSegments.isEmpty() && ySegments.isEmpty()) {
     setState(QtScroller::Inactive);
-  else
+  } else {
     setState(QtScroller::Scrolling);
+  }
 
   return true;
 }
 
-void QtScrollerPrivate::timerEventWhileScrolling() {
+void QtScrollerPrivate::timerEventWhileScrolling()
+{
   qScrollerDebug() << "QtScroller::timerEventWhileScrolling()";
 
   setContentPositionHelperScrolling();
-  if (xSegments.isEmpty() && ySegments.isEmpty())
+  if (xSegments.isEmpty() && ySegments.isEmpty()) {
     setState(QtScroller::Inactive);
+  }
 }
 
 bool QtScrollerPrivate::pressWhileScrolling(const QPointF &position,
-                                            qint64 timestamp) {
+    qint64 timestamp)
+{
   Q_Q(QtScroller);
 
   if ((q->velocity() <= properties.d->maximumClickThroughVelocity) &&
@@ -1830,44 +1972,48 @@ bool QtScrollerPrivate::pressWhileScrolling(const QPointF &position,
 /*! \internal
     This function handles all state changes of the scroller.
 */
-void QtScrollerPrivate::setState(QtScroller::State newstate) {
+void QtScrollerPrivate::setState(QtScroller::State newstate)
+{
   Q_Q(QtScroller);
   bool sendLastScroll = false;
 
-  if (state == newstate)
+  if (state == newstate) {
     return;
+  }
 
   qScrollerDebug() << q << "QtScroller::setState(" << stateName(newstate)
                    << ")";
 
   switch (newstate) {
-    case QtScroller::Inactive:
-      scrollTimer->stop();
+  case QtScroller::Inactive:
+    scrollTimer->stop();
 
-      // send the last scroll event (but only after the current state change was
-      // finished)
-      if (!firstScroll)
-        sendLastScroll = true;
+    // send the last scroll event (but only after the current state change was
+    // finished)
+    if (!firstScroll) {
+      sendLastScroll = true;
+    }
 
-      releaseVelocity = QPointF(0, 0);
-      break;
+    releaseVelocity = QPointF(0, 0);
+    break;
 
-    case QtScroller::Pressed:
-      scrollTimer->stop();
+  case QtScroller::Pressed:
+    scrollTimer->stop();
 
-      oldVelocity = releaseVelocity;
-      releaseVelocity = QPointF(0, 0);
-      break;
+    oldVelocity = releaseVelocity;
+    releaseVelocity = QPointF(0, 0);
+    break;
 
-    case QtScroller::Dragging:
-      dragDistance = QPointF(0, 0);
-      if (state == QtScroller::Pressed)
-        scrollTimer->start();
-      break;
-
-    case QtScroller::Scrolling:
+  case QtScroller::Dragging:
+    dragDistance = QPointF(0, 0);
+    if (state == QtScroller::Pressed) {
       scrollTimer->start();
-      break;
+    }
+    break;
+
+  case QtScroller::Scrolling:
+    scrollTimer->start();
+    break;
   }
 
   qSwap(state, newstate);
@@ -1878,10 +2024,11 @@ void QtScrollerPrivate::setState(QtScroller::State newstate) {
     sendEvent(target, &se);
     firstScroll = true;
   }
-  if (state == QtScroller::Dragging || state == QtScroller::Scrolling)
+  if (state == QtScroller::Dragging || state == QtScroller::Scrolling) {
     activeScrollers.insert(q);
-  else
+  } else {
     activeScrollers.remove(q);
+  }
   emit q->stateChanged(state);
 }
 
@@ -1900,14 +2047,16 @@ void QtScrollerPrivate::setState(QtScroller::State newstate) {
    moved
 */
 void QtScrollerPrivate::setContentPositionHelperDragging(
-    const QPointF &deltaPos) {
+  const QPointF &deltaPos)
+{
   Q_Q(QtScroller);
   QPointF ppm = q->pixelPerMeter();
   const QtScrollerPropertiesPrivate *sp = properties.d.data();
   QPointF v = q->velocity();
 
-  if (sp->overshootDragResistanceFactor)
+  if (sp->overshootDragResistanceFactor) {
     overshootPosition /= sp->overshootDragResistanceFactor;
+  }
 
   QPointF oldPos = contentPosition + overshootPosition;
   QPointF newPos = oldPos + deltaPos;
@@ -1923,21 +2072,21 @@ void QtScrollerPrivate::setContentPositionHelperDragging(
   // --- handle overshooting and stop if the coordinate is going back inside the
   // normal area
   bool alwaysOvershootX =
-      (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
+    (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
   bool alwaysOvershootY =
-      (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
+    (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOn);
   bool noOvershootX =
-      (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOff) ||
-      ((state == QtScroller::Dragging) && !sp->overshootDragResistanceFactor) ||
-      !sp->overshootDragDistanceFactor;
+    (sp->hOvershootPolicy == QtScrollerProperties::OvershootAlwaysOff) ||
+    ((state == QtScroller::Dragging) && !sp->overshootDragResistanceFactor) ||
+    !sp->overshootDragDistanceFactor;
   bool noOvershootY =
-      (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOff) ||
-      ((state == QtScroller::Dragging) && !sp->overshootDragResistanceFactor) ||
-      !sp->overshootDragDistanceFactor;
+    (sp->vOvershootPolicy == QtScrollerProperties::OvershootAlwaysOff) ||
+    ((state == QtScroller::Dragging) && !sp->overshootDragResistanceFactor) ||
+    !sp->overshootDragDistanceFactor;
   bool canOvershootX =
-      !noOvershootX && (alwaysOvershootX || contentPosRange.width());
+    !noOvershootX && (alwaysOvershootX || contentPosRange.width());
   bool canOvershootY =
-      !noOvershootY && (alwaysOvershootY || contentPosRange.height());
+    !noOvershootY && (alwaysOvershootY || contentPosRange.height());
 
   qreal oldOvershootX = (canOvershootX) ? oldPos.x() - oldClampedPos.x() : 0;
   qreal oldOvershootY = (canOvershootY) ? oldPos.y() - oldClampedPos.y() : 0;
@@ -1973,7 +2122,7 @@ void QtScrollerPrivate::setContentPositionHelperDragging(
 
   QtScrollEvent se(contentPosition, overshootPosition,
                    firstScroll ? QtScrollEvent::ScrollStarted
-                               : QtScrollEvent::ScrollUpdated);
+                   : QtScrollEvent::ScrollUpdated);
   sendEvent(target, &se);
   firstScroll = false;
 
@@ -1983,7 +2132,8 @@ void QtScrollerPrivate::setContentPositionHelperDragging(
 }
 
 qreal QtScrollerPrivate::nextSegmentPosition(QQueue<ScrollSegment> &segments,
-                                             qint64 now, qreal oldPos) {
+    qint64 now, qreal oldPos)
+{
   qreal pos = oldPos;
 
   // check the X segments for new positions
@@ -2009,7 +2159,8 @@ qreal QtScrollerPrivate::nextSegmentPosition(QQueue<ScrollSegment> &segments,
   return pos;
 }
 
-void QtScrollerPrivate::setContentPositionHelperScrolling() {
+void QtScrollerPrivate::setContentPositionHelperScrolling()
+{
   qint64 now = monotonicTimer.elapsed();
   QPointF newPos = contentPosition + overshootPosition;
 
@@ -2028,7 +2179,7 @@ void QtScrollerPrivate::setContentPositionHelperScrolling() {
 
   QtScrollEvent se(contentPosition, overshootPosition,
                    firstScroll ? QtScrollEvent::ScrollStarted
-                               : QtScrollEvent::ScrollUpdated);
+                   : QtScrollEvent::ScrollUpdated);
   sendEvent(target, &se);
   firstScroll = false;
 
@@ -2048,7 +2199,8 @@ void QtScrollerPrivate::setContentPositionHelperScrolling() {
     Returns the nearest snap position or NaN if no such point could be found.
  */
 qreal QtScrollerPrivate::nextSnapPos(qreal p, int dir,
-                                     Qt::Orientation orientation) {
+                                     Qt::Orientation orientation)
+{
   qreal bestSnapPos = Q_QNAN;
   qreal bestSnapPosDist = Q_INFINITY;
 
@@ -2067,10 +2219,12 @@ qreal QtScrollerPrivate::nextSnapPos(qreal p, int dir,
     // the snap points in the list
     foreach(qreal snapPos, snapPositionsX) {
       qreal snapPosDist = snapPos - p;
-      if ((dir > 0 && snapPosDist < 0) || (dir < 0 && snapPosDist > 0))
-        continue; // wrong direction
-      if (snapPos < minPos || snapPos > maxPos)
-        continue; // invalid
+      if ((dir > 0 && snapPosDist < 0) || (dir < 0 && snapPosDist > 0)) {
+        continue;  // wrong direction
+      }
+      if (snapPos < minPos || snapPos > maxPos) {
+        continue;  // invalid
+      }
 
       if (qIsNaN(bestSnapPos) || qAbs(snapPosDist) < bestSnapPosDist) {
         bestSnapPos = snapPos;
@@ -2082,19 +2236,20 @@ qreal QtScrollerPrivate::nextSnapPos(qreal p, int dir,
     if (snapIntervalX > 0.0) {
       qreal first = minPos + snapFirstX;
       qreal snapPos;
-      if (dir > 0)
+      if (dir > 0) {
         snapPos = qCeil((p - first) / snapIntervalX) * snapIntervalX + first;
-      else if (dir < 0)
+      } else if (dir < 0) {
         snapPos = qFloor((p - first) / snapIntervalX) * snapIntervalX + first;
-      else if (p <= first)
+      } else if (p <= first) {
         snapPos = first;
-      else {
+      } else {
         qreal last =
-            qFloor((maxPos - first) / snapIntervalX) * snapIntervalX + first;
-        if (p >= last)
+          qFloor((maxPos - first) / snapIntervalX) * snapIntervalX + first;
+        if (p >= last) {
           snapPos = last;
-        else
+        } else {
           snapPos = qRound((p - first) / snapIntervalX) * snapIntervalX + first;
+        }
       }
 
       if (snapPos >= first && snapPos <= maxPos) {
@@ -2111,10 +2266,12 @@ qreal QtScrollerPrivate::nextSnapPos(qreal p, int dir,
     // the snap points in the list
     foreach(qreal snapPos, snapPositionsY) {
       qreal snapPosDist = snapPos - p;
-      if ((dir > 0 && snapPosDist < 0) || (dir < 0 && snapPosDist > 0))
-        continue; // wrong direction
-      if (snapPos < minPos || snapPos > maxPos)
-        continue; // invalid
+      if ((dir > 0 && snapPosDist < 0) || (dir < 0 && snapPosDist > 0)) {
+        continue;  // wrong direction
+      }
+      if (snapPos < minPos || snapPos > maxPos) {
+        continue;  // invalid
+      }
 
       if (qIsNaN(bestSnapPos) || qAbs(snapPosDist) < bestSnapPosDist) {
         bestSnapPos = snapPos;
@@ -2126,19 +2283,20 @@ qreal QtScrollerPrivate::nextSnapPos(qreal p, int dir,
     if (snapIntervalY > 0.0) {
       qreal first = minPos + snapFirstY;
       qreal snapPos;
-      if (dir > 0)
+      if (dir > 0) {
         snapPos = qCeil((p - first) / snapIntervalY) * snapIntervalY + first;
-      else if (dir < 0)
+      } else if (dir < 0) {
         snapPos = qFloor((p - first) / snapIntervalY) * snapIntervalY + first;
-      else if (p <= first)
+      } else if (p <= first) {
         snapPos = first;
-      else {
+      } else {
         qreal last =
-            qFloor((maxPos - first) / snapIntervalY) * snapIntervalY + first;
-        if (p >= last)
+          qFloor((maxPos - first) / snapIntervalY) * snapIntervalY + first;
+        if (p >= last) {
           snapPos = last;
-        else
+        } else {
           snapPos = qRound((p - first) / snapIntervalY) * snapIntervalY + first;
+        }
       }
 
       if (snapPos >= first && snapPos <= maxPos) {

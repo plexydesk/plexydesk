@@ -7,7 +7,8 @@
 #include <QGraphicsObject>
 #include <abstractcellcomponent.h>
 
-class CellItem : public PlexyDesk::TableViewItem {
+class CellItem : public PlexyDesk::TableViewItem
+{
   Q_OBJECT
 public:
   CellItem(const QRectF &rect, QGraphicsItem *parent = 0);

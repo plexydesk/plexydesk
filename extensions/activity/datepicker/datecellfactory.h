@@ -5,7 +5,8 @@
 
 using namespace UI;
 
-class DateCellFactory : public TableModel {
+class DateCellFactory : public TableModel
+{
   Q_OBJECT
 
 public:

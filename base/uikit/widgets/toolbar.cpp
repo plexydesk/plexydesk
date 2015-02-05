@@ -7,8 +7,10 @@
 #include <tableview.h>
 #include <QGraphicsLinearLayout>
 
-namespace UI {
-class ToolBar::PrivateToolBar {
+namespace UI
+{
+class ToolBar::PrivateToolBar
+{
 public:
   PrivateToolBar() {}
   ~PrivateToolBar() {}
@@ -24,7 +26,8 @@ public:
 };
 
 ToolBar::ToolBar(QGraphicsObject *parent)
-    : UIWidget(parent), d(new PrivateToolBar) {
+  : UIWidget(parent), d(new PrivateToolBar)
+{
   d->mButtonCount = 0;
   d->m_icon_resolution = "mdpi";
   d->m_icon_size = QSize(24, 24);
@@ -43,7 +46,8 @@ ToolBar::ToolBar(QGraphicsObject *parent)
 ToolBar::~ToolBar() { delete d; }
 
 void ToolBar::addAction(const QString &lable, const QString &icon,
-                        bool togleAction) {
+                        bool togleAction)
+{
   ImageButton *button = new ImageButton(d->mLayoutBase);
 
   float _button_size = d->m_icon_size.width();
@@ -54,7 +58,7 @@ void ToolBar::addAction(const QString &lable, const QString &icon,
 
   button->setLable(lable);
   button->setPixmap(UI::Theme::instance()->drawable(
-      icon + ".png", d->m_icon_resolution));
+                      icon + ".png", d->m_icon_resolution));
   button->setGeometry(QRectF(QPointF(), d->m_icon_size));
   button->setMinimumSize(d->m_icon_size);
 
@@ -67,7 +71,8 @@ void ToolBar::addAction(const QString &lable, const QString &icon,
   d->mLayout->activate();
 }
 
-void ToolBar::insertWidget(UIWidget *widget) {
+void ToolBar::insertWidget(UIWidget *widget)
+{
   if (d->mLayout->count() != 0) {
     d->mLayout->addStretch();
   }
@@ -79,11 +84,13 @@ void ToolBar::insertWidget(UIWidget *widget) {
   update();
 }
 
-void ToolBar::setOrientation(Qt::Orientation orientation) {
+void ToolBar::setOrientation(Qt::Orientation orientation)
+{
   d->mLayout->setOrientation(orientation);
 }
 
-void ToolBar::setIconResolution(const QString &res) {
+void ToolBar::setIconResolution(const QString &res)
+{
   d->m_icon_resolution = res;
 }
 
@@ -106,18 +113,21 @@ QRectF ToolBar::contentGeometry() const { return d->contentGeometry(); }
 
 QRectF ToolBar::frameGeometry() const { return d->frameGeometry(); }
 
-QSizeF ToolBar::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
+QSizeF ToolBar::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+{
   return d->frameGeometry().size();
 }
 
-void ToolBar::paintView(QPainter *painter, const QRectF &exposeRect) {
+void ToolBar::paintView(QPainter *painter, const QRectF &exposeRect)
+{
   QPen pen;
   painter->save();
   painter->fillRect(frameGeometry(), QColor("#f0f0f0"));
   painter->restore();
 }
 
-void ToolBar::onButtonPressed() {
+void ToolBar::onButtonPressed()
+{
   if (sender()) {
     ImageButton *button = qobject_cast<ImageButton *>(sender());
     if (button) {
@@ -127,11 +137,13 @@ void ToolBar::onButtonPressed() {
   }
 }
 
-QRectF ToolBar::PrivateToolBar::contentGeometry() const {
+QRectF ToolBar::PrivateToolBar::contentGeometry() const
+{
   return mLayout->contentsRect();
 }
 
-QRectF ToolBar::PrivateToolBar::frameGeometry() const {
+QRectF ToolBar::PrivateToolBar::frameGeometry() const
+{
   return mLayout->geometry();
 }
 }

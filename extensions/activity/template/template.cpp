@@ -21,7 +21,8 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class TemplateActivity::PrivateTemplate {
+class TemplateActivity::PrivateTemplate
+{
 public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
@@ -30,21 +31,19 @@ public:
 };
 
 TemplateActivity::TemplateActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateTemplate) {}
+  : UI::DesktopActivity(object), d(new PrivateTemplate) {}
 
 TemplateActivity::~TemplateActivity() { delete d; }
 
 void TemplateActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
-                                    const QPointF &window_pos) {
+                                    const QPointF &window_pos)
+{
   d->m_main_window = new UI::UIWidget();
 
-  d->m_main_window->setWindowTitle(window_title);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderDropShadow);
 
   setGeometry(window_geometry);
   updateContentGeometry(d->m_main_window);
@@ -62,7 +61,8 @@ void TemplateActivity::updateAttribute(const QString &name,
 
 UI::UIWidget *TemplateActivity::window() const { return d->m_main_window; }
 
-void TemplateActivity::onWidgetClosed(UI::UIWidget *widget) {
+void TemplateActivity::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

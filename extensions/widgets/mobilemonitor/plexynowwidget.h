@@ -5,7 +5,8 @@
 #include <desktopwidget.h>
 #include <QGraphicsDropShadowEffect>
 
-class PlexyNowWidget : public PlexyDesk::DesktopWidget {
+class PlexyNowWidget : public PlexyDesk::DesktopWidget
+{
   Q_OBJECT
 public:
   explicit PlexyNowWidget(const QRectF &rect);

@@ -35,7 +35,8 @@
 
 #include "mac_backgroundrender.h"
 
-class MacBackgroundController : public PlexyDesk::ControllerInterface {
+class MacBackgroundController : public PlexyDesk::ControllerInterface
+{
   Q_OBJECT
 
 public:

@@ -24,7 +24,8 @@
 #include <dataplugininterface.h>
 
 class DesktopActivityMonitorInterface : public QObject,
-                                        public PlexyDesk::DataPluginInterface {
+  public PlexyDesk::DataPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.desktopactivitymonitor")

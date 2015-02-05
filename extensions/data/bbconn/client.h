@@ -50,7 +50,8 @@
 
 class PeerManager;
 
-class Client : public QObject {
+class Client : public QObject
+{
   Q_OBJECT
 
 public:

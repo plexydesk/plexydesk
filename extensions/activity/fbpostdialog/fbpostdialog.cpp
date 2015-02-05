@@ -28,7 +28,8 @@
 #include <cookiejar.h>
 #include <config.h>
 
-class FBPostDialogActivity::PrivateFBPostDialog {
+class FBPostDialogActivity::PrivateFBPostDialog
+{
 public:
   PrivateFBPostDialog() {}
   ~PrivateFBPostDialog() {}
@@ -42,13 +43,14 @@ public:
 };
 
 FBPostDialogActivity::FBPostDialogActivity(QGraphicsObject *object)
-    : PlexyDesk::DesktopActivity(object), d(new PrivateFBPostDialog) {}
+  : PlexyDesk::DesktopActivity(object), d(new PrivateFBPostDialog) {}
 
 FBPostDialogActivity::~FBPostDialogActivity() { delete d; }
 
 void FBPostDialogActivity::createWindow(const QRectF &window_geometry,
                                         const QString &window_title,
-                                        const QPointF &window_pos) {
+                                        const QPointF &window_pos)
+{
   d->mFrame = new PlexyDesk::Window();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
@@ -93,7 +95,8 @@ void FBPostDialogActivity::createWindow(const QRectF &window_geometry,
   d->mWebView->setUrl(QUrl(urlStr));
 }
 
-QRectF FBPostDialogActivity::geometry() const {
+QRectF FBPostDialogActivity::geometry() const
+{
   return QRectF(0.0, 0.0, 480, 480);
 }
 
@@ -101,7 +104,8 @@ PlexyDesk::Widget *FBPostDialogActivity::window() const { return d->mFrame; }
 
 QVariantMap FBPostDialogActivity::result() const { return QVariantMap(); }
 
-void FBPostDialogActivity::onWidgetClosed(PlexyDesk::Widget *widget) {
+void FBPostDialogActivity::onWidgetClosed(PlexyDesk::Widget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   this->discardActivity();
 }

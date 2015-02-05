@@ -33,20 +33,22 @@
 #include <plexyconfig.h>
 #include <svgprovider.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::UIWidget(parent) {
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::UIWidget(parent)
+{
   mTimer = new QTimer(this);
   mTimer->setTimerType(Qt::VeryCoarseTimer);
 
   connect(mTimer, SIGNAL(timeout()), this, SLOT(updateNow()));
   mTimer->start(1000);
 
-  setWindowFlag(UIWidget::kRenderDropShadow, false);
+  setWindowFlag(Window::kRenderDropShadow, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setLabelName("Clock");
   updateNow();
 }
 
-void ClockWidget::preRenderClockImages() {
+void ClockWidget::preRenderClockImages()
+{
   qDebug() << Q_FUNC_INFO << "Start";
   UI::SvgProvider *svg = new UI::SvgProvider();
 
@@ -64,7 +66,8 @@ void ClockWidget::preRenderClockImages() {
   delete svg;
 }
 
-void ClockWidget::updateTime(const QVariantMap &data) {
+void ClockWidget::updateTime(const QVariantMap &data)
+{
   QTime time = QTime::currentTime();
   mSecondValue = 6.0 * time.second();
   mMinutesValue = 6.0 * time.minute();
@@ -76,7 +79,8 @@ void ClockWidget::updateTime(const QVariantMap &data) {
 ClockWidget::~ClockWidget() {}
 
 void ClockWidget::drawClockHand(QPainter *p, QRectF rect, int factor,
-                                float angle, QColor hand_color, int thikness) {
+                                float angle, QColor hand_color, int thikness)
+{
   p->save();
   float _adjustment = rect.width() / factor;
 
@@ -100,12 +104,14 @@ void ClockWidget::drawClockHand(QPainter *p, QRectF rect, int factor,
   p->restore();
 }
 
-void ClockWidget::updateNow() {
+void ClockWidget::updateNow()
+{
   updateTime(QVariantMap());
   update();
 }
 
-void ClockWidget::paintView(QPainter *p, const QRectF &r) {
+void ClockWidget::paintView(QPainter *p, const QRectF &r)
+{
   QRectF rect(r.x() + 8, r.y() + 8, r.width() - 16, r.height() - 16);
 
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |

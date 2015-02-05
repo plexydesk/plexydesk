@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class HttpServerData : public UI::DataSource {
+class HttpServerData : public UI::DataSource
+{
   Q_OBJECT
 
 public:

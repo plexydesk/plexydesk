@@ -81,7 +81,8 @@ Manager Specification..
 @see KWin
 **/
 
-class DECL_UI_KIT_EXPORT NETRootInfo : public NET {
+class DECL_UI_KIT_EXPORT NETRootInfo : public NET
+{
 public:
   /**
   Indexes for the properties array.
@@ -698,7 +699,8 @@ protected:
 
   @param numberOfDesktops the new number of desktops
   **/
-  virtual void changeNumberOfDesktops(int numberOfDesktops) {
+  virtual void changeNumberOfDesktops(int numberOfDesktops)
+  {
     Q_UNUSED(numberOfDesktops);
   }
 
@@ -711,7 +713,8 @@ protected:
 
   @param geom the new size
   **/
-  virtual void changeDesktopGeometry(int desktop, const NETSize &geom) {
+  virtual void changeDesktopGeometry(int desktop, const NETSize &geom)
+  {
     Q_UNUSED(desktop);
     Q_UNUSED(geom);
   }
@@ -725,7 +728,8 @@ protected:
 
   @param viewport the new position of the viewport
   **/
-  virtual void changeDesktopViewport(int desktop, const NETPoint &viewport) {
+  virtual void changeDesktopViewport(int desktop, const NETPoint &viewport)
+  {
     Q_UNUSED(desktop);
     Q_UNUSED(viewport);
   }
@@ -772,7 +776,8 @@ protected:
   a description of the different directions).
   **/
   virtual void moveResize(Window window, int x_root, int y_root,
-                          unsigned long direction) {
+                          unsigned long direction)
+  {
     Q_UNUSED(window);
     Q_UNUSED(x_root);
     Q_UNUSED(y_root);
@@ -801,7 +806,8 @@ for binary compatibility reasons (adds new virtual methods). Simply
 use it instead of NETRootInfo and override also the added virtual methods.
 @since 3.2
 */
-class PLEXYDESKUICORE_EXPORT NETRootInfo2 : public NETRootInfo {
+class PLEXYDESKUICORE_EXPORT NETRootInfo2 : public NETRootInfo
+{
 public:
   NETRootInfo2(Display *display, Window supportWindow, const char *wmName,
                unsigned long properties[], int properties_size, int screen = -1,
@@ -825,7 +831,8 @@ protected:
   @param window the window from which the reply came
   @param timestamp timestamp of the ping
   */
-  virtual void gotPing(Window window, Time timestamp) {
+  virtual void gotPing(Window window, Time timestamp)
+  {
     Q_UNUSED(window);
     Q_UNUSED(timestamp);
   }
@@ -840,7 +847,8 @@ protected:
   @param active_window active window of the requesting application, if any
   **/
   virtual void changeActiveWindow(Window window, NET::RequestSource src,
-                                  Time timestamp, Window active_window) {
+                                  Time timestamp, Window active_window)
+  {
     Q_UNUSED(window);
     Q_UNUSED(src);
     Q_UNUSED(timestamp);
@@ -855,7 +863,8 @@ protected:
   @param above other window in the restack request
   @param detail restack detail
   **/
-  virtual void restackWindow(Window window, Window above, int detail) {
+  virtual void restackWindow(Window window, Window above, int detail)
+  {
     Q_UNUSED(window);
     Q_UNUSED(above);
     Q_UNUSED(detail);
@@ -875,7 +884,8 @@ protected:
   @param height Requested height for the window
   **/
   virtual void moveResizeWindow(Window window, int flags, int x, int y,
-                                int width, int height) {
+                                int width, int height)
+  {
     Q_UNUSED(window);
     Q_UNUSED(flags);
     Q_UNUSED(x);
@@ -893,7 +903,8 @@ for binary compatibility reasons (adds new virtual methods). Simply
 use it instead of NETRootInfo and override also the added virtual methods.
 @since 3.3
 */
-class PLEXYDESKUICORE_EXPORT NETRootInfo3 : public NETRootInfo2 {
+class PLEXYDESKUICORE_EXPORT NETRootInfo3 : public NETRootInfo2
+{
 public:
   NETRootInfo3(Display *display, Window supportWindow, const char *wmName,
                unsigned long properties[], int properties_size, int screen = -1,
@@ -926,7 +937,8 @@ protected:
   @param timestamp the timestamp of the request
   **/
   virtual void restackWindow(Window window, RequestSource source, Window above,
-                             int detail, Time timestamp) {
+                             int detail, Time timestamp)
+  {
     Q_UNUSED(window);
     Q_UNUSED(source);
     Q_UNUSED(above);
@@ -940,7 +952,8 @@ protected:
   @param timestamp timestamp of the ping
   @param flags flags passed in the original message
   */
-  virtual void gotTakeActivity(Window window, Time timestamp, long flags) {
+  virtual void gotTakeActivity(Window window, Time timestamp, long flags)
+  {
     Q_UNUSED(window);
     Q_UNUSED(timestamp);
     Q_UNUSED(flags);
@@ -954,7 +967,8 @@ for binary compatibility reasons (adds new virtual methods). Simply
 use it instead of NETRootInfo and override also the added virtual methods.
 @since 3.5
 */
-class PLEXYDESKUICORE_EXPORT NETRootInfo4 : public NETRootInfo3 {
+class PLEXYDESKUICORE_EXPORT NETRootInfo4 : public NETRootInfo3
+{
 public:
   NETRootInfo4(Display *display, Window supportWindow, const char *wmName,
                unsigned long properties[], int properties_size, int screen = -1,
@@ -990,7 +1004,8 @@ Window Manager Specification.
 @see http://www.freedesktop.org/standards/wm-spec/
 **/
 
-class PLEXYDESKUICORE_EXPORT NETWinInfo : public NET {
+class PLEXYDESKUICORE_EXPORT NETWinInfo : public NET
+{
 public:
   /**
   Indexes for the properties array.
@@ -1501,7 +1516,8 @@ protected:
 
   @param mask the mask for the state
   **/
-  virtual void changeState(unsigned long state, unsigned long mask) {
+  virtual void changeState(unsigned long state, unsigned long mask)
+  {
     Q_UNUSED(state);
     Q_UNUSED(mask);
   }

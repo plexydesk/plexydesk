@@ -24,7 +24,8 @@
 #include <abstractplugininterface.h>
 #include <datainterface.h>
 
-class VISIBLE_SYM IRCData : public PlexyDesk::DataPlugin {
+class VISIBLE_SYM IRCData : public PlexyDesk::DataPlugin
+{
   Q_OBJECT
 
 public:

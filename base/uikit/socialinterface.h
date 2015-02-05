@@ -23,9 +23,11 @@
 #include <abstractplugininterface.h>
 #include <socialplugin.h>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 class PLEXYDESKUICORE_EXPORT SocialInterface : public QObject,
-                                               public AbstractPluginInterface {
+  public AbstractPluginInterface
+{
   Q_OBJECT
 public:
   void init() {}

@@ -22,7 +22,8 @@
 #include <QTimer>
 #include <config.h>
 
-class WebCamData::Private {
+class WebCamData::Private
+{
 public:
   Private() {}
   ~Private() {}
@@ -45,7 +46,8 @@ public:
   CvHistogram *histogram;
 };
 
-WebCamData::WebCamData(QObject *object) : d(new Private) {
+WebCamData::WebCamData(QObject *object) : d(new Private)
+{
   d->data = 0;
   d->hasFace = false;
   d->mCascade = 0;
@@ -65,7 +67,8 @@ WebCamData::WebCamData(QObject *object) : d(new Private) {
   init();
 }
 
-void WebCamData::grab() {
+void WebCamData::grab()
+{
   if (!d->mCaptureData) {
     return;
   }
@@ -92,7 +95,8 @@ void WebCamData::grab() {
              "/share/opencv/haarcascades/haarcascade_frontalface_default.xml");
 }
 
-void WebCamData::init() {
+void WebCamData::init()
+{
   qDebug() << Q_FUNC_INFO << OPENCV_ROOT;
 
   if (d->mCaptureData) {
@@ -104,13 +108,14 @@ void WebCamData::init() {
   }
 
   d->mCascade = (CvHaarClassifierCascade *)cvLoad(
-      OPENCV_ROOT
-      "/share/opencv/haarcascades/haarcascade_frontalface_default.xml");
+                  OPENCV_ROOT
+                  "/share/opencv/haarcascades/haarcascade_frontalface_default.xml");
 
   d->mFaceStore = cvCreateMemStorage(0);
 }
 
-QRect WebCamData::detectFace(const char *faceData) {
+QRect WebCamData::detectFace(const char *faceData)
+{
 
   if (d->hasFace) {
     trackFace();
@@ -125,8 +130,8 @@ QRect WebCamData::detectFace(const char *faceData) {
   CvRect *rect = 0;
   int faceSize = d->data->width / 5;
   d->mFaceSeq =
-      cvHaarDetectObjects(d->data, d->mCascade, d->mFaceStore, 1.1, 6,
-                          CV_HAAR_DO_CANNY_PRUNING, cvSize(faceSize, faceSize));
+    cvHaarDetectObjects(d->data, d->mCascade, d->mFaceStore, 1.1, 6,
+                        CV_HAAR_DO_CANNY_PRUNING, cvSize(faceSize, faceSize));
   //   qDebug() << "Number of Faces Detected" << d->mFaceSeq->total;
 
   if (d->mFaceSeq && d->mFaceSeq->total) {
@@ -172,7 +177,8 @@ QRect WebCamData::detectFace(const char *faceData) {
   return QRect();
 }
 
-void WebCamData::trackFace() {
+void WebCamData::trackFace()
+{
   CvConnectedComp comps;
   updateHugeImage(d->data);
 
@@ -208,14 +214,16 @@ void WebCamData::trackFace() {
   Q_EMIT dataReady();
 }
 
-void WebCamData::updateHugeImage(const IplImage *img) {
+void WebCamData::updateHugeImage(const IplImage *img)
+{
   cvCvtColor(img, d->hsvImage, CV_BGR2HSV);
   cvInRangeS(d->hsvImage, cvScalar(0, 55, MIN(65, 256), 0),
              cvScalar(180, 256, MAX(65, 255), 0), d->mask);
   cvSplit(d->hsvImage, d->hueImage, 0, 0, 0);
 }
 
-WebCamData::~WebCamData() {
+WebCamData::~WebCamData()
+{
   qDebug() << Q_FUNC_INFO;
   cvReleaseCapture(&d->mCaptureData);
   delete d;

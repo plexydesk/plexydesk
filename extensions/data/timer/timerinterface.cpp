@@ -21,10 +21,11 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UI::DataSource> TimerInterface::model() {
+QSharedPointer<UI::DataSource> TimerInterface::model()
+{
   QSharedPointer<UI::DataSource> obj =
-      QSharedPointer<UI::DataSource>(new TimerData(),
-                                            &QObject::deleteLater);
+    QSharedPointer<UI::DataSource>(new TimerData(),
+                                   &QObject::deleteLater);
 
   return obj;
 }

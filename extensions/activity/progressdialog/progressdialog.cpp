@@ -22,7 +22,8 @@
 #include <view_controller.h>
 #include <progressbar.h>
 
-class ProgressDialogActivity::PrivateProgressDialog {
+class ProgressDialogActivity::PrivateProgressDialog
+{
 public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
@@ -35,16 +36,18 @@ public:
 };
 
 ProgressDialogActivity::ProgressDialogActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateProgressDialog) {}
+  : UI::DesktopActivity(object), d(new PrivateProgressDialog) {}
 
-ProgressDialogActivity::~ProgressDialogActivity() {
+ProgressDialogActivity::~ProgressDialogActivity()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
-                                          const QString &window_title,
-                                          const QPointF &window_pos) {
+    const QString &window_title,
+    const QPointF &window_pos)
+{
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
@@ -52,12 +55,9 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   setGeometry(window_geometry);
 
   d->mFrame->setLabelName("Progress Dialog");
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground, true);
-  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow, true);
-  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType, true);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle, true);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
-  d->mFrame->setWindowTitle(window_title);
+  d->mFrame->setWindowFlag(UI::Window::kRenderBackground, true);
+  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType, true);
+  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow, true);
 
   d->m_task_completed = 0;
 
@@ -91,17 +91,21 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
 QVariantMap ProgressDialogActivity::result() const { return QVariantMap(); }
 
 void ProgressDialogActivity::updateAttribute(const QString &name,
-                                             const QVariant &data) {
-  if (!d->mFrame)
+    const QVariant &data)
+{
+  if (!d->mFrame) {
     return;
+  }
 
-  if (d->m_task_completed)
+  if (d->m_task_completed) {
     return;
+  }
 
   float progress = data.toFloat();
 
-  if (d->m_progress_bar_widget)
+  if (d->m_progress_bar_widget) {
     d->m_progress_bar_widget->setValue(progress);
+  }
 
   if (d->mMax == progress) {
     // this->onWidgetClosed(d->mFrame);
@@ -112,12 +116,14 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
 
 UI::UIWidget *ProgressDialogActivity::window() const { return d->mFrame; }
 
-void ProgressDialogActivity::onWidgetClosed(UI::UIWidget *widget) {
+void ProgressDialogActivity::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
 
-void ProgressDialogActivity::onHideAnimationFinished() {
+void ProgressDialogActivity::onHideAnimationFinished()
+{
   d->m_task_completed = 1;
   Q_EMIT finished();
 }

@@ -22,10 +22,11 @@
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DesktopActivity>
-InputDialogActivityInterface::activity() {
+InputDialogActivityInterface::activity()
+{
   QSharedPointer<UI::DesktopActivity> obj =
-      QSharedPointer<UI::DesktopActivity>(new InputDialogActivityData(),
-                                                 &QObject::deleteLater);
+    QSharedPointer<UI::DesktopActivity>(new InputDialogActivityData(),
+                                        &QObject::deleteLater);
 
   return obj;
 }

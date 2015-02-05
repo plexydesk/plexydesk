@@ -36,7 +36,8 @@
 #include <button.h>
 #include <texteditor.h>
 
-class InputDialogActivityData::PrivateInputDialogActivity {
+class InputDialogActivityData::PrivateInputDialogActivity
+{
 public:
   PrivateInputDialogActivity() {}
   ~PrivateInputDialogActivity() {}
@@ -65,7 +66,8 @@ public:
 };
 
 InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateInputDialogActivity) {
+  : UI::DesktopActivity(object), d(new PrivateInputDialogActivity)
+{
   d->mStyle = UI::Theme::instance()->defaultDesktopStyle();
   d->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
 }
@@ -73,8 +75,9 @@ InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
 InputDialogActivityData::~InputDialogActivityData() { delete d; }
 
 void InputDialogActivityData::createWindow(const QRectF &window_geometry,
-                                           const QString &window_title,
-                                           const QPointF &window_pos) {
+    const QString &window_title,
+    const QPointF &window_pos)
+{
   if (hasAttribute("geometry")) {
     d->mBoundingRect = attributes()["geometry"].toRect();
   } else {
@@ -87,15 +90,9 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
 
-  if (hasAttribute("title")) {
-    d->mFrame->setWindowTitle(attributes()["title"].toString());
-  }
-
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->mFrame->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
+  d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UI::Window::kRenderDropShadow);
 
   d->mBackgroundEffect = new QGraphicsBlurEffect(this);
   d->mBackgroundEffect->setBlurHints(QGraphicsBlurEffect::PerformanceHint);
@@ -118,7 +115,7 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   QRectF _editorRect(0.0, 0.0, geometry().width(),
                      geometry().height() -
-                         (96 + d->mOkButton->boundingRect().height()));
+                     (96 + d->mOkButton->boundingRect().height()));
   d->mEditor = new UI::TextEditor(d->mLayoutBase);
   d->mVLayout->addItem(d->mEditor);
 
@@ -149,7 +146,8 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
 QString InputDialogActivityData::getErrorMessage() const { return QString(); }
 
-QVariantMap InputDialogActivityData::activityResult() const {
+QVariantMap InputDialogActivityData::activityResult() const
+{
   QVariantMap rv;
   rv["text"] = QVariant(d->mCurrentText);
   return rv;
@@ -161,14 +159,16 @@ QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
 UI::UIWidget *InputDialogActivityData::window() const { return d->mFrame; }
 
-void InputDialogActivityData::onWidgetClosed(UI::UIWidget *widget) {
+void InputDialogActivityData::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   discardActivity();
 }
 
 void InputDialogActivityData::onMotionAnimFinished() { Q_EMIT finished(); }
 
-void InputDialogActivityData::onOkButtonPressed() {
+void InputDialogActivityData::onOkButtonPressed()
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   d->mCurrentText = d->mEditor->text();
   Q_EMIT finished();
@@ -177,7 +177,8 @@ void InputDialogActivityData::onOkButtonPressed() {
 
 void InputDialogActivityData::paint(QPainter *painter,
                                     const QStyleOptionGraphicsItem *option,
-                                    QWidget *widget) {
+                                    QWidget *widget)
+{
   /*
   if (d->mStyle) {
       UI::StyleFeatures feature;

@@ -20,9 +20,11 @@
 #include <QtCore>
 #include <QtGui>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 VideoWidget::VideoWidget(const QRectF &rect, QWidget *widget)
-    : DesktopWidget(rect, widget) {
+  : DesktopWidget(rect, widget)
+{
   setDockImage(QPixmap(applicationDirPath() +
                        "/share/plexy/skins/widgets/base-widget/pila.png"));
   cover = QImage(200, 200, QImage::Format_ARGB32_Premultiplied);
@@ -31,20 +33,23 @@ VideoWidget::VideoWidget(const QRectF &rect, QWidget *widget)
 
 VideoWidget::~VideoWidget() {}
 
-void VideoWidget::setFrameImage(QImage &img) {
+void VideoWidget::setFrameImage(QImage &img)
+{
   video = img;
   update();
 }
 
 void VideoWidget::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
-                               QWidget *widget) {
+                               QWidget *widget)
+{
   QRectF r = e->exposedRect;
   p->drawImage(QRectF(20, 20, r.width() - 40, r.height() - 40), video);
 }
 
 void VideoWidget::paintExtDockFace(QPainter *p,
                                    const QStyleOptionGraphicsItem *e,
-                                   QWidget *widget) {
+                                   QWidget *widget)
+{
   QRectF r = e->exposedRect;
   p->drawImage(QRectF(20, 20, r.width() - 40, r.height() - 40), cover);
 }

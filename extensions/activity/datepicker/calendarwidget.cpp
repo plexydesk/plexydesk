@@ -10,7 +10,8 @@
 #include "datecellfactory.h"
 #include <components/dialwidget.h>
 
-class CalendarWidget::PrivateCalendarWidget {
+class CalendarWidget::PrivateCalendarWidget
+{
 public:
   PrivateCalendarWidget() {}
   ~PrivateCalendarWidget() {}
@@ -41,7 +42,8 @@ public:
 };
 
 CalendarWidget::CalendarWidget(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateCalendarWidget) {
+  : UI::UIWidget(parent), d(new PrivateCalendarWidget)
+{
 
   d->mHour = 0;
   d->mMin = 0;
@@ -62,11 +64,11 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   d->mNextBtn->setLable("Next");
   d->mNextBtn->setPixmap(
-      UI::Theme::instance()->drawable("pd_next_icon_white.png", "mdpi"));
+    UI::Theme::instance()->drawable("pd_next_icon_white.png", "mdpi"));
 
   d->mPrevBtn->setLable("Previous");
   d->mPrevBtn->setPixmap(
-      UI::Theme::instance()->drawable("pd_prev_icon_white.png", "mdpi"));
+    UI::Theme::instance()->drawable("pd_prev_icon_white.png", "mdpi"));
 
   d->mPrevBtn->setSize(QSize(24, 24));
   d->mNextBtn->setSize(QSize(24, 24));
@@ -77,9 +79,9 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mYearLable->setLabelStyle(Qt::transparent, Qt::white);
   d->mYearLable->setFontSize(14);
   d->mYearLable->setLabel(
-      QString("%1 %2")
-          .arg(QDate::longMonthName(QDate::currentDate().month()))
-          .arg(QDate::currentDate().year()));
+    QString("%1 %2")
+    .arg(QDate::longMonthName(QDate::currentDate().month()))
+    .arg(QDate::currentDate().year()));
 
   d->mLayout->addItem(d->mPrevBtn);
   d->mLayout->addItem(d->mYearLable);
@@ -89,7 +91,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   connect(d->mPrevBtn, SIGNAL(clicked()), this, SLOT(onPrevClicked()));
 
   d->mFrame = new UI::UIWidget(this);
-  d->mFrame->setWindowFlag(UI::UIWidget::kRenderBackground, false);
+  d->mFrame->setWindowFlag(UI::Window::kRenderBackground, false);
   d->mFrame->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
 
@@ -157,10 +159,10 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   d->mOkBtn = new UI::ImageButton(this);
   d->mOkBtn->setPixmap(
-      UI::Theme::instance()->drawable("pd_arrow_icon.png", "mdpi"));
+    UI::Theme::instance()->drawable("pd_arrow_icon.png", "mdpi"));
   d->mOkBtn->setSize(QSize(48, 48));
   d->mOkBtn->setPos(this->boundingRect().width() -
-                        d->mOkBtn->boundingRect().width(),
+                    d->mOkBtn->boundingRect().width(),
                     d->mTimeLable->pos().y() + 10);
   d->mOkBtn->show();
 
@@ -172,12 +174,13 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   for (int s = 0; s < 43; s++) {
     DateCellFactory *_delegate =
-        dynamic_cast<DateCellFactory *>(d->mDayTable->model());
+      dynamic_cast<DateCellFactory *>(d->mDayTable->model());
 
     TableViewItem *com = _delegate->itemAt(s);
 
-    if (!com)
+    if (!com) {
       continue;
+    }
 
     connect(com, SIGNAL(clicked(TableViewItem *)), this, SLOT(onCellClicked()));
   }
@@ -185,20 +188,23 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
 CalendarWidget::~CalendarWidget() { delete d; }
 
-void CalendarWidget::clearTableValues() {
+void CalendarWidget::clearTableValues()
+{
   for (int i = 0; i < 43; i++) {
     DateCellFactory *_delegate =
-        dynamic_cast<DateCellFactory *>(d->mDayTable->model());
+      dynamic_cast<DateCellFactory *>(d->mDayTable->model());
 
     TableViewItem *com = _delegate->itemAt(i);
 
-    if (!com)
+    if (!com) {
       continue;
+    }
 
     DateCell *cell = qobject_cast<DateCell *>(com);
 
-    if (!cell)
+    if (!cell) {
       continue;
+    }
 
     qDebug() << Q_FUNC_INFO << "Blank Label;";
     cell->setLabel("");
@@ -207,45 +213,53 @@ void CalendarWidget::clearTableValues() {
 
 QDate CalendarWidget::currentDate() const { return d->mCurrentDate; }
 
-uint CalendarWidget::currentMinute() const {
+uint CalendarWidget::currentMinute() const
+{
   return d->mClockMinWidget->currentValue();
 }
 
-uint CalendarWidget::currentHour() const {
+uint CalendarWidget::currentHour() const
+{
   return d->mClockHourWidget->currentValue();
 }
 
-void CalendarWidget::setBackgroundImage(const QImage &img) {
+void CalendarWidget::setBackgroundImage(const QImage &img)
+{
   d->mBackgroundImage = img;
   update();
 }
 
-void CalendarWidget::changeDate(const QDate &date) {
+void CalendarWidget::changeDate(const QDate &date)
+{
   clearTableValues();
   for (int s = date.dayOfWeek(); s < 43; s++) {
     DateCellFactory *_delegate =
-        qobject_cast<DateCellFactory *>(d->mDayTable->model());
+      qobject_cast<DateCellFactory *>(d->mDayTable->model());
 
     TableViewItem *com = _delegate->itemAt(s);
 
-    if (!com)
+    if (!com) {
       continue;
+    }
 
     DateCell *cell = qobject_cast<DateCell *>(com);
 
-    if (!cell)
+    if (!cell) {
       continue;
+    }
 
     int value = s - date.dayOfWeek() + 1;
-    if (value > date.daysInMonth())
+    if (value > date.daysInMonth()) {
       continue;
+    }
 
     qDebug() << Q_FUNC_INFO << "Value of date:;" << value;
     cell->setLabel(QString("%1").arg(value));
   }
 }
 
-void CalendarWidget::onNextClicked() {
+void CalendarWidget::onNextClicked()
+{
   int currentMonth = d->mCurrentDate.month();
   int currentYear = d->mCurrentDate.year();
   int currentDay = d->mCurrentDate.day();
@@ -260,12 +274,13 @@ void CalendarWidget::onNextClicked() {
   d->mCurrentDate.setDate(currentYear, currentMonth, currentDay);
   update();
   d->mYearLable->setLabel(
-      QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
-          d->mCurrentDate.year()));
+    QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
+      d->mCurrentDate.year()));
   changeDate(d->mCurrentDate);
 }
 
-void CalendarWidget::onPrevClicked() {
+void CalendarWidget::onPrevClicked()
+{
   int currentMonth = d->mCurrentDate.month();
   int currentYear = d->mCurrentDate.year();
   int currentDay = d->mCurrentDate.day();
@@ -280,12 +295,13 @@ void CalendarWidget::onPrevClicked() {
   d->mCurrentDate.setDate(currentYear, currentMonth, currentDay);
   update();
   d->mYearLable->setLabel(
-      QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
-          d->mCurrentDate.year()));
+    QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
+      d->mCurrentDate.year()));
   changeDate(d->mCurrentDate);
 }
 
-void CalendarWidget::onHourValueChanged(float value) {
+void CalendarWidget::onHourValueChanged(float value)
+{
   d->mHour = value;
 
   if (value < 10) {
@@ -297,7 +313,8 @@ void CalendarWidget::onHourValueChanged(float value) {
   d->mTimeLable->setLabel(QString(d->mHourLable + ":" + d->mMinLable));
 }
 
-void CalendarWidget::onMinValueChanged(float value) {
+void CalendarWidget::onMinValueChanged(float value)
+{
   d->mMin = value;
 
   if (value < 10) {
@@ -309,7 +326,8 @@ void CalendarWidget::onMinValueChanged(float value) {
   d->mTimeLable->setLabel(QString(d->mHourLable + ":" + d->mMinLable));
 }
 
-void CalendarWidget::onCellClicked() {
+void CalendarWidget::onCellClicked()
+{
   if (sender()) {
     DateCell *cell = qobject_cast<DateCell *>(sender());
     if (cell) {
@@ -324,7 +342,8 @@ void CalendarWidget::onCellClicked() {
 
 void CalendarWidget::onOkButtonClicked() { Q_EMIT done(); }
 
-void CalendarWidget::paintView(QPainter *painter, const QRectF &rect) {
+void CalendarWidget::paintView(QPainter *painter, const QRectF &rect)
+{
   painter->save();
 
   painter->setRenderHint(QPainter::Antialiasing);

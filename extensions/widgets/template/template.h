@@ -27,7 +27,8 @@
 #include <abstractdesktopwidget.h>
 #include <QtNetwork>
 
-class TemplateControllerImpl : public PlexyDesk::ControllerInterface {
+class TemplateControllerImpl : public PlexyDesk::ControllerInterface
+{
   Q_OBJECT
 
 public:

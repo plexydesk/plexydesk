@@ -48,23 +48,25 @@
 
 #include "shaders_global.h"
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 class ShaderEffectBuffer;
 
-class SHADERSSHARED_EXPORT ShaderEffectSource : public QDeclarativeItem {
+class SHADERSSHARED_EXPORT ShaderEffectSource : public QDeclarativeItem
+{
   Q_OBJECT
   Q_PROPERTY(QDeclarativeItem *sourceItem READ sourceItem WRITE setSourceItem
-                 NOTIFY sourceItemChanged)
+             NOTIFY sourceItemChanged)
   Q_PROPERTY(QRectF sourceRect READ sourceRect WRITE setSourceRect NOTIFY
-                 sourceRectChanged)
+             sourceRectChanged)
   Q_PROPERTY(QSize textureSize READ textureSize WRITE setTextureSize NOTIFY
-                 textureSizeChanged)
+             textureSizeChanged)
   Q_PROPERTY(bool live READ isLive WRITE setLive NOTIFY liveChanged)
   Q_PROPERTY(bool hideSource READ hideSource WRITE setHideSource NOTIFY
-                 hideSourceChanged)
+             hideSourceChanged)
   Q_PROPERTY(WrapMode wrapMode READ wrapMode WRITE setWrapMode NOTIFY
-                 wrapModeChanged)
+             wrapModeChanged)
   Q_ENUMS(WrapMode)
   Q_ENUMS(Format)
 
@@ -79,7 +81,8 @@ public:
   QDeclarativeItem *sourceItem() const { return m_sourceItem.data(); }
   void setSourceItem(QDeclarativeItem *item);
 
-  QRectF sourceRect() const {
+  QRectF sourceRect() const
+  {
     return m_sourceRect;
   };
   void setSourceRect(const QRectF &rect);
@@ -93,7 +96,8 @@ public:
   bool hideSource() const { return m_hideSource; }
   void setHideSource(bool hide);
 
-  WrapMode wrapMode() const {
+  WrapMode wrapMode() const
+  {
     return m_wrapMode;
   };
   void setWrapMode(WrapMode mode);

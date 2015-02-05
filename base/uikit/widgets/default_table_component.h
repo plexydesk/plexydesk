@@ -5,7 +5,8 @@
 #include <plexydesk_ui_exports.h>
 
 class DECL_UI_KIT_EXPORT DefaultTableComponent
-    : public UI::TableViewItem {
+  : public UI::TableViewItem
+{
   Q_OBJECT
 
 public:

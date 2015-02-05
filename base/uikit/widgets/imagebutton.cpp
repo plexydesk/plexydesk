@@ -9,14 +9,18 @@
 
 #include <QDebug>
 
-namespace UI {
+namespace UI
+{
 
-class ImageButton::PrivateImageButton {
+class ImageButton::PrivateImageButton
+{
 public:
   PrivateImageButton() {}
-  ~PrivateImageButton() {
-    if (mZoomAnimation)
+  ~PrivateImageButton()
+  {
+    if (mZoomAnimation) {
       delete mZoomAnimation;
+    }
   }
 
   QPixmap mPixmap;
@@ -26,26 +30,31 @@ public:
   QColor mBgColor;
 };
 
-void ImageButton::createZoomAnimation() {
-  if (!d->mZoomAnimation)
+void ImageButton::createZoomAnimation()
+{
+  if (!d->mZoomAnimation) {
     return;
+  }
 
   d->mZoomAnimation->setDuration(100);
   d->mZoomAnimation->setStartValue(1.0);
   d->mZoomAnimation->setEndValue(1.1);
 }
 
-void ImageButton::setBackgroundColor(const QColor &color) {
+void ImageButton::setBackgroundColor(const QColor &color)
+{
   d->mBgColor = color;
   update();
 }
 
-StylePtr ImageButton::style() const {
+StylePtr ImageButton::style() const
+{
   return Theme::instance()->defaultDesktopStyle();
 }
 
 ImageButton::ImageButton(QGraphicsObject *parent)
-    : UIWidget(parent), d(new PrivateImageButton) {
+  : UIWidget(parent), d(new PrivateImageButton)
+{
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   setAcceptHoverEvents(true);
@@ -64,16 +73,19 @@ ImageButton::ImageButton(QGraphicsObject *parent)
 
 ImageButton::~ImageButton() { delete d; }
 
-void ImageButton::setSize(const QSize &size) {
+void ImageButton::setSize(const QSize &size)
+{
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 }
 
 QSizeF ImageButton::sizeHint(Qt::SizeHint which,
-                             const QSizeF &constraint) const {
+                             const QSizeF &constraint) const
+{
   return geometry().size();
 }
 
-void ImageButton::setPixmap(const QPixmap &pixmap) {
+void ImageButton::setPixmap(const QPixmap &pixmap)
+{
   d->mPixmap = pixmap;
   // QGraphicsItem::setTransformOriginPoint(boundingRect().center());
 }
@@ -86,7 +98,8 @@ void ImageButton::onZoomDone() {}
 
 void ImageButton::onZoomOutDone() {}
 
-void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
     d->mZoomAnimation->start();
@@ -95,12 +108,14 @@ void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   Q_EMIT clicked();
 }
 
-void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   event->accept();
   Q_EMIT selected(true);
 }
 
-void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
   if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Forward);
     d->mZoomAnimation->start();
@@ -109,7 +124,8 @@ void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
   event->accept();
 }
 
-void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
   if (scale() > 1.0) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
     d->mZoomAnimation->start();
@@ -120,7 +136,8 @@ void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
   Q_EMIT selected(false);
 }
 
-void ImageButton::paintView(QPainter *painter, const QRectF &rect) {
+void ImageButton::paintView(QPainter *painter, const QRectF &rect)
+{
   painter->save();
 
   painter->setRenderHints(QPainter::SmoothPixmapTransform |

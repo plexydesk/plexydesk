@@ -29,7 +29,8 @@
 class QLineEdit;
 class QWidget;
 
-class DirectoryController : public UI::ViewController {
+class DirectoryController : public UI::ViewController
+{
   Q_OBJECT
 
 public:

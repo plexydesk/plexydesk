@@ -6,7 +6,8 @@
 
 class FolderItem;
 
-class FolderProvider : public UI::TableModel {
+class FolderProvider : public UI::TableModel
+{
   Q_OBJECT
 public:
   FolderProvider(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -25,7 +26,7 @@ public:
   virtual float rightMargin() const;
 
   UI::UIWidget *loadWidgetControlllerByName(
-      const QString &controllerName) const;
+    const QString &controllerName) const;
 
   UI::DataSourcePtr loadDataSourceEngine(const QString &engine);
 

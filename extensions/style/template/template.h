@@ -28,7 +28,8 @@
 
 using namespace PlexyDesk;
 
-class TemplateStyle : public PlexyDesk::Style {
+class TemplateStyle : public PlexyDesk::Style
+{
   Q_OBJECT
 
 public:
@@ -43,7 +44,7 @@ public:
                                        const PlexyDesk::StyleFeatures &feature,
                                        const QString &text, QPainter *painter);
   virtual PlexyDesk::StyleFeatures controlElementFeatures(
-      ControlElement element = ControlElement());
+    ControlElement element = ControlElement());
 
 private:
   class PrivateTemplate;

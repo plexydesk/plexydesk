@@ -5,9 +5,11 @@
 #include <QImage>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 
-class QuetzalSocialKit_EXPORT AsyncImageCreator : public QThread {
+class QuetzalSocialKit_EXPORT AsyncImageCreator : public QThread
+{
   Q_OBJECT
 public:
   explicit AsyncImageCreator(QObject *parent = 0);

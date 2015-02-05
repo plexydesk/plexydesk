@@ -6,7 +6,8 @@
 
 using namespace UI;
 
-class DECL_UI_KIT_EXPORT DefaultTableModel : public TableModel {
+class DECL_UI_KIT_EXPORT DefaultTableModel : public TableModel
+{
   Q_OBJECT
 
 public:

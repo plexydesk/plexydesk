@@ -30,7 +30,8 @@
 // plexy
 #include <datainterface.h>
 
-class UtubeData : public PlexyDesk::DataPlugin {
+class UtubeData : public PlexyDesk::DataPlugin
+{
   Q_OBJECT
 
 public:

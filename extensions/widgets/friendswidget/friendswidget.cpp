@@ -44,21 +44,24 @@
 #include <QBitmap>
 #include <QPaintEvent>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 FriendsWidget::FriendsWidget(const QRectF &rect, QWidget *widget)
-    : DesktopWidget(rect, widget) {
+  : DesktopWidget(rect, widget)
+{
   mShade = 0;
   setPath(QDir::toNativeSeparators(
-      PlexyDesk::Config::getInstance()->plexydeskBasePath() +
-      "/share/plexy/theme/skins/default/widget/friendswidget"));
+            PlexyDesk::Config::getInstance()->plexydeskBasePath() +
+            "/share/plexy/theme/skins/default/widget/friendswidget"));
   setDockImage(QPixmap(mPrefix + "icon.png"));
   drawFriendsWidget();
 }
 
 void FriendsWidget::setPath(const QString &path) { mPrefix = path + "/"; }
 
-void FriendsWidget::drawFriendsWidget() {
+void FriendsWidget::drawFriendsWidget()
+{
   // Friends
   FriendItem *fitem = new FriendItem(this);
   fitem->setPos(18, 50);
@@ -143,7 +146,8 @@ void FriendsWidget::drawFriendsWidget() {
 FriendsWidget::~FriendsWidget() {}
 
 void FriendsWidget::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
-                                 QWidget *) {
+                                 QWidget *)
+{
   qDebug() << "drawing face" << __PRETTY_FUNCTION__ << __LINE__;
   QRectF r = e->exposedRect;
 
@@ -185,7 +189,8 @@ void FriendsWidget::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
 
 void FriendsWidget::paintExtDockFace(QPainter *p,
                                      const QStyleOptionGraphicsItem *e,
-                                     QWidget *) {
+                                     QWidget *)
+{
   qDebug() << "drawing dock" << __PRETTY_FUNCTION__ << __LINE__;
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);
@@ -207,7 +212,8 @@ void FriendsWidget::paintExtDockFace(QPainter *p,
 
 void FriendsWidget::paintExtBackFace(QPainter *p,
                                      const QStyleOptionGraphicsItem *e,
-                                     QWidget *) {
+                                     QWidget *)
+{
   qDebug() << "drawing back face" << __PRETTY_FUNCTION__ << __LINE__;
   QRectF r = e->exposedRect;
 

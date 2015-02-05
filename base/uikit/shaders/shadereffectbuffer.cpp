@@ -41,10 +41,11 @@
 
 #include "shadereffectbuffer.h"
 
-namespace PlexyDesk {
-ShaderEffectBuffer::ShaderEffectBuffer(const QSize& size,
-                                       const QGLFramebufferObjectFormat& format)
-    : QGLFramebufferObject(size, format) {}
+namespace PlexyDesk
+{
+ShaderEffectBuffer::ShaderEffectBuffer(const QSize &size,
+                                       const QGLFramebufferObjectFormat &format)
+  : QGLFramebufferObject(size, format) {}
 
 ShaderEffectBuffer::~ShaderEffectBuffer() {}
 }

@@ -46,11 +46,13 @@ action.
 \returns A list of action label supported by the widget  plugin
 */
 
-namespace UI {
+namespace UI
+{
 class UIWidget;
 typedef QList<QAction *> ActionList;
 
-class DECL_UI_KIT_EXPORT ViewController : public QObject {
+class DECL_UI_KIT_EXPORT ViewController : public QObject
+{
   Q_OBJECT
 
 public:
@@ -59,13 +61,13 @@ public:
       *
       */
   virtual ~ViewController();
-    /**
-      * @brief once the controller is loaded this method will be called by the
-      * loader. initilisization of the controller has to be done here. by
-      * inheriting
-      * this class.
-      *
-      */
+  /**
+    * @brief once the controller is loaded this method will be called by the
+    * loader. initilisization of the controller has to be done here. by
+    * inheriting
+    * this class.
+    *
+    */
   virtual void init() = 0;
   /**
       * @brief
@@ -159,9 +161,9 @@ public:
       * @return DesktopActivityPtr Returns a Activity Pointer
       */
   virtual UI::DesktopActivityPtr activity(const QString &name,
-                                      const QRectF &geometry = QRectF(),
-                                      const QPointF &pos = QPoint(0.0, 0.0),
-                                      const QString &window_title = QString());
+                                          const QRectF &geometry = QRectF(),
+                                          const QPointF &pos = QPoint(0.0, 0.0),
+                                          const QString &window_title = QString());
 
   virtual QString icon() const = 0;
 

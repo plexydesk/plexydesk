@@ -5,7 +5,8 @@
 #include <extensionmanager.h>
 #include <controllerinterface.h>
 
-class CellsProvider::CellsProviderPrivate {
+class CellsProvider::CellsProviderPrivate
+{
 public:
   CellsProviderPrivate() {}
   ~CellsProviderPrivate() {}
@@ -16,13 +17,14 @@ public:
 };
 
 CellsProvider::CellsProvider(const QRectF &rect, QGraphicsObject *parent)
-    : PlexyDesk::DelegateInterface(parent), d(new CellsProviderPrivate) {}
+  : PlexyDesk::DelegateInterface(parent), d(new CellsProviderPrivate) {}
 
 CellsProvider::~CellsProvider() { delete d; }
 
-bool CellsProvider::init() {
+bool CellsProvider::init()
+{
   PlexyDesk::DataSourcePtr geoLocationSource =
-      this->loadDataSourceEngine("locationengine");
+    this->loadDataSourceEngine("locationengine");
 
   if (geoLocationSource.data()) {
     connect(geoLocationSource.data(), SIGNAL(ready()), this,
@@ -32,7 +34,7 @@ bool CellsProvider::init() {
   }
 
   PlexyDesk::DataSourcePtr googlePlacesSource =
-      this->loadDataSourceEngine("googleplacesengine");
+    this->loadDataSourceEngine("googleplacesengine");
 
   if (googlePlacesSource.data()) {
     connect(googlePlacesSource.data(), SIGNAL(ready()), this,
@@ -63,11 +65,13 @@ bool CellsProvider::init() {
   return 1;
 }
 
-QList<PlexyDesk::TableViewItem *> CellsProvider::componentList() {
+QList<PlexyDesk::TableViewItem *> CellsProvider::componentList()
+{
   return mCellList;
 }
 
-float CellsProvider::margin() const {
+float CellsProvider::margin() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -75,7 +79,8 @@ float CellsProvider::margin() const {
   return 5.0;
 }
 
-float CellsProvider::padding() const {
+float CellsProvider::padding() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -83,7 +88,8 @@ float CellsProvider::padding() const {
   return 5.0;
 }
 
-float CellsProvider::leftMargin() const {
+float CellsProvider::leftMargin() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -91,7 +97,8 @@ float CellsProvider::leftMargin() const {
   return 5.0;
 }
 
-float CellsProvider::rightMargin() const {
+float CellsProvider::rightMargin() const
+{
 #ifdef Q_WS_QPA
   return 20.0;
 #endif
@@ -127,10 +134,11 @@ controllerName;
 */
 
 PlexyDesk::DataSourcePtr CellsProvider::loadDataSourceEngine(
-    const QString &engine) {
+  const QString &engine)
+{
   QSharedPointer<PlexyDesk::DataSource> dataSource =
-      PlexyDesk::ExtensionManager::instance()->desktopDataEngineExtension(
-          engine);
+    PlexyDesk::ExtensionManager::instance()->desktopDataEngineExtension(
+      engine);
 
   // connect(d->mDataSource.data(), SIGNAL(ready()), this, SLOT(onReady()));
   d->mEngines[engine] = dataSource;
@@ -140,7 +148,8 @@ PlexyDesk::DataSourcePtr CellsProvider::loadDataSourceEngine(
 
 void CellsProvider::onGeoLocationReady() {}
 
-void CellsProvider::onLocationSourceUpdated(const QVariantMap &data) {
+void CellsProvider::onLocationSourceUpdated(const QVariantMap &data)
+{
 
   Q_EMIT updated();
 }

@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class LocatoinData : public PlexyDesk::DataSource {
+class LocatoinData : public PlexyDesk::DataSource
+{
   Q_OBJECT
 
 public:

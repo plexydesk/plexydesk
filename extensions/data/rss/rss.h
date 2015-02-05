@@ -30,7 +30,8 @@
 #include <QMap>
 #include <QList>
 
-class VISIBLE_SYM RssData : public PlexyDesk::DataPlugin {
+class VISIBLE_SYM RssData : public PlexyDesk::DataPlugin
+{
   Q_OBJECT
 
 public:

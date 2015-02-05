@@ -58,11 +58,12 @@ class PictureFlowPrivate;
    placed at the center.
 
  */
-class PictureFlow : public QWidget {
+class PictureFlow : public QWidget
+{
   Q_OBJECT
 
   Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE
-                 setBackgroundColor)
+             setBackgroundColor)
   Q_PROPERTY(QSize slideSize READ slideSize WRITE setSlideSize)
   Q_PROPERTY(int slideCount READ slideCount)
   Q_PROPERTY(int centerIndex READ centerIndex WRITE setCenterIndex)

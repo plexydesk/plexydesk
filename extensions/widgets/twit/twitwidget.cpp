@@ -31,13 +31,15 @@
 #include <QXmlQuery>
 #include <QXmlSerializer>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 TwitWidget::TwitWidget(const QRectF &rect, QWidget *widget)
-    : PlexyDesk::ListView(rect, widget) {
+  : PlexyDesk::ListView(rect, widget)
+{
   utubeEngine =
-      (PlexyDesk::DataPlugin *)PlexyDesk::PluginLoader::getInstance()->instance(
-          "restengine");
+    (PlexyDesk::DataPlugin *)PlexyDesk::PluginLoader::getInstance()->instance(
+      "restengine");
 
   QString account;
   QString pass;
@@ -58,7 +60,8 @@ TwitWidget::TwitWidget(const QRectF &rect, QWidget *widget)
 
 TwitWidget::~TwitWidget() {}
 
-void TwitWidget::onDataReady() {
+void TwitWidget::onDataReady()
+{
   QXmlQuery query;
   QBuffer input;
   QByteArray data = utubeEngine->readAll()["data"].toByteArray();
@@ -76,11 +79,11 @@ void TwitWidget::onDataReady() {
   QXmlSerializer serializer(query, &result);
 
   query.setQuery(precon + "for $i in doc($Timeline)/statuses/status/text "
-                          "return <text>{$i}</text> ");
+                 "return <text>{$i}</text> ");
   query.evaluateTo(&serializer);
   QString allText(out);
   QString newText =
-      allText.replace("<text><text>", "^^~").replace("</text></text>", "");
+    allText.replace("<text><text>", "^^~").replace("</text></text>", "");
 
   QStringList items = newText.split("^^~");
 
@@ -95,14 +98,16 @@ void TwitWidget::onDataReady() {
   }
 }
 
-void TwitWidget::readConfig(QString &user, QString &pass) {
+void TwitWidget::readConfig(QString &user, QString &pass)
+{
   Config::getInstance()->beginGroup("twitter");
   user = Config::getInstance()->value("account").toString();
   pass = Config::getInstance()->value("password").toString();
   Config::getInstance()->endGroup();
 }
 
-void TwitWidget::data(QVariantMap &data) {
+void TwitWidget::data(QVariantMap &data)
+{
   qDebug() << Q_FUNC_INFO << data["data"];
 
   /*

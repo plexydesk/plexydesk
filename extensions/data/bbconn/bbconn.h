@@ -27,7 +27,8 @@
 
 #include "connection.h"
 
-class BBConnData : public PlexyDesk::DataSource {
+class BBConnData : public PlexyDesk::DataSource
+{
   Q_OBJECT
 
 public:

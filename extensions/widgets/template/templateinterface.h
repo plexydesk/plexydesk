@@ -25,7 +25,8 @@
 #include <controllerplugininterface.h>
 
 class TemplateInterface : public QObject,
-                          public PlexyDesk::ControllerPluginInterface {
+  public PlexyDesk::ControllerPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.template")

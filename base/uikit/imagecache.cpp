@@ -25,9 +25,11 @@
 
 #include <imagecache.h>
 
-namespace UI {
+namespace UI
+{
 
-class ImageCache::Private {
+class ImageCache::Private
+{
 public:
   Private() {}
   ~Private() {}
@@ -42,21 +44,23 @@ ImageCache::ImageCache() : QObject(0), d(new Private) { load("default"); }
 ImageCache::~ImageCache() { delete d; }
 
 QPixmap ImageCache::requestPixmap(const QString &id, QSize *size,
-                                  const QSize &requestedSize) {
+                                  const QSize &requestedSize)
+{
   if (size->width() <= 0 && size->height() <= 0) {
     return get(id);
   }
   QPixmap rv =
-      get(id).scaled(requestedSize.width(), requestedSize.height(),
-                     Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    get(id).scaled(requestedSize.width(), requestedSize.height(),
+                   Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
   return rv;
 }
 
-void ImageCache::load(const QString &themename) {
+void ImageCache::load(const QString &themename)
+{
   QString prefix =
-      QDir::toNativeSeparators(Config::getInstance()->prefix() +
-                               QLatin1String("/share/plexy/themepack/") +
-                               themename + QLatin1String("/resources/"));
+    QDir::toNativeSeparators(Config::getInstance()->prefix() +
+                             QLatin1String("/share/plexy/themepack/") +
+                             themename + QLatin1String("/resources/"));
 
   QDir dir(prefix);
   dir.setFilter(QDir::Files);
@@ -71,29 +75,34 @@ void ImageCache::load(const QString &themename) {
 }
 
 void ImageCache::addToCached(const QString &imgfile, const QString &filename,
-                             const QString &themename) {
+                             const QString &themename)
+{
   QString prefix =
-      QDir::toNativeSeparators(Config::getInstance()->prefix() +
-                               QLatin1String("/share/plexy/themepack/") +
-                               themename + QLatin1String("/resources/"));
+    QDir::toNativeSeparators(Config::getInstance()->prefix() +
+                             QLatin1String("/share/plexy/themepack/") +
+                             themename + QLatin1String("/resources/"));
 
   QFileInfo file = prefix + imgfile;
   d->fileHash[filename] = file.absoluteFilePath();
 }
 
-QPixmap ImageCache::get(const QString &name) {
+QPixmap ImageCache::get(const QString &name)
+{
   return QPixmap(d->fileHash[name]);
 }
 
-bool ImageCache::isCached(QString &filename) const {
-  if ((d->fileHash[filename]).isNull())
+bool ImageCache::isCached(QString &filename) const
+{
+  if ((d->fileHash[filename]).isNull()) {
     return false;
+  }
 
   return true;
 }
 
 bool ImageCache::drawSvg(QPainter *p, QRectF rect, const QString &file,
-                         const QString &elementId) {
+                         const QString &elementId)
+{
   QString svgFile = d->fileHash[file];
   qDebug() << Q_FUNC_INFO << svgFile;
   QFileInfo fileInfo(svgFile);

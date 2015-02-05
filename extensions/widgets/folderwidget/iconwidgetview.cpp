@@ -11,7 +11,8 @@
 #include "folderprovider.h"
 #include "fileinforview.h"
 
-class IconWidgetView::PrivateIconWidgetView {
+class IconWidgetView::PrivateIconWidgetView
+{
 public:
   PrivateIconWidgetView() {}
   ~PrivateIconWidgetView() { delete mInfoView; }
@@ -22,16 +23,17 @@ public:
 };
 
 IconWidgetView::IconWidgetView(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateIconWidgetView) {
+  : UI::UIWidget(parent), d(new PrivateIconWidgetView)
+{
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setWindowFlag(UI::UIWidget::kRenderBackground, false);
-  this->setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
+  this->setWindowFlag(UI::Window::kRenderBackground, false);
+  this->setWindowFlag(UI::Window::kRenderDropShadow, false);
 
   QRectF rect(0.0, 0.0, 200.0, 200.0);
   QRectF iconViewRect =
-      QRectF(12.0, 32.0, rect.width() - 24.0, rect.height() - 64.0);
+    QRectF(12.0, 32.0, rect.width() - 24.0, rect.height() - 64.0);
   QRectF iconViewRectTable =
-      QRectF(12.0, 32.0, rect.width() - 24.0, rect.height() - 64.0);
+    QRectF(12.0, 32.0, rect.width() - 24.0, rect.height() - 64.0);
   QRectF infoViewRect = QRectF(0.0, 0.0, rect.width(), 40);
 
   d->mInfoView = new FileInforView(this);
@@ -45,8 +47,8 @@ IconWidgetView::IconWidgetView(QGraphicsObject *parent)
   d->mInfoView->setZValue(d->mTableView->zValue() + 1);
 
   d->mInfoView->setSliderPos(
-      QPointF(0.0, rect.height() + 124),
-      QPointF(0.0, d->mTableView->boundingRect().height() - (105)));
+    QPointF(0.0, rect.height() + 124),
+    QPointF(0.0, d->mTableView->boundingRect().height() - (105)));
 
   connect(d->mFolderViewSource, SIGNAL(itemClicked(FolderItem *)), this,
           SLOT(onClicked(FolderItem *)));
@@ -54,11 +56,13 @@ IconWidgetView::IconWidgetView(QGraphicsObject *parent)
 
 IconWidgetView::~IconWidgetView() { delete d; }
 
-void IconWidgetView::setDirectoryPath(const QString &path) {
+void IconWidgetView::setDirectoryPath(const QString &path)
+{
   d->mFolderViewSource->setDirectoryPath(path);
 }
 
-void IconWidgetView::onClicked(FolderItem *item) {
+void IconWidgetView::onClicked(FolderItem *item)
+{
   d->mTableView->clearSelection();
 
   if (item) {

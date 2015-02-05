@@ -44,7 +44,8 @@
 #include "connection.h"
 #include "peermanager.h"
 
-Client::Client(const QString &token) {
+Client::Client(const QString &token)
+{
   qDebug() << Q_FUNC_INFO << "Create Client";
   peerManager = new PeerManager(this);
   peerManager->setServerPort(server.serverPort());
@@ -58,48 +59,58 @@ Client::Client(const QString &token) {
   mToken = token;
 }
 
-void Client::sendMessage(const QString &message) {
-  if (message.isEmpty())
+void Client::sendMessage(const QString &message)
+{
+  if (message.isEmpty()) {
     return;
+  }
 
   QList<Connection *> connections = peers.values();
   foreach(Connection * connection, connections)
   connection->sendMessage(message);
 }
 
-QString Client::nickName() const {
+QString Client::nickName() const
+{
   return QString(peerManager->userName()) + '@' + QHostInfo::localHostName() +
          ':' + QString::number(server.serverPort());
 }
 
-bool Client::hasConnection(const QHostAddress &senderIp, int senderPort) const {
-  if (senderPort == -1)
+bool Client::hasConnection(const QHostAddress &senderIp, int senderPort) const
+{
+  if (senderPort == -1) {
     return peers.contains(senderIp);
+  }
 
-  if (!peers.contains(senderIp))
+  if (!peers.contains(senderIp)) {
     return false;
+  }
 
   QList<Connection *> connections = peers.values(senderIp);
   foreach(Connection * connection, connections) {
 
-    if (!connection)
+    if (!connection) {
       continue;
+    }
 
-    if (connection->peerPort() == senderPort)
+    if (connection->peerPort() == senderPort) {
       return true;
+    }
   }
 
   return false;
 }
 
-void Client::approveGreeting(Connection *connection, bool policy) {
+void Client::approveGreeting(Connection *connection, bool policy)
+{
   if (connection) {
     // approve;
     connection->approveClient(policy);
   }
 }
 
-void Client::newConnection(Connection *connection) {
+void Client::newConnection(Connection *connection)
+{
   qDebug() << Q_FUNC_INFO;
   connection->setGreetingMessage(mToken);
 
@@ -111,37 +122,46 @@ void Client::newConnection(Connection *connection) {
           SIGNAL(greet(QString, Connection *)));
 }
 
-void Client::readyForUse() {
+void Client::readyForUse()
+{
   Connection *connection = qobject_cast<Connection *>(sender());
   if (!connection ||
-      hasConnection(connection->peerAddress(), connection->peerPort()))
+      hasConnection(connection->peerAddress(), connection->peerPort())) {
     return;
+  }
 
   connect(connection, SIGNAL(newMessage(QString, QString)), this,
           SIGNAL(newMessage(QString, QString)));
 
   peers.insert(connection->peerAddress(), connection);
   QString nick = connection->name();
-  if (!nick.isEmpty())
+  if (!nick.isEmpty()) {
     emit newParticipant(nick);
+  }
 }
 
-void Client::disconnected() {
-  if (Connection *connection = qobject_cast<Connection *>(sender()))
+void Client::disconnected()
+{
+  if (Connection *connection = qobject_cast<Connection *>(sender())) {
     removeConnection(connection);
+  }
 }
 
-void Client::connectionError(QAbstractSocket::SocketError /* socketError */) {
-  if (Connection *connection = qobject_cast<Connection *>(sender()))
+void Client::connectionError(QAbstractSocket::SocketError /* socketError */)
+{
+  if (Connection *connection = qobject_cast<Connection *>(sender())) {
     removeConnection(connection);
+  }
 }
 
-void Client::removeConnection(Connection *connection) {
+void Client::removeConnection(Connection *connection)
+{
   if (peers.contains(connection->peerAddress())) {
     peers.remove(connection->peerAddress());
     QString nick = connection->name();
-    if (!nick.isEmpty())
+    if (!nick.isEmpty()) {
       emit participantLeft(nick);
+    }
   }
   connection->deleteLater();
 }

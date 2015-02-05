@@ -46,11 +46,13 @@
 #include <QGraphicsEffect>
 #include "shaders_global.h"
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 class ShaderEffectSource;
 
-class SHADERSSHARED_EXPORT ShaderEffect : public QGraphicsEffect {
+class SHADERSSHARED_EXPORT ShaderEffect : public QGraphicsEffect
+{
   Q_OBJECT
 
 public:

@@ -19,14 +19,16 @@
 #include "rss.h"
 #include <desktopwidget.h>
 
-RssData::RssData(QObject *object) {
+RssData::RssData(QObject *object)
+{
   init();
   mRssTimer = new QTimer(this);
   connect(mRssTimer, SIGNAL(timeout()), this, SLOT(fetch()));
   mRssTimer->start(1000 * 60 * 60);
 }
 
-void RssData::init() {
+void RssData::init()
+{
   mHttp = new QHttp(this);
   connect(mHttp, SIGNAL(readyRead(const QHttpResponseHeader &)), this,
           SLOT(readData(const QHttpResponseHeader &)));
@@ -40,7 +42,8 @@ RssData::~RssData() {}
 
 /** This method will fetch the
  * rss feed from the given URL */
-void RssData::fetch() {
+void RssData::fetch()
+{
   qDebug() << "RSS: Fetching XML..." << endl;
 
   mXml.clear();
@@ -51,7 +54,8 @@ void RssData::fetch() {
   mConnectionId = mHttp->get(url.path());
 }
 
-void RssData::readData(const QHttpResponseHeader &resp) {
+void RssData::readData(const QHttpResponseHeader &resp)
+{
   if (resp.statusCode() != 200) {
     mHttp->abort();
     qDebug() << "RSS: Error." << endl;
@@ -61,7 +65,8 @@ void RssData::readData(const QHttpResponseHeader &resp) {
   }
 }
 
-void RssData::finished(int id, bool error) {
+void RssData::finished(int id, bool error)
+{
   if (error) {
     qDebug() << "RSS: Received error during HTTP fetch." << endl;
   } else if (id == mConnectionId) {
@@ -73,7 +78,8 @@ void RssData::finished(int id, bool error) {
 
 /** This method will parse the
  * XML and add entries to the QList: mRssEntries*/
-void RssData::parseXml() {
+void RssData::parseXml()
+{
   while (!mXml.atEnd()) {
     mXml.readNext();
     if (mXml.isStartElement()) {
@@ -121,12 +127,14 @@ void RssData::parseXml() {
   // emit data(rss);
 }
 
-void RssData::pushData(QVariant &var) {
+void RssData::pushData(QVariant &var)
+{
   mHttp->abort();
   init();
 }
 
-QGraphicsItem *RssData::item() {
+QGraphicsItem *RssData::item()
+{
   /// \todo: null for success compilation only
   return NULL;
 }

@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class TemplateData : public PlexyDesk::DataSource {
+class TemplateData : public PlexyDesk::DataSource
+{
   Q_OBJECT
 
 public:

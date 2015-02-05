@@ -9,9 +9,11 @@
 #include <style.h>
 #include <themepackloader.h>
 
-namespace UI {
+namespace UI
+{
 
-class LineEdit::PrivateLineEdit {
+class LineEdit::PrivateLineEdit
+{
 public:
   typedef enum { NORMAL, FOCUSED, HOVER } EditState;
 
@@ -33,13 +35,14 @@ public:
 };
 
 LineEdit::LineEdit(QGraphicsObject *parent)
-    : UIWidget(parent), d(new PrivateLineEdit) {
+  : UIWidget(parent), d(new PrivateLineEdit)
+{
   d->mState = PrivateLineEdit::NORMAL;
   d->mStyle = Theme::instance()->defaultDesktopStyle();
 
   setSize(
-      QSize(Theme::style()->attrbute("widget", "line_edit_width").toInt(),
-            Theme::style()->attrbute("widget", "line_edit_height").toInt()));
+    QSize(Theme::style()->attrbute("widget", "line_edit_width").toInt(),
+          Theme::style()->attrbute("widget", "line_edit_height").toInt()));
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setAcceptHoverEvents(true);
@@ -54,25 +57,28 @@ QString LineEdit::text() const { return d->mText; }
 
 void LineEdit::style(StylePtr style) { d->mStyle = style; }
 
-void LineEdit::setSize(const QSizeF &size) {
+void LineEdit::setSize(const QSizeF &size)
+{
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 }
 
-QSizeF LineEdit::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
+QSizeF LineEdit::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+{
   return boundingRect().size();
 }
 
 void LineEdit::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                     QWidget * /*widget*/) {
+                     QWidget * /*widget*/)
+{
   switch (d->mState) {
-    case PrivateLineEdit::NORMAL:
-      d->paintNormalEdit(painter, option);
-      break;
-    case PrivateLineEdit::FOCUSED:
-      d->paintFocusedEdit(painter, option);
-      break;
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown State";
+  case PrivateLineEdit::NORMAL:
+    d->paintNormalEdit(painter, option);
+    break;
+  case PrivateLineEdit::FOCUSED:
+    d->paintFocusedEdit(painter, option);
+    break;
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown State";
   }
   QFontMetrics m = painter->fontMetrics();
   int _text_pixel_width = m.width(d->mText) + 1;
@@ -89,31 +95,35 @@ void LineEdit::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   QPointF line2(_text_cursor_width, option->exposedRect.height() - 10);
 
   QPen pen =
-      QPen(QColor(98, 101, 108), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    QPen(QColor(98, 101, 108), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   painter->setPen(pen);
   painter->drawLine(line1, line2);
 }
 
-void LineEdit::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void LineEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   QGraphicsObject::mousePressEvent(event);
   event->accept();
   d->mState = PrivateLineEdit::FOCUSED;
   update();
 }
 
-void LineEdit::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void LineEdit::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   qDebug() << Q_FUNC_INFO << event->pos();
   QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void LineEdit::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+void LineEdit::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
   setCursor(Qt::IBeamCursor);
   d->mState = PrivateLineEdit::FOCUSED;
   update();
   QGraphicsObject::mouseMoveEvent(event);
 }
 
-void LineEdit::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+void LineEdit::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
   setCursor(Qt::IBeamCursor);
   grabKeyboard();
   d->mState = PrivateLineEdit::FOCUSED;
@@ -121,7 +131,8 @@ void LineEdit::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
   QGraphicsItem::hoverEnterEvent(event);
 }
 
-void LineEdit::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+void LineEdit::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
   ungrabKeyboard();
   d->mState = PrivateLineEdit::NORMAL;
   setCursor(Qt::ArrowCursor);
@@ -129,42 +140,49 @@ void LineEdit::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
   QGraphicsObject::hoverLeaveEvent(event);
 }
 
-void LineEdit::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
+void LineEdit::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
   setCursor(Qt::IBeamCursor);
   d->mState = PrivateLineEdit::FOCUSED;
   update();
   QGraphicsObject::hoverMoveEvent(event);
 }
 
-bool LineEdit::eventFilter(QObject *object, QEvent *event) {
+bool LineEdit::eventFilter(QObject *object, QEvent *event)
+{
   if (event->type() == QEvent::KeyPress) {
     QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
     if (keyEvent->key() == Qt::Key_Enter) {
       // Special tab handling
       return true;
-    } else
+    } else {
       return false;
+    }
   }
   return false;
 }
 
-void LineEdit::keyPressEvent(QKeyEvent *event) {
+void LineEdit::keyPressEvent(QKeyEvent *event)
+{
   if (event->key() == Qt::Key_Backspace) {
     d->mText.remove(d->mKeyCursorLeftLoc - 1, 1);
-    if (d->mKeyCursorLeftLoc != 0)
+    if (d->mKeyCursorLeftLoc != 0) {
       d->mKeyCursorLeftLoc--;
+    }
     Q_EMIT text(d->mText);
     update();
     return;
   } else if (event->key() == Qt::Key_Left) {
-    if (d->mKeyCursorLeftLoc != 0)
+    if (d->mKeyCursorLeftLoc != 0) {
       d->mKeyCursorLeftLoc--;
+    }
     update();
     return;
 
   } else if (event->key() == Qt::Key_Right) {
-    if (d->mKeyCursorLeftLoc < d->mText.count())
+    if (d->mKeyCursorLeftLoc < d->mText.count()) {
       d->mKeyCursorLeftLoc++;
+    }
     update();
     return;
   } else if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
@@ -178,7 +196,8 @@ void LineEdit::keyPressEvent(QKeyEvent *event) {
 }
 
 void LineEdit::PrivateLineEdit::paintNormalEdit(
-    QPainter *painter, const QStyleOptionGraphicsItem *option) {
+  QPainter *painter, const QStyleOptionGraphicsItem *option)
+{
   StyleFeatures feature;
   feature.geometry = option->exposedRect;
   feature.render_state = StyleFeatures::kRenderElement;
@@ -192,7 +211,8 @@ void LineEdit::PrivateLineEdit::paintNormalEdit(
 }
 
 void LineEdit::PrivateLineEdit::paintFocusedEdit(
-    QPainter *painter, const QStyleOptionGraphicsItem *option) {
+  QPainter *painter, const QStyleOptionGraphicsItem *option)
+{
   StyleFeatures feature;
   feature.geometry = option->exposedRect;
   feature.render_state = StyleFeatures::kRenderRaised;

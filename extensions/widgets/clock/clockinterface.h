@@ -27,7 +27,8 @@
 #include <controllerplugininterface.h>
 
 class ClockInterface : public QObject,
-                       public UI::ControllerPluginInterface {
+  public UI::ControllerPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(UI::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.clock")

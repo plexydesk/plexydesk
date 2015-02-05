@@ -20,13 +20,15 @@
 #include <QVariant>
 #include <style.h>
 
-namespace UI {
+namespace UI
+{
 
 Style::Style() {}
 
 Style::~Style() {}
 
-QVariant Style::attrbute(const QString &type, const QString &name) const {
+QVariant Style::attrbute(const QString &type, const QString &name) const
+{
   return attributeMap(type)[name];
 }
 }

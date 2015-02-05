@@ -30,7 +30,8 @@
 
 using namespace UI;
 
-class DockControllerImpl : public UI::ViewController {
+class DockControllerImpl : public UI::ViewController
+{
   Q_OBJECT
 
 public:
@@ -88,10 +89,10 @@ private:
   PrivateDock *const d;
 
   UI::DesktopActivityPtr createActivity(const QString &controllerName,
-                                               const QString &activity,
-                                               const QString &title,
-                                               const QPoint &pos,
-                                               const QVariantMap &dataItem);
+                                        const QString &activity,
+                                        const QString &title,
+                                        const QPoint &pos,
+                                        const QVariantMap &dataItem);
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
 };

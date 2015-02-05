@@ -6,8 +6,10 @@
 #include <desktopwidget.h>
 #include "sociotwitterinterface.h"
 
-namespace PlexyDesk {
-class SocioTwitterwidget : public DesktopWidget {
+namespace PlexyDesk
+{
+class SocioTwitterwidget : public DesktopWidget
+{
   Q_OBJECT
 
 public:

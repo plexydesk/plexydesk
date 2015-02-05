@@ -29,11 +29,13 @@
 #include <tableviewcellinterface.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 
 class TableModel;
 
-class DECL_UI_KIT_EXPORT TableView : public UIWidget {
+class DECL_UI_KIT_EXPORT TableView : public UIWidget
+{
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)
 

@@ -2,8 +2,10 @@
 
 #include <QDebug>
 
-namespace UI {
-class DialWidget::PrivateDialWidget {
+namespace UI
+{
+class DialWidget::PrivateDialWidget
+{
 public:
   PrivateDialWidget() {}
   ~PrivateDialWidget() {}
@@ -22,12 +24,11 @@ public:
 };
 
 DialWidget::DialWidget(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateDialWidget) {
-  this->setWindowFlag(UI::UIWidget::kRenderBackground);
-  this->setWindowFlag(UI::UIWidget::kTopLevelWindow, false);
-  this->setWindowFlag(UI::UIWidget::kConvertToWindowType, false);
-  this->setWindowFlag(UI::UIWidget::kRenderWindowTitle, false);
-  this->setWindowFlag(UI::UIWidget::kRenderDropShadow, false);
+  : UI::UIWidget(parent), d(new PrivateDialWidget)
+{
+  this->setWindowFlag(UI::Window::kRenderBackground);
+  this->setWindowFlag(UI::Window::kConvertToWindowType, false);
+  this->setWindowFlag(UI::Window::kRenderDropShadow, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsSelectable, true);
 
@@ -46,60 +47,71 @@ float DialWidget::maxValue() const { return d->mMaxValue; }
 
 float DialWidget::currentValue() const { return d->mProgressValue; }
 
-void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
+void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
+{
   qDebug() << Q_FUNC_INFO << event->pos();
 }
 
-void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   d->mInitPos = mapToScene(event->pos());
   event->accept();
   QGraphicsItem::mousePressEvent(event);
 }
 
-void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   event->accept();
   // QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void DialWidget::PrivateDialWidget::calculateValue() {
+void DialWidget::PrivateDialWidget::calculateValue()
+{
   //
   float decimalValue = (mAngle - mStartAngle) / (mMaxAngle / mMaxValue);
-  if (decimalValue < 0)
+  if (decimalValue < 0) {
     decimalValue += mMaxValue;
+  }
 
   int hours = (int)decimalValue;
 
-  if (hours == mMaxValue)
+  if (hours == mMaxValue) {
     hours = 0;
+  }
 
   mProgressValue = hours;
 }
 
-QString DialWidget::PrivateDialWidget::convertAngleToTimeString(float angle) {
+QString DialWidget::PrivateDialWidget::convertAngleToTimeString(float angle)
+{
   QString time = "";
   float decimalValue = (angle - mStartAngle) / 15.0;
-  if (decimalValue < 0)
+  if (decimalValue < 0) {
     decimalValue += mMaxValue;
+  }
 
   int hours = (int)decimalValue;
 
-  if (hours == mMaxValue)
+  if (hours == mMaxValue) {
     hours = 0;
+  }
 
   float minutes = ((int)angle % (int)15) / 0.25;
 
   return QString("%1:%2").arg(hours).arg(minutes); // time;
 }
 
-void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
   QPointF pos = mapToScene(event->pos());
 
   QLineF line(boundingRect().center(), event->pos());
 
   d->mAngle = line.angle(QLineF(0.0, 0.0, 1.0, 0.0));
 
-  if (line.dy() < 0)
+  if (line.dy() < 0) {
     d->mAngle = d->mMaxAngle - d->mAngle;
+  }
 
   d->mInitPos = pos;
 
@@ -110,7 +122,8 @@ void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
   Q_EMIT value(d->mProgressValue);
 }
 
-void DialWidget::paintView(QPainter *painter, const QRectF &rect) {
+void DialWidget::paintView(QPainter *painter, const QRectF &rect)
+{
   QPen pen;
   pen.setColor(QColor("#F28585"));
   pen.setWidth(4);

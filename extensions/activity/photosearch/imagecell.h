@@ -3,7 +3,8 @@
 
 #include <abstractcellcomponent.h>
 
-class ImageCell : public UI::TableViewItem {
+class ImageCell : public UI::TableViewItem
+{
   Q_OBJECT
 public:
   typedef enum { List = 0, Grid } ItemLayout;

@@ -27,7 +27,8 @@
 
 #include <datastore.h>
 
-class DesktopActivityMonitorData : public PlexyDesk::DataSource {
+class DesktopActivityMonitorData : public PlexyDesk::DataSource
+{
   Q_OBJECT
 
 public:

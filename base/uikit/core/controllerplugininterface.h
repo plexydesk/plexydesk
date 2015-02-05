@@ -9,9 +9,11 @@
 #include <view_controller.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 
-class DECL_UI_KIT_EXPORT ControllerPluginInterface {
+class DECL_UI_KIT_EXPORT ControllerPluginInterface
+{
 public:
   ControllerPluginInterface() {}
   virtual ~ControllerPluginInterface() {};

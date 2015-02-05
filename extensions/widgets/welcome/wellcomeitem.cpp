@@ -2,7 +2,8 @@
 #include <QtCore>
 #include "wellcomeitem.moc"
 
-class WellcomeItem::Private {
+class WellcomeItem::Private
+{
 public:
   Private() {}
   ~Private() {}
@@ -28,7 +29,8 @@ public:
 };
 
 WellcomeItem::WellcomeItem(const QRectF &rect, QGraphicsItem *parent)
-    : QGraphicsRectItem(rect, parent), d(new Private) {
+  : QGraphicsRectItem(rect, parent), d(new Private)
+{
   // TODO
   d->height = 128;
   d->width = 128;
@@ -47,7 +49,8 @@ WellcomeItem::WellcomeItem(const QRectF &rect, QGraphicsItem *parent)
 
 WellcomeItem::~WellcomeItem() { delete d; }
 
-QImage WellcomeItem::reflection(QImage &img) {
+QImage WellcomeItem::reflection(QImage &img)
+{
   QImage reflect = img.mirrored(0, 1);
   QPainter p(&reflect);
   QPoint x, y;
@@ -63,20 +66,22 @@ QImage WellcomeItem::reflection(QImage &img) {
   return reflect;
 }
 
-void WellcomeItem::paintItem(QPainter *painter, const QRectF rect) {
+void WellcomeItem::paintItem(QPainter *painter, const QRectF rect)
+{
   painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
 
   QRectF source(0, 0, d->width, d->height);
   if (!d->iconPixmap.isNull()) {
     painter->drawPixmap(
-        int(((int)source.width() - d->iconPixmap.width()) / 2),
-        int(((int)source.height() - d->iconPixmap.height()) / 2),
-        d->iconPixmap.height(), d->iconPixmap.width(), d->iconPixmap);
+      int(((int)source.width() - d->iconPixmap.width()) / 2),
+      int(((int)source.height() - d->iconPixmap.height()) / 2),
+      d->iconPixmap.height(), d->iconPixmap.width(), d->iconPixmap);
   }
 }
 void WellcomeItem::paint(QPainter *painter,
                          const QStyleOptionGraphicsItem *option,
-                         QWidget *widget) {
+                         QWidget *widget)
+{
   Q_UNUSED(widget);
   painter->save();
   painter->setClipRect(option->exposedRect);
@@ -85,8 +90,8 @@ void WellcomeItem::paint(QPainter *painter,
   //  painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
   this->paintItem(painter, option->exposedRect);
   painter->drawImage(
-      QPoint((d->width - d->iconPixmap.width()) / 2, d->iconPixmap.height()),
-      d->refimg);
+    QPoint((d->width - d->iconPixmap.width()) / 2, d->iconPixmap.height()),
+    d->refimg);
   painter->restore();
 }
 
@@ -96,36 +101,42 @@ QString WellcomeItem::loadSvg(MouseState state) { return d->ids[state]; }
 
 // Events
 
-void WellcomeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+void WellcomeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
   Q_UNUSED(event);
   d->state = OVER;
   update();
   d->timeline.setDirection(QTimeLine::Forward);
-  if (d->timeline.state() == QTimeLine::NotRunning)
+  if (d->timeline.state() == QTimeLine::NotRunning) {
     d->timeline.start();
+  }
   emit clicked();
 }
 
-void WellcomeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
+void WellcomeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
   Q_UNUSED(event);
   d->state = OVER;
   // update ();
 }
 
-void WellcomeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+void WellcomeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
   Q_UNUSED(event);
   d->state = REGULAR;
   update();
   d->timeline.setDirection(QTimeLine::Backward);
-  if (d->timeline.state() == QTimeLine::NotRunning)
+  if (d->timeline.state() == QTimeLine::NotRunning) {
     d->timeline.start();
+  }
 }
 
 QString WellcomeItem::name() const { return d->text; }
 
 void WellcomeItem::setName(const QString &name) { d->text = name; }
 
-void WellcomeItem::setIcon(const QPixmap &icon) {
+void WellcomeItem::setIcon(const QPixmap &icon)
+{
   d->iconPixmap = QPixmap(icon);
   // FIXME
   // Optimize
@@ -148,7 +159,8 @@ void WellcomeItem::setIcon(const QPixmap &icon) {
   p.end();
 }
 
-void WellcomeItem::zoom(int step) {
+void WellcomeItem::zoom(int step)
+{
 
   QPointF center = this->boundingRect().center();
   resetMatrix();

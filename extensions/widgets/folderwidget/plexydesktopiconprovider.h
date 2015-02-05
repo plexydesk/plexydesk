@@ -22,13 +22,14 @@
 
 #include <QFileIconProvider>
 
-class PlexyDesktopIconProvider : public QFileIconProvider {
+class PlexyDesktopIconProvider : public QFileIconProvider
+{
 public:
   PlexyDesktopIconProvider();
   virtual ~PlexyDesktopIconProvider();
   virtual QIcon icon(IconType type) const;
-  virtual QIcon icon(const QFileInfo& info) const;
-  virtual QString type(const QFileInfo& info) const;
+  virtual QIcon icon(const QFileInfo &info) const;
+  virtual QString type(const QFileInfo &info) const;
 };
 
 #endif // PLEXYDESKTOPICONPROVIDER_H

@@ -4,9 +4,11 @@
 #include <syncengineinterface.h>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit {
+namespace QuetzalKit
+{
 
-class QuetzalDataKit_EXPORT DiskSyncEngine : public SyncEngineInterface {
+class QuetzalDataKit_EXPORT DiskSyncEngine : public SyncEngineInterface
+{
   Q_OBJECT
 public:
   explicit DiskSyncEngine(QObject *parent = 0);

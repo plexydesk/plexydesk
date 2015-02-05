@@ -4,7 +4,8 @@
 #include <plexy.h>
 #include <desktopwidget.h>
 
-class FacebookMessageDialog : public PlexyDesk::DesktopWidget {
+class FacebookMessageDialog : public PlexyDesk::DesktopWidget
+{
   Q_OBJECT
 public:
   FacebookMessageDialog(const QRectF &rect, QGraphicsObject *parent = 0);

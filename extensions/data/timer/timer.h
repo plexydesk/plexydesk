@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class TimerData : public UI::DataSource {
+class TimerData : public UI::DataSource
+{
   Q_OBJECT
 
 public:

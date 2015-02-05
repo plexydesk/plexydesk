@@ -27,7 +27,8 @@
 #include <desktopactivity.h>
 #include <widget.h>
 
-class InputDialogActivityData : public UI::DesktopActivity {
+class InputDialogActivityData : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

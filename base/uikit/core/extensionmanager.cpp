@@ -27,10 +27,12 @@
 #include "controllerplugininterface.h"
 #include "activity_interface.h"
 
-namespace UI {
+namespace UI
+{
 ExtensionManager *ExtensionManager::mInstance = 0;
 
-class ExtensionManager::PrivateExtManager {
+class ExtensionManager::PrivateExtManager
+{
 public:
   typedef QHash<QString, DataPluginInterface *> EnginePlugins;
   typedef QHash<QString, ControllerPluginInterface *> ControllerPlugins;
@@ -56,9 +58,10 @@ public:
 };
 
 ExtensionManager::ExtensionManager(QObject *parent)
-    : QObject(parent), d(new PrivateExtManager) {}
+  : QObject(parent), d(new PrivateExtManager) {}
 
-ExtensionManager::~ExtensionManager() {
+ExtensionManager::~ExtensionManager()
+{
   foreach(QPluginLoader * _loader, d->m_plugin_loader_list) {
     _loader->unload();
     delete _loader;
@@ -70,7 +73,8 @@ ExtensionManager::~ExtensionManager() {
 }
 
 ExtensionManager *ExtensionManager::instance(const QString &desktopPrefix,
-                                             const QString &prefix) {
+    const QString &prefix)
+{
   if (!mInstance) {
     mInstance = new ExtensionManager();
     mInstance->setPluginPrefix(prefix);
@@ -81,30 +85,35 @@ ExtensionManager *ExtensionManager::instance(const QString &desktopPrefix,
 }
 
 ExtensionManager *ExtensionManager::init(const QString &desktopPrefix,
-                                         const QString &prefix)
+    const QString &prefix)
 {
-   return instance(desktopPrefix, prefix);
+  return instance(desktopPrefix, prefix);
 }
 
-ExtensionManager *ExtensionManager::instance() {
+ExtensionManager *ExtensionManager::instance()
+{
   if (!mInstance) {
     mInstance = new ExtensionManager();
   }
   return mInstance;
 }
 
-void ExtensionManager::destroyInstance() {
-  if (mInstance)
+void ExtensionManager::destroyInstance()
+{
+  if (mInstance) {
     mInstance->deleteLater();
+  }
 
   mInstance = 0;
 }
 
-QStringList ExtensionManager::extensionList(const QString &types) {
+QStringList ExtensionManager::extensionList(const QString &types)
+{
   return d->mDict[types];
 }
 
-DataSourcePtr ExtensionManager::dataEngine(const QString &name) {
+DataSourcePtr ExtensionManager::dataEngine(const QString &name)
+{
   if (d->m_engine_plugins[name]) {
     return d->m_engine_plugins[name]->model();
   } else {
@@ -117,7 +126,8 @@ DataSourcePtr ExtensionManager::dataEngine(const QString &name) {
   return QSharedPointer<DataSource>();
 }
 
-ViewControllerPtr ExtensionManager::controller(const QString &name) {
+ViewControllerPtr ExtensionManager::controller(const QString &name)
+{
   if (d->mControllers[name]) {
     return d->mControllers[name]->controller();
   } else {
@@ -130,7 +140,8 @@ ViewControllerPtr ExtensionManager::controller(const QString &name) {
   return QSharedPointer<ViewController>();
 }
 
-DesktopActivityPtr ExtensionManager::activity(const QString &name) {
+DesktopActivityPtr ExtensionManager::activity(const QString &name)
+{
 
   if (d->mActivities[name]) {
     return d->mActivities[name]->activity();
@@ -144,7 +155,8 @@ DesktopActivityPtr ExtensionManager::activity(const QString &name) {
   return QSharedPointer<DesktopActivity>();
 }
 
-StylePtr ExtensionManager::style(const QString &name) {
+StylePtr ExtensionManager::style(const QString &name)
+{
   if (d->mStyles[name]) {
     return d->mStyles[name]->style();
   } else {
@@ -158,31 +170,33 @@ StylePtr ExtensionManager::style(const QString &name) {
 }
 
 QString ExtensionManager::desktopControllerExtensionInfo(
-    const QString &key) const {
+  const QString &key) const
+{
   return d->mPluginNames[key];
 }
 
 void ExtensionManager::load(const QString &interface,
-                            const QString &pluginName) {
+                            const QString &pluginName)
+{
 #ifdef Q_OS_MAC
   QPluginLoader *loader =
-      new QPluginLoader(d->mPluginPrefix + QLatin1String("lib") + pluginName +
-                        QLatin1String(".dylib"));
+    new QPluginLoader(d->mPluginPrefix + QLatin1String("lib") + pluginName +
+                      QLatin1String(".dylib"));
 #endif
 
 #ifdef Q_OS_LINUX
   QPluginLoader *loader = new QPluginLoader(
-      d->mPluginPrefix + QLatin1String("lib") + pluginName + ".so");
+    d->mPluginPrefix + QLatin1String("lib") + pluginName + ".so");
 #endif
 
 #ifdef Q_OS_WIN
   QPluginLoader *loader =
-      new QPluginLoader(d->mPluginPrefix + pluginName + ".dll");
+    new QPluginLoader(d->mPluginPrefix + pluginName + ".dll");
 #endif
 
 #ifdef Q_OS_QPA
   QPluginLoader *loader = new QPluginLoader(
-      d->mPluginPrefix + QLatin1String("lib") + pluginName + ".so");
+    d->mPluginPrefix + QLatin1String("lib") + pluginName + ".so");
 #endif
 
   if (interface.toLower() == "engine") {
@@ -253,13 +267,14 @@ void ExtensionManager::load(const QString &interface,
   d->m_plugin_loader_list.append(loader);
 }
 
-void ExtensionManager::scanForPlugins() {
-    qDebug() << Q_FUNC_INFO << d->mPluginInfoPrefix << " : "
-             << d->mPluginPrefix;
+void ExtensionManager::scanForPlugins()
+{
+  qDebug() << Q_FUNC_INFO << d->mPluginInfoPrefix << " : "
+           << d->mPluginPrefix;
   if (d->mPluginInfoPrefix.isEmpty() || d->mPluginInfoPrefix.isNull()) {
     qWarning() << Q_FUNC_INFO << "Prefix undefined"
                << " try running PluginLoader::getInstanceWithPrefix with the "
-                  "correct path first";
+               "correct path first";
   }
 
   QDir dir(d->mPluginInfoPrefix);
@@ -272,32 +287,37 @@ void ExtensionManager::scanForPlugins() {
   }
 }
 
-void ExtensionManager::setPluginPrefix(const QString &path) {
+void ExtensionManager::setPluginPrefix(const QString &path)
+{
   d->mPluginPrefix = path;
 }
 
-void ExtensionManager::setPluginInfoPrefix(const QString &path) {
+void ExtensionManager::setPluginInfoPrefix(const QString &path)
+{
   d->mPluginInfoPrefix = path;
 }
 
-QString ExtensionManager::pluginInforPrefix() const {
+QString ExtensionManager::pluginInforPrefix() const
+{
   return d->mPluginInfoPrefix;
 }
 
 QString ExtensionManager::pluginPrefix() const { return d->mPluginPrefix; }
 
-void ExtensionManager::loadDesktop(const QString &path) {
+void ExtensionManager::loadDesktop(const QString &path)
+{
   QSettings desktopFile(path, QSettings::IniFormat, this);
   desktopFile.beginGroup("Desktop Entry");
   d->addToDict(desktopFile.value("Type").toString(),
                desktopFile.value("X-PLEXYDESK-Library").toString());
   d->mPluginNames[desktopFile.value("X-PLEXYDESK-Library").toString()] =
-      desktopFile.value("Name").toString();
+    desktopFile.value("Name").toString();
   desktopFile.endGroup();
 }
 
 void ExtensionManager::PrivateExtManager::addToDict(const QString &interface,
-                                                    const QString &pluginName) {
+    const QString &pluginName)
+{
   const QStringList dictKeys = mDict.keys();
   if (!dictKeys.contains(interface)) {
     QStringList list;

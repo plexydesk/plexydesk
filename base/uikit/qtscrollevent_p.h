@@ -3,18 +3,20 @@
 
 #include "qtscrollevent.h"
 
-class QtScrollPrepareEventPrivate {
+class QtScrollPrepareEventPrivate
+{
 public:
   inline QtScrollPrepareEventPrivate() : target(0) {}
 
-  QObject* target;
+  QObject *target;
   QPointF startPos;
   QSizeF viewportSize;
   QRectF contentPosRange;
   QPointF contentPos;
 };
 
-class QtScrollEventPrivate {
+class QtScrollEventPrivate
+{
 public:
   inline QtScrollEventPrivate() {}
 

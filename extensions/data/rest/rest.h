@@ -25,7 +25,8 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class RestData : public UI::DataSource {
+class RestData : public UI::DataSource
+{
   Q_OBJECT
 
 public:

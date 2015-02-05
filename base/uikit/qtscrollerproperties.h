@@ -55,7 +55,8 @@ class QtScroller;
 class QtScrollerPrivate;
 class QtScrollerPropertiesPrivate;
 
-class QtScrollerProperties {
+class QtScrollerProperties
+{
 public:
   QtScrollerProperties();
   QtScrollerProperties(const QtScrollerProperties &sp);
@@ -80,8 +81,8 @@ public:
     MousePressEventDelay,        // qreal [s]
     DragStartDistance,           // qreal [m]
     DragVelocitySmoothingFactor, // qreal [0..1/s]  (complex calculation
-                                 // involving time) v = v_new* DASF + v_old *
-                                 // (1-DASF)
+    // involving time) v = v_new* DASF + v_old *
+    // (1-DASF)
     AxisLockThreshold,           // qreal [0..1] atan(|min(dx,dy)|/|max(dx,dy)|)
     ScrollingCurve,              // QEasingCurve
     DecelerationFactor,          // slope of the curve

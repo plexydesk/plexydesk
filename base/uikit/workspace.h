@@ -6,10 +6,12 @@
 #include <space.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 typedef QList<Space *> SpacesList;
 
-class DECL_UI_KIT_EXPORT WorkSpace : public QGraphicsView {
+class DECL_UI_KIT_EXPORT WorkSpace : public QGraphicsView
+{
   Q_OBJECT
 public:
   WorkSpace(QGraphicsScene *scene, QWidget *parent = 0);

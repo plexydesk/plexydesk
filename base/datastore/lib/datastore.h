@@ -4,12 +4,14 @@
 #include <QObject>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit {
+namespace QuetzalKit
+{
 
 class SyncObject;
 class SyncEngineInterface;
 
-class QuetzalDataKit_EXPORT DataStore : public QObject {
+class QuetzalDataKit_EXPORT DataStore : public QObject
+{
   Q_OBJECT
 public:
   explicit DataStore(const QString &name, QObject *parent = 0);

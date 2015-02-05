@@ -28,8 +28,9 @@
    scrolling.
 */
 QtScrollPrepareEvent::QtScrollPrepareEvent(const QPointF &startPos)
-    : QEvent(static_cast<QEvent::Type>(ScrollPrepare)),
-      d(new QtScrollPrepareEventPrivate()) {
+  : QEvent(static_cast<QEvent::Type>(ScrollPrepare)),
+    d(new QtScrollPrepareEventPrivate())
+{
   d->startPos = startPos;
 }
 
@@ -55,7 +56,8 @@ QSizeF QtScrollPrepareEvent::viewportSize() const { return d->viewportSize; }
 
     \sa setMaximumContentRect()
 */
-QRectF QtScrollPrepareEvent::contentPosRange() const {
+QRectF QtScrollPrepareEvent::contentPosRange() const
+{
   return d->contentPosRange;
 }
 
@@ -69,7 +71,8 @@ QPointF QtScrollPrepareEvent::contentPos() const { return d->contentPos; }
 
     \sa viewportSize()
 */
-void QtScrollPrepareEvent::setViewportSize(const QSizeF &size) {
+void QtScrollPrepareEvent::setViewportSize(const QSizeF &size)
+{
   d->viewportSize = size;
 }
 
@@ -78,7 +81,8 @@ void QtScrollPrepareEvent::setViewportSize(const QSizeF &size) {
 
     \sa contentPosRange
 */
-void QtScrollPrepareEvent::setContentPosRange(const QRectF &rect) {
+void QtScrollPrepareEvent::setContentPosRange(const QRectF &rect)
+{
   d->contentPosRange = rect;
 }
 
@@ -87,7 +91,8 @@ void QtScrollPrepareEvent::setContentPosRange(const QRectF &rect) {
 
     \sa contentPos()
 */
-void QtScrollPrepareEvent::setContentPos(const QPointF &pos) {
+void QtScrollPrepareEvent::setContentPos(const QPointF &pos)
+{
   d->contentPos = pos;
 }
 
@@ -133,7 +138,8 @@ void QtScrollPrepareEvent::setContentPos(const QPointF &pos) {
 QtScrollEvent::QtScrollEvent(const QPointF &contentPos,
                              const QPointF &overshootDistance,
                              ScrollState scrollState)
-    : QEvent(static_cast<QEvent::Type>(Scroll)), d(new QtScrollEventPrivate()) {
+  : QEvent(static_cast<QEvent::Type>(Scroll)), d(new QtScrollEventPrivate())
+{
   d->contentPos = contentPos;
   d->overshoot = overshootDistance;
   d->state = scrollState;
@@ -170,6 +176,7 @@ QPointF QtScrollEvent::overshootDistance() const { return d->overshoot; }
    stopped.
     \sa isLast()
 */
-QtScrollEvent::ScrollState QtScrollEvent::scrollState() const {
+QtScrollEvent::ScrollState QtScrollEvent::scrollState() const
+{
   return d->state;
 }

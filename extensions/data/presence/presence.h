@@ -25,7 +25,8 @@
 
 class QDBusObjectPath;
 
-class VISIBLE_SYM PresenceData : public PlexyDesk::DataPlugin {
+class VISIBLE_SYM PresenceData : public PlexyDesk::DataPlugin
+{
   Q_OBJECT
 
 public:

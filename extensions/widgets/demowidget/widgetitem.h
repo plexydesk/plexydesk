@@ -24,9 +24,11 @@
 #include <plexy.h>
 #include <desktopwidget.h>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
-class WidgetItem : public DesktopWidget {
+class WidgetItem : public DesktopWidget
+{
 
   Q_OBJECT
 public:

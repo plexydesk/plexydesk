@@ -21,10 +21,11 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UI::DesktopActivity> ProgressDialogInterface::activity() {
+QSharedPointer<UI::DesktopActivity> ProgressDialogInterface::activity()
+{
   QSharedPointer<UI::DesktopActivity> obj =
-      QSharedPointer<UI::DesktopActivity>(new ProgressDialogActivity(),
-                                                 &QObject::deleteLater);
+    QSharedPointer<UI::DesktopActivity>(new ProgressDialogActivity(),
+                                        &QObject::deleteLater);
 
   return obj;
 }

@@ -26,9 +26,11 @@
 //#include <SDL.h>
 //#include <SDL_thread.h>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
-class VPlayer::Private {
+class VPlayer::Private
+{
 public:
   Private() {}
   ~Private() {}
@@ -47,7 +49,8 @@ public:
   QImage *currentFrame;
 };
 
-VPlayer::VPlayer(QObject *parent) : QObject(parent), d(new Private) {
+VPlayer::VPlayer(QObject *parent) : QObject(parent), d(new Private)
+{
   init();
   d->vidtimer = new QTimer(this);
   connect(d->vidtimer, SIGNAL(timeout()), this, SLOT(decode()));
@@ -57,7 +60,8 @@ VPlayer::VPlayer(QObject *parent) : QObject(parent), d(new Private) {
 
 VPlayer::~VPlayer() {}
 
-void VPlayer::decode() {
+void VPlayer::decode()
+{
   if (av_read_frame(d->pFormatCtx, &d->packet) >= 0) {
     if (d->packet.stream_index == d->videoStream) {
 
@@ -70,8 +74,8 @@ void VPlayer::decode() {
                     (AVPicture *)d->pFrame, PIX_FMT_YUV420P,
                     d->pCodecCtx->width, d->pCodecCtx->height);
         d->currentFrame =
-            new QImage(d->pFrameRGB->data[0], d->pCodecCtx->width,
-                       d->pCodecCtx->height, QImage::Format_ARGB32);
+          new QImage(d->pFrameRGB->data[0], d->pCodecCtx->width,
+                     d->pCodecCtx->height, QImage::Format_ARGB32);
         // d->video->setPixmap(QPixmap::fromImage(*d->currentFrame));
         emit frameReady(*d->currentFrame);
         //      delete d->currentFrame;
@@ -89,7 +93,8 @@ void VPlayer::decode() {
 
 void VPlayer::init() { av_register_all(); }
 
-void VPlayer::setFileName(const QString &name) {
+void VPlayer::setFileName(const QString &name)
+{
   QFile *file = new QFile(name);
 
   if (file->exists()) {

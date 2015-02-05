@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class TakeNoteActivity : public UI::DesktopActivity {
+class TakeNoteActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

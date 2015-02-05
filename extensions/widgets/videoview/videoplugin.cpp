@@ -23,7 +23,8 @@
 #include <pluginloader.h>
 #include <QtGui>
 
-VideoPlugin::VideoPlugin(QObject *object) {
+VideoPlugin::VideoPlugin(QObject *object)
+{
   base = new QWidget();
 
   flow = new QLabel(base);
@@ -33,10 +34,10 @@ VideoPlugin::VideoPlugin(QObject *object) {
 
   search = new QLineEdit(base);
   search->setStyleSheet(
-      "border:1px solid ; font-style:strong ;padding-left:20px; background: "
-      "black ; background-image:url(" +
-      applicationDirPath() + "/share/plexy/skins/default/flick/bg-search.png) "
-                             ";background-repeat: no-repeat ;  color:black ");
+    "border:1px solid ; font-style:strong ;padding-left:20px; background: "
+    "black ; background-image:url(" +
+    applicationDirPath() + "/share/plexy/skins/default/flick/bg-search.png) "
+    ";background-repeat: no-repeat ;  color:black ");
   search->move(0, 170);
   search->resize(300, 30);
   search->show();
@@ -48,7 +49,8 @@ VideoPlugin::VideoPlugin(QObject *object) {
 
 VideoPlugin::~VideoPlugin() { delete base; }
 
-void VideoPlugin::searchImage() {
+void VideoPlugin::searchImage()
+{
   qDebug() << "Searching video" << endl;
   search->setEnabled(false);
 
@@ -56,13 +58,15 @@ void VideoPlugin::searchImage() {
   emit sendData(data);
 }
 
-void VideoPlugin::data(QVariant &data) {
+void VideoPlugin::data(QVariant &data)
+{
   QImage wall = data.value<QImage>();
   search->setEnabled(true);
   flow->setPixmap(QPixmap::fromImage(wall));
 }
 
-QGraphicsItem *VideoPlugin::item() {
+QGraphicsItem *VideoPlugin::item()
+{
   PlexyDesk::PluginLoader *loader = new PlexyDesk::PluginLoader();
   loader->scanDisk();
   videoEngine = (PlexyDesk::DataInterface *)loader->instance("videoengine");

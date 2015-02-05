@@ -3,10 +3,11 @@
 #include <style.h>
 
 FacebookContactCardButton::FacebookContactCardButton(QGraphicsObject *parent)
-    : PlexyDesk::Button(parent) {}
+  : PlexyDesk::Button(parent) {}
 
 void FacebookContactCardButton::paintNormalButton(
-    QPainter *painter, const QStyleOptionGraphicsItem *option) {
+  QPainter *painter, const QStyleOptionGraphicsItem *option)
+{
   PlexyDesk::StyleFeatures feature;
   feature.exposeRect = option->exposedRect;
   feature.state = PlexyDesk::StyleFeatures::SF_None;
@@ -40,7 +41,8 @@ void FacebookContactCardButton::paintNormalButton(
 }
 
 void FacebookContactCardButton::paintSunkenButton(
-    QPainter *painter, const QStyleOptionGraphicsItem *option) {
+  QPainter *painter, const QStyleOptionGraphicsItem *option)
+{
   PlexyDesk::StyleFeatures feature;
   feature.exposeRect = option->exposedRect;
   feature.state = PlexyDesk::StyleFeatures::SF_Raised;

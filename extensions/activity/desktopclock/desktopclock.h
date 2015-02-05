@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class DesktopClockActivity : public UI::DesktopActivity {
+class DesktopClockActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

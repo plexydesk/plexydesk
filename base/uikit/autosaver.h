@@ -53,7 +53,8 @@ changes.
 It will wait several seconds after changed() to combining multiple changes and
 prevent continuous writing to disk.
 */
-class DECL_UI_KIT_EXPORT AutoSaver : public QObject {
+class DECL_UI_KIT_EXPORT AutoSaver : public QObject
+{
 
   Q_OBJECT
 

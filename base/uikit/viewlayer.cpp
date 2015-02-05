@@ -1,8 +1,10 @@
 #include <QtCore/QDebug>
 #include "viewlayer.h"
 
-namespace PlexyDesk {
-class ViewLayer::Private {
+namespace PlexyDesk
+{
+class ViewLayer::Private
+{
 public:
   Private() {}
   ~Private() { clean(); }
@@ -18,7 +20,8 @@ private:
   void clean();
 };
 
-void ViewLayer::Private::clean() {
+void ViewLayer::Private::clean()
+{
   qDebug() << "Cleaning layers";
 
   QStringList keysList = layer.keys();
@@ -32,13 +35,15 @@ void ViewLayer::Private::clean() {
   layer.clear();
 }
 
-ViewLayer::ViewLayer(QObject *obj) : QObject(obj), d(new Private) {
+ViewLayer::ViewLayer(QObject *obj) : QObject(obj), d(new Private)
+{
   d->currentList = new Private::List;
 }
 
 ViewLayer::~ViewLayer() { delete d; }
 
-void ViewLayer::addItem(const QString &layerName, AbstractDesktopWidget *item) {
+void ViewLayer::addItem(const QString &layerName, AbstractDesktopWidget *item)
+{
   if (d->currentLayerName != layerName) {
     item->hide();
   }
@@ -52,7 +57,8 @@ void ViewLayer::addItem(const QString &layerName, AbstractDesktopWidget *item) {
   }
 }
 
-void ViewLayer::showLayer(const QString &layername) {
+void ViewLayer::showLayer(const QString &layername)
+{
   /* Hide all the stuff in the current layer
      then show the requested layer
    */
@@ -72,7 +78,8 @@ void ViewLayer::showLayer(const QString &layername) {
     d->currentLayerName = layername;
   }
 }
-void ViewLayer::hideLayer() {
+void ViewLayer::hideLayer()
+{
   for (int i = 0; i < d->currentList->size(); i++) {
     if (d->currentList->at(i)) {
       d->currentList->at(i)->hide();
@@ -80,15 +87,17 @@ void ViewLayer::hideLayer() {
   }
 }
 
-void ViewLayer::switchLayer() {
+void ViewLayer::switchLayer()
+{
   QString newLayer;
   QString currentLayer = d->layer.key(d->currentList);
   QList<QString> keysList = d->layer.keys();
   int totalLayers = d->layer.count();
   int index = -1;
   for (int i = 0; i < totalLayers; i++) {
-    if (keysList[i] == currentLayer)
+    if (keysList[i] == currentLayer) {
       index = i;
+    }
   }
   if (index != totalLayers - 1) {
     newLayer = keysList.at(index + 1);

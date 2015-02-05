@@ -4,9 +4,11 @@
 #include <QTextStream>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 
-class QuetzalSocialKit_EXPORT WebContentInterface {
+class QuetzalSocialKit_EXPORT WebContentInterface
+{
 public:
   WebContentInterface();
 

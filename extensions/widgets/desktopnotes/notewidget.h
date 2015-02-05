@@ -9,7 +9,8 @@
 #include <webservice.h>
 #include <desktopactivity.h>
 
-class NoteWidget : public UI::UIWidget {
+class NoteWidget : public UI::UIWidget
+{
   Q_OBJECT
 public:
   explicit NoteWidget(QGraphicsObject *parent = 0);
@@ -69,8 +70,8 @@ private:
   void requestPhotoSizes(const QString &photoID);
   void initDataStore();
   UI::DesktopActivityPtr showCalendar(const QString &activity,
-                                             const QString &title,
-                                             const QVariantMap &dataItem);
+                                      const QString &title,
+                                      const QVariantMap &dataItem);
 };
 
 #endif // M_NOTE_WIDGET_H

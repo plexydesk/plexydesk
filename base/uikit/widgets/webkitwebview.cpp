@@ -4,9 +4,11 @@
 #include <QWebInspector>
 #include <QNetworkCookieJar>
 
-namespace UI {
+namespace UI
+{
 
-class WebKitWebView::PrivateWebKitWebView {
+class WebKitWebView::PrivateWebKitWebView
+{
 public:
   PrivateWebKitWebView() {}
   ~PrivateWebKitWebView() {}
@@ -16,7 +18,8 @@ public:
 };
 
 WebKitWebView::WebKitWebView(QGraphicsObject *parent)
-    : UI::UIWidget(parent), d(new PrivateWebKitWebView) {
+  : UI::UIWidget(parent), d(new PrivateWebKitWebView)
+{
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
   d->mView = new QGraphicsWebView(this);
   QRectF rect(0.0, 0.0, 200.0, 200.0);
@@ -37,9 +40,9 @@ WebKitWebView::WebKitWebView(QGraphicsObject *parent)
   settings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 
 #if 0
-    QWebInspector *inspector = new QWebInspector;
-    inspector->setPage(d->mView->page());
-    inspector->show();
+  QWebInspector *inspector = new QWebInspector;
+  inspector->setPage(d->mView->page());
+  inspector->show();
 #endif
 
   if (d->mView->page() && d->mView->page()->mainFrame()) {
@@ -53,17 +56,19 @@ WebKitWebView::~WebKitWebView() { delete d; }
 
 void WebKitWebView::setUrl(const QUrl &url) { d->mView->setUrl(url); }
 
-void WebKitWebView::injectQObject(const QString &objectName, QObject *object) {
+void WebKitWebView::injectQObject(const QString &objectName, QObject *object)
+{
   d->mObjects[objectName] = object;
 }
 
-void WebKitWebView::addJavaScriptObject() {
+void WebKitWebView::addJavaScriptObject()
+{
   qDebug() << Q_FUNC_INFO << "Initiate WebKit Bridge";
 
   Q_FOREACH(const QString & objectName, d->mObjects.keys()) {
     if (d->mObjects[objectName]) {
       d->mView->page()->mainFrame()->addToJavaScriptWindowObject(
-          objectName, d->mObjects[objectName]);
+        objectName, d->mObjects[objectName]);
     }
   }
 }

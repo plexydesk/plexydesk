@@ -23,7 +23,8 @@
 
 #include "idletimedetector.h"
 
-class IdleTimeEngineData::PrivateIdleTimeEngine {
+class IdleTimeEngineData::PrivateIdleTimeEngine
+{
 public:
   PrivateIdleTimeEngine() {}
   ~PrivateIdleTimeEngine() {}
@@ -32,7 +33,8 @@ public:
 };
 
 IdleTimeEngineData::IdleTimeEngineData(QObject *object)
-    : PlexyDesk::DataSource(object), d(new PrivateIdleTimeEngine) {
+  : PlexyDesk::DataSource(object), d(new PrivateIdleTimeEngine)
+{
   d->mIdleEngine = new IdleTimeDetector(this);
   startTimer(1000);
 
@@ -47,7 +49,8 @@ void IdleTimeEngineData::setArguments(QVariant arg) {}
 
 void IdleTimeEngineData::onAwakeEvent() { Q_EMIT sourceUpdated(readAll()); }
 
-QVariantMap IdleTimeEngineData::readAll() {
+QVariantMap IdleTimeEngineData::readAll()
+{
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -59,7 +62,8 @@ QVariantMap IdleTimeEngineData::readAll() {
   return dataMap;
 }
 
-void IdleTimeEngineData::timerEvent(QTimerEvent *event) {
+void IdleTimeEngineData::timerEvent(QTimerEvent *event)
+{
   if (d->mIdleEngine && d->mIdleEngine->duration() <= 0) {
     return;
   }

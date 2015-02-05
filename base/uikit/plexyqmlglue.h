@@ -6,10 +6,12 @@
 #include <QtDeclarative/QDeclarativeEngine>
 #include <PlexyDeskUICore_export.h>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 class PlexyQmlGlueData;
 
-class PlexyDeskUICore_EXPORT PlexyQmlGlue {
+class PlexyDeskUICore_EXPORT PlexyQmlGlue
+{
 public:
   PlexyQmlGlue();
   PlexyQmlGlue(const PlexyQmlGlue &);

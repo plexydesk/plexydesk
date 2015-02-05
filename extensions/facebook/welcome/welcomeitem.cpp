@@ -1,7 +1,8 @@
 #include "welcomeitem.h"
 #include <QtCore>
 
-class WelcomeItem::Private {
+class WelcomeItem::Private
+{
 public:
   Private() {}
   ~Private() {}
@@ -27,7 +28,8 @@ public:
 };
 
 WelcomeItem::WelcomeItem(const QRectF &rect, QGraphicsItem *parent)
-    : QGraphicsRectItem(rect, parent), d(new Private) {
+  : QGraphicsRectItem(rect, parent), d(new Private)
+{
   // TODO
   d->height = 128;
   d->width = 128;
@@ -46,7 +48,8 @@ WelcomeItem::WelcomeItem(const QRectF &rect, QGraphicsItem *parent)
 
 WelcomeItem::~WelcomeItem() { delete d; }
 
-QImage WelcomeItem::reflection(QImage &img) {
+QImage WelcomeItem::reflection(QImage &img)
+{
   QImage reflect = img.mirrored(0, 1);
   QPainter p(&reflect);
   QPoint x, y;
@@ -62,20 +65,22 @@ QImage WelcomeItem::reflection(QImage &img) {
   return reflect;
 }
 
-void WelcomeItem::paintItem(QPainter *painter, const QRectF rect) {
+void WelcomeItem::paintItem(QPainter *painter, const QRectF rect)
+{
   painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
 
   QRectF source(0, 0, d->width, d->height);
   if (!d->iconPixmap.isNull()) {
     painter->drawPixmap(
-        int(((int)source.width() - d->iconPixmap.width()) / 2),
-        int(((int)source.height() - d->iconPixmap.height()) / 2),
-        d->iconPixmap.height(), d->iconPixmap.width(), d->iconPixmap);
+      int(((int)source.width() - d->iconPixmap.width()) / 2),
+      int(((int)source.height() - d->iconPixmap.height()) / 2),
+      d->iconPixmap.height(), d->iconPixmap.width(), d->iconPixmap);
   }
 }
 void WelcomeItem::paint(QPainter *painter,
                         const QStyleOptionGraphicsItem *option,
-                        QWidget *widget) {
+                        QWidget *widget)
+{
   Q_UNUSED(widget);
   painter->save();
   painter->setClipRect(option->exposedRect);
@@ -84,8 +89,8 @@ void WelcomeItem::paint(QPainter *painter,
   //  painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
   this->paintItem(painter, option->exposedRect);
   painter->drawImage(
-      QPoint((d->width - d->iconPixmap.width()) / 2, d->iconPixmap.height()),
-      d->refimg);
+    QPoint((d->width - d->iconPixmap.width()) / 2, d->iconPixmap.height()),
+    d->refimg);
   painter->restore();
 }
 
@@ -95,36 +100,42 @@ QString WelcomeItem::loadSvg(MouseState state) { return d->ids[state]; }
 
 // Events
 
-void WelcomeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+void WelcomeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
   Q_UNUSED(event);
   d->state = OVER;
   update();
   d->timeline.setDirection(QTimeLine::Forward);
-  if (d->timeline.state() == QTimeLine::NotRunning)
+  if (d->timeline.state() == QTimeLine::NotRunning) {
     d->timeline.start();
+  }
   emit clicked();
 }
 
-void WelcomeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
+void WelcomeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
   Q_UNUSED(event);
   d->state = OVER;
   // update ();
 }
 
-void WelcomeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+void WelcomeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
   Q_UNUSED(event);
   d->state = REGULAR;
   update();
   d->timeline.setDirection(QTimeLine::Backward);
-  if (d->timeline.state() == QTimeLine::NotRunning)
+  if (d->timeline.state() == QTimeLine::NotRunning) {
     d->timeline.start();
+  }
 }
 
 QString WelcomeItem::name() const { return d->text; }
 
 void WelcomeItem::setName(const QString &name) { d->text = name; }
 
-void WelcomeItem::setIcon(const QPixmap &icon) {
+void WelcomeItem::setIcon(const QPixmap &icon)
+{
   d->iconPixmap = QPixmap(icon);
   // FIXME
   // Optimize
@@ -147,7 +158,8 @@ void WelcomeItem::setIcon(const QPixmap &icon) {
   p.end();
 }
 
-void WelcomeItem::zoom(int step) {
+void WelcomeItem::zoom(int step)
+{
 
   QPointF center = this->boundingRect().center();
   resetMatrix();

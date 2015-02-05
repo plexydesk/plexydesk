@@ -46,7 +46,8 @@
 // self
 #include "classicbackgroundrender.h"
 
-class BackgroundController::PrivateBackgroundController {
+class BackgroundController::PrivateBackgroundController
+{
 public:
   PrivateBackgroundController() {}
 
@@ -65,23 +66,26 @@ public:
 };
 
 BackgroundController::BackgroundController(QObject *object)
-    : UI::ViewController(object),
-      d(new PrivateBackgroundController) {
+  : UI::ViewController(object),
+    d(new PrivateBackgroundController)
+{
   d->m_background_render_item = 0;
 }
 
-BackgroundController::~BackgroundController() {
+BackgroundController::~BackgroundController()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-void BackgroundController::init() {
+void BackgroundController::init()
+{
   QString wallpaperPath = QDir::toNativeSeparators(
-      UI::Config::getInstance()->prefix() +
-      QString("/share/plexy/themepack/default/resources/default-16x9.png"));
+                            UI::Config::getInstance()->prefix() +
+                            QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
   d->m_background_render_item = new ClassicBackgroundRender(
-      QRectF(0.0, 0.0, 0.0, 0.0), 0, QImage(wallpaperPath));
+    QRectF(0.0, 0.0, 0.0, 0.0), 0, QImage(wallpaperPath));
   d->m_background_render_item->setController(this);
   d->m_background_render_item->setLabelName("classic Backdrop");
   /*
@@ -97,12 +101,14 @@ void BackgroundController::init() {
   insert(d->m_background_render_item);
 }
 
-void BackgroundController::revokeSession(const QVariantMap &args) {
+void BackgroundController::revokeSession(const QVariantMap &args)
+{
   QUrl backgroundUrl = args["background"].toString();
   QString mode = args["mode"].toString();
 
-  if (backgroundUrl.isEmpty())
+  if (backgroundUrl.isEmpty()) {
     return;
+  }
 
   d->mCurrentMode = mode;
 
@@ -110,17 +116,19 @@ void BackgroundController::revokeSession(const QVariantMap &args) {
 
   if (backgroundUrl.isLocalFile()) {
     d->m_background_render_item->setBackgroundImage(
-        QUrl(args["background"].toString()));
+      QUrl(args["background"].toString()));
   } else {
     downloadRemoteFile(backgroundUrl);
   }
 }
 
-UI::ActionList BackgroundController::actions() const {
+UI::ActionList BackgroundController::actions() const
+{
   return d->mActionList;
 }
 
-void BackgroundController::createSeamlessDesktop() {
+void BackgroundController::createSeamlessDesktop()
+{
   /*
       bool _is_seamless_set = false;
 
@@ -153,11 +161,12 @@ void BackgroundController::createSeamlessDesktop() {
   */
   if (d->m_background_render_item)
     d->m_background_render_item->setSeamLessMode(
-        !(d->m_background_render_item->isSeamlessModeSet()));
+      !(d->m_background_render_item->isSeamlessModeSet()));
 }
 
 void BackgroundController::requestAction(const QString &actionName,
-                                         const QVariantMap &data) {
+    const QVariantMap &data)
+{
   if (actionName == tr("Adjust")) {
     createModeChooser();
   } else if (actionName == tr("Search")) {
@@ -175,9 +184,10 @@ void BackgroundController::requestAction(const QString &actionName,
   }
 }
 
-void BackgroundController::downloadRemoteFile(QUrl fileUrl) {
+void BackgroundController::downloadRemoteFile(QUrl fileUrl)
+{
   QuetzalSocialKit::AsyncDataDownloader *downloader =
-      new QuetzalSocialKit::AsyncDataDownloader(this);
+    new QuetzalSocialKit::AsyncDataDownloader(this);
 
   connect(downloader, SIGNAL(ready()), this, SLOT(onImageReady()));
   connect(downloader, SIGNAL(progress(float)), this,
@@ -191,7 +201,8 @@ void BackgroundController::downloadRemoteFile(QUrl fileUrl) {
   createProgressDialog();
 }
 
-void BackgroundController::createModeChooser() {
+void BackgroundController::createModeChooser()
+{
   QVariantMap data;
 
   data["Streach"] = QVariant("pd_home_sym_icon.png");
@@ -204,14 +215,16 @@ void BackgroundController::createModeChooser() {
 }
 
 void BackgroundController::setScaleMode(
-    ClassicBackgroundRender::ScalingMode mode) {
+  ClassicBackgroundRender::ScalingMode mode)
+{
   if (d->m_background_render_item) {
     d->m_background_render_item->setBackgroundMode(mode);
   }
 }
 
 void BackgroundController::handleDropEvent(UI::UIWidget * /*widget*/,
-                                           QDropEvent *event) {
+    QDropEvent *event)
+{
   qDebug() << Q_FUNC_INFO;
 
   if (event->mimeData()->hasImage()) {
@@ -239,8 +252,9 @@ void BackgroundController::handleDropEvent(UI::UIWidget * /*widget*/,
     QFileInfo info(droppedFile);
 
     if (!info.isDir()) {
-      if (d->m_background_render_item)
+      if (d->m_background_render_item) {
         d->m_background_render_item->setBackgroundImage(droppedFile);
+      }
 
       createModeChooser();
 
@@ -255,7 +269,8 @@ void BackgroundController::handleDropEvent(UI::UIWidget * /*widget*/,
   }
 }
 
-void BackgroundController::setViewRect(const QRectF &rect) {
+void BackgroundController::setViewRect(const QRectF &rect)
+{
   if (d->m_background_render_item) {
     d->m_background_render_item->setBackgroundGeometry(rect);
     // d->m_background_render_item->setGeometry(rect);
@@ -264,10 +279,11 @@ void BackgroundController::setViewRect(const QRectF &rect) {
 }
 
 void BackgroundController::saveImageLocally(const QByteArray &data,
-                                            const QString &source,
-                                            bool saveLocally) {
+    const QString &source,
+    bool saveLocally)
+{
   QuetzalSocialKit::AsyncImageCreator *imageSave =
-      new QuetzalSocialKit::AsyncImageCreator(this);
+    new QuetzalSocialKit::AsyncImageCreator(this);
 
   connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
@@ -280,10 +296,11 @@ void BackgroundController::saveImageLocally(const QByteArray &data,
 }
 
 void BackgroundController::saveImageLocally(const QImage &data,
-                                            const QString &source,
-                                            bool saveLocally) {
+    const QString &source,
+    bool saveLocally)
+{
   QuetzalSocialKit::AsyncImageCreator *imageSave =
-      new QuetzalSocialKit::AsyncImageCreator(this);
+    new QuetzalSocialKit::AsyncImageCreator(this);
 
   connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
@@ -295,9 +312,10 @@ void BackgroundController::saveImageLocally(const QImage &data,
   imageSave->start();
 }
 
-void BackgroundController::onImageReady() {
+void BackgroundController::onImageReady()
+{
   QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
     saveImageLocally(downloader->data(),
@@ -306,9 +324,10 @@ void BackgroundController::onImageReady() {
   }
 }
 
-void BackgroundController::onImageSaveReady() {
+void BackgroundController::onImageSaveReady()
+{
   QuetzalSocialKit::AsyncImageCreator *c =
-      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
   if (c) {
     if (c->image().isNull()) {
@@ -317,18 +336,19 @@ void BackgroundController::onImageSaveReady() {
       return;
     }
 
-    if (d->m_background_render_item)
+    if (d->m_background_render_item) {
       d->m_background_render_item->setBackgroundImage(c->image());
+    }
 
     if (viewport()) {
-        if (!c->offline()) {
-          viewport()->updateSessionValue(controllerName(), "background",
-                                   c->metaData()["url"].toString());
-        } else {
-          viewport()->updateSessionValue(
-              controllerName(), "background",
-              QDir::toNativeSeparators("file://" + c->imagePath()));
-        }
+      if (!c->offline()) {
+        viewport()->updateSessionValue(controllerName(), "background",
+                                       c->metaData()["url"].toString());
+      } else {
+        viewport()->updateSessionValue(
+          controllerName(), "background",
+          QDir::toNativeSeparators("file://" + c->imagePath()));
+      }
     }
 
     if (d->mCurrentMode.isEmpty() || d->mCurrentMode.isNull()) {
@@ -347,7 +367,8 @@ void BackgroundController::onImageSaveReady() {
   }
 }
 
-void BackgroundController::setScaleMode(const QString &action) {
+void BackgroundController::setScaleMode(const QString &action)
+{
   if (action == "Fit") {
     this->setScaleMode(ClassicBackgroundRender::None);
   } else if (action == "Streach") {
@@ -365,15 +386,17 @@ void BackgroundController::setScaleMode(const QString &action) {
   }
 }
 
-QString BackgroundController::icon() const {
+QString BackgroundController::icon() const
+{
   return QString("pd_home_sym_icon.png");
 }
 
 QString BackgroundController::label() const { return QString(tr("Desktop")); }
 
-void BackgroundController::configure(const QPointF &pos) {
+void BackgroundController::configure(const QPointF &pos)
+{
   UI::DesktopActivityPtr intent =
-      UI::ExtensionManager::instance()->activity("icongrid");
+    UI::ExtensionManager::instance()->activity("icongrid");
 
   if (!intent) {
     qWarning() << Q_FUNC_INFO << "No such Activity";
@@ -405,16 +428,19 @@ void BackgroundController::configure(const QPointF &pos) {
   viewport()->addActivity(intent);
 }
 
-void BackgroundController::prepareRemoval() {
-  if (d->mProgressDialog)
+void BackgroundController::prepareRemoval()
+{
+  if (d->mProgressDialog) {
     d->mProgressDialog.clear();
+  }
 }
 
 // remove
-void BackgroundController::onModeActivityFinished() {
+void BackgroundController::onModeActivityFinished()
+{
   if (sender()) {
     UI::DesktopActivity *activity =
-        qobject_cast<UI::DesktopActivity *>(sender());
+      qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -427,10 +453,11 @@ void BackgroundController::onModeActivityFinished() {
 }
 
 // remove
-void BackgroundController::onWallpaperActivityFinished() {
+void BackgroundController::onWallpaperActivityFinished()
+{
   if (sender()) {
     UI::DesktopActivity *activity =
-        qobject_cast<UI::DesktopActivity *>(sender());
+      qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -441,10 +468,11 @@ void BackgroundController::onWallpaperActivityFinished() {
   }
 }
 
-void BackgroundController::onSearchFinished() {
+void BackgroundController::onSearchFinished()
+{
   if (sender()) {
     UI::DesktopActivity *activity =
-        qobject_cast<UI::DesktopActivity *>(sender());
+      qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -454,15 +482,18 @@ void BackgroundController::onSearchFinished() {
   }
 }
 
-void BackgroundController::onUpdateImageDownloadProgress(float progress) {
-  if (d->mProgressDialog)
+void BackgroundController::onUpdateImageDownloadProgress(float progress)
+{
+  if (d->mProgressDialog) {
     d->updateProgress(progress);
+  }
 }
 
-void BackgroundController::onConfigureDone() {
+void BackgroundController::onConfigureDone()
+{
   if (sender()) {
     UI::DesktopActivity *activity =
-        qobject_cast<UI::DesktopActivity *>(sender());
+      qobject_cast<UI::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap result = activity->result();
@@ -478,17 +509,18 @@ void BackgroundController::onConfigureDone() {
       } else if (result["action"] == "Seamless") {
         if (d->m_background_render_item)
           d->m_background_render_item->setSeamLessMode(
-              !(d->m_background_render_item->isSeamlessModeSet()));
+            !(d->m_background_render_item->isSeamlessModeSet()));
       }
     }
   }
 }
 
 void BackgroundController::createModeActivity(const QString &activity,
-                                              const QString &title,
-                                              const QVariantMap &data) {
+    const QString &title,
+    const QVariantMap &data)
+{
   UI::DesktopActivityPtr intent =
-      UI::ExtensionManager::instance()->activity("icongrid");
+    UI::ExtensionManager::instance()->activity("icongrid");
 
   if (!intent || !viewport()) {
     return;
@@ -506,10 +538,11 @@ void BackgroundController::createModeActivity(const QString &activity,
 }
 
 void BackgroundController::createWallpaperActivity(const QString &activity,
-                                                   const QString &title,
-                                                   const QVariantMap &data) {
+    const QString &title,
+    const QVariantMap &data)
+{
   UI::DesktopActivityPtr intent =
-      UI::ExtensionManager::instance()->activity("photosearchactivity");
+    UI::ExtensionManager::instance()->activity("photosearchactivity");
 
   if (!intent || !viewport()) {
     return;
@@ -526,10 +559,11 @@ void BackgroundController::createWallpaperActivity(const QString &activity,
 }
 
 void BackgroundController::createSearchActivity(const QString &activity,
-                                                const QString &title,
-                                                const QVariantMap &data) {
+    const QString &title,
+    const QVariantMap &data)
+{
   UI::DesktopActivityPtr intent =
-      UI::ExtensionManager::instance()->activity("flikrsearchactivity");
+    UI::ExtensionManager::instance()->activity("flikrsearchactivity");
 
   if (!intent || !viewport()) {
     return;
@@ -545,30 +579,33 @@ void BackgroundController::createSearchActivity(const QString &activity,
   viewport()->addActivity(intent);
 }
 
-void BackgroundController::createProgressDialog() {
+void BackgroundController::createProgressDialog()
+{
   QRectF _view_rect;
 
   _view_rect = QRectF(0.0, 0.0, 420.0, 128.0);
 
   if (!d->mProgressDialog)
     d->mProgressDialog = UI::ExtensionManager::instance()->activity(
-        "progressdialogactivity");
+                           "progressdialogactivity");
 
-  if (!d->mProgressDialog || !viewport())
+  if (!d->mProgressDialog || !viewport()) {
     return;
+  }
 
   d->mProgressDialog->setActivityAttribute("title", "Progress Dialog");
   d->mProgressDialog->setActivityAttribute("data", QVariant());
   d->mProgressDialog->createWindow(
-      _view_rect, "Downlading Image",
-      viewport()->center(_view_rect,
-                         UI::Space::kCenterOnViewportTop));
+    _view_rect, "Downlading Image",
+    viewport()->center(_view_rect,
+                       UI::Space::kCenterOnViewportTop));
 
   viewport()->addActivity(d->mProgressDialog);
 }
 
 void BackgroundController::saveSession(const QString &key,
-                                       const QVariant &value) {
+                                       const QVariant &value)
+{
   UI::Space *view = viewport();
 
   if (view) {
@@ -576,13 +613,15 @@ void BackgroundController::saveSession(const QString &key,
   }
 }
 
-QVariant BackgroundController::sessionValue(const QString &key) {
+QVariant BackgroundController::sessionValue(const QString &key)
+{
   return QVariant();
 }
 
 QAction *BackgroundController::PrivateBackgroundController::createAction(
-    BackgroundController *controller, const QString &name, const QString &icon,
-    int id) {
+  BackgroundController *controller, const QString &name, const QString &icon,
+  int id)
+{
   QAction *action = new QAction(controller);
   action->setText(name);
   action->setProperty("id", QVariant(id));
@@ -594,9 +633,11 @@ QAction *BackgroundController::PrivateBackgroundController::createAction(
 }
 
 void BackgroundController::PrivateBackgroundController::updateProgress(
-    float progress) {
+  float progress)
+{
   QVariant progressVal = progress;
 
-  if (mProgressDialog)
+  if (mProgressDialog) {
     mProgressDialog->updateAttribute("progress", progress);
+  }
 }

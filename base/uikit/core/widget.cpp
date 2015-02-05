@@ -104,9 +104,11 @@
   * Label to display when the widget is in dock mode
   */
 
-namespace UI {
+namespace UI
+{
 
-class Window::PrivateAbstractDesktopWidget {
+class Window::PrivateAbstractDesktopWidget
+{
 public:
   PrivateAbstractDesktopWidget() : m_widget_controller(0) {}
   ~PrivateAbstractDesktopWidget() {}
@@ -118,9 +120,10 @@ public:
 };
 
 Window::Window(QGraphicsObject *parent)
-    : QGraphicsObject(parent),
-      QGraphicsLayoutItem(0),
-      d(new PrivateAbstractDesktopWidget) {
+  : QGraphicsObject(parent),
+    QGraphicsLayoutItem(0),
+    d(new PrivateAbstractDesktopWidget)
+{
   d->m_widget_name = QLatin1String("Widget");
   d->m_current_layer_type = kRenderAtForgroundLevel;
 
@@ -138,11 +141,17 @@ Window::Window(QGraphicsObject *parent)
 
 Window::~Window() { delete d; }
 
-QRectF Window::boundingRect() const {
-  return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
+QRectF Window::boundingRect() const
+{
+    return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
 }
 
-void Window::setMinimizedGeometry(const QRectF &rect) {
+void Window::setWindowFlag(int flags, bool enable)
+{
+}
+
+void Window::setMinimizedGeometry(const QRectF &rect)
+{
   d->m_minized_view_geometry = rect;
 }
 
@@ -176,7 +185,8 @@ QRectF Widget::geometry() const
 }
 */
 
-QString Window::uuid() const {
+QString Window::uuid() const
+{
   QString rv;
 
   rv = QString(QCryptographicHash::hash((label().toLatin1()),
@@ -185,59 +195,79 @@ QString Window::uuid() const {
   return rv;
 }
 
-Window::RenderLevel Window::layerType() const {
+Window::RenderLevel Window::layerType() const
+{
   return d->m_current_layer_type;
 }
 
-void Window::setLayerType(RenderLevel level) const {
+void Window::setLayerType(RenderLevel level) const
+{
   d->m_current_layer_type = level;
 }
 
 void Window::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                   QWidget * /*widget*/) {
-  if (!painter->isActive())
+                   QWidget * /*widget*/)
+{
+  if (!painter->isActive()) {
     return;
-  if (isObscured())
+  }
+  if (isObscured()) {
     return;
+  }
 
   painter->setClipRect(boundingRect());
   paintView(painter, boundingRect());
 }
 
-void Window::setGeometry(const QRectF &rect) {
+void Window::setGeometry(const QRectF &rect)
+{
   // d->m_content_geometry = rect;
   prepareGeometryChange();
   QGraphicsLayoutItem::setGeometry(rect);
   setPos(rect.topLeft());
 }
 
-QSizeF Window::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
+QSizeF Window::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+{
   // todo: ignoreing which for now. we will return based on
   // return geometry().size();
   QSizeF sh;
   switch (which) {
-    case Qt::MinimumSize:
-      sh = QSizeF(0, 0);
-      break;
-    case Qt::PreferredSize:
-      sh = QSizeF(50, 50); // rather arbitrary
-      break;
-    case Qt::MaximumSize:
-      sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-      break;
-    default:
-      qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
-               "value of 'which'");
-      break;
+  case Qt::MinimumSize:
+    sh = QSizeF(0, 0);
+    break;
+  case Qt::PreferredSize:
+    sh = QSizeF(50, 50); // rather arbitrary
+    break;
+  case Qt::MaximumSize:
+    sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    break;
+  default:
+    qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
+             "value of 'which'");
+    break;
   }
   return sh;
 }
 
-void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void Window::paintView(QPainter *painter, const QRectF &rect)
+{
+  StyleFeatures feature;
+  feature.geometry = rect;
+
+  if (style()) {
+    style()->draw("window_frame", feature, painter);
+  }
+
+}
+
+void Window::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
   QGraphicsObject::mousePressEvent(event);
 }
 
-void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
   /*
   if (controller() && controller()->viewport()) {
       AbstractDesktopView *view =
@@ -252,30 +282,36 @@ void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void Window::focusOutEvent(QFocusEvent *event) {
+void Window::focusOutEvent(QFocusEvent *event)
+{
   event->accept();
   Q_EMIT focusLost();
 }
 
-float Window::scaleFactorForWidth() const {
+float Window::scaleFactorForWidth() const
+{
   return geometry().width() / boundingRect().width();
 }
 
-float Window::scaleFactorForHeight() const {
+float Window::scaleFactorForHeight() const
+{
   return geometry().height() / boundingRect().height();
 }
 
-void Window::setChildWidetVisibility(bool show) {
+void Window::setChildWidetVisibility(bool show)
+{
   Q_FOREACH(QGraphicsItem * item, this->childItems()) {
     (show) ? item->show() : item->hide();
   }
 }
 
-void Window::setController(ViewController *view_controller) {
+void Window::setController(ViewController *view_controller)
+{
   d->m_widget_controller = view_controller;
 }
 
-ViewController *Window::controller() const {
+ViewController *Window::controller() const
+{
   return d->m_widget_controller;
 }
 

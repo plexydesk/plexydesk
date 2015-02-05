@@ -1,6 +1,7 @@
 #include "widgetstyleinterface.h"
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 WidgetStyleInterface::WidgetStyleInterface() {}
 }

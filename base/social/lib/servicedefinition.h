@@ -5,9 +5,11 @@
 #include <QUrl>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 
-class QuetzalSocialKit_EXPORT ServiceDefinition : public QObject {
+class QuetzalSocialKit_EXPORT ServiceDefinition : public QObject
+{
   Q_OBJECT
 public:
   ServiceDefinition(const QString &input, QObject *parent = 0);
@@ -37,7 +39,7 @@ public:
   QUrl queryURL(const QString &method, const QVariantMap &data) const;
 
   QMultiMap<QString, QVariantMap> queryResult(const QString &method,
-                                              const QString &data) const;
+      const QString &data) const;
 
 protected:
   void buildServiceDefs();

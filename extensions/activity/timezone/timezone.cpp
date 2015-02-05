@@ -21,33 +21,34 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class TimeZoneActivity::PrivateTimeZone {
+class TimeZoneActivity::PrivateTimeZone
+{
 public:
   PrivateTimeZone() {}
-  ~PrivateTimeZone() {
-    if (m_main_window)
+  ~PrivateTimeZone()
+  {
+    if (m_main_window) {
       delete m_main_window;
+    }
   }
 
   UI::UIWidget *m_main_window;
 };
 
 TimeZoneActivity::TimeZoneActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateTimeZone) {}
+  : UI::DesktopActivity(object), d(new PrivateTimeZone) {}
 
 TimeZoneActivity::~TimeZoneActivity() { delete d; }
 
 void TimeZoneActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
-                                    const QPointF &window_pos) {
+                                    const QPointF &window_pos)
+{
   d->m_main_window = new UI::UIWidget();
 
-  d->m_main_window->setWindowTitle(window_title);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderDropShadow);
 
   setGeometry(window_geometry);
   updateContentGeometry(d->m_main_window);
@@ -65,12 +66,14 @@ void TimeZoneActivity::updateAttribute(const QString &name,
 
 UI::UIWidget *TimeZoneActivity::window() const { return d->m_main_window; }
 
-void TimeZoneActivity::onWidgetClosed(UI::UIWidget *widget) {
+void TimeZoneActivity::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }
 
-void TimeZoneActivity::onHideAnimationFinished() {
+void TimeZoneActivity::onHideAnimationFinished()
+{
   delete d->m_main_window;
   d->m_main_window = 0;
   Q_EMIT finished();

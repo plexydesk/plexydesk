@@ -1,16 +1,18 @@
 #include "datasource.h"
 #include <QVariantHash>
 
-namespace UI {
+namespace UI
+{
 
-class DataSource::PrivateDataSource {
+class DataSource::PrivateDataSource
+{
 public:
   PrivateDataSource() {}
   ~PrivateDataSource() {}
 };
 
 DataSource::DataSource(QObject *object)
-    : QObject(object), d(new PrivateDataSource) {}
+  : QObject(object), d(new PrivateDataSource) {}
 
 DataSource::~DataSource() { delete d; }
 

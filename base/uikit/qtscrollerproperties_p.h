@@ -57,7 +57,8 @@
 #include <QEasingCurve>
 #include "qtscrollerproperties.h"
 
-class QtScrollerPropertiesPrivate {
+class QtScrollerPropertiesPrivate
+{
 public:
   static QtScrollerPropertiesPrivate *defaults();
 

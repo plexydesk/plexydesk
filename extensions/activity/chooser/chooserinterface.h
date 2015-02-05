@@ -24,7 +24,8 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class IconGridInterface : public QObject, public UI::ActivityInterface {
+class IconGridInterface : public QObject, public UI::ActivityInterface
+{
   Q_OBJECT
   Q_INTERFACES(UI::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.icongrid")

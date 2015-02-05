@@ -4,9 +4,11 @@
 #include <QTcpServer>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 class WebContentInterface;
-class QuetzalSocialKit_EXPORT WebServer : public QTcpServer {
+class QuetzalSocialKit_EXPORT WebServer : public QTcpServer
+{
   Q_OBJECT
 public:
   explicit WebServer(QObject *parent = 0);

@@ -7,9 +7,11 @@
 #include <QGraphicsLayoutItem>
 #include <plexydesk_ui_exports.h>
 
-namespace UI {
+namespace UI
+{
 
-class DECL_UI_KIT_EXPORT ImageView : public UIWidget {
+class DECL_UI_KIT_EXPORT ImageView : public UIWidget
+{
   Q_OBJECT
 public:
   explicit ImageView(QGraphicsObject *parent = 0);

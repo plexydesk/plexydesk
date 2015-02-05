@@ -3,7 +3,8 @@
 
 #include <QObject>
 
-class AppleActivityMonitor : public QObject {
+class AppleActivityMonitor : public QObject
+{
   Q_OBJECT
 public:
   explicit AppleActivityMonitor(QObject *parent = 0);

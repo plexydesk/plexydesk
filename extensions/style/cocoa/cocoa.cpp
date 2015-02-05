@@ -22,7 +22,8 @@
 #include <view_controller.h>
 #include <stylefeatures.h>
 
-class CocoaStyle::PrivateCocoa {
+class CocoaStyle::PrivateCocoa
+{
 public:
   PrivateCocoa() {}
   ~PrivateCocoa() {}
@@ -31,7 +32,8 @@ public:
   QVariantMap m_attribute_map;
 };
 
-CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
+CocoaStyle::CocoaStyle() : d(new PrivateCocoa)
+{
   d->m_type_map["button"] = 1;
   d->m_type_map["vertical_list_item"] = 2;
   d->m_type_map["window_button"] = 3;
@@ -90,38 +92,41 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
 
 CocoaStyle::~CocoaStyle() { delete d; }
 
-QVariantMap CocoaStyle::attributeMap(const QString &type) const {
+QVariantMap CocoaStyle::attributeMap(const QString &type) const
+{
   return d->m_attribute_map[type].toMap();
 }
 
 void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
-                      QPainter *painter) {
+                      QPainter *painter)
+{
   switch (d->m_type_map[type]) {
-    case 1:
-      drawPushButton(options, painter);
-      break;
-    case 2:
-      drawVListItem(options, painter);
-      break;
-    case 3:
-      drawWindowButton(options, painter);
-      break;
-    case 6:
-      drawLineEdit(options, painter);
-      break;
-    case 19:
-      drawProgressBar(options, painter);
-      break;
-    case 21:
-      drawFrame(options, painter);
-      break;
-    default:
-      qWarning() << Q_FUNC_INFO << "Unknown Element:" << type;
+  case 1:
+    drawPushButton(options, painter);
+    break;
+  case 2:
+    drawVListItem(options, painter);
+    break;
+  case 3:
+    drawWindowButton(options, painter);
+    break;
+  case 6:
+    drawLineEdit(options, painter);
+    break;
+  case 19:
+    drawProgressBar(options, painter);
+    break;
+  case 21:
+    drawFrame(options, painter);
+    break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Unknown Element:" << type;
   }
 }
 
 void CocoaStyle::drawPushButton(const StyleFeatures &features,
-                                QPainter *painter) {
+                                QPainter *painter)
+{
   QRectF rect = features.geometry;
 
   /* Painter settings */
@@ -153,7 +158,8 @@ void CocoaStyle::drawPushButton(const StyleFeatures &features,
 }
 
 void CocoaStyle::drawWindowButton(const StyleFeatures &features,
-                                  QPainter *painter) {
+                                  QPainter *painter)
+{
   QRectF rect = features.geometry.adjusted(0, 0, 0, 0);
 
   painter->save();
@@ -184,7 +190,8 @@ void CocoaStyle::drawWindowButton(const StyleFeatures &features,
   painter->restore();
 }
 
-void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
+void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter)
+{
   QRectF rect = features.geometry;
 
   painter->save();
@@ -220,7 +227,7 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     option.setAlignment(Qt::AlignCenter);
 
     QPen _title_font_pen =
-        QPen(QColor("#969696"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      QPen(QColor("#969696"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(_title_font_pen);
 
     painter->drawText(_window_title_rect, features.text_data, option);
@@ -239,7 +246,8 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
 }
 
 void CocoaStyle::drawPushButtonText(const StyleFeatures &features,
-                                    const QString &text, QPainter *painter) {
+                                    const QString &text, QPainter *painter)
+{
   /* Painter settings */
   QPen pen;
 
@@ -255,7 +263,8 @@ void CocoaStyle::drawPushButtonText(const StyleFeatures &features,
 }
 
 void CocoaStyle::drawLineEdit(const StyleFeatures &features,
-                              QPainter *painter) {
+                              QPainter *painter)
+{
   QRectF rect = features.geometry.adjusted(1, 1, 0, 0);
 
   /* Painter settings */
@@ -276,10 +285,10 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
   QPen pen;
   if (features.render_state == StyleFeatures::kRenderRaised) {
     pen =
-        QPen(QColor("#D1D1D1"), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      QPen(QColor("#D1D1D1"), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   } else {
     pen =
-        QPen(QColor("#D0D0D0"), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      QPen(QColor("#D0D0D0"), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   }
   painter->setPen(pen);
   painter->drawPath(backgroundPath);
@@ -293,7 +302,8 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
 }
 
 void CocoaStyle::drawLineEditText(const StyleFeatures &features,
-                                  const QString &text, QPainter *painter) {
+                                  const QString &text, QPainter *painter)
+{
   /* Painter settings */
   painter->setRenderHint(QPainter::Antialiasing, true);
   painter->setRenderHint(QPainter::TextAntialiasing, true);
@@ -317,14 +327,15 @@ void CocoaStyle::drawLineEditText(const StyleFeatures &features,
                     Qt::AlignLeft | Qt::AlignVCenter, text);
 
   pen =
-      QPen(QColor(98, 101, 108), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    QPen(QColor(98, 101, 108), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   painter->setPen(pen);
   // painter->drawLine(QPoint(width + 11, 4), QPoint(width +
   // 11,features.geometry.height() - 4));
 }
 
 void CocoaStyle::drawLabelEditText(const StyleFeatures &features,
-                                   const QString &text, QPainter *painter) {
+                                   const QString &text, QPainter *painter)
+{
   /*
   QPen pen;
 
@@ -349,25 +360,27 @@ void CocoaStyle::drawLabelEditText(const StyleFeatures &features,
 }
 
 void CocoaStyle::drawSeperatorLine(const StyleFeatures &features,
-                                   QPainter *painter) {
+                                   QPainter *painter)
+{
   painter->save();
   QPen pen = QPen(QColor(217, 217, 217), 1, Qt::SolidLine, Qt::RoundCap,
                   Qt::RoundJoin);
   painter->setPen(pen);
   painter->drawLine(
-      QPoint(features.geometry.x(), features.geometry.y()),
-      QPoint(features.geometry.width(), features.geometry.height()));
+    QPoint(features.geometry.x(), features.geometry.y()),
+    QPoint(features.geometry.width(), features.geometry.height()));
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
   painter->setPen(pen);
   painter->drawLine(
-      QPoint(features.geometry.x() + 1, features.geometry.y() + 1),
-      QPoint(features.geometry.width() + 1, features.geometry.height() + 1));
+    QPoint(features.geometry.x() + 1, features.geometry.y() + 1),
+    QPoint(features.geometry.width() + 1, features.geometry.height() + 1));
   painter->restore();
 }
 
 void CocoaStyle::drawProgressBar(const StyleFeatures &features,
-                                 QPainter *painter) {
+                                 QPainter *painter)
+{
   painter->save();
 
   painter->setRenderHint(QPainter::Antialiasing, true);
@@ -375,46 +388,49 @@ void CocoaStyle::drawProgressBar(const StyleFeatures &features,
   painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
   switch (features.render_state) {
-    case StyleFeatures::kRenderBackground: {
-      QRectF rect = features.geometry;
-      QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-      linearGrad.setColorAt(1, QColor("#F7F7F7"));
-      linearGrad.setColorAt(0.5, QColor("#C2C2C2"));
-      linearGrad.setColorAt(0, QColor("#F7F7F7"));
-      QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
-                         Qt::RoundJoin);
+  case StyleFeatures::kRenderBackground: {
+    QRectF rect = features.geometry;
+    QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
+    linearGrad.setColorAt(1, QColor("#F7F7F7"));
+    linearGrad.setColorAt(0.5, QColor("#C2C2C2"));
+    linearGrad.setColorAt(0, QColor("#F7F7F7"));
+    QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
+                       Qt::RoundJoin);
 
-      QPointF backgroundLineStart(rect.topLeft().x(),
-                                  rect.bottomLeft().y() / 2);
-      QPointF backgroundLineEnd(rect.topRight().x(),
-                                rect.bottomRight().y() / 2);
-      painter->setPen(backgroundPen);
-      painter->drawLine(backgroundLineStart, backgroundLineEnd);
-    } break;
-    case StyleFeatures::kRenderForground: {
-      QRectF rect = features.geometry;
-      QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-      linearGrad.setColorAt(1, QColor("#91B670"));
-      linearGrad.setColorAt(0, QColor("#B3DF89"));
-      QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
-                         Qt::RoundJoin);
+    QPointF backgroundLineStart(rect.topLeft().x(),
+                                rect.bottomLeft().y() / 2);
+    QPointF backgroundLineEnd(rect.topRight().x(),
+                              rect.bottomRight().y() / 2);
+    painter->setPen(backgroundPen);
+    painter->drawLine(backgroundLineStart, backgroundLineEnd);
+  }
+  break;
+  case StyleFeatures::kRenderForground: {
+    QRectF rect = features.geometry;
+    QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
+    linearGrad.setColorAt(1, QColor("#91B670"));
+    linearGrad.setColorAt(0, QColor("#B3DF89"));
+    QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
+                       Qt::RoundJoin);
 
-      QPointF backgroundLineStart(rect.topLeft().x(),
-                                  rect.bottomLeft().y() / 2);
-      QPointF backgroundLineEnd(rect.topRight().x(),
-                                rect.bottomRight().y() / 2);
-      painter->setPen(backgroundPen);
-      painter->drawLine(backgroundLineStart, backgroundLineEnd);
-    } break;
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown progress bar state";
+    QPointF backgroundLineStart(rect.topLeft().x(),
+                                rect.bottomLeft().y() / 2);
+    QPointF backgroundLineEnd(rect.topRight().x(),
+                              rect.bottomRight().y() / 2);
+    painter->setPen(backgroundPen);
+    painter->drawLine(backgroundLineStart, backgroundLineEnd);
+  }
+  break;
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown progress bar state";
   }
 
   painter->restore();
 }
 
 void CocoaStyle::drawVListItem(const StyleFeatures &features,
-                               QPainter *painter) {
+                               QPainter *painter)
+{
   QRectF rect = features.geometry;
 
   QPen backgroundPen(QColor("#d6d6d6"), 1, Qt::SolidLine, Qt::RoundCap,

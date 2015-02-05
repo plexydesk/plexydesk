@@ -26,14 +26,17 @@
 #define GL_MULTISAMPLE 0x809D
 #endif
 
-namespace PlexyDesk {
-class BaseRender::Private {
+namespace PlexyDesk
+{
+class BaseRender::Private
+{
 public:
   Private() {}
   ~Private() {}
 
   CacheDict dict;
-  void drawPattern(QPainter *p, const QRect &r) {
+  void drawPattern(QPainter *p, const QRect &r)
+  {
     p->fillRect(r, QColor(255, 255, 255));
   }
 
@@ -44,8 +47,9 @@ public:
 
 BaseRender::BaseRender(QWidget *parent, const QGLWidget *shareWidget,
                        Qt::WindowFlags flag)
-    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent, shareWidget, flag),
-      d(new Private) {
+  : QGLWidget(QGLFormat(QGL::SampleBuffers), parent, shareWidget, flag),
+    d(new Private)
+{
   setMouseTracking(true);
   // TODO
   // add sample buffer and pbuffer support flags here
@@ -55,20 +59,22 @@ BaseRender::BaseRender(QWidget *parent, const QGLWidget *shareWidget,
 
 BaseRender::~BaseRender() { delete d; }
 
-void BaseRender::resetViewport(int width, int height) {
+void BaseRender::resetViewport(int width, int height)
+{
   glViewport(0, 0, (GLint)width, (GLint)height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 10.0);
 }
 
-void BaseRender::resetOverlay(int width, int height) {
+void BaseRender::resetOverlay(int width, int height)
+{
   QString text = tr("Plexy Desk 1.0, Revolution Begins");
   QFontMetrics metrics = QFontMetrics(font());
   int border = qMax(4, metrics.leading());
   QRect rect =
-      metrics.boundingRect(0, 0, width - 2 * border, int(height * 0.125),
-                           Qt::AlignCenter | Qt::TextWordWrap, text);
+    metrics.boundingRect(0, 0, width - 2 * border, int(height * 0.125),
+                         Qt::AlignCenter | Qt::TextWordWrap, text);
   d->image = QImage(width, rect.height() + 2 * border,
                     QImage::Format_ARGB32_Premultiplied);
   d->image.fill(qRgba(0, 0, 0, 127));
@@ -83,14 +89,16 @@ void BaseRender::resetOverlay(int width, int height) {
 
 void BaseRender::initializeGL() {}
 
-void BaseRender::resizeGL(int w, int h) {
+void BaseRender::resizeGL(int w, int h)
+{
   d->width = w;
   d->height = h;
   resetViewport(w, h);
   resetOverlay(w, h);
 }
 
-void BaseRender::paintEvent(QPaintEvent *event) {
+void BaseRender::paintEvent(QPaintEvent *event)
+{
   Q_UNUSED(event);
 
   QPainter p;

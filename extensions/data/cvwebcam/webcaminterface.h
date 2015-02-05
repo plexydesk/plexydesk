@@ -27,7 +27,8 @@
 #include <datainterface.h>
 #include <dataplugin.h>
 
-class WebCamInterface : public PlexyDesk::DataInterface {
+class WebCamInterface : public PlexyDesk::DataInterface
+{
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

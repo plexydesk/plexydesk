@@ -41,13 +41,15 @@
 
 #include "qsggeometry.h"
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 /*!
     Convenience function which returns attributes to be used for 2D solid
     color drawing.
  */
 
-const QSGGeometry::AttributeSet &QSGGeometry::defaultAttributes_Point2D() {
+const QSGGeometry::AttributeSet &QSGGeometry::defaultAttributes_Point2D()
+{
   static Attribute data[] = { { 0, 2, GL_FLOAT } };
   static AttributeSet attrs = { 1, sizeof(float) * 2, data };
   return attrs;
@@ -59,7 +61,8 @@ const QSGGeometry::AttributeSet &QSGGeometry::defaultAttributes_Point2D() {
  */
 
 const QSGGeometry::AttributeSet &
-QSGGeometry::defaultAttributes_TexturedPoint2D() {
+QSGGeometry::defaultAttributes_TexturedPoint2D()
+{
   static Attribute data[] = { { 0, 2, GL_FLOAT }, { 1, 2, GL_FLOAT } };
   static AttributeSet attrs = { 2, sizeof(float) * 4, data };
   return attrs;
@@ -71,7 +74,8 @@ QSGGeometry::defaultAttributes_TexturedPoint2D() {
  */
 
 const QSGGeometry::AttributeSet &
-QSGGeometry::defaultAttributes_ColoredPoint2D() {
+QSGGeometry::defaultAttributes_ColoredPoint2D()
+{
   static Attribute data[] = { { 0, 2, GL_FLOAT }, { 1, 4, GL_UNSIGNED_BYTE } };
   static AttributeSet attrs = { 2, 2 * sizeof(float) + 4 * sizeof(char), data };
   return attrs;
@@ -108,14 +112,15 @@ QSGGeometry::defaultAttributes_ColoredPoint2D() {
 
 QSGGeometry::QSGGeometry(const QSGGeometry::AttributeSet &attributes,
                          int vertexCount, int indexCount, int indexType)
-    : m_drawing_mode(GL_TRIANGLE_STRIP),
-      m_vertex_count(0),
-      m_index_count(0),
-      m_index_type(indexType),
-      m_attributes(attributes),
-      m_data(0),
-      m_index_data_offset(-1),
-      m_owns_data(false) {
+  : m_drawing_mode(GL_TRIANGLE_STRIP),
+    m_vertex_count(0),
+    m_index_count(0),
+    m_index_type(indexType),
+    m_attributes(attributes),
+    m_data(0),
+    m_index_data_offset(-1),
+    m_owns_data(false)
+{
   Q_ASSERT(m_attributes.count > 0);
   Q_ASSERT(m_attributes.stride > 0);
 
@@ -124,9 +129,11 @@ QSGGeometry::QSGGeometry(const QSGGeometry::AttributeSet &attributes,
   allocate(vertexCount, indexCount);
 }
 
-QSGGeometry::~QSGGeometry() {
-  if (m_owns_data)
+QSGGeometry::~QSGGeometry()
+{
+  if (m_owns_data) {
     qFree(m_data);
+  }
 }
 
 /*!
@@ -162,7 +169,8 @@ QSGGeometry::~QSGGeometry() {
 
     \sa indexDataAsUShort(), indexDataAsUInt()
  */
-void *QSGGeometry::indexData() {
+void *QSGGeometry::indexData()
+{
   return m_index_data_offset < 0 ? 0 : ((char *)m_data + m_index_data_offset);
 }
 
@@ -171,7 +179,8 @@ void *QSGGeometry::indexData() {
 
     \sa indexDataAsUShort(), indexDataAsUInt()
  */
-const void *QSGGeometry::indexData() const {
+const void *QSGGeometry::indexData() const
+{
   return m_index_data_offset < 0 ? 0 : ((char *)m_data + m_index_data_offset);
 }
 
@@ -205,9 +214,11 @@ void QSGGeometry::setDrawingMode(GLenum mode) { m_drawing_mode = mode; }
     Vertex and index data will be invalidated after this call and the caller
    must
  */
-void QSGGeometry::allocate(int vertexCount, int indexCount) {
-  if (vertexCount == m_vertex_count && indexCount == m_index_count)
+void QSGGeometry::allocate(int vertexCount, int indexCount)
+{
+  if (vertexCount == m_vertex_count && indexCount == m_index_count) {
     return;
+  }
 
   m_vertex_count = vertexCount;
   m_index_count = indexCount;
@@ -215,8 +226,9 @@ void QSGGeometry::allocate(int vertexCount, int indexCount) {
   bool canUsePrealloc = m_index_count <= 0;
   int vertexByteSize = m_attributes.stride * m_vertex_count;
 
-  if (m_owns_data)
+  if (m_owns_data) {
     qFree(m_data);
+  }
 
   if (canUsePrealloc && vertexByteSize <= (int)sizeof(m_prealloc)) {
     m_data = (void *)&m_prealloc[0];
@@ -226,8 +238,8 @@ void QSGGeometry::allocate(int vertexCount, int indexCount) {
     Q_ASSERT(m_index_type == GL_UNSIGNED_INT ||
              m_index_type == GL_UNSIGNED_SHORT);
     int indexByteSize =
-        indexCount *
-        (m_index_type == GL_UNSIGNED_SHORT ? sizeof(quint16) : sizeof(quint32));
+      indexCount *
+      (m_index_type == GL_UNSIGNED_SHORT ? sizeof(quint16) : sizeof(quint32));
     m_data = (void *)qMalloc(vertexByteSize + indexByteSize);
     m_index_data_offset = vertexByteSize;
     m_owns_data = true;
@@ -240,7 +252,8 @@ void QSGGeometry::allocate(int vertexCount, int indexCount) {
     The function assumes the geometry object contains a single triangle strip
     of QSGGeometry::Point2D vertices
  */
-void QSGGeometry::updateRectGeometry(QSGGeometry *g, const QRectF &rect) {
+void QSGGeometry::updateRectGeometry(QSGGeometry *g, const QRectF &rect)
+{
   Point2D *v = g->vertexDataAsPoint2D();
   v[0].x = rect.left();
   v[0].y = rect.top();
@@ -265,7 +278,8 @@ void QSGGeometry::updateRectGeometry(QSGGeometry *g, const QRectF &rect) {
     QSGGeometry::TexturedPoint2D.
  */
 void QSGGeometry::updateTexturedRectGeometry(QSGGeometry *g, const QRectF &rect,
-                                             const QRectF &textureRect) {
+    const QRectF &textureRect)
+{
   TexturedPoint2D *v = g->vertexDataAsTexturedPoint2D();
   v[0].x = rect.left();
   v[0].y = rect.top();

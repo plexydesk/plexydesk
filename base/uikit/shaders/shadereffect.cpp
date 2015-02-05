@@ -49,19 +49,21 @@
 
 static QTransform savedWorldTransform;
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 
 ShaderEffect::ShaderEffect(QObject *parent)
-    : QGraphicsEffect(parent), m_changed(true) {}
+  : QGraphicsEffect(parent), m_changed(true) {}
 
 ShaderEffect::~ShaderEffect() {}
 
-void ShaderEffect::prepareBufferedDraw(QPainter *painter) {
+void ShaderEffect::prepareBufferedDraw(QPainter *painter)
+{
   // This workaround needed because QGraphicsEffect seems to always utilize
   // default painters worldtransform
   // instead of the active painters worldtransform.
   const ShaderEffectBuffer *effectBuffer =
-      dynamic_cast<ShaderEffectBuffer *>(painter->device());
+    dynamic_cast<ShaderEffectBuffer *>(painter->device());
   if (effectBuffer) {
     savedWorldTransform = painter->worldTransform() * savedWorldTransform;
     painter->setWorldTransform(savedWorldTransform);
@@ -70,7 +72,8 @@ void ShaderEffect::prepareBufferedDraw(QPainter *painter) {
   }
 }
 
-void ShaderEffect::draw(QPainter *painter) {
+void ShaderEffect::draw(QPainter *painter)
+{
   const QGLContext *context = QGLContext::currentContext();
 
   prepareBufferedDraw(painter);
@@ -79,13 +82,16 @@ void ShaderEffect::draw(QPainter *painter) {
     updateRenderTargets();
   }
 
-  if (!context || m_renderTargets.count() == 0 || !hideOriginal())
+  if (!context || m_renderTargets.count() == 0 || !hideOriginal()) {
     drawSource(painter);
+  }
 }
 
-void ShaderEffect::updateRenderTargets() {
-  if (!m_changed)
+void ShaderEffect::updateRenderTargets()
+{
+  if (!m_changed) {
     return;
+  }
 
   m_changed = false;
 
@@ -105,9 +111,9 @@ void ShaderEffect::updateRenderTargets() {
         QSize textureSize = m_renderTargets[i]->textureSize();
 
         qreal yflip = m_renderTargets[i]->isMirrored()
-                          ? -1.0
-                          : 1.0; // flip y to match scenegraph, it also flips
-                                 // texturecoordinates
+                      ? -1.0
+                      : 1.0; // flip y to match scenegraph, it also flips
+        // texturecoordinates
         qreal xscale = 1.0;
         qreal yscale = 1.0 * yflip;
 
@@ -157,34 +163,42 @@ void ShaderEffect::updateRenderTargets() {
   }
 }
 
-void ShaderEffect::sourceChanged(ChangeFlags flags) {
+void ShaderEffect::sourceChanged(ChangeFlags flags)
+{
   Q_UNUSED(flags);
   m_changed = true;
 }
 
-void ShaderEffect::addRenderTarget(ShaderEffectSource *target) {
-  if (!m_renderTargets.contains(target))
+void ShaderEffect::addRenderTarget(ShaderEffectSource *target)
+{
+  if (!m_renderTargets.contains(target)) {
     m_renderTargets.append(target);
+  }
 }
 
-void ShaderEffect::removeRenderTarget(ShaderEffectSource *target) {
+void ShaderEffect::removeRenderTarget(ShaderEffectSource *target)
+{
   int index = m_renderTargets.indexOf(target);
-  if (index >= 0)
+  if (index >= 0) {
     m_renderTargets.remove(index);
-  else
+  } else {
     qWarning() << "ShaderEffect::removeRenderTarget - did not find target.";
+  }
 }
 
-bool ShaderEffect::hideOriginal() const {
-  if (m_renderTargets.count() == 0)
+bool ShaderEffect::hideOriginal() const
+{
+  if (m_renderTargets.count() == 0) {
     return false;
+  }
 
   // Just like scenegraph version, if there is even one source that says "hide
   // original" we hide it.
   int count = m_renderTargets.count();
   for (int i = 0; i < count; i++) {
-    if (m_renderTargets[i]->hideSource())
+    if (m_renderTargets[i]->hideSource()) {
       return true;
+    }
   }
   return false;
 }

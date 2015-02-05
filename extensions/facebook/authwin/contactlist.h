@@ -6,7 +6,8 @@
 #include <scrollwidget.h>
 #include "contactlistitem.h"
 
-class ContactList : public PlexyDesk::ScrollWidget {
+class ContactList : public PlexyDesk::ScrollWidget
+{
   Q_OBJECT
 public:
   ContactList(const QRectF &rect, QGraphicsObject *parent = 0);

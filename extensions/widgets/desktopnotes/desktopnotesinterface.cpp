@@ -22,10 +22,11 @@
 #include <plexyconfig.h>
 
 QSharedPointer<UI::ViewController>
-DesktopNotesInterface::controller() {
+DesktopNotesInterface::controller()
+{
   QSharedPointer<UI::ViewController> obj =
-      QSharedPointer<UI::ViewController>(
-          new DesktopNotesControllerImpl(this), &QObject::deleteLater);
+    QSharedPointer<UI::ViewController>(
+      new DesktopNotesControllerImpl(this), &QObject::deleteLater);
 
   return obj;
 }

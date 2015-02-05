@@ -6,38 +6,40 @@
 
 #include <functional>
 
-namespace UI {
+namespace UI
+{
 
-class ModelView : public UIWidget {
+class ModelView : public UIWidget
+{
   Q_OBJECT
 
 public:
-    typedef enum {
-        kGridModel,
-        kListModel,
-        kTableModel
-    } ModelType;
+  typedef enum {
+    kGridModel,
+    kListModel,
+    kTableModel
+  } ModelType;
 
-    ModelView(QGraphicsObject *parent = 0);
-    virtual ~ModelView();
+  ModelView(QGraphicsObject *parent = 0);
+  virtual ~ModelView();
 
-    virtual void insert(UIWidget *widget);
-    virtual void remove(UIWidget *widget);
+  virtual void insert(UIWidget *widget);
+  virtual void remove(UIWidget *widget);
 
-    virtual void clear();
+  virtual void clear();
 
-    virtual void setViewGeometry(const QRectF &rect);
-    //Qt
-    virtual QRectF boundingRect() const;
-    virtual void setGeometry(const QRectF &rect);
-    virtual QSizeF sizeHint(Qt::SizeHint which,
-                            const QSizeF &constraint) const;
+  virtual void setViewGeometry(const QRectF &rect);
+  //Qt
+  virtual QRectF boundingRect() const;
+  virtual void setGeometry(const QRectF &rect);
+  virtual QSizeF sizeHint(Qt::SizeHint which,
+                          const QSizeF &constraint) const;
 protected:
-    bool sceneEvent(QEvent *e);
-    bool event(QEvent *e);
+  bool sceneEvent(QEvent *e);
+  bool event(QEvent *e);
 private:
-    class PrivateModelView;
-    PrivateModelView * const d;
+  class PrivateModelView;
+  PrivateModelView *const d;
 };
 
 }

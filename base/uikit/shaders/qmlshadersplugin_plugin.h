@@ -44,7 +44,8 @@
 
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 
-class qmlshaderspluginPlugin : public QDeclarativeExtensionPlugin {
+class qmlshaderspluginPlugin : public QDeclarativeExtensionPlugin
+{
   Q_OBJECT
 
 public:

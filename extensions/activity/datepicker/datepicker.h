@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class DatePickerActivity : public UI::DesktopActivity {
+class DatePickerActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

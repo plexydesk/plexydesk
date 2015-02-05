@@ -27,7 +27,8 @@
 #include "photowidget.h"
 #include "imageitem.h"
 
-class PhotoFrameController : public UI::ViewController {
+class PhotoFrameController : public UI::ViewController
+{
   Q_OBJECT
 
 public:

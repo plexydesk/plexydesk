@@ -5,10 +5,11 @@
 #include <PlexyDeskUICore_export.h>
 
 class PlexyDeskUICore_EXPORT QmlPixmapProvider
-    : public QDeclarativeImageProvider {
+  : public QDeclarativeImageProvider
+{
 public:
   QmlPixmapProvider(QDeclarativeImageProvider::ImageType type =
-                        QDeclarativeImageProvider::Pixmap);
+                      QDeclarativeImageProvider::Pixmap);
   virtual ~QmlPixmapProvider();
 
   QPixmap requestPixmap(const QString &id, QSize *size,

@@ -29,16 +29,15 @@
 #define CREATE_DIR "createDirectory"
 
 DirectoryController::DirectoryController(QObject *object)
-    : UI::ViewController(object) {
+  : UI::ViewController(object)
+{
   mThemePack = UI::Theme::instance();
 
   UI::UIWidget *parent = new UI::UIWidget();
 
-  parent->setWindowFlag(UI::UIWidget::kRenderBackground);
-  parent->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  parent->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  parent->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  parent->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  parent->setWindowFlag(UI::Window::kRenderBackground);
+  parent->setWindowFlag(UI::Window::kConvertToWindowType);
+  parent->setWindowFlag(UI::Window::kRenderDropShadow);
 
   IconWidgetView *view = new IconWidgetView(parent);
   view->setPos(0.0, 64.0);
@@ -46,9 +45,9 @@ DirectoryController::DirectoryController(QObject *object)
   view->setDirectoryPath(QDir::homePath());
   view->setController(this);
   parent->setLabelName("Home");
-  parent->setWindowTitle("Home");
+
   QFileInfo info(
-      QDir::toNativeSeparators(QDir::homePath() + QLatin1String("/Desktop/")));
+    QDir::toNativeSeparators(QDir::homePath() + QLatin1String("/Desktop/")));
 
   // parent->setLabelName(info.completeSuffix());
   mFolderViewList.append(parent);
@@ -56,7 +55,8 @@ DirectoryController::DirectoryController(QObject *object)
 
 DirectoryController::~DirectoryController() {}
 
-void DirectoryController::init() {
+void DirectoryController::init()
+{
   QAction *_add_dir_action = new QAction(this);
   _add_dir_action->setText(tr("Folder"));
 
@@ -68,23 +68,23 @@ void DirectoryController::init() {
 
 void DirectoryController::revokeSession(const QVariantMap &args) {}
 
-UI::ActionList DirectoryController::actions() const {
+UI::ActionList DirectoryController::actions() const
+{
   return m_supported_action_list;
 }
 
 void DirectoryController::requestAction(const QString &actionName,
-                                        const QVariantMap &args) {
+                                        const QVariantMap &args)
+{
   if (actionName == CREATE_DIR) {
     qDebug() << "Not supported yet";
   } else if (actionName == tr("Folder")) {
     qDebug() << Q_FUNC_INFO << "Request Add DIR";
     UI::UIWidget *parent = new UI::UIWidget();
 
-    parent->setWindowFlag(UI::UIWidget::kRenderBackground);
-    parent->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-    parent->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-    parent->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-    parent->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+    parent->setWindowFlag(UI::Window::kRenderBackground);
+    parent->setWindowFlag(UI::Window::kConvertToWindowType);
+    parent->setWindowFlag(UI::Window::kRenderDropShadow);
 
     IconWidgetView *view = new IconWidgetView(parent);
     view->setPos(0.0, 64.0);
@@ -95,7 +95,6 @@ void DirectoryController::requestAction(const QString &actionName,
     QFileInfo info(args["path"].toString());
 
     parent->setLabelName(info.baseName());
-    parent->setWindowTitle("Dropped: " + info.baseName());
 
     mFolderViewList.append(parent);
 
@@ -104,7 +103,8 @@ void DirectoryController::requestAction(const QString &actionName,
 }
 
 void DirectoryController::handleDropEvent(UI::UIWidget *widget,
-                                          QDropEvent *event) {
+    QDropEvent *event)
+{
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
 
@@ -119,13 +119,16 @@ void DirectoryController::handleDropEvent(UI::UIWidget *widget,
   }
 }
 
-void DirectoryController::setViewRect(const QRectF &rect) {
+void DirectoryController::setViewRect(const QRectF &rect)
+{
   Q_FOREACH(UI::UIWidget * view, mFolderViewList) {
-    if (view)
+    if (view) {
       view->setPos(rect.x(), rect.y());
+    }
   }
 }
 
-QString DirectoryController::icon() const {
+QString DirectoryController::icon() const
+{
   return QString("pd_add_folder_icon.png");
 }

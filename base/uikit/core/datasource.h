@@ -88,8 +88,10 @@ operation.
 \param args The argument to be passed to the data source, The data source should
 define the protocol to be used.
 **/
-namespace UI {
-class DECL_UI_KIT_EXPORT DataSource : public QObject {
+namespace UI
+{
+class DECL_UI_KIT_EXPORT DataSource : public QObject
+{
   Q_OBJECT
 
 public:

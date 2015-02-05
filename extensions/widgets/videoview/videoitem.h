@@ -25,8 +25,10 @@
 #include <datainterface.h>
 #include <desktopwidget.h>
 
-namespace PlexyDesk {
-class VideoWidget : public DesktopWidget {
+namespace PlexyDesk
+{
+class VideoWidget : public DesktopWidget
+{
   Q_OBJECT
 public:
   VideoWidget(const QRectF &rect, QWidget *embeddedWidget = 0);

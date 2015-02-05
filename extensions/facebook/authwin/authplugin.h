@@ -6,7 +6,8 @@
 #include "facebookcontactui.h"
 #include "facebookauthenticationwidget.h"
 
-class AuthPlugin : public PlexyDesk::ControllerInterface {
+class AuthPlugin : public PlexyDesk::ControllerInterface
+{
   Q_OBJECT
 
 public:

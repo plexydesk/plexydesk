@@ -26,7 +26,8 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class TimePickerActivity : public UI::DesktopActivity {
+class TimePickerActivity : public UI::DesktopActivity
+{
   Q_OBJECT
 
 public:

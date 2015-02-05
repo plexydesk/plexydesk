@@ -6,13 +6,15 @@
 #include <datastore.h>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit {
+namespace QuetzalKit
+{
 
 /**
     * @brief
     *
     */
-class QuetzalDataKit_EXPORT SyncObject : public QObject {
+class QuetzalDataKit_EXPORT SyncObject : public QObject
+{
   Q_OBJECT
 public:
   /**

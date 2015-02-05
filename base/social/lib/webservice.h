@@ -6,13 +6,15 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit {
+namespace QuetzalSocialKit
+{
 
 class ServiceDefinition;
 
 typedef QSharedPointer<ServiceDefinition> ServiceDefinitionPtr;
 
-class QuetzalSocialKit_EXPORT WebService : public QObject {
+class QuetzalSocialKit_EXPORT WebService : public QObject
+{
   Q_OBJECT
 public:
   explicit WebService(QObject *parent = 0);

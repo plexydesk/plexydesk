@@ -22,9 +22,11 @@
 #include <QPainter>
 #include <QCoreApplication>
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 ImagePileWidget::ImagePileWidget(const QRectF &rect, QGraphicsObject *widget)
-    : DesktopWidget(rect, widget) {
+  : DesktopWidget(rect, widget)
+{
   // setDockImage(QPixmap(QCoreApplication::applicationDirPath() +
   // "/share/plexy/skins/widgets/base-widget/pila.png"));
   cover = QImage(200, 200, QImage::Format_ARGB32_Premultiplied);
@@ -38,7 +40,8 @@ void ImagePileWidget::paintExtFace(QPainter * /*p*/,
 
 void ImagePileWidget::paintExtDockFace(QPainter *p,
                                        const QStyleOptionGraphicsItem *e,
-                                       QWidget * /*widget*/) {
+                                       QWidget * /*widget*/)
+{
   QRectF r = e->exposedRect;
   p->drawImage(QRectF(20, 20, r.width() - 40, r.height() - 40), cover);
 }

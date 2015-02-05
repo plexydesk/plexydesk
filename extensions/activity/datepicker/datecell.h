@@ -3,7 +3,8 @@
 
 #include <abstractcellcomponent.h>
 
-class DateCell : public UI::TableViewItem {
+class DateCell : public UI::TableViewItem
+{
   Q_OBJECT
 public:
   typedef enum { List = 0, Grid } ItemLayout;

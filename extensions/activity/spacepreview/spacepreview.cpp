@@ -21,7 +21,8 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class SpacePreviewActivity::PrivateSpacePreview {
+class SpacePreviewActivity::PrivateSpacePreview
+{
 public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
@@ -30,21 +31,19 @@ public:
 };
 
 SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
-    : UI::DesktopActivity(object), d(new PrivateSpacePreview) {}
+  : UI::DesktopActivity(object), d(new PrivateSpacePreview) {}
 
 SpacePreviewActivity::~SpacePreviewActivity() { delete d; }
 
 void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
-                                    const QString &window_title,
-                                    const QPointF &window_pos) {
+                                        const QString &window_title,
+                                        const QPointF &window_pos)
+{
   d->m_main_window = new UI::UIWidget();
 
-  d->m_main_window->setWindowTitle(window_title);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kTopLevelWindow);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderWindowTitle);
-  d->m_main_window->setWindowFlag(UI::UIWidget::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
+  d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UI::Window::kRenderDropShadow);
 
   setGeometry(window_geometry);
   updateContentGeometry(d->m_main_window);
@@ -58,11 +57,12 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 
 void SpacePreviewActivity::updateAttribute(const QString &name,
-                                       const QVariant &data) {}
+    const QVariant &data) {}
 
 UI::UIWidget *SpacePreviewActivity::window() const { return d->m_main_window; }
 
-void SpacePreviewActivity::onWidgetClosed(UI::UIWidget *widget) {
+void SpacePreviewActivity::onWidgetClosed(UI::UIWidget *widget)
+{
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
 }

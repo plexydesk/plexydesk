@@ -4,7 +4,8 @@
 #include <datasource.h>
 #include <extensionmanager.h>
 
-class ExtLaoderTestRunner::PrivateExtLaoderTestRunner {
+class ExtLaoderTestRunner::PrivateExtLaoderTestRunner
+{
 public:
   PrivateExtLaoderTestRunner() {}
   ~PrivateExtLaoderTestRunner() {}
@@ -13,20 +14,24 @@ public:
 };
 
 ExtLaoderTestRunner::ExtLaoderTestRunner(QObject *parent)
-    : d(new PrivateExtLaoderTestRunner), QObject(parent) {
+  : d(new PrivateExtLaoderTestRunner), QObject(parent)
+{
   qDebug() << Q_FUNC_INFO << "Runner Started";
 }
 
-ExtLaoderTestRunner::~ExtLaoderTestRunner() {
+ExtLaoderTestRunner::~ExtLaoderTestRunner()
+{
   qDebug() << Q_FUNC_INFO << "Runner Ended";
   delete d;
 }
 
-bool ExtLaoderTestRunner::connectToDataSource(const QString &source) {
+bool ExtLaoderTestRunner::connectToDataSource(const QString &source)
+{
   d->mDataSource = UI::ExtensionManager::instance()->dataEngine(source);
 
-  if (!d->mDataSource.data())
+  if (!d->mDataSource.data()) {
     return 0;
+  }
 
   connect(d->mDataSource.data(), SIGNAL(ready()), this, SLOT(onReady()));
   connect(d->mDataSource.data(), SIGNAL(sourceUpdated(const QVariantMap &)),
@@ -35,16 +40,19 @@ bool ExtLaoderTestRunner::connectToDataSource(const QString &source) {
   return true;
 }
 
-void ExtLaoderTestRunner::loadtest(const QString &source) {
+void ExtLaoderTestRunner::loadtest(const QString &source)
+{
   UI::DataSourcePtr _source =
-      UI::ExtensionManager::instance()->dataEngine(source);
+    UI::ExtensionManager::instance()->dataEngine(source);
 
-  if (!_source)
+  if (!_source) {
     return;
+  }
 
   qDebug() << Q_FUNC_INFO << "Complete";
 }
 
-void ExtLaoderTestRunner::onSourceUpdated(const QVariantMap &data) {
+void ExtLaoderTestRunner::onSourceUpdated(const QVariantMap &data)
+{
   qDebug() << Q_FUNC_INFO << data;
 }

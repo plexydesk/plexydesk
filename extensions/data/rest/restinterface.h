@@ -24,7 +24,8 @@
 #include <dataplugininterface.h>
 #include <QtNetwork>
 
-class RestInterface : public QObject, public UI::DataPluginInterface {
+class RestInterface : public QObject, public UI::DataPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(UI::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.restengine")

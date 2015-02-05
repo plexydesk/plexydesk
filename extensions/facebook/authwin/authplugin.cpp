@@ -23,7 +23,8 @@
 #include <abstractdesktopview.h>
 
 AuthPlugin::AuthPlugin(QObject *object)
-    : PlexyDesk::ControllerInterface(object) {
+  : PlexyDesk::ControllerInterface(object)
+{
   mWidget = new FacebookAuthenticationWidget(QRectF(0, 0, 480, 320));
   mWidget->setController(this);
   mWidget->setVisible(true);
@@ -49,11 +50,13 @@ AuthPlugin::AuthPlugin(QObject *object)
 
 AuthPlugin::~AuthPlugin() { qDebug() << Q_FUNC_INFO; }
 
-void AuthPlugin::init() {
+void AuthPlugin::init()
+{
   // return mContactUI;
 }
 
-void AuthPlugin::requestFriendsList(QString token, const QVariantMap &args) {
+void AuthPlugin::requestFriendsList(QString token, const QVariantMap &args)
+{
   PlexyDesk::DataSource *fbSource = dataSource();
   QVariantMap request;
   QVariant arg;
@@ -62,11 +65,13 @@ void AuthPlugin::requestFriendsList(QString token, const QVariantMap &args) {
   mToken = token;
   arg = request;
 
-  if (fbSource)
+  if (fbSource) {
     fbSource->setArguments(arg);
+  }
 }
 
-void AuthPlugin::revokeSession(const QVariantMap &args) {
+void AuthPlugin::revokeSession(const QVariantMap &args)
+{
   QString token = args["access_token"].toString();
 
   if (token.isNull() || token.isEmpty()) {
@@ -95,19 +100,23 @@ void AuthPlugin::revokeSession(const QVariantMap &args) {
   }
 }
 
-void AuthPlugin::setViewRect(const QRectF &rect) {
-  if (mWidget)
+void AuthPlugin::setViewRect(const QRectF &rect)
+{
+  if (mWidget) {
     mWidget->setPos(rect.x(), rect.y());
+  }
 
-  if (mContactUI)
+  if (mContactUI) {
     mContactUI->setPos(rect.x(), rect.y());
+  }
 }
 
 void AuthPlugin::firstRun() { requestFacebookSession(); }
 
 void AuthPlugin::handleViewport() { requestFacebookSession(); }
 
-QStringList AuthPlugin::actions() const {
+QStringList AuthPlugin::actions() const
+{
   QStringList rv;
   rv << "Friends Browser"
      << "Feed Wall";
@@ -116,7 +125,8 @@ QStringList AuthPlugin::actions() const {
 }
 
 void AuthPlugin::requestAction(const QString &actionName,
-                               const QVariantMap &args) {
+                               const QVariantMap &args)
+{
   if (actionName == "Friends Browser") {
     if (mContactUI) {
       mContactUI->show();
@@ -132,7 +142,7 @@ void AuthPlugin::requestAction(const QString &actionName,
 
       if (viewport()) {
         PlexyDesk::AbstractDesktopView *view =
-            qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
+          qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
 
         if (view) {
           view->addWidgetToView(mContactUI);
@@ -144,7 +154,8 @@ void AuthPlugin::requestAction(const QString &actionName,
   }
 }
 
-bool AuthPlugin::deleteWidget(PlexyDesk::AbstractDesktopWidget *widget) {
+bool AuthPlugin::deleteWidget(PlexyDesk::AbstractDesktopWidget *widget)
+{
   if (widget == mContactUI) {
     delete mContactUI;
     mContactUI = 0;
@@ -160,7 +171,7 @@ bool AuthPlugin::deleteWidget(PlexyDesk::AbstractDesktopWidget *widget) {
 
     if (viewport()) {
       PlexyDesk::AbstractDesktopView *view =
-          qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
+        qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
 
       if (view)
         view->sessionDataForController(controllerName(), "contact",
@@ -170,7 +181,8 @@ bool AuthPlugin::deleteWidget(PlexyDesk::AbstractDesktopWidget *widget) {
   return false;
 }
 
-void AuthPlugin::onDataUpdated(const QVariantMap &map) {
+void AuthPlugin::onDataUpdated(const QVariantMap &map)
+{
   QString command = map["command"].toString();
 
   if (command == "login") {
@@ -181,26 +193,30 @@ void AuthPlugin::onDataUpdated(const QVariantMap &map) {
       if (mWidget) {
         if (viewport()) {
           PlexyDesk::AbstractDesktopView *view =
-              qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
-          if (view)
+            qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
+          if (view) {
             view->addWidgetToView(mWidget);
+          }
         }
       }
     }
   }
 
   if (command == "friends") {
-    if (mContactUI)
+    if (mContactUI) {
       mContactUI->setFacebookContactData(map["data"].toHash());
+    }
   }
 
   if (command == "userinfo") {
-    if (mContactUI)
+    if (mContactUI) {
       mContactUI->addContact(map);
+    }
   }
 }
 
-void AuthPlugin::onFacebookToken(const QString &token) {
+void AuthPlugin::onFacebookToken(const QString &token)
+{
   PlexyDesk::DataSource *fbSource = dataSource();
   QVariantMap request;
   QVariant arg;
@@ -209,13 +225,15 @@ void AuthPlugin::onFacebookToken(const QString &token) {
   arg = request;
   mToken = token;
 
-  if (fbSource)
+  if (fbSource) {
     fbSource->setArguments(arg);
+  }
 }
 
-void AuthPlugin::onAddContactCard(const QString &id) {
+void AuthPlugin::onAddContactCard(const QString &id)
+{
   FacebookContactCard *contactCard =
-      new FacebookContactCard(QRectF(0.0, 0.0, 320, 480), 0);
+    new FacebookContactCard(QRectF(0.0, 0.0, 320, 480), 0);
   contactCard->setPos(50, 50);
   contactCard->setDataSource(id, mToken, dataSource());
   contactCard->setController(this);
@@ -227,7 +245,7 @@ void AuthPlugin::onAddContactCard(const QString &id) {
 
   if (viewport()) {
     PlexyDesk::AbstractDesktopView *view =
-        qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
+      qobject_cast<PlexyDesk::AbstractDesktopView *>(viewport());
     if (view) {
       view->addWidgetToView(contactCard);
       view->sessionDataForController(controllerName(), "contact",
@@ -236,7 +254,8 @@ void AuthPlugin::onAddContactCard(const QString &id) {
   }
 }
 
-void AuthPlugin::requestFacebookSession() {
+void AuthPlugin::requestFacebookSession()
+{
   PlexyDesk::DataSource *fbSource = dataSource();
 
   QVariantMap request;
@@ -244,6 +263,7 @@ void AuthPlugin::requestFacebookSession() {
   request["command"] = QVariant("login");
   arg = request;
 
-  if (fbSource)
+  if (fbSource) {
     fbSource->setArguments(arg);
+  }
 }

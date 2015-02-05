@@ -24,7 +24,8 @@
 #include <dataplugininterface.h>
 
 class HttpServerInterface : public QObject,
-                            public UI::DataPluginInterface {
+  public UI::DataPluginInterface
+{
   Q_OBJECT
   Q_INTERFACES(UI::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.httpserver")

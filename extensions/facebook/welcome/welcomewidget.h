@@ -27,7 +27,8 @@
 
 class QTimer;
 
-class WelcomeWidget : public PlexyDesk::DesktopWidget {
+class WelcomeWidget : public PlexyDesk::DesktopWidget
+{
   Q_OBJECT
 public:
   WelcomeWidget(const QRectF &rect, QWidget *widget = 0);

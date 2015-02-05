@@ -48,7 +48,8 @@ static const int PongTimeout = 60 * 1000;
 static const int PingInterval = 5 * 1000;
 static const char SeparatorToken = ' ';
 
-Connection::Connection(QObject *parent) : QTcpSocket(parent) {
+Connection::Connection(QObject *parent) : QTcpSocket(parent)
+{
   greetingMessage = tr("0009098");
   username = tr("unknown");
   state = WaitingForGreeting;
@@ -71,13 +72,16 @@ Connection::~Connection() {}
 
 QString Connection::name() const { return username; }
 
-void Connection::setGreetingMessage(const QString &message) {
+void Connection::setGreetingMessage(const QString &message)
+{
   greetingMessage = message;
 }
 
-bool Connection::sendMessage(const QString &message) {
-  if (message.isEmpty())
+bool Connection::sendMessage(const QString &message)
+{
+  if (message.isEmpty()) {
     return false;
+  }
 
   QByteArray msg = message.toUtf8();
   QByteArray data = "MESSAGE " + QByteArray::number(msg.size()) + ' ' + msg;
@@ -86,7 +90,8 @@ bool Connection::sendMessage(const QString &message) {
 
 void Connection::approveClient(bool policy) { isApproved = policy; }
 
-void Connection::timerEvent(QTimerEvent *timerEvent) {
+void Connection::timerEvent(QTimerEvent *timerEvent)
+{
   if (timerEvent->timerId() == transferTimerId) {
     abort();
     killTimer(transferTimerId);
@@ -94,10 +99,12 @@ void Connection::timerEvent(QTimerEvent *timerEvent) {
   }
 }
 
-void Connection::processReadyRead() {
+void Connection::processReadyRead()
+{
   if (state == WaitingForGreeting) {
-    if (!readProtocolHeader())
+    if (!readProtocolHeader()) {
       return;
+    }
     if (currentDataType != Greeting) {
       abort();
       return;
@@ -106,8 +113,9 @@ void Connection::processReadyRead() {
   }
 
   if (state == ReadingGreeting) {
-    if (!hasEnoughData())
+    if (!hasEnoughData()) {
       return;
+    }
 
     buffer = read(numBytesForCurrentDataType);
     if (buffer.size() != numBytesForCurrentDataType) {
@@ -130,8 +138,9 @@ void Connection::processReadyRead() {
     buffer.clear();
     ;
 
-    if (!isGreetingMessageSent)
+    if (!isGreetingMessageSent) {
       sendGreetingMessage();
+    }
 
     pingTimer.start();
     pongTime.start();
@@ -142,16 +151,19 @@ void Connection::processReadyRead() {
 
   do {
     if (currentDataType == Undefined) {
-      if (!readProtocolHeader())
+      if (!readProtocolHeader()) {
         return;
+      }
     }
-    if (!hasEnoughData())
+    if (!hasEnoughData()) {
       return;
+    }
     processData();
   } while (bytesAvailable() > 0);
 }
 
-void Connection::sendPing() {
+void Connection::sendPing()
+{
   if (pongTime.elapsed() > PongTimeout) {
     abort();
     return;
@@ -160,17 +172,21 @@ void Connection::sendPing() {
   write("PING 1 p");
 }
 
-void Connection::sendGreetingMessage() {
+void Connection::sendGreetingMessage()
+{
   QByteArray greeting = greetingMessage.toUtf8();
   QByteArray data =
-      "GREETING " + QByteArray::number(greeting.size()) + ' ' + greeting;
-  if (write(data) == data.size())
+    "GREETING " + QByteArray::number(greeting.size()) + ' ' + greeting;
+  if (write(data) == data.size()) {
     isGreetingMessageSent = true;
+  }
 }
 
-int Connection::readDataIntoBuffer(int maxSize) {
-  if (maxSize > MaxBufferSize)
+int Connection::readDataIntoBuffer(int maxSize)
+{
+  if (maxSize > MaxBufferSize) {
     return 0;
+  }
 
   int numBytesBeforeRead = buffer.size();
   if (numBytesBeforeRead == MaxBufferSize) {
@@ -180,16 +196,19 @@ int Connection::readDataIntoBuffer(int maxSize) {
 
   while (bytesAvailable() > 0 && buffer.size() < maxSize) {
     buffer.append(read(1));
-    if (buffer.endsWith(SeparatorToken))
+    if (buffer.endsWith(SeparatorToken)) {
       break;
+    }
   }
   return buffer.size() - numBytesBeforeRead;
 }
 
-int Connection::dataLengthForCurrentDataType() {
+int Connection::dataLengthForCurrentDataType()
+{
   if (bytesAvailable() <= 0 || readDataIntoBuffer() <= 0 ||
-      !buffer.endsWith(SeparatorToken))
+      !buffer.endsWith(SeparatorToken)) {
     return 0;
+  }
 
   buffer.chop(1);
   int number = buffer.toInt();
@@ -197,7 +216,8 @@ int Connection::dataLengthForCurrentDataType() {
   return number;
 }
 
-bool Connection::readProtocolHeader() {
+bool Connection::readProtocolHeader()
+{
   if (transferTimerId) {
     killTimer(transferTimerId);
     transferTimerId = 0;
@@ -227,14 +247,16 @@ bool Connection::readProtocolHeader() {
   return true;
 }
 
-bool Connection::hasEnoughData() {
+bool Connection::hasEnoughData()
+{
   if (transferTimerId) {
     QObject::killTimer(transferTimerId);
     transferTimerId = 0;
   }
 
-  if (numBytesForCurrentDataType <= 0)
+  if (numBytesForCurrentDataType <= 0) {
     numBytesForCurrentDataType = dataLengthForCurrentDataType();
+  }
 
   if (bytesAvailable() < numBytesForCurrentDataType ||
       numBytesForCurrentDataType <= 0) {
@@ -245,7 +267,8 @@ bool Connection::hasEnoughData() {
   return true;
 }
 
-void Connection::processData() {
+void Connection::processData()
+{
   buffer = read(numBytesForCurrentDataType);
   if (buffer.size() != numBytesForCurrentDataType) {
     abort();
@@ -253,18 +276,19 @@ void Connection::processData() {
   }
 
   switch (currentDataType) {
-    case PlainText:
-      if (isApproved)
-        emit newMessage(peerAddress().toString(), QString::fromUtf8(buffer));
-      break;
-    case Ping:
-      write("PONG 1 p");
-      break;
-    case Pong:
-      pongTime.restart();
-      break;
-    default:
-      break;
+  case PlainText:
+    if (isApproved) {
+      emit newMessage(peerAddress().toString(), QString::fromUtf8(buffer));
+    }
+    break;
+  case Ping:
+    write("PONG 1 p");
+    break;
+  case Pong:
+    pongTime.restart();
+    break;
+  default:
+    break;
   }
 
   currentDataType = Undefined;

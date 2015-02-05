@@ -29,7 +29,8 @@
 // Qt
 #include <QAction>
 
-class Clock::PrivateClockController {
+class Clock::PrivateClockController
+{
 public:
   PrivateClockController() {}
 
@@ -37,17 +38,20 @@ public:
 };
 
 Clock::Clock(QObject *parent)
-    : UI::ViewController(parent), d(new PrivateClockController) {
+  : UI::ViewController(parent), d(new PrivateClockController)
+{
   clock = 0;
 }
 
-Clock::~Clock() {
+Clock::~Clock()
+{
   qDebug() << Q_FUNC_INFO << "Deleted";
   delete d;
 }
 
 QAction *Clock::createAction(int id, const QString &action_name,
-                             const QString &icon_name) {
+                             const QString &icon_name)
+{
   QAction *_add_clock_action = new QAction(this);
   _add_clock_action->setText(action_name);
   _add_clock_action->setProperty("id", QVariant(id));
@@ -57,7 +61,8 @@ QAction *Clock::createAction(int id, const QString &action_name,
   return _add_clock_action;
 }
 
-void Clock::init() {
+void Clock::init()
+{
   m_supported_action_list << createAction(1, tr("Clock"),
                                           "pd_clock_frame_icon.png");
   m_supported_action_list << createAction(2, tr("Timer"),
@@ -68,12 +73,15 @@ void Clock::init() {
 
 void Clock::revokeSession(const QVariantMap & /*args*/) {}
 
-void Clock::setViewRect(const QRectF &rect) {
-  if (clock)
+void Clock::setViewRect(const QRectF &rect)
+{
+  if (clock) {
     clock->setPos(rect.x(), rect.y());
+  }
 }
 
-bool Clock::removeWidget(UI::UIWidget *widget) {
+bool Clock::removeWidget(UI::UIWidget *widget)
+{
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
 
@@ -99,15 +107,17 @@ bool Clock::removeWidget(UI::UIWidget *widget) {
 
 UI::ActionList Clock::actions() const { return m_supported_action_list; }
 
-void Clock::requestAction(const QString &actionName, const QVariantMap &args) {
-  if (!viewport())
+void Clock::requestAction(const QString &actionName, const QVariantMap &args)
+{
+  if (!viewport()) {
     return;
+  }
 
   if (actionName == tr("Clock")) {
     QRectF _view_geomeetry(0.0, 0.0, 260.0, 512.0);
 
     UI::DesktopActivityPtr _clock_activity =
-        UI::ExtensionManager::instance()->activity("desktopclock");
+      UI::ExtensionManager::instance()->activity("desktopclock");
 
     _clock_activity->createWindow(_view_geomeetry, "Montreal",
                                   viewport()->center(_view_geomeetry));
@@ -119,12 +129,15 @@ void Clock::requestAction(const QString &actionName, const QVariantMap &args) {
 
 QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
 
-void Clock::onDataUpdated(const QVariantMap &data) {
-  if (clock)
+void Clock::onDataUpdated(const QVariantMap &data)
+{
+  if (clock) {
     clock->updateTime(data);
+  }
 
   Q_FOREACH(ClockWidget * _clock, mClocks) {
-    if (_clock)
+    if (_clock) {
       _clock->updateTime(data);
+    }
   }
 }

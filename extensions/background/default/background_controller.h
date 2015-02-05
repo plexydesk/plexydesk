@@ -28,7 +28,8 @@
 // self
 #include "classicbackgroundrender.h"
 
-class BackgroundController : public UI::ViewController {
+class BackgroundController : public UI::ViewController
+{
   Q_OBJECT
 
 public:

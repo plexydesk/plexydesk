@@ -5,7 +5,8 @@
 #include <desktopactivity.h>
 #include <desktopwidget.h>
 
-namespace UI {
+namespace UI
+{
 class Space;
 
 /**
@@ -14,7 +15,8 @@ class Space;
  * This class coverts a given window class into a
  * popup class which will hide when the focus is lost.
  */
-class Menu : public QObject {
+class Menu : public QObject
+{
   Q_OBJECT
 public:
   /**

@@ -45,7 +45,8 @@
 
 class Connection;
 
-class Server : public QTcpServer {
+class Server : public QTcpServer
+{
   Q_OBJECT
 
 public:

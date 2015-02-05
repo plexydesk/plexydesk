@@ -47,23 +47,23 @@
 #include <QtOpenGL>
 
 static const char qt_default_vertex_code[] =
-    "uniform highp mat4 qt_ModelViewProjectionMatrix;\n"
-    "attribute highp vec4 qt_Vertex;\n"
-    "attribute highp vec2 qt_MultiTexCoord0;\n"
-    "varying highp vec2 qt_TexCoord0;\n"
-    "void main(void)\n"
-    "{\n"
-    "qt_TexCoord0 = qt_MultiTexCoord0;\n"
-    "gl_Position = qt_ModelViewProjectionMatrix * qt_Vertex;\n"
-    "}\n";
+  "uniform highp mat4 qt_ModelViewProjectionMatrix;\n"
+  "attribute highp vec4 qt_Vertex;\n"
+  "attribute highp vec2 qt_MultiTexCoord0;\n"
+  "varying highp vec2 qt_TexCoord0;\n"
+  "void main(void)\n"
+  "{\n"
+  "qt_TexCoord0 = qt_MultiTexCoord0;\n"
+  "gl_Position = qt_ModelViewProjectionMatrix * qt_Vertex;\n"
+  "}\n";
 
 static const char qt_default_fragment_code[] =
-    "varying highp vec2 qt_TexCoord0;\n"
-    "uniform lowp sampler2D source;\n"
-    "void main(void)\n"
-    "{\n"
-    "gl_FragColor = texture2D(source, qt_TexCoord0.st);\n"
-    "}\n";
+  "varying highp vec2 qt_TexCoord0;\n"
+  "uniform lowp sampler2D source;\n"
+  "void main(void)\n"
+  "{\n"
+  "gl_FragColor = texture2D(source, qt_TexCoord0.st);\n"
+  "}\n";
 
 static const char qt_postion_attribute_name[] = "qt_Vertex";
 static const char qt_texcoord_attribute_name[] = "qt_MultiTexCoord0";
@@ -219,22 +219,24 @@ wiggleAmount;
 
 */
 
-namespace PlexyDesk {
+namespace PlexyDesk
+{
 ShaderEffectItem::ShaderEffectItem(QDeclarativeItem *parent)
-    : QDeclarativeItem(parent),
-      m_meshResolution(1, 1),
-      m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4),
-      m_blending(true),
-      m_program_dirty(true),
-      m_active(true),
-      m_respectsMatrix(false),
-      m_respectsOpacity(false),
-      m_checkedViewportUpdateMode(false),
-      m_checkedOpenGL(false),
-      m_checkedShaderPrograms(false),
-      m_hasShaderPrograms(false),
-      m_mirrored(false),
-      m_defaultVertexShader(true) {
+  : QDeclarativeItem(parent),
+    m_meshResolution(1, 1),
+    m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4),
+    m_blending(true),
+    m_program_dirty(true),
+    m_active(true),
+    m_respectsMatrix(false),
+    m_respectsOpacity(false),
+    m_checkedViewportUpdateMode(false),
+    m_checkedOpenGL(false),
+    m_checkedShaderPrograms(false),
+    m_hasShaderPrograms(false),
+    m_mirrored(false),
+    m_defaultVertexShader(true)
+{
   setFlag(QGraphicsItem::ItemHasNoContents, false);
   connect(this, SIGNAL(visibleChanged()), this, SLOT(handleVisibilityChange()));
   m_active = isVisible();
@@ -264,9 +266,11 @@ ShaderEffectItem::~ShaderEffectItem() { reset(); }
     \brief the OpenGL fragment shader code.
 */
 
-void ShaderEffectItem::setFragmentShader(const QString &code) {
-  if (m_fragment_code.constData() == code.constData())
+void ShaderEffectItem::setFragmentShader(const QString &code)
+{
+  if (m_fragment_code.constData() == code.constData()) {
     return;
+  }
 
   m_fragment_code = code;
   if (isComponentComplete()) {
@@ -301,9 +305,11 @@ void ShaderEffectItem::setFragmentShader(const QString &code) {
     \brief the OpenGL vertex shader code.
 */
 
-void ShaderEffectItem::setVertexShader(const QString &code) {
-  if (m_vertex_code.constData() == code.constData())
+void ShaderEffectItem::setVertexShader(const QString &code)
+{
+  if (m_vertex_code.constData() == code.constData()) {
     return;
+  }
 
   m_vertex_code = code;
   m_defaultVertexShader = false;
@@ -340,9 +346,11 @@ void ShaderEffectItem::setVertexShader(const QString &code) {
     \brief the drawing is done using blending.
 */
 
-void ShaderEffectItem::setBlending(bool enable) {
-  if (m_blending == enable)
+void ShaderEffectItem::setBlending(bool enable)
+{
+  if (m_blending == enable) {
     return;
+  }
 
   m_blending = enable;
   m_changed = true;
@@ -367,21 +375,25 @@ void ShaderEffectItem::setBlending(bool enable) {
     \brief the amount of triangles in the mesh for both x and y-axis.
 */
 
-void ShaderEffectItem::setMeshResolution(const QSize &size) {
-  if (size == m_meshResolution)
+void ShaderEffectItem::setMeshResolution(const QSize &size)
+{
+  if (size == m_meshResolution) {
     return;
+  }
 
   m_meshResolution = size;
   emit meshResolutionChanged();
   updateGeometry();
 }
 
-void ShaderEffectItem::componentComplete() {
+void ShaderEffectItem::componentComplete()
+{
   updateProperties();
   QDeclarativeItem::componentComplete();
 }
 
-void ShaderEffectItem::checkViewportUpdateMode() {
+void ShaderEffectItem::checkViewportUpdateMode()
+{
   if (!m_checkedViewportUpdateMode) {
     QGraphicsScene *s = scene();
     if (s) {
@@ -390,8 +402,8 @@ void ShaderEffectItem::checkViewportUpdateMode() {
         if (views[i]->viewportUpdateMode() !=
             QGraphicsView::FullViewportUpdate) {
           qWarning() << "ShaderEffectItem::checkViewportUpdateMode - consider "
-                        "setting QGraphicsView::FullViewportUpdate mode with "
-                        "OpenGL!";
+                     "setting QGraphicsView::FullViewportUpdate mode with "
+                     "OpenGL!";
         }
       }
     }
@@ -400,9 +412,11 @@ void ShaderEffectItem::checkViewportUpdateMode() {
 }
 
 void ShaderEffectItem::paint(QPainter *painter,
-                             const QStyleOptionGraphicsItem *, QWidget *) {
-  if (!m_active)
+                             const QStyleOptionGraphicsItem *, QWidget *)
+{
+  if (!m_active) {
     return;
+  }
 
   const QGLContext *context = QGLContext::currentContext();
 
@@ -416,15 +430,17 @@ void ShaderEffectItem::paint(QPainter *painter,
             << "ShaderEffectItem::paint - Shader programs are not supported";
     }
 
-    if (!m_hasShaderPrograms)
+    if (!m_hasShaderPrograms) {
       return;
+    }
 
     checkViewportUpdateMode();
     painter->save();
     painter->beginNativePainting();
 
-    if (context->format().samples() > 1)
+    if (context->format().samples() > 1) {
       painter->setRenderHint(QPainter::Antialiasing);
+    }
 
     QMatrix4x4 combinedMatrix = QMatrix4x4(painter->transform());
     renderEffect(painter, combinedMatrix);
@@ -439,12 +455,15 @@ void ShaderEffectItem::paint(QPainter *painter,
 }
 
 void ShaderEffectItem::renderEffect(QPainter *painter,
-                                    const QMatrix4x4 &matrix) {
-  if (!painter || !painter->device())
+                                    const QMatrix4x4 &matrix)
+{
+  if (!painter || !painter->device()) {
     return;
+  }
 
-  if (!m_program.isLinked() || m_program_dirty)
+  if (!m_program.isLinked() || m_program_dirty) {
     updateShaderProgram();
+  }
 
   m_program.bind();
 
@@ -489,21 +508,25 @@ void ShaderEffectItem::renderEffect(QPainter *painter,
   if (m_geometry.indexCount())
     glDrawElements(m_geometry.drawingMode(), m_geometry.indexCount(),
                    m_geometry.indexType(), m_geometry.indexData());
-  else
+  else {
     glDrawArrays(m_geometry.drawingMode(), 0, m_geometry.vertexCount());
+  }
 
   glDepthMask(false);
   glDisable(GL_DEPTH_TEST);
 
-  for (int i = 0; i < m_attributeNames.size(); ++i)
+  for (int i = 0; i < m_attributeNames.size(); ++i) {
     m_program.disableAttributeArray(m_geometry.attributes()[i].position);
+  }
 }
 
-void ShaderEffectItem::updateEffectState(const QMatrix4x4 &matrix) {
+void ShaderEffectItem::updateEffectState(const QMatrix4x4 &matrix)
+{
   for (int i = m_sources.size() - 1; i >= 0; --i) {
     const ShaderEffectItem::SourceData &source = m_sources.at(i);
-    if (!source.source)
+    if (!source.source) {
       continue;
+    }
 
     glActiveTexture(GL_TEXTURE0 + i);
     source.source->bind();
@@ -523,48 +546,50 @@ void ShaderEffectItem::updateEffectState(const QMatrix4x4 &matrix) {
     QVariant v = property(name.constData());
 
     switch (v.type()) {
-      case QVariant::Color:
-        m_program.setUniformValue(name.constData(), qvariant_cast<QColor>(v));
-        break;
-      case QVariant::Double:
-        m_program.setUniformValue(name.constData(),
-                                  (float)qvariant_cast<double>(v));
-        break;
-      case QVariant::Transform:
-        m_program.setUniformValue(name.constData(),
-                                  qvariant_cast<QTransform>(v));
-        break;
-      case QVariant::Int:
-        m_program.setUniformValue(name.constData(), v.toInt());
-        break;
-      case QVariant::Bool:
-        m_program.setUniformValue(name.constData(), GLint(v.toBool()));
-        break;
-      case QVariant::Size:
-      case QVariant::SizeF:
-        m_program.setUniformValue(name.constData(), v.toSizeF());
-        break;
-      case QVariant::Point:
-      case QVariant::PointF:
-        m_program.setUniformValue(name.constData(), v.toPointF());
-        break;
-      case QVariant::Rect:
-      case QVariant::RectF: {
-        QRectF r = v.toRectF();
-        m_program.setUniformValue(name.constData(), r.x(), r.y(), r.width(),
-                                  r.height());
-      } break;
-      case QVariant::Vector3D:
-        m_program.setUniformValue(name.constData(),
-                                  qvariant_cast<QVector3D>(v));
-        break;
-      default:
-        break;
+    case QVariant::Color:
+      m_program.setUniformValue(name.constData(), qvariant_cast<QColor>(v));
+      break;
+    case QVariant::Double:
+      m_program.setUniformValue(name.constData(),
+                                (float)qvariant_cast<double>(v));
+      break;
+    case QVariant::Transform:
+      m_program.setUniformValue(name.constData(),
+                                qvariant_cast<QTransform>(v));
+      break;
+    case QVariant::Int:
+      m_program.setUniformValue(name.constData(), v.toInt());
+      break;
+    case QVariant::Bool:
+      m_program.setUniformValue(name.constData(), GLint(v.toBool()));
+      break;
+    case QVariant::Size:
+    case QVariant::SizeF:
+      m_program.setUniformValue(name.constData(), v.toSizeF());
+      break;
+    case QVariant::Point:
+    case QVariant::PointF:
+      m_program.setUniformValue(name.constData(), v.toPointF());
+      break;
+    case QVariant::Rect:
+    case QVariant::RectF: {
+      QRectF r = v.toRectF();
+      m_program.setUniformValue(name.constData(), r.x(), r.y(), r.width(),
+                                r.height());
+    }
+    break;
+    case QVariant::Vector3D:
+      m_program.setUniformValue(name.constData(),
+                                qvariant_cast<QVector3D>(v));
+      break;
+    default:
+      break;
     }
   }
 }
 
-static inline int size_of_type(GLenum type) {
+static inline int size_of_type(GLenum type)
+{
   static int sizes[] = {
     sizeof(char), sizeof(unsigned char), sizeof(short), sizeof(unsigned short),
     sizeof(int),  sizeof(unsigned int),  sizeof(float), 2,
@@ -573,12 +598,14 @@ static inline int size_of_type(GLenum type) {
   return sizes[type - GL_BYTE];
 }
 
-void ShaderEffectItem::bindGeometry() {
+void ShaderEffectItem::bindGeometry()
+{
   char const *const *attrNames = m_attributeNames.constData();
   int offset = 0;
   for (int j = 0; j < m_attributeNames.size(); ++j) {
-    if (!*attrNames[j])
+    if (!*attrNames[j]) {
       continue;
+    }
     Q_ASSERT_X(j < m_geometry.attributeCount(),
                "ShaderEffectItem::bindGeometry()",
                "Geometry lacks attribute required by material");
@@ -595,19 +622,21 @@ void ShaderEffectItem::bindGeometry() {
           << "ShaderEffectItem::bindGeometry() - non supported attribute type!";
 
     m_program.setAttributeArray(
-        a.position, (GLfloat *)(((char *)m_geometry.vertexData()) + offset),
-        a.tupleSize, m_geometry.stride());
+      a.position, (GLfloat *)(((char *)m_geometry.vertexData()) + offset),
+      a.tupleSize, m_geometry.stride());
     // glVertexAttribPointer(a.position, a.tupleSize, a.type, normalize,
     // m_geometry.stride(), (char *) m_geometry.vertexData() + offset);
     offset += a.tupleSize * size_of_type(a.type);
   }
 }
 
-void ShaderEffectItem::updateGeometry() {
+void ShaderEffectItem::updateGeometry()
+{
   QRectF srcRect(0, 1, 1, -1);
 
-  if (m_mirrored)
+  if (m_mirrored) {
     srcRect = QRectF(0, 0, 1, 1);
+  }
 
   QRectF dstRect = QRectF(0, 0, width(), height());
 
@@ -616,8 +645,9 @@ void ShaderEffectItem::updateGeometry() {
 
   QSGGeometry *g = &m_geometry;
   if (vmesh == 1 && hmesh == 1) {
-    if (g->vertexCount() != 4)
+    if (g->vertexCount() != 4) {
       g->allocate(4);
+    }
     QSGGeometry::updateTexturedRectGeometry(g, dstRect, srcRect);
     return;
   }
@@ -652,15 +682,18 @@ void ShaderEffectItem::updateGeometry() {
   }
 }
 
-void ShaderEffectItem::setActive(bool enable) {
-  if (m_active == enable)
+void ShaderEffectItem::setActive(bool enable)
+{
+  if (m_active == enable) {
     return;
+  }
 
   if (m_active) {
     for (int i = 0; i < m_sources.size(); ++i) {
       ShaderEffectSource *source = m_sources.at(i).source;
-      if (!source)
+      if (!source) {
         continue;
+      }
       disconnect(source, SIGNAL(repaintRequired()), this, SLOT(markDirty()));
       source->derefFromEffectItem();
     }
@@ -671,8 +704,9 @@ void ShaderEffectItem::setActive(bool enable) {
   if (m_active) {
     for (int i = 0; i < m_sources.size(); ++i) {
       ShaderEffectSource *source = m_sources.at(i).source;
-      if (!source)
+      if (!source) {
         continue;
+      }
       source->refFromEffectItem();
       connect(source, SIGNAL(repaintRequired()), this, SLOT(markDirty()));
     }
@@ -682,22 +716,27 @@ void ShaderEffectItem::setActive(bool enable) {
   markDirty();
 }
 
-void ShaderEffectItem::preprocess() {
+void ShaderEffectItem::preprocess()
+{
   for (int i = 0; i < m_sources.size(); ++i) {
     ShaderEffectSource *source = m_sources.at(i).source;
-    if (source)
+    if (source) {
       source->updateBackbuffer();
+    }
   }
 }
 
 void ShaderEffectItem::geometryChanged(const QRectF &newGeometry,
-                                       const QRectF &oldGeometry) {
-  if (newGeometry.size() != oldGeometry.size())
+                                       const QRectF &oldGeometry)
+{
+  if (newGeometry.size() != oldGeometry.size()) {
     updateGeometry();
+  }
   QDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
 }
 
-void ShaderEffectItem::changeSource(int index) {
+void ShaderEffectItem::changeSource(int index)
+{
   Q_ASSERT(index >= 0 && index < m_sources.size());
   QVariant v = property(m_sources.at(index).name.constData());
   setSource(v, index);
@@ -705,7 +744,8 @@ void ShaderEffectItem::changeSource(int index) {
 
 void ShaderEffectItem::markDirty() { update(); }
 
-void ShaderEffectItem::setSource(const QVariant &var, int index) {
+void ShaderEffectItem::setSource(const QVariant &var, int index)
+{
   Q_ASSERT(index >= 0 && index < m_sources.size());
 
   SourceData &source = m_sources[index];
@@ -727,13 +767,13 @@ void ShaderEffectItem::setSource(const QVariant &var, int index) {
 
   if (!source.item)
     qWarning(
-        "Could not assign property '%s', did not implement QDeclarativeItem.",
-        source.name.constData());
+      "Could not assign property '%s', did not implement QDeclarativeItem.",
+      source.name.constData());
 
   if (!source.source)
     qWarning(
-        "Could not assign property '%s', did not implement ShaderEffectSource.",
-        source.name.constData());
+      "Could not assign property '%s', did not implement ShaderEffectSource.",
+      source.name.constData());
 
   // TODO: Find better solution.
   // 'source.item' needs a canvas to get a scenegraph node.
@@ -753,7 +793,8 @@ void ShaderEffectItem::setSource(const QVariant &var, int index) {
   }
 }
 
-void ShaderEffectItem::disconnectPropertySignals() {
+void ShaderEffectItem::disconnectPropertySignals()
+{
   disconnect(this, 0, this, SLOT(markDirty()));
   for (int i = 0; i < m_sources.size(); ++i) {
     SourceData &source = m_sources[i];
@@ -762,7 +803,8 @@ void ShaderEffectItem::disconnectPropertySignals() {
   }
 }
 
-void ShaderEffectItem::connectPropertySignals() {
+void ShaderEffectItem::connectPropertySignals()
+{
   QSet<QByteArray>::const_iterator it;
   for (it = m_uniformNames.begin(); it != m_uniformNames.end(); ++it) {
     int pi = metaObject()->indexOfProperty(it->constData());
@@ -798,7 +840,8 @@ void ShaderEffectItem::connectPropertySignals() {
   }
 }
 
-void ShaderEffectItem::reset() {
+void ShaderEffectItem::reset()
+{
   disconnectPropertySignals();
 
   m_program.removeAllShaders();
@@ -806,8 +849,9 @@ void ShaderEffectItem::reset() {
   m_uniformNames.clear();
   for (int i = 0; i < m_sources.size(); ++i) {
     const SourceData &source = m_sources.at(i);
-    if (m_active && source.source)
+    if (m_active && source.source) {
       source.source->derefFromEffectItem();
+    }
     delete source.mapper;
   }
 
@@ -815,15 +859,18 @@ void ShaderEffectItem::reset() {
   m_program_dirty = true;
 }
 
-void ShaderEffectItem::updateProperties() {
+void ShaderEffectItem::updateProperties()
+{
   QString vertexCode = m_vertex_code;
   QString fragmentCode = m_fragment_code;
 
-  if (vertexCode.isEmpty())
+  if (vertexCode.isEmpty()) {
     vertexCode = qt_default_vertex_code;
+  }
 
-  if (fragmentCode.isEmpty())
+  if (fragmentCode.isEmpty()) {
     fragmentCode = qt_default_fragment_code;
+  }
 
   lookThroughShaderCode(vertexCode);
   lookThroughShaderCode(fragmentCode);
@@ -846,15 +893,18 @@ void ShaderEffectItem::updateProperties() {
   connectPropertySignals();
 }
 
-void ShaderEffectItem::updateShaderProgram() {
+void ShaderEffectItem::updateShaderProgram()
+{
   QString vertexCode = m_vertex_code;
   QString fragmentCode = m_fragment_code;
 
-  if (vertexCode.isEmpty())
+  if (vertexCode.isEmpty()) {
     vertexCode = QString::fromLatin1(qt_default_vertex_code);
+  }
 
-  if (fragmentCode.isEmpty())
+  if (fragmentCode.isEmpty()) {
     fragmentCode = QString::fromLatin1(qt_default_fragment_code);
+  }
 
   m_program.addShaderFromSourceCode(QGLShader::Vertex, vertexCode);
   m_program.addShaderFromSourceCode(QGLShader::Fragment, fragmentCode);
@@ -869,30 +919,34 @@ void ShaderEffectItem::updateShaderProgram() {
     qWarning() << m_program.log();
   }
 
-  if (!m_attributeNames.contains(qt_postion_attribute_name))
+  if (!m_attributeNames.contains(qt_postion_attribute_name)) {
     qWarning("ShaderEffectItem: Missing reference to \'qt_Vertex\'.");
-  if (!m_attributeNames.contains(qt_texcoord_attribute_name))
+  }
+  if (!m_attributeNames.contains(qt_texcoord_attribute_name)) {
     qWarning("ShaderEffectItem: Missing reference to \'qt_MultiTexCoord0\'.");
+  }
   if (!m_respectsMatrix)
     qWarning("ShaderEffectItem: Missing reference to "
              "\'qt_ModelViewProjectionMatrix\'.");
 
   if (m_program.isLinked()) {
     m_program.bind();
-    for (int i = 0; i < m_sources.size(); ++i)
+    for (int i = 0; i < m_sources.size(); ++i) {
       m_program.setUniformValue(m_sources.at(i).name.constData(), i);
+    }
   }
 
   m_program_dirty = false;
 }
 
-void ShaderEffectItem::lookThroughShaderCode(const QString &code) {
+void ShaderEffectItem::lookThroughShaderCode(const QString &code)
+{
   // Regexp for matching attributes and uniforms.
   // In human readable form: attribute|uniform [lowp|mediump|highp] <type>
   // <name>
   static QRegExp re(
-      QLatin1String("\\b(attribute|uniform)\\b\\s*\\b(?:lowp|mediump|highp)?"
-                    "\\b\\s*\\b(\\w+)\\b\\s*\\b(\\w+)"));
+    QLatin1String("\\b(attribute|uniform)\\b\\s*\\b(?:lowp|mediump|highp)?"
+                  "\\b\\s*\\b(\\w+)\\b\\s*\\b(\\w+)"));
   Q_ASSERT(re.isValid());
 
   int pos = -1;

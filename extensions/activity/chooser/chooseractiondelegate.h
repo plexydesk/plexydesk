@@ -5,7 +5,8 @@
 
 using namespace UI;
 
-class ChooserActionDelegate : public TableModel {
+class ChooserActionDelegate : public TableModel
+{
   Q_OBJECT
 
 public:

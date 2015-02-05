@@ -50,7 +50,8 @@
 class Client;
 class Connection;
 
-class PeerManager : public QObject {
+class PeerManager : public QObject
+{
   Q_OBJECT
 
 public:
