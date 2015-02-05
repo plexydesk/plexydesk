@@ -5,7 +5,7 @@
 #include <QPropertyAnimation>
 
 #include <tableview.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 #include "folderitem.h"
 #include "folderprovider.h"
@@ -23,7 +23,7 @@ public:
 };
 
 IconWidgetView::IconWidgetView(QGraphicsObject *parent)
-  : UI::UIWidget(parent), d(new PrivateIconWidgetView)
+  : UI::Window(parent), d(new PrivateIconWidgetView)
 {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setWindowFlag(UI::Window::kRenderBackground, false);

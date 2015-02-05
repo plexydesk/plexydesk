@@ -18,7 +18,7 @@ public:
 };
 
 WebKitWebView::WebKitWebView(QGraphicsObject *parent)
-  : UI::UIWidget(parent), d(new PrivateWebKitWebView)
+  : UI::Window(parent), d(new PrivateWebKitWebView)
 {
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
   d->mView = new QGraphicsWebView(this);

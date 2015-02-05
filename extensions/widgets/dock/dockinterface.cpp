@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "dock.h"
 #include "dockinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::ViewController> DockInterface::controller()

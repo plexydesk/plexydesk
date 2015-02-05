@@ -5,10 +5,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <plexy.h>
 #include <style.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <webservice.h>
 
-class ReminderWidget : public UI::UIWidget
+class ReminderWidget : public UI::Window
 {
   Q_OBJECT
 public:

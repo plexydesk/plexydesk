@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "desktopclock.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <view_controller.h>
 #include <toolbar.h>
@@ -38,7 +38,7 @@ public:
 
   ~PrivateDesktopClock() {}
 
-  UI::UIWidget *m_main_window;
+  UI::Window *m_main_window;
   QGraphicsWidget *m_layout_widget;
   QGraphicsLinearLayout *m_main_layout;
   UI::ToolBar *m_tool_bar;
@@ -58,7 +58,7 @@ DesktopClockActivity::~DesktopClockActivity() { delete d; }
 void DesktopClockActivity::createFrameWindow(const QRectF &window_geometry,
     const QString &window_title)
 {
-  d->m_main_window = new UI::UIWidget();
+  d->m_main_window = new UI::Window();
   d->m_main_window->setGeometry(window_geometry);
 
   d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
@@ -130,20 +130,20 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
-UI::UIWidget *DesktopClockActivity::window() const
+UI::Window *DesktopClockActivity::window() const
 {
   return d->m_main_window;
 }
 
-void DesktopClockActivity::onWidgetClosed(UI::UIWidget *widget)
+void DesktopClockActivity::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

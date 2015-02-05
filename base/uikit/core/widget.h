@@ -28,15 +28,11 @@
 
 namespace UI
 {
-
+ /*
+  * @brief The Base Class for All types of Desktop Widgets.
+  */
 class ViewController;
-/**
-    * @brief The Base Class for All types of Desktop Widgets.
-    */
-/**
-    * @brief
-    *
-    */
+
 class DECL_UI_KIT_EXPORT Window : public QGraphicsObject,
   public QGraphicsLayoutItem
 {
@@ -57,188 +53,49 @@ public:
     kRenderWindowTitle = 1ul << 5
   } WidgetFlags;
 
-  /**
-      * @brief
-      *
-      */
   enum RenderLevel { kRenderAtBackgroundLevel, kRenderAtForgroundLevel };
-  /**
-      * @brief Destructor
-      */
-  /**
-      * @brief
-      *
-      */
+
+  Window(QGraphicsObject *parent = 0);
   virtual ~Window();
-  /**
-      * @brief Returns the bounding Area of the Widget
-      *
-      * @return Bounding rectangle as a QRectF
-      */
-  virtual QRectF boundingRect() const;
-
-  virtual void setWindowFlag(int flags, bool enable = true);
-  /**
-       * @brief
-       *
-       * @param rect
-       */
-  virtual void setMinimizedGeometry(const QRectF &rect);
-  /**
-      * @brief
-      *
-      * @return QRectF
-      */
-  virtual QRectF minimizedGeometry() const;
-  /**
-      * @brief
-      *
-      * @param view_controller
-      */
-  virtual void setController(ViewController *view_controller);
-  /**
-      * @brief
-      *
-      * @return ControllerInterface
-      */
-  virtual ViewController *controller() const;
-  /**
-      * @brief
-      *
-      * @param name
-      */
-  virtual void setLabelName(const QString &name);
-
-  /**
-      * @brief
-      *
-      * @return QString
-      */
-  virtual QString label() const;
-  /**
-      * @brief
-      *
-      * @return QString
-      */
-  virtual QString uuid() const;
-  /**
-      * @brief
-      *
-      * @param style
-      */
-  virtual StylePtr style() const = 0;
-  /**
-      * @brief
-      *
-      * @return Layer
-      */
-  virtual RenderLevel layerType() const;
-  /**
-      * @brief
-      *
-      * @param type
-      */
-  virtual void setLayerType(RenderLevel level) const;
 
   void setGeometry(const QRectF &rect);
+  virtual QRectF boundingRect() const;
+  virtual void setMinimizedGeometry(const QRectF &rect);
+  virtual QRectF minimizedGeometry() const;
+
+  virtual void setController(ViewController *view_controller);
+  virtual ViewController *controller() const;
+
+  virtual void setLabelName(const QString &name);
+  virtual QString label() const;
+  virtual QString uuid() const;
+
+  virtual StylePtr style() const;
+
+  virtual RenderLevel layerType() const;
+  virtual void setLayerType(RenderLevel level) const;
+
+  virtual void setWindowFlag(int flags, bool enable = true);
 
 Q_SIGNALS:
-  /**
-      * @brief
-      *
-      * @param widget
-      */
-  void closed(UI::Window *widget);
-  /**
-      * @brief
-      *
-      */
-  void rectChanged();
-  /**
-      * @brief
-      *
-      */
-  void stateChanged();
-  /**
-      * @brief
-      *
-      * @param pos
-      * @param widgetId
-      */
-  void itemMoved(const QPointF &pos, const QString &widgetId);
-  /**
-      * @brief
-      *
-      */
   void clicked();
-
   void focusLost();
 
 protected:
-  /**
-      * @brief
-      *
-      * @param rect
-      * @param parent
-      */
-  Window(QGraphicsObject *parent = 0);
-  /**
-      * @brief
-      *
-      * @param painter
-      * @param option
-      * @param widget
-      */
+  virtual void paintView(QPainter *painter, const QRectF &rect);
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                      QWidget *widget = 0);
 
   virtual QSizeF sizeHint(Qt::SizeHint which,
                           const QSizeF &constraint = QSizeF()) const;
-  /**
-      * @brief
-      *
-      * @param painter
-      * @param rect
-      */
-  virtual void paintView(QPainter *painter, const QRectF &rect);
-  /**
-    * @brief
-    *
-    * @param event
-    */
-  virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-  /**
-      * @brief
-      *
-      * @param event
-      */
-  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-  /**
-      * @brief
-      *
-      * @return float
-      */
-  virtual float scaleFactorForWidth() const;
-  /**
-      * @brief
-      *
-      * @return float
-      */
-  virtual float scaleFactorForHeight() const;
-  /**
-  * @brief Hide or show all the child Widgets
-  *
-  * method used to control the visibility of the child widgets. this is
-  * useful when
-  * heavy animation or scaling has to be done on the parent widget.
-  * for instance the dock animation.
-  *
-  * @param show if true it will show the child widets, and hide if false.
-  */
-  virtual void setChildWidetVisibility(bool show);
 
   virtual void focusOutEvent(QFocusEvent *event);
+  virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+  virtual float scaleFactorForWidth() const;
+  virtual float scaleFactorForHeight() const;
+  virtual void setChildWidetVisibility(bool show);
 private:
   class PrivateAbstractDesktopWidget;
   PrivateAbstractDesktopWidget *const d;

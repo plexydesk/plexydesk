@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "timepicker.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
@@ -44,8 +44,8 @@ QRectF TimePickerActivity::geometry() const { return QRectF(); }
 
 QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
 
-UI::UIWidget *TimePickerActivity::window() const { return 0; }
+UI::Window *TimePickerActivity::window() const { return 0; }
 
-void TimePickerActivity::onWidgetClosed(UI::UIWidget *widget) {}
+void TimePickerActivity::onWidgetClosed(UI::Window *widget) {}
 
 void TimePickerActivity::onHideAnimationFinished() {}

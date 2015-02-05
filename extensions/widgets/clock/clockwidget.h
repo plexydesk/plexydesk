@@ -21,11 +21,11 @@
 #ifndef CLOCK
 #define CLOCK
 
-#include <desktopwidget.h>
+#include <widget.h>
 
 #include <QTimer>
 
-class ClockWidget : public UI::UIWidget
+class ClockWidget : public UI::Window
 {
   Q_OBJECT
 

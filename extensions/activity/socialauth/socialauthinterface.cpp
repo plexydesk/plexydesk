@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "socialauth.h"
 #include "socialauthinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DesktopActivity> SocialAuthInterface::activity()

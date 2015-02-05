@@ -20,12 +20,12 @@
 #define PLEXY_BACK_DROP_ITEM_CLASSIC_H
 
 #include <plexy.h>
-#include <desktopwidget.h>
+#include <deskt
 
 namespace UI
 {
 
-class ImagePileWidget : public UIWidget
+class ImagePileWidget : public Window
 {
   Q_OBJECT
 public:

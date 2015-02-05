@@ -24,7 +24,7 @@ public:
   uint mFontSize;
 };
 
-Label::Label(QGraphicsObject *parent) : UIWidget(parent), d(new PrivateLabel)
+Label::Label(QGraphicsObject *parent) : Window(parent), d(new PrivateLabel)
 {
   d->mBgColor = Qt::transparent;
   d->mFgColor = QColor(88, 88, 88);

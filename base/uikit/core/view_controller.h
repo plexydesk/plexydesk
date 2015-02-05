@@ -48,7 +48,7 @@ action.
 
 namespace UI
 {
-class UIWidget;
+class Window;
 typedef QList<QAction *> ActionList;
 
 class DECL_UI_KIT_EXPORT ViewController : public QObject
@@ -121,7 +121,7 @@ public:
       * @param widget
       * @param event
       */
-  virtual void handleDropEvent(UIWidget *widget, QDropEvent *event);
+  virtual void handleDropEvent(Window *widget, QDropEvent *event);
 
   /**
       * @brief
@@ -136,9 +136,9 @@ public:
       * @param widget
       * @return bool
       */
-  virtual bool removeWidget(UIWidget *widget);
+  virtual bool removeWidget(Window *widget);
 
-  virtual void insert(UIWidget *widget);
+  virtual void insert(Window *widget);
 
   /**
       * @brief

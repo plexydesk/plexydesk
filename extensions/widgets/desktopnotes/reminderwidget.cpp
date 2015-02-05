@@ -56,7 +56,7 @@ public:
 };
 
 ReminderWidget::ReminderWidget(QGraphicsObject *parent)
-  : UI::UIWidget(parent), d(new PrivateReminderWidget)
+  : UI::Window(parent), d(new PrivateReminderWidget)
 {
   setCacheMode(QGraphicsItem::DeviceCoordinateCache);
   setWindowFlag(UI::Window::kRenderDropShadow, true);

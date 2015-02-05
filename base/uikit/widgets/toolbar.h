@@ -1,13 +1,13 @@
 #ifndef TOOLBAR_H
 #define TOOLBAR_H
 
-#include <desktopwidget.h>
+#include <widget.h>
 #include <widget.h>
 #include <plexydesk_ui_exports.h>
 
 namespace UI
 {
-class DECL_UI_KIT_EXPORT ToolBar : public UI::UIWidget
+class DECL_UI_KIT_EXPORT ToolBar : public UI::Window
 {
   Q_OBJECT
 
@@ -19,7 +19,7 @@ public:
   virtual void addAction(const QString &lable, const QString &icon,
                          bool togleAction = false);
 
-  virtual void insertWidget(UIWidget *widget);
+  virtual void insertWidget(Window *widget);
 
   virtual void setOrientation(Qt::Orientation orientation);
 

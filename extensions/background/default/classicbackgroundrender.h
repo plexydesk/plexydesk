@@ -6,9 +6,9 @@
 #include <QImage>
 
 #include <widget.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
-class ClassicBackgroundRender : public UI::UIWidget
+class ClassicBackgroundRender : public UI::Window
 {
   Q_OBJECT
 public:

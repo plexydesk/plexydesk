@@ -25,7 +25,6 @@
 
 #include <themepackloader.h>
 #include "photowidget.h"
-#include "imageitem.h"
 
 class PhotoFrameController : public UI::ViewController
 {
@@ -39,11 +38,11 @@ public:
 
   virtual void revokeSession(const QVariantMap &args);
 
-  virtual void handleDropEvent(UI::UIWidget *widget, QDropEvent *event);
+  virtual void handleDropEvent(UI::Window *widget, QDropEvent *event);
 
   virtual void setViewRect(const QRectF &rect);
 
-  bool removeWidget(UI::UIWidget *widget);
+  bool removeWidget(UI::Window *widget);
 
   UI::ActionList actions() const;
 

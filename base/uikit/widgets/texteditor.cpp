@@ -31,7 +31,7 @@ public:
 };
 
 TextEditor::TextEditor(QGraphicsObject *parent)
-  : UI::UIWidget(parent), d(new PrivateTextEditor)
+  : UI::Window(parent), d(new PrivateTextEditor)
 {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
@@ -114,7 +114,7 @@ void TextEditor::setGeometry(const QRectF &rect)
   d->mProxyWidget->resize(rect.size());
   d->mEditor->move(0.0, 0.0);
 
-  UIWidget::setGeometry(rect);
+  Window::setGeometry(rect);
 }
 
 void TextEditor::updateTextScale()

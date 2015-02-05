@@ -21,7 +21,7 @@
 #define TABLEVIEWCELLINTERFACE_H
 
 #include <plexy.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 

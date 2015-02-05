@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "inputdialogactivity.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <QStyleOptionGraphicsItem>
@@ -44,7 +44,7 @@ public:
 
   StylePtr mStyle;
 
-  UI::UIWidget *mFrame;
+  UI::Window *mFrame;
   QGraphicsBlurEffect *mBackgroundEffect;
 
   /*Widgets*/
@@ -85,7 +85,7 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   }
 
   // todo: invoke UI
-  d->mFrame = new UI::UIWidget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
@@ -134,8 +134,8 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   d->mEditor->setFocus();
 
-  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
 
   connect(d->mCancelButton, SIGNAL(clicked()), this, SIGNAL(canceled()));
   connect(d->mOkButton, SIGNAL(clicked()), this, SLOT(onOkButtonPressed()));
@@ -157,9 +157,9 @@ QRectF InputDialogActivityData::geometry() const { return d->mBoundingRect; }
 
 QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
-UI::UIWidget *InputDialogActivityData::window() const { return d->mFrame; }
+UI::Window *InputDialogActivityData::window() const { return d->mFrame; }
 
-void InputDialogActivityData::onWidgetClosed(UI::UIWidget *widget)
+void InputDialogActivityData::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   discardActivity();

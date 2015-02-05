@@ -42,10 +42,10 @@ public:
   void createWindow(const QRectF &window_geometry, const QString &window_title,
                     const QPointF &window_pos);
   QVariantMap result() const;
-  UIWidget *window() const;
+  Window *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::UIWidget *widget);
+  void onWidgetClosed(UI::Window *widget);
   void onDiscard();
   void onClicked(TableViewItem *item);
   void onArgumentChanged();

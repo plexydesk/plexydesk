@@ -17,13 +17,13 @@
 *******************************************************************************/
 
 #include "chooser.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
 #include <tableviewcellinterface.h>
 #include <tableview.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <imageview.h>
 #include <themepackloader.h>
 #include "chooseritem.h"
@@ -35,7 +35,7 @@ public:
   PrivateIconGrid() : mFrame(0) {}
   ~PrivateIconGrid() {}
 
-  UI::UIWidget *mFrame;
+  UI::Window *mFrame;
   UI::TableView *mTable;
   QRectF mBoundingRect;
   QString mSelection;
@@ -66,7 +66,7 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->mBoundingRect = window_geometry;
   d->m_auto_scale_frame = false;
 
-  d->mFrame = new UI::UIWidget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setWindowFlag(UI::Window::kRenderBackground);
   d->mFrame->setWindowFlag(UI::Window::kConvertToWindowType);
@@ -81,8 +81,8 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
   d->mTable->setModel(d->m_action_delegate);
-  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
 
   if (hasAttribute("data")) {
     QVariantMap data = attributes()["data"].toMap();
@@ -124,9 +124,9 @@ QVariantMap IconGridActivity::result() const
   return d->m_activity_result;
 }
 
-UIWidget *IconGridActivity::window() const { return d->mFrame; }
+Window *IconGridActivity::window() const { return d->mFrame; }
 
-void IconGridActivity::onWidgetClosed(UI::UIWidget *widget)
+void IconGridActivity::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discardActivity();

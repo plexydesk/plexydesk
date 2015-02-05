@@ -5,11 +5,11 @@
 #include <QGraphicsSceneMouseEvent>
 #include <plexy.h>
 #include <style.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <webservice.h>
 #include <desktopactivity.h>
 
-class NoteWidget : public UI::UIWidget
+class NoteWidget : public UI::Window
 {
   Q_OBJECT
 public:

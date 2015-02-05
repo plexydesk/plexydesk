@@ -6,12 +6,12 @@
 
 #include <style.h>
 #include <plexydesk_ui_exports.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT ProgressBar : public UIWidget
+class DECL_UI_KIT_EXPORT ProgressBar : public Window
 {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)

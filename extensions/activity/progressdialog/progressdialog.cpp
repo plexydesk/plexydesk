@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "progressdialog.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
@@ -28,7 +28,7 @@ public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
 
-  UI::UIWidget *mFrame;
+  UI::Window *mFrame;
   UI::ProgressBar *m_progress_bar_widget;
   int mMax;
   int mMin;
@@ -51,7 +51,7 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  d->mFrame = new UI::UIWidget();
+  d->mFrame = new UI::Window();
   setGeometry(window_geometry);
 
   d->mFrame->setLabelName("Progress Dialog");
@@ -61,8 +61,8 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
 
   d->m_task_completed = 0;
 
-  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
 
   d->mMax = 100.0;
   d->mMin = 0.0;
@@ -114,9 +114,9 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 }
 
-UI::UIWidget *ProgressDialogActivity::window() const { return d->mFrame; }
+UI::Window *ProgressDialogActivity::window() const { return d->mFrame; }
 
-void ProgressDialogActivity::onWidgetClosed(UI::UIWidget *widget)
+void ProgressDialogActivity::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

@@ -254,8 +254,8 @@ DesktopActivityPtr DockControllerImpl::createActivity(
   _intent->createWindow(QRectF(0.0, _activity_location.y(), 330.0, 320.0),
                         title, QPointF());
 
-  UI::UIWidget *_activity_widget =
-    qobject_cast<UI::UIWidget *>(_intent->window());
+  UI::Window *_activity_widget =
+    qobject_cast<UI::Window *>(_intent->window());
 
   if (_activity_widget) {
     _activity_widget->setWindowFlag(UI::Window::kRenderDropShadow, true);
@@ -413,8 +413,8 @@ void DockControllerImpl::onActivityAnimationFinished()
     return;
   }
 
-  UI::UIWidget *_activity_widget =
-    qobject_cast<UI::UIWidget *>(activity->window());
+  UI::Window *_activity_widget =
+    qobject_cast<UI::Window *>(activity->window());
 
   if (_activity_widget) {
     _activity_widget->setWindowFlag(UI::Window::kRenderDropShadow,

@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "desktopclock.h"
 #include "desktopclockinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DesktopActivity> DesktopClockInterface::activity()

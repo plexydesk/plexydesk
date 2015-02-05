@@ -22,7 +22,7 @@ public:
 };
 
 ImageView::ImageView(QGraphicsObject *parent)
-  : UIWidget(parent), d(new PrivateImageView)
+  : Window(parent), d(new PrivateImageView)
 {
   setFlag(QGraphicsItem::ItemIsMovable, true);
 }

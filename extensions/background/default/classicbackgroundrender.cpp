@@ -8,7 +8,7 @@
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
     QGraphicsObject *parent,
     const QImage &background_image)
-  : UI::UIWidget(parent)
+  : UI::Window(parent)
 {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
@@ -103,7 +103,7 @@ void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
   qDebug() << Q_FUNC_INFO;
   setFocus(Qt::MouseFocusReason);
-  UI::UIWidget::mousePressEvent(event);
+  UI::Window::mousePressEvent(event);
 }
 
 void ClassicBackgroundRender::paintView(QPainter *painter,

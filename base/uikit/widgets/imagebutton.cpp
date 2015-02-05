@@ -53,7 +53,7 @@ StylePtr ImageButton::style() const
 }
 
 ImageButton::ImageButton(QGraphicsObject *parent)
-  : UIWidget(parent), d(new PrivateImageButton)
+  : Window(parent), d(new PrivateImageButton)
 {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);

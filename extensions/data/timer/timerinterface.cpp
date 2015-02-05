@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "timer.h"
 #include "timerinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DataSource> TimerInterface::model()

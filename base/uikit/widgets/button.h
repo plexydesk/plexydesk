@@ -7,14 +7,14 @@
 #include <QGraphicsLayoutItem>
 
 #include <widget.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT Button : public UIWidget
+class DECL_UI_KIT_EXPORT Button : public Window
 {
   Q_OBJECT
 

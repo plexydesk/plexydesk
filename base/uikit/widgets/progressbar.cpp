@@ -29,7 +29,7 @@ public:
 };
 
 ProgressBar::ProgressBar(QGraphicsObject *parent)
-  : UIWidget(parent), d(new PrivateProgressBar)
+  : Window(parent), d(new PrivateProgressBar)
 {
   d->mMaxValue = 100.0;
   d->mMinValue = 1.0;

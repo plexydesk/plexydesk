@@ -7,11 +7,11 @@
 #include <QGraphicsObject>
 #include <QGraphicsLayoutItem>
 #include <plexydesk_ui_exports.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 namespace UI
 {
-class DECL_UI_KIT_EXPORT LineEdit : public UIWidget
+class DECL_UI_KIT_EXPORT LineEdit : public Window
 {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)

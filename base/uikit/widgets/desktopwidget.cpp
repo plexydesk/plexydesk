@@ -21,7 +21,7 @@
 namespace UI
 {
 
-class UIWidget::PrivateDesktopWidget
+class Window::PrivateDesktopWidget
 {
 public:
   PrivateDesktopWidget() {}
@@ -41,7 +41,7 @@ public:
   WindowButton *m_window_close_button_widget_ptr;
 };
 
-UIWidget::UIWidget(QGraphicsObject *parent)
+Window::Window(QGraphicsObject *parent)
   : Window(parent), d(new PrivateDesktopWidget)
 {
   d->m_enable_edit_mode = false;
@@ -101,32 +101,32 @@ UIWidget::UIWidget(QGraphicsObject *parent)
   //       SLOT(windowCloseButtonClicked()));
 }
 
-UIWidget::~UIWidget()
+Window::~Window()
 {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-void UIWidget::pressHoldTimeOut()
+void Window::pressHoldTimeOut()
 {
   d->m_enable_edit_mode = true;
   update();
 }
 
-void UIWidget::windowCloseButtonClicked() {  }
+void Window::windowCloseButtonClicked() {  }
 
-void UIWidget::zoomDone()
+void Window::zoomDone()
 {
   prepareGeometryChange();
   resetMatrix();
 }
 
-void UIWidget::propertyAnimationForZoomDone()
+void Window::propertyAnimationForZoomDone()
 {
   zoomDone();
 }
 
 
-StylePtr UIWidget::style() const { return Theme::style(); }
+StylePtr Window::style() const { return Theme::style(); }
 
 }

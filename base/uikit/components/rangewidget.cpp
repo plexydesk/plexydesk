@@ -24,7 +24,7 @@ public:
 };
 
 RangeWidget::RangeWidget(QGraphicsObject *parent)
-  : UI::UIWidget(parent), d(new PrivateRangeWidget)
+  : UI::Window(parent), d(new PrivateRangeWidget)
 {
   this->setWindowFlag(UI::Window::kRenderBackground);
   this->setWindowFlag(UI::Window::kConvertToWindowType, false);

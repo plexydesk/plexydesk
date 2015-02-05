@@ -28,6 +28,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 
+#include "themepackloader.h"
 #include <view_controller.h>
 #include "widget.h"
 
@@ -193,6 +194,11 @@ QString Window::uuid() const
                                         QCryptographicHash::Md5).toHex());
 
   return rv;
+}
+
+StylePtr Window::style() const
+{
+    return Theme::style();
 }
 
 Window::RenderLevel Window::layerType() const

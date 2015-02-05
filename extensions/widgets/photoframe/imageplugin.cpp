@@ -19,7 +19,7 @@
 
 #include "imageplugin.h"
 #include <extensionmanager.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <space.h>
 
 // qt
@@ -86,7 +86,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   }
 }
 
-void PhotoFrameController::handleDropEvent(UI::UIWidget *widget,
+void PhotoFrameController::handleDropEvent(UI::Window *widget,
     QDropEvent *event)
 {
   if (event->mimeData()->urls().count() >= 0) {
@@ -126,7 +126,7 @@ void PhotoFrameController::setViewRect(const QRectF &rect)
   }
 }
 
-bool PhotoFrameController::removeWidget(UI::UIWidget *widget)
+bool PhotoFrameController::removeWidget(UI::Window *widget)
 {
   if (!widget) {
     return 1;

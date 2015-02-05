@@ -21,7 +21,7 @@
 // plexydesk
 #include <plexyconfig.h>
 #include <extensionmanager.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <extensionmanager.h>
 
 // social
@@ -222,7 +222,7 @@ void BackgroundController::setScaleMode(
   }
 }
 
-void BackgroundController::handleDropEvent(UI::UIWidget * /*widget*/,
+void BackgroundController::handleDropEvent(UI::Window * /*widget*/,
     QDropEvent *event)
 {
   qDebug() << Q_FUNC_INFO;

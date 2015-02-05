@@ -61,7 +61,7 @@ public:
 };
 
 FileInforView::FileInforView(QGraphicsObject *parent)
-  : UI::UIWidget(parent), d(new PrivateFileInforView)
+  : UI::Window(parent), d(new PrivateFileInforView)
 {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setWindowFlag(UI::Window::kRenderDropShadow, false);

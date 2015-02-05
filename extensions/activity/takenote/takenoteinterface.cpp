@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "takenote.h"
 #include "takenoteinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DesktopActivity> TakeNoteInterface::activity()

@@ -19,7 +19,7 @@
 
 #include "folderplugin.h"
 #include <extensionmanager.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <QDir>
 #include <QDropEvent>
 #include <QMimeData>
@@ -33,7 +33,7 @@ DirectoryController::DirectoryController(QObject *object)
 {
   mThemePack = UI::Theme::instance();
 
-  UI::UIWidget *parent = new UI::UIWidget();
+  UI::Window *parent = new UI::Window();
 
   parent->setWindowFlag(UI::Window::kRenderBackground);
   parent->setWindowFlag(UI::Window::kConvertToWindowType);
@@ -80,7 +80,7 @@ void DirectoryController::requestAction(const QString &actionName,
     qDebug() << "Not supported yet";
   } else if (actionName == tr("Folder")) {
     qDebug() << Q_FUNC_INFO << "Request Add DIR";
-    UI::UIWidget *parent = new UI::UIWidget();
+    UI::Window *parent = new UI::Window();
 
     parent->setWindowFlag(UI::Window::kRenderBackground);
     parent->setWindowFlag(UI::Window::kConvertToWindowType);
@@ -102,7 +102,7 @@ void DirectoryController::requestAction(const QString &actionName,
   }
 }
 
-void DirectoryController::handleDropEvent(UI::UIWidget *widget,
+void DirectoryController::handleDropEvent(UI::Window *widget,
     QDropEvent *event)
 {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
@@ -121,7 +121,7 @@ void DirectoryController::handleDropEvent(UI::UIWidget *widget,
 
 void DirectoryController::setViewRect(const QRectF &rect)
 {
-  Q_FOREACH(UI::UIWidget * view, mFolderViewList) {
+  Q_FOREACH(UI::Window * view, mFolderViewList) {
     if (view) {
       view->setPos(rect.x(), rect.y());
     }

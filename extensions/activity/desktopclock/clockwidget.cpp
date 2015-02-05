@@ -33,7 +33,7 @@
 #include <plexyconfig.h>
 #include <svgprovider.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::UIWidget(parent)
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::Window(parent)
 {
   mTimer = new QTimer(this);
   mTimer->setTimerType(Qt::VeryCoarseTimer);

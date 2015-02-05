@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "spacepreview.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
@@ -27,7 +27,7 @@ public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
 
-  UI::UIWidget *m_main_window;
+  UI::Window *m_main_window;
 };
 
 SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
@@ -39,7 +39,7 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
                                         const QString &window_title,
                                         const QPointF &window_pos)
 {
-  d->m_main_window = new UI::UIWidget();
+  d->m_main_window = new UI::Window();
 
   d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
   d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
@@ -50,8 +50,8 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
 }
 
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
@@ -59,9 +59,9 @@ QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 void SpacePreviewActivity::updateAttribute(const QString &name,
     const QVariant &data) {}
 
-UI::UIWidget *SpacePreviewActivity::window() const { return d->m_main_window; }
+UI::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
 
-void SpacePreviewActivity::onWidgetClosed(UI::UIWidget *widget)
+void SpacePreviewActivity::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

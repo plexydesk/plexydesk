@@ -22,7 +22,7 @@ public:
 };
 
 ModelView::ModelView(QGraphicsObject *parent) :
-  UIWidget(parent),
+  Window(parent),
   d(new PrivateModelView)
 {
 
@@ -49,7 +49,7 @@ ModelView::~ModelView()
   delete d;
 }
 
-void ModelView::insert(UIWidget *widget)
+void ModelView::insert(Window *widget)
 {
   widget->setParentItem(d->m_scroll_frame);
   widget->setParent(d->m_scroll_frame);
@@ -64,7 +64,7 @@ void ModelView::insert(UIWidget *widget)
   update();
 }
 
-void ModelView::remove(UIWidget *widget) {}
+void ModelView::remove(Window *widget) {}
 
 void ModelView::clear()
 {
@@ -74,7 +74,7 @@ void ModelView::clear()
 
   while (d->m_list_layout->count() > 0) {
     int index = d->m_list_layout->count() - 1;
-    UIWidget *item = (UIWidget *)(d->m_list_layout->itemAt(index));
+    Window *item = (Window *)(d->m_list_layout->itemAt(index));
     d->m_list_layout->removeAt(index);
 
     if (item) {

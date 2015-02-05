@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "flickrphotosearch.h"
 #include "flickrphotosearchinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DataSource> FlickrPhotoSearchInterface::model()

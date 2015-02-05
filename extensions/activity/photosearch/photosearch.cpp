@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "photosearch.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <QDir>
@@ -41,7 +41,7 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  UI::UIWidget *mFrame;
+  UI::Window *mFrame;
   UI::ProgressBar *mProgressBar;
   UI::TableView *mTable;
   ImageCellAdaptor *mFactory;
@@ -65,7 +65,7 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_frame_geometry = QRectF(0.0, 0.0, 600.0, 480.0);
 
   // todo: invoke UI
-  d->mFrame = new UI::UIWidget();
+  d->mFrame = new UI::Window();
   updateContentGeometry(d->mFrame);
   setGeometry(d->m_frame_geometry);
 
@@ -86,8 +86,8 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
-  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
   connect(d->mFactory, SIGNAL(completed(int)), this,
           SLOT(onProgressValue(int)));
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
@@ -100,9 +100,9 @@ QRectF PhotoSearchActivity::geometry() const { return d->m_frame_geometry; }
 
 QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
-UIWidget *PhotoSearchActivity::window() const { return d->mFrame; }
+Window *PhotoSearchActivity::window() const { return d->mFrame; }
 
-void PhotoSearchActivity::onWidgetClosed(UI::UIWidget *widget)
+void PhotoSearchActivity::onWidgetClosed(UI::Window *widget)
 {
   if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;

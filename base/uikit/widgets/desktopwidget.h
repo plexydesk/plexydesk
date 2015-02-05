@@ -11,17 +11,17 @@
 
 namespace UI
 {
-class DECL_UI_KIT_EXPORT UIWidget : public Window
+class DECL_UI_KIT_EXPORT Window : public Window
 {
   Q_OBJECT
 
 public:
-  explicit UIWidget(QGraphicsObject *parent = 0);
-  virtual ~UIWidget();
+  explicit Window(QGraphicsObject *parent = 0);
+  virtual ~Window();
 
 Q_SIGNALS:
   void clicked();
-  void closed(UI::UIWidget *widget);
+  void closed(UI::Window *widget);
 
 protected:
   StylePtr style() const;

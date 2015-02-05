@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "socialauth.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
@@ -27,7 +27,7 @@ public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
 
-  UI::UIWidget *mFrame;
+  UI::Window *mFrame;
 };
 
 SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
@@ -41,7 +41,7 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
 {
   setGeometry(window_geometry);
 
-  d->mFrame = new UI::UIWidget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
@@ -54,14 +54,14 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
   exec();
 
   showActivity();
-  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
 }
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
-UI::UIWidget *SocialAuthActivity::window() const { return d->mFrame; }
+UI::Window *SocialAuthActivity::window() const { return d->mFrame; }
 
-void SocialAuthActivity::onWidgetClosed(UI::UIWidget *widget) {}
+void SocialAuthActivity::onWidgetClosed(UI::Window *widget) {}
 
 void SocialAuthActivity::onHideAnimationFinished() {}

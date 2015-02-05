@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "cocoa.h"
 #include "cocoainterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 static void destroyStyle(UI::Style *style) { delete style; }

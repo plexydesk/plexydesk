@@ -11,7 +11,7 @@
 #include <desktopactivitymenu.h>
 #include <QGraphicsScene>
 #include <QWeakPointer>
-#include <desktopwidget.h>
+#include <widget.h>
 
 #include "workspace.h"
 
@@ -42,7 +42,7 @@ public:
   WorkSpace *mWorkSpace;
   QGraphicsScene *m_main_scene;
   QList<UI::DesktopActivityPtr> m_activity_list;
-  std::list<UI::UIWidget *> m_window_list;
+  std::list<UI::Window *> m_window_list;
   QMap<QString, ViewControllerPtr> m_current_controller_map;
   QList<ActivityPoupWeekPtr> m_activity_popup_list;
   QList<ViewControllerPtr> m_controller_list;
@@ -183,7 +183,7 @@ void Space::addActivityPoupToView(QSharedPointer<DesktopActivityMenu> menu)
   d->m_activity_popup_list.append(menu.toWeakRef());
 }
 
-void Space::addWidgetToView(UIWidget *widget)
+void Space::addWidgetToView(Window *widget)
 {
   if (!widget) {
     return;
@@ -205,8 +205,8 @@ void Space::addWidgetToView(UIWidget *widget)
   d->m_main_scene->addItem(widget);
   widget->setPos(_widget_location);
 
-  connect(widget, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(widget, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
 
   widget->show();
 
@@ -217,7 +217,7 @@ void Space::addWidgetToView(UIWidget *widget)
   d->m_window_list.push_front(widget);
 }
 
-void Space::onWidgetClosed(UIWidget *widget)
+void Space::onWidgetClosed(Window *widget)
 {
   qDebug() << Q_FUNC_INFO << __LINE__;
   if (!d->m_main_scene) {
@@ -413,7 +413,7 @@ void Space::clear()
   foreach(DesktopActivityPtr _activity, d->m_activity_list) {
     qDebug() << Q_FUNC_INFO << "Remove Activity: ";
     if (_activity) {
-      UIWidget *_widget = _activity->window();
+      Window *_widget = _activity->window();
       if (_widget) {
         if (d->m_main_scene->items().contains(_widget)) {
           d->m_main_scene->removeItem(_widget);
@@ -427,7 +427,7 @@ void Space::clear()
   }
 
   // delete owner widgets
-  for (UIWidget *_widget : d->m_window_list) {
+  for (Window *_widget : d->m_window_list) {
     if (_widget) {
       if (d->m_main_scene->items().contains(_widget)) {
         d->m_main_scene->removeItem(_widget);
@@ -590,7 +590,7 @@ void Space::handleDropEvent(QDropEvent *event,
         continue;
       }
 
-      UIWidget *widget = qobject_cast<UIWidget *>(itemObject);
+      Window *widget = qobject_cast<Window *>(itemObject);
 
       if (!widget || !widget->controller()) {
         qDebug() << Q_FUNC_INFO << "Not a Valid Item";

@@ -2,13 +2,13 @@
 #define DIAL_WIDGET_H
 
 #include <plexy.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <QGraphicsSceneMouseEvent>
 #include <plexydesk_ui_exports.h>
 
 namespace UI
 {
-class DECL_UI_KIT_EXPORT DialWidget : public UI::UIWidget
+class DECL_UI_KIT_EXPORT DialWidget : public UI::Window
 {
   Q_OBJECT
 public:

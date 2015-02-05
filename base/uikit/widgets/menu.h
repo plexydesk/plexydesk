@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <desktopactivity.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 namespace UI
 {
@@ -37,7 +37,7 @@ public:
    *
    * @param widget a Valid Window class to.
    */
-  virtual void setContentWidget(QSharedPointer<UIWidget> widget);
+  virtual void setContentWidget(QSharedPointer<Window> widget);
   /**
    * @brief Invoke the menu on a given location
    *

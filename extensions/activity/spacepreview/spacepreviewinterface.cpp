@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "spacepreview.h"
 #include "spacepreviewinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DesktopActivity> SpacePreviewInterface::activity()

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PLEXYDESK_SCROLL_WIDGET_H
 #include <plexy.h>
 #include <config.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 #include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsObject>
@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT ScrollWidget : public UIWidget
+class DECL_UI_KIT_EXPORT ScrollWidget : public Window
 {
   Q_OBJECT
 public:

@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "datepicker.h"
 #include "datepickerinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DesktopActivity> DatePickerInterface::activity()

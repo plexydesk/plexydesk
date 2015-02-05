@@ -24,7 +24,7 @@ public:
 };
 
 DialWidget::DialWidget(QGraphicsObject *parent)
-  : UI::UIWidget(parent), d(new PrivateDialWidget)
+  : UI::Window(parent), d(new PrivateDialWidget)
 {
   this->setWindowFlag(UI::Window::kRenderBackground);
   this->setWindowFlag(UI::Window::kConvertToWindowType, false);

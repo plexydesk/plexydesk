@@ -23,12 +23,12 @@
 #include <plexy.h>
 #include <button.h>
 #include <plexydesk_ui_exports.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT WindowButton : public UI::UIWidget
+class DECL_UI_KIT_EXPORT WindowButton : public UI::Window
 {
   Q_OBJECT
 public:

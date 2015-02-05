@@ -2,9 +2,9 @@
 #define SNAPFRAME_H
 
 #include <plexy.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
-class SnapFrame : public UI::UIWidget
+class SnapFrame : public UI::Window
 {
   Q_OBJECT
 public:

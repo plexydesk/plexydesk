@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "timepicker.h"
 #include "timepickerinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DesktopActivity> TimePickerInterface::activity()

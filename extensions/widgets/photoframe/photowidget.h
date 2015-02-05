@@ -2,10 +2,10 @@
 #define PHOTOWIDGET_H
 
 #include <plexy.h>
-#include <desktopwidget.h>
+#include <widget.h>
 #include <QGraphicsDropShadowEffect>
 
-class PhotoWidget : public UI::UIWidget
+class PhotoWidget : public UI::Window
 {
   Q_OBJECT
 

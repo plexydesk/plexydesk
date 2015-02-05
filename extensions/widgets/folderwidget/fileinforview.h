@@ -21,12 +21,12 @@
 #define FILEINFORVIEW_H
 
 #include <plexy.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 #include <QIcon>
 #include <QFileInfo>
 
-class FileInforView : public UI::UIWidget
+class FileInforView : public UI::Window
 {
   Q_OBJECT
 public:

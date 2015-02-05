@@ -1,7 +1,7 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include "desktopwidget.h"
+#include <widget.h>
 
 #include <QGraphicsObject>
 #include <QGraphicsLayoutItem>
@@ -12,7 +12,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT Label : public UIWidget
+class DECL_UI_KIT_EXPORT Label : public Window
 {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)

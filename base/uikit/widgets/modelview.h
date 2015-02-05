@@ -2,14 +2,14 @@
 #define MODELVIEW_H
 
 #include <QGraphicsObject>
-#include <desktopwidget.h>
+#include <widget.h>
 
 #include <functional>
 
 namespace UI
 {
 
-class ModelView : public UIWidget
+class ModelView : public Window
 {
   Q_OBJECT
 
@@ -23,8 +23,8 @@ public:
   ModelView(QGraphicsObject *parent = 0);
   virtual ~ModelView();
 
-  virtual void insert(UIWidget *widget);
-  virtual void remove(UIWidget *widget);
+  virtual void insert(Window *widget);
+  virtual void remove(Window *widget);
 
   virtual void clear();
 

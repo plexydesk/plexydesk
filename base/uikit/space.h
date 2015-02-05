@@ -7,7 +7,7 @@
 #include <desktopactivitymenu.h>
 #include <view_controller.h>
 #include <plexydesk_ui_exports.h>
-#include <desktopwidget.h>
+#include <widget.h>
 
 namespace UI
 {
@@ -72,8 +72,8 @@ Q_SIGNALS:
   void controllerAdded(const QString &name);
 
 public Q_SLOTS:
-  virtual void addWidgetToView(UIWidget *widget);
-  virtual void onWidgetClosed(UIWidget *widget);
+  virtual void addWidgetToView(Window *widget);
+  virtual void onWidgetClosed(Window *widget);
   virtual void onActivityFinished();
 
 private Q_SLOTS:

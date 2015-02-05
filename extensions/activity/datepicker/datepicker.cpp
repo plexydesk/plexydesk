@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "datepicker.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
@@ -33,7 +33,7 @@ public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
 
-  UI::UIWidget *mFrame;
+  UI::Window *mFrame;
   DateCellFactory *mFactory;
   UI::TableView *mTable;
   QRectF mBoundingRect;
@@ -54,7 +54,7 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
                                       const QString &window_title,
                                       const QPointF &window_pos)
 {
-  d->mFrame = new UI::UIWidget();
+  d->mFrame = new UI::Window();
 
   updateContentGeometry(d->mFrame);
   setGeometry(window_geometry);
@@ -76,16 +76,16 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
   connect(d->mLoader, SIGNAL(imageSearchDone(QImage)), this,
           SLOT(onImageReady(QImage)));
 
-  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
   connect(d->mCalendarWidget, SIGNAL(done()), this, SLOT(onCalendarReady()));
 }
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
-UI::UIWidget *DatePickerActivity::window() const { return d->mFrame; }
+UI::Window *DatePickerActivity::window() const { return d->mFrame; }
 
-void DatePickerActivity::onWidgetClosed(UI::UIWidget *widget)
+void DatePickerActivity::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

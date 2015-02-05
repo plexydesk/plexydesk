@@ -144,7 +144,7 @@ void DesktopActivity::updateAction()
 }
 
 // todo: remove this
-void DesktopActivity::updateContentGeometry(UIWidget *widget)
+void DesktopActivity::updateContentGeometry(Window *widget)
 {
   if (!widget) {
     return;

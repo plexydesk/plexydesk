@@ -1,9 +1,9 @@
 #ifndef CALENDARWIDGET_H
 #define CALENDARWIDGET_H
 
-#include <desktopwidget.h>
+#include <widget.h>
 
-class CalendarWidget : public UI::UIWidget
+class CalendarWidget : public UI::Window
 {
   Q_OBJECT
 

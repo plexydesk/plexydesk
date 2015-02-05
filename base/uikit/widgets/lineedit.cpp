@@ -35,7 +35,7 @@ public:
 };
 
 LineEdit::LineEdit(QGraphicsObject *parent)
-  : UIWidget(parent), d(new PrivateLineEdit)
+  : Window(parent), d(new PrivateLineEdit)
 {
   d->mState = PrivateLineEdit::NORMAL;
   d->mStyle = Theme::instance()->defaultDesktopStyle();

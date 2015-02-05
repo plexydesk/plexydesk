@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "template.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
@@ -27,7 +27,7 @@ public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
 
-  UI::UIWidget *m_main_window;
+  UI::Window *m_main_window;
 };
 
 TemplateActivity::TemplateActivity(QGraphicsObject *object)
@@ -39,7 +39,7 @@ void TemplateActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
-  d->m_main_window = new UI::UIWidget();
+  d->m_main_window = new UI::Window();
 
   d->m_main_window->setWindowFlag(UI::Window::kRenderBackground);
   d->m_main_window->setWindowFlag(UI::Window::kConvertToWindowType);
@@ -50,8 +50,8 @@ void TemplateActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->m_main_window, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
 }
 
 QVariantMap TemplateActivity::result() const { return QVariantMap(); }
@@ -59,9 +59,9 @@ QVariantMap TemplateActivity::result() const { return QVariantMap(); }
 void TemplateActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
-UI::UIWidget *TemplateActivity::window() const { return d->m_main_window; }
+UI::Window *TemplateActivity::window() const { return d->m_main_window; }
 
-void TemplateActivity::onWidgetClosed(UI::UIWidget *widget)
+void TemplateActivity::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

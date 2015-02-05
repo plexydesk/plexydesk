@@ -63,7 +63,6 @@ set(CORE_LIBRARY_HEADER_FILES
 set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/button.cpp
     widgets/scrollwidget.cpp
-    widgets/desktopwidget.cpp
     widgets/imageview.cpp
     widgets/label.cpp
     widgets/progressbar.cpp
@@ -110,7 +109,6 @@ set(LIBRARY_HEADER_FILES
     widgets/texteditor.h
     widgets/windowbutton.h
     widgets/tableview.h
-    widgets/desktopwidget.h
     widgets/scrollwidget.h
     widgets/imageview.h
     widgets/label.h

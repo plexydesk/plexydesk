@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "takenote.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 #include <imagebutton.h>
 #include <QTimer>
@@ -32,7 +32,7 @@ public:
 
   ~PrivateTakeNote() {}
 
-  UI::UIWidget *mFrame;
+  UI::Window *mFrame;
   QGraphicsWidget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
@@ -56,7 +56,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
                                     const QPointF &window_pos)
 {
   // todo: invoke UI
-  d->mFrame = new UI::UIWidget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setVisible(true);
   setGeometry(window_geometry);
@@ -100,8 +100,8 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  connect(d->mFrame, SIGNAL(closed(UI::UIWidget *)), this,
-          SLOT(onWidgetClosed(UI::UIWidget *)));
+  connect(d->mFrame, SIGNAL(closed(UI::Window *)), this,
+          SLOT(onWidgetClosed(UI::Window *)));
   // todo: invoke UI
 
   d->mAddNoteBtn->setLable(QLatin1String("Note"));
@@ -125,9 +125,9 @@ QVariantMap TakeNoteActivity::result() const
   return rv;
 }
 
-UI::UIWidget *TakeNoteActivity::window() const { return d->mFrame; }
+UI::Window *TakeNoteActivity::window() const { return d->mFrame; }
 
-void TakeNoteActivity::onWidgetClosed(UI::UIWidget *widget)
+void TakeNoteActivity::onWidgetClosed(UI::Window *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

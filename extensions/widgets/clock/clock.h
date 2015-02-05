@@ -39,7 +39,7 @@ public:
 
   void setViewRect(const QRectF &rect);
 
-  bool removeWidget(UI::UIWidget *widget);
+  bool removeWidget(UI::Window *widget);
 
   UI::ActionList actions() const;
 

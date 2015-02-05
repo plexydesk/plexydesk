@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "httpserver.h"
 #include "httpserverinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DataSource> HttpServerInterface::model()

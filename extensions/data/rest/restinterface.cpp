@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "rest.h"
 #include "restinterface.h"
-#include <desktopwidget.h>
+#include <widget.h>
 #include <plexyconfig.h>
 
 QSharedPointer<UI::DataSource> RestInterface::model()

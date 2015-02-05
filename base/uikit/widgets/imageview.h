@@ -1,7 +1,7 @@
 #ifndef IMAGEVIEW_H
 #define IMAGEVIEW_H
 
-#include "desktopwidget.h"
+#include <widget.h>
 
 #include <QGraphicsObject>
 #include <QGraphicsLayoutItem>
@@ -10,7 +10,7 @@
 namespace UI
 {
 
-class DECL_UI_KIT_EXPORT ImageView : public UIWidget
+class DECL_UI_KIT_EXPORT ImageView : public Window
 {
   Q_OBJECT
 public:
