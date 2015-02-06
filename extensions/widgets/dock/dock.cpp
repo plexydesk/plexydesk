@@ -128,6 +128,7 @@ void DockControllerImpl::init()
     d->m_desktop_actions_popup->setSpace(_space);
     d->m_desktop_actions_popup->setActivity(d->m_action_activity);
     _space->addActivityPoupToView(d->m_desktop_actions_popup);
+    d->m_desktop_actions_popup->hide();
   }
 
   // loads the controllers before dock was created;
@@ -232,37 +233,16 @@ DesktopActivityPtr DockControllerImpl::createActivity(
   const QString &controllerName, const QString &activity,
   const QString &title, const QPoint &pos, const QVariantMap &dataItem)
 {
-  UI::DesktopActivityPtr _intent =
-    UI::ExtensionManager::instance()->activity(activity);
-
-  if (!_intent) {
-    qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
-    return DesktopActivityPtr();
-  }
-
   QPoint _activity_location = pos;
-
   _activity_location.setY(viewport()->geometry().y());
+
+  UI::DesktopActivityPtr _intent =
+          viewport()->createActivity(activity, title, _activity_location,
+                                     QRectF(0, _activity_location.y(), 330, 320),
+                                     dataItem);
+  _intent->setController(UI::ViewControllerPtr(this));
   _intent->setActivityAttribute("data", QVariant(dataItem));
   _intent->setActivityAttribute("auto_scale", QVariant(1));
-
-  _intent->setController(UI::ViewControllerPtr(this));
-
-  connect(_intent.data(), SIGNAL(showAnimationFinished()), this,
-          SLOT(onActivityAnimationFinished()));
-
-  _intent->createWindow(QRectF(0.0, _activity_location.y(), 330.0, 320.0),
-                        title, QPointF());
-
-  UI::Widget *_activity_widget =
-    qobject_cast<UI::Widget *>(_intent->window());
-
-  if (_activity_widget) {
-    _activity_widget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
-    _activity_widget->setWindowFlag(UI::Widget::kConvertToWindowType,
-                                    false);
-    _activity_widget->setWindowFlag(UI::Widget::kRenderBackground, true);
-  }
 
   return _intent;
 }

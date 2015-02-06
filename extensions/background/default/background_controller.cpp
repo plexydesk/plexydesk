@@ -58,7 +58,6 @@ public:
 
   void updateProgress(float progress);
 
-  UI::DesktopActivityPtr mProgressDialog;
   QString mCurrentMode;
 
   UI::ActionList mActionList;
@@ -198,7 +197,6 @@ void BackgroundController::downloadRemoteFile(QUrl fileUrl)
 
   downloader->setMetaData(metaData);
   downloader->setUrl(fileUrl);
-  createProgressDialog();
 }
 
 void BackgroundController::createModeChooser()
@@ -360,11 +358,6 @@ void BackgroundController::onImageSaveReady()
     c->quit();
     c->deleteLater();
   }
-
-  if (d->mProgressDialog) {
-    d->mProgressDialog->hide();
-    d->mProgressDialog.clear();
-  }
 }
 
 void BackgroundController::setScaleMode(const QString &action)
@@ -395,14 +388,6 @@ QString BackgroundController::label() const { return QString(tr("Desktop")); }
 
 void BackgroundController::configure(const QPointF &pos)
 {
-  UI::DesktopActivityPtr intent =
-    UI::ExtensionManager::instance()->activity("icongrid");
-
-  if (!intent) {
-    qWarning() << Q_FUNC_INFO << "No such Activity";
-    return;
-  }
-
   QPointF localPos;
   QPointF _activity_pos;
 
@@ -419,20 +404,12 @@ void BackgroundController::configure(const QPointF &pos)
   data["Adjust"] = "pd_quit_icon.png";
   data["Seamless"] = "pd_desktop_icon.png";
 
-  intent->setActivityAttribute("data", QVariant(data));
-
-  intent->setController(viewport()->controller("classicbackdrop"));
-
-  intent->createWindow(QRectF(0.0, 0.0, 330.0, 192.0), tr("Desktop"),
-                       _activity_pos);
-  viewport()->addActivity(intent);
+  viewport()->createActivity("icongrind", "Desktop", _activity_pos,
+                             QRectF(0, 0, 330, 192), data);
 }
 
 void BackgroundController::prepareRemoval()
 {
-  if (d->mProgressDialog) {
-    d->mProgressDialog.clear();
-  }
 }
 
 // remove
@@ -482,13 +459,6 @@ void BackgroundController::onSearchFinished()
   }
 }
 
-void BackgroundController::onUpdateImageDownloadProgress(float progress)
-{
-  if (d->mProgressDialog) {
-    d->updateProgress(progress);
-  }
-}
-
 void BackgroundController::onConfigureDone()
 {
   if (sender()) {
@@ -519,88 +489,49 @@ void BackgroundController::createModeActivity(const QString &activity,
     const QString &title,
     const QVariantMap &data)
 {
-  UI::DesktopActivityPtr intent =
-    UI::ExtensionManager::instance()->activity("icongrid");
-
-  if (!intent || !viewport()) {
+  if (!viewport()) {
     return;
   }
 
   QRectF _view_geometry(0.0, 0.0, 420.0, 192.0);
 
-  intent->setActivityAttribute("data", QVariant(data));
+  UI::DesktopActivityPtr intent = viewport()->createActivity(activity, title,
+                             viewport()->center(_view_geometry),
+                             _view_geometry,
+                             data);
   intent->setController(viewport()->controller("classicbackdrop"));
-
-  intent->createWindow(_view_geometry, tr("Background Mode"),
-                       viewport()->center(_view_geometry));
-
-  viewport()->addActivity(intent);
 }
 
 void BackgroundController::createWallpaperActivity(const QString &activity,
     const QString &title,
     const QVariantMap &data)
 {
-  UI::DesktopActivityPtr intent =
-    UI::ExtensionManager::instance()->activity("photosearchactivity");
-
-  if (!intent || !viewport()) {
-    return;
-  }
+  if (!viewport()) return;
 
   QRectF _view_geometry(0.0, 0.0, 420.0, 192.0);
 
-  intent->setActivityAttribute("data", QVariant(data));
+  UI::DesktopActivityPtr intent =
+          viewport()->createActivity("photosearchactivity", title,
+                                     viewport()->center(_view_geometry),
+                                     _view_geometry,
+                                     data);
   intent->setController(viewport()->controller("classicbackdrop"));
-  intent->createWindow(_view_geometry, title,
-                       viewport()->center(_view_geometry));
-
-  viewport()->addActivity(intent);
 }
 
 void BackgroundController::createSearchActivity(const QString &activity,
     const QString &title,
     const QVariantMap &data)
 {
-  UI::DesktopActivityPtr intent =
-    UI::ExtensionManager::instance()->activity("flikrsearchactivity");
+  if (!viewport()) return;
 
-  if (!intent || !viewport()) {
-    return;
-  }
-
-  intent->setActivityAttribute("data", QVariant(data));
-  intent->setController(viewport()->controller("classicbackdrop"));
   QRectF _activity_geometry(0.0, 0.0, 572, 480);
 
-  intent->createWindow(_activity_geometry, title,
-                       viewport()->center(_activity_geometry));
-
-  viewport()->addActivity(intent);
-}
-
-void BackgroundController::createProgressDialog()
-{
-  QRectF _view_rect;
-
-  _view_rect = QRectF(0.0, 0.0, 420.0, 128.0);
-
-  if (!d->mProgressDialog)
-    d->mProgressDialog = UI::ExtensionManager::instance()->activity(
-                           "progressdialogactivity");
-
-  if (!d->mProgressDialog || !viewport()) {
-    return;
-  }
-
-  d->mProgressDialog->setActivityAttribute("title", "Progress Dialog");
-  d->mProgressDialog->setActivityAttribute("data", QVariant());
-  d->mProgressDialog->createWindow(
-    _view_rect, "Downlading Image",
-    viewport()->center(_view_rect,
-                       UI::Space::kCenterOnViewportTop));
-
-  viewport()->addActivity(d->mProgressDialog);
+  UI::DesktopActivityPtr intent =
+          viewport()->createActivity("flikrsearchactivity", title,
+                                     viewport()->center(_activity_geometry),
+                                     _activity_geometry,
+                                     data);
+  intent->setController(viewport()->controller("classicbackdrop"));
 }
 
 void BackgroundController::saveSession(const QString &key,
@@ -636,8 +567,4 @@ void BackgroundController::PrivateBackgroundController::updateProgress(
   float progress)
 {
   QVariant progressVal = progress;
-
-  if (mProgressDialog) {
-    mProgressDialog->updateAttribute("progress", progress);
-  }
 }

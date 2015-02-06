@@ -154,17 +154,6 @@ public:
       */
   virtual QString controllerName() const;
 
-  /**
-      * @brief Method used to get the activity pointer by name
-      *
-      * @param name The idenfier name of the desktop activity
-      * @return DesktopActivityPtr Returns a Activity Pointer
-      */
-  virtual UI::DesktopActivityPtr activity(const QString &name,
-                                          const QRectF &geometry = QRectF(),
-                                          const QPointF &pos = QPoint(0.0, 0.0),
-                                          const QString &window_title = QString());
-
   virtual QString icon() const = 0;
 
   virtual QString label() const;

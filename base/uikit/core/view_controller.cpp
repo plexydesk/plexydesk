@@ -50,24 +50,6 @@ void ViewController::setControllerName(const QString &name)
 
 QString ViewController::controllerName() const { return d->mName; }
 
-DesktopActivityPtr ViewController::activity(const QString &name,
-    const QRectF &geometry,
-    const QPointF &pos,
-    const QString &window_title)
-{
-  DesktopActivityPtr intent = ExtensionManager::instance()->activity(name);
-
-  if (intent) {
-    intent->setController(ViewControllerPtr(this));
-    intent->createWindow(geometry, window_title, pos);
-  }
-
-  if (viewport()) {
-    viewport()->addActivity(intent);
-  }
-  return intent;
-}
-
 QString ViewController::label() const { return QString(); }
 
 void ViewController::configure(const QPointF &pos) { Q_UNUSED(pos) }

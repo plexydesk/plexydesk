@@ -91,7 +91,8 @@ void Space::addController(const QString &aName)
 
 UI::DesktopActivityPtr Space::createActivity(const QString &activity,
     const QString &title,
-    const QPointF &pos, const QRectF &rect,
+    const QPointF &pos,
+    const QRectF &rect,
     const QVariantMap &dataItem)
 {
   UI::DesktopActivityPtr intent =
@@ -108,7 +109,6 @@ UI::DesktopActivityPtr Space::createActivity(const QString &activity,
 
   addActivity(intent);
 
-  /// d->m_activity_map[activity] = intent;
   d->m_activity_list << intent;
 
   return intent;

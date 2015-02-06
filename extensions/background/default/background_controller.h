@@ -69,8 +69,6 @@ private Q_SLOTS:
 
   void onSearchFinished();
 
-  void onUpdateImageDownloadProgress(float progress);
-
   void onConfigureDone();
 
 private:
@@ -96,8 +94,6 @@ private:
 
   void createSearchActivity(const QString &activity, const QString &title,
                             const QVariantMap &data);
-
-  void createProgressDialog();
 
   void saveSession(const QString &key, const QVariant &value);
 
