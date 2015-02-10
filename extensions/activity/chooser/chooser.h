@@ -26,6 +26,7 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 #include <widget.h>
+#include <window.h>
 #include <abstractcellcomponent.h>
 
 using namespace UI;
@@ -42,7 +43,7 @@ public:
   void createWindow(const QRectF &window_geometry, const QString &window_title,
                     const QPointF &window_pos);
   QVariantMap result() const;
-  Widget *window() const;
+  Window *window() const;
 
 private Q_SLOTS:
   void onWidgetClosed(UI::Widget *widget);

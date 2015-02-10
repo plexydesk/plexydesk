@@ -41,7 +41,7 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  UI::Widget *mFrame;
+  UI::Window *mFrame;
   UI::ProgressBar *mProgressBar;
   UI::TableView *mTable;
   ImageCellAdaptor *mFactory;
@@ -65,7 +65,7 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_frame_geometry = QRectF(0.0, 0.0, 600.0, 480.0);
 
   // todo: invoke UI
-  d->mFrame = new UI::Widget();
+  d->mFrame = new UI::Window();
   updateContentGeometry(d->mFrame);
   setGeometry(d->m_frame_geometry);
 
@@ -100,7 +100,7 @@ QRectF PhotoSearchActivity::geometry() const { return d->m_frame_geometry; }
 
 QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
-Widget *PhotoSearchActivity::window() const { return d->mFrame; }
+Window *PhotoSearchActivity::window() const { return d->mFrame; }
 
 void PhotoSearchActivity::onWidgetClosed(UI::Widget *widget)
 {

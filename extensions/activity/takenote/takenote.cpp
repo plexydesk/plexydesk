@@ -32,7 +32,7 @@ public:
 
   ~PrivateTakeNote() {}
 
-  UI::Widget *mFrame;
+  UI::Window *mFrame;
   QGraphicsWidget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
@@ -56,7 +56,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
                                     const QPointF &window_pos)
 {
   // todo: invoke UI
-  d->mFrame = new UI::Widget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setVisible(true);
   setGeometry(window_geometry);
@@ -125,7 +125,7 @@ QVariantMap TakeNoteActivity::result() const
   return rv;
 }
 
-UI::Widget *TakeNoteActivity::window() const { return d->mFrame; }
+UI::Window *TakeNoteActivity::window() const { return d->mFrame; }
 
 void TakeNoteActivity::onWidgetClosed(UI::Widget *widget)
 {

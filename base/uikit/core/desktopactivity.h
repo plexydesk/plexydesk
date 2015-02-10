@@ -5,6 +5,7 @@
 #include <QGraphicsObject>
 
 #include <widget.h>
+#include <window.h>
 
 #include <plexydesk_ui_exports.h>
 
@@ -30,7 +31,7 @@ public:
                             const QString &window_title,
                             const QPointF &window_pos) = 0;
 
-  virtual Widget *window() const = 0;
+  virtual Window *window() const = 0;
 
   virtual void setActivityAttribute(const QString &name, const QVariant &data);
 
@@ -59,7 +60,7 @@ public:
   virtual Space *viewport() const;
 
   // virtual void cleanup() = 0;
-  virtual void cleanup() {};
+  virtual void cleanup() {}
 
 protected:
   virtual void updateAction();

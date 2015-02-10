@@ -22,6 +22,7 @@
 #include <QtCore>
 #include <plexy.h>
 
+#include <window.h>
 #include <datasource.h>
 #include <QtNetwork>
 #include <desktopactivity.h>
@@ -44,7 +45,7 @@ public:
 
   QVariantMap result() const;
 
-  Widget *window() const;
+  Window *window() const;
 
 private Q_SLOTS:
   void onWidgetClosed(UI::Widget *widget);

@@ -24,6 +24,7 @@
 
 #include <datasource.h>
 #include <QtNetwork>
+#include <window.h>
 #include <desktopactivity.h>
 
 class ProgressDialogActivity : public UI::DesktopActivity
@@ -42,7 +43,7 @@ public:
 
   virtual void updateAttribute(const QString &name, const QVariant &data);
 
-  UI::Widget *window() const;
+  UI::Window *window() const;
 
 private Q_SLOTS:
   void onWidgetClosed(UI::Widget *widget);

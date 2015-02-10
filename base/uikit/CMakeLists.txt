@@ -90,6 +90,7 @@ set(LIBRARY_SOURCE_FILES
     imagecache.cpp
     svgprovider.cpp
     plexyconfig.cpp
+    window.cpp
     workspace.cpp
     space.cpp
     ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
@@ -103,6 +104,7 @@ set(LIBRARY_HEADER_FILES
     themepackloader.h
     imagecache.h
     svgprovider.h
+    window.h
     plexyconfig.h
     widgets/button.h
     widgets/lineedit.h

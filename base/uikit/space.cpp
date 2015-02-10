@@ -13,6 +13,7 @@
 #include <QWeakPointer>
 #include <widget.h>
 
+#include "window.h"
 #include "workspace.h"
 
 namespace UI
@@ -109,7 +110,7 @@ UI::DesktopActivityPtr Space::createActivity(const QString &activity,
 
   addActivity(intent);
 
-  d->m_activity_list << intent;
+  //d->m_activity_list << intent;
 
   return intent;
 }
@@ -169,11 +170,11 @@ void Space::addActivity(UI::DesktopActivityPtr activity)
       // qWarning() << Q_FUNC_INFO << "Space already contains the activity";
       return;
     }
-    qDebug() << Q_FUNC_INFO << "Before Adding: " << d->m_activity_list.count();
+
     d->m_activity_list << activity;
 
-    qDebug() << Q_FUNC_INFO << "After Adding: " << d->m_activity_list.count();
     activity->setViewport(this);
+
     d->m_main_scene->addItem(activity->window());
   }
 }

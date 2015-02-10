@@ -27,7 +27,7 @@ public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
 
-  UI::Widget *m_main_window;
+  UI::Window *m_main_window;
 };
 
 SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
@@ -39,7 +39,7 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
                                         const QString &window_title,
                                         const QPointF &window_pos)
 {
-  d->m_main_window = new UI::Widget();
+  d->m_main_window = new UI::Window();
 
   d->m_main_window->setWindowFlag(UI::Widget::kRenderBackground);
   d->m_main_window->setWindowFlag(UI::Widget::kConvertToWindowType);
@@ -59,7 +59,7 @@ QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 void SpacePreviewActivity::updateAttribute(const QString &name,
     const QVariant &data) {}
 
-UI::Widget *SpacePreviewActivity::window() const { return d->m_main_window; }
+UI::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
 
 void SpacePreviewActivity::onWidgetClosed(UI::Widget *widget)
 {

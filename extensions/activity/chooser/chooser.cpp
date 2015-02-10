@@ -35,7 +35,7 @@ public:
   PrivateIconGrid() : mFrame(0) {}
   ~PrivateIconGrid() {}
 
-  UI::Widget *mFrame;
+  UI::Window *mFrame;
   UI::TableView *mTable;
   QRectF mBoundingRect;
   QString mSelection;
@@ -66,7 +66,7 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->mBoundingRect = window_geometry;
   d->m_auto_scale_frame = false;
 
-  d->mFrame = new UI::Widget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
   d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
@@ -124,7 +124,7 @@ QVariantMap IconGridActivity::result() const
   return d->m_activity_result;
 }
 
-Widget *IconGridActivity::window() const { return d->mFrame; }
+Window *IconGridActivity::window() const { return d->mFrame; }
 
 void IconGridActivity::onWidgetClosed(UI::Widget *widget)
 {

@@ -27,6 +27,7 @@
 #include <desktopactivity.h>
 #include <webservice.h>
 #include <abstractcellcomponent.h>
+#include <window.h>
 
 using namespace UI;
 class FlickrSearchActivity : public UI::DesktopActivity
@@ -45,7 +46,7 @@ public:
 
   QVariantMap result() const;
 
-  Widget *window() const;
+  Window *window() const;
 
   void cleanup();
 

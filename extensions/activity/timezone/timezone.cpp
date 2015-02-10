@@ -32,7 +32,7 @@ public:
     }
   }
 
-  UI::Widget *m_main_window;
+  UI::Window *m_main_window;
 };
 
 TimeZoneActivity::TimeZoneActivity(QGraphicsObject *object)
@@ -44,7 +44,7 @@ void TimeZoneActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
-  d->m_main_window = new UI::Widget();
+  d->m_main_window = new UI::Window();
 
   d->m_main_window->setWindowFlag(UI::Widget::kRenderBackground);
   d->m_main_window->setWindowFlag(UI::Widget::kConvertToWindowType);
@@ -64,7 +64,7 @@ QVariantMap TimeZoneActivity::result() const { return QVariantMap(); }
 void TimeZoneActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
-UI::Widget *TimeZoneActivity::window() const { return d->m_main_window; }
+UI::Window *TimeZoneActivity::window() const { return d->m_main_window; }
 
 void TimeZoneActivity::onWidgetClosed(UI::Widget *widget)
 {

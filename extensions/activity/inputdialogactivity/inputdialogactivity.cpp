@@ -44,7 +44,7 @@ public:
 
   StylePtr mStyle;
 
-  UI::Widget *mFrame;
+  UI::Window *mFrame;
   QGraphicsBlurEffect *mBackgroundEffect;
 
   /*Widgets*/
@@ -85,7 +85,7 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   }
 
   // todo: invoke UI
-  d->mFrame = new UI::Widget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
@@ -157,7 +157,7 @@ QRectF InputDialogActivityData::geometry() const { return d->mBoundingRect; }
 
 QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
-UI::Widget *InputDialogActivityData::window() const { return d->mFrame; }
+UI::Window *InputDialogActivityData::window() const { return d->mFrame; }
 
 void InputDialogActivityData::onWidgetClosed(UI::Widget *widget)
 {

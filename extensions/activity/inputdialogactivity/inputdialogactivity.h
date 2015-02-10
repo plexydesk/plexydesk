@@ -26,6 +26,7 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 #include <widget.h>
+#include <window.h>
 
 class InputDialogActivityData : public UI::DesktopActivity
 {
@@ -50,7 +51,7 @@ public:
 
   QVariantMap result() const;
 
-  UI::Widget *window() const;
+  UI::Window *window() const;
 
 private Q_SLOTS:
   void onWidgetClosed(UI::Widget *widget);

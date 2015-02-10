@@ -27,7 +27,7 @@ public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
 
-  UI::Widget *m_main_window;
+  UI::Window *m_main_window;
 };
 
 TemplateActivity::TemplateActivity(QGraphicsObject *object)
@@ -39,7 +39,7 @@ void TemplateActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
-  d->m_main_window = new UI::Widget();
+  d->m_main_window = new UI::Window();
 
   d->m_main_window->setWindowFlag(UI::Widget::kRenderBackground);
   d->m_main_window->setWindowFlag(UI::Widget::kConvertToWindowType);
@@ -59,7 +59,7 @@ QVariantMap TemplateActivity::result() const { return QVariantMap(); }
 void TemplateActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
-UI::Widget *TemplateActivity::window() const { return d->m_main_window; }
+UI::Window *TemplateActivity::window() const { return d->m_main_window; }
 
 void TemplateActivity::onWidgetClosed(UI::Widget *widget)
 {

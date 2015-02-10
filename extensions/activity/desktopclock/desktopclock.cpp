@@ -38,7 +38,7 @@ public:
 
   ~PrivateDesktopClock() {}
 
-  UI::Widget *m_main_window;
+  UI::Window *m_main_window;
   QGraphicsWidget *m_layout_widget;
   QGraphicsLinearLayout *m_main_layout;
   UI::ToolBar *m_tool_bar;
@@ -58,7 +58,7 @@ DesktopClockActivity::~DesktopClockActivity() { delete d; }
 void DesktopClockActivity::createFrameWindow(const QRectF &window_geometry,
     const QString &window_title)
 {
-  d->m_main_window = new UI::Widget();
+  d->m_main_window = new UI::Window();
   d->m_main_window->setGeometry(window_geometry);
 
   d->m_main_window->setWindowFlag(UI::Widget::kRenderBackground);
@@ -138,7 +138,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
-UI::Widget *DesktopClockActivity::window() const
+UI::Window *DesktopClockActivity::window() const
 {
   return d->m_main_window;
 }

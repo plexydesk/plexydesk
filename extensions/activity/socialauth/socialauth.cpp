@@ -27,7 +27,7 @@ public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
 
-  UI::Widget *mFrame;
+  UI::Window *mFrame;
 };
 
 SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
@@ -41,7 +41,7 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
 {
   setGeometry(window_geometry);
 
-  d->mFrame = new UI::Widget();
+  d->mFrame = new UI::Window();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
@@ -60,7 +60,7 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
-UI::Widget *SocialAuthActivity::window() const { return d->mFrame; }
+UI::Window *SocialAuthActivity::window() const { return d->mFrame; }
 
 void SocialAuthActivity::onWidgetClosed(UI::Widget *widget) {}
 

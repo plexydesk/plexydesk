@@ -33,7 +33,7 @@ public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
 
-  UI::Widget *mFrame;
+  UI::Window *mFrame;
   DateCellFactory *mFactory;
   UI::TableView *mTable;
   QRectF mBoundingRect;
@@ -54,7 +54,7 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
                                       const QString &window_title,
                                       const QPointF &window_pos)
 {
-  d->mFrame = new UI::Widget();
+  d->mFrame = new UI::Window();
 
   updateContentGeometry(d->mFrame);
   setGeometry(window_geometry);
@@ -83,7 +83,7 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
-UI::Widget *DatePickerActivity::window() const { return d->mFrame; }
+UI::Window *DatePickerActivity::window() const { return d->mFrame; }
 
 void DatePickerActivity::onWidgetClosed(UI::Widget *widget)
 {

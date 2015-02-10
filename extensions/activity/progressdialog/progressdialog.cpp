@@ -28,7 +28,7 @@ public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
 
-  UI::Widget *mFrame;
+  UI::Window *mFrame;
   UI::ProgressBar *m_progress_bar_widget;
   int mMax;
   int mMin;
@@ -51,7 +51,7 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  d->mFrame = new UI::Widget();
+  d->mFrame = new UI::Window();
   setGeometry(window_geometry);
 
   d->mFrame->setLabelName("Progress Dialog");
@@ -114,7 +114,7 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 }
 
-UI::Widget *ProgressDialogActivity::window() const { return d->mFrame; }
+UI::Window *ProgressDialogActivity::window() const { return d->mFrame; }
 
 void ProgressDialogActivity::onWidgetClosed(UI::Widget *widget)
 {
