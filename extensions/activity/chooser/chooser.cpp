@@ -67,22 +67,26 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->m_auto_scale_frame = false;
 
   d->mFrame = new UI::Window();
+
+  /*
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
   d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
   d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
+  */
 
   setGeometry(window_geometry);
 
   d->mTable = new UI::TableView(d->mFrame);
+
   d->mTable->setGeometry(window_geometry);
   d->m_action_delegate = new ChooserActionDelegate(d->mFrame);
-  d->mTable->setPos(0.0, 72.0);
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
   d->mTable->setModel(d->m_action_delegate);
   connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
           SLOT(onWidgetClosed(UI::Widget *)));
+
 
   if (hasAttribute("data")) {
     QVariantMap data = attributes()["data"].toMap();
@@ -105,6 +109,8 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
     setGeometry(_content_rect);
     d->mFrame->setGeometry(_content_rect);
   }
+
+  d->mFrame->setWindowContent(d->mTable);
 
   exec(window_pos);
 

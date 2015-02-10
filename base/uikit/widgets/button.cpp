@@ -107,6 +107,11 @@ void Button::setActionData(const QVariant &data) { d->mData = data; }
 
 QVariant Button::actionData() const { return d->mData; }
 
+void Button::setButtonPressCallback(std::function<void ()> handler)
+{
+
+}
+
 void Button::paintView(QPainter *painter, const QRectF &rect)
 {
   switch (d->mState) {

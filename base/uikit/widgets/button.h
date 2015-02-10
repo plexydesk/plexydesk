@@ -6,6 +6,8 @@
 #include <QGraphicsObject>
 #include <QGraphicsLayoutItem>
 
+#include <functional>
+
 #include <widget.h>
 #include <widget.h>
 #include <style.h>
@@ -38,6 +40,8 @@ public:
   void setActionData(const QVariant &data);
 
   QVariant actionData() const;
+
+  virtual void setButtonPressCallback(std::function<void ()> handler);
 
 Q_SIGNALS:
   void clicked();

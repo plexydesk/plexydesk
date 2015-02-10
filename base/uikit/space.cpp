@@ -63,7 +63,6 @@ Space::~Space()
 
 void Space::addController(const QString &aName)
 {
-
   if (d->m_current_controller_map.keys().contains(aName)) {
     return;
   }
@@ -108,9 +107,12 @@ UI::DesktopActivityPtr Space::createActivity(const QString &activity,
 
   intent->createWindow(rect, title, QPointF(pos.x(), pos.y()));
 
-  addActivity(intent);
+  if (intent->window()) {
+      intent->window()->setWindowTitle(title);
+      intent->window()->setWindowViewport(this);
+  }
 
-  //d->m_activity_list << intent;
+  addActivity(intent);
 
   return intent;
 }
