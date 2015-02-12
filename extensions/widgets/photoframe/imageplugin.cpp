@@ -63,7 +63,10 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   }
 
   foreach(const QString & str, photoList) {
+      UI::Window *window = new UI::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
+    window->setWindowContent(photoWidget);
+
     photoWidget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
     photoWidget->setWindowFlag(UI::Widget::kConvertToWindowType, true);
     photoWidget->setController(this);
@@ -82,7 +85,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
       photoWidget->setContentImage(image);
     }
 
-    insert(photoWidget);
+    insert(window);
   }
 }
 
@@ -164,19 +167,23 @@ UI::ActionList PhotoFrameController::actions() const
 }
 
 void PhotoFrameController::requestAction(const QString &actionName,
-    const QVariantMap &args)
+                                         const QVariantMap &args)
 {
-  if (actionName == tr("Photo")) {
-    PhotoWidget *photoWidget = new PhotoWidget();
-    photoWidget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UI::Widget::kConvertToWindowType, true);
-    photoWidget->setController(this);
-    photoWidget->setLabelName("Photo");
-    mPhotoList.append(photoWidget);
-    photoWidget->setPhotoURL(QString("ID:%1").arg(mPhotoList.count()));
+    if (actionName == tr("Photo")) {
+        UI::Window *window = new UI::Window();
+        PhotoWidget *photoWidget = new PhotoWidget();
 
-    insert(photoWidget);
-  }
+        window->setWindowContent(photoWidget);
+
+        photoWidget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
+        photoWidget->setWindowFlag(UI::Widget::kConvertToWindowType, true);
+        photoWidget->setController(this);
+        photoWidget->setLabelName("Photo");
+        mPhotoList.append(photoWidget);
+        photoWidget->setPhotoURL(QString("ID:%1").arg(mPhotoList.count()));
+
+        insert(window);
+    }
 }
 
 QString PhotoFrameController::icon() const

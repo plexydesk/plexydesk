@@ -109,15 +109,21 @@ void DesktopNotesControllerImpl::onDataUpdated(const QVariantMap &data) {}
 
 void DesktopNotesControllerImpl::createNoteUI()
 {
-  NoteWidget *note = new NoteWidget(0);
+  UI::Window *window = new UI::Window();
+  NoteWidget *note = new NoteWidget(window);
   note->resize(QSizeF(320, 320));
   note->setController(this);
-  insert(note);
+
+  window->setWindowContent(window);
+  insert(window);
 }
 
 void DesktopNotesControllerImpl::createReminderUI()
 {
-  ReminderWidget *reminder = new ReminderWidget(0);
+  UI::Window *window = new UI::Window();
+  ReminderWidget *reminder = new ReminderWidget(window);
   reminder->setController(this);
-  insert(reminder);
+
+  window->setWindowContent(reminder);
+  insert(window);
 }

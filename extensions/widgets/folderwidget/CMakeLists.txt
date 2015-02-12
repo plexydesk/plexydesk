@@ -1,6 +1,4 @@
 set(CMAKE_AUTOMOC ON)
-# photoframe widget already provides these
-#ADD_SUBDIRECTORY(img)
 
 SET(sourceFiles
     interface.cpp

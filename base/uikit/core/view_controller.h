@@ -138,7 +138,7 @@ public:
       */
   virtual bool removeWidget(Widget *widget);
 
-  virtual void insert(Widget *widget);
+  virtual void insert(Window *window);
 
   /**
       * @brief

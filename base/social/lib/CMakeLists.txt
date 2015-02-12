@@ -39,7 +39,7 @@ IF (NOT Qt5Core_FOUND)
     FIND_PACKAGE(Qt5Xml REQUIRED)
 
     SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS})
-    SET(CMAKE_CXX_FLAGS "-fPIC")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
     # TODO/FIXME: -DPLEXYCORE_STANDALONE is stuff to be resolved!
     MESSAGE(WARNING "\n\nBuilding lib as a minimal standalone library. Non-functional for plexydesk now!\n\n")

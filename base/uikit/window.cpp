@@ -4,6 +4,8 @@
 #include <QPointF>
 #include <QSizeF>
 
+#include <button.h>
+#include <windowbutton.h>
 #include <space.h>
 
 namespace UI {
@@ -17,6 +19,10 @@ public:
     Space *m_window_viewport;
     QString m_window_title;
 
+    WindowType m_window_type;
+
+    WindowButton *m_window_close_button;
+
     std::function<void (const QSizeF &size)> m_window_size_callback;
     std::function<void (const QPointF &size)> m_window_move_callback;
     std::function<void ()> m_window_close_callback;
@@ -27,6 +33,12 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
     setWindowFlag(Widget::kRenderBackground, true);
     setGeometry(QRectF(0, 0, 400, 400));
     setWindowTitle("Test");
+    d->m_window_type = kApplicationWindow;
+
+    d->m_window_close_button = new WindowButton(this);
+    d->m_window_close_button->setPos(5,5);
+    d->m_window_close_button->show();
+    d->m_window_close_button->setZValue(10000);
 }
 
 Window::~Window()
@@ -40,9 +52,15 @@ void Window::setWindowContent(Widget *widget)
         return;
 
     d->m_window_content = widget;
+    d->m_window_content->setParentItem(this);
+
     this->setGeometry(d->m_window_content->boundingRect());
 
-    d->m_window_content->setPos(0.0, 72.0);
+    if (d->m_window_type == kApplicationWindow) {
+       d->m_window_content->setPos(0.0, 72.0);
+    } else {
+       d->m_window_close_button->hide();
+    }
 }
 
 void Window::setWindowViewport(Space *space)
@@ -50,14 +68,31 @@ void Window::setWindowViewport(Space *space)
     d->m_window_viewport = space;
 }
 
-void Window::setWindowTitle(const QString &aTitle)
+void Window::setWindowTitle(const QString &a_window_title)
 {
-    d->m_window_title = aTitle;
+    d->m_window_title = a_window_title;
 }
 
 QString Window::windowTitlte() const
 {
     return d->m_window_title;
+}
+
+Window::WindowType Window::windowType()
+{
+    return d->m_window_type;
+}
+
+void Window::setWindowType(Window::WindowType a_window_type)
+{
+    d->m_window_type = a_window_type;
+
+    if (a_window_type == kApplicationWindow &&
+            d->m_window_content) {
+       d->m_window_content->setPos(0.0, 72.0);
+    } else {
+       d->m_window_close_button->hide();
+    }
 }
 
 void Window::setWindowResizeCallback(

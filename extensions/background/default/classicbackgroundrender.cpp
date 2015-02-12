@@ -8,7 +8,7 @@
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
     QGraphicsObject *parent,
     const QImage &background_image)
-  : UI::Widget(parent)
+  : UI::Window(parent)
 {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);

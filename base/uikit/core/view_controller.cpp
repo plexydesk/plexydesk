@@ -75,13 +75,13 @@ bool ViewController::removeWidget(Widget *widget)
   return false;
 }
 
-void ViewController::insert(Widget *widget)
+void ViewController::insert(Window *window)
 {
   if (!d->mViewport) {
     return;
   }
 
-  d->mViewport->addWidgetToView(widget);
+  d->mViewport->addWidgetToView(window);
 }
 
 void ViewController::onReady()

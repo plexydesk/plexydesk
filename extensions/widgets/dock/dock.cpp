@@ -44,22 +44,25 @@ class DockControllerImpl::PrivateDock
 {
 public:
   PrivateDock() {}
-
   ~PrivateDock() { qDebug() << Q_FUNC_INFO; }
 
 public:
-  QGraphicsLinearLayout *m_linear_layout;
+  Window *m_dock_window;
+  Window *m_preview_window;
+
   UI::ToolBar *m_navigation_dock;
+  UI::ModelView *m_preview_widget;
+
   QMap<QString, int> m_actions_map;
+
   QStringList m_controller_name_list;
+
   bool m_main_panel_is_hidden;
+
   UI::DesktopActivityPtr m_action_activity;
   UI::ImageButton *m_add_new_workspace_button_ptr;
   QSharedPointer<UI::DesktopActivityMenu> m_desktop_actions_popup;
   UI::ActionList m_supported_action_list;
-
-  //spaces preview
-  UI::ModelView *m_preview_widget;
 };
 
 DockControllerImpl::DockControllerImpl(QObject *object)
@@ -139,10 +142,19 @@ void DockControllerImpl::init()
   connect(viewport(), SIGNAL(controllerAdded(QString)), this,
           SLOT(onControllerAdded(QString)));
 
-  insert(d->m_navigation_dock);
-  insert(d->m_preview_widget);
+  d->m_dock_window = new UI::Window();
+  d->m_preview_window = new UI::Window();
+
+  d->m_dock_window->setWindowType(Window::kPanelWindow);
+
+  d->m_dock_window->setWindowContent(d->m_navigation_dock);
+  d->m_preview_window->setWindowContent(d->m_preview_widget);
+
+  insert(d->m_dock_window);
+  insert(d->m_preview_window);
 
   d->m_preview_widget->hide();
+  d->m_navigation_dock->show();
 }
 
 void DockControllerImpl::revokeSession(const QVariantMap &args) {}
@@ -153,14 +165,16 @@ void DockControllerImpl::setViewRect(const QRectF &rect)
     return;
   }
 
-  d->m_navigation_dock->setPos(
-    viewport()->center(d->m_navigation_dock->frameGeometry(),
+  d->m_dock_window->setPos(
+    viewport()->center(d->m_dock_window->geometry(),
                        Space::kCenterOnViewportLeft));
 
   d->m_preview_widget->setViewGeometry(
     QRectF(0.0, 0.0, 256, rect.height() - 24.0));
+  d->m_preview_window->setGeometry(
+    QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
-  d->m_preview_widget->setPos(
+  d->m_preview_window->setPos(
     rect.x() + d->m_navigation_dock->frameGeometry().width() + 5,
     rect.y() + 24.0);
 

@@ -28,6 +28,8 @@
 #define ADD_DIR "addDirectory"
 #define CREATE_DIR "createDirectory"
 
+#include <functional>
+
 DirectoryController::DirectoryController(QObject *object)
   : UI::ViewController(object)
 {
@@ -76,30 +78,31 @@ UI::ActionList DirectoryController::actions() const
 void DirectoryController::requestAction(const QString &actionName,
                                         const QVariantMap &args)
 {
-  if (actionName == CREATE_DIR) {
-    qDebug() << "Not supported yet";
-  } else if (actionName == tr("Folder")) {
-    qDebug() << Q_FUNC_INFO << "Request Add DIR";
-    UI::Widget *parent = new UI::Widget();
+    if (actionName == CREATE_DIR) {
+        qDebug() << "Not supported yet";
+    } else if (actionName == tr("Folder")) {
+        UI::Window *window = new UI::Window();
+        window->setWindowCloseCallback([&]() {
+            delete window;
+        });
 
-    parent->setWindowFlag(UI::Widget::kRenderBackground);
-    parent->setWindowFlag(UI::Widget::kConvertToWindowType);
-    parent->setWindowFlag(UI::Widget::kRenderDropShadow);
+        UI::Widget *parent = new UI::Widget();
 
-    IconWidgetView *view = new IconWidgetView(parent);
-    view->setPos(0.0, 64.0);
+        window->setWindowContent(parent);
 
-    view->setDirectoryPath(args["path"].toString());
-    view->setController(this);
+        IconWidgetView *view = new IconWidgetView(parent);
 
-    QFileInfo info(args["path"].toString());
+        view->setDirectoryPath(args["path"].toString());
+        view->setController(this);
 
-    parent->setLabelName(info.baseName());
+        QFileInfo info(args["path"].toString());
 
-    mFolderViewList.append(parent);
+        window->setWindowTitle(info.baseName());
 
-    insert(parent);
-  }
+        mFolderViewList.append(parent);
+
+        insert(window);
+    }
 }
 
 void DirectoryController::handleDropEvent(UI::Widget *widget,
