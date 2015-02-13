@@ -1,7 +1,5 @@
 #include "photowidget.h"
 
-#include <svgprovider.h>
-
 class PhotoWidget::PrivatePhotoFrame
 {
 public:
