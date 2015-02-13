@@ -41,9 +41,6 @@ public:
   void updateTime(const QVariantMap &data);
 
 private:
-  void preRenderClockImages();
-
-private:
   double mSecondValue;
   double mMinutesValue;
   double mHourValue;

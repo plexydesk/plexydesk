@@ -88,7 +88,6 @@ set(LIBRARY_SOURCE_FILES
     netwm.cpp
     themepackloader.cpp
     imagecache.cpp
-    svgprovider.cpp
     plexyconfig.cpp
     window.cpp
     workspace.cpp
@@ -103,7 +102,6 @@ set(LIBRARY_HEADER_FILES
     netwm_p.h
     themepackloader.h
     imagecache.h
-    svgprovider.h
     window.h
     plexyconfig.h
     widgets/button.h

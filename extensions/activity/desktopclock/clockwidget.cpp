@@ -31,7 +31,6 @@
 #include <QDateTime>
 #include <QDir>
 #include <plexyconfig.h>
-#include <svgprovider.h>
 
 ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
 {
@@ -45,25 +44,6 @@ ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setLabelName("Clock");
   updateNow();
-}
-
-void ClockWidget::preRenderClockImages()
-{
-  qDebug() << Q_FUNC_INFO << "Start";
-  UIKit::SvgProvider *svg = new UIKit::SvgProvider();
-
-  mClockBackFace = svg->get(QLatin1String("clock#ClockFace"));
-  mClockSecondHand = svg->get(QLatin1String("clock#SecondHand"));
-  mClockMinuteHand = svg->get(QLatin1String("clock#MinuteHand"));
-  mClockHourHand = svg->get(QLatin1String("clock#HourHand"));
-  mClockScrew = svg->get(QLatin1String("clock#HandCenterScrew"));
-  mClockGlass = svg->get(QLatin1String("clock#Glass"));
-
-  qDebug() << Q_FUNC_INFO << "End";
-
-  setGeometry(mClockBackFace.rect());
-
-  delete svg;
 }
 
 void ClockWidget::updateTime(const QVariantMap &data)

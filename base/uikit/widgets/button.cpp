@@ -1,10 +1,10 @@
 #include "button.h"
 
-#include <svgprovider.h>
 #include <widget.h>
 
 #include <QGraphicsSceneEvent>
 #include <QStyleOptionGraphicsItem>
+
 #include <extensionmanager.h>
 #include <themepackloader.h>
 

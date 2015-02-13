@@ -42,8 +42,6 @@ public Q_SLOTS:
   void updateNow();
 
 private:
-  void preRenderClockImages();
-
   double mSecondValue;
   double mMinutesValue;
   double mHourValue;
