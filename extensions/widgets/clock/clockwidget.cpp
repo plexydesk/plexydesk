@@ -33,7 +33,7 @@
 #include <plexyconfig.h>
 #include <svgprovider.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::Widget(parent)
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
 {
   setLabelName("Clock");
 }
@@ -41,7 +41,7 @@ ClockWidget::ClockWidget(QGraphicsObject *parent) : UI::Widget(parent)
 void ClockWidget::preRenderClockImages()
 {
   qDebug() << Q_FUNC_INFO << "Start";
-  UI::SvgProvider *svg = new UI::SvgProvider();
+  UIKit::SvgProvider *svg = new UIKit::SvgProvider();
 
   mClockBackFace = svg->get(QLatin1String("clock#ClockFace"));
   mClockSecondHand = svg->get(QLatin1String("clock#SecondHand"));

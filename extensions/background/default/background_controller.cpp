@@ -60,12 +60,12 @@ public:
 
   QString mCurrentMode;
 
-  UI::ActionList mActionList;
+  UIKit::ActionList mActionList;
   ClassicBackgroundRender *m_background_render_item;
 };
 
 BackgroundController::BackgroundController(QObject *object)
-  : UI::ViewController(object),
+  : UIKit::ViewController(object),
     d(new PrivateBackgroundController)
 {
   d->m_background_render_item = 0;
@@ -80,7 +80,7 @@ BackgroundController::~BackgroundController()
 void BackgroundController::init()
 {
   QString wallpaperPath = QDir::toNativeSeparators(
-                            UI::Config::getInstance()->prefix() +
+                            UIKit::Config::getInstance()->prefix() +
                             QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
   d->m_background_render_item = new ClassicBackgroundRender(
@@ -121,7 +121,7 @@ void BackgroundController::revokeSession(const QVariantMap &args)
   }
 }
 
-UI::ActionList BackgroundController::actions() const
+UIKit::ActionList BackgroundController::actions() const
 {
   return d->mActionList;
 }
@@ -220,7 +220,7 @@ void BackgroundController::setScaleMode(
   }
 }
 
-void BackgroundController::handleDropEvent(UI::Widget * /*widget*/,
+void BackgroundController::handleDropEvent(UIKit::Widget * /*widget*/,
     QDropEvent *event)
 {
   qDebug() << Q_FUNC_INFO;
@@ -230,7 +230,7 @@ void BackgroundController::handleDropEvent(UI::Widget * /*widget*/,
 
     if (!image.isNull()) {
       qDebug() << Q_FUNC_INFO << "Request Save Image Locally";
-      saveImageLocally(image, UI::Config::cacheDir("wallpaper"), true);
+      saveImageLocally(image, UIKit::Config::cacheDir("wallpaper"), true);
     }
     return;
   }
@@ -258,7 +258,7 @@ void BackgroundController::handleDropEvent(UI::Widget * /*widget*/,
 
       // todo FIX!
       if (viewport()) {
-        UI::Space *space = viewport();
+        UIKit::Space *space = viewport();
         if (space)
           space->updateSessionValue(controllerName(), "background",
                                     fileUrl.toString());
@@ -288,7 +288,7 @@ void BackgroundController::saveImageLocally(const QByteArray &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, UI::Config::cacheDir("wallpaper"),
+  imageSave->setData(data, UIKit::Config::cacheDir("wallpaper"),
                      saveLocally);
   imageSave->start();
 }
@@ -305,7 +305,7 @@ void BackgroundController::saveImageLocally(const QImage &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, UI::Config::cacheDir("wallpaper"),
+  imageSave->setData(data, UIKit::Config::cacheDir("wallpaper"),
                      saveLocally);
   imageSave->start();
 }
@@ -416,8 +416,8 @@ void BackgroundController::prepareRemoval()
 void BackgroundController::onModeActivityFinished()
 {
   if (sender()) {
-    UI::DesktopActivity *activity =
-      qobject_cast<UI::DesktopActivity *>(sender());
+    UIKit::DesktopActivity *activity =
+      qobject_cast<UIKit::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -433,8 +433,8 @@ void BackgroundController::onModeActivityFinished()
 void BackgroundController::onWallpaperActivityFinished()
 {
   if (sender()) {
-    UI::DesktopActivity *activity =
-      qobject_cast<UI::DesktopActivity *>(sender());
+    UIKit::DesktopActivity *activity =
+      qobject_cast<UIKit::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -448,8 +448,8 @@ void BackgroundController::onWallpaperActivityFinished()
 void BackgroundController::onSearchFinished()
 {
   if (sender()) {
-    UI::DesktopActivity *activity =
-      qobject_cast<UI::DesktopActivity *>(sender());
+    UIKit::DesktopActivity *activity =
+      qobject_cast<UIKit::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap resultData = activity->result();
@@ -462,8 +462,8 @@ void BackgroundController::onSearchFinished()
 void BackgroundController::onConfigureDone()
 {
   if (sender()) {
-    UI::DesktopActivity *activity =
-      qobject_cast<UI::DesktopActivity *>(sender());
+    UIKit::DesktopActivity *activity =
+      qobject_cast<UIKit::DesktopActivity *>(sender());
 
     if (activity) {
       QVariantMap result = activity->result();
@@ -495,7 +495,7 @@ void BackgroundController::createModeActivity(const QString &activity,
 
   QRectF _view_geometry(0.0, 0.0, 420.0, 192.0);
 
-  UI::DesktopActivityPtr intent = viewport()->createActivity(activity, title,
+  UIKit::DesktopActivityPtr intent = viewport()->createActivity(activity, title,
                              viewport()->center(_view_geometry),
                              _view_geometry,
                              data);
@@ -510,7 +510,7 @@ void BackgroundController::createWallpaperActivity(const QString &activity,
 
   QRectF _view_geometry(0.0, 0.0, 420.0, 192.0);
 
-  UI::DesktopActivityPtr intent =
+  UIKit::DesktopActivityPtr intent =
           viewport()->createActivity("photosearchactivity", title,
                                      viewport()->center(_view_geometry),
                                      _view_geometry,
@@ -526,7 +526,7 @@ void BackgroundController::createSearchActivity(const QString &activity,
 
   QRectF _activity_geometry(0.0, 0.0, 572, 480);
 
-  UI::DesktopActivityPtr intent =
+  UIKit::DesktopActivityPtr intent =
           viewport()->createActivity("flikrsearchactivity", title,
                                      viewport()->center(_activity_geometry),
                                      _activity_geometry,
@@ -537,7 +537,7 @@ void BackgroundController::createSearchActivity(const QString &activity,
 void BackgroundController::saveSession(const QString &key,
                                        const QVariant &value)
 {
-  UI::Space *view = viewport();
+  UIKit::Space *view = viewport();
 
   if (view) {
     view->updateSessionValue(controllerName(), key, value.toString());

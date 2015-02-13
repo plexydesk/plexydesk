@@ -25,7 +25,7 @@
 
 #include <svgprovider.h>
 
-namespace UI
+namespace UIKit
 {
 
 class SvgProvider::Private

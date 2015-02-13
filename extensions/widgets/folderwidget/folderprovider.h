@@ -6,7 +6,7 @@
 
 class FolderItem;
 
-class FolderProvider : public UI::TableModel
+class FolderProvider : public UIKit::TableModel
 {
   Q_OBJECT
 public:
@@ -15,7 +15,7 @@ public:
 
   virtual bool init();
 
-  QList<UI::TableViewItem *> componentList();
+  QList<UIKit::TableViewItem *> componentList();
 
   float margin() const;
 
@@ -25,12 +25,12 @@ public:
 
   virtual float rightMargin() const;
 
-  UI::Widget *loadWidgetControlllerByName(
+  UIKit::Widget *loadWidgetControlllerByName(
     const QString &controllerName) const;
 
-  UI::DataSourcePtr loadDataSourceEngine(const QString &engine);
+  UIKit::DataSourcePtr loadDataSourceEngine(const QString &engine);
 
-  UI::TableModel::TableRenderMode renderType() const;
+  UIKit::TableModel::TableRenderMode renderType() const;
 
   void setDirectoryPath(const QString &path);
 
@@ -43,7 +43,7 @@ public Q_SLOTS:
   void onLocationSourceUpdated(const QVariantMap &data);
 
 private:
-  QList<UI::TableViewItem *> mFolderList;
+  QList<UIKit::TableViewItem *> mFolderList;
 
   class FolderProviderPrivate;
   FolderProviderPrivate *const d;

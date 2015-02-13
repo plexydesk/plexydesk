@@ -26,7 +26,7 @@
 #include <themepackloader.h>
 #include "photowidget.h"
 
-class PhotoFrameController : public UI::ViewController
+class PhotoFrameController : public UIKit::ViewController
 {
   Q_OBJECT
 
@@ -38,13 +38,13 @@ public:
 
   virtual void revokeSession(const QVariantMap &args);
 
-  virtual void handleDropEvent(UI::Widget *widget, QDropEvent *event);
+  virtual void handleDropEvent(UIKit::Widget *widget, QDropEvent *event);
 
   virtual void setViewRect(const QRectF &rect);
 
-  bool removeWidget(UI::Widget *widget);
+  bool removeWidget(UIKit::Widget *widget);
 
-  UI::ActionList actions() const;
+  UIKit::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
@@ -56,7 +56,7 @@ private:
   PhotoWidget *mFrameParentitem;
   QList<PhotoWidget *> mPhotoList;
   QString mImageSource;
-  UI::ActionList m_supported_action_list;
+  UIKit::ActionList m_supported_action_list;
   QStringList m_current_url_list;
 };
 

@@ -29,16 +29,16 @@ public:
 
   QString getContentText(const QString &data) const;
 
-  UI::Style *mStyle;
+  UIKit::Style *mStyle;
   QString mReminderTitle;
   QString mStatusMessage;
   QPixmap mPixmap;
   QString mID;
   QPixmap mAvatar;
 
-  UI::Button *mButton;
-  UI::TextEditor *mTextEdit;
-  UI::Label *mLable;
+  UIKit::Button *mButton;
+  UIKit::TextEditor *mTextEdit;
+  UIKit::Label *mLable;
 
   QGraphicsWidget *mLayoutBase;
   QGraphicsWidget *mSubLayoutBase;
@@ -56,11 +56,11 @@ public:
 };
 
 ReminderWidget::ReminderWidget(QGraphicsObject *parent)
-  : UI::Widget(parent), d(new PrivateReminderWidget)
+  : UIKit::Widget(parent), d(new PrivateReminderWidget)
 {
   setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-  setWindowFlag(UI::Widget::kRenderDropShadow, true);
-  setWindowFlag(UI::Widget::kConvertToWindowType, true);
+  setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
+  setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
 
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mLayoutBase->setGeometry(this->boundingRect());
@@ -80,11 +80,11 @@ ReminderWidget::ReminderWidget(QGraphicsObject *parent)
   d->mSubLayout->setOrientation(Qt::Vertical);
   d->mSubLayout->setContentsMargins(64.0, 0.0, 0.0, 0.0);
 
-  d->mLable = new UI::Label(d->mSubLayoutBase);
+  d->mLable = new UIKit::Label(d->mSubLayoutBase);
   d->mLable->setLabel(QDateTime::currentDateTime().toString());
   d->mLable->setSize(QSizeF(this->boundingRect().width() - 64.0, 24));
   d->mLable->setLabelStyle(QColor(254, 254, 254, 128), QColor(0, 0, 0));
-  d->mTextEdit = new UI::TextEditor(d->mSubLayoutBase);
+  d->mTextEdit = new UIKit::TextEditor(d->mSubLayoutBase);
   d->mTextEdit->style(
     "border: 0; background: rgba(0,0,0,0); color: rgb(255, 255, 255)");
 
@@ -317,7 +317,7 @@ void ReminderWidget::onImageReady()
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UI::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UIKit::Config::cacheDir(), true);
     imageSave->setCrop(QRectF(100, 0.0, 64.0, boundingRect().height()));
     imageSave->start();
 

@@ -5,7 +5,7 @@
 #include <desktopactivity.h>
 #include <widget.h>
 
-namespace UI
+namespace UIKit
 {
 class Space;
 

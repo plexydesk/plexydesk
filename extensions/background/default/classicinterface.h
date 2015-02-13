@@ -25,17 +25,17 @@
 #include <controllerplugininterface.h>
 
 class ClassicBackdrop : public QObject,
-  public UI::ControllerPluginInterface
+  public UIKit::ControllerPluginInterface
 {
   Q_OBJECT
-  Q_INTERFACES(UI::ControllerPluginInterface)
+  Q_INTERFACES(UIKit::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.classicbackground")
 
 public:
   ClassicBackdrop(QObject *parent = 0);
   virtual ~ClassicBackdrop();
 
-  QSharedPointer<UI::ViewController> controller();
+  QSharedPointer<UIKit::ViewController> controller();
 };
 
 #endif

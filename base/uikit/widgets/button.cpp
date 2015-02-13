@@ -8,7 +8,7 @@
 #include <extensionmanager.h>
 #include <themepackloader.h>
 
-namespace UI
+namespace UIKit
 {
 
 class Button::PrivateButton
@@ -68,8 +68,8 @@ void Button::paintNormalButton(QPainter *painter, const QRectF &rect)
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (UI::Theme::instance()->defaultDesktopStyle()) {
-    UI::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
+  if (UIKit::Theme::instance()->defaultDesktopStyle()) {
+    UIKit::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
         painter);
   }
 }
@@ -82,15 +82,15 @@ void Button::paintSunkenButton(QPainter *painter, const QRectF &rect)
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderPressed;
 
-  if (UI::Theme::instance()->defaultDesktopStyle()) {
-    UI::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
+  if (UIKit::Theme::instance()->defaultDesktopStyle()) {
+    UIKit::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
         painter);
   }
 }
 
 StylePtr Button::style() const
 {
-  return UI::Theme::instance()->defaultDesktopStyle();
+  return UIKit::Theme::instance()->defaultDesktopStyle();
 }
 
 void Button::setSize(const QSize &size)

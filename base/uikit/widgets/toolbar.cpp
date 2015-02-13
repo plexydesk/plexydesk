@@ -7,7 +7,7 @@
 #include <tableview.h>
 #include <QGraphicsLinearLayout>
 
-namespace UI
+namespace UIKit
 {
 class ToolBar::PrivateToolBar
 {
@@ -57,7 +57,7 @@ void ToolBar::addAction(const QString &lable, const QString &icon,
   }
 
   button->setLable(lable);
-  button->setPixmap(UI::Theme::instance()->drawable(
+  button->setPixmap(UIKit::Theme::instance()->drawable(
                       icon + ".png", d->m_icon_resolution));
   button->setGeometry(QRectF(QPointF(), d->m_icon_size));
   button->setMinimumSize(d->m_icon_size);

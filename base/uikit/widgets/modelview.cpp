@@ -6,7 +6,7 @@
 
 #include <QScroller>
 
-namespace UI
+namespace UIKit
 {
 
 class ModelView::PrivateModelView

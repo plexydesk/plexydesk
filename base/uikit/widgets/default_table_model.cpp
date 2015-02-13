@@ -16,7 +16,7 @@ public:
 };
 
 DefaultTableModel::DefaultTableModel(QGraphicsObject *parent)
-  : UI::TableModel(parent), d(new PrivateTableDelegate)
+  : UIKit::TableModel(parent), d(new PrivateTableDelegate)
 {
   d->m_current_item_label_visibility = false;
   setCellSize(QSize(96, 96));

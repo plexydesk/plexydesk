@@ -26,9 +26,9 @@
 #include <QtNetwork>
 #include <style.h>
 
-using namespace UI;
+using namespace UIKit;
 
-class CocoaStyle : public UI::Style
+class CocoaStyle : public UIKit::Style
 {
 public:
   CocoaStyle();

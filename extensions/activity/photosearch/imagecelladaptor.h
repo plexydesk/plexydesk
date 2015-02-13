@@ -5,7 +5,7 @@
 #include <tableviewcellinterface.h>
 #include <webservice.h>
 
-using namespace UI;
+using namespace UIKit;
 
 class ImageCellAdaptor : public TableModel
 {

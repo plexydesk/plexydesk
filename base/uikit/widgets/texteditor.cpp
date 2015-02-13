@@ -14,7 +14,7 @@
 
 #include <widget.h>
 
-namespace UI
+namespace UIKit
 {
 
 class TextEditor::PrivateTextEditor
@@ -31,7 +31,7 @@ public:
 };
 
 TextEditor::TextEditor(QGraphicsObject *parent)
-  : UI::Widget(parent), d(new PrivateTextEditor)
+  : UIKit::Widget(parent), d(new PrivateTextEditor)
 {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
@@ -56,8 +56,8 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   d->mProxyWidget->setPos(0.0, 0.0);
 
   d->mTextScaleFactor = 1.0;
-  setWindowFlag(UI::Widget::kRenderDropShadow, false);
-  setWindowFlag(UI::Widget::kRenderBackground, false);
+  setWindowFlag(UIKit::Widget::kRenderDropShadow, false);
+  setWindowFlag(UIKit::Widget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
   connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(onTextUpdated()));

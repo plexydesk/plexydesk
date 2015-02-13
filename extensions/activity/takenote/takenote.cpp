@@ -32,19 +32,19 @@ public:
 
   ~PrivateTakeNote() {}
 
-  UI::Window *mFrame;
+  UIKit::Window *mFrame;
   QGraphicsWidget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
-  UI::ImageButton *mAddNoteBtn;
-  UI::ImageButton *mAddTaskBtn;
-  UI::ImageButton *mAddReminderBtn;
+  UIKit::ImageButton *mAddNoteBtn;
+  UIKit::ImageButton *mAddTaskBtn;
+  UIKit::ImageButton *mAddReminderBtn;
 
   QString mSelection;
 };
 
 TakeNoteActivity::TakeNoteActivity(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivateTakeNote)
+  : UIKit::DesktopActivity(object), d(new PrivateTakeNote)
 {
   d->mFrame = 0;
 }
@@ -56,7 +56,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
                                     const QPointF &window_pos)
 {
   // todo: invoke UI
-  d->mFrame = new UI::Window();
+  d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setVisible(true);
   setGeometry(window_geometry);
@@ -66,9 +66,9 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   if (hasAttribute("title")) {
   }
 
-  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
 
   d->mLayoutBase = new QGraphicsWidget(0);
   d->mLayoutBase->setParentItem(d->mFrame);
@@ -77,16 +77,16 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   d->mLayoutBase->setGeometry(this->geometry());
   d->mLayoutBase->moveBy(0.0, 64.0);
 
-  d->mAddNoteBtn = new UI::ImageButton(d->mLayoutBase);
-  d->mAddNoteBtn->setPixmap(UI::Theme::instance()->drawable(
+  d->mAddNoteBtn = new UIKit::ImageButton(d->mLayoutBase);
+  d->mAddNoteBtn->setPixmap(UIKit::Theme::instance()->drawable(
                               "pd_note_add_button_green.png", "hdpi"));
 
-  d->mAddTaskBtn = new UI::ImageButton(d->mLayoutBase);
-  d->mAddTaskBtn->setPixmap(UI::Theme::instance()->drawable(
+  d->mAddTaskBtn = new UIKit::ImageButton(d->mLayoutBase);
+  d->mAddTaskBtn->setPixmap(UIKit::Theme::instance()->drawable(
                               "pd_note_add_button_blue.png", "hdpi"));
 
-  d->mAddReminderBtn = new UI::ImageButton(d->mLayoutBase);
-  d->mAddReminderBtn->setPixmap(UI::Theme::instance()->drawable(
+  d->mAddReminderBtn = new UIKit::ImageButton(d->mLayoutBase);
+  d->mAddReminderBtn->setPixmap(UIKit::Theme::instance()->drawable(
                                   "pd_note_add_button_orange.png", "hdpi"));
 
   d->mLayout->addItem(d->mAddNoteBtn);
@@ -100,8 +100,8 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
   // todo: invoke UI
 
   d->mAddNoteBtn->setLable(QLatin1String("Note"));
@@ -125,9 +125,9 @@ QVariantMap TakeNoteActivity::result() const
   return rv;
 }
 
-UI::Window *TakeNoteActivity::window() const { return d->mFrame; }
+UIKit::Window *TakeNoteActivity::window() const { return d->mFrame; }
 
-void TakeNoteActivity::onWidgetClosed(UI::Widget *widget)
+void TakeNoteActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
@@ -137,8 +137,8 @@ void TakeNoteActivity::onHideAnimationFinished() { Q_EMIT finished(); }
 
 void TakeNoteActivity::onClicked()
 {
-  UI::ImageButton *button =
-    qobject_cast<UI::ImageButton *>(sender());
+  UIKit::ImageButton *button =
+    qobject_cast<UIKit::ImageButton *>(sender());
 
   if (button) {
     d->mSelection = button->label();

@@ -28,9 +28,9 @@
 #include <QtNetwork>
 #include <abstractcellcomponent.h>
 
-using namespace UI;
+using namespace UIKit;
 
-class DockControllerImpl : public UI::ViewController
+class DockControllerImpl : public UIKit::ViewController
 {
   Q_OBJECT
 
@@ -45,7 +45,7 @@ public:
 
   void setViewRect(const QRectF &rect);
 
-  UI::ActionList actions() const;
+  UIKit::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
@@ -88,7 +88,7 @@ private:
   class PrivateDock;
   PrivateDock *const d;
 
-  UI::DesktopActivityPtr createActivity(const QString &controllerName,
+  UIKit::DesktopActivityPtr createActivity(const QString &controllerName,
                                         const QString &activity,
                                         const QString &title,
                                         const QPoint &pos,

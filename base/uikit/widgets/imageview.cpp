@@ -7,7 +7,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <themepackloader.h>
 
-namespace UI
+namespace UIKit
 {
 class ImageView::PrivateImageView
 {

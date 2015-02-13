@@ -8,7 +8,7 @@ class QRectF;
 class QPointF;
 class QSizeF;
 
-namespace UI {
+namespace UIKit {
 class Space;
 
 class Window : public Widget

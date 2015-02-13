@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace UI
+namespace UIKit
 {
 class RangeWidget::PrivateRangeWidget
 {
@@ -24,11 +24,11 @@ public:
 };
 
 RangeWidget::RangeWidget(QGraphicsObject *parent)
-  : UI::Widget(parent), d(new PrivateRangeWidget)
+  : UIKit::Widget(parent), d(new PrivateRangeWidget)
 {
-  this->setWindowFlag(UI::Widget::kRenderBackground);
-  this->setWindowFlag(UI::Widget::kConvertToWindowType, false);
-  this->setWindowFlag(UI::Widget::kRenderDropShadow, false);
+  this->setWindowFlag(UIKit::Widget::kRenderBackground);
+  this->setWindowFlag(UIKit::Widget::kConvertToWindowType, false);
+  this->setWindowFlag(UIKit::Widget::kRenderDropShadow, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsSelectable, true);
 

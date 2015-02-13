@@ -31,7 +31,7 @@ public:
 };
 
 FolderItem::FolderItem(const QRectF &rect, QGraphicsItem *parent)
-  : UI::TableViewItem(rect, parent), d(new PrivateFolderItem)
+  : UIKit::TableViewItem(rect, parent), d(new PrivateFolderItem)
 {
   this->setCacheMode(DeviceCoordinateCache);
   d->mRect = rect;

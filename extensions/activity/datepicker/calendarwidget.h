@@ -3,7 +3,7 @@
 
 #include <widget.h>
 
-class CalendarWidget : public UI::Widget
+class CalendarWidget : public UIKit::Widget
 {
   Q_OBJECT
 

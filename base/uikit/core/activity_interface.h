@@ -3,7 +3,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 
 class DesktopActivity;
@@ -13,10 +13,10 @@ class DECL_UI_KIT_EXPORT ActivityInterface
 public:
   explicit ActivityInterface() {}
 
-  virtual QSharedPointer<UI::DesktopActivity> activity() = 0;
+  virtual QSharedPointer<UIKit::DesktopActivity> activity() = 0;
 };
 } // namespace PlexyDesk
 
-Q_DECLARE_INTERFACE(UI::ActivityInterface,
+Q_DECLARE_INTERFACE(UIKit::ActivityInterface,
                     "org.plexydesk.ActivityInterface")
 #endif // ACTIVITY_INTERFACE_H

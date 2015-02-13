@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UI::DataSource> HttpServerInterface::model()
+QSharedPointer<UIKit::DataSource> HttpServerInterface::model()
 {
-  QSharedPointer<UI::DataSource> obj =
-    QSharedPointer<UI::DataSource>(new HttpServerData(),
+  QSharedPointer<UIKit::DataSource> obj =
+    QSharedPointer<UIKit::DataSource>(new HttpServerData(),
                                    &QObject::deleteLater);
 
   return obj;

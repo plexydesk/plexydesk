@@ -24,10 +24,10 @@
 #include <dataplugininterface.h>
 #include <QtNetwork>
 
-class RestInterface : public QObject, public UI::DataPluginInterface
+class RestInterface : public QObject, public UIKit::DataPluginInterface
 {
   Q_OBJECT
-  Q_INTERFACES(UI::DataPluginInterface)
+  Q_INTERFACES(UIKit::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.restengine")
 
 public:
@@ -35,7 +35,7 @@ public:
   virtual ~RestInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UI::DataSource> model();
+  QSharedPointer<UIKit::DataSource> model();
 };
 
 #endif

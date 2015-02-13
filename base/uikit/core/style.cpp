@@ -20,7 +20,7 @@
 #include <QVariant>
 #include <style.h>
 
-namespace UI
+namespace UIKit
 {
 
 Style::Style() {}

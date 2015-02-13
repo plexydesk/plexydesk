@@ -23,7 +23,7 @@
 
 #include "scrollwidget.h"
 
-namespace UI
+namespace UIKit
 {
 
 class ScrollWidget::Private

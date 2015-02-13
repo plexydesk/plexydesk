@@ -35,8 +35,8 @@ public:
   PrivateIconGrid() : mFrame(0) {}
   ~PrivateIconGrid() {}
 
-  UI::Window *mFrame;
-  UI::TableView *mTable;
+  UIKit::Window *mFrame;
+  UIKit::TableView *mTable;
   QRectF mBoundingRect;
   QString mSelection;
 
@@ -47,7 +47,7 @@ public:
 };
 
 IconGridActivity::IconGridActivity(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivateIconGrid) {}
+  : UIKit::DesktopActivity(object), d(new PrivateIconGrid) {}
 
 IconGridActivity::~IconGridActivity()
 {
@@ -66,7 +66,7 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->mBoundingRect = window_geometry;
   d->m_auto_scale_frame = false;
 
-  d->mFrame = new UI::Window();
+  d->mFrame = new UIKit::Window();
 
   /*
   d->mFrame->setGeometry(window_geometry);
@@ -77,15 +77,15 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
 
   setGeometry(window_geometry);
 
-  d->mTable = new UI::TableView(d->mFrame);
+  d->mTable = new UIKit::TableView(d->mFrame);
 
   d->mTable->setGeometry(window_geometry);
   d->m_action_delegate = new ChooserActionDelegate(d->mFrame);
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
   d->mTable->setModel(d->m_action_delegate);
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
 
 
   if (hasAttribute("data")) {
@@ -93,7 +93,7 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
 
     foreach(const QVariant & var, data.keys()) {
       d->m_action_delegate->addDataItem(
-        var.toString(), UI::Theme::instance()->drawable(
+        var.toString(), UIKit::Theme::instance()->drawable(
           data[var.toString()].toString(), "hdpi"),
         false);
     }
@@ -132,7 +132,7 @@ QVariantMap IconGridActivity::result() const
 
 Window *IconGridActivity::window() const { return d->mFrame; }
 
-void IconGridActivity::onWidgetClosed(UI::Widget *widget)
+void IconGridActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discardActivity();
@@ -176,7 +176,7 @@ void IconGridActivity::onArgumentChanged()
     foreach(const QVariant & var, data.values()) {
       QVariantMap _item = var.toMap();
       d->m_action_delegate->addDataItem(_item["label"].toString(),
-                                        UI::Theme::instance()->drawable(
+                                        UIKit::Theme::instance()->drawable(
                                           _item["icon"].toString(), "hdpi"),
                                         false, _item);
     }

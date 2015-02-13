@@ -105,7 +105,7 @@
   * Label to display when the widget is in dock mode
   */
 
-namespace UI
+namespace UIKit
 {
 
 class Widget::PrivateAbstractDesktopWidget
@@ -162,39 +162,6 @@ void Widget::setLabelName(const QString &name) { d->m_widget_name = name; }
 
 QString Widget::label() const { return d->m_widget_name; }
 
-/*
-void Widget::setContentsRect(const QRectF &rect)
-{
-    d->m_content_geometry = rect;
-
-    prepareGeometryChange();
-    QPointF center = boundingRect().center();
-    QTransform mat = QTransform();
-    mat.translate(center.x(), center.y());
-    mat.translate(-center.x(), -center.y());
-    setTransform(mat);
-    resetMatrix();
-    update();
-    updateGeometry();
-}
-*/
-
-/*
-QRectF Widget::geometry() const
-{
-    return d->m_content_geometry;
-}
-*/
-
-QString Widget::uuid() const
-{
-  QString rv;
-
-  rv = QString(QCryptographicHash::hash((label().toLatin1()),
-                                        QCryptographicHash::Md5).toHex());
-
-  return rv;
-}
 
 StylePtr Widget::style() const
 {

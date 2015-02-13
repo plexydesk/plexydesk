@@ -3,7 +3,7 @@
 
 #include <abstractcellcomponent.h>
 
-class GridIcon : public UI::TableViewItem
+class GridIcon : public UIKit::TableViewItem
 {
   Q_OBJECT
 public:

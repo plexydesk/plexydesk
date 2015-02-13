@@ -16,7 +16,7 @@
 #include "window.h"
 #include "workspace.h"
 
-namespace UI
+namespace UIKit
 {
 
 typedef QWeakPointer<DesktopActivityMenu> ActivityPoupWeekPtr;
@@ -39,76 +39,76 @@ public:
 public:
   int mID;
   QString mName;
-  QRectF m_desktop_rect;
+  QRectF mDesktopRect;
   WorkSpace *mWorkSpace;
-  QGraphicsScene *m_main_scene;
-  QList<UI::DesktopActivityPtr> m_activity_list;
-  std::list<UI::Widget *> m_window_list;
-  QMap<QString, ViewControllerPtr> m_current_controller_map;
-  QList<ActivityPoupWeekPtr> m_activity_popup_list;
-  QList<ViewControllerPtr> m_controller_list;
+  QGraphicsScene *mMainScene;
+  QList<UIKit::DesktopActivityPtr> mActivityList;
+  std::list<UIKit::Widget *> mWindowList;
+  QMap<QString, ViewControllerPtr> mCurrentControllerMap;
+  QList<ActivityPoupWeekPtr> mActivityPopupList;
+  QList<ViewControllerPtr> mControllerList;
 };
 
-Space::Space(QObject *parent) : QObject(parent), d(new PrivateSpace)
+Space::Space(QObject *aParent) : QObject(aParent), mPrivImpl(new PrivateSpace)
 {
-  d->mWorkSpace = 0;
-  d->m_main_scene = 0;
+  mPrivImpl->mWorkSpace = 0;
+  mPrivImpl->mMainScene = 0;
 }
 
 Space::~Space()
 {
   clear();
-  delete d;
+  delete mPrivImpl;
 }
 
 void Space::addController(const QString &aName)
 {
-  if (d->m_current_controller_map.keys().contains(aName)) {
+  if (mPrivImpl->mCurrentControllerMap.keys().contains(aName)) {
     return;
   }
 
-  QSharedPointer<ViewController> controller_ptr =
-    (UI::ExtensionManager::instance()->controller(aName));
+  QSharedPointer<ViewController> controllerPtr =
+    (UIKit::ExtensionManager::instance()->controller(aName));
 
-  if (!controller_ptr) {
+  if (!controllerPtr) {
     qWarning() << Q_FUNC_INFO << "Error loading extension" << aName;
     return;
   }
 
-  d->m_current_controller_map[aName] = controller_ptr;
+  mPrivImpl->mCurrentControllerMap[aName] = controllerPtr;
 
-  controller_ptr->setViewport(this);
-  controller_ptr->setControllerName(aName);
+  controllerPtr->setViewport(this);
+  controllerPtr->setControllerName(aName);
 
-  controller_ptr->init();
+  controllerPtr->init();
 
-  d->createActionsFromController(this, controller_ptr);
+  mPrivImpl->createActionsFromController(this, controllerPtr);
 
   registerController(aName);
 
   Q_EMIT controllerAdded(aName);
 }
 
-UI::DesktopActivityPtr Space::createActivity(const QString &activity,
-    const QString &title,
-    const QPointF &pos,
-    const QRectF &rect,
-    const QVariantMap &dataItem)
+UIKit::DesktopActivityPtr Space::createActivity(const QString &aActivity,
+    const QString &aTitle,
+    const QPointF &aPos,
+    const QRectF &aRect,
+    const QVariantMap &aDataMap)
 {
-  UI::DesktopActivityPtr intent =
-    UI::ExtensionManager::instance()->activity(activity);
+  UIKit::DesktopActivityPtr intent =
+    UIKit::ExtensionManager::instance()->activity(aActivity);
 
   if (!intent) {
-    qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
-    return UI::DesktopActivityPtr();
+    qWarning() << Q_FUNC_INFO << "No such Activity: " << aActivity;
+    return UIKit::DesktopActivityPtr();
   }
 
-  intent->setActivityAttribute("data", QVariant(dataItem));
+  intent->setActivityAttribute("data", QVariant(aDataMap));
 
-  intent->createWindow(rect, title, QPointF(pos.x(), pos.y()));
+  intent->createWindow(aRect, aTitle, QPointF(aPos.x(), aPos.y()));
 
   if (intent->window()) {
-      intent->window()->setWindowTitle(title);
+      intent->window()->setWindowTitle(aTitle);
       intent->window()->setWindowViewport(this);
   }
 
@@ -124,14 +124,14 @@ void Space::updateSessionValue(const QString &aName,
     return;
   }
 
-  QuetzalKit::DataStore *_data_store = new QuetzalKit::DataStore(
-    d->sessionNameForController(aName), this);
+  QuetzalKit::DataStore *dataStore = new QuetzalKit::DataStore(
+    mPrivImpl->sessionNameForController(aName), this);
   QuetzalKit::DiskSyncEngine *engine =
-    new QuetzalKit::DiskSyncEngine(_data_store);
+    new QuetzalKit::DiskSyncEngine(dataStore);
 
-  _data_store->setSyncEngine(engine);
+  dataStore->setSyncEngine(engine);
 
-  QuetzalKit::SyncObject *_session_list_ptr = _data_store->begin("SessionData");
+  QuetzalKit::SyncObject *_session_list_ptr = dataStore->begin("SessionData");
 
   if (!_session_list_ptr) {
     return;
@@ -142,8 +142,8 @@ void Space::updateSessionValue(const QString &aName,
       _session_list_ptr->createNewObject("Session");
 
     _session_object_ptr->setObjectAttribute(aKey, aValue);
-    _data_store->insert(_session_object_ptr);
-    delete _data_store;
+    dataStore->insert(_session_object_ptr);
+    delete dataStore;
   } else {
     Q_FOREACH(QuetzalKit::SyncObject * _child_session_object,
               _session_list_ptr->childObjects()) {
@@ -151,48 +151,48 @@ void Space::updateSessionValue(const QString &aName,
         continue;
       }
       _child_session_object->setObjectAttribute(aKey, aValue);
-      _data_store->updateNode(_child_session_object);
+      dataStore->updateNode(_child_session_object);
     }
 
-    delete _data_store;
+    delete dataStore;
   }
 }
 
-void Space::addActivity(UI::DesktopActivityPtr activity)
+void Space::addActivity(UIKit::DesktopActivityPtr aActivity)
 {
-  if (!activity) {
+  if (!aActivity) {
     return;
   }
 
-  connect(activity.data(), SIGNAL(finished()), this,
+  connect(aActivity.data(), SIGNAL(finished()), this,
           SLOT(onActivityFinished()));
 
-  if (activity->window() && d->m_main_scene) {
-    if (d->m_activity_list.contains(activity)) {
+  if (aActivity->window() && mPrivImpl->mMainScene) {
+    if (mPrivImpl->mActivityList.contains(aActivity)) {
       // qWarning() << Q_FUNC_INFO << "Space already contains the activity";
       return;
     }
 
-    d->m_activity_list << activity;
+    mPrivImpl->mActivityList << aActivity;
 
-    activity->setViewport(this);
+    aActivity->setViewport(this);
 
-    d->m_main_scene->addItem(activity->window());
+    mPrivImpl->mMainScene->addItem(aActivity->window());
   }
 }
 
-void Space::addActivityPoupToView(QSharedPointer<DesktopActivityMenu> menu)
+void Space::addActivityPoupToView(QSharedPointer<DesktopActivityMenu> aMenu)
 {
-  d->m_activity_popup_list.append(menu.toWeakRef());
+  mPrivImpl->mActivityPopupList.append(aMenu.toWeakRef());
 }
 
-void Space::addWidgetToView(Widget *widget)
+void Space::addWidgetToView(Widget *aWidget)
 {
-  if (!widget) {
+  if (!aWidget) {
     return;
   }
 
-  if (!d->m_main_scene) {
+  if (!mPrivImpl->mMainScene) {
     qWarning() << Q_FUNC_INFO << "Scene not Set";
     return;
   }
@@ -201,50 +201,50 @@ void Space::addWidgetToView(Widget *widget)
   QPoint _widget_location;
 
   _widget_location.setX(_center_of_space_location.x() -
-                        widget->boundingRect().width() / 2);
+                        aWidget->boundingRect().width() / 2);
   _widget_location.setY(_center_of_space_location.y() -
-                        widget->boundingRect().height() / 2);
+                        aWidget->boundingRect().height() / 2);
 
-  d->m_main_scene->addItem(widget);
-  widget->setPos(_widget_location);
+  mPrivImpl->mMainScene->addItem(aWidget);
+  aWidget->setPos(_widget_location);
 
-  connect(widget, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(aWidget, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
 
-  widget->show();
+  aWidget->show();
 
-  if (widget->controller()) {
-    widget->controller()->setViewRect(d->m_desktop_rect);
+  if (aWidget->controller()) {
+    aWidget->controller()->setViewRect(mPrivImpl->mDesktopRect);
   }
 
-  d->m_window_list.push_front(widget);
+  mPrivImpl->mWindowList.push_front(aWidget);
 }
 
-void Space::onWidgetClosed(Widget *widget)
+void Space::onWidgetClosed(Widget *aWidget)
 {
   qDebug() << Q_FUNC_INFO << __LINE__;
-  if (!d->m_main_scene) {
+  if (!mPrivImpl->mMainScene) {
     return;
   }
 
-  if (!widget) {
+  if (!aWidget) {
     return;
   }
 
-  if (widget->controller()) {
-    if (widget->controller()->removeWidget(widget)) {
+  if (aWidget->controller()) {
+    if (aWidget->controller()->removeWidget(aWidget)) {
       return;
     }
   }
 
-  d->m_main_scene->removeItem(widget);
+  mPrivImpl->mMainScene->removeItem(aWidget);
 
-  qDebug() << Q_FUNC_INFO << "Before :" << d->m_window_list.size();
-  d->m_window_list.remove(widget);
-  qDebug() << Q_FUNC_INFO << "After:" << d->m_window_list.size();
+  qDebug() << Q_FUNC_INFO << "Before :" << mPrivImpl->mWindowList.size();
+  mPrivImpl->mWindowList.remove(aWidget);
+  qDebug() << Q_FUNC_INFO << "After:" << mPrivImpl->mWindowList.size();
 
-  if (widget) {
-    delete widget;
+  if (aWidget) {
+    delete aWidget;
   }
 }
 
@@ -261,24 +261,24 @@ void Space::onActivityFinished()
     }
 
     int i = 0;
-    foreach(DesktopActivityPtr _activity, d->m_activity_list) {
+    foreach(DesktopActivityPtr _activity, mPrivImpl->mActivityList) {
       if (_activity.data() == activity) {
         _activity.clear();
-        qDebug() << Q_FUNC_INFO << "Before :" << d->m_activity_list.count();
-        d->m_activity_list.removeAt(i);
-        d->m_activity_list.removeAll(_activity);
-        qDebug() << Q_FUNC_INFO << "After :" << d->m_activity_list.count();
+        qDebug() << Q_FUNC_INFO << "Before :" << mPrivImpl->mActivityList.count();
+        mPrivImpl->mActivityList.removeAt(i);
+        mPrivImpl->mActivityList.removeAll(_activity);
+        qDebug() << Q_FUNC_INFO << "After :" << mPrivImpl->mActivityList.count();
       }
       i++;
     }
   }
 }
 
-void Space::registerController(const QString &controllerName)
+void Space::registerController(const QString &aControllerName)
 {
-  qDebug() << Q_FUNC_INFO << "Controller :" << controllerName;
+  qDebug() << Q_FUNC_INFO << "Controller :" << aControllerName;
   QuetzalKit::DataStore *_data_store =
-    new QuetzalKit::DataStore(d->sessionNameForSpace(), this);
+    new QuetzalKit::DataStore(mPrivImpl->sessionNameForSpace(), this);
   QuetzalKit::DiskSyncEngine *_engine =
     new QuetzalKit::DiskSyncEngine(_data_store);
 
@@ -295,7 +295,7 @@ void Space::registerController(const QString &controllerName)
       continue;
     }
 
-    if (_child_object_ptr->attributeValue("name").toString() == controllerName) {
+    if (_child_object_ptr->attributeValue("name").toString() == aControllerName) {
       _has_controller = true;
     }
   }
@@ -304,7 +304,7 @@ void Space::registerController(const QString &controllerName)
     QuetzalKit::SyncObject *_controller_ptr =
       _session_list_ptr->createNewObject("Controller");
 
-    _controller_ptr->setObjectAttribute("name", controllerName);
+    _controller_ptr->setObjectAttribute("name", aControllerName);
     _data_store->insert(_controller_ptr);
   }
 
@@ -312,7 +312,7 @@ void Space::registerController(const QString &controllerName)
 
   // create a new data  Store to link it to this store.
   QuetzalKit::DataStore *_linked_sub_store = new QuetzalKit::DataStore(
-    d->sessionNameForController(controllerName), this);
+    mPrivImpl->sessionNameForController(aControllerName), this);
   _engine = new QuetzalKit::DiskSyncEngine(_linked_sub_store);
   _linked_sub_store->setSyncEngine(_engine);
 
@@ -343,8 +343,8 @@ void Space::registerController(const QString &controllerName)
     }
   }
 
-  if (controller(controllerName)) {
-    controller(controllerName)->revokeSession(_session_data);
+  if (controller(aControllerName)) {
+    controller(aControllerName)->revokeSession(_session_data);
   }
 
   delete _linked_sub_store;
@@ -394,7 +394,7 @@ void Space::PrivateSpace::initSessionStorage(Space *space)
   delete _data_store;
 }
 
-Space::PrivateSpace::~PrivateSpace() { m_current_controller_map.clear(); }
+Space::PrivateSpace::~PrivateSpace() { mCurrentControllerMap.clear(); }
 
 QString Space::PrivateSpace::sessionNameForSpace()
 {
@@ -408,75 +408,75 @@ QString Space::PrivateSpace::sessionNameForController(
            controllerName);
 }
 
-QString Space::sessionName() const { return d->sessionNameForSpace(); }
+QString Space::sessionName() const { return mPrivImpl->sessionNameForSpace(); }
 
 void Space::clear()
 {
   int i = 0;
-  foreach(DesktopActivityPtr _activity, d->m_activity_list) {
+  foreach(DesktopActivityPtr _activity, mPrivImpl->mActivityList) {
     qDebug() << Q_FUNC_INFO << "Remove Activity: ";
     if (_activity) {
       Widget *_widget = _activity->window();
       if (_widget) {
-        if (d->m_main_scene->items().contains(_widget)) {
-          d->m_main_scene->removeItem(_widget);
+        if (mPrivImpl->mMainScene->items().contains(_widget)) {
+          mPrivImpl->mMainScene->removeItem(_widget);
           delete _widget;
         }
       }
 
-      d->m_activity_list.removeAt(i);
+      mPrivImpl->mActivityList.removeAt(i);
     }
     i++;
   }
 
   // delete owner widgets
-  for (Widget *_widget : d->m_window_list) {
+  for (Widget *_widget : mPrivImpl->mWindowList) {
     if (_widget) {
-      if (d->m_main_scene->items().contains(_widget)) {
-        d->m_main_scene->removeItem(_widget);
+      if (mPrivImpl->mMainScene->items().contains(_widget)) {
+        mPrivImpl->mMainScene->removeItem(_widget);
       }
       delete _widget;
       qDebug() << Q_FUNC_INFO << "Widget Deleted: OK";
     }
   }
 
-  d->m_window_list.clear();
+  mPrivImpl->mWindowList.clear();
   // remove spaces which belongs to the space.
-  foreach(const QString & _key, d->m_current_controller_map.keys()) {
+  foreach(const QString & _key, mPrivImpl->mCurrentControllerMap.keys()) {
     qDebug() << Q_FUNC_INFO << _key;
-    ViewControllerPtr _controller_ptr = d->m_current_controller_map[_key];
+    ViewControllerPtr _controller_ptr = mPrivImpl->mCurrentControllerMap[_key];
     _controller_ptr->prepareRemoval();
     qDebug() << Q_FUNC_INFO
-             << "Before Removal:" << d->m_current_controller_map.count();
-    d->m_current_controller_map.remove(_key);
+             << "Before Removal:" << mPrivImpl->mCurrentControllerMap.count();
+    mPrivImpl->mCurrentControllerMap.remove(_key);
     qDebug() << Q_FUNC_INFO
-             << "After Removal:" << d->m_current_controller_map.count();
+             << "After Removal:" << mPrivImpl->mCurrentControllerMap.count();
   }
 
-  d->m_current_controller_map.clear();
+  mPrivImpl->mCurrentControllerMap.clear();
 }
 
 void Space::dismissActivityPopup()
 {
-  Q_FOREACH(ActivityPoupWeekPtr popup, d->m_activity_popup_list) {
+  Q_FOREACH(ActivityPoupWeekPtr popup, mPrivImpl->mActivityPopupList) {
     QSharedPointer<DesktopActivityMenu> _strong_ptr = popup.toStrongRef();
     if (_strong_ptr) {
       _strong_ptr->hide();
     } else {
       // activity is deleted so we remove from the list
       qDebug() << Q_FUNC_INFO << "Error no ref";
-      d->m_activity_popup_list.removeAll(popup);
+      mPrivImpl->mActivityPopupList.removeAll(popup);
     }
   }
 }
 
 QPointF Space::mousePointerPos() const
 {
-  if (!d->mWorkSpace) {
+  if (!mPrivImpl->mWorkSpace) {
     return QCursor::pos();
   }
 
-  QGraphicsView *_view_parent = qobject_cast<QGraphicsView *>(d->mWorkSpace);
+  QGraphicsView *_view_parent = qobject_cast<QGraphicsView *>(mPrivImpl->mWorkSpace);
 
   if (!_view_parent) {
     return QCursor::pos();
@@ -485,33 +485,33 @@ QPointF Space::mousePointerPos() const
   return _view_parent->mapToScene(QCursor::pos());
 }
 
-QPointF Space::center(const QRectF &viewGeometry,
-                      const ViewportLocation &loc) const
+QPointF Space::center(const QRectF &aViewGeometry,
+                      const ViewportLocation &aLocation) const
 {
   QPointF _rv;
   float _x_location;
   float _y_location;
 
-  switch (loc) {
+  switch (aLocation) {
   case kCenterOnViewport:
-    _y_location = (geometry().height() / 2) - (viewGeometry.height() / 2);
-    _x_location = (geometry().width() / 2) - (viewGeometry.width() / 2);
+    _y_location = (geometry().height() / 2) - (aViewGeometry.height() / 2);
+    _x_location = (geometry().width() / 2) - (aViewGeometry.width() / 2);
     break;
   case kCenterOnViewportLeft:
-    _y_location = (geometry().height() / 2) - (viewGeometry.height() / 2);
+    _y_location = (geometry().height() / 2) - (aViewGeometry.height() / 2);
     _x_location = (geometry().topLeft().x());
     break;
   case kCenterOnViewportRight:
-    _y_location = (geometry().height() / 2) - (viewGeometry.height() / 2);
-    _x_location = (geometry().width() - (viewGeometry.width()));
+    _y_location = (geometry().height() / 2) - (aViewGeometry.height() / 2);
+    _x_location = (geometry().width() - (aViewGeometry.width()));
     break;
   case kCenterOnViewportTop:
     _y_location = (0.0);
-    _x_location = ((geometry().width() / 2) - (viewGeometry.width() / 2));
+    _x_location = ((geometry().width() / 2) - (aViewGeometry.width() / 2));
     break;
   case kCenterOnViewportBottom:
-    _y_location = (geometry().height() - (viewGeometry.height()));
-    _x_location = ((geometry().width() / 2) - (viewGeometry.width() / 2));
+    _y_location = (geometry().height() - (aViewGeometry.height()));
+    _x_location = ((geometry().width() / 2) - (aViewGeometry.width() / 2));
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Error : Unknown Viewprot Location Type:";
@@ -526,31 +526,31 @@ QPointF Space::center(const QRectF &viewGeometry,
 
 ViewControllerPtr Space::controller(const QString &aName)
 {
-  if (!d->m_current_controller_map.keys().contains(aName)) {
+  if (!mPrivImpl->mCurrentControllerMap.keys().contains(aName)) {
     return ViewControllerPtr();
   }
 
-  return d->m_current_controller_map[aName];
+  return mPrivImpl->mCurrentControllerMap[aName];
 }
 
-QStringList Space::getSessionControllers() const
+QStringList Space::currentControllerList() const
 {
-  return d->m_current_controller_map.keys();
+  return mPrivImpl->mCurrentControllerMap.keys();
 }
 
-void Space::setName(const QString &aName) { d->mName = aName; }
+void Space::setName(const QString &aName) { mPrivImpl->mName = aName; }
 
-QString Space::name() const { return d->mName; }
+QString Space::name() const { return mPrivImpl->mName; }
 
-void Space::setId(int aId) { d->mID = aId; }
+void Space::setId(int aId) { mPrivImpl->mID = aId; }
 
-int Space::id() const { return d->mID; }
+int Space::id() const { return mPrivImpl->mID; }
 
 void Space::setGeometry(const QRectF &aRealRect)
 {
-  d->m_desktop_rect = aRealRect;
+  mPrivImpl->mDesktopRect = aRealRect;
 
-  foreach(DesktopActivityPtr _activity, d->m_activity_list) {
+  foreach(DesktopActivityPtr _activity, mPrivImpl->mActivityList) {
     if (_activity && _activity->window()) {
       QPointF _activity_pos = _activity->window()->pos();
 
@@ -561,30 +561,30 @@ void Space::setGeometry(const QRectF &aRealRect)
     }
   }
 
-  foreach(const QString & _key, d->m_current_controller_map.keys()) {
-    ViewControllerPtr _controller_ptr = d->m_current_controller_map[_key];
-    _controller_ptr->setViewRect(d->m_desktop_rect);
+  foreach(const QString & _key, mPrivImpl->mCurrentControllerMap.keys()) {
+    ViewControllerPtr _controller_ptr = mPrivImpl->mCurrentControllerMap[_key];
+    _controller_ptr->setViewRect(mPrivImpl->mDesktopRect);
   }
 }
 
-QObject *Space::workspace() { return d->mWorkSpace; }
+QObject *Space::workspace() { return mPrivImpl->mWorkSpace; }
 
-void Space::setWorkspace(WorkSpace *aWorkspace) { d->mWorkSpace = aWorkspace; }
+void Space::setWorkspace(WorkSpace *aWorkspace) { mPrivImpl->mWorkSpace = aWorkspace; }
 
-void Space::restoreSession() { d->initSessionStorage(this); }
+void Space::restoreSession() { mPrivImpl->initSessionStorage(this); }
 
 void Space::setScene(QGraphicsScene *aScenePtr)
 {
-  d->m_main_scene = aScenePtr;
+  mPrivImpl->mMainScene = aScenePtr;
 }
 
-QRectF Space::geometry() const { return d->m_desktop_rect; }
+QRectF Space::geometry() const { return mPrivImpl->mDesktopRect; }
 
 void Space::handleDropEvent(QDropEvent *event,
                             const QPointF &local_event_location)
 {
-  if (d->m_main_scene) {
-    QList<QGraphicsItem *> items = d->m_main_scene->items(local_event_location);
+  if (mPrivImpl->mMainScene) {
+    QList<QGraphicsItem *> items = mPrivImpl->mMainScene->items(local_event_location);
 
     Q_FOREACH(QGraphicsItem * item, items) {
       QGraphicsObject *itemObject = item->toGraphicsObject();

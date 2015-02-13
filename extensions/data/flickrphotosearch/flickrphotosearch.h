@@ -26,7 +26,7 @@
 #include <QtNetwork>
 #include <webservice.h>
 
-class FlickrPhotoSearchData : public UI::DataSource
+class FlickrPhotoSearchData : public UIKit::DataSource
 {
   Q_OBJECT
 

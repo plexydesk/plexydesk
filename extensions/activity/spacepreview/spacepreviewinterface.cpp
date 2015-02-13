@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UI::DesktopActivity> SpacePreviewInterface::activity()
+QSharedPointer<UIKit::DesktopActivity> SpacePreviewInterface::activity()
 {
-  QSharedPointer<UI::DesktopActivity> obj =
-    QSharedPointer<UI::DesktopActivity>(new SpacePreviewActivity(),
+  QSharedPointer<UIKit::DesktopActivity> obj =
+    QSharedPointer<UIKit::DesktopActivity>(new SpacePreviewActivity(),
                                         &QObject::deleteLater);
 
   return obj;

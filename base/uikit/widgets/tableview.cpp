@@ -28,7 +28,7 @@
 #include <QDebug>
 #include <themepackloader.h>
 
-namespace UI
+namespace UIKit
 {
 
 class TableView::PrivateTableView
@@ -116,8 +116,8 @@ void TableView::setModel(TableModel *iface)
   }
 
   connect(iface, SIGNAL(cleared()), this, SLOT(onClear()));
-  connect(iface, SIGNAL(add(UI::TableViewItem *)), this,
-          SLOT(onAddViewItem(UI::TableViewItem *)));
+  connect(iface, SIGNAL(add(UIKit::TableViewItem *)), this,
+          SLOT(onAddViewItem(UIKit::TableViewItem *)));
 
   if (iface) {
     iface->init();
@@ -227,7 +227,7 @@ void TableView::onItemClick(TableViewItem *component)
   qDebug() << Q_FUNC_INFO << " Activated :";
 }
 
-void TableView::onAddViewItem(UI::TableViewItem *item)
+void TableView::onAddViewItem(UIKit::TableViewItem *item)
 {
   if (!d->m_table_delegate_ptr) {
     return;

@@ -4,7 +4,7 @@
 #include <QTimer>
 #include <workspace.h>
 
-namespace UI
+namespace UIKit
 {
 
 class DesktopActivityMenu::PrivateActivityPopup
@@ -26,7 +26,7 @@ DesktopActivityMenu::DesktopActivityMenu(QObject *parent)
   d->m_current_visibility = false;
 }
 
-UI::DesktopActivityMenu::~DesktopActivityMenu()
+UIKit::DesktopActivityMenu::~DesktopActivityMenu()
 {
   qDebug() << Q_FUNC_INFO;
   delete d;

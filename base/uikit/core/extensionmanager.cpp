@@ -27,7 +27,7 @@
 #include "controllerplugininterface.h"
 #include "activity_interface.h"
 
-namespace UI
+namespace UIKit
 {
 ExtensionManager *ExtensionManager::mInstance = 0;
 

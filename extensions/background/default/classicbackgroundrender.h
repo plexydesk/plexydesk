@@ -8,7 +8,7 @@
 #include <widget.h>
 #include <window.h>
 
-class ClassicBackgroundRender : public UI::Window
+class ClassicBackgroundRender : public UIKit::Window
 {
   Q_OBJECT
 public:

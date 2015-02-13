@@ -3,7 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-using namespace UI;
+using namespace UIKit;
 
 class ChooserActionDelegate : public TableModel
 {

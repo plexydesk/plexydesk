@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UI::DesktopActivity> PhotoSearchInterface::activity()
+QSharedPointer<UIKit::DesktopActivity> PhotoSearchInterface::activity()
 {
-  QSharedPointer<UI::DesktopActivity> obj =
-    QSharedPointer<UI::DesktopActivity>(new PhotoSearchActivity(),
+  QSharedPointer<UIKit::DesktopActivity> obj =
+    QSharedPointer<UIKit::DesktopActivity>(new PhotoSearchActivity(),
                                         &QObject::deleteLater);
 
   return obj;

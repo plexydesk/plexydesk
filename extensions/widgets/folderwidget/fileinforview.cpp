@@ -51,20 +51,20 @@ public:
 
   // action buttons.
   QGraphicsWidget *mLayoutBase;
-  UI::Button *mDeleteButton;
-  UI::Button *mRenameButton;
-  UI::WindowButton *mWindowButton;
+  UIKit::Button *mDeleteButton;
+  UIKit::Button *mRenameButton;
+  UIKit::WindowButton *mWindowButton;
   // UI::LineEdit *mRnameField;
   QLineEdit *mLineEdit;
   QGraphicsProxyWidget *mLineEditProxy;
-  UI::Style *mStyle;
+  UIKit::Style *mStyle;
 };
 
 FileInforView::FileInforView(QGraphicsObject *parent)
-  : UI::Widget(parent), d(new PrivateFileInforView)
+  : UIKit::Widget(parent), d(new PrivateFileInforView)
 {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setWindowFlag(UI::Widget::kRenderDropShadow, false);
+  this->setWindowFlag(UIKit::Widget::kRenderDropShadow, false);
 
   d->mSlideAnimation = new QPropertyAnimation(this, "pos");
   d->mSlideAnimation->setDuration(500);
@@ -75,7 +75,7 @@ FileInforView::FileInforView(QGraphicsObject *parent)
   d->mGridLayout = new QGraphicsGridLayout(d->mLayoutBase);
 
   /* Window button */
-  d->mWindowButton = new UI::WindowButton(this);
+  d->mWindowButton = new UIKit::WindowButton(this);
   // d->mWindowButton->setPos(rect.width() -
   // (d->mWindowButton->boundingRect().width() + 10.0), 10.0);
   d->mWindowButton->show();
@@ -83,13 +83,13 @@ FileInforView::FileInforView(QGraphicsObject *parent)
           SLOT(onCloseButtonClicked()));
 
   /* Delete Button */
-  d->mDeleteButton = new UI::Button(d->mLayoutBase);
+  d->mDeleteButton = new UIKit::Button(d->mLayoutBase);
   d->mDeleteButton->setLabel(tr("Trash"));
   d->mDeleteButton->setSize(QSize(100, 25));
   d->mGridLayout->addItem(d->mDeleteButton, 0, 0);
 
   /* Rename Button */
-  d->mRenameButton = new UI::Button(d->mLayoutBase);
+  d->mRenameButton = new UIKit::Button(d->mLayoutBase);
   d->mRenameButton->setLabel(tr("Rename"));
   d->mRenameButton->setSize(QSize(100, 25));
   d->mGridLayout->addItem(d->mRenameButton, 0, 1);
@@ -161,7 +161,7 @@ void FileInforView::paintView(QPainter *painter, const QRectF &rect)
 {
   painter->fillRect(rect, QColor(236, 236, 236));
 
-  UI::StyleFeatures feature;
+  UIKit::StyleFeatures feature;
   feature.geometry = QRectF(rect.topRight().x(), rect.topRight().y(),
                             rect.topLeft().x(), rect.topLeft().y());
 

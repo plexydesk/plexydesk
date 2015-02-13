@@ -25,17 +25,17 @@
 #include <controllerplugininterface.h>
 
 class DesktopNotesInterface : public QObject,
-  public UI::ControllerPluginInterface
+  public UIKit::ControllerPluginInterface
 {
   Q_OBJECT
-  Q_INTERFACES(UI::ControllerPluginInterface)
+  Q_INTERFACES(UIKit::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.desktopnotes")
 
 public:
   virtual ~DesktopNotesInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UI::ViewController> controller();
+  QSharedPointer<UIKit::ViewController> controller();
 };
 
 #endif

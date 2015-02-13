@@ -26,7 +26,7 @@
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 
-namespace UI
+namespace UIKit
 {
  /*
   * @brief The Base Class for All types of Desktop Widgets.
@@ -68,7 +68,6 @@ public:
 
   virtual void setLabelName(const QString &name);
   virtual QString label() const;
-  virtual QString uuid() const;
 
   virtual StylePtr style() const;
 

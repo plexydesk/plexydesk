@@ -33,7 +33,7 @@ public:
 };
 
 FlickrPhotoSearchData::FlickrPhotoSearchData(QObject *object)
-  : UI::DataSource(object), d(new PrivateFlickrPhotoSearch) {}
+  : UIKit::DataSource(object), d(new PrivateFlickrPhotoSearch) {}
 
 void FlickrPhotoSearchData::init() {}
 

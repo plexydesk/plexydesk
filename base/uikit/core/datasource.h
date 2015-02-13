@@ -88,7 +88,7 @@ operation.
 \param args The argument to be passed to the data source, The data source should
 define the protocol to be used.
 **/
-namespace UI
+namespace UIKit
 {
 class DECL_UI_KIT_EXPORT DataSource : public QObject
 {

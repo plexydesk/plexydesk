@@ -24,17 +24,17 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class IconGridInterface : public QObject, public UI::ActivityInterface
+class IconGridInterface : public QObject, public UIKit::ActivityInterface
 {
   Q_OBJECT
-  Q_INTERFACES(UI::ActivityInterface)
+  Q_INTERFACES(UIKit::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.icongrid")
 
 public:
   virtual ~IconGridInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UI::DesktopActivity> activity();
+  QSharedPointer<UIKit::DesktopActivity> activity();
 };
 
 #endif

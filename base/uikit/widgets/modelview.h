@@ -6,7 +6,7 @@
 
 #include <functional>
 
-namespace UI
+namespace UIKit
 {
 
 class ModelView : public Widget

@@ -30,7 +30,7 @@ public:
 };
 
 HttpServerData::HttpServerData(QObject *object)
-  : UI::DataSource(object), d(new PrivateHttpServer)
+  : UIKit::DataSource(object), d(new PrivateHttpServer)
 {
   startTimer(1000);
 }

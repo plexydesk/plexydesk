@@ -25,7 +25,7 @@
 
 #include <imagecache.h>
 
-namespace UI
+namespace UIKit
 {
 
 class ImageCache::Private

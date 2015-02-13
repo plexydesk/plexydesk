@@ -41,16 +41,16 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  UI::Window *mFrame;
-  UI::ProgressBar *mProgressBar;
-  UI::TableView *mTable;
+  UIKit::Window *mFrame;
+  UIKit::ProgressBar *mProgressBar;
+  UIKit::TableView *mTable;
   ImageCellAdaptor *mFactory;
   QRectF m_frame_geometry;
   QVariantMap mResult;
 };
 
 PhotoSearchActivity::PhotoSearchActivity(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivatePhotoSearch) {}
+  : UIKit::DesktopActivity(object), d(new PrivatePhotoSearch) {}
 
 PhotoSearchActivity::~PhotoSearchActivity()
 {
@@ -65,18 +65,18 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_frame_geometry = QRectF(0.0, 0.0, 600.0, 480.0);
 
   // todo: invoke UI
-  d->mFrame = new UI::Window();
+  d->mFrame = new UIKit::Window();
   updateContentGeometry(d->mFrame);
   setGeometry(d->m_frame_geometry);
 
   d->mFrame->setLabelName("WallPaper");
 
-  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
 
   // table
-  d->mTable = new UI::TableView(d->mFrame);
+  d->mTable = new UIKit::TableView(d->mFrame);
 
   d->mFactory = new ImageCellAdaptor(d->mFrame);
 
@@ -86,8 +86,8 @@ void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
   connect(d->mFactory, SIGNAL(completed(int)), this,
           SLOT(onProgressValue(int)));
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
@@ -102,7 +102,7 @@ QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
 Window *PhotoSearchActivity::window() const { return d->mFrame; }
 
-void PhotoSearchActivity::onWidgetClosed(UI::Widget *widget)
+void PhotoSearchActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;
@@ -168,7 +168,7 @@ void PhotoSearchActivity::locateLocalFiles() const
   pathList << url;
 #endif
 
-  pathList << UI::Config::cacheDir("wallpaper");
+  pathList << UIKit::Config::cacheDir("wallpaper");
 
   d->mFactory->addPathList(pathList);
 }

@@ -31,7 +31,7 @@
 #include <desktopactivity.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 /**
     * @brief PlexyDesk Plugin Manager Class
@@ -103,7 +103,7 @@ public:
       * @param name
       * @return DesktopActivityPtr
       */
-  UI::DesktopActivityPtr activity(const QString &name);
+  UIKit::DesktopActivityPtr activity(const QString &name);
   /**
       * @brief
       *

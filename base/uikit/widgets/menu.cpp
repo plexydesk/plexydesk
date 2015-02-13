@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QTimer>
 
-namespace UI
+namespace UIKit
 {
 
 class Menu::PrivateMenu
@@ -27,7 +27,7 @@ Menu::Menu(QObject *parent) : QObject(parent), d(new PrivateMenu)
   d->m_current_visibility = false;
 }
 
-UI::Menu::~Menu()
+UIKit::Menu::~Menu()
 {
   qDebug() << Q_FUNC_INFO;
   delete d;

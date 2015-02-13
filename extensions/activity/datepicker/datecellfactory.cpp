@@ -17,7 +17,7 @@ public:
 };
 
 DateCellFactory::DateCellFactory(QGraphicsObject *parent)
-  : UI::TableModel(parent), d(new PrivateDateCellFactory)
+  : UIKit::TableModel(parent), d(new PrivateDateCellFactory)
 {
   /*
   for (int i = 0 ; i < 10; i++) {
@@ -96,7 +96,7 @@ void DateCellFactory::setHeaderMode(bool mode) { d->mHeaderMode = mode; }
 
 void DateCellFactory::setCellSize(const QSize &size) { d->mCellSize = size; }
 
-UI::TableViewItem *DateCellFactory::itemAt(int i)
+UIKit::TableViewItem *DateCellFactory::itemAt(int i)
 {
   qDebug() << Q_FUNC_INFO << d->mListItems.count();
 

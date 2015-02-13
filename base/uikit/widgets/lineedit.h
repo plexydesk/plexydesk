@@ -9,7 +9,7 @@
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
 
-namespace UI
+namespace UIKit
 {
 class DECL_UI_KIT_EXPORT LineEdit : public Widget
 {

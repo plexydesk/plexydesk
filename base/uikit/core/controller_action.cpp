@@ -1,6 +1,6 @@
 #include "controller_action.h"
 
-namespace UI
+namespace UIKit
 {
 
 class ControllerAction::PrivateControllerAction
@@ -18,7 +18,7 @@ public:
 
 ControllerAction::ControllerAction() : d(new PrivateControllerAction) {}
 
-UI::ControllerAction::~ControllerAction() { delete d; }
+UIKit::ControllerAction::~ControllerAction() { delete d; }
 
 std::string ControllerAction::name() const { return d->m_action_name; }
 

@@ -28,8 +28,8 @@
 #include <desktopactivity.h>
 #include <abstractcellcomponent.h>
 
-using namespace UI;
-class PhotoSearchActivity : public UI::DesktopActivity
+using namespace UIKit;
+class PhotoSearchActivity : public UIKit::DesktopActivity
 {
   Q_OBJECT
 
@@ -48,7 +48,7 @@ public:
   Window *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Widget *widget);
+  void onWidgetClosed(UIKit::Widget *widget);
 
   void onHideAnimationFinished();
 

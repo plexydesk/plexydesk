@@ -3,7 +3,7 @@
 
 #include <abstractcellcomponent.h>
 
-class DateCell : public UI::TableViewItem
+class DateCell : public UIKit::TableViewItem
 {
   Q_OBJECT
 public:

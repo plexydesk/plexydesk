@@ -3,7 +3,7 @@
 
 #include <abstractcellcomponent.h>
 
-class ImageCell : public UI::TableViewItem
+class ImageCell : public UIKit::TableViewItem
 {
   Q_OBJECT
 public:

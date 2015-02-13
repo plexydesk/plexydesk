@@ -19,7 +19,7 @@
 
 #include "tableviewcellinterface.h"
 
-namespace UI
+namespace UIKit
 {
 
 TableModel::TableModel(QObject *parent) : QObject(parent) {}

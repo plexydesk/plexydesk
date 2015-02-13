@@ -35,16 +35,16 @@ public:
 
   QString getContentText(const QString &data) const;
 
-  UI::Style *mStyle;
+  UIKit::Style *mStyle;
   QString mNoteTitle;
   QString mStatusMessage;
   QPixmap mPixmap;
   QString mID;
   QPixmap mAvatar;
-  UI::Button *mButton;
-  UI::TextEditor *mTextEdit;
-  UI::Label *mLable;
-  UI::ImageButton *mCloseButton;
+  UIKit::Button *mButton;
+  UIKit::TextEditor *mTextEdit;
+  UIKit::Label *mLable;
+  UIKit::ImageButton *mCloseButton;
   QGraphicsWidget *mLayoutBase;
   QGraphicsWidget *mSubLayoutBase;
   QGraphicsLinearLayout *mMainVerticleLayout;
@@ -55,13 +55,13 @@ public:
   QuetzalKit::SyncObject *mNoteListObject; // contains the list of Notes.
   QuetzalKit::SyncObject *mCurrentNoteObject;
   QuetzalKit::SyncObject *getNoteObject();
-  UI::ToolBar *mToolBar;
-  UI::DesktopActivityPtr m_calendar_activity_dialog;
+  UIKit::ToolBar *mToolBar;
+  UIKit::DesktopActivityPtr m_calendar_activity_dialog;
 };
 
 void NoteWidget::createToolBar()
 {
-  d->mToolBar = new UI::ToolBar(d->mSubLayoutBase);
+  d->mToolBar = new UIKit::ToolBar(d->mSubLayoutBase);
   d->mToolBar->addAction("contact", "pd_add_contact_icon", false);
   d->mToolBar->addAction("list", "pd_list_icon", false);
   d->mToolBar->addAction("date", "pd_calendar_icon", false);
@@ -74,11 +74,11 @@ void NoteWidget::createToolBar()
 }
 
 NoteWidget::NoteWidget(QGraphicsObject *parent)
-  : UI::Widget(parent), d(new PrivateNoteWidget)
+  : UIKit::Widget(parent), d(new PrivateNoteWidget)
 {
-  setWindowFlag(UI::Widget::kRenderDropShadow, true);
-  setWindowFlag(UI::Widget::kConvertToWindowType, true);
-  setWindowFlag(UI::Widget::kRenderBackground, true);
+  setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
+  setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
+  setWindowFlag(UIKit::Widget::kRenderBackground, true);
 
 
   d->mLayoutBase = new QGraphicsWidget(this);
@@ -99,7 +99,7 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
   connect(d->mToolBar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 
-  d->mTextEdit = new UI::TextEditor(d->mSubLayoutBase);
+  d->mTextEdit = new UIKit::TextEditor(d->mSubLayoutBase);
   d->mTextEdit->style(
     "border: 0; background: rgba(255,255,255,255); color: #4E4945");
 
@@ -109,9 +109,9 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
   d->mTextEdit->setPlaceholderText("Title :");
   d->mMainVerticleLayout->addItem(d->mSubLayoutBase);
 
-  d->mCloseButton = new UI::ImageButton(this);
+  d->mCloseButton = new UIKit::ImageButton(this);
   d->mCloseButton->setPixmap(
-    UI::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
+    UIKit::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
   d->mCloseButton->setSize(QSize(16, 16));
   d->mCloseButton->hide();
   d->mCloseButton->setBackgroundColor(Qt::white);
@@ -257,7 +257,7 @@ void NoteWidget::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget)
 {
-  UI::Widget::paint(painter, option, widget);
+  UIKit::Widget::paint(painter, option, widget);
   painter->save();
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
   painter->drawPixmap(
@@ -331,7 +331,7 @@ void NoteWidget::onDocuemntTitleAvailable(const QString &title)
   this->setTitle(title);
 }
 
-UI::DesktopActivityPtr NoteWidget::showCalendar(
+UIKit::DesktopActivityPtr NoteWidget::showCalendar(
   const QString &activity, const QString &title,
   const QVariantMap &dataItem)
 {
@@ -340,7 +340,7 @@ UI::DesktopActivityPtr NoteWidget::showCalendar(
   }
 
   d->m_calendar_activity_dialog =
-    UI::ExtensionManager::instance()->activity(activity);
+    UIKit::ExtensionManager::instance()->activity(activity);
 
   if (!d->m_calendar_activity_dialog) {
     qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
@@ -372,7 +372,7 @@ void NoteWidget::onToolBarAction(const QString &action)
       return;
     }
 
-    UI::DesktopActivityPtr activity =
+    UIKit::DesktopActivityPtr activity =
       this->showCalendar("datepickeractivity", "Date/Time", QVariantMap());
 
     if (activity) {
@@ -465,7 +465,7 @@ void NoteWidget::onImageReady()
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UI::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UIKit::Config::cacheDir(), true);
     imageSave->setCrop(QRectF(0.0, 0.0, 300.0, 300.0));
     imageSave->start();
 
@@ -519,8 +519,8 @@ void NoteWidget::onDatePickerDone()
 {
   qDebug() << Q_FUNC_INFO;
   if (sender()) {
-    UI::DesktopActivity *activity =
-      qobject_cast<UI::DesktopActivity *>(sender());
+    UIKit::DesktopActivity *activity =
+      qobject_cast<UIKit::DesktopActivity *>(sender());
     if (activity) {
       qDebug() << Q_FUNC_INFO << activity->result();
       if (activity->window()) {
@@ -553,8 +553,8 @@ QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject()
 void NoteWidget::onActivityClosed()
 {
   if (sender()) {
-    UI::DesktopActivity *activity =
-      qobject_cast<UI::DesktopActivity *>(sender());
+    UIKit::DesktopActivity *activity =
+      qobject_cast<UIKit::DesktopActivity *>(sender());
 
     if (activity) {
       if (activity->window()) {

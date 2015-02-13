@@ -25,7 +25,7 @@
 #include <QPainter>
 #include <QObject>
 
-namespace UI
+namespace UIKit
 {
 
 class DECL_UI_KIT_EXPORT Style
@@ -44,5 +44,5 @@ public:
 };
 }
 
-typedef QSharedPointer<UI::Style> StylePtr;
+typedef QSharedPointer<UIKit::Style> StylePtr;
 #endif // STYLE_H

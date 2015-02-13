@@ -6,7 +6,7 @@
 #include "view_controller.h"
 #include <space.h>
 
-namespace UI
+namespace UIKit
 {
 
 class DesktopActivity::PrivateDesktopActivity

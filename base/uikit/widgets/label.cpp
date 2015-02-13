@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QTextOption>
 
-namespace UI
+namespace UIKit
 {
 
 class Label::PrivateLabel

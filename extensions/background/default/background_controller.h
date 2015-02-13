@@ -28,7 +28,7 @@
 // self
 #include "classicbackgroundrender.h"
 
-class BackgroundController : public UI::ViewController
+class BackgroundController : public UIKit::ViewController
 {
   Q_OBJECT
 
@@ -41,11 +41,11 @@ public:
 
   void revokeSession(const QVariantMap &args);
 
-  UI::ActionList actions() const;
+  UIKit::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &data);
 
-  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
+  void handleDropEvent(UIKit::Widget *widget, QDropEvent *event);
 
   void setViewRect(const QRectF &rect);
 

@@ -2,7 +2,7 @@
 #include <extensionmanager.h>
 #include <QDebug>
 
-namespace UI
+namespace UIKit
 {
 
 class ViewController::PrivateViewControllerPlugin

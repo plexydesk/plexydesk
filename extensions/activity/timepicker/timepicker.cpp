@@ -29,7 +29,7 @@ public:
 };
 
 TimePickerActivity::TimePickerActivity(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivateTimePicker) {}
+  : UIKit::DesktopActivity(object), d(new PrivateTimePicker) {}
 
 TimePickerActivity::~TimePickerActivity() { delete d; }
 
@@ -44,8 +44,8 @@ QRectF TimePickerActivity::geometry() const { return QRectF(); }
 
 QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
 
-UI::Window *TimePickerActivity::window() const { return 0; }
+UIKit::Window *TimePickerActivity::window() const { return 0; }
 
-void TimePickerActivity::onWidgetClosed(UI::Widget *widget) {}
+void TimePickerActivity::onWidgetClosed(UIKit::Widget *widget) {}
 
 void TimePickerActivity::onHideAnimationFinished() {}

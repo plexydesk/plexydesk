@@ -31,7 +31,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-namespace UI
+namespace UIKit
 {
 
 class Config::Private

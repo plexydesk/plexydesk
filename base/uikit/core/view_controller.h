@@ -46,7 +46,7 @@ action.
 \returns A list of action label supported by the widget  plugin
 */
 
-namespace UI
+namespace UIKit
 {
 class Widget;
 typedef QList<QAction *> ActionList;

@@ -25,9 +25,9 @@
 #include <workspace.h>
 #include <view_controller.h>
 
-using namespace UI;
+using namespace UIKit;
 
-class DesktopManager : public UI::WorkSpace
+class DesktopManager : public UIKit::WorkSpace
 {
   Q_OBJECT
 public:

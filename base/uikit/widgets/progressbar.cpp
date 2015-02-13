@@ -9,7 +9,7 @@
 #include <QVariantAnimation>
 #include <themepackloader.h>
 
-namespace UI
+namespace UIKit
 {
 
 class ProgressBar::PrivateProgressBar
@@ -138,8 +138,8 @@ void ProgressBar::paint(QPainter *painter,
   features.render_state = StyleFeatures::kRenderBackground;
   features.geometry = option->exposedRect;
 
-  if (UI::Theme::style()) {
-    UI::Theme::style()->draw("linear_progress_bar", features, painter);
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("linear_progress_bar", features, painter);
   }
 
   float percentage = (d->mValue / d->mMaxValue) * 100;
@@ -151,8 +151,8 @@ void ProgressBar::paint(QPainter *painter,
 
   progressFeatures.render_state = StyleFeatures::kRenderForground;
 
-  if (UI::Theme::style()) {
-    UI::Theme::style()->draw("linear_progress_bar", progressFeatures,
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("linear_progress_bar", progressFeatures,
                              painter);
   }
 

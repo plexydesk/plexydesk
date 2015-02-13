@@ -24,7 +24,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-namespace UI
+namespace UIKit
 {
 
 class WindowButton::PrivateWindowButton
@@ -70,8 +70,8 @@ void WindowButton::paintNormalButton(QPainter *painter, const QRectF &rect)
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (UI::Theme::style()) {
-    UI::Theme::style()->draw("window_button", feature, painter);
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("window_button", feature, painter);
   }
 }
 
@@ -81,8 +81,8 @@ void WindowButton::paintSunkenButton(QPainter *painter, const QRectF &rect)
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderRaised;
 
-  if (UI::Theme::style()) {
-    UI::Theme::style()->draw("window_button", feature, painter);
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("window_button", feature, painter);
   }
 }
 }

@@ -13,7 +13,7 @@
 #include <imagebutton.h>
 #include <syncobject.h>
 
-namespace UI
+namespace UIKit
 {
 class WorkSpace::PrivateWorkSpace
 {

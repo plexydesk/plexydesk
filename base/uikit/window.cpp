@@ -8,7 +8,7 @@
 #include <windowbutton.h>
 #include <space.h>
 
-namespace UI {
+namespace UIKit {
 class Window::PrivateWindow {
 public:
     PrivateWindow() :  m_window_content(0){}

@@ -5,10 +5,10 @@
 #include <widget.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 
-class DECL_UI_KIT_EXPORT TextEditor : public UI::Widget
+class DECL_UI_KIT_EXPORT TextEditor : public UIKit::Widget
 {
   Q_OBJECT
 public:

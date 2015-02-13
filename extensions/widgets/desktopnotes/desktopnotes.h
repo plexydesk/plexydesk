@@ -27,7 +27,7 @@
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl : public UI::ViewController
+class DesktopNotesControllerImpl : public UIKit::ViewController
 {
   Q_OBJECT
 
@@ -41,11 +41,11 @@ public:
 
   void setViewRect(const QRectF &rect);
 
-  UI::ActionList actions() const;
+  UIKit::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
-  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
+  void handleDropEvent(UIKit::Widget *widget, QDropEvent *event);
 
   QString icon() const;
 

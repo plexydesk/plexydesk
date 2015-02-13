@@ -38,7 +38,7 @@ public:
 };
 
 Clock::Clock(QObject *parent)
-  : UI::ViewController(parent), d(new PrivateClockController)
+  : UIKit::ViewController(parent), d(new PrivateClockController)
 {
   clock = 0;
 }
@@ -80,7 +80,7 @@ void Clock::setViewRect(const QRectF &rect)
   }
 }
 
-bool Clock::removeWidget(UI::Widget *widget)
+bool Clock::removeWidget(UIKit::Widget *widget)
 {
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
@@ -105,7 +105,7 @@ bool Clock::removeWidget(UI::Widget *widget)
   return 1;
 }
 
-UI::ActionList Clock::actions() const { return m_supported_action_list; }
+UIKit::ActionList Clock::actions() const { return m_supported_action_list; }
 
 void Clock::requestAction(const QString &actionName, const QVariantMap &args)
 {
@@ -116,8 +116,8 @@ void Clock::requestAction(const QString &actionName, const QVariantMap &args)
   if (actionName == tr("Clock")) {
     QRectF _view_geomeetry(0.0, 0.0, 260.0, 512.0);
 
-    UI::DesktopActivityPtr _clock_activity =
-      UI::ExtensionManager::instance()->activity("desktopclock");
+    UIKit::DesktopActivityPtr _clock_activity =
+      UIKit::ExtensionManager::instance()->activity("desktopclock");
 
     _clock_activity->createWindow(_view_geomeetry, "Montreal",
                                   viewport()->center(_view_geomeetry));

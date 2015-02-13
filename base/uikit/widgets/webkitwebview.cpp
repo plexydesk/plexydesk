@@ -4,7 +4,7 @@
 #include <QWebInspector>
 #include <QNetworkCookieJar>
 
-namespace UI
+namespace UIKit
 {
 
 class WebKitWebView::PrivateWebKitWebView
@@ -18,7 +18,7 @@ public:
 };
 
 WebKitWebView::WebKitWebView(QGraphicsObject *parent)
-  : UI::Widget(parent), d(new PrivateWebKitWebView)
+  : UIKit::Widget(parent), d(new PrivateWebKitWebView)
 {
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
   d->mView = new QGraphicsWebView(this);

@@ -23,14 +23,14 @@
 
 #include <controllerplugininterface.h>
 
-class Interface : public QObject, public UI::ControllerPluginInterface
+class Interface : public QObject, public UIKit::ControllerPluginInterface
 {
   Q_OBJECT
-  Q_INTERFACES(UI::ControllerPluginInterface)
+  Q_INTERFACES(UIKit::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.foo")
 
 public:
-  QSharedPointer<UI::ViewController> controller();
+  QSharedPointer<UIKit::ViewController> controller();
 };
 
 #endif

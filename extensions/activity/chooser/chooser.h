@@ -29,9 +29,9 @@
 #include <window.h>
 #include <abstractcellcomponent.h>
 
-using namespace UI;
+using namespace UIKit;
 
-class IconGridActivity : public UI::DesktopActivity
+class IconGridActivity : public UIKit::DesktopActivity
 {
   Q_OBJECT
 
@@ -46,7 +46,7 @@ public:
   Window *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Widget *widget);
+  void onWidgetClosed(UIKit::Widget *widget);
   void onDiscard();
   void onClicked(TableViewItem *item);
   void onArgumentChanged();

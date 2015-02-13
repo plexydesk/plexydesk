@@ -33,12 +33,12 @@ public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
 
-  UI::Window *mFrame;
+  UIKit::Window *mFrame;
   DateCellFactory *mFactory;
-  UI::TableView *mTable;
+  UIKit::TableView *mTable;
   QRectF mBoundingRect;
   QString mSelection;
-  UI::Theme *mLoader;
+  UIKit::Theme *mLoader;
 
   QVariantMap m_result_data;
 
@@ -46,7 +46,7 @@ public:
 };
 
 DatePickerActivity::DatePickerActivity(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivateDatePicker) {}
+  : UIKit::DesktopActivity(object), d(new PrivateDatePicker) {}
 
 DatePickerActivity::~DatePickerActivity() { delete d; }
 
@@ -54,14 +54,14 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
                                       const QString &window_title,
                                       const QPointF &window_pos)
 {
-  d->mFrame = new UI::Window();
+  d->mFrame = new UIKit::Window();
 
   updateContentGeometry(d->mFrame);
   setGeometry(window_geometry);
 
-  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground, false);
-  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground, false);
+  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
 
   d->mCalendarWidget = new CalendarWidget(d->mFrame);
 
@@ -71,21 +71,21 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
 
   showActivity();
 
-  d->mLoader = new UI::Theme("default", this);
+  d->mLoader = new UIKit::Theme("default", this);
 
   connect(d->mLoader, SIGNAL(imageSearchDone(QImage)), this,
           SLOT(onImageReady(QImage)));
 
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
   connect(d->mCalendarWidget, SIGNAL(done()), this, SLOT(onCalendarReady()));
 }
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
-UI::Window *DatePickerActivity::window() const { return d->mFrame; }
+UIKit::Window *DatePickerActivity::window() const { return d->mFrame; }
 
-void DatePickerActivity::onWidgetClosed(UI::Widget *widget)
+void DatePickerActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

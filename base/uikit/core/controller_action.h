@@ -4,7 +4,7 @@
 #include <cstring>
 #include <string>
 
-namespace UI
+namespace UIKit
 {
 
 class ControllerAction

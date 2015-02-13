@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
   qDebug() << "Checking environment variable PLUGIN_HOME" << pathPtr;
 
 #ifdef Q_OS_MAC
-  UI::ExtensionManager *loader = UI::ExtensionManager::instance(
+  UIKit::ExtensionManager *loader = UIKit::ExtensionManager::instance(
                                    QDir::toNativeSeparators(
                                      (pathPtr) + QLatin1String("/Contents/share/plexy/ext/groups/")),
                                    QDir::toNativeSeparators((pathPtr) +

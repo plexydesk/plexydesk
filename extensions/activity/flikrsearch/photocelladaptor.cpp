@@ -37,7 +37,7 @@ public:
 };
 
 PhotoCellAdaptor::PhotoCellAdaptor(QObject *parent)
-  : UI::TableModel(parent), d(new PrivatePhotoCellAdaptor)
+  : UIKit::TableModel(parent), d(new PrivatePhotoCellAdaptor)
 {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
@@ -265,7 +265,7 @@ void PhotoCellAdaptor::onImageReady()
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UI::Config::cacheDir(),
+    imageSave->setData(downloader->data(), UIKit::Config::cacheDir(),
                        false);
     imageSave->start();
     downloader->deleteLater();

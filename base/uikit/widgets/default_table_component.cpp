@@ -20,9 +20,9 @@ public:
   ~PrivateTableComponent() {}
 
 public:
-  UI::Button *mOptButton;
-  UI::Label *m_label_widget;
-  UI::ImageView *m_image_view_widget;
+  UIKit::Button *mOptButton;
+  UIKit::Label *m_label_widget;
+  UIKit::ImageView *m_image_view_widget;
 
   QGraphicsWidget *m_layout_base;
   QGraphicsLinearLayout *m_linear_layout;
@@ -40,7 +40,7 @@ public:
 DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
     LayoutType type,
     QGraphicsItem *parent)
-  : UI::TableViewItem(rect, parent), d(new PrivateTableComponent)
+  : UIKit::TableViewItem(rect, parent), d(new PrivateTableComponent)
 {
   d->m_current_geometry = rect;
   d->m_current_item_selection = false;
@@ -52,13 +52,13 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
 
   d->m_linear_layout = new QGraphicsLinearLayout(d->m_layout_base);
 
-  d->m_image_view_widget = new UI::ImageView(d->m_layout_base);
+  d->m_image_view_widget = new UIKit::ImageView(d->m_layout_base);
   d->m_image_view_widget->setPixmap(
-    UI::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+    UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
 
-  d->m_label_widget = new UI::Label(d->m_layout_base);
+  d->m_label_widget = new UIKit::Label(d->m_layout_base);
 
-  d->mOptButton = new UI::Button(d->m_layout_base);
+  d->mOptButton = new UIKit::Button(d->m_layout_base);
 
   connect(d->m_image_view_widget, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->m_label_widget, SIGNAL(clicked()), this, SLOT(onClicked()));
@@ -171,9 +171,9 @@ void DefaultTableComponent::paint(QPainter *painter,
   /* Painter settings */
   if (d->m_current_layout_type == kListLayout || d->m_current_item_selection) {
 
-    UI::StyleFeatures features;
+    UIKit::StyleFeatures features;
 
-    features.render_state = UI::StyleFeatures::kRenderElement;
+    features.render_state = UIKit::StyleFeatures::kRenderElement;
     features.geometry = boundingRect();
     features.text_data = d->m_current_label_str;
 
@@ -181,8 +181,8 @@ void DefaultTableComponent::paint(QPainter *painter,
     painter->setRenderHint(QPainter::TextAntialiasing, true);
     painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
-    if (UI::Theme::style()) {
-      UI::Theme::style()->draw("vertical_list_item", features, painter);
+    if (UIKit::Theme::style()) {
+      UIKit::Theme::style()->draw("vertical_list_item", features, painter);
     }
 
     /*

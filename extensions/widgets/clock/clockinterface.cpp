@@ -1,10 +1,10 @@
 #include "clockinterface.h"
 #include "clock.h"
 
-QSharedPointer<UI::ViewController> ClockInterface::controller()
+QSharedPointer<UIKit::ViewController> ClockInterface::controller()
 {
-  QSharedPointer<UI::ViewController> obj =
-    QSharedPointer<UI::ViewController>(new Clock(),
+  QSharedPointer<UIKit::ViewController> obj =
+    QSharedPointer<UIKit::ViewController>(new Clock(),
                                        &QObject::deleteLater);
 
   return obj;

@@ -31,7 +31,7 @@ public:
 };
 
 PhotoCell::PhotoCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-  : UI::TableViewItem(rect, parent), d(new PrivatePhotoCell)
+  : UIKit::TableViewItem(rect, parent), d(new PrivatePhotoCell)
 {
   d->mBoundingRect = rect;
   d->mIsSelected = false;

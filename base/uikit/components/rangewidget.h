@@ -6,10 +6,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 
-class DECL_UI_KIT_EXPORT RangeWidget : public UI::Widget
+class DECL_UI_KIT_EXPORT RangeWidget : public UIKit::Widget
 {
   Q_OBJECT
 public:

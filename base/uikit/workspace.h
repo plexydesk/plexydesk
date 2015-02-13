@@ -6,7 +6,7 @@
 #include <space.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 typedef QList<Space *> SpacesList;
 

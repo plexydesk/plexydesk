@@ -30,8 +30,8 @@ public:
   // QPixmap mIconImage;
   bool mIsSelected;
 
-  UI::Label *mLabelView;
-  UI::ImageView *mImageView;
+  UIKit::Label *mLabelView;
+  UIKit::ImageView *mImageView;
 
   ItemLayout mType;
 
@@ -39,7 +39,7 @@ public:
 };
 
 GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-  : UI::TableViewItem(rect, parent), d(new PrivateChooserItem)
+  : UIKit::TableViewItem(rect, parent), d(new PrivateChooserItem)
 {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
@@ -49,10 +49,10 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mLayout = new QGraphicsLinearLayout(this);
 
-  d->mImageView = new UI::ImageView(d->mLayoutBase);
+  d->mImageView = new UIKit::ImageView(d->mLayoutBase);
   d->mImageView->setPixmap(
-    UI::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
-  d->mLabelView = new UI::Label(d->mLayoutBase);
+    UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+  d->mLabelView = new UIKit::Label(d->mLayoutBase);
   connect(d->mImageView, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->mLabelView, SIGNAL(clicked()), this, SLOT(onClicked()));
 

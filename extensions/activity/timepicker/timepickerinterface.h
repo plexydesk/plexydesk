@@ -25,17 +25,17 @@
 #include <desktopactivity.h>
 
 class TimePickerInterface : public QObject,
-  public UI::ActivityInterface
+  public UIKit::ActivityInterface
 {
   Q_OBJECT
-  Q_INTERFACES(UI::ActivityInterface)
+  Q_INTERFACES(UIKit::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.timepicker")
 
 public:
   virtual ~TimePickerInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UI::DesktopActivity> activity();
+  QSharedPointer<UIKit::DesktopActivity> activity();
 };
 
 #endif

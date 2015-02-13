@@ -29,8 +29,8 @@
 #include <abstractcellcomponent.h>
 #include <window.h>
 
-using namespace UI;
-class FlickrSearchActivity : public UI::DesktopActivity
+using namespace UIKit;
+class FlickrSearchActivity : public UIKit::DesktopActivity
 {
   Q_OBJECT
 
@@ -54,7 +54,7 @@ public Q_SLOTS:
   void photoItemClicked(TableViewItem *item);
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Widget *widget);
+  void onWidgetClosed(UIKit::Widget *widget);
 
   // void onClicked(UI::AbstractCellComponent *item);
 

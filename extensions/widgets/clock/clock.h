@@ -25,7 +25,7 @@
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public UI::ViewController
+class Clock : public UIKit::ViewController
 {
   Q_OBJECT
 
@@ -39,9 +39,9 @@ public:
 
   void setViewRect(const QRectF &rect);
 
-  bool removeWidget(UI::Widget *widget);
+  bool removeWidget(UIKit::Widget *widget);
 
-  UI::ActionList actions() const;
+  UIKit::ActionList actions() const;
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
@@ -56,7 +56,7 @@ private:
   QTimer *mTimer;
   ClockWidget *clock;
   QList<ClockWidget *> mClocks;
-  UI::ActionList m_supported_action_list;
+  UIKit::ActionList m_supported_action_list;
 
   class PrivateClockController;
   PrivateClockController *const d;

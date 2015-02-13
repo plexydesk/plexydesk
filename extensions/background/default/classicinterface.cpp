@@ -23,14 +23,14 @@
 #include <QtPlugin>
 
 ClassicBackdrop::ClassicBackdrop(QObject * /*parent*/)
-  : UI::ControllerPluginInterface() {}
+  : UIKit::ControllerPluginInterface() {}
 
 ClassicBackdrop::~ClassicBackdrop() {}
 
-QSharedPointer<UI::ViewController> ClassicBackdrop::controller()
+QSharedPointer<UIKit::ViewController> ClassicBackdrop::controller()
 {
-  QSharedPointer<UI::ViewController> obj =
-    QSharedPointer<UI::ViewController>(new BackgroundController(),
+  QSharedPointer<UIKit::ViewController> obj =
+    QSharedPointer<UIKit::ViewController>(new BackgroundController(),
                                        &QObject::deleteLater);
 
   return obj;

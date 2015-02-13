@@ -9,7 +9,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 
 class ViewController;

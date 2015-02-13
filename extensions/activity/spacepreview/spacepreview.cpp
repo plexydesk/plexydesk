@@ -27,11 +27,11 @@ public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
 
-  UI::Window *m_main_window;
+  UIKit::Window *m_main_window;
 };
 
 SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivateSpacePreview) {}
+  : UIKit::DesktopActivity(object), d(new PrivateSpacePreview) {}
 
 SpacePreviewActivity::~SpacePreviewActivity() { delete d; }
 
@@ -39,19 +39,19 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
                                         const QString &window_title,
                                         const QPointF &window_pos)
 {
-  d->m_main_window = new UI::Window();
+  d->m_main_window = new UIKit::Window();
 
-  d->m_main_window->setWindowFlag(UI::Widget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UI::Widget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UI::Widget::kRenderDropShadow);
+  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderBackground);
+  d->m_main_window->setWindowFlag(UIKit::Widget::kConvertToWindowType);
+  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderDropShadow);
 
   setGeometry(window_geometry);
   updateContentGeometry(d->m_main_window);
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->m_main_window, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
 }
 
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
@@ -59,9 +59,9 @@ QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 void SpacePreviewActivity::updateAttribute(const QString &name,
     const QVariant &data) {}
 
-UI::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
+UIKit::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
 
-void SpacePreviewActivity::onWidgetClosed(UI::Widget *widget)
+void SpacePreviewActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();

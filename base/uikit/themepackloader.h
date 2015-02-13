@@ -12,7 +12,7 @@
 #include <datastore.h>
 #include <webservice.h>
 
-namespace UI
+namespace UIKit
 {
 class DECL_UI_KIT_EXPORT Theme : public QObject
 {

@@ -31,15 +31,15 @@
 #include <functional>
 
 DirectoryController::DirectoryController(QObject *object)
-  : UI::ViewController(object)
+  : UIKit::ViewController(object)
 {
-  mThemePack = UI::Theme::instance();
+  mThemePack = UIKit::Theme::instance();
 
-  UI::Widget *parent = new UI::Widget();
+  UIKit::Widget *parent = new UIKit::Widget();
 
-  parent->setWindowFlag(UI::Widget::kRenderBackground);
-  parent->setWindowFlag(UI::Widget::kConvertToWindowType);
-  parent->setWindowFlag(UI::Widget::kRenderDropShadow);
+  parent->setWindowFlag(UIKit::Widget::kRenderBackground);
+  parent->setWindowFlag(UIKit::Widget::kConvertToWindowType);
+  parent->setWindowFlag(UIKit::Widget::kRenderDropShadow);
 
   IconWidgetView *view = new IconWidgetView(parent);
   view->setPos(0.0, 64.0);
@@ -70,7 +70,7 @@ void DirectoryController::init()
 
 void DirectoryController::revokeSession(const QVariantMap &args) {}
 
-UI::ActionList DirectoryController::actions() const
+UIKit::ActionList DirectoryController::actions() const
 {
   return m_supported_action_list;
 }
@@ -81,12 +81,12 @@ void DirectoryController::requestAction(const QString &actionName,
     if (actionName == CREATE_DIR) {
         qDebug() << "Not supported yet";
     } else if (actionName == tr("Folder")) {
-        UI::Window *window = new UI::Window();
+        UIKit::Window *window = new UIKit::Window();
         window->setWindowCloseCallback([&]() {
             delete window;
         });
 
-        UI::Widget *parent = new UI::Widget();
+        UIKit::Widget *parent = new UIKit::Widget();
 
         window->setWindowContent(parent);
 
@@ -105,7 +105,7 @@ void DirectoryController::requestAction(const QString &actionName,
     }
 }
 
-void DirectoryController::handleDropEvent(UI::Widget *widget,
+void DirectoryController::handleDropEvent(UIKit::Widget *widget,
     QDropEvent *event)
 {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
@@ -124,7 +124,7 @@ void DirectoryController::handleDropEvent(UI::Widget *widget,
 
 void DirectoryController::setViewRect(const QRectF &rect)
 {
-  Q_FOREACH(UI::Widget * view, mFolderViewList) {
+  Q_FOREACH(UIKit::Widget * view, mFolderViewList) {
     if (view) {
       view->setPos(rect.x(), rect.y());
     }

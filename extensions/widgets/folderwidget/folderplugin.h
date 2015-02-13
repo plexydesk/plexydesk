@@ -29,7 +29,7 @@
 class QLineEdit;
 class QWidget;
 
-class DirectoryController : public UI::ViewController
+class DirectoryController : public UIKit::ViewController
 {
   Q_OBJECT
 
@@ -41,17 +41,17 @@ public:
 
   void revokeSession(const QVariantMap &args);
 
-  UI::ActionList actions() const;
+  UIKit::ActionList actions() const;
   void requestAction(const QString &actionName, const QVariantMap &args);
-  void handleDropEvent(UI::Widget *widget, QDropEvent *event);
+  void handleDropEvent(UIKit::Widget *widget, QDropEvent *event);
   void setViewRect(const QRectF &rect);
 
   QString icon() const;
 
 private:
-  UI::Theme *mThemePack;
-  QList<UI::Widget *> mFolderViewList;
-  UI::ActionList m_supported_action_list;
+  UIKit::Theme *mThemePack;
+  QList<UIKit::Widget *> mFolderViewList;
+  UIKit::ActionList m_supported_action_list;
 };
 
 #endif

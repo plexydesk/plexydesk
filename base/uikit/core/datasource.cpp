@@ -1,7 +1,7 @@
 #include "datasource.h"
 #include <QVariantHash>
 
-namespace UI
+namespace UIKit
 {
 
 class DataSource::PrivateDataSource

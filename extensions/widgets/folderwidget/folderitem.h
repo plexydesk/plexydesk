@@ -9,7 +9,7 @@
 #include <QFileInfo>
 #include <QIcon>
 
-class FolderItem : public UI::TableViewItem
+class FolderItem : public UIKit::TableViewItem
 {
   Q_OBJECT
 public:

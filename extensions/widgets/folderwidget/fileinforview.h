@@ -26,7 +26,7 @@
 #include <QIcon>
 #include <QFileInfo>
 
-class FileInforView : public UI::Widget
+class FileInforView : public UIKit::Widget
 {
   Q_OBJECT
 public:

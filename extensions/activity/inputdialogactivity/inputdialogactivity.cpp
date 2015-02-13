@@ -44,12 +44,12 @@ public:
 
   StylePtr mStyle;
 
-  UI::Window *mFrame;
+  UIKit::Window *mFrame;
   QGraphicsBlurEffect *mBackgroundEffect;
 
   /*Widgets*/
-  UI::Button *mOkButton;
-  UI::Button *mCancelButton;
+  UIKit::Button *mOkButton;
+  UIKit::Button *mCancelButton;
 
   QGraphicsWidget *mLayoutBase;
   QGraphicsWidget *mHLayoutBase;
@@ -59,16 +59,16 @@ public:
 
   QLineEdit *mLineEdit;
   QGraphicsProxyWidget *mLineEditProxy;
-  UI::TextEditor *mEditor;
+  UIKit::TextEditor *mEditor;
 
   QRectF mBoundingRect;
   QString mCurrentText;
 };
 
 InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivateInputDialogActivity)
+  : UIKit::DesktopActivity(object), d(new PrivateInputDialogActivity)
 {
-  d->mStyle = UI::Theme::instance()->defaultDesktopStyle();
+  d->mStyle = UIKit::Theme::instance()->defaultDesktopStyle();
   d->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
 }
 
@@ -85,14 +85,14 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   }
 
   // todo: invoke UI
-  d->mFrame = new UI::Window();
+  d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
   d->mFrame->setLabelName("Message Dialog");
 
-  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground);
+  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
 
   d->mBackgroundEffect = new QGraphicsBlurEffect(this);
   d->mBackgroundEffect->setBlurHints(QGraphicsBlurEffect::PerformanceHint);
@@ -110,13 +110,13 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   d->mHLayoutBase = new QGraphicsWidget(d->mLayoutBase);
 
-  d->mOkButton = new UI::Button(d->mHLayoutBase);
-  d->mCancelButton = new UI::Button(d->mHLayoutBase);
+  d->mOkButton = new UIKit::Button(d->mHLayoutBase);
+  d->mCancelButton = new UIKit::Button(d->mHLayoutBase);
 
   QRectF _editorRect(0.0, 0.0, geometry().width(),
                      geometry().height() -
                      (96 + d->mOkButton->boundingRect().height()));
-  d->mEditor = new UI::TextEditor(d->mLayoutBase);
+  d->mEditor = new UIKit::TextEditor(d->mLayoutBase);
   d->mVLayout->addItem(d->mEditor);
 
   d->mHLayout = new QGraphicsLinearLayout(d->mHLayoutBase);
@@ -134,8 +134,8 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   d->mEditor->setFocus();
 
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
 
   connect(d->mCancelButton, SIGNAL(clicked()), this, SIGNAL(canceled()));
   connect(d->mOkButton, SIGNAL(clicked()), this, SLOT(onOkButtonPressed()));
@@ -157,9 +157,9 @@ QRectF InputDialogActivityData::geometry() const { return d->mBoundingRect; }
 
 QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
-UI::Window *InputDialogActivityData::window() const { return d->mFrame; }
+UIKit::Window *InputDialogActivityData::window() const { return d->mFrame; }
 
-void InputDialogActivityData::onWidgetClosed(UI::Widget *widget)
+void InputDialogActivityData::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   discardActivity();

@@ -19,8 +19,8 @@ public:
     }
   }
 
-  QMap<QString, UI::ViewControllerPtr> mControllerMap;
-  QMap<QString, UI::DataSourcePtr> mEngines;
+  QMap<QString, UIKit::ViewControllerPtr> mControllerMap;
+  QMap<QString, UIKit::DataSourcePtr> mEngines;
   QFileSystemModel *mFileSystemModel;
   QFileIconProvider *mIconProvider;
 
@@ -28,7 +28,7 @@ public:
 };
 
 FolderProvider::FolderProvider(const QRectF &rect, QGraphicsObject *parent)
-  : UI::TableModel(parent), d(new FolderProviderPrivate)
+  : UIKit::TableModel(parent), d(new FolderProviderPrivate)
 {
 
   d->mIconProvider = new QFileIconProvider();
@@ -110,11 +110,11 @@ controllerName;
 }
 */
 
-UI::DataSourcePtr FolderProvider::loadDataSourceEngine(
+UIKit::DataSourcePtr FolderProvider::loadDataSourceEngine(
   const QString &engine)
 {
-  QSharedPointer<UI::DataSource> dataSource =
-    UI::ExtensionManager::instance()->dataEngine(engine);
+  QSharedPointer<UIKit::DataSource> dataSource =
+    UIKit::ExtensionManager::instance()->dataEngine(engine);
 
   // connect(d->mDataSource.data(), SIGNAL(ready()), this, SLOT(onReady()));
   d->mEngines[engine] = dataSource;
@@ -122,9 +122,9 @@ UI::DataSourcePtr FolderProvider::loadDataSourceEngine(
   return dataSource;
 }
 
-UI::TableModel::TableRenderMode FolderProvider::renderType() const
+UIKit::TableModel::TableRenderMode FolderProvider::renderType() const
 {
-  return UI::TableModel::kRenderAsGridView;
+  return UIKit::TableModel::kRenderAsGridView;
 }
 
 void FolderProvider::setDirectoryPath(const QString &path)

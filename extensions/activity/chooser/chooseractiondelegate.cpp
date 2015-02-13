@@ -16,7 +16,7 @@ public:
 };
 
 ChooserActionDelegate::ChooserActionDelegate(QGraphicsObject *parent)
-  : UI::TableModel(parent), d(new PrivateChooserActionDelegate) {}
+  : UIKit::TableModel(parent), d(new PrivateChooserActionDelegate) {}
 
 ChooserActionDelegate::~ChooserActionDelegate()
 {

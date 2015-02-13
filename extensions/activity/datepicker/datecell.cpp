@@ -33,7 +33,7 @@ public:
 };
 
 DateCell::DateCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-  : UI::TableViewItem(rect, parent), d(new PrivateDateCell)
+  : UIKit::TableViewItem(rect, parent), d(new PrivateDateCell)
 {
   d->mBoundingRect = rect;
   d->mIsSelected = false;

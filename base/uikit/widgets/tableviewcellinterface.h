@@ -25,7 +25,7 @@
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 /**
     * \class this is a interface definition cell creators
@@ -123,9 +123,9 @@ Q_SIGNALS:
       */
   void updated();
 
-  void add(UI::TableViewItem *item);
+  void add(UIKit::TableViewItem *item);
 
-  void removed(UI::TableViewItem *item);
+  void removed(UIKit::TableViewItem *item);
 
   void cleared();
 };

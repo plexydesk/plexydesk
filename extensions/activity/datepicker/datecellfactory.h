@@ -3,7 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-using namespace UI;
+using namespace UIKit;
 
 class DateCellFactory : public TableModel
 {
@@ -13,7 +13,7 @@ public:
   DateCellFactory(QGraphicsObject *parent = 0);
   virtual ~DateCellFactory();
 
-  QList<UI::TableViewItem *> componentList();
+  QList<UIKit::TableViewItem *> componentList();
 
   float margin() const;
 
@@ -36,7 +36,7 @@ public:
 
   void setCellSize(const QSize &size);
 
-  UI::TableViewItem *itemAt(int i);
+  UIKit::TableViewItem *itemAt(int i);
 
 private:
   class PrivateDateCellFactory;

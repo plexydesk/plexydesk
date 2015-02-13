@@ -12,7 +12,7 @@ public:
 };
 
 SnapFrame::SnapFrame(QGraphicsObject *parent)
-  : UI::Widget(parent), d(new PrivateSnapFrame)
+  : UIKit::Widget(parent), d(new PrivateSnapFrame)
 {
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }

@@ -3,7 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-class TimeZoneModel : public UI::TableModel
+class TimeZoneModel : public UIKit::TableModel
 {
   Q_OBJECT
 

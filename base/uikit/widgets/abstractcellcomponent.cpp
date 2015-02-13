@@ -1,7 +1,7 @@
 #include "abstractcellcomponent.h"
 #include <QDebug>
 
-namespace UI
+namespace UIKit
 {
 
 TableViewItem::TableViewItem(const QRectF &rect, QGraphicsItem *parent)

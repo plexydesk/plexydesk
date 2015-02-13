@@ -6,7 +6,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 class Space;
 
@@ -18,7 +18,7 @@ public:
 
   virtual ~DesktopActivityMenu();
 
-  virtual void setActivity(UI::DesktopActivityPtr activity);
+  virtual void setActivity(UIKit::DesktopActivityPtr activity);
 
   virtual void setSpace(Space *space);
 

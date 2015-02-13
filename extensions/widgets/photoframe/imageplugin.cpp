@@ -63,12 +63,12 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   }
 
   foreach(const QString & str, photoList) {
-      UI::Window *window = new UI::Window();
+      UIKit::Window *window = new UIKit::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
     window->setWindowContent(photoWidget);
 
-    photoWidget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UI::Widget::kConvertToWindowType, true);
+    photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
     photoWidget->setController(this);
     photoWidget->setLabelName("Photo");
     mPhotoList.append(photoWidget);
@@ -89,7 +89,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   }
 }
 
-void PhotoFrameController::handleDropEvent(UI::Widget *widget,
+void PhotoFrameController::handleDropEvent(UIKit::Widget *widget,
     QDropEvent *event)
 {
   if (event->mimeData()->urls().count() >= 0) {
@@ -110,7 +110,7 @@ void PhotoFrameController::handleDropEvent(UI::Widget *widget,
       }
 
       if (viewport()) {
-        UI::Space *view = qobject_cast<UI::Space *>(viewport());
+        UIKit::Space *view = qobject_cast<UIKit::Space *>(viewport());
         if (view) {
           view->updateSessionValue(controllerName(), "photos",
                                    m_current_url_list.join(","));
@@ -129,7 +129,7 @@ void PhotoFrameController::setViewRect(const QRectF &rect)
   }
 }
 
-bool PhotoFrameController::removeWidget(UI::Widget *widget)
+bool PhotoFrameController::removeWidget(UIKit::Widget *widget)
 {
   if (!widget) {
     return 1;
@@ -161,7 +161,7 @@ bool PhotoFrameController::removeWidget(UI::Widget *widget)
   return 1;
 }
 
-UI::ActionList PhotoFrameController::actions() const
+UIKit::ActionList PhotoFrameController::actions() const
 {
   return m_supported_action_list;
 }
@@ -170,13 +170,13 @@ void PhotoFrameController::requestAction(const QString &actionName,
                                          const QVariantMap &args)
 {
     if (actionName == tr("Photo")) {
-        UI::Window *window = new UI::Window();
+        UIKit::Window *window = new UIKit::Window();
         PhotoWidget *photoWidget = new PhotoWidget();
 
         window->setWindowContent(photoWidget);
 
-        photoWidget->setWindowFlag(UI::Widget::kRenderDropShadow, true);
-        photoWidget->setWindowFlag(UI::Widget::kConvertToWindowType, true);
+        photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
+        photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
         photoWidget->setController(this);
         photoWidget->setLabelName("Photo");
         mPhotoList.append(photoWidget);

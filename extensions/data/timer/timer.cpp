@@ -29,7 +29,7 @@ public:
 };
 
 TimerData::TimerData(QObject *object)
-  : UI::DataSource(object), d(new Private)
+  : UIKit::DataSource(object), d(new Private)
 {
   startTimer(1000);
 }

@@ -10,14 +10,14 @@ public:
   PrivateTableDelegate() {}
   ~PrivateTableDelegate() { m_data_map.clear(); }
 
-  QList<UI::TableViewItem *> m_table_view_item_list;
+  QList<UIKit::TableViewItem *> m_table_view_item_list;
   QMap<QString, QPixmap> m_data_map;
   QSize m_current_item_size;
   bool m_current_item_label_visibility;
 };
 
 TimeZoneModel::TimeZoneModel(QGraphicsObject *parent)
-  : UI::TableModel(parent), d(new PrivateTableDelegate)
+  : UIKit::TableModel(parent), d(new PrivateTableDelegate)
 {
   d->m_current_item_label_visibility = false;
 }
@@ -50,9 +50,9 @@ bool TimeZoneModel::init()
   return true;
 }
 
-UI::TableModel::TableRenderMode TimeZoneModel::renderType() const
+UIKit::TableModel::TableRenderMode TimeZoneModel::renderType() const
 {
-  return UI::TableModel::kRenderAsListView;
+  return UIKit::TableModel::kRenderAsListView;
 }
 
 void TimeZoneModel::insertItem(const QString &label, const QPixmap pixmap,

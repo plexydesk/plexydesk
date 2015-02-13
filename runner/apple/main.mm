@@ -37,7 +37,7 @@
 #include <objc/message.h>
 
 
-bool dockClickHandler(id self,SEL _cmd,...)
+bool OnDockMousePressCallback(id self,SEL _cmd,...)
 {
     Q_UNUSED(self)
     Q_UNUSED(_cmd)
@@ -48,7 +48,6 @@ bool dockClickHandler(id self,SEL _cmd,...)
 
 int main(int argc, char *argv[])
 {
-
     QApplication qtApp(argc, argv);
 
     id cls = objc_getClass("NSApplication");
@@ -60,31 +59,35 @@ int main(int argc, char *argv[])
         id delegate = objc_msgSend(appInst, sel_registerName("delegate"));
         id delClass = objc_msgSend(delegate,  sel_registerName("class"));
         //const char* tst = class_getName(delClass->isa);
-        bool test = class_addMethod((id)delClass,
-                                    sel_registerName("applicationShouldHandleReopen:hasVisibleWindows:"),
-                                    (IMP)dockClickHandler,"B@:");
+        bool classMethodFunc = class_addMethod(
+                    (id)delClass,
+                    sel_registerName(
+                        "applicationShouldHandleReopen:hasVisibleWindows:"),
+                    (IMP)OnDockMousePressCallback,"B@:");
 
-        if (!test)
-        {
+        if (!classMethodFunc) {
             NSLog(@"Failed to register with your mac");
         }
     }
 
-    NSLog(@"Start PlexyDesk :MacUI \n");
-
     CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    CFStringRef macPath = CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
-    const char *pathPtr = CFStringGetCStringPtr(macPath,CFStringGetSystemEncoding());
+    CFStringRef macPath =
+            CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
+    const char *pathPtr =
+            CFStringGetCStringPtr(macPath,CFStringGetSystemEncoding());
 
     CFRelease(appUrlRef);
     CFRelease(macPath);
 
-    UI::ExtensionManager *loader =
-            UI::ExtensionManager::init(
+    UIKit::ExtensionManager *loader =
+            UIKit::ExtensionManager::init(
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +
-                                         QLatin1String("/Contents/PlugIns/plexydesk/data/")),
+                                         QLatin1String(
+                                             "/Contents/PlugIns/plexydesk/data/"
+                                             )),
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +
-                                         QLatin1String("/Contents/PlugIns/plexydesk/")));
+                                         QLatin1String(
+                                             "/Contents/PlugIns/plexydesk/")));
     Q_UNUSED(loader);
 
 
@@ -104,7 +107,8 @@ int main(int argc, char *argv[])
 
     NSView *_desktopView = reinterpret_cast<NSView *>(workspace.winId());
 
-    [[_desktopView window] setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+    [[_desktopView window]
+            setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
     [[_desktopView window] setHasShadow:NO];
     [[_desktopView window] setOpaque:NO];
     [[_desktopView window] setLevel:kCGDesktopIconWindowLevel + 1];
@@ -113,7 +117,10 @@ int main(int argc, char *argv[])
 
     workspace.show();
 
-    qtApp.setStyleSheet(QString("QScrollBar:vertical{ border: 2px solid grey; background: #32CC99; height: 15px; margin: 0px 20px 0 20px; }"));
+    qtApp.setStyleSheet(
+                QString("QScrollBar:vertical{ border: 2px solid grey;"
+                        " background: #32CC99; height: 15px; margin: 0px 20px"
+                        " 0 20px; }"));
 
     return qtApp.exec();
 }

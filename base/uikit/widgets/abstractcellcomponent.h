@@ -6,7 +6,7 @@
 #include <QGraphicsItem>
 #include <plexydesk_ui_exports.h>
 
-namespace UI
+namespace UIKit
 {
 
 class DECL_UI_KIT_EXPORT TableViewItem : public QGraphicsObject,

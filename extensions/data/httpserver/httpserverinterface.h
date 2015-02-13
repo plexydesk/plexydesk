@@ -24,17 +24,17 @@
 #include <dataplugininterface.h>
 
 class HttpServerInterface : public QObject,
-  public UI::DataPluginInterface
+  public UIKit::DataPluginInterface
 {
   Q_OBJECT
-  Q_INTERFACES(UI::DataPluginInterface)
+  Q_INTERFACES(UIKit::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.httpserver")
 
 public:
   virtual ~HttpServerInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UI::DataSource> model();
+  QSharedPointer<UIKit::DataSource> model();
 };
 
 #endif

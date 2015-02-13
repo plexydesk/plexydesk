@@ -27,7 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class SpacePreviewActivity : public UI::DesktopActivity
+class SpacePreviewActivity : public UIKit::DesktopActivity
 {
   Q_OBJECT
 
@@ -43,10 +43,10 @@ public:
 
   virtual void updateAttribute(const QString &name, const QVariant &data);
 
-  UI::Window *window() const;
+  UIKit::Window *window() const;
 
 private Q_SLOTS:
-  void onWidgetClosed(UI::Widget *widget);
+  void onWidgetClosed(UIKit::Widget *widget);
   void onHideAnimationFinished();
 
 private:

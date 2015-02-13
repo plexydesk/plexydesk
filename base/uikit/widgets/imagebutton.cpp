@@ -9,7 +9,7 @@
 
 #include <QDebug>
 
-namespace UI
+namespace UIKit
 {
 
 class ImageButton::PrivateImageButton

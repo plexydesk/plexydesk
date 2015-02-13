@@ -25,10 +25,10 @@
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
 
-namespace UI
+namespace UIKit
 {
 
-class DECL_UI_KIT_EXPORT WindowButton : public UI::Button
+class DECL_UI_KIT_EXPORT WindowButton : public UIKit::Button
 {
   Q_OBJECT
 public:

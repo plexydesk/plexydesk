@@ -33,11 +33,11 @@ public:
   ~PrivateDesktopNotes() {}
   QTimer *mDesktopNotes;
   QMap<QString, int> mNoteActions;
-  UI::ActionList m_supported_action_list;
+  UIKit::ActionList m_supported_action_list;
 };
 
 DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
-  : UI::ViewController(object), d(new PrivateDesktopNotes)
+  : UIKit::ViewController(object), d(new PrivateDesktopNotes)
 {
   d->mNoteActions["Note"] = 1;
   d->mNoteActions["Task"] = 2;
@@ -62,7 +62,7 @@ void DesktopNotesControllerImpl::revokeSession(const QVariantMap &args) {}
 
 void DesktopNotesControllerImpl::setViewRect(const QRectF &rect) {}
 
-UI::ActionList DesktopNotesControllerImpl::actions() const
+UIKit::ActionList DesktopNotesControllerImpl::actions() const
 {
   // return d->mNoteActions.keys();
   return d->m_supported_action_list;
@@ -85,7 +85,7 @@ void DesktopNotesControllerImpl::requestAction(const QString &actionName,
   }
 }
 
-void DesktopNotesControllerImpl::handleDropEvent(UI::Widget *widget,
+void DesktopNotesControllerImpl::handleDropEvent(UIKit::Widget *widget,
     QDropEvent *event)
 {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
@@ -109,7 +109,7 @@ void DesktopNotesControllerImpl::onDataUpdated(const QVariantMap &data) {}
 
 void DesktopNotesControllerImpl::createNoteUI()
 {
-  UI::Window *window = new UI::Window();
+  UIKit::Window *window = new UIKit::Window();
   NoteWidget *note = new NoteWidget(window);
   note->resize(QSizeF(320, 320));
   note->setController(this);
@@ -120,7 +120,7 @@ void DesktopNotesControllerImpl::createNoteUI()
 
 void DesktopNotesControllerImpl::createReminderUI()
 {
-  UI::Window *window = new UI::Window();
+  UIKit::Window *window = new UIKit::Window();
   ReminderWidget *reminder = new ReminderWidget(window);
   reminder->setController(this);
 

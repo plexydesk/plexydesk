@@ -28,15 +28,15 @@ public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
 
-  UI::Window *mFrame;
-  UI::ProgressBar *m_progress_bar_widget;
+  UIKit::Window *mFrame;
+  UIKit::ProgressBar *m_progress_bar_widget;
   int mMax;
   int mMin;
   bool m_task_completed;
 };
 
 ProgressDialogActivity::ProgressDialogActivity(QGraphicsObject *object)
-  : UI::DesktopActivity(object), d(new PrivateProgressDialog) {}
+  : UIKit::DesktopActivity(object), d(new PrivateProgressDialog) {}
 
 ProgressDialogActivity::~ProgressDialogActivity()
 {
@@ -51,18 +51,18 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  d->mFrame = new UI::Window();
+  d->mFrame = new UIKit::Window();
   setGeometry(window_geometry);
 
   d->mFrame->setLabelName("Progress Dialog");
-  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground, true);
-  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType, true);
-  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow, true);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground, true);
+  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
+  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
 
   d->m_task_completed = 0;
 
-  connect(d->mFrame, SIGNAL(closed(UI::Widget *)), this,
-          SLOT(onWidgetClosed(UI::Widget *)));
+  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(onWidgetClosed(UIKit::Widget *)));
 
   d->mMax = 100.0;
   d->mMin = 0.0;
@@ -75,7 +75,7 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
     d->mMin = attributes()["min"].toFloat();
   }
 
-  d->m_progress_bar_widget = new UI::ProgressBar(d->mFrame);
+  d->m_progress_bar_widget = new UIKit::ProgressBar(d->mFrame);
   d->m_progress_bar_widget->setRange(d->mMin, d->mMax);
   d->m_progress_bar_widget->setSize(QSize(window_geometry.width() - 10, 32));
   d->m_progress_bar_widget->setValue(0.0);
@@ -114,9 +114,9 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 }
 
-UI::Window *ProgressDialogActivity::window() const { return d->mFrame; }
+UIKit::Window *ProgressDialogActivity::window() const { return d->mFrame; }
 
-void ProgressDialogActivity::onWidgetClosed(UI::Widget *widget)
+void ProgressDialogActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discardActivity();
