@@ -65,6 +65,9 @@ _f.mitie_ner_get_detection_length.argtypes = ctypes.c_void_p, ctypes.c_ulong
 _f.mitie_ner_get_detection_tag.restype = ctypes.c_ulong
 _f.mitie_ner_get_detection_tag.argtypes = ctypes.c_void_p, ctypes.c_ulong
 
+_f.mitie_ner_get_detection_score.restype = ctypes.c_double
+_f.mitie_ner_get_detection_score.argtypes = ctypes.c_void_p, ctypes.c_ulong
+
 _f.mitie_ner_get_num_detections.restype = ctypes.c_ulong
 _f.mitie_ner_get_num_detections.argtypes = ctypes.c_void_p,
 
@@ -204,7 +207,8 @@ class named_entity_extractor:
         num = _f.mitie_ner_get_num_detections(dets)
         temp = ([(xrange(_f.mitie_ner_get_detection_position(dets,i),
             _f.mitie_ner_get_detection_position(dets,i)+_f.mitie_ner_get_detection_length(dets,i)),
-            tags[_f.mitie_ner_get_detection_tag(dets,i)]
+            tags[_f.mitie_ner_get_detection_tag(dets,i)],
+            _f.mitie_ner_get_detection_score(dets,i)
             ) for i in xrange(num)])
         _f.mitie_free(dets)
         return temp
@@ -390,7 +394,7 @@ class ner_training_instance:
             raise Exception("Unable to add entity to training instance.  Probably ran out of RAM.");
         
 
-class ner_trainer:
+class ner_trainer(object):
     def __init__(self, filename):
         self.__obj = _f.mitie_create_ner_trainer(filename)
         self.__mitie_free = _f.mitie_free
@@ -412,7 +416,7 @@ class ner_trainer:
     def beta(self):
         return _f.mitie_ner_trainer_get_beta(self.__obj)
 
-    @property
+    @beta.setter
     def beta(self, value):
         if (value < 0):
             raise Exception("Invalid beta value given.  beta can't be negative.")
@@ -422,7 +426,7 @@ class ner_trainer:
     def num_threads(self):
         return _f.mitie_ner_trainer_get_num_threads(self.__obj)
 
-    @property
+    @num_threads.setter
     def num_threads(self, value):
         _f.mitie_ner_trainer_set_num_threads(self.__obj, value)
     
@@ -470,7 +474,7 @@ _f.mitie_train_binary_relation_detector.argtypes = ctypes.c_void_p,
 
 
 
-class binary_relation_detector_trainer:
+class binary_relation_detector_trainer(object):
     def __init__(self, relation_name, ner):
         self.__obj = _f.mitie_create_binary_relation_trainer(relation_name, ner._obj)
         self.__mitie_free = _f.mitie_free
@@ -524,7 +528,7 @@ class binary_relation_detector_trainer:
     def beta(self):
         return _f.mitie_binary_relation_trainer_get_beta(self.__obj)
 
-    @property
+    @beta.setter
     def beta(self, value):
         if (value < 0):
             raise Exception("Invalid beta value given.  beta can't be negative.")
@@ -534,7 +538,7 @@ class binary_relation_detector_trainer:
     def num_threads(self):
         return _f.mitie_binary_relation_trainer_get_num_threads(self.__obj)
 
-    @property
+    @num_threads.setter
     def num_threads(self, value):
         _f.mitie_binary_relation_trainer_set_num_threads(self.__obj, value)
     

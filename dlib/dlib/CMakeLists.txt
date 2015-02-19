@@ -8,9 +8,13 @@ SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
 
 cmake_minimum_required(VERSION 2.4)
 
+set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 # Suppress cmake warnings about changes in new versions.
 if(COMMAND cmake_policy) 
    cmake_policy(SET CMP0003 NEW) 
+   if (POLICY CMP0054)
+      cmake_policy(SET CMP0054 NEW)
+   endif()
 endif()
 
 
@@ -68,8 +72,7 @@ if (NOT TARGET dlib)
    "Disable this if you don't want to link against libjpeg" )
    set (DLIB_LINK_WITH_SQLITE3_STR
    "Disable this if you don't want to link against sqlite3" )
-   set (DLIB_LINK_WITH_FFTW_STR
-   "Disable this if you don't want to link against fftw" )
+   #set (DLIB_LINK_WITH_FFTW_STR "Disable this if you don't want to link against fftw" )
 
    option(DLIB_ISO_CPP_ONLY ${DLIB_ISO_CPP_ONLY_STR} OFF)
    option(DLIB_NO_GUI_SUPPORT ${DLIB_NO_GUI_SUPPORT_STR} OFF)
@@ -80,7 +83,7 @@ if (NOT TARGET dlib)
    option(DLIB_LINK_WITH_LIBPNG ${DLIB_LINK_WITH_LIBPNG_STR} ON)
    option(DLIB_LINK_WITH_LIBJPEG ${DLIB_LINK_WITH_LIBJPEG_STR} ON)
    option(DLIB_LINK_WITH_SQLITE3 ${DLIB_LINK_WITH_SQLITE3_STR} ON)
-   option(DLIB_LINK_WITH_FFTW ${DLIB_LINK_WITH_FFTW_STR} ON)
+   #option(DLIB_LINK_WITH_FFTW ${DLIB_LINK_WITH_FFTW_STR} ON)
 
    set(source_files 
          base64/base64_kernel_1.cpp
@@ -132,9 +135,9 @@ if (NOT TARGET dlib)
       # we want to link to the right stuff depending on our platform.  
       if (WIN32 AND NOT CYGWIN) ###############################################################################
          if (DLIB_NO_GUI_SUPPORT)
-            set (dlib_needed_libraries ws2_32)
+            set (dlib_needed_libraries ws2_32 winmm)
          else()
-            set (dlib_needed_libraries ws2_32 comctl32 gdi32 imm32)
+            set (dlib_needed_libraries ws2_32 winmm comctl32 gdi32 imm32)
          endif()
       elseif(APPLE) ############################################################################
          find_library(pthreadlib pthread)
@@ -155,7 +158,8 @@ if (NOT TARGET dlib)
             else()
                message(" *****************************************************************************")
                message(" *** DLIB GUI SUPPORT DISABLED BECAUSE X11 DEVELOPMENT LIBRARIES NOT FOUND ***")
-               message(" *** Make sure libx11-dev is installed if you want GUI support             ***")
+               message(" *** Make sure XQuartz is installed if you want GUI support.               ***")
+               message(" *** You can download XQuartz from: http://xquartz.macosforge.org/landing/ ***")
                message(" *****************************************************************************")
                set(DLIB_NO_GUI_SUPPORT ON CACHE STRING ${DLIB_NO_GUI_SUPPORT_STR} FORCE )
             endif()
@@ -208,13 +212,18 @@ if (NOT TARGET dlib)
             )
       endif()
 
+      INCLUDE (CheckFunctionExists)
 
       if (DLIB_LINK_WITH_LIBPNG)
          # try to find libpng 
-         set(ZLIB_FIND_QUIETLY ON)
-         set(PNG_FIND_QUIETLY ON)
-         include(FindPNG)
+         find_package(PNG QUIET)
+         # Make sure there isn't something wrong with the version of LIBPNG
+         # installed on this system.  
          if (PNG_FOUND)
+            set(CMAKE_REQUIRED_LIBRARIES ${PNG_LIBRARY})
+            CHECK_FUNCTION_EXISTS(png_create_read_struct LIBPNG_IS_GOOD)
+         endif()
+         if (PNG_FOUND AND LIBPNG_IS_GOOD)
             include_directories(${PNG_INCLUDE_DIR})
             set (dlib_needed_libraries ${dlib_needed_libraries} ${PNG_LIBRARY})
          else()
@@ -261,8 +270,15 @@ if (NOT TARGET dlib)
 
       if (DLIB_LINK_WITH_LIBJPEG)
          # try to find libjpeg 
-         include(FindJPEG)
+         find_package(JPEG QUIET)
+         # Make sure there isn't something wrong with the version of libjpeg 
+         # installed on this system.  Also don't use the installed libjpeg
+         # if this is an APPLE system because apparently it's broken (as of 2015/01/01).
          if (JPEG_FOUND)
+            set(CMAKE_REQUIRED_LIBRARIES ${JPEG_LIBRARY})
+            CHECK_FUNCTION_EXISTS(jpeg_read_header LIBJPEG_IS_GOOD)
+         endif()
+         if (JPEG_FOUND AND LIBJPEG_IS_GOOD AND NOT APPLE)
             include_directories(${JPEG_INCLUDE_DIR})
             set (dlib_needed_libraries ${dlib_needed_libraries} ${JPEG_LIBRARY})
          else()
@@ -294,10 +310,30 @@ if (NOT TARGET dlib)
                   external/libjpeg/jmemnobs.cpp
                   external/libjpeg/jquant1.cpp
                   external/libjpeg/jquant2.cpp
-                  external/libjpeg/jutils.cpp  )
+                  external/libjpeg/jutils.cpp  
+                  external/libjpeg/jcapimin.cpp
+                  external/libjpeg/jdatadst.cpp
+                  external/libjpeg/jcparam.cpp
+                  external/libjpeg/jcapistd.cpp
+                  external/libjpeg/jcmarker.cpp
+                  external/libjpeg/jcinit.cpp
+                  external/libjpeg/jcmaster.cpp
+                  external/libjpeg/jcdctmgr.cpp
+                  external/libjpeg/jccoefct.cpp  
+                  external/libjpeg/jccolor.cpp  
+                  external/libjpeg/jchuff.cpp  
+                  external/libjpeg/jcmainct.cpp  
+                  external/libjpeg/jcphuff.cpp  
+                  external/libjpeg/jcprepct.cpp  
+                  external/libjpeg/jcsample.cpp
+                  external/libjpeg/jfdctint.cpp
+                  external/libjpeg/jfdctflt.cpp
+                  external/libjpeg/jfdctfst.cpp
+                  )
          endif()
          set(source_files ${source_files}
             image_loader/jpeg_loader.cpp
+            image_saver/save_jpeg.cpp
             )
       endif()
 
@@ -346,13 +382,12 @@ if (NOT TARGET dlib)
          # make sure fftw3.h is in the include path
          find_path(fftw_path fftw3.h)
          if (fftw AND fftw_path)
-            get_filename_component(fftw_path2 ${fftw_path} PATH CACHE)
-            include_directories(${fftw_path2})
+            include_directories(${fftw_path})
             set(dlib_needed_libraries ${dlib_needed_libraries} ${fftw} )
          else()
             set(DLIB_LINK_WITH_FFTW OFF CACHE STRING ${DLIB_LINK_WITH_SQLITE3_STR} FORCE )
          endif()
-         mark_as_advanced(fftw fftw_path fftw_path2)
+         mark_as_advanced(fftw fftw_path)
       endif()
 
 

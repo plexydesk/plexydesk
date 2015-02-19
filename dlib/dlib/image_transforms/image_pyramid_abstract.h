@@ -1,11 +1,12 @@
 // Copyright (C) 2010  Davis E. King (davis@dlib.net)
 // License: Boost Software License   See LICENSE.txt for the full license.
-#undef DLIB_IMAGE_PYRaMID_ABSTRACT_H__
-#ifdef DLIB_IMAGE_PYRaMID_ABSTRACT_H__
+#undef DLIB_IMAGE_PYRaMID_ABSTRACT_Hh_
+#ifdef DLIB_IMAGE_PYRaMID_ABSTRACT_Hh_
 
 #include "../pixel.h"
 #include "../array2d.h"
 #include "../geometry.h"
+#include "../image_processing/generic_image.h"
 
 namespace dlib
 {
@@ -47,10 +48,12 @@ namespace dlib
         /*!
             requires
                 - is_same_object(original, down) == false
-                - in_image_type == is an implementation of array2d/array2d_kernel_abstract.h
-                - out_image_type == is an implementation of array2d/array2d_kernel_abstract.h
-                - pixel_traits<typename in_image_type::type>::has_alpha == false
-                - pixel_traits<typename out_image_type::type>::has_alpha == false
+                - in_image_type == an image object that implements the interface defined in
+                  dlib/image_processing/generic_image.h 
+                - out_image_type == an image object that implements the interface defined in
+                  dlib/image_processing/generic_image.h 
+                - for both pixel types P in the input and output images, we require:
+                    - pixel_traits<P>::has_alpha == false
             ensures
                 - #down will contain an image that is roughly (N-1)/N times the size of the
                   original image.  
@@ -60,6 +63,24 @@ namespace dlib
                   in the #down image.  
                 - Note that some points on the border of the original image might correspond to 
                   points outside the #down image.  
+        !*/
+
+        template <
+            typename image_type
+            >
+        void operator() (
+            image_type& img
+        ) const;
+        /*!
+            requires
+                - image_type == an image object that implements the interface defined in
+                  dlib/image_processing/generic_image.h 
+                - pixel_traits<typename image_traits<image_type>::pixel_type>::has_alpha == false
+            ensures
+                - This function downsamples the given image and stores the results in #img.
+                  In particular, it is equivalent to performing: 
+                    (*this)(img, temp); 
+                    swap(img, temp);
         !*/
 
     // -------------------------------
@@ -88,21 +109,21 @@ namespace dlib
                   point_up(point_down(P)) == P
         !*/
 
-        rectangle rect_down (
-            const rectangle& rect
+        drectangle rect_down (
+            const drectangle& rect
         ) const;
         /*!
             ensures
-                - returns rectangle(point_down(rect.tl_corner()), point_down(rect.br_corner()));
+                - returns drectangle(point_down(rect.tl_corner()), point_down(rect.br_corner()));
                   (i.e. maps rect into a downsampled)
         !*/
 
-        rectangle rect_up (
-            const rectangle& rect
+        drectangle rect_up (
+            const drectangle& rect
         ) const;
         /*!
             ensures
-                - returns rectangle(point_up(rect.tl_corner()), point_up(rect.br_corner()));
+                - returns drectangle(point_up(rect.tl_corner()), point_up(rect.br_corner()));
                   (i.e. maps rect into a parent image)
         !*/
 
@@ -134,23 +155,23 @@ namespace dlib
                         point_up(p,0) == p,  etc. )
         !*/
 
-        rectangle rect_down (
-            const rectangle& rect,
+        drectangle rect_down (
+            const drectangle& rect,
             unsigned int levels
         ) const;
         /*!
             ensures
-                - returns rectangle(point_down(rect.tl_corner(),levels), point_down(rect.br_corner(),levels));
+                - returns drectangle(point_down(rect.tl_corner(),levels), point_down(rect.br_corner(),levels));
                   (i.e. Basically applies rect_down() to rect levels times and returns the result.)
         !*/
 
-        rectangle rect_up (
-            const rectangle& rect,
+        drectangle rect_up (
+            const drectangle& rect,
             unsigned int levels
         ) const;
         /*!
             ensures
-                - returns rectangle(point_up(rect.tl_corner(),levels), point_up(rect.br_corner(),levels));
+                - returns drectangle(point_up(rect.tl_corner(),levels), point_up(rect.br_corner(),levels));
                   (i.e. Basically applies rect_up() to rect levels times and returns the result.)
         !*/
 
@@ -178,6 +199,6 @@ namespace dlib
 
 }
 
-#endif // DLIB_IMAGE_PYRaMID_ABSTRACT_H__
+#endif // DLIB_IMAGE_PYRaMID_ABSTRACT_Hh_
 
 

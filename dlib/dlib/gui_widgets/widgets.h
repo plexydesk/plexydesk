@@ -3253,12 +3253,12 @@ namespace dlib
 
             // if the new image has a different size when compared to the previous image
             // then we should readjust the total rectangle size.
-            if (new_img.nr() != img.nr() || new_img.nc() != img.nc())
+            if (num_rows(new_img) != img.nr() || num_columns(new_img) != img.nc())
             {
                 if (zoom_in_scale != 1)
-                    set_total_rect_size(new_img.nc()*zoom_in_scale, new_img.nr()*zoom_in_scale);
+                    set_total_rect_size(num_columns(new_img)*zoom_in_scale, num_rows(new_img)*zoom_in_scale);
                 else
-                    set_total_rect_size(new_img.nc()/zoom_out_scale, new_img.nr()/zoom_out_scale);
+                    set_total_rect_size(num_columns(new_img)/zoom_out_scale, num_rows(new_img)/zoom_out_scale);
             }
             else
             {
@@ -3679,6 +3679,9 @@ namespace dlib
         void add_overlay(const rectangle& r, pixel_type p) 
         { add_overlay(image_display::overlay_rect(r,p)); }
 
+        void add_overlay(const rectangle& r) 
+        { add_overlay(image_display::overlay_rect(r,rgb_pixel(255,0,0))); }
+
         template <typename pixel_type>
         void add_overlay(const rectangle& r, pixel_type p, const std::string& l) 
         { add_overlay(image_display::overlay_rect(r,p,l)); }
@@ -3693,6 +3696,9 @@ namespace dlib
 
             add_overlay(temp);
         }
+
+        void add_overlay(const std::vector<rectangle>& r) 
+        { add_overlay(r, rgb_pixel(255,0,0)); }
 
         void add_overlay(
             const full_object_detection& object,

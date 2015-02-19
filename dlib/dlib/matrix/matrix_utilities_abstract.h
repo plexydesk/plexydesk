@@ -1411,6 +1411,47 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    point max_point (
+        const matrix_exp& m
+    );
+    /*!
+        requires
+            - m.size() > 0
+        ensures
+            - returns the location of the maximum element of the array, that is, if the
+              returned point is P then it will be the case that: m(P.y(),P.x()) == max(m).
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    dlib::vector<double,2> max_point_interpolated (
+        const matrix_exp& m
+    );
+    /*!
+        requires
+            - m.size() > 0
+        ensures
+            - Like max_point(), this function finds the location in m with the largest
+              value.  However, we additionally use some quadratic interpolation to find the
+              location of the maximum point with sub-pixel accuracy.  Therefore, the
+              returned point is equal to max_point(m) + some small sub-pixel delta.
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
+    point min_point (
+        const matrix_exp& m
+    );
+    /*!
+        requires
+            - m.size() > 0
+        ensures
+            - returns the location of the minimum element of the array, that is, if the
+              returned point is P then it will be the case that: m(P.y(),P.x()) == min(m).
+    !*/
+
+// ----------------------------------------------------------------------------------------
+
     const matrix_exp::type sum (
         const matrix_exp& m
     );
