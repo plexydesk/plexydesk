@@ -225,12 +225,14 @@ QSizeF Widget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
 
 void Widget::paintView(QPainter *painter, const QRectF &rect)
 {
+    /*
   StyleFeatures feature;
   feature.geometry = rect;
 
   if (style()) {
     style()->draw("window_frame", feature, painter);
   }
+  */
 
 }
 

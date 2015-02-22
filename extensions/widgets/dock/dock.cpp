@@ -149,6 +149,7 @@ void DockControllerImpl::init()
 
   d->m_dock_window->setWindowType(Window::kPanelWindow);
   d->m_preview_window->setWindowType(Window::kPopupWindow);
+  d->m_preview_window->setEnableWindowBackground(false);
 
   d->m_dock_window->setWindowContent(d->m_navigation_dock);
   d->m_preview_window->setWindowContent(d->m_preview_widget);
@@ -534,7 +535,7 @@ void DockControllerImpl::updatePreview()
 
     if (_workspace) {
       foreach(UIKit::Space * _space, _workspace->currentSpaces()) {
-        QPixmap _preview = _workspace->previewSpace(_space);
+        QPixmap _preview = _workspace->thumbnail(_space);
 
         UIKit::ImageView *p = new UIKit::ImageView();
         p->setMinimumSize(_preview.size());

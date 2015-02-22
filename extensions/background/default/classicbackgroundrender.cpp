@@ -15,6 +15,8 @@ ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
   mBackgroundImage = background_image;
   mScalingMode = None;
   mSeamLessMode = false;
+  setWindowType(UIKit::Window::kFramelessWindow);
+  setEnableWindowBackground(false);
 }
 
 void ClassicBackgroundRender::setBackgroundImage(const QString &path)
