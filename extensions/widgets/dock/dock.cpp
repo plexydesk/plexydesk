@@ -174,6 +174,7 @@ void DockControllerImpl::setViewRect(const QRectF &rect)
 
   d->m_preview_widget->setViewGeometry(
     QRectF(0.0, 0.0, 256, rect.height() - 24.0));
+
   d->m_preview_window->setGeometry(
     QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
@@ -474,6 +475,7 @@ void DockControllerImpl::onNavigationPanelClicked(const QString &action)
       updatePreview();
       d->m_preview_window->show();
     }
+
     return;
   } else if (action == tr("Menu")) {
     if (!viewport() || !viewport()->workspace()) {
@@ -527,6 +529,9 @@ void DockControllerImpl::updatePreview()
     UIKit::WorkSpace *_workspace =
       qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
+    float lHeight = 10;
+    float lWidth = 0;
+
     if (_workspace) {
       foreach(UIKit::Space * _space, _workspace->currentSpaces()) {
         QPixmap _preview = _workspace->previewSpace(_space);
@@ -534,10 +539,19 @@ void DockControllerImpl::updatePreview()
         UIKit::ImageView *p = new UIKit::ImageView();
         p->setMinimumSize(_preview.size());
         p->setPixmap(_preview);
-
+        lHeight += _preview.size().height();
+        lWidth = _preview.size().width();
         d->m_preview_widget->insert(p);
       }
     }
+
+    QPointF lMenuPos =
+    viewport()->center(d->m_action_activity->window()->boundingRect(),
+                         UIKit::Space::kCenterOnViewportLeft);
+
+    lMenuPos.setX(d->m_navigation_dock->geometry().width() + 5.0);
+    d->m_preview_window->setGeometry(
+                QRectF(lMenuPos.x(), lMenuPos.y(), lWidth, lHeight));
   }
 }
 
