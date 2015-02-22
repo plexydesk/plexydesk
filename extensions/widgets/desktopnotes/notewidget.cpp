@@ -76,11 +76,6 @@ void NoteWidget::createToolBar()
 NoteWidget::NoteWidget(QGraphicsObject *parent)
   : UIKit::Widget(parent), d(new PrivateNoteWidget)
 {
-  setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
-  setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
-  setWindowFlag(UIKit::Widget::kRenderBackground, true);
-
-
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mSubLayoutBase = new QGraphicsWidget(d->mLayoutBase);
 
@@ -229,10 +224,9 @@ void NoteWidget::resize(const QSizeF &size)
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 
   d->mLayoutBase->setGeometry(geometry());
-  d->mLayoutBase->setPos(0.0, 64.0);
+  //d->mLayoutBase->setPos(0.0, 64.0);
 
-  d->mSubLayoutBase->setGeometry(QRectF(0.0, 64.0, boundingRect().width(),
-                                        boundingRect().height() - 64.0));
+  d->mSubLayoutBase->setGeometry(boundingRect());
   d->mTextEdit->setMaximumSize(geometry().size());
   d->mMainVerticleLayout->setGeometry(
     QRectF(0.0, 0.0, size.width(), size.height()));
@@ -261,7 +255,7 @@ void NoteWidget::paint(QPainter *painter,
   painter->save();
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
   painter->drawPixmap(
-    QRectF(0.0, 64.0, option->exposedRect.width(), 300.0), d->mPixmap,
+    QRectF(0, 0, option->exposedRect.width(), 300.0), d->mPixmap,
     QRectF((d->mPixmap.width() - option->exposedRect.width()) / 2, 0.0,
            option->exposedRect.width(), 300));
   painter->restore();

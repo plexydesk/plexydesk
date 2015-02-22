@@ -67,14 +67,6 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->m_auto_scale_frame = false;
 
   d->mFrame = new UIKit::Window();
-
-  /*
-  d->mFrame->setGeometry(window_geometry);
-  d->mFrame->setWindowFlag(UI::Widget::kRenderBackground);
-  d->mFrame->setWindowFlag(UI::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UI::Widget::kRenderDropShadow);
-  */
-
   setGeometry(window_geometry);
 
   d->mTable = new UIKit::TableView(d->mFrame);

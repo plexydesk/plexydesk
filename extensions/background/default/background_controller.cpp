@@ -508,7 +508,7 @@ void BackgroundController::createWallpaperActivity(const QString &activity,
 {
   if (!viewport()) return;
 
-  QRectF _view_geometry(0.0, 0.0, 420.0, 192.0);
+  QRectF _view_geometry(0.0, 0.0, 600, 480);
 
   UIKit::DesktopActivityPtr intent =
           viewport()->createActivity("photosearchactivity", title,

@@ -1,3 +1,4 @@
+#include "themepackloader.h"
 #include "window.h"
 
 #include <QRectF>
@@ -10,6 +11,7 @@
 
 #include <QDebug>
 #include <QTimer>
+#include <QGraphicsDropShadowEffect>
 
 namespace UIKit {
 class Window::PrivateWindow {
@@ -36,8 +38,9 @@ public:
 Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
 {
     setWindowFlag(Widget::kRenderBackground, true);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
     setGeometry(QRectF(0, 0, 400, 400));
-    setWindowTitle("Test");
+    setWindowTitle("");
     d->m_window_type = kApplicationWindow;
 
     d->m_window_close_button = new WindowButton(this);
@@ -69,10 +72,27 @@ void Window::setWindowContent(Widget *widget)
 
     this->setGeometry(d->m_window_content->boundingRect());
 
+    float sWindowTitleHeight = 0;
+
+    if (UIKit::Theme::style()) {
+        sWindowTitleHeight = UIKit::Theme::style()
+                                 ->attrbute("frame", "window_title_height")
+                                 .toFloat();
+    }
+
     if (d->m_window_type == kApplicationWindow) {
-       d->m_window_content->setPos(0.0, 72.0);
+       d->m_window_content->setPos(0.0, sWindowTitleHeight);
     } else {
        d->m_window_close_button->hide();
+    }
+
+    if (d->m_window_type != kFramelessWindow) {
+        QGraphicsDropShadowEffect *lEffect = new QGraphicsDropShadowEffect(this);
+        lEffect->setColor(QColor("#111111"));
+        lEffect->setBlurRadius(26);
+        lEffect->setXOffset(0);
+        lEffect->setYOffset(0);
+        setGraphicsEffect(lEffect);
     }
 }
 
@@ -105,6 +125,10 @@ void Window::setWindowType(Window::WindowType a_window_type)
        d->m_window_content->setPos(0.0, 72.0);
     } else {
        d->m_window_close_button->hide();
+    }
+
+    if (d->m_window_type == kPopupWindow) {
+        setZValue(10000);
     }
 }
 

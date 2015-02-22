@@ -132,7 +132,7 @@ Widget::Widget(QGraphicsObject *parent)
 
   setCacheMode(DeviceCoordinateCache);
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
-  setFlag(QGraphicsItem::ItemIsMovable, true);
+  setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
   setAcceptTouchEvents(true);

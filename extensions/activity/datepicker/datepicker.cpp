@@ -55,30 +55,15 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
                                       const QPointF &window_pos)
 {
   d->mFrame = new UIKit::Window();
-
-  updateContentGeometry(d->mFrame);
+  d->mFrame->setGeometry(window_geometry);
+  d->mFrame->setWindowTitle(window_title);
   setGeometry(window_geometry);
 
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground, false);
-  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
-
   d->mCalendarWidget = new CalendarWidget(d->mFrame);
+  d->mCalendarWidget->setGeometry(window_geometry);
 
-  d->mCalendarWidget->setPos(0.0, 0.0);
-
+  d->mFrame->setWindowContent(d->mCalendarWidget);
   exec(window_pos);
-
-  showActivity();
-
-  d->mLoader = new UIKit::Theme("default", this);
-
-  connect(d->mLoader, SIGNAL(imageSearchDone(QImage)), this,
-          SLOT(onImageReady(QImage)));
-
-  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
-  connect(d->mCalendarWidget, SIGNAL(done()), this, SLOT(onCalendarReady()));
 }
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }

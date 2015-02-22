@@ -38,8 +38,10 @@ public:
 
   ~PrivateDesktopClock() {}
 
-  UIKit::Window *m_main_window;
-  QGraphicsWidget *m_layout_widget;
+  UIKit::Window *mMainWindow;
+  UIKit::Widget *mWindowContentWidget;
+
+  QGraphicsWidget *mLayoutWidget;
   QGraphicsLinearLayout *m_main_layout;
   UIKit::ToolBar *m_tool_bar;
   UIKit::Label *m_timezone_label;
@@ -58,12 +60,8 @@ DesktopClockActivity::~DesktopClockActivity() { delete d; }
 void DesktopClockActivity::createFrameWindow(const QRectF &window_geometry,
     const QString &window_title)
 {
-  d->m_main_window = new UIKit::Window();
-  d->m_main_window->setGeometry(window_geometry);
-
-  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderDropShadow);
+  d->mMainWindow = new UIKit::Window();
+  d->mMainWindow->setGeometry(window_geometry);
 
   setGeometry(window_geometry);
 }
@@ -77,24 +75,21 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   createFrameWindow(window_geometry, window_title);
 
-  d->m_layout_widget = new QGraphicsWidget(d->m_main_window);
-  d->m_main_layout = new QGraphicsLinearLayout(d->m_layout_widget);
+  d->mWindowContentWidget = new UIKit::Widget;
+  d->mWindowContentWidget->setGeometry(window_geometry);
 
-  if (UIKit::Theme::style()) {
-    float _window_title_height = UIKit::Theme::style()
-                                 ->attrbute("frame", "window_title_height")
-                                 .toFloat();
-    _layout_geometry.setY(_window_title_height);
-    _layout_geometry.setHeight(window_geometry.height() - _window_title_height);
-  }
+  d->mLayoutWidget = new QGraphicsWidget(d->mWindowContentWidget);
+  d->m_main_layout = new QGraphicsLinearLayout(d->mLayoutWidget);
 
-  d->m_layout_widget->setGeometry(_layout_geometry);
+  d->mLayoutWidget->setGeometry(window_geometry);
 
   d->m_main_layout->setGeometry(_layout_geometry);
   d->m_main_layout->setOrientation(Qt::Vertical);
 
+  d->mMainWindow->setWindowContent(d->mWindowContentWidget);
+
   /* add clock widget */
-  d->m_clock_widget = new ClockWidget(d->m_layout_widget);
+  d->m_clock_widget = new ClockWidget(d->mLayoutWidget);
   d->m_clock_widget->setGeometry(_clock_geometry);
   d->m_clock_widget->setMinimumSize(_clock_geometry.size());
   d->m_clock_widget->setMaximumHeight(_clock_geometry.height());
@@ -102,7 +97,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   d->m_main_layout->addItem(d->m_clock_widget);
 
   /* Add Toolbar Widget */
-  d->m_tool_bar = new UIKit::ToolBar(d->m_layout_widget);
+  d->m_tool_bar = new UIKit::ToolBar(d->mLayoutWidget);
 
   d->m_timezone_label = new UIKit::Label(d->m_tool_bar);
   d->m_timezone_label->setSize(QSizeF(window_geometry.width() - 64, 32.0));
@@ -118,7 +113,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   /* Add table view */
   QRectF _timezone_table_rect(0.0, 0.0, window_geometry.width(), 128);
 
-  d->m_timezone_table = new UIKit::TableView(d->m_layout_widget);
+  d->m_timezone_table = new UIKit::TableView(d->mLayoutWidget);
   d->m_timezone_table->setGeometry(_timezone_table_rect);
 
   d->m_timezone_model = new TimeZoneModel(d->m_timezone_table);
@@ -130,7 +125,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UIKit::Widget *)), this,
+  connect(d->mMainWindow, SIGNAL(closed(UIKit::Widget *)), this,
           SLOT(onWidgetClosed(UIKit::Widget *)));
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
@@ -140,7 +135,7 @@ QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
 UIKit::Window *DesktopClockActivity::window() const
 {
-  return d->m_main_window;
+  return d->mMainWindow;
 }
 
 void DesktopClockActivity::onWidgetClosed(UIKit::Widget *widget)

@@ -139,7 +139,7 @@ void DialWidget::paintView(QPainter *painter, const QRectF &rect)
 
   painter->save();
   QPen pen_border;
-  pen_border.setColor(QColor("#F0F0F0"));
+  pen_border.setColor(QColor(181, 181, 181));
   pen_border.setWidth(4);
   painter->setPen(pen_border);
 
@@ -153,7 +153,7 @@ void DialWidget::paintView(QPainter *painter, const QRectF &rect)
                                 borderRect.height() - 4));
 
   // painter->fillPath(clockInisde, QColor("#F28585"));
-  painter->fillPath(clockInisde, QColor(Qt::white));
+  painter->fillPath(clockInisde, QColor("#f0f0f0"));
 
   QFont font = painter->font();
   font.setBold(true);
@@ -181,7 +181,7 @@ void DialWidget::paintView(QPainter *painter, const QRectF &rect)
   QPainterPath path;
   path.addEllipse(ctrFrameRect);
   painter->fillPath(path, QColor(Qt::white));
-  painter->fillPath(path, QColor("#F28585"));
+  painter->fillPath(path, QColor(81, 81, 81));
 
   QPen whitePen;
   whitePen.setColor(Qt::white);

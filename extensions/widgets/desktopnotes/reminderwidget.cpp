@@ -58,16 +58,11 @@ public:
 ReminderWidget::ReminderWidget(QGraphicsObject *parent)
   : UIKit::Widget(parent), d(new PrivateReminderWidget)
 {
-  setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-  setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
-  setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
-
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mLayoutBase->setGeometry(this->boundingRect());
 
   d->mSubLayoutBase = new QGraphicsWidget(d->mLayoutBase);
-  d->mSubLayoutBase->setGeometry(
-    QRectF(64.0, 0.0, boundingRect().width(), boundingRect().height()));
+  d->mSubLayoutBase->setGeometry(boundingRect());
 
   d->mMainVerticleLayout = new QGraphicsLinearLayout(d->mLayoutBase);
   d->mMainVerticleLayout->setOrientation(Qt::Horizontal);

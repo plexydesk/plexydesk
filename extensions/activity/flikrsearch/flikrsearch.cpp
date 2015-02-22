@@ -46,6 +46,7 @@ public:
   }
 
   QGraphicsWidget *m_main_frame_widget;
+  UIKit::Widget *mWindowContentWidget;
   QGraphicsLinearLayout *m_verticle_layout;
 
   UIKit::ToolBar *m_top_toolbar;
@@ -58,8 +59,6 @@ public:
 
   UIKit::ProgressBar *m_progress_widget;
   UIKit::LineEdit *m_search_input_box;
-
-  QRectF m_bounding_geometry;
 
   int m_page_count;
   int m_current_page_index;
@@ -78,38 +77,30 @@ FlickrSearchActivity::~FlickrSearchActivity()
   delete d;
 }
 
-void FlickrSearchActivity::createWindow(const QRectF &window_geometry,
+void FlickrSearchActivity::createWindow(const QRectF &aWindowGeometry,
                                         const QString &window_title,
                                         const QPointF &window_pos)
 {
   d->m_is_new_search = true;
-  d->m_bounding_geometry = window_geometry;
 
   d->m_view_delegate_window = new UIKit::Window();
-  d->m_view_delegate_window->setGeometry(window_geometry);
-  d->m_view_delegate_window->setWindowFlag(
-    UIKit::Widget::kRenderBackground);
-  d->m_view_delegate_window->setWindowFlag(
-    UIKit::Widget::kConvertToWindowType);
-  d->m_view_delegate_window->setWindowFlag(
-    UIKit::Widget::kRenderDropShadow);
+  d->m_view_delegate_window->setGeometry(aWindowGeometry);
 
-  float _window_title_height = 64.0;
-  float _size_attribute = 1.0;
+  d->mWindowContentWidget = new UIKit::Widget();
+  d->m_main_frame_widget = new QGraphicsWidget(d->mWindowContentWidget);
 
-  d->m_main_frame_widget = new QGraphicsWidget(d->m_view_delegate_window);
-  d->m_main_frame_widget->setGeometry(
-    QRectF(0.0, 0.0, window_geometry.width(),
-           window_geometry.height() - _window_title_height));
-  d->m_main_frame_widget->setPos(0.0, _window_title_height);
+  d->m_main_frame_widget->setGeometry(aWindowGeometry);
+  d->mWindowContentWidget->setGeometry(aWindowGeometry);
+
+  d->m_view_delegate_window->setWindowContent(d->mWindowContentWidget);
 
   d->m_top_toolbar = new UIKit::ToolBar(d->m_main_frame_widget);
   d->m_top_toolbar->setIconSize(QSize(32, 32));
-  d->m_top_toolbar->setMinimumSize(QSizeF(window_geometry.width() - 20, 42));
+  d->m_top_toolbar->setMinimumSize(QSizeF(aWindowGeometry.width() - 20, 42));
 
   d->m_search_input_box = new UIKit::LineEdit(d->m_top_toolbar);
   d->m_search_input_box->setMinimumSize(
-    QSizeF(window_geometry.width() - 58, 32));
+    QSizeF(aWindowGeometry.width() - 58, 32));
 
   d->m_top_toolbar->insertWidget(d->m_search_input_box);
   d->m_top_toolbar->addAction(tr("search"), "pd_out_icon", false);
@@ -117,7 +108,7 @@ void FlickrSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_verticle_layout = new QGraphicsLinearLayout(d->m_main_frame_widget);
   d->m_verticle_layout->setOrientation(Qt::Vertical);
   d->m_verticle_layout->setContentsMargins(5.0, 0.0, 5.0, 0.0);
-  d->m_verticle_layout->setGeometry(window_geometry);
+  d->m_verticle_layout->setGeometry(aWindowGeometry);
   d->m_verticle_layout->setSpacing(0);
 
   d->m_verticle_layout->addItem(d->m_top_toolbar);
@@ -128,7 +119,7 @@ void FlickrSearchActivity::createWindow(const QRectF &window_geometry,
   d->m_image_cell_model->setLabelVisibility(false);
   d->m_image_grid_view->setModel(d->m_image_cell_model);
 
-  d->m_image_grid_view->setMinimumSize(QSizeF(window_geometry.width(), 308));
+  d->m_image_grid_view->setMinimumSize(QSizeF(aWindowGeometry.width(), 308));
 
   d->m_verticle_layout->addItem(d->m_image_grid_view);
 
@@ -141,7 +132,7 @@ void FlickrSearchActivity::createWindow(const QRectF &window_geometry,
 
   d->m_progress_widget = new UIKit::ProgressBar(d->m_bottom_toolbar);
   d->m_progress_widget->setMinimumSize(
-    QSizeF(window_geometry.width() - 116, 32));
+    QSizeF(aWindowGeometry.width() - 116, 32));
 
   d->m_bottom_toolbar->addAction(tr("next"), "pd_in_icon", false);
   d->m_bottom_toolbar->insertWidget(d->m_progress_widget);

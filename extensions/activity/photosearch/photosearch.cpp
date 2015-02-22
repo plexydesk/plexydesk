@@ -41,11 +41,11 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  UIKit::Window *mFrame;
+  UIKit::Window *mWindowFrame;
   UIKit::ProgressBar *mProgressBar;
   UIKit::TableView *mTable;
   ImageCellAdaptor *mFactory;
-  QRectF m_frame_geometry;
+  QRectF mGeometry;
   QVariantMap mResult;
 };
 
@@ -58,49 +58,42 @@ PhotoSearchActivity::~PhotoSearchActivity()
   delete d;
 }
 
-void PhotoSearchActivity::createWindow(const QRectF &window_geometry,
-                                       const QString &window_title,
+void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
+                                       const QString &aWindowTitle,
                                        const QPointF &window_pos)
 {
-  d->m_frame_geometry = QRectF(0.0, 0.0, 600.0, 480.0);
+  d->mGeometry = aWindowGeometry;
 
   // todo: invoke UI
-  d->mFrame = new UIKit::Window();
-  updateContentGeometry(d->mFrame);
-  setGeometry(d->m_frame_geometry);
-
-  d->mFrame->setLabelName("WallPaper");
-
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground);
-  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
+  d->mWindowFrame = new UIKit::Window();
+  d->mWindowFrame->setGeometry(aWindowGeometry);
+  d->mWindowFrame->setWindowTitle(aWindowTitle);
 
   // table
-  d->mTable = new UIKit::TableView(d->mFrame);
-
-  d->mFactory = new ImageCellAdaptor(d->mFrame);
+  d->mTable = new UIKit::TableView(d->mWindowFrame);
+  d->mFactory = new ImageCellAdaptor(d->mWindowFrame);
 
   d->mTable->setModel(d->mFactory);
-  d->mTable->setGeometry(d->m_frame_geometry);
-  d->mTable->setPos(0.0, 72.0);
+  d->mTable->setGeometry(aWindowGeometry);
+
+  d->mWindowFrame->setWindowContent(d->mTable);
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
-  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
+  connect(d->mWindowFrame, SIGNAL(closed(UIKit::Widget *)), this,
           SLOT(onWidgetClosed(UIKit::Widget *)));
   connect(d->mFactory, SIGNAL(completed(int)), this,
           SLOT(onProgressValue(int)));
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
 
   exec(window_pos);
-  // showActivity();
 }
 
-QRectF PhotoSearchActivity::geometry() const { return d->m_frame_geometry; }
+QRectF PhotoSearchActivity::geometry() const { return d->mGeometry; }
 
 QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
-Window *PhotoSearchActivity::window() const { return d->mFrame; }
+Window *PhotoSearchActivity::window() const { return d->mWindowFrame; }
 
 void PhotoSearchActivity::onWidgetClosed(UIKit::Widget *widget)
 {
@@ -146,7 +139,7 @@ void PhotoSearchActivity::onClicked(TableViewItem *item)
 void PhotoSearchActivity::onProgressValue(int value)
 {
   if (value == 100) {
-    if (d->mFrame) {
+    if (d->mWindowFrame) {
       if (hasAttribute("title")) {
       }
     }

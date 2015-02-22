@@ -39,7 +39,7 @@ public:
 
   virtual ~FlickrSearchActivity();
 
-  void createWindow(const QRectF &window_geometry, const QString &window_title,
+  void createWindow(const QRectF &aWindowGeometry, const QString &window_title,
                     const QPointF &window_pos);
 
   // virtual QRectF geometry() const;

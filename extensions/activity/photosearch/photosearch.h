@@ -38,7 +38,7 @@ public:
 
   virtual ~PhotoSearchActivity();
 
-  void createWindow(const QRectF &window_geometry, const QString &window_title,
+  void createWindow(const QRectF &window_geometry, const QString &aWindowTitle,
                     const QPointF &window_pos);
 
   virtual QRectF geometry() const;
