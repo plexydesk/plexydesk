@@ -61,7 +61,6 @@ public:
 
   UIKit::DesktopActivityPtr m_action_activity;
   UIKit::ImageButton *m_add_new_workspace_button_ptr;
-  QSharedPointer<UIKit::DesktopActivityMenu> m_desktop_actions_popup;
   UIKit::ActionList m_supported_action_list;
 };
 
@@ -96,9 +95,6 @@ DockControllerImpl::DockControllerImpl(QObject *object)
           SLOT(onNavigationPanelClicked(QString)));
   // menu
   d->m_preview_widget = new UIKit::ModelView();
-
-  d->m_desktop_actions_popup = QSharedPointer<UIKit::DesktopActivityMenu>(
-                                 new UIKit::DesktopActivityMenu(this));
 }
 
 DockControllerImpl::~DockControllerImpl()
@@ -127,10 +123,18 @@ void DockControllerImpl::init()
   if (_space) {
     d->m_action_activity =
       createActivity("", "icongrid", "", QPoint(), QVariantMap());
+    /*
     d->m_desktop_actions_popup->setSpace(_space);
     d->m_desktop_actions_popup->setActivity(d->m_action_activity);
     _space->addActivityPoupToView(d->m_desktop_actions_popup);
     d->m_desktop_actions_popup->hide();
+    */
+
+    if (d->m_action_activity && d->m_action_activity->window()) {
+        d->m_action_activity->window()->setWindowType(Window::kPopupWindow);
+        d->m_action_activity->window()->setVisible(false);
+    }
+
   }
 
   // loads the controllers before dock was created;
@@ -145,7 +149,7 @@ void DockControllerImpl::init()
   d->m_preview_window = new UIKit::Window();
 
   d->m_dock_window->setWindowType(Window::kPanelWindow);
-  d->m_preview_window->setWindowType(Window::kPanelWindow);
+  d->m_preview_window->setWindowType(Window::kPopupWindow);
 
   d->m_dock_window->setWindowContent(d->m_navigation_dock);
   d->m_preview_window->setWindowContent(d->m_preview_widget);
@@ -194,7 +198,12 @@ void DockControllerImpl::requestAction(const QString &actionName,
                                        const QVariantMap &args)
 {
   if (actionName.toLower() == "menu") {
-    d->m_desktop_actions_popup->exec(args["menu_pos"].toPoint());
+
+    if (d->m_action_activity && d->m_action_activity->window()) {
+        d->m_action_activity->window()->setPos(args["menu_pos"].toPoint());
+        d->m_action_activity->window()->show();
+    }
+
     return;
   } else if (actionName.toLower() == "show-dock") {
     d->m_navigation_dock->show();
@@ -298,12 +307,7 @@ void DockControllerImpl::prepareRemoval()
       qobject_cast<QGraphicsView *>(viewport()->workspace());
 
     if (_workspace) {
-      if (d->m_action_activity->window()) {
         d->m_action_activity.clear();
-      }
-
-      d->m_desktop_actions_popup.clear();
-      d->m_action_activity.clear();
     } else {
       if (d->m_action_activity) {
         d->m_action_activity.clear();
@@ -481,7 +485,12 @@ void DockControllerImpl::onNavigationPanelClicked(const QString &action)
       viewport()->center(d->m_action_activity->window()->boundingRect(),
                          UIKit::Space::kCenterOnViewportLeft);
     _menu_pos.setX(d->m_navigation_dock->frameGeometry().width() + 5);
-    d->m_desktop_actions_popup->exec(_menu_pos);
+
+    if (d->m_action_activity && d->m_action_activity->window()) {
+        d->m_action_activity->window()->setPos(_menu_pos);
+        d->m_action_activity->window()->show();
+    }
+
   } else if (action == tr("Add")) {
     onAddSpaceButtonClicked();
   }

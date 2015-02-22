@@ -8,6 +8,9 @@
 #include <windowbutton.h>
 #include <space.h>
 
+#include <QDebug>
+#include <QTimer>
+
 namespace UIKit {
 class Window::PrivateWindow {
 public:
@@ -39,6 +42,14 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
     d->m_window_close_button->setPos(5,5);
     d->m_window_close_button->show();
     d->m_window_close_button->setZValue(10000);
+
+    setFocus(Qt::MouseFocusReason);
+
+    connect(this, &Widget::focusLost, [&]() {
+        qDebug() << Q_FUNC_INFO << "Lost focus";
+        if (d->m_window_type == kPopupWindow)
+            hide();
+    });
 }
 
 Window::~Window()
@@ -121,4 +132,25 @@ void Window::paintView(QPainter *painter, const QRectF &rect)
       style()->draw("window_frame", feature, painter);
     }
 }
+
+void Window::show()
+{
+    setVisible(true);
+    setFocus(Qt::MouseFocusReason);
+}
+
+void Window::hide()
+{
+    // Qt 5.4 -> QTimer::singleShot(250, []() { windowHide(); } );
+    QTimer *lTimer = new QTimer(this);
+    lTimer->setSingleShot(true);
+
+    connect(lTimer, &QTimer::timeout, [=]() {
+        setVisible(false);
+        delete lTimer;
+    } );
+
+    lTimer->start(250);
+}
+
 }

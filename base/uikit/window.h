@@ -42,6 +42,10 @@ public:
             std::function<void (const QPointF &pos)> handler);
     virtual void setWindowCloseCallback(
             std::function<void ()> handler);
+
+    virtual void show();
+    virtual void hide();
+
 protected:
     virtual void paintView(QPainter *painter, const QRectF &rect);
 

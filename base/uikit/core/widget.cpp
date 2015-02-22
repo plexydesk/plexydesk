@@ -236,6 +236,7 @@ void Widget::paintView(QPainter *painter, const QRectF &rect)
 
 void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+  setFocus(Qt::MouseFocusReason);
   QGraphicsObject::mousePressEvent(event);
 }
 
