@@ -96,7 +96,6 @@ DockControllerImpl::DockControllerImpl(QObject *object)
           SLOT(onNavigationPanelClicked(QString)));
   // menu
   d->m_preview_widget = new UIKit::ModelView();
-  d->m_preview_widget->hide();
 
   d->m_desktop_actions_popup = QSharedPointer<UIKit::DesktopActivityMenu>(
                                  new UIKit::DesktopActivityMenu(this));
@@ -146,6 +145,7 @@ void DockControllerImpl::init()
   d->m_preview_window = new UIKit::Window();
 
   d->m_dock_window->setWindowType(Window::kPanelWindow);
+  d->m_preview_window->setWindowType(Window::kPanelWindow);
 
   d->m_dock_window->setWindowContent(d->m_navigation_dock);
   d->m_preview_window->setWindowContent(d->m_preview_widget);
@@ -153,7 +153,7 @@ void DockControllerImpl::init()
   insert(d->m_dock_window);
   insert(d->m_preview_window);
 
-  d->m_preview_widget->hide();
+  d->m_preview_window->hide();
   d->m_navigation_dock->show();
 }
 
@@ -178,7 +178,7 @@ void DockControllerImpl::setViewRect(const QRectF &rect)
     rect.x() + d->m_navigation_dock->frameGeometry().width() + 5,
     rect.y() + 24.0);
 
-  d->m_preview_widget->hide();
+  d->m_preview_window->hide();
 
   if (d->m_action_activity) {
     d->m_action_activity->window()->setPos(0.0, 0.0);
@@ -203,14 +203,14 @@ void DockControllerImpl::requestAction(const QString &actionName,
     d->m_navigation_dock->hide();
     return;
   } else if (actionName.toLower() == "show-expose") {
-    if (d->m_preview_widget->isVisible()) {
-      d->m_preview_widget->hide();
+    if (d->m_preview_window->isVisible()) {
+      d->m_preview_window->hide();
     } else {
       updatePreview();
-      d->m_preview_widget->show();
+      d->m_preview_window->show();
     }
   } else if (actionName.toLower() == "hide-expose") {
-    d->m_preview_widget->hide();
+    d->m_preview_window->hide();
   }
 
   if (viewport() && viewport()->controller(args["controller"].toString())) {
@@ -464,12 +464,12 @@ void DockControllerImpl::onNavigationPanelClicked(const QString &action)
   } else if (action == tr("Seamless")) {
     this->toggleSeamless();
   } else if (action == tr("Expose")) {
-    if (d->m_preview_widget->isVisible()) {
+    if (d->m_preview_window->isVisible()) {
       qDebug() << Q_FUNC_INFO << "curren visible";
-      d->m_preview_widget->hide();
+      d->m_preview_window->hide();
     } else {
       updatePreview();
-      d->m_preview_widget->show();
+      d->m_preview_window->show();
     }
     return;
   } else if (action == tr("Menu")) {
