@@ -21,7 +21,6 @@
 // Qt
 #include <QGraphicsLinearLayout>
 
-#include <menu.h>
 #include <toolbar.h>
 #include <imagebutton.h>
 #include <tableview.h>

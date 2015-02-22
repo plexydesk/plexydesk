@@ -4,7 +4,6 @@
 #include <QGraphicsItem>
 #include <QObject>
 
-#include <desktopactivitymenu.h>
 #include <view_controller.h>
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
@@ -59,9 +58,6 @@ public:
                                         const QPointF &aPos,
                                         const QRectF &aRect,
                                         const QVariantMap &aDataMap);
-  virtual void addActivityPoupToView(QSharedPointer<DesktopActivityMenu> aMenu);
-
-  virtual void dismissActivityPopup();
 
   virtual QPointF mousePointerPos() const;
   virtual QPointF center(const QRectF &aViewGeometry,

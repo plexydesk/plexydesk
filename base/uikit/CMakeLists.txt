@@ -77,9 +77,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/tableviewcellinterface.cpp
     widgets/abstractcellcomponent.cpp
     widgets/toolbar.cpp
-    widgets/desktopactivitymenu.cpp
     widgets/modelview.cpp
-    widgets/menu.cpp
     components/dialwidget.cpp
     components/rangewidget.cpp
     )
@@ -118,10 +116,8 @@ set(LIBRARY_HEADER_FILES
     widgets/default_table_component.h
     widgets/tableviewcellinterface.h
     widgets/abstractcellcomponent.h
-    widgets/desktopactivitymenu.h
     widgets/toolbar.h
     widgets/modelview.h
-    widgets/menu.h
     components/dialwidget.h
     components/rangewidget.h
     workspace.h

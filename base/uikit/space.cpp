@@ -8,7 +8,6 @@
 #include <disksyncengine.h>
 #include <extensionmanager.h>
 #include <syncobject.h>
-#include <desktopactivitymenu.h>
 #include <QGraphicsScene>
 #include <QWeakPointer>
 #include <widget.h>
@@ -18,8 +17,6 @@
 
 namespace UIKit
 {
-
-typedef QWeakPointer<DesktopActivityMenu> ActivityPoupWeekPtr;
 
 class Space::PrivateSpace
 {
@@ -45,7 +42,6 @@ public:
   QList<UIKit::DesktopActivityPtr> mActivityList;
   std::list<UIKit::Widget *> mWindowList;
   QMap<QString, ViewControllerPtr> mCurrentControllerMap;
-  QList<ActivityPoupWeekPtr> mActivityPopupList;
   QList<ViewControllerPtr> mControllerList;
 };
 
@@ -179,11 +175,6 @@ void Space::addActivity(UIKit::DesktopActivityPtr aActivity)
 
     mPrivImpl->mMainScene->addItem(aActivity->window());
   }
-}
-
-void Space::addActivityPoupToView(QSharedPointer<DesktopActivityMenu> aMenu)
-{
-  mPrivImpl->mActivityPopupList.append(aMenu.toWeakRef());
 }
 
 void Space::addWidgetToView(Widget *aWidget)
@@ -454,20 +445,6 @@ void Space::clear()
   }
 
   mPrivImpl->mCurrentControllerMap.clear();
-}
-
-void Space::dismissActivityPopup()
-{
-  Q_FOREACH(ActivityPoupWeekPtr popup, mPrivImpl->mActivityPopupList) {
-    QSharedPointer<DesktopActivityMenu> _strong_ptr = popup.toStrongRef();
-    if (_strong_ptr) {
-      _strong_ptr->hide();
-    } else {
-      // activity is deleted so we remove from the list
-      qDebug() << Q_FUNC_INFO << "Error no ref";
-      mPrivImpl->mActivityPopupList.removeAll(popup);
-    }
-  }
 }
 
 QPointF Space::mousePointerPos() const
