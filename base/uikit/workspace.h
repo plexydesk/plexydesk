@@ -38,7 +38,7 @@ public:
 
   virtual QRectF workspaceGeometry() const;
 
-  virtual QPixmap previewSpace(Space *space, int scaleFactor = 10);
+  virtual QPixmap thumbnail(Space *space, int scaleFactor = 10);
 
   virtual SpacesList currentSpaces();
 

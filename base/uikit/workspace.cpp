@@ -443,7 +443,7 @@ void WorkSpace::removeSpace(Space *space)
   saveSpaceRemovalSessionData(_space_ref);
 }
 
-QPixmap WorkSpace::previewSpace(Space *space, int scaleFactor)
+QPixmap WorkSpace::thumbnail(Space *space, int scaleFactor)
 {
   if (!space) {
     return QPixmap();
@@ -477,7 +477,7 @@ QPixmap WorkSpace::previewSpace(Space *space, int scaleFactor)
   _desktop_preview.setClipPath(_frame_path);
 
   _desktop_preview.fillRect(
-    QRectF(0.0, 0.0, _thumbnail.width(), _thumbnail.height()), Qt::white);
+    QRectF(0.0, 0.0, _thumbnail.width(), _thumbnail.height()), Qt::transparent);
 
   scene()->render(&_desktop_preview,
                   QRectF(0.0, 0.0, _thumbnail.width(), _thumbnail.height()),
@@ -485,10 +485,10 @@ QPixmap WorkSpace::previewSpace(Space *space, int scaleFactor)
 
   _desktop_preview.restore();
 
-  QPen pen(QColor("#F0F0F0"), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  QPen pen(QColor("#F0F0F0"), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
   _desktop_preview.setPen(pen);
-  _desktop_preview.drawRect(_thumbnail_geometry);
+  _desktop_preview.drawRoundRect(_thumbnail_geometry, 6, 6);
 
   _desktop_preview.end();
 
