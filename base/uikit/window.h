@@ -46,6 +46,8 @@ public:
     virtual void show();
     virtual void hide();
 
+    virtual void setEnableWindowBackground(bool aVisible = true);
+
 protected:
     virtual void paintView(QPainter *painter, const QRectF &rect);
 

@@ -14,7 +14,8 @@
 namespace UIKit {
 class Window::PrivateWindow {
 public:
-    PrivateWindow() :  m_window_content(0){}
+    PrivateWindow() :  m_window_content(0),
+    mWindowBackgroundVisibility(true){}
     ~PrivateWindow() {}
 
     QRectF m_window_geometry;
@@ -23,6 +24,7 @@ public:
     QString m_window_title;
 
     WindowType m_window_type;
+    bool mWindowBackgroundVisibility;
 
     WindowButton *m_window_close_button;
 
@@ -124,6 +126,9 @@ void Window::setWindowCloseCallback(std::function<void ()> handler)
 
 void Window::paintView(QPainter *painter, const QRectF &rect)
 {
+    if (!d->mWindowBackgroundVisibility)
+        return;
+
     StyleFeatures feature;
     feature.geometry = rect;
     feature.text_data = d->m_window_title;
@@ -151,6 +156,11 @@ void Window::hide()
     } );
 
     lTimer->start(250);
+}
+
+void Window::setEnableWindowBackground(bool aVisible)
+{
+    d->mWindowBackgroundVisibility = aVisible;
 }
 
 }
