@@ -36,6 +36,8 @@ public:
   void resize(const QSizeF &size);
 
   void createToolBar();
+
+  void setViewport(UIKit::Space *space);
 Q_SIGNALS:
   void clicked(NoteWidget *item);
 

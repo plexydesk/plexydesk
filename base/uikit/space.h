@@ -66,12 +66,13 @@ public:
 
   virtual void handleDropEvent(QDropEvent *event, const QPointF &event_pos);
 
+  virtual void insertWindowToView(Window *aWindow);
+  virtual void removeWindowFromView(Window *aWindow);
+
 Q_SIGNALS:
   void controllerAdded(const QString &aName);
 
 public Q_SLOTS:
-  virtual void addWidgetToView(Widget *aWidget);
-  virtual void onWidgetClosed(Widget *aWidget);
   virtual void onActivityFinished();
 
 protected:

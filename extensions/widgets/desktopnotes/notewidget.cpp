@@ -57,6 +57,7 @@ public:
   QuetzalKit::SyncObject *getNoteObject();
   UIKit::ToolBar *mToolBar;
   UIKit::DesktopActivityPtr m_calendar_activity_dialog;
+  UIKit::Space *mViewport;
 };
 
 void NoteWidget::createToolBar()
@@ -71,6 +72,11 @@ void NoteWidget::createToolBar()
   d->mToolBar->addAction("blue", "pd_icon_blue_color_action", false);
   d->mToolBar->addAction("black", "pd_icon_black_color_action", false);
   d->mToolBar->addAction("delete", "pd_trash_icon", false);
+}
+
+void NoteWidget::setViewport(UIKit::Space *space)
+{
+    d->mViewport = space;
 }
 
 NoteWidget::NoteWidget(QGraphicsObject *parent)
@@ -366,13 +372,16 @@ void NoteWidget::onToolBarAction(const QString &action)
       return;
     }
 
-    UIKit::DesktopActivityPtr activity =
-      this->showCalendar("datepickeractivity", "Date/Time", QVariantMap());
+    d->m_calendar_activity_dialog =
+      d->mViewport->createActivity("datepickeractivity", "Date/Time", QPointF(),
+                                   QRectF(0, 0, 600, 440), QVariantMap());
 
+    /*
     if (activity) {
       connect(activity.data(), SIGNAL(finished()), this,
               SLOT(onDatePickerDone()));
     }
+    */
 
   } else if (action == tr("list")) {
     d->mTextEdit->beginList();
@@ -443,9 +452,7 @@ void NoteWidget::onSizeServiceCompleteJson(
   service->deleteLater();
 }
 
-void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service)
-{
-}
+void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service){}
 
 void NoteWidget::onImageReady()
 {
@@ -539,10 +546,7 @@ QString NoteWidget::PrivateNoteWidget::getContentText(
   return rv;
 }
 
-QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject()
-{
-  return 0;
-}
+QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject() { return 0;}
 
 void NoteWidget::onActivityClosed()
 {

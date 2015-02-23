@@ -81,7 +81,7 @@ void ViewController::insert(Window *window)
     return;
   }
 
-  d->mViewport->addWidgetToView(window);
+  d->mViewport->insertWindowToView(window);
 }
 
 void ViewController::onReady()

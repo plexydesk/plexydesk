@@ -173,13 +173,13 @@ void Space::addActivity(UIKit::DesktopActivityPtr aActivity)
 
     aActivity->setViewport(this);
 
-    mPrivImpl->mMainScene->addItem(aActivity->window());
+    insertWindowToView(aActivity->window());
   }
 }
 
-void Space::addWidgetToView(Widget *aWidget)
+void Space::insertWindowToView(Window *aWindow)
 {
-  if (!aWidget) {
+  if (!aWindow) {
     return;
   }
 
@@ -192,50 +192,55 @@ void Space::addWidgetToView(Widget *aWidget)
   QPoint _widget_location;
 
   _widget_location.setX(_center_of_space_location.x() -
-                        aWidget->boundingRect().width() / 2);
+                        aWindow->boundingRect().width() / 2);
   _widget_location.setY(_center_of_space_location.y() -
-                        aWidget->boundingRect().height() / 2);
+                        aWindow->boundingRect().height() / 2);
 
-  mPrivImpl->mMainScene->addItem(aWidget);
-  aWidget->setPos(_widget_location);
+  mPrivImpl->mMainScene->addItem(aWindow);
+  aWindow->setPos(_widget_location);
 
-  connect(aWidget, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
+  connect(aWindow, SIGNAL(closed(UIKit::Widget *)), this,
+          SLOT(removeWindowFromView(UIKit::Widget *)));
 
-  aWidget->show();
+  aWindow->show();
 
-  if (aWidget->controller()) {
-    aWidget->controller()->setViewRect(mPrivImpl->mDesktopRect);
+  if (aWindow->controller()) {
+    aWindow->controller()->setViewRect(mPrivImpl->mDesktopRect);
   }
 
-  mPrivImpl->mWindowList.push_front(aWidget);
+  mPrivImpl->mWindowList.push_front(aWindow);
+
+  aWindow->setWindowCloseCallback([this](Window *window){
+      qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
+      this->removeWindowFromView(window);
+  });
 }
 
-void Space::onWidgetClosed(Widget *aWidget)
+void Space::removeWindowFromView(Window *aWindow)
 {
   qDebug() << Q_FUNC_INFO << __LINE__;
   if (!mPrivImpl->mMainScene) {
     return;
   }
 
-  if (!aWidget) {
+  if (!aWindow) {
     return;
   }
 
-  if (aWidget->controller()) {
-    if (aWidget->controller()->removeWidget(aWidget)) {
+  if (aWindow->controller()) {
+    if (aWindow->controller()->removeWidget(aWindow)) {
       return;
     }
   }
 
-  mPrivImpl->mMainScene->removeItem(aWidget);
+  mPrivImpl->mMainScene->removeItem(aWindow);
 
   qDebug() << Q_FUNC_INFO << "Before :" << mPrivImpl->mWindowList.size();
-  mPrivImpl->mWindowList.remove(aWidget);
+  mPrivImpl->mWindowList.remove(aWindow);
   qDebug() << Q_FUNC_INFO << "After:" << mPrivImpl->mWindowList.size();
 
-  if (aWidget) {
-    delete aWidget;
+  if (aWindow) {
+    delete aWindow;
   }
 }
 

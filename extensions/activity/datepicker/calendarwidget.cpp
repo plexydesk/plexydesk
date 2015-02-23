@@ -137,7 +137,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   d->mClockMinWidget = new UIKit::DialWidget(this);
   d->mClockMinWidget->setGeometry(QRectF(0, 0, 150, 150));
-  //d->mClockMinWidget->setPos(70, 70 + 48);
+  d->mClockMinWidget->setPos(70, 70 + 48);
   d->mClockHourWidget->setPos(0.0, 48);
 
   d->mClockMinWidget->setMaxValue(60);

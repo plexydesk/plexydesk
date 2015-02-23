@@ -41,7 +41,7 @@ public:
     virtual void setWindowMoveCallback(
             std::function<void (const QPointF &pos)> handler);
     virtual void setWindowCloseCallback(
-            std::function<void ()> handler);
+            std::function<void (Window *)> aCallback);
 
     virtual void show();
     virtual void hide();

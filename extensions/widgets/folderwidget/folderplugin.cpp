@@ -82,8 +82,9 @@ void DirectoryController::requestAction(const QString &actionName,
         qDebug() << "Not supported yet";
     } else if (actionName == tr("Folder")) {
         UIKit::Window *window = new UIKit::Window();
-        window->setWindowCloseCallback([&]() {
-            delete window;
+
+        window->setWindowCloseCallback([&](UIKit::Window *aWindow) {
+            delete aWindow;
         });
 
         UIKit::Widget *parent = new UIKit::Widget();

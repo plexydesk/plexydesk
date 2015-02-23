@@ -114,6 +114,7 @@ void DesktopNotesControllerImpl::createNoteUI()
   NoteWidget *note = new NoteWidget(window);
   note->resize(QSizeF(320, 320));
   note->setController(this);
+  note->setViewport(viewport());
 
   window->setGeometry(note->geometry());
   window->setWindowTitle("Note");
