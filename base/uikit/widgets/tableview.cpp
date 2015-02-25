@@ -56,6 +56,8 @@ public:
   QGraphicsLinearLayout *m_base_list_layout;
   QGraphicsGridLayout *m_base_grid_layout;
   QList<TableViewItem *> m_current_table_view_item_list;
+
+  std::function <void (TableViewItem *item)> mItemActivationCallback;
 };
 
 TableView::TableView(QGraphicsObject *parent)
@@ -214,6 +216,11 @@ uint TableView::count() const
   return 0;
 }
 
+void TableView::setItemActivationCallback(std::function<void (TableViewItem *)> aCallback)
+{
+    d->mItemActivationCallback = aCallback;
+}
+
 void TableView::onItemClick(TableViewItem *component)
 {
   clearSelection();
@@ -222,7 +229,11 @@ void TableView::onItemClick(TableViewItem *component)
     component->setSelected();
   }
 
+  //todo: Remove this depricated method.
   Q_EMIT activated(component);
+
+  if (d->mItemActivationCallback)
+      d->mItemActivationCallback(component);
 
   qDebug() << Q_FUNC_INFO << " Activated :";
 }

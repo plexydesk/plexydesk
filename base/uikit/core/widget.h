@@ -69,12 +69,18 @@ public:
   virtual void setLabelName(const QString &name);
   virtual QString label() const;
 
+  virtual void setWidgetID(unsigned int aID);
+  virtual unsigned widgetID() const;
+
   virtual StylePtr style() const;
 
   virtual RenderLevel layerType() const;
   virtual void setLayerType(RenderLevel level) const;
 
   virtual void setWindowFlag(int flags, bool enable = true);
+
+  virtual void joinEventMonitor(
+          std::function<void (int type, const Widget *ptr)> aCallback);
 
 Q_SIGNALS:
   void clicked();

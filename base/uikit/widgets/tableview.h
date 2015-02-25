@@ -62,6 +62,8 @@ public:
 
   virtual uint count() const;
 
+  virtual void setItemActivationCallback(std::function<void (TableViewItem* item)> aCallback);
+
 private Q_SLOTS:
   virtual void onItemClick(TableViewItem *component);
   virtual void onAddViewItem(UIKit::TableViewItem *item);

@@ -111,13 +111,19 @@ namespace UIKit
 class Widget::PrivateAbstractDesktopWidget
 {
 public:
-  PrivateAbstractDesktopWidget() : m_widget_controller(0) {}
+  PrivateAbstractDesktopWidget() :
+      m_widget_controller(0),
+      mWidgetID(0){}
   ~PrivateAbstractDesktopWidget() {}
 
   RenderLevel m_current_layer_type;
   QString m_widget_name;
   QRectF m_minized_view_geometry;
   ViewController *m_widget_controller;
+
+  unsigned int mWidgetID;
+
+  std::function<void (int type, const Widget *ptr)> mEventCallback;
 };
 
 Widget::Widget(QGraphicsObject *parent)
@@ -151,6 +157,11 @@ void Widget::setWindowFlag(int flags, bool enable)
 {
 }
 
+void Widget::joinEventMonitor(std::function<void (int, const Widget *)> aCallback)
+{
+    d->mEventCallback = aCallback;
+}
+
 void Widget::setMinimizedGeometry(const QRectF &rect)
 {
   d->m_minized_view_geometry = rect;
@@ -162,6 +173,15 @@ void Widget::setLabelName(const QString &name) { d->m_widget_name = name; }
 
 QString Widget::label() const { return d->m_widget_name; }
 
+void Widget::setWidgetID(unsigned int aID)
+{
+   d->mWidgetID = aID;
+}
+
+unsigned Widget::widgetID() const
+{
+    return d->mWidgetID;
+}
 
 StylePtr Widget::style() const
 {
@@ -238,22 +258,18 @@ void Widget::paintView(QPainter *painter, const QRectF &rect)
 
 void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    //todo : check why mouse release events are not called.
+    //https://github.com/plexydesk/plexydesk/issues/7
+  if (d->mEventCallback) {
+      d->mEventCallback(1, this);
+  }
+
   setFocus(Qt::MouseFocusReason);
   QGraphicsObject::mousePressEvent(event);
 }
 
 void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  /*
-  if (controller() && controller()->viewport()) {
-      AbstractDesktopView *view =
-  qobject_cast<AbstractDesktopView*>(controller()->viewport());
-      if (view)
-        view->saveItemLocationToSession(controller()->controllerName(), pos(),
-  this->uuid());
-  }
-  */
-
   Q_EMIT clicked();
   QGraphicsObject::mouseReleaseEvent(event);
 }

@@ -19,6 +19,8 @@ public:
 
   QGraphicsLinearLayout *m_list_layout;
   QRectF m_viewport_geometry;
+
+  std::function<void (int index)> mViewActivationCallback;
 };
 
 ModelView::ModelView(QGraphicsObject *parent) :
@@ -41,6 +43,7 @@ ModelView::ModelView(QGraphicsObject *parent) :
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
 
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
+
 }
 
 ModelView::~ModelView()
@@ -53,7 +56,12 @@ void ModelView::insert(Widget *widget)
 {
   widget->setParentItem(d->m_scroll_frame);
   widget->setParent(d->m_scroll_frame);
-  //widget->setFlag(QGraphicsItem::ItemIsMovable, false);
+  widget->setWidgetID(d->m_list_layout->count());
+
+  widget->joinEventMonitor([this](int type, const Widget *widget) {
+      if (d->mViewActivationCallback)
+          d->mViewActivationCallback(widget->widgetID());
+  });
 
   d->m_list_layout->addItem(widget);
   d->m_list_layout->updateGeometry();
@@ -104,7 +112,12 @@ void ModelView::setGeometry(const QRectF &rect)
 QSizeF ModelView::sizeHint(Qt::SizeHint which,
                            const QSizeF &constraint) const
 {
-  return d->m_list_layout->contentsRect().size();
+    return d->m_list_layout->contentsRect().size();
+}
+
+void ModelView::setViewActivationCallback(std::function<void (int)> aCallback)
+{
+    d->mViewActivationCallback = aCallback;
 }
 
 bool ModelView::event(QEvent *e)

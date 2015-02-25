@@ -53,9 +53,7 @@ public:
   UIKit::ModelView *m_preview_widget;
 
   QMap<QString, int> m_actions_map;
-
   QStringList m_controller_name_list;
-
   bool m_main_panel_is_hidden;
 
   UIKit::DesktopActivityPtr m_action_activity;
@@ -94,6 +92,16 @@ DockControllerImpl::DockControllerImpl(QObject *object)
           SLOT(onNavigationPanelClicked(QString)));
   // menu
   d->m_preview_widget = new UIKit::ModelView();
+  d->m_preview_widget->setViewActivationCallback([this](int index) {
+      if (this->viewport() && this->viewport()->workspace()) {
+          UIKit::WorkSpace *_workspace =
+                  qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
+
+          if (_workspace) {
+              _workspace->exposeSpace(index);
+          }
+      }
+  });
 }
 
 DockControllerImpl::~DockControllerImpl()
@@ -122,12 +130,6 @@ void DockControllerImpl::init()
   if (_space) {
     d->m_action_activity =
       createActivity("", "icongrid", "", QPoint(), QVariantMap());
-    /*
-    d->m_desktop_actions_popup->setSpace(_space);
-    d->m_desktop_actions_popup->setActivity(d->m_action_activity);
-    _space->addActivityPoupToView(d->m_desktop_actions_popup);
-    d->m_desktop_actions_popup->hide();
-    */
 
     if (d->m_action_activity && d->m_action_activity->window()) {
         d->m_action_activity->window()->setWindowType(Window::kPopupWindow);
@@ -538,6 +540,7 @@ void DockControllerImpl::updatePreview()
         QPixmap _preview = _workspace->thumbnail(_space);
 
         UIKit::ImageView *p = new UIKit::ImageView();
+
         p->setMinimumSize(_preview.size());
         p->setPixmap(_preview);
         lHeight += _preview.size().height();

@@ -34,6 +34,9 @@ public:
   virtual void setGeometry(const QRectF &rect);
   virtual QSizeF sizeHint(Qt::SizeHint which,
                           const QSizeF &constraint) const;
+
+  virtual void setViewActivationCallback(
+          std::function<void (int index)> aCallback);
 protected:
   bool sceneEvent(QEvent *e);
   bool event(QEvent *e);
