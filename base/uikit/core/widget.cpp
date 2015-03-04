@@ -116,6 +116,8 @@ public:
       mWidgetID(0){}
   ~PrivateAbstractDesktopWidget() {}
 
+  QVariantMap mStyleAttributeMap;
+
   RenderLevel m_current_layer_type;
   QString m_widget_name;
   QRectF m_minized_view_geometry;
@@ -160,6 +162,16 @@ void Widget::setWindowFlag(int flags, bool enable)
 void Widget::joinEventMonitor(std::function<void (int, const Widget *)> aCallback)
 {
     d->mEventCallback = aCallback;
+}
+
+void Widget::setStyleAttribute(const QString &aKey, QVariant aData)
+{
+    d->mStyleAttributeMap[aKey] = aData;
+}
+
+QVariant Widget::styleAttribute(const QString &aKey)
+{
+    return d->mStyleAttributeMap[aKey];
 }
 
 void Widget::setMinimizedGeometry(const QRectF &rect)
