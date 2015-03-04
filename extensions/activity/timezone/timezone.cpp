@@ -20,6 +20,8 @@
 #include <plexyconfig.h>
 #include <QTimer>
 #include <view_controller.h>
+#include <modelview.h>
+#include <label.h>
 
 class TimeZoneActivity::PrivateTimeZone
 {
@@ -27,54 +29,69 @@ public:
   PrivateTimeZone() {}
   ~PrivateTimeZone()
   {
-    if (m_main_window) {
-      delete m_main_window;
+    if (mWindowPtr) {
+      delete mWindowPtr;
     }
+   qDebug() << Q_FUNC_INFO << "Delete TimeZone Activity";
   }
 
-  UIKit::Window *m_main_window;
+  void loadTimeZones();
+
+  UIKit::Window *mWindowPtr;
+  UIKit::ModelView *mTimeZoneBrowserPtr;
 };
 
-TimeZoneActivity::TimeZoneActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateTimeZone) {}
+TimeZoneActivity::TimeZoneActivity(QGraphicsObject *aParent)
+  : UIKit::DesktopActivity(aParent), mPrivConstPtr(new PrivateTimeZone) {}
 
-TimeZoneActivity::~TimeZoneActivity() { delete d; }
+TimeZoneActivity::~TimeZoneActivity() { delete mPrivConstPtr; }
 
-void TimeZoneActivity::createWindow(const QRectF &window_geometry,
-                                    const QString &window_title,
-                                    const QPointF &window_pos)
+void TimeZoneActivity::createWindow(const QRectF &aWindowGeometry,
+                                    const QString &aWindowTitle,
+                                    const QPointF &aWindowPos)
 {
-  d->m_main_window = new UIKit::Window();
+  mPrivConstPtr->mWindowPtr = new UIKit::Window();
 
-  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderDropShadow);
+  mPrivConstPtr->mWindowPtr->setWindowTitle(aWindowTitle);
+  mPrivConstPtr->mTimeZoneBrowserPtr =
+          new UIKit::ModelView(mPrivConstPtr->mWindowPtr);
+  mPrivConstPtr->mTimeZoneBrowserPtr->setGeometry(aWindowGeometry);
+  mPrivConstPtr->mTimeZoneBrowserPtr->setViewGeometry(aWindowGeometry);
 
-  setGeometry(window_geometry);
-  updateContentGeometry(d->m_main_window);
 
-  exec(window_pos);
+  mPrivConstPtr->mWindowPtr->setWindowContent(
+              mPrivConstPtr->mTimeZoneBrowserPtr);
 
-  connect(d->m_main_window, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
+  setGeometry(aWindowGeometry);
+
+  exec(aWindowPos);
+
+  mPrivConstPtr->loadTimeZones();
 }
 
 QVariantMap TimeZoneActivity::result() const { return QVariantMap(); }
 
-void TimeZoneActivity::updateAttribute(const QString &name,
-                                       const QVariant &data) {}
+void TimeZoneActivity::updateAttribute(const QString &aName,
+                                       const QVariant &aVariantData) {}
 
-UIKit::Window *TimeZoneActivity::window() const { return d->m_main_window; }
+UIKit::Window *TimeZoneActivity::window() const { return mPrivConstPtr->mWindowPtr; }
 
-void TimeZoneActivity::onWidgetClosed(UIKit::Widget *widget)
+
+void TimeZoneActivity::PrivateTimeZone::loadTimeZones()
 {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
-}
+   foreach(const QByteArray id,  QTimeZone::availableTimeZoneIds()) {
+       UIKit::Label *lTimeZoneLabelPtr =
+               new UIKit::Label(mTimeZoneBrowserPtr);
+       lTimeZoneLabelPtr->setMinimumSize(
+                   mTimeZoneBrowserPtr->geometry().width(),
+                   32);
+       lTimeZoneLabelPtr->setSize(QSizeF(mTimeZoneBrowserPtr->boundingRect().width(),
+                                         32));
+       lTimeZoneLabelPtr->show();
 
-void TimeZoneActivity::onHideAnimationFinished()
-{
-  delete d->m_main_window;
-  d->m_main_window = 0;
-  Q_EMIT finished();
+       qDebug() << Q_FUNC_INFO << mTimeZoneBrowserPtr->boundingRect();
+
+       lTimeZoneLabelPtr->setLabel(QString(id));
+       mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
+   }
 }

@@ -29,5 +29,3 @@ QSharedPointer<UIKit::DesktopActivity> TimeZoneInterface::activity()
 
   return obj;
 }
-
-// Q_EXPORT_PLUGIN2(timezoneengine, TimeZoneInterface)

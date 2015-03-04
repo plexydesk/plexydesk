@@ -52,9 +52,11 @@ QRectF Label::boundingRect() const
 {
   // QSizeF size = d->pixelSizeOfText(d->mString);
 
+  /*
   if (d->mSize.width() <= 0) {
     return contentBoundingRect();
   }
+  */
 
   return QRectF(0.0, 0.0, d->mSize.width(), d->mSize.height());
 }
@@ -103,6 +105,7 @@ void Label::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   painter->save();
   painter->setPen(d->mFgColor);
 
+  /*
   QFontMetrics metrics(painter->font());
   QString elidedText =
     metrics.elidedText(d->mString, Qt::ElideMiddle, d->mSize.width());
@@ -116,6 +119,8 @@ void Label::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   drawFont.setPixelSize(d->mFontSize);
   painter->setFont(drawFont);
   painter->fillPath(path, d->mBgColor);
+  */
+  painter->fillRect(option->exposedRect, QColor("#ffffff"));
   painter->drawText(option->exposedRect, d->mString,
                     QTextOption(Qt::AlignCenter));
   painter->restore();

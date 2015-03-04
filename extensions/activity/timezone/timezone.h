@@ -32,26 +32,21 @@ class TimeZoneActivity : public UIKit::DesktopActivity
   Q_OBJECT
 
 public:
-  TimeZoneActivity(QGraphicsObject *object = 0);
+  TimeZoneActivity(QGraphicsObject *aParent= 0);
 
   virtual ~TimeZoneActivity();
 
-  void createWindow(const QRectF &window_geometry, const QString &window_title,
-                    const QPointF &window_pos);
-
-  QVariantMap result() const;
-
-  virtual void updateAttribute(const QString &name, const QVariant &data);
-
+  void createWindow(const QRectF &aWindowGeometry,
+                    const QString &aWindowTitle,
+                    const QPointF &aWindowPos);
   UIKit::Window *window() const;
 
-private Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
-  void onHideAnimationFinished();
+  QVariantMap result() const;
+  virtual void updateAttribute(const QString &aName, const QVariant &aVariantData);
 
 private:
   class PrivateTimeZone;
-  PrivateTimeZone *const d;
+  PrivateTimeZone *const mPrivConstPtr;
 };
 
 #endif
