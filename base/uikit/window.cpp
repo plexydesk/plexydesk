@@ -50,16 +50,20 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
 
     setFocus(Qt::MouseFocusReason);
 
-    connect(d->m_window_close_button, &WindowButton::clicked, [this]() {
-        qDebug() << Q_FUNC_INFO << "Close Window";
-        if (d->m_window_close_callback)
-            d->m_window_close_callback(this);
+    joinEventMonitor([this](Widget::InputEvent aEvent, const Widget *aWidget) {
+        if (aEvent == Widget::kFocusOutEvent &&
+                d->m_window_type == kPopupWindow) {
+            hide();
+        }
     });
 
-    connect(this, &Widget::focusLost, [this]() {
-        qDebug() << Q_FUNC_INFO << "Lost focus";
-        if (d->m_window_type == kPopupWindow)
-            hide();
+    d->m_window_close_button->joinEventMonitor([this](Widget::InputEvent aEvent,
+                                               const Widget *aWidget) {
+        if (aEvent == Widget::kMouseReleaseEvent) {
+            if (d->m_window_close_callback)
+                d->m_window_close_callback(this);
+
+        }
     });
 }
 

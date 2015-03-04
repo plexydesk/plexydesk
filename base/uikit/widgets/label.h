@@ -42,11 +42,9 @@ public:
                              const QColor &textColor);
 
 Q_SIGNALS:
-  void clicked();
   void contentBoundingRectChaned();
 
 protected:
-  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                      QWidget *widget = 0);
 

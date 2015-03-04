@@ -26,10 +26,9 @@ public:
   virtual QString label() const;
 
   void setBackgroundColor(const QColor &color);
-
   virtual StylePtr style() const;
+
 Q_SIGNALS:
-  void clicked();
   void selected(bool);
 private Q_SLOTS:
   void onZoomDone();

@@ -53,6 +53,14 @@ public:
     kRenderWindowTitle = 1ul << 5
   } WidgetFlags;
 
+  typedef enum {
+    kMousePressedEvent = 1ul << 0,
+    kMouseReleaseEvent = 1ul << 1,
+    kFocusOutEvent = 1ul << 2,
+    kFocusInEvent = 1ul << 3,
+    kKeyPressEvent = 1ul << 4
+  } InputEvent;
+
   enum RenderLevel { kRenderAtBackgroundLevel, kRenderAtForgroundLevel };
 
   Widget(QGraphicsObject *parent = 0);
@@ -80,7 +88,10 @@ public:
   virtual void setWindowFlag(int flags, bool enable = true);
 
   virtual void joinEventMonitor(
-          std::function<void (int type, const Widget *ptr)> aCallback);
+          std::function<void (InputEvent type, const Widget *ptr)> aCallback);
+
+  virtual void setStyleAttribute(const QString &aKey, QVariant aData);
+  virtual QVariant styleAttribute(const QString &aKey);
 
 Q_SIGNALS:
   void clicked();

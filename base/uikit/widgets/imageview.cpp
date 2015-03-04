@@ -43,12 +43,6 @@ void ImageView::setPixmap(const QPixmap &pixmap) { d->mPixmap = pixmap; }
 
 StylePtr ImageView::style() const { return Theme::style(); }
 
-void ImageView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-  Q_EMIT clicked();
-  QGraphicsObject::mouseReleaseEvent(event);
-}
-
 void ImageView::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
   Q_EMIT mouseOver();

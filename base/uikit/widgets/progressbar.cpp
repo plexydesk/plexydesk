@@ -126,7 +126,7 @@ void ProgressBar::onValueChanged(const QVariant &value)
 
 void ProgressBar::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  Q_EMIT clicked();
+  Widget::mouseReleaseEvent(event);
 }
 
 void ProgressBar::paint(QPainter *painter,

@@ -62,7 +62,16 @@ void ToolBar::addAction(const QString &lable, const QString &icon,
   button->setGeometry(QRectF(QPointF(), d->m_icon_size));
   button->setMinimumSize(d->m_icon_size);
 
-  connect(button, SIGNAL(clicked()), this, SLOT(onButtonPressed()));
+  connect(button, SIGNAL(clicked()), this, SLOT(toolButtonPressHandler()));
+
+  button->joinEventMonitor([this](Widget::InputEvent aEventType,
+                           const Widget *aWidget) {
+      if (aEventType == kMouseReleaseEvent) {
+          toolButtonPressHandler(aWidget);
+
+      }
+  });
+
   d->mLayout->addItem(button);
   d->mButtonCount = d->mButtonCount + 1;
 
@@ -126,10 +135,10 @@ void ToolBar::paintView(QPainter *painter, const QRectF &exposeRect)
   painter->restore();
 }
 
-void ToolBar::onButtonPressed()
+void ToolBar::toolButtonPressHandler(const Widget *aWidget)
 {
-  if (sender()) {
-    ImageButton *button = qobject_cast<ImageButton *>(sender());
+  if (aWidget) {
+    const ImageButton *button = qobject_cast<const ImageButton *>(aWidget);
     if (button) {
       qDebug() << Q_FUNC_INFO << button->label();
       Q_EMIT action(button->label());

@@ -43,9 +43,6 @@ public:
 
   virtual void setButtonPressCallback(std::function<void ()> handler);
 
-Q_SIGNALS:
-  void clicked();
-
 protected:
   virtual void paintView(QPainter *painter, const QRectF &rect);
 

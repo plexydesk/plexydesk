@@ -49,15 +49,15 @@ void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
   d->mState = PrivateButton::PRESS;
   update();
-  // QGraphicsObject::mousePressEvent(event);
+  Widget::mousePressEvent(event);
 }
 
 void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
   d->mState = PrivateButton::NORMAL;
   update();
-  Q_EMIT clicked();
-  // QGraphicsObject::mouseReleaseEvent(event);
+
+  Widget::mouseReleaseEvent(event);
 }
 
 void Button::paintNormalButton(QPainter *painter, const QRectF &rect)
