@@ -64,6 +64,7 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa)
   QVariantMap _size_attributes;
   QVariantMap _button_attributes;
   QVariantMap _vlist_item_attributes;
+  QVariantMap lLabelAttributesMap;
 
   _frame_attributes["window_title_height"] = 64.0;
   _frame_attributes["window_minimized_height"] = 128.0;
@@ -88,6 +89,7 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa)
   d->m_attribute_map["frame"] = _frame_attributes;
   d->m_attribute_map["widget"] = _widget_attributes;
   d->m_attribute_map["size"] = _size_attributes;
+
 }
 
 CocoaStyle::~CocoaStyle() { delete d; }
@@ -98,7 +100,7 @@ QVariantMap CocoaStyle::attributeMap(const QString &type) const
 }
 
 void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
-                      QPainter *painter)
+                      QPainter *painter, const Widget *aWidget)
 {
   switch (d->m_type_map[type]) {
   case 1:
@@ -112,6 +114,9 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
     break;
   case 6:
     drawLineEdit(options, painter);
+    break;
+  case 9:
+    drawLabel(options, painter, aWidget);
     break;
   case 19:
     drawProgressBar(options, painter);
@@ -452,4 +457,14 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
     painter->drawLine(rect.bottomLeft(), rect.bottomRight());
   }
   painter->restore();
+}
+
+void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
+                           QPainter *aPainterPtr, const Widget *aWidget)
+{
+  aPainterPtr->save();
+  aPainterPtr->fillRect(aFeatures.geometry, QColor("#ffffff"));
+  aPainterPtr->drawText(aFeatures.geometry, aWidget->label(),
+                    QTextOption(Qt::AlignCenter));
+  aPainterPtr->restore();
 }
