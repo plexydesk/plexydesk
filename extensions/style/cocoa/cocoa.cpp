@@ -465,6 +465,6 @@ void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
   aPainterPtr->save();
   aPainterPtr->fillRect(aFeatures.geometry, QColor("#ffffff"));
   aPainterPtr->drawText(aFeatures.geometry, aWidget->label(),
-                    QTextOption(Qt::AlignCenter));
+                    QTextOption(Qt::AlignHCenter | Qt::AlignLeft));
   aPainterPtr->restore();
 }
