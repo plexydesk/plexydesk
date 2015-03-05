@@ -45,11 +45,16 @@ public:
   QVariantMap result() const;
   Window *window() const;
 
+  /*
+protected:
+  Widget *createActionItem(const QString &aIcon,
+                           const QString &aLabel,
+                           const QString &aControllerName);
+                           */
+
 private Q_SLOTS:
   void onWidgetClosed(UIKit::Widget *widget);
   void onDiscard();
-  void onClicked(TableViewItem *item);
-  void onArgumentChanged();
 
 private:
   class PrivateIconGrid;

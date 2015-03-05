@@ -48,8 +48,11 @@ public:
 
     virtual void setEnableWindowBackground(bool aVisible = true);
 
+
 protected:
-    virtual void paintView(QPainter *painter, const QRectF &rect);
+  virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+  virtual void paintView(QPainter *painter, const QRectF &rect);
 
 private:
     class PrivateWindow;

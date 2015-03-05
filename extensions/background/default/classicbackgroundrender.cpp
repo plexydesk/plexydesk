@@ -105,7 +105,7 @@ void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
   qDebug() << Q_FUNC_INFO;
   setFocus(Qt::MouseFocusReason);
-  UIKit::Widget::mousePressEvent(event);
+  UIKit::Window::mousePressEvent(event);
 }
 
 void ClassicBackgroundRender::paintView(QPainter *painter,

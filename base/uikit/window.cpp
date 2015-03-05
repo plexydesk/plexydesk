@@ -50,14 +50,14 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
 
     setFocus(Qt::MouseFocusReason);
 
-    joinEventMonitor([this](Widget::InputEvent aEvent, const Widget *aWidget) {
+    onInputEvent([this](Widget::InputEvent aEvent, const Widget *aWidget) {
         if (aEvent == Widget::kFocusOutEvent &&
                 d->m_window_type == kPopupWindow) {
             hide();
         }
     });
 
-    d->m_window_close_button->joinEventMonitor([this](Widget::InputEvent aEvent,
+    d->m_window_close_button->onInputEvent([this](Widget::InputEvent aEvent,
                                                const Widget *aWidget) {
         if (aEvent == Widget::kMouseReleaseEvent) {
             if (d->m_window_close_callback)
@@ -195,6 +195,16 @@ void Window::hide()
 void Window::setEnableWindowBackground(bool aVisible)
 {
     d->mWindowBackgroundVisibility = aVisible;
+}
+
+void Window::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+   QGraphicsObject::mousePressEvent(event);
+}
+
+void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+   QGraphicsObject::mouseReleaseEvent(event);
 }
 
 }
