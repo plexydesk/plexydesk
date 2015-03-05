@@ -105,13 +105,16 @@ void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     d->mZoomAnimation->start();
   }
   event->accept();
-  Q_EMIT clicked();
+
+  Widget::mouseReleaseEvent(event);
 }
 
 void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
   event->accept();
   Q_EMIT selected(true);
+
+  Widget::mouseReleaseEvent(event);
 }
 
 void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
@@ -122,6 +125,8 @@ void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
   }
 
   event->accept();
+
+  Widget::hoverEnterEvent(event);
 }
 
 void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
@@ -134,6 +139,8 @@ void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
   event->accept();
 
   Q_EMIT selected(false);
+
+  Widget::hoverLeaveEvent(event);
 }
 
 void ImageButton::paintView(QPainter *painter, const QRectF &rect)

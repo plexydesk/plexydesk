@@ -37,8 +37,10 @@ public:
 
   QVariantMap attributeMap(const QString &type) const;
 
-  virtual void draw(const QString &type, const StyleFeatures &options,
-                    QPainter *painter);
+  virtual void draw(const QString &type,
+                    const StyleFeatures &options,
+                    QPainter *painter,
+                    const UIKit::Widget *aWidget = 0);
 
 private:
   class PrivateCocoa;
@@ -56,6 +58,10 @@ private:
   void drawSeperatorLine(const StyleFeatures &features, QPainter *painter);
   void drawProgressBar(const StyleFeatures &features, QPainter *painter);
   void drawVListItem(const StyleFeatures &features, QPainter *painter);
+
+  void drawLabel(const StyleFeatures &aFeatures,
+                 QPainter *aPainterPtr,
+                 const UIKit::Widget *aWidget);
 };
 
 #endif

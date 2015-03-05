@@ -32,7 +32,6 @@ public:
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint) const;
 
 Q_SIGNALS:
-  void clicked();
   void submit();
   void text(const QString &text);
 

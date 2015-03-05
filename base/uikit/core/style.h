@@ -27,6 +27,7 @@
 
 namespace UIKit
 {
+class Widget;
 
 class DECL_UI_KIT_EXPORT Style
 {
@@ -39,8 +40,10 @@ public:
 
   virtual QVariantMap attributeMap(const QString &type) const = 0;
 
-  virtual void draw(const QString &type, const StyleFeatures &options,
-                    QPainter *painter) = 0;
+  virtual void draw(const QString &type,
+                    const StyleFeatures &options,
+                    QPainter *painter,
+                    const Widget *aWidget = 0) = 0;
 };
 }
 

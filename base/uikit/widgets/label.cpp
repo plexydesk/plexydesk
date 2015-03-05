@@ -94,11 +94,6 @@ void Label::setLabelStyle(const QColor &backgroundColor,
   update();
 }
 
-void Label::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-  Q_EMIT clicked();
-}
-
 void Label::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                   QWidget *widget)
 {
@@ -120,7 +115,7 @@ void Label::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   painter->setFont(drawFont);
   painter->fillPath(path, d->mBgColor);
   */
-  painter->fillRect(option->exposedRect, QColor("#ffffff"));
+  //painter->fillRect(option->exposedRect, QColor("#ffffff"));
   painter->drawText(option->exposedRect, d->mString,
                     QTextOption(Qt::AlignCenter));
   painter->restore();

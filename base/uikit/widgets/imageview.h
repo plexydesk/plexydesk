@@ -23,15 +23,14 @@ public:
 
   virtual void setPixmap(const QPixmap &pixmap);
   virtual StylePtr style() const;
+
 Q_SIGNALS:
-  void clicked();
   void mouseOver();
   void mouseReleased();
   void mouseEnter();
   void mouseLeave();
 
 private:
-  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
   virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
   virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
   virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);

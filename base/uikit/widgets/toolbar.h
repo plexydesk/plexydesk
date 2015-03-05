@@ -2,12 +2,11 @@
 #define TOOLBAR_H
 
 #include <widget.h>
-#include <widget.h>
 #include <plexydesk_ui_exports.h>
 
 namespace UIKit
 {
-class DECL_UI_KIT_EXPORT ToolBar : public UIKit::Widget
+class DECL_UI_KIT_EXPORT ToolBar : public Widget
 {
   Q_OBJECT
 
@@ -43,8 +42,7 @@ Q_SIGNALS:
 protected:
   virtual void paintView(QPainter *painter, const QRectF &exposeRect);
 
-private Q_SLOTS:
-  void onButtonPressed();
+  void toolButtonPressHandler(const Widget *aWidget);
 
 private:
   class PrivateToolBar;

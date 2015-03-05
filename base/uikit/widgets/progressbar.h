@@ -18,19 +18,15 @@ class DECL_UI_KIT_EXPORT ProgressBar : public Widget
 
 public:
   explicit ProgressBar(QGraphicsObject *parent = 0);
-
   virtual ~ProgressBar();
 
   virtual void setLabel(const QString &txt);
-
   virtual QString label() const;
 
   virtual void setSize(const QSizeF &size);
-
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint) const;
 
   virtual int maxRange();
-
   virtual int minRange();
 
 public Q_SLOTS:
@@ -39,7 +35,6 @@ public Q_SLOTS:
   void onValueChanged(const QVariant &value);
 
 Q_SIGNALS:
-  void clicked();
   void contentBoundingRectChaned();
 
 protected:

@@ -116,6 +116,8 @@ public:
       mWidgetID(0){}
   ~PrivateAbstractDesktopWidget() {}
 
+  QVariantMap mStyleAttributeMap;
+
   RenderLevel m_current_layer_type;
   QString m_widget_name;
   QRectF m_minized_view_geometry;
@@ -123,7 +125,7 @@ public:
 
   unsigned int mWidgetID;
 
-  std::function<void (int type, const Widget *ptr)> mEventCallback;
+  std::function<void (InputEvent type, const Widget *ptr)> mEventCallback;
 };
 
 Widget::Widget(QGraphicsObject *parent)
@@ -144,6 +146,7 @@ Widget::Widget(QGraphicsObject *parent)
   setAcceptTouchEvents(true);
   setAcceptHoverEvents(true);
   setGraphicsItem(this);
+
 }
 
 Widget::~Widget() { delete d; }
@@ -157,9 +160,20 @@ void Widget::setWindowFlag(int flags, bool enable)
 {
 }
 
-void Widget::joinEventMonitor(std::function<void (int, const Widget *)> aCallback)
+void Widget::joinEventMonitor(
+        std::function<void (InputEvent, const Widget *)> aCallback)
 {
     d->mEventCallback = aCallback;
+}
+
+void Widget::setStyleAttribute(const QString &aKey, QVariant aData)
+{
+    d->mStyleAttributeMap[aKey] = aData;
+}
+
+QVariant Widget::styleAttribute(const QString &aKey)
+{
+    return d->mStyleAttributeMap[aKey];
 }
 
 void Widget::setMinimizedGeometry(const QRectF &rect)
@@ -261,7 +275,7 @@ void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
     //todo : check why mouse release events are not called.
     //https://github.com/plexydesk/plexydesk/issues/7
   if (d->mEventCallback) {
-      d->mEventCallback(1, this);
+      d->mEventCallback(kMousePressedEvent, this);
   }
 
   setFocus(Qt::MouseFocusReason);
@@ -270,14 +284,22 @@ void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  Q_EMIT clicked();
+  if (d->mEventCallback) {
+      d->mEventCallback(kMouseReleaseEvent, this);
+  }
+
   QGraphicsObject::mouseReleaseEvent(event);
 }
 
 void Widget::focusOutEvent(QFocusEvent *event)
 {
   event->accept();
-  Q_EMIT focusLost();
+
+  if (d->mEventCallback) {
+      d->mEventCallback(kFocusOutEvent, this);
+  }
+
+  QGraphicsObject::focusOutEvent(event);
 }
 
 float Widget::scaleFactorForWidth() const
