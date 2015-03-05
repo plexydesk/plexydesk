@@ -3,6 +3,7 @@
 #include <QGraphicsLinearLayout>
 #include <QDebug>
 #include <QGraphicsWidget>
+#include <QGraphicsGridLayout>
 
 #include <QScroller>
 
@@ -15,24 +16,34 @@ public:
   PrivateModelView() {}
   ~PrivateModelView() {}
 
+  ModelType m_model_view_type;
   QGraphicsWidget *m_scroll_frame;
 
   QGraphicsLinearLayout *m_list_layout;
+  QGraphicsGridLayout *m_grid_layout;
   QRectF m_viewport_geometry;
+
 
   std::function<void (int index)> mViewActivationCallback;
 };
 
-ModelView::ModelView(QGraphicsObject *parent) :
+ModelView::ModelView(QGraphicsObject *parent, ModelType aModelType) :
   Widget(parent),
   d(new PrivateModelView)
 {
-
+  d->m_model_view_type = aModelType;
   d->m_scroll_frame = new QGraphicsWidget(this);
 
-  d->m_list_layout = new QGraphicsLinearLayout(d->m_scroll_frame);
-  d->m_list_layout->setOrientation(Qt::Vertical);
-  d->m_list_layout->setContentsMargins(0, 0, 0, 0);
+  if (d->m_model_view_type == kListModel) {
+    d->m_list_layout = new QGraphicsLinearLayout(d->m_scroll_frame);
+    d->m_list_layout->setOrientation(Qt::Vertical);
+    d->m_list_layout->setContentsMargins(0, 0, 0, 0);
+  }
+
+  if (d->m_model_view_type == kGridModel) {
+      d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
+      d->m_grid_layout->setContentsMargins(0, 0, 0, 0);
+  }
 
   d->m_viewport_geometry = QRectF();
   d->m_scroll_frame->setGeometry(QRectF());
@@ -43,7 +54,6 @@ ModelView::ModelView(QGraphicsObject *parent) :
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
 
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
-
 }
 
 ModelView::~ModelView()
@@ -52,22 +62,59 @@ ModelView::~ModelView()
   delete d;
 }
 
-void ModelView::insert(Widget *widget)
+void ModelView::insert_to_list_view(Widget *widget)
 {
-  widget->setParentItem(d->m_scroll_frame);
-  widget->setParent(d->m_scroll_frame);
   widget->setWidgetID(d->m_list_layout->count());
-
-  widget->joinEventMonitor([this](int type, const Widget *widget) {
-      if (d->mViewActivationCallback)
-          d->mViewActivationCallback(widget->widgetID());
-  });
 
   d->m_list_layout->addItem(widget);
   d->m_list_layout->updateGeometry();
   d->m_list_layout->activate();
 
   d->m_scroll_frame->setGeometry(d->m_list_layout->geometry());
+}
+
+void ModelView::insert_to_grid_view(Widget *widget)
+{
+  if (!d->m_grid_layout)
+    return;
+
+  widget->setWidgetID(d->m_grid_layout->count());
+
+  int l_item_per_row =
+          d->m_viewport_geometry.width() /
+          widget->boundingRect().width();
+
+  d->m_grid_layout->addItem(widget,
+                            d->m_grid_layout->count() / l_item_per_row,
+                            d->m_grid_layout->count() % l_item_per_row);
+
+  d->m_grid_layout->activate();
+  d->m_grid_layout->updateGeometry();
+
+  d->m_scroll_frame->setGeometry(d->m_grid_layout->geometry());
+}
+
+void ModelView::insert_to_table_view(Widget *widget)
+{
+}
+
+void ModelView::insert(Widget *widget)
+{
+  widget->setParentItem(d->m_scroll_frame);
+  widget->setParent(d->m_scroll_frame);
+
+  widget->joinEventMonitor([this](int type, const Widget *widget) {
+      if (type == Widget::kMouseReleaseEvent) {
+        if (d->mViewActivationCallback)
+            d->mViewActivationCallback(widget->widgetID());
+      }
+   });
+
+  switch(d->m_model_view_type) {
+  case kListModel: insert_to_list_view(widget); break;
+  case kGridModel: insert_to_grid_view(widget); break;
+  case kTableModel: insert_to_table_view(widget);break;
+  }
 
   update();
 }
