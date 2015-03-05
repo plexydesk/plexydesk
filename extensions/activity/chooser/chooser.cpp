@@ -26,24 +26,61 @@
 #include <widget.h>
 #include <imageview.h>
 #include <themepackloader.h>
+#include <modelview.h>
+#include <label.h>
 #include "chooseritem.h"
 #include "chooseractiondelegate.h"
+
+class Action
+{
+public:
+    Action(){}
+    ~Action(){}
+
+    QString controller_name() const;
+    void set_controller_name(const QString &controller_name);
+
+    Widget *createActionItem(const QString &aIcon,
+                             const QString &aLabel,
+                             const QString &aControllerName);
+    void onActionActivated(
+            std::function<void(const Action *aAction)> aHandler) {
+        m_action_handler = aHandler;
+    }
+
+    QString label() const;
+    void setLabel(const QString &label);
+
+private:
+    QString m_controller_name;
+    QString m_label;
+    QString m_icon;
+
+    std::function<void (const Action *aAction)> m_action_handler;
+};
 
 class IconGridActivity::PrivateIconGrid
 {
 public:
-  PrivateIconGrid() : mFrame(0) {}
-  ~PrivateIconGrid() {}
+  PrivateIconGrid() : m_activity_window_ptr(0) {}
+  ~PrivateIconGrid() {
+      qDeleteAll(m_action_list);
+  }
 
-  UIKit::Window *mFrame;
+  UIKit::Window *m_activity_window_ptr;
   UIKit::TableView *mTable;
-  QRectF mBoundingRect;
+  UIKit::ModelView *m_grid_view;
+
   QString mSelection;
 
   QVariantMap m_activity_result;
 
   ChooserActionDelegate *m_action_delegate;
   bool m_auto_scale_frame;
+
+  QMap<int, QVariant> m_action_map;
+  QList<Action *> m_action_list;
+
 };
 
 IconGridActivity::IconGridActivity(QGraphicsObject *object)
@@ -59,62 +96,65 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
-  if (d->mFrame) {
+  if (d->m_activity_window_ptr) {
     return;
   }
 
-  d->mBoundingRect = window_geometry;
   d->m_auto_scale_frame = false;
 
-  d->mFrame = new UIKit::Window();
-  setGeometry(window_geometry);
-
-  d->mTable = new UIKit::TableView(d->mFrame);
-
-  d->mTable->setGeometry(window_geometry);
-  d->m_action_delegate = new ChooserActionDelegate(d->mFrame);
-  connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
-          SLOT(onClicked(TableViewItem *)));
-  d->mTable->setModel(d->m_action_delegate);
-  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
+  d->m_activity_window_ptr = new UIKit::Window();
+  d->m_activity_window_ptr->setWindowTitle(window_title);
+  d->m_activity_window_ptr->setGeometry(window_geometry);
 
 
-  if (hasAttribute("data")) {
-    QVariantMap data = attributes()["data"].toMap();
+  d->m_grid_view = new UIKit::ModelView(d->m_activity_window_ptr,
+                                        UIKit::ModelView::kGridModel);
+  d->m_grid_view->setViewGeometry(window_geometry);
 
-    foreach(const QVariant & var, data.keys()) {
-      d->m_action_delegate->addDataItem(
-        var.toString(), UIKit::Theme::instance()->drawable(
-          data[var.toString()].toString(), "hdpi"),
-        false);
-    }
-  }
+  onArgumentsUpdated([this]() {
+      if (hasAttribute("data")) {
+          QVariantMap data = attributes()["data"].toMap();
 
-  if (hasAttribute("auto_scale")) {
-    d->m_auto_scale_frame = attributes()["auto_scale"].toBool();
-  }
+          foreach(const QVariant & var, data.values()) {
+              QVariantMap _item = var.toMap();
+              Action *l_action_item = new Action;
+              d->m_action_list.append(l_action_item);
+              l_action_item->onActionActivated([this](const Action *aAction) {
+                  qDebug() << Q_FUNC_INFO << "Hello world : " <<
+                              aAction->controller_name();
+                  d->m_activity_result.clear();
+                  d->m_activity_result["controller"] =
+                          aAction->controller_name();
+                  d->m_activity_result["action"] = aAction->label();
+                  d->mSelection = aAction->label();
+                  updateAction();
+              });
 
-  if (d->m_auto_scale_frame) {
-    QRectF _content_rect = d->mTable->geometry();
-    _content_rect.setHeight(_content_rect.height() + 64);
-    setGeometry(_content_rect);
-    d->mFrame->setGeometry(_content_rect);
-  }
+              d->m_grid_view->insert(
+                          l_action_item->createActionItem(_item["icon"].toString(),
+                          _item["label"].toString(),
+                          _item["controller"].toString()));
+          }
+      }
 
-  d->mFrame->setWindowContent(d->mTable);
+      if (hasAttribute("auto_scale")) {
+          d->m_auto_scale_frame = attributes()["auto_scale"].toBool();
+      }
+
+      if (d->m_auto_scale_frame) {
+          QRectF _content_rect = d->m_grid_view->boundingRect();
+          _content_rect.setHeight(_content_rect.height() + 64);
+          setGeometry(_content_rect);
+          d->m_activity_window_ptr->setGeometry(_content_rect);
+      }
+  });
+
+  d->m_activity_window_ptr->setWindowContent(d->m_grid_view);
 
   exec(window_pos);
 
   connect(this, SIGNAL(attributeChanged()), this, SLOT(onArgumentChanged()));
 }
-
-/*
-QRectF IconGridActivity::geometry() const
-{
-    return d->mBoundingRect;
-}
-*/
 
 QVariantMap IconGridActivity::result() const
 {
@@ -122,7 +162,7 @@ QVariantMap IconGridActivity::result() const
   return d->m_activity_result;
 }
 
-Window *IconGridActivity::window() const { return d->mFrame; }
+Window *IconGridActivity::window() const { return d->m_activity_window_ptr; }
 
 void IconGridActivity::onWidgetClosed(UIKit::Widget *widget)
 {
@@ -132,56 +172,66 @@ void IconGridActivity::onWidgetClosed(UIKit::Widget *widget)
 
 void IconGridActivity::onDiscard() { Q_EMIT finished(); }
 
-void IconGridActivity::onClicked(TableViewItem *item)
+///action class impl
+Widget *Action::createActionItem(const QString &aIcon,
+                                 const QString &aLabel,
+                                 const QString &aControllerName)
 {
-  if (item) {
-    GridIcon *i = qobject_cast<GridIcon *>(item);
-    if (i) {
-      d->mSelection = i->label();
+    m_controller_name = aControllerName;
+    m_label = aLabel;
+    m_icon = aIcon;
 
-      d->m_activity_result.clear();
+    Widget *l_rv = new Widget();
 
-      d->m_activity_result["label"] = i->label();
+    UIKit::ImageView *l_image_view = new UIKit::ImageView(l_rv);
+    UIKit::Label *l_action_label = new UIKit::Label(l_rv);
+    l_action_label->setLabel(aLabel);
+    l_action_label->setLabelName(aLabel);
 
-      foreach(const QString & key, i->itemProperties().keys()) {
-        d->m_activity_result[key] = i->itemProperties()[key];
-      }
+    QPixmap l_view_pixmap (UIKit::Theme::instance()->drawable(
+                               aIcon, "hdpi"));
+    l_image_view->setMinimumSize(l_view_pixmap.size());
+    l_image_view->setSize(l_view_pixmap.size());
+    l_image_view->setPixmap(l_view_pixmap);
 
-      if (d->mTable) {
-        d->mTable->clearSelection();
-      }
+    l_action_label->setSize(QSizeF(l_image_view->boundingRect().width(), 32));
+    l_action_label->setPos(0, l_image_view->boundingRect().height());
 
-      updateAction();
-    }
-  }
+    l_rv->setGeometry(l_image_view->geometry());
+
+    QSizeF l_action_item_size;
+    l_action_item_size.setHeight(l_image_view->boundingRect().height() +
+                                 l_action_label->boundingRect().height());
+    l_action_item_size.setWidth(l_image_view->boundingRect().width());
+
+    l_rv->setMinimumSize(l_action_item_size);
+
+    l_image_view->onInputEvent([this](UIKit::Widget::InputEvent aEvent,
+                                   const Widget *aWidget) {
+        if (aEvent == UIKit::Widget::kMouseReleaseEvent) {
+          if (m_action_handler)
+            m_action_handler(this);
+        }
+    });
+
+    return l_rv;
+}
+QString Action::label() const
+{
+  return m_label;
 }
 
-void IconGridActivity::onArgumentChanged()
+void Action::setLabel(const QString &label)
 {
-  if (!d->m_action_delegate) {
-    return;
-  }
+  m_label = label;
+}
 
-  if (hasAttribute("data")) {
-    QVariantMap data = attributes()["data"].toMap();
+QString Action::controller_name() const
+{
+  return m_controller_name;
+}
 
-    foreach(const QVariant & var, data.values()) {
-      QVariantMap _item = var.toMap();
-      d->m_action_delegate->addDataItem(_item["label"].toString(),
-                                        UIKit::Theme::instance()->drawable(
-                                          _item["icon"].toString(), "hdpi"),
-                                        false, _item);
-    }
-  }
-
-  if (hasAttribute("auto_scale")) {
-    d->m_auto_scale_frame = attributes()["auto_scale"].toBool();
-  }
-
-  if (d->m_auto_scale_frame) {
-    QRectF _content_rect = d->mTable->geometry();
-    _content_rect.setHeight(_content_rect.height() + 64);
-    setGeometry(_content_rect);
-    d->mFrame->setGeometry(_content_rect);
-  }
+void Action::set_controller_name(const QString &controller_name)
+{
+  m_controller_name = controller_name;
 }

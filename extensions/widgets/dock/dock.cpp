@@ -140,11 +140,16 @@ void DockControllerImpl::init()
 
   // loads the controllers before dock was created;
   Q_FOREACH(const QString & name, viewport()->currentControllerList()) {
-    this->onControllerAdded(name);
+    loadControllerActions(name);
   }
 
-  connect(viewport(), SIGNAL(controllerAdded(QString)), this,
-          SLOT(onControllerAdded(QString)));
+  viewport()->onViewportEventNotify([this](Space::ViewportNotificationType aType,
+                                    const QVariant &aData,
+                                    const Space *aSpace) {
+
+      if (aType == Space::kControllerAddedNotification)
+        loadControllerActions(aData.toString());
+  });
 
   d->m_dock_window = new UIKit::Window();
   d->m_preview_window = new UIKit::Window();
@@ -226,6 +231,9 @@ void DockControllerImpl::requestAction(const QString &actionName,
   }
 
   if (viewport() && viewport()->controller(args["controller"].toString())) {
+      qDebug() << Q_FUNC_INFO << actionName;
+      qDebug() << Q_FUNC_INFO << args;
+
     viewport()->controller(args["controller"].toString())->requestAction(
       actionName, args);
   } else {
@@ -355,7 +363,7 @@ void DockControllerImpl::toggleDesktopPanel()
   }
 }
 
-void DockControllerImpl::onControllerAdded(const QString &name)
+void DockControllerImpl::loadControllerActions(const QString &name)
 {
   if (d->m_controller_name_list.contains(name) || !viewport()) {
     return;

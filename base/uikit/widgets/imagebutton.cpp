@@ -104,17 +104,15 @@ void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
     d->mZoomAnimation->start();
   }
-  event->accept();
 
+  qDebug() << Q_FUNC_INFO;
   Widget::mouseReleaseEvent(event);
 }
 
 void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-  event->accept();
   Q_EMIT selected(true);
-
-  Widget::mouseReleaseEvent(event);
+  Widget::mousePressEvent(event);
 }
 
 void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

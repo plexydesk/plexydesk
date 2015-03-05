@@ -18,6 +18,9 @@
 namespace UIKit
 {
 
+typedef std::function<void (Space::ViewportNotificationType,
+                            const QVariant &,
+                            const Space *)> NotifyFunc;
 class Space::PrivateSpace
 {
 public:
@@ -43,6 +46,8 @@ public:
   std::list<UIKit::Widget *> mWindowList;
   QMap<QString, ViewControllerPtr> mCurrentControllerMap;
   QList<ViewControllerPtr> mControllerList;
+
+  QList<NotifyFunc> m_notify_chain;
 };
 
 Space::Space(QObject *aParent) : QObject(aParent), mPrivImpl(new PrivateSpace)
@@ -82,7 +87,12 @@ void Space::addController(const QString &aName)
 
   registerController(aName);
 
-  Q_EMIT controllerAdded(aName);
+  foreach(NotifyFunc l_notify_handler, mPrivImpl->m_notify_chain) {
+      if (l_notify_handler)
+          l_notify_handler(Space::kControllerAddedNotification,
+                           QVariant(aName),
+                           this);
+  }
 }
 
 UIKit::DesktopActivityPtr Space::createActivity(const QString &aActivity,
@@ -165,7 +175,7 @@ void Space::addActivity(UIKit::DesktopActivityPtr aActivity)
 
   if (aActivity->window() && mPrivImpl->mMainScene) {
     if (mPrivImpl->mActivityList.contains(aActivity)) {
-      // qWarning() << Q_FUNC_INFO << "Space already contains the activity";
+       qWarning() << Q_FUNC_INFO << "Space already contains the activity";
       return;
     }
 
@@ -218,7 +228,6 @@ void Space::insertWindowToView(Window *aWindow)
 
 void Space::removeWindowFromView(Window *aWindow)
 {
-  qDebug() << Q_FUNC_INFO << __LINE__;
   if (!mPrivImpl->mMainScene) {
     return;
   }
@@ -242,6 +251,14 @@ void Space::removeWindowFromView(Window *aWindow)
   if (aWindow) {
     delete aWindow;
   }
+}
+
+void Space::onViewportEventNotify(
+        std::function<void (ViewportNotificationType,
+                            const QVariant &,
+                            const Space *)> aNotifyHandler)
+{
+    mPrivImpl->m_notify_chain.append(aNotifyHandler);
 }
 
 void Space::onActivityFinished()
@@ -566,7 +583,8 @@ void Space::handleDropEvent(QDropEvent *event,
                             const QPointF &local_event_location)
 {
   if (mPrivImpl->mMainScene) {
-    QList<QGraphicsItem *> items = mPrivImpl->mMainScene->items(local_event_location);
+    QList<QGraphicsItem *> items =
+            mPrivImpl->mMainScene->items(local_event_location);
 
     Q_FOREACH(QGraphicsItem * item, items) {
       QGraphicsObject *itemObject = item->toGraphicsObject();

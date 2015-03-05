@@ -26,6 +26,8 @@ public:
   QVariantMap m_arguments;
   ViewControllerPtr m_controller_ptr;
   Space *m_current_viewport;
+
+  QList<std::function<void ()>> m_arg_handler_list;
 };
 
 DesktopActivity::DesktopActivity(QGraphicsObject *parent)
@@ -44,15 +46,16 @@ void DesktopActivity::setActivityAttribute(const QString &name,
 
 QVariantMap DesktopActivity::attributes() const { return d->m_arguments; }
 
-void DesktopActivity::updateAttribute(const QString &name,
-                                      const QVariant &data)
+void DesktopActivity::updateAttribute(const QString &name, const QVariant &data)
 {
   setActivityAttribute(name, data);
   Q_EMIT attributeChanged();
-}
 
-void DesktopActivity::setResult(DesktopActivity::ResultType type,
-                                const QVariantMap &data) {}
+  foreach (std::function<void ()> l_handler, d->m_arg_handler_list) {
+      if (l_handler)
+          l_handler();
+  }
+}
 
 QString DesktopActivity::getErrorMessage() const { return QString(); }
 
@@ -130,7 +133,17 @@ void DesktopActivity::setViewport(Space *viewport)
 
 Space *DesktopActivity::viewport() const
 {
-  return d->m_current_viewport;
+    return d->m_current_viewport;
+}
+
+void DesktopActivity::onArgumentsUpdated(std::function<void ()> a_handler)
+{
+    d->m_arg_handler_list.append(a_handler);
+}
+
+void DesktopActivity::onActionCompleted(
+        std::function<void (const QVariantMap &)> a_handler)
+{
 }
 
 void DesktopActivity::updateAction()

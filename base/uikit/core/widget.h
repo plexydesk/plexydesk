@@ -87,7 +87,7 @@ public:
 
   virtual void setWindowFlag(int flags, bool enable = true);
 
-  virtual void joinEventMonitor(
+  virtual void onInputEvent(
           std::function<void (InputEvent type, const Widget *ptr)> aCallback);
 
   virtual void setStyleAttribute(const QString &aKey, QVariant aData);

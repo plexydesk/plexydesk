@@ -146,7 +146,6 @@ Widget::Widget(QGraphicsObject *parent)
   setAcceptTouchEvents(true);
   setAcceptHoverEvents(true);
   setGraphicsItem(this);
-
 }
 
 Widget::~Widget() { delete d; }
@@ -160,7 +159,7 @@ void Widget::setWindowFlag(int flags, bool enable)
 {
 }
 
-void Widget::joinEventMonitor(
+void Widget::onInputEvent(
         std::function<void (InputEvent, const Widget *)> aCallback)
 {
     d->mEventCallback = aCallback;
@@ -279,16 +278,17 @@ void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
   }
 
   setFocus(Qt::MouseFocusReason);
-  QGraphicsObject::mousePressEvent(event);
+  //QGraphicsObject::mousePressEvent(event);
 }
 
 void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+  qDebug() << Q_FUNC_INFO << metaObject()->className();
   if (d->mEventCallback) {
       d->mEventCallback(kMouseReleaseEvent, this);
   }
 
-  QGraphicsObject::mouseReleaseEvent(event);
+  //QGraphicsObject::mouseReleaseEvent(event);
 }
 
 void Widget::focusOutEvent(QFocusEvent *event)

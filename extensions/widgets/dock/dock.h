@@ -67,7 +67,7 @@ public Q_SLOTS:
 
   void toggleDesktopPanel();
 
-  void onControllerAdded(const QString &name);
+  void loadControllerActions(const QString &name);
 
   void onActivityAnimationFinished();
 

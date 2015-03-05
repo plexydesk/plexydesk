@@ -42,7 +42,7 @@ ModelView::ModelView(QGraphicsObject *parent, ModelType aModelType) :
 
   if (d->m_model_view_type == kGridModel) {
       d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
-      d->m_grid_layout->setContentsMargins(0, 0, 0, 0);
+      d->m_grid_layout->setContentsMargins(16, 0, 0, 0);
   }
 
   d->m_viewport_geometry = QRectF();
@@ -85,8 +85,8 @@ void ModelView::insert_to_grid_view(Widget *widget)
           widget->boundingRect().width();
 
   d->m_grid_layout->addItem(widget,
-                            d->m_grid_layout->count() / l_item_per_row,
-                            d->m_grid_layout->count() % l_item_per_row);
+                            d->m_grid_layout->count() / (l_item_per_row - 1),
+                            d->m_grid_layout->count() % (l_item_per_row -1));
 
   d->m_grid_layout->activate();
   d->m_grid_layout->updateGeometry();
@@ -103,7 +103,7 @@ void ModelView::insert(Widget *widget)
   widget->setParentItem(d->m_scroll_frame);
   widget->setParent(d->m_scroll_frame);
 
-  widget->joinEventMonitor([this](int type, const Widget *widget) {
+  widget->onInputEvent([this](int type, const Widget *widget) {
       if (type == Widget::kMouseReleaseEvent) {
         if (d->mViewActivationCallback)
             d->mViewActivationCallback(widget->widgetID());
