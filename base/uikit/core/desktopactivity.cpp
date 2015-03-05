@@ -141,9 +141,9 @@ void DesktopActivity::onArgumentsUpdated(std::function<void ()> a_handler)
     d->m_arg_handler_list.append(a_handler);
 }
 
-void DesktopActivity::onActionCompleted(std::function<void (const QVariantMap &)> a_handler)
+void DesktopActivity::onActionCompleted(
+        std::function<void (const QVariantMap &)> a_handler)
 {
-
 }
 
 void DesktopActivity::updateAction()

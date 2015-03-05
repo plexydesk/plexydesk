@@ -24,6 +24,15 @@ public:
     kCenterOnViewportBottom
   } ViewportLocation;
 
+  typedef enum {
+    kControllerAddedNotification,
+    kControllerRemovedNotification,
+    kGeometryChangedNotification,
+    kOrientationChangedNotification,
+    kSpaceSwitchNotification,
+    kObjectDroppedNotification
+  } ViewportNotificationType;
+
   explicit Space(QObject *aParent = 0);
   virtual ~Space();
 
@@ -69,8 +78,10 @@ public:
   virtual void insertWindowToView(Window *aWindow);
   virtual void removeWindowFromView(Window *aWindow);
 
-Q_SIGNALS:
-  void controllerAdded(const QString &aName);
+  virtual void onViewportEventNotify(
+          std::function<void (ViewportNotificationType aNotification,
+                              const QVariant &aNotifyData,
+                              const Space *aSpace)> aNotifyHandler);
 
 public Q_SLOTS:
   virtual void onActivityFinished();
