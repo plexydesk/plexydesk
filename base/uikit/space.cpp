@@ -42,7 +42,7 @@ public:
   WorkSpace *mWorkSpace;
   QGraphicsScene *mMainScene;
   QList<UIKit::DesktopActivityPtr> mActivityList;
-  std::list<UIKit::Widget *> mWindowList;
+  std::list<UIKit::Window *> mWindowList;
   QMap<QString, ViewControllerPtr> mCurrentControllerMap;
   QList<ViewControllerPtr> mControllerList;
 
@@ -426,26 +426,18 @@ void Space::clear()
   foreach(DesktopActivityPtr _activity, mPrivImpl->mActivityList) {
     qDebug() << Q_FUNC_INFO << "Remove Activity: ";
     if (_activity) {
-      Widget *_widget = _activity->window();
-      if (_widget) {
-        if (mPrivImpl->mMainScene->items().contains(_widget)) {
-          mPrivImpl->mMainScene->removeItem(_widget);
-          delete _widget;
-        }
-      }
-
       mPrivImpl->mActivityList.removeAt(i);
     }
     i++;
   }
 
   // delete owner widgets
-  for (Widget *_widget : mPrivImpl->mWindowList) {
+  for (Window *_widget : mPrivImpl->mWindowList) {
     if (_widget) {
       if (mPrivImpl->mMainScene->items().contains(_widget)) {
         mPrivImpl->mMainScene->removeItem(_widget);
       }
-      delete _widget;
+      _widget->discard();
       qDebug() << Q_FUNC_INFO << "Widget Deleted: OK";
     }
   }
