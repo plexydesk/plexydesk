@@ -42,7 +42,7 @@ public:
   WorkSpace *mWorkSpace;
   QGraphicsScene *mMainScene;
   QList<UIKit::DesktopActivityPtr> mActivityList;
-  std::list<UIKit::Widget *> mWindowList;
+  std::list<UIKit::Window *> mWindowList;
   QMap<QString, ViewControllerPtr> mCurrentControllerMap;
   QList<ViewControllerPtr> mControllerList;
 
@@ -219,9 +219,9 @@ void Space::insertWindowToView(Window *aWindow)
 
   mPrivImpl->mWindowList.push_front(aWindow);
 
-  aWindow->setWindowCloseCallback([this](Window *window){
+  aWindow->onWindowClosed([this](Window *window){
       qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
-      this->removeWindowFromView(window);
+      removeWindowFromView(window);
   });
 }
 
@@ -247,9 +247,7 @@ void Space::removeWindowFromView(Window *aWindow)
   mPrivImpl->mWindowList.remove(aWindow);
   qDebug() << Q_FUNC_INFO << "After:" << mPrivImpl->mWindowList.size();
 
-  if (aWindow) {
-    delete aWindow;
-  }
+  aWindow->discard();
 }
 
 void Space::onViewportEventNotify(
@@ -428,26 +426,18 @@ void Space::clear()
   foreach(DesktopActivityPtr _activity, mPrivImpl->mActivityList) {
     qDebug() << Q_FUNC_INFO << "Remove Activity: ";
     if (_activity) {
-      Widget *_widget = _activity->window();
-      if (_widget) {
-        if (mPrivImpl->mMainScene->items().contains(_widget)) {
-          mPrivImpl->mMainScene->removeItem(_widget);
-          delete _widget;
-        }
-      }
-
       mPrivImpl->mActivityList.removeAt(i);
     }
     i++;
   }
 
   // delete owner widgets
-  for (Widget *_widget : mPrivImpl->mWindowList) {
+  for (Window *_widget : mPrivImpl->mWindowList) {
     if (_widget) {
       if (mPrivImpl->mMainScene->items().contains(_widget)) {
         mPrivImpl->mMainScene->removeItem(_widget);
       }
-      delete _widget;
+      _widget->discard();
       qDebug() << Q_FUNC_INFO << "Widget Deleted: OK";
     }
   }

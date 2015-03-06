@@ -49,7 +49,7 @@ public:
   virtual void setViewport(Space *viewport);
   virtual Space *viewport() const;
 
-  virtual void cleanup() {}
+  virtual void cleanup() = 0;
 
   virtual void onArgumentsUpdated(
           std::function<void ()> a_handler);

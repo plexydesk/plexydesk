@@ -121,6 +121,10 @@ void DesktopNotesControllerImpl::createNoteUI()
   window->setWindowContent(note);
 
   insert(window);
+
+  window->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      delete aWindow;
+  });
 }
 
 void DesktopNotesControllerImpl::createReminderUI()
@@ -135,4 +139,8 @@ void DesktopNotesControllerImpl::createReminderUI()
   window->setWindowContent(reminder);
 
   insert(window);
+
+  window->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      delete aWindow;
+  });
 }

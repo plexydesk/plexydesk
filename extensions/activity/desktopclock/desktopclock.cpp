@@ -75,7 +75,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   createFrameWindow(window_geometry, window_title);
 
-  d->mWindowContentWidget = new UIKit::Widget;
+  d->mWindowContentWidget = new UIKit::Widget(d->mMainWindow);
   d->mWindowContentWidget->setGeometry(window_geometry);
 
   d->mLayoutWidget = new QGraphicsWidget(d->mWindowContentWidget);
@@ -118,33 +118,34 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
 
   d->m_timezone_model = new TimeZoneModel(d->m_timezone_table);
   d->m_timezone_table->setModel(d->m_timezone_model);
-  // d->m_timezone_table->setPos(0.0, 0.0);
   d->m_timezone_model->insertItem("OMG", QPixmap(), false);
 
   d->m_main_layout->addItem(d->m_timezone_table);
 
   exec(window_pos);
 
-  connect(d->mMainWindow, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
+
+  d->mMainWindow->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      discardActivity();
+  });
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
 UIKit::Window *DesktopClockActivity::window() const
 {
-  return d->mMainWindow;
+    return d->mMainWindow;
 }
 
-void DesktopClockActivity::onWidgetClosed(UIKit::Widget *widget)
+void DesktopClockActivity::cleanup()
 {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
-}
+    if (d->mMainWindow)
+        delete d->mMainWindow;
 
-void DesktopClockActivity::onHideAnimationFinished() { Q_EMIT finished(); }
+    d->mMainWindow = 0;
+}
 
 void DesktopClockActivity::onToolBarAction(const QString &str)
 {
@@ -154,9 +155,11 @@ void DesktopClockActivity::onToolBarAction(const QString &str)
     if (viewport()) {
       UIKit::Space *_space = qobject_cast<UIKit::Space *>(viewport());
       if (_space) {
-        UIKit::DesktopActivityPtr _timezone = viewport()->createActivity(
-                                             "timezone", tr("TimeZone"), _space->mousePointerPos(),
-                                             QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
+        UIKit::DesktopActivityPtr _timezone =
+                viewport()->createActivity(
+                    "timezone", tr("TimeZone"),
+                    _space->mousePointerPos(),
+                    QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
         _space->addActivity(_timezone);
       }
     } else {

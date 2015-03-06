@@ -55,9 +55,6 @@ public Q_SLOTS:
   void onImageSaveReadyJson();
   void onImageReadyJson(const QString &fileName);
   void deleteImageAttachment();
-  void onDatePickerDone();
-
-  void onActivityClosed();
 
 protected:
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -71,9 +68,6 @@ private:
   void requestNoteSideImageFromWebService(const QString &key);
   void requestPhotoSizes(const QString &photoID);
   void initDataStore();
-  UIKit::DesktopActivityPtr showCalendar(const QString &activity,
-                                      const QString &title,
-                                      const QVariantMap &dataItem);
-};
+ };
 
 #endif // M_NOTE_WIDGET_H

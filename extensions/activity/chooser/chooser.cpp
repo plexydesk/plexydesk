@@ -150,10 +150,11 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   });
 
   d->m_activity_window_ptr->setWindowContent(d->m_grid_view);
+  d->m_activity_window_ptr->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      discardActivity();
+  });
 
   exec(window_pos);
-
-  connect(this, SIGNAL(attributeChanged()), this, SLOT(onArgumentChanged()));
 }
 
 QVariantMap IconGridActivity::result() const
@@ -163,6 +164,14 @@ QVariantMap IconGridActivity::result() const
 }
 
 Window *IconGridActivity::window() const { return d->m_activity_window_ptr; }
+
+void IconGridActivity::cleanup()
+{
+    if (d->m_activity_window_ptr)
+        delete d->m_activity_window_ptr;
+
+    d->m_activity_window_ptr = 0;
+}
 
 void IconGridActivity::onWidgetClosed(UIKit::Widget *widget)
 {

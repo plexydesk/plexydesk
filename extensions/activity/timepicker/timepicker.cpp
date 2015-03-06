@@ -46,6 +46,10 @@ QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
 
 UIKit::Window *TimePickerActivity::window() const { return 0; }
 
+void TimePickerActivity::cleanup()
+{
+}
+
 void TimePickerActivity::onWidgetClosed(UIKit::Widget *widget) {}
 
 void TimePickerActivity::onHideAnimationFinished() {}

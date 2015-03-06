@@ -86,6 +86,10 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   exec(window_pos);
 
   showActivity();
+
+  d->mFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      discardActivity();
+  });
 }
 
 QVariantMap ProgressDialogActivity::result() const { return QVariantMap(); }
@@ -108,13 +112,18 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 
   if (d->mMax == progress) {
-    // this->onWidgetClosed(d->mFrame);
-    connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
     discardActivity();
   }
 }
 
 UIKit::Window *ProgressDialogActivity::window() const { return d->mFrame; }
+
+void ProgressDialogActivity::cleanup()
+{
+    if (d->mFrame)
+        delete d->mFrame;
+    d->mFrame = 0;
+}
 
 void ProgressDialogActivity::onWidgetClosed(UIKit::Widget *widget)
 {

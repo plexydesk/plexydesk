@@ -52,7 +52,6 @@ DateCell::DateCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
 
 DateCell::~DateCell()
 {
-  // qDebug() << Q_FUNC_INFO;
   delete d;
 }
 

@@ -80,13 +80,16 @@ void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
-  connect(d->mWindowFrame, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
   connect(d->mFactory, SIGNAL(completed(int)), this,
           SLOT(onProgressValue(int)));
+
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
 
   exec(window_pos);
+
+  d->mWindowFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      discardActivity();
+  });
 }
 
 QRectF PhotoSearchActivity::geometry() const { return d->mGeometry; }
@@ -95,19 +98,12 @@ QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
 Window *PhotoSearchActivity::window() const { return d->mWindowFrame; }
 
-void PhotoSearchActivity::onWidgetClosed(UIKit::Widget *widget)
+void PhotoSearchActivity::cleanup()
 {
-  if (d->mFactory && d->mFactory->hasRunningThreads()) {
-    return;
-  }
+    if (d->mWindowFrame)
+        delete d->mWindowFrame;
 
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
-}
-
-void PhotoSearchActivity::onHideAnimationFinished()
-{
-  // Q_EMIT finished();
+    d->mWindowFrame = 0;
 }
 
 void PhotoSearchActivity::onShowAnimationFinished()
@@ -123,16 +119,9 @@ void PhotoSearchActivity::onClicked(TableViewItem *item)
 
   ImageCell *i = qobject_cast<ImageCell *>(item);
   if (i) {
-    // qDebug() << Q_FUNC_INFO <<
-    // d->mAsyncImageLoader->filePathFromName(i->label());
-
     d->mResult["action"] = QString("Change Background");
     d->mResult["background"] = "file://" + i->label();
-
     updateAction();
-
-    connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-    discardActivity();
   }
 }
 

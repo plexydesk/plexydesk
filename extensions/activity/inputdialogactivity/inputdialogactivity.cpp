@@ -134,14 +134,15 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
 
   d->mEditor->setFocus();
 
-  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
-
   connect(d->mCancelButton, SIGNAL(clicked()), this, SIGNAL(canceled()));
   connect(d->mOkButton, SIGNAL(clicked()), this, SLOT(onOkButtonPressed()));
 
   this->exec();
   showActivity();
+
+  d->mFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      discardActivity();
+  });
 }
 
 QString InputDialogActivityData::getErrorMessage() const { return QString(); }
@@ -158,6 +159,14 @@ QRectF InputDialogActivityData::geometry() const { return d->mBoundingRect; }
 QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
 UIKit::Window *InputDialogActivityData::window() const { return d->mFrame; }
+
+void InputDialogActivityData::cleanup()
+{
+    if (d->mFrame)
+        delete d->mFrame;
+
+    d->mFrame = 0;
+}
 
 void InputDialogActivityData::onWidgetClosed(UIKit::Widget *widget)
 {

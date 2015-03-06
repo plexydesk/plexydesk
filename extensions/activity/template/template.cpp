@@ -50,8 +50,9 @@ void TemplateActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  connect(d->m_main_window, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
+  d->m_main_window->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      discardActivity();
+  });
 }
 
 QVariantMap TemplateActivity::result() const { return QVariantMap(); }
@@ -60,6 +61,13 @@ void TemplateActivity::updateAttribute(const QString &name,
                                        const QVariant &data) {}
 
 UIKit::Window *TemplateActivity::window() const { return d->m_main_window; }
+
+void TemplateActivity::cleanup()
+{
+    if (d->m_main_window)
+        delete d->m_main_window;
+    d->m_main_window = 0;
+}
 
 void TemplateActivity::onWidgetClosed(UIKit::Widget *widget)
 {

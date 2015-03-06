@@ -135,20 +135,25 @@ Widget::Widget(QGraphicsObject *parent)
 {
   d->m_widget_name = QLatin1String("Widget");
   d->m_current_layer_type = kRenderAtForgroundLevel;
-
   d->m_minized_view_geometry = QRectF(0.0, 0.0, 64, 64);
 
   setCacheMode(DeviceCoordinateCache);
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
+
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
+
   setAcceptTouchEvents(true);
   setAcceptHoverEvents(true);
   setGraphicsItem(this);
 }
 
-Widget::~Widget() { delete d; }
+Widget::~Widget()
+{
+    qDebug() << Q_FUNC_INFO;
+    delete d;
+}
 
 QRectF Widget::boundingRect() const
 {

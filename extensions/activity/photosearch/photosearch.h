@@ -46,16 +46,12 @@ public:
   QVariantMap result() const;
 
   Window *window() const;
+  void cleanup();
 
 private Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
-
-  void onHideAnimationFinished();
 
   void onShowAnimationFinished();
-
   void onClicked(TableViewItem *item);
-
   void onProgressValue(int value);
 
   // void onDirectoryReady();

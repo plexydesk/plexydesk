@@ -33,6 +33,7 @@ public:
     std::function<void (const QSizeF &size)> m_window_size_callback;
     std::function<void (const QPointF &size)> m_window_move_callback;
     std::function<void (Window *)> m_window_close_callback;
+    std::function<void (Window *)> m_window_discard_callback;
 };
 
 Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
@@ -69,6 +70,7 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
 
 Window::~Window()
 {
+    qDebug() << Q_FUNC_INFO;
     delete d;
 }
 
@@ -153,9 +155,14 @@ void Window::setWindowMoveCallback(std::function<void (const QPointF &)> handler
     d->m_window_move_callback = handler;
 }
 
-void Window::setWindowCloseCallback(std::function<void (Window *)> aCallback)
+void Window::onWindowClosed(std::function<void (Window *)> aCallback)
 {
     d->m_window_close_callback = aCallback;
+}
+
+void Window::onWindowDiscarded(std::function<void (Window *)> aCallback)
+{
+    d->m_window_discard_callback = aCallback;
 }
 
 void Window::paintView(QPainter *painter, const QRectF &rect)
@@ -190,6 +197,15 @@ void Window::hide()
     } );
 
     lTimer->start(250);
+}
+
+void Window::discard()
+{
+  if (d->m_window_discard_callback) {
+      qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
+      d->m_window_discard_callback(this);
+  }
+
 }
 
 void Window::setEnableWindowBackground(bool aVisible)
