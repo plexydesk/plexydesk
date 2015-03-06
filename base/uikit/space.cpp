@@ -17,7 +17,6 @@
 
 namespace UIKit
 {
-
 typedef std::function<void (Space::ViewportNotificationType,
                             const QVariant &,
                             const Space *)> NotifyFunc;

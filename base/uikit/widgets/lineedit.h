@@ -18,23 +18,18 @@ class DECL_UI_KIT_EXPORT LineEdit : public Widget
 
 public:
   explicit LineEdit(QGraphicsObject *parent = 0);
-
   virtual ~LineEdit();
 
   virtual void setText(const QString &txt);
-
   virtual QString text() const;
 
   virtual void style(StylePtr style);
 
   virtual void setSize(const QSizeF &size);
-
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint) const;
-
 Q_SIGNALS:
   void submit();
   void text(const QString &text);
-
 protected:
   virtual bool eventFilter(QObject *object, QEvent *event);
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,

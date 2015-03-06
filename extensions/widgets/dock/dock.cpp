@@ -92,7 +92,7 @@ DockControllerImpl::DockControllerImpl(QObject *object)
           SLOT(onNavigationPanelClicked(QString)));
   // menu
   d->m_preview_widget = new UIKit::ModelView();
-  d->m_preview_widget->setViewActivationCallback([this](int index) {
+  d->m_preview_widget->onActivated([this](int index) {
       if (this->viewport() && this->viewport()->workspace()) {
           UIKit::WorkSpace *_workspace =
                   qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());

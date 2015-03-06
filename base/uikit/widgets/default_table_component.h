@@ -8,48 +8,43 @@ class DECL_UI_KIT_EXPORT DefaultTableComponent
   : public UIKit::TableViewItem
 {
   Q_OBJECT
-
 public:
-  typedef enum { kListLayout = 0, kGridLayout } LayoutType;
+  typedef enum {
+    kListLayout = 0,
+    kGridLayout
+  } LayoutType;
 
-  DefaultTableComponent(const QRectF &rect, LayoutType = kListLayout,
+  DefaultTableComponent(const QRectF &rect,
+                        LayoutType = kListLayout,
                         QGraphicsItem *parent = 0);
   virtual ~DefaultTableComponent();
 
   QRectF boundingRect() const;
-
   virtual QSizeF sizeHint(Qt::SizeHint hint, const QSizeF &size) const;
 
   void setSelected();
+  void clearSelection();
+  void setSelected(bool selection);
 
   void setLabelVisibility(bool visible);
 
-  void clearSelection();
-
   void setLabel(const QString &txt);
-
-  void setIcon(const QPixmap &pixmap);
-
-  QPixmap icon();
-
-  void setSelected(bool selection);
-
+  QString name() const;
   QString label() const;
 
-  QString name();
+  void setIcon(const QPixmap &pixmap);
+  QPixmap icon();
 
   void setData(const QPixmap &pixmap, const QString &label);
-
 protected:
-  virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+  virtual void paint(QPainter *painter,
+                     const QStyleOptionGraphicsItem *option,
                      QWidget *widget = 0);
-
 private Q_SLOTS:
   void onClicked();
-
 private:
   class PrivateTableComponent;
-  PrivateTableComponent *const d;
+  PrivateTableComponent *const m_priv_ptr;
 };
 
 #endif

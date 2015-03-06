@@ -15,18 +15,15 @@
 
 namespace UIKit
 {
-
 class DECL_UI_KIT_EXPORT Button : public Widget
 {
   Q_OBJECT
 
 public:
   explicit Button(QGraphicsObject *parent = 0);
-
   virtual ~Button();
 
   virtual void setLabel(const QString &txt);
-
   virtual QString label() const;
 
   virtual void setIcon(const QImage &img);
@@ -34,26 +31,19 @@ public:
   virtual StylePtr style() const;
 
   virtual void setSize(const QSize &size);
-
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint) const;
 
   void setActionData(const QVariant &data);
-
   QVariant actionData() const;
 
-  virtual void setButtonPressCallback(std::function<void ()> handler);
-
+  virtual void onButtonPressed(std::function<void ()> aHandler);
 protected:
-  virtual void paintView(QPainter *painter, const QRectF &rect);
-
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+  virtual void paintView(QPainter *painter, const QRectF &rect);
   virtual void paintNormalButton(QPainter *painter, const QRectF &rect);
-
   virtual void paintSunkenButton(QPainter *painter, const QRectF &rect);
-
 private:
   class PrivateButton;
   PrivateButton *const d;

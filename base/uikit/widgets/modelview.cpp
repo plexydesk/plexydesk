@@ -23,8 +23,7 @@ public:
   QGraphicsGridLayout *m_grid_layout;
   QRectF m_viewport_geometry;
 
-
-  std::function<void (int index)> mViewActivationCallback;
+  std::function<void (int index)> m_activation_handler;
 };
 
 ModelView::ModelView(QGraphicsObject *parent, ModelType aModelType) :
@@ -105,8 +104,8 @@ void ModelView::insert(Widget *widget)
 
   widget->onInputEvent([this](int type, const Widget *widget) {
       if (type == Widget::kMouseReleaseEvent) {
-        if (d->mViewActivationCallback)
-            d->mViewActivationCallback(widget->widgetID());
+        if (d->m_activation_handler)
+            d->m_activation_handler(widget->widgetID());
       }
    });
 
@@ -162,9 +161,9 @@ QSizeF ModelView::sizeHint(Qt::SizeHint which,
     return d->m_list_layout->contentsRect().size();
 }
 
-void ModelView::setViewActivationCallback(std::function<void (int)> aCallback)
+void ModelView::onActivated(std::function<void (int)> aCallback)
 {
-    d->mViewActivationCallback = aCallback;
+    d->m_activation_handler = aCallback;
 }
 
 bool ModelView::event(QEvent *e)

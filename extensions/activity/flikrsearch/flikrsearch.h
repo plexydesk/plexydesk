@@ -33,47 +33,29 @@ using namespace UIKit;
 class FlickrSearchActivity : public UIKit::DesktopActivity
 {
   Q_OBJECT
-
 public:
   FlickrSearchActivity(QGraphicsObject *object = 0);
-
   virtual ~FlickrSearchActivity();
 
   void createWindow(const QRectF &aWindowGeometry, const QString &window_title,
                     const QPointF &window_pos);
-
-  // virtual QRectF geometry() const;
-
-  QVariantMap result() const;
-
   Window *window() const;
 
+  QVariantMap result() const;
   void cleanup();
-
 public Q_SLOTS:
   void photoItemClicked(TableViewItem *item);
 
 private Q_SLOTS:
   void onWidgetClosed(UIKit::Widget *widget);
-
-  // void onClicked(UI::AbstractCellComponent *item);
-
   void onButtonClicked();
-
   void onNextButtonClicked();
-
   void onPreviousButtonClicked();
-
   void onHideAnimationFinished();
-
   void onPageCount(int count);
-
   void onProgressRange(int range);
-
   void onCompleted(int count);
-
   void onToolbarAction(const QString &action);
-
 private:
   class PrivateFlikrSearch;
   PrivateFlikrSearch *const d;

@@ -43,7 +43,6 @@ protected:
   virtual void paintView(QPainter *painter, const QRectF &exposeRect);
 
   void toolButtonPressHandler(const Widget *aWidget);
-
 private:
   class PrivateToolBar;
   PrivateToolBar *const d;
