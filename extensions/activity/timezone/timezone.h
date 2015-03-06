@@ -40,6 +40,7 @@ public:
                     const QString &aWindowTitle,
                     const QPointF &aWindowPos);
   UIKit::Window *window() const;
+  void cleanup();
 
   QVariantMap result() const;
   virtual void updateAttribute(const QString &aName, const QVariant &aVariantData);

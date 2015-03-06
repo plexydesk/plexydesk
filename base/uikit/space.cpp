@@ -219,9 +219,9 @@ void Space::insertWindowToView(Window *aWindow)
 
   mPrivImpl->mWindowList.push_front(aWindow);
 
-  aWindow->setWindowCloseCallback([this](Window *window){
+  aWindow->onWindowClosed([this](Window *window){
       qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
-      this->removeWindowFromView(window);
+      removeWindowFromView(window);
   });
 }
 
@@ -247,9 +247,7 @@ void Space::removeWindowFromView(Window *aWindow)
   mPrivImpl->mWindowList.remove(aWindow);
   qDebug() << Q_FUNC_INFO << "After:" << mPrivImpl->mWindowList.size();
 
-  if (aWindow) {
-    delete aWindow;
-  }
+  aWindow->discard();
 }
 
 void Space::onViewportEventNotify(

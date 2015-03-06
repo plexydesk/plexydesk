@@ -83,7 +83,7 @@ void DirectoryController::requestAction(const QString &actionName,
     } else if (actionName == tr("Folder")) {
         UIKit::Window *window = new UIKit::Window();
 
-        window->setWindowCloseCallback([&](UIKit::Window *aWindow) {
+        window->onWindowClosed([&](UIKit::Window *aWindow) {
             delete aWindow;
         });
 

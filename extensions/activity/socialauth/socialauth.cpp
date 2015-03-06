@@ -54,13 +54,22 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
   exec();
 
   showActivity();
-  connect(d->mFrame, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(onWidgetClosed(UIKit::Widget *)));
+
+  d->mFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
+      discardActivity();
+  });
 }
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
 UIKit::Window *SocialAuthActivity::window() const { return d->mFrame; }
+
+void SocialAuthActivity::cleanup()
+{
+    if (d->mFrame)
+        delete d->mFrame;
+    d->mFrame = 0;
+}
 
 void SocialAuthActivity::onWidgetClosed(UIKit::Widget *widget) {}
 

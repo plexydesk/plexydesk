@@ -40,15 +40,16 @@ public:
             std::function<void (const QSizeF &size)> handler);
     virtual void setWindowMoveCallback(
             std::function<void (const QPointF &pos)> handler);
-    virtual void setWindowCloseCallback(
+    virtual void onWindowClosed(
+            std::function<void (Window *)> aCallback);
+    virtual void onWindowDiscarded(
             std::function<void (Window *)> aCallback);
 
     virtual void show();
     virtual void hide();
+    virtual void discard();
 
     virtual void setEnableWindowBackground(bool aVisible = true);
-
-
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);

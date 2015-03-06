@@ -56,8 +56,7 @@ public:
   QuetzalKit::SyncObject *mCurrentNoteObject;
   QuetzalKit::SyncObject *getNoteObject();
   UIKit::ToolBar *mToolBar;
-  UIKit::DesktopActivityPtr m_calendar_activity_dialog;
-  UIKit::Space *mViewport;
+  UIKit::Space *m_viewport;
 };
 
 void NoteWidget::createToolBar()
@@ -76,7 +75,7 @@ void NoteWidget::createToolBar()
 
 void NoteWidget::setViewport(UIKit::Space *space)
 {
-    d->mViewport = space;
+    d->m_viewport = space;
 }
 
 NoteWidget::NoteWidget(QGraphicsObject *parent)
@@ -331,57 +330,15 @@ void NoteWidget::onDocuemntTitleAvailable(const QString &title)
   this->setTitle(title);
 }
 
-UIKit::DesktopActivityPtr NoteWidget::showCalendar(
-  const QString &activity, const QString &title,
-  const QVariantMap &dataItem)
-{
-  if (d->m_calendar_activity_dialog) {
-    return d->m_calendar_activity_dialog;
-  }
-
-  d->m_calendar_activity_dialog =
-    UIKit::ExtensionManager::instance()->activity(activity);
-
-  if (!d->m_calendar_activity_dialog) {
-    qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
-  }
-
-  QPointF _activity_pos;
-  _activity_pos.setX(x());
-  _activity_pos.setY(y());
-
-  d->m_calendar_activity_dialog->createWindow(QRectF(0.0, 0.0, 600.0, 440.0),
-      title, _activity_pos);
-
-  QGraphicsItem *child =
-    (QGraphicsItem *)d->m_calendar_activity_dialog->window();
-
-  if (this->scene()) {
-    this->scene()->addItem(child);
-    child->show();
-  }
-
-  return d->m_calendar_activity_dialog;
-}
 void NoteWidget::onToolBarAction(const QString &action)
 {
   qDebug() << Q_FUNC_INFO << action;
   if (action == tr("date")) {
-    if (d->m_calendar_activity_dialog) {
-      d->m_calendar_activity_dialog->showActivity();
-      return;
-    }
 
-    d->m_calendar_activity_dialog =
-      d->mViewport->createActivity("datepickeractivity", "Date/Time", QPointF(),
+    if (d->m_viewport) {
+      d->m_viewport->createActivity("datepickeractivity", "Date/Time", QPointF(),
                                    QRectF(0, 0, 600, 440), QVariantMap());
-
-    /*
-    if (activity) {
-      connect(activity.data(), SIGNAL(finished()), this,
-              SLOT(onDatePickerDone()));
     }
-    */
 
   } else if (action == tr("list")) {
     d->mTextEdit->beginList();
@@ -516,23 +473,6 @@ void NoteWidget::deleteImageAttachment()
   update();
 }
 
-void NoteWidget::onDatePickerDone()
-{
-  qDebug() << Q_FUNC_INFO;
-  if (sender()) {
-    UIKit::DesktopActivity *activity =
-      qobject_cast<UIKit::DesktopActivity *>(sender());
-    if (activity) {
-      qDebug() << Q_FUNC_INFO << activity->result();
-      if (activity->window()) {
-        scene()->removeItem(activity->window());
-      }
-
-      d->m_calendar_activity_dialog.clear();
-    }
-  }
-}
-
 QString NoteWidget::PrivateNoteWidget::getContentText(
   const QString &data) const
 {
@@ -546,19 +486,5 @@ QString NoteWidget::PrivateNoteWidget::getContentText(
   return rv;
 }
 
-QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject() { return 0;}
-
-void NoteWidget::onActivityClosed()
-{
-  if (sender()) {
-    UIKit::DesktopActivity *activity =
-      qobject_cast<UIKit::DesktopActivity *>(sender());
-
-    if (activity) {
-      if (activity->window()) {
-        scene()->removeItem(activity->window());
-      }
-      delete activity;
-    }
-  }
-}
+QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject()
+{ return 0;}

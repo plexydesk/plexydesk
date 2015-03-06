@@ -92,17 +92,9 @@ void DesktopActivity::showActivity()
 void DesktopActivity::discardActivity()
 {
   hide();
-
   if (window()) {
-    QGraphicsScene *_scene = window()->scene();
-
-    if (_scene) {
-      _scene->removeItem(window());
-      cleanup();
-    }
+    cleanup();
   }
-
-  Q_EMIT discarded();
 }
 
 void DesktopActivity::hide()

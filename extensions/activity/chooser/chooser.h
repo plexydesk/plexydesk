@@ -44,6 +44,7 @@ public:
                     const QPointF &window_pos);
   QVariantMap result() const;
   Window *window() const;
+  void cleanup();
 
   /*
 protected:

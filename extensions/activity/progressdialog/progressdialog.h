@@ -44,6 +44,7 @@ public:
   virtual void updateAttribute(const QString &name, const QVariant &data);
 
   UIKit::Window *window() const;
+  void cleanup();
 
 private Q_SLOTS:
   void onWidgetClosed(UIKit::Widget *widget);
