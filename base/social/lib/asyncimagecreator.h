@@ -12,7 +12,7 @@ class QuetzalSocialKit_EXPORT AsyncImageCreator : public QThread
 {
   Q_OBJECT
 public:
-  explicit AsyncImageCreator(QObject *parent = 0);
+  explicit AsyncImageCreator(QObject *a_parent_ptr = 0);
 
   virtual ~AsyncImageCreator();
 

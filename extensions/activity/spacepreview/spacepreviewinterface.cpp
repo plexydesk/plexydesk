@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> SpacePreviewInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new SpacePreviewActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

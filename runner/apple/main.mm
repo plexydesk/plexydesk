@@ -92,17 +92,17 @@ int main(int argc, char *argv[])
 
 
     DesktopManager workspace;
-    workspace.addDefaultController("classicbackdrop");
-    workspace.addDefaultController("dockwidget");
-    workspace.addDefaultController("plexyclock");
-    workspace.addDefaultController("desktopnoteswidget");
-    workspace.addDefaultController("folderwidget");
-    workspace.addDefaultController("photoframe");
+    workspace.add_default_controller("classicbackdrop");
+    workspace.add_default_controller("dockwidget");
+    workspace.add_default_controller("plexyclock");
+    workspace.add_default_controller("desktopnoteswidget");
+    workspace.add_default_controller("folderwidget");
+    workspace.add_default_controller("photoframe");
 
-    workspace.restoreSession();
+    workspace.restore_session();
 
-    if (workspace.spaceCount() <= 0) {
-        workspace.addSpace();
+    if (workspace.space_count() <= 0) {
+        workspace.add_default_space();
     }
 
     NSView *_desktopView = reinterpret_cast<NSView *>(workspace.winId());

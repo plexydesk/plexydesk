@@ -8,7 +8,7 @@ class IconWidgetView : public UIKit::Widget
 {
   Q_OBJECT
 public:
-  explicit IconWidgetView(QGraphicsObject *parent = 0);
+  explicit IconWidgetView(QGraphicsObject *a_parent_ptr = 0);
   virtual ~IconWidgetView();
 
   void setDirectoryPath(const QString &path);

@@ -32,7 +32,7 @@ public:
     if (mWindowPtr) {
       delete mWindowPtr;
     }
-   qDebug() << Q_FUNC_INFO << "Delete TimeZone Activity";
+    qDebug() << Q_FUNC_INFO << "Delete TimeZone Activity";
   }
 
   void loadTimeZones();
@@ -54,19 +54,19 @@ void TimeZoneActivity::createWindow(const QRectF &aWindowGeometry,
 
   mPrivConstPtr->mWindowPtr->setWindowTitle(aWindowTitle);
   mPrivConstPtr->mTimeZoneBrowserPtr =
-          new UIKit::ModelView(mPrivConstPtr->mWindowPtr);
+    new UIKit::ModelView(mPrivConstPtr->mWindowPtr);
   mPrivConstPtr->mTimeZoneBrowserPtr->setGeometry(aWindowGeometry);
   mPrivConstPtr->mTimeZoneBrowserPtr->setViewGeometry(aWindowGeometry);
 
   mPrivConstPtr->mWindowPtr->setWindowContent(
-              mPrivConstPtr->mTimeZoneBrowserPtr);
+    mPrivConstPtr->mTimeZoneBrowserPtr);
 
   setGeometry(aWindowGeometry);
 
   exec(aWindowPos);
 
-  mPrivConstPtr->mWindowPtr->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  mPrivConstPtr->mWindowPtr->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 
   mPrivConstPtr->loadTimeZones();
@@ -81,26 +81,27 @@ UIKit::Window *TimeZoneActivity::window() const { return mPrivConstPtr->mWindowP
 
 void TimeZoneActivity::cleanup()
 {
-    if (mPrivConstPtr->mWindowPtr)
-        delete mPrivConstPtr->mWindowPtr;
-    mPrivConstPtr->mWindowPtr = 0;
+  if (mPrivConstPtr->mWindowPtr) {
+    delete mPrivConstPtr->mWindowPtr;
+  }
+  mPrivConstPtr->mWindowPtr = 0;
 }
 
 void TimeZoneActivity::PrivateTimeZone::loadTimeZones()
 {
-   foreach(const QByteArray id,  QTimeZone::availableTimeZoneIds()) {
-       UIKit::Label *lTimeZoneLabelPtr =
-               new UIKit::Label(mTimeZoneBrowserPtr);
-       lTimeZoneLabelPtr->setMinimumSize(
-                   mTimeZoneBrowserPtr->geometry().width(),
-                   32);
-       lTimeZoneLabelPtr->setSize(QSizeF(mTimeZoneBrowserPtr->boundingRect().width(),
-                                         32));
-       lTimeZoneLabelPtr->show();
+  foreach(const QByteArray id,  QTimeZone::availableTimeZoneIds()) {
+    UIKit::Label *lTimeZoneLabelPtr =
+      new UIKit::Label(mTimeZoneBrowserPtr);
+    lTimeZoneLabelPtr->setMinimumSize(
+      mTimeZoneBrowserPtr->geometry().width(),
+      32);
+    lTimeZoneLabelPtr->setSize(QSizeF(mTimeZoneBrowserPtr->boundingRect().width(),
+                                      32));
+    lTimeZoneLabelPtr->show();
 
-       qDebug() << Q_FUNC_INFO << mTimeZoneBrowserPtr->boundingRect();
+    qDebug() << Q_FUNC_INFO << mTimeZoneBrowserPtr->boundingRect();
 
-       lTimeZoneLabelPtr->setLabel(QString(id));
-       mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
-   }
+    lTimeZoneLabelPtr->setLabel(QString(id));
+    mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
+  }
 }

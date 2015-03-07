@@ -48,7 +48,7 @@ public:
       *
       * @param parent
       */
-  ExtensionManager(QObject *parent = 0);
+  ExtensionManager(QObject *a_parent_ptr = 0);
   /**
       * @brief
       *

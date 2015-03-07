@@ -55,8 +55,8 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
 
   showActivity();
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 }
 
@@ -66,9 +66,10 @@ UIKit::Window *SocialAuthActivity::window() const { return d->mFrame; }
 
 void SocialAuthActivity::cleanup()
 {
-    if (d->mFrame)
-        delete d->mFrame;
-    d->mFrame = 0;
+  if (d->mFrame) {
+    delete d->mFrame;
+  }
+  d->mFrame = 0;
 }
 
 void SocialAuthActivity::onWidgetClosed(UIKit::Widget *widget) {}

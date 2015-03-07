@@ -8,7 +8,7 @@ class CalendarWidget : public UIKit::Widget
   Q_OBJECT
 
 public:
-  CalendarWidget(QGraphicsObject *parent = 0);
+  CalendarWidget(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~CalendarWidget();
 

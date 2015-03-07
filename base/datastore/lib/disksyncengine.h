@@ -11,7 +11,7 @@ class QuetzalDataKit_EXPORT DiskSyncEngine : public SyncEngineInterface
 {
   Q_OBJECT
 public:
-  explicit DiskSyncEngine(QObject *parent = 0);
+  explicit DiskSyncEngine(QObject *a_parent_ptr = 0);
   virtual ~DiskSyncEngine();
 
   virtual void setEngineName(const QString &name);

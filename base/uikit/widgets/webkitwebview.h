@@ -12,7 +12,7 @@ class DECL_UI_KIT_EXPORT WebKitWebView : public UIKit::Widget
 {
   Q_OBJECT
 public:
-  WebKitWebView(QGraphicsObject *parent = 0);
+  WebKitWebView(QGraphicsObject *a_parent_ptr = 0);
   virtual ~WebKitWebView();
 
   virtual void setUrl(const QUrl &url);

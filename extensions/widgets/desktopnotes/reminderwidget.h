@@ -12,7 +12,7 @@ class ReminderWidget : public UIKit::Widget
 {
   Q_OBJECT
 public:
-  explicit ReminderWidget(QGraphicsObject *parent = 0);
+  explicit ReminderWidget(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~ReminderWidget();
 

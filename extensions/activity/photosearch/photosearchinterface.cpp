@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> PhotoSearchInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new PhotoSearchActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

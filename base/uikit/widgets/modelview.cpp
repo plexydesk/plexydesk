@@ -40,8 +40,8 @@ ModelView::ModelView(QGraphicsObject *parent, ModelType aModelType) :
   }
 
   if (d->m_model_view_type == kGridModel) {
-      d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
-      d->m_grid_layout->setContentsMargins(16, 0, 0, 0);
+    d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
+    d->m_grid_layout->setContentsMargins(16, 0, 0, 0);
   }
 
   d->m_viewport_geometry = QRectF();
@@ -74,18 +74,19 @@ void ModelView::insert_to_list_view(Widget *widget)
 
 void ModelView::insert_to_grid_view(Widget *widget)
 {
-  if (!d->m_grid_layout)
+  if (!d->m_grid_layout) {
     return;
+  }
 
   widget->setWidgetID(d->m_grid_layout->count());
 
   int l_item_per_row =
-          d->m_viewport_geometry.width() /
-          widget->boundingRect().width();
+    d->m_viewport_geometry.width() /
+    widget->boundingRect().width();
 
   d->m_grid_layout->addItem(widget,
                             d->m_grid_layout->count() / (l_item_per_row - 1),
-                            d->m_grid_layout->count() % (l_item_per_row -1));
+                            d->m_grid_layout->count() % (l_item_per_row - 1));
 
   d->m_grid_layout->activate();
   d->m_grid_layout->updateGeometry();
@@ -102,17 +103,24 @@ void ModelView::insert(Widget *widget)
   widget->setParentItem(d->m_scroll_frame);
   widget->setParent(d->m_scroll_frame);
 
-  widget->onInputEvent([this](int type, const Widget *widget) {
-      if (type == Widget::kMouseReleaseEvent) {
-        if (d->m_activation_handler)
-            d->m_activation_handler(widget->widgetID());
+  widget->onInputEvent([this](int type, const Widget * widget) {
+    if (type == Widget::kMouseReleaseEvent) {
+      if (d->m_activation_handler) {
+        d->m_activation_handler(widget->widgetID());
       }
-   });
+    }
+  });
 
-  switch(d->m_model_view_type) {
-  case kListModel: insert_to_list_view(widget); break;
-  case kGridModel: insert_to_grid_view(widget); break;
-  case kTableModel: insert_to_table_view(widget);break;
+  switch (d->m_model_view_type) {
+  case kListModel:
+    insert_to_list_view(widget);
+    break;
+  case kGridModel:
+    insert_to_grid_view(widget);
+    break;
+  case kTableModel:
+    insert_to_table_view(widget);
+    break;
   }
 
   update();
@@ -158,12 +166,12 @@ void ModelView::setGeometry(const QRectF &rect)
 QSizeF ModelView::sizeHint(Qt::SizeHint which,
                            const QSizeF &constraint) const
 {
-    return d->m_list_layout->contentsRect().size();
+  return d->m_list_layout->contentsRect().size();
 }
 
 void ModelView::onActivated(std::function<void (int)> aCallback)
 {
-    d->m_activation_handler = aCallback;
+  d->m_activation_handler = aCallback;
 }
 
 bool ModelView::event(QEvent *e)

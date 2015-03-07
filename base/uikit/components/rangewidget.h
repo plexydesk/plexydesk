@@ -13,7 +13,7 @@ class DECL_UI_KIT_EXPORT RangeWidget : public UIKit::Widget
 {
   Q_OBJECT
 public:
-  RangeWidget(QGraphicsObject *parent = 0);
+  RangeWidget(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~RangeWidget();
 

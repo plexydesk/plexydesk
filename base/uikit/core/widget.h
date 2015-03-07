@@ -28,9 +28,9 @@
 
 namespace UIKit
 {
- /*
-  * @brief The Base Class for All types of Desktop Widgets.
-  */
+/*
+ * @brief The Base Class for All types of Desktop Widgets.
+ */
 class ViewController;
 
 class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
@@ -63,7 +63,7 @@ public:
 
   enum RenderLevel { kRenderAtBackgroundLevel, kRenderAtForgroundLevel };
 
-  Widget(QGraphicsObject *parent = 0);
+  Widget(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Widget();
 
   void setGeometry(const QRectF &rect);
@@ -88,7 +88,7 @@ public:
   virtual void setWindowFlag(int flags, bool enable = true);
 
   virtual void onInputEvent(
-          std::function<void (InputEvent type, const Widget *ptr)> aCallback);
+    std::function<void (InputEvent type, const Widget *ptr)> aCallback);
 
   virtual void setStyleAttribute(const QString &aKey, QVariant aData);
   virtual QVariant styleAttribute(const QString &aKey);

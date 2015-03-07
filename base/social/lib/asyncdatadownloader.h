@@ -12,7 +12,7 @@ class QuetzalSocialKit_EXPORT AsyncDataDownloader : public QObject
 {
   Q_OBJECT
 public:
-  explicit AsyncDataDownloader(QObject *parent = 0);
+  explicit AsyncDataDownloader(QObject *a_parent_ptr = 0);
   virtual ~AsyncDataDownloader();
 
   void setMetaData(const QVariantMap &metaData);

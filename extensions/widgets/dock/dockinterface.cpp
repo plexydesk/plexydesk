@@ -25,7 +25,7 @@ QSharedPointer<UIKit::ViewController> DockInterface::controller()
 {
   QSharedPointer<UIKit::ViewController> obj =
     QSharedPointer<UIKit::ViewController>(new DockControllerImpl(0),
-                                       &QObject::deleteLater);
+                                          &QObject::deleteLater);
 
   return obj;
 }

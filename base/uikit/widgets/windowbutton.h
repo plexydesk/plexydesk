@@ -34,7 +34,7 @@ class DECL_UI_KIT_EXPORT WindowButton : public UIKit::Button
 public:
   typedef enum { CLOSE, ZOOM, MINIMIZE } WindowButtonType;
 
-  explicit WindowButton(QGraphicsObject *parent = 0);
+  explicit WindowButton(QGraphicsObject *a_parent_ptr = 0);
   ~WindowButton();
 
   void setButtonType(WindowButtonType type);

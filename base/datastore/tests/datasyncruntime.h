@@ -10,7 +10,7 @@ class DataSyncRuntime : public QObject
   Q_OBJECT
 
 public:
-  explicit DataSyncRuntime(QObject *parent = 0);
+  explicit DataSyncRuntime(QObject *a_parent_ptr = 0);
 
   virtual ~DataSyncRuntime();
 

@@ -168,7 +168,7 @@ protected:
       *
       * @param parent
       */
-  explicit ViewController(QObject *parent = 0);
+  explicit ViewController(QObject *a_parent_ptr = 0);
 
   /**
       * @brief

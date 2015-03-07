@@ -12,7 +12,7 @@ class QuetzalDataKit_EXPORT MemorySyncEngine : public SyncEngineInterface
   Q_OBJECT
 
 public:
-  explicit MemorySyncEngine(QObject *parent = 0);
+  explicit MemorySyncEngine(QObject *a_parent_ptr = 0);
 
   virtual QString data(const QString &storeName);
 

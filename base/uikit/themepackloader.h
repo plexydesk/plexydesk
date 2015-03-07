@@ -20,7 +20,7 @@ class DECL_UI_KIT_EXPORT Theme : public QObject
   Q_PROPERTY(QString themeName READ QString WRITE setThemeName)
 
 public:
-  Theme(const QString &themeName, QObject *parent = 0);
+  Theme(const QString &themeName, QObject *a_parent_ptr = 0);
 
   virtual ~Theme();
 

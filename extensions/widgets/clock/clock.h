@@ -30,7 +30,7 @@ class Clock : public UIKit::ViewController
   Q_OBJECT
 
 public:
-  Clock(QObject *parent = 0);
+  Clock(QObject *a_parent_ptr = 0);
   virtual ~Clock();
 
   void init();

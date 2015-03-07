@@ -5,7 +5,7 @@ QSharedPointer<UIKit::ViewController> ClockInterface::controller()
 {
   QSharedPointer<UIKit::ViewController> obj =
     QSharedPointer<UIKit::ViewController>(new Clock(),
-                                       &QObject::deleteLater);
+                                          &QObject::deleteLater);
 
   return obj;
 }

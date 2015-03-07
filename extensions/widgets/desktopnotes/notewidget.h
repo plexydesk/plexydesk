@@ -13,7 +13,7 @@ class NoteWidget : public UIKit::Widget
 {
   Q_OBJECT
 public:
-  explicit NoteWidget(QGraphicsObject *parent = 0);
+  explicit NoteWidget(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~NoteWidget();
 
@@ -68,6 +68,6 @@ private:
   void requestNoteSideImageFromWebService(const QString &key);
   void requestPhotoSizes(const QString &photoID);
   void initDataStore();
- };
+};
 
 #endif // M_NOTE_WIDGET_H

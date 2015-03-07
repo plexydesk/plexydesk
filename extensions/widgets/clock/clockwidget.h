@@ -30,7 +30,7 @@ class ClockWidget : public UIKit::Widget
   Q_OBJECT
 
 public:
-  ClockWidget(QGraphicsObject *parent = 0);
+  ClockWidget(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~ClockWidget();
 

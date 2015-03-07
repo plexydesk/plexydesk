@@ -75,7 +75,7 @@ void NoteWidget::createToolBar()
 
 void NoteWidget::setViewport(UIKit::Space *space)
 {
-    d->m_viewport = space;
+  d->m_viewport = space;
 }
 
 NoteWidget::NoteWidget(QGraphicsObject *parent)
@@ -336,8 +336,8 @@ void NoteWidget::onToolBarAction(const QString &action)
   if (action == tr("date")) {
 
     if (d->m_viewport) {
-      d->m_viewport->createActivity("datepickeractivity", "Date/Time", QPointF(),
-                                   QRectF(0, 0, 600, 440), QVariantMap());
+      d->m_viewport->create_activity("datepickeractivity", "Date/Time", QPointF(),
+                                     QRectF(0, 0, 600, 440), QVariantMap());
     }
 
   } else if (action == tr("list")) {
@@ -409,7 +409,7 @@ void NoteWidget::onSizeServiceCompleteJson(
   service->deleteLater();
 }
 
-void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service){}
+void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service) {}
 
 void NoteWidget::onImageReady()
 {

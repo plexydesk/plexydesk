@@ -13,7 +13,7 @@ class DECL_UI_KIT_EXPORT ImageButton : public Widget
 {
   Q_OBJECT
 public:
-  explicit ImageButton(QGraphicsObject *parent = 0);
+  explicit ImageButton(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ImageButton();
 
   virtual void setSize(const QSize &size);

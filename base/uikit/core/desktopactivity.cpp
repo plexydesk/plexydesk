@@ -51,9 +51,10 @@ void DesktopActivity::updateAttribute(const QString &name, const QVariant &data)
   setActivityAttribute(name, data);
   Q_EMIT attributeChanged();
 
-  foreach (std::function<void ()> l_handler, d->m_arg_handler_list) {
-      if (l_handler)
-          l_handler();
+  foreach(std::function<void ()> l_handler, d->m_arg_handler_list) {
+    if (l_handler) {
+      l_handler();
+    }
   }
 }
 
@@ -125,16 +126,16 @@ void DesktopActivity::setViewport(Space *viewport)
 
 Space *DesktopActivity::viewport() const
 {
-    return d->m_current_viewport;
+  return d->m_current_viewport;
 }
 
 void DesktopActivity::onArgumentsUpdated(std::function<void ()> a_handler)
 {
-    d->m_arg_handler_list.append(a_handler);
+  d->m_arg_handler_list.append(a_handler);
 }
 
 void DesktopActivity::onActionCompleted(
-        std::function<void (const QVariantMap &)> a_handler)
+  std::function<void (const QVariantMap &)> a_handler)
 {
 }
 

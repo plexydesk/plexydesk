@@ -11,7 +11,7 @@ class DECL_UI_KIT_EXPORT DefaultTableModel : public TableModel
   Q_OBJECT
 
 public:
-  DefaultTableModel(QGraphicsObject *parent = 0);
+  DefaultTableModel(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~DefaultTableModel();
 

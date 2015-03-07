@@ -122,7 +122,7 @@ void Clock::requestAction(const QString &actionName, const QVariantMap &args)
     _clock_activity->createWindow(_view_geomeetry, "Montreal",
                                   viewport()->center(_view_geomeetry));
     if (viewport()) {
-      viewport()->addActivity(_clock_activity);
+      viewport()->add_activity(_clock_activity);
     }
   }
 }

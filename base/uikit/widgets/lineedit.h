@@ -17,7 +17,7 @@ class DECL_UI_KIT_EXPORT LineEdit : public Widget
   Q_INTERFACES(QGraphicsLayoutItem)
 
 public:
-  explicit LineEdit(QGraphicsObject *parent = 0);
+  explicit LineEdit(QGraphicsObject *a_parent_ptr = 0);
   virtual ~LineEdit();
 
   virtual void setText(const QString &txt);

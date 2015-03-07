@@ -9,7 +9,7 @@ class GridIcon : public UIKit::TableViewItem
 public:
   typedef enum { List = 0, Grid } ItemLayout;
 
-  GridIcon(const QRectF &rect, ItemLayout = List, QGraphicsItem *parent = 0);
+  GridIcon(const QRectF &rect, ItemLayout = List, QGraphicsItem *a_parent_ptr = 0);
   ~GridIcon();
 
   QRectF boundingRect() const;

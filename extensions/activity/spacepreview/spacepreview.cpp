@@ -50,8 +50,8 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  d->m_main_window->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  d->m_main_window->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 }
 
@@ -64,10 +64,11 @@ UIKit::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
 
 void SpacePreviewActivity::cleanup()
 {
-    if (d->m_main_window)
-        delete d->m_main_window;
+  if (d->m_main_window) {
+    delete d->m_main_window;
+  }
 
-    d->m_main_window = 0;
+  d->m_main_window = 0;
 }
 
 void SpacePreviewActivity::onWidgetClosed(UIKit::Widget *widget)

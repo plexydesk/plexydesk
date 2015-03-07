@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DataSource> FlickrPhotoSearchInterface::model()
 {
   QSharedPointer<UIKit::DataSource> obj =
     QSharedPointer<UIKit::DataSource>(new FlickrPhotoSearchData(),
-                                   &QObject::deleteLater);
+                                      &QObject::deleteLater);
 
   return obj;
 }

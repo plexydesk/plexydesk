@@ -32,7 +32,7 @@ class ClassicBackdrop : public QObject,
   Q_PLUGIN_METADATA(IID "org.qt-project.classicbackground")
 
 public:
-  ClassicBackdrop(QObject *parent = 0);
+  ClassicBackdrop(QObject *a_parent_ptr = 0);
   virtual ~ClassicBackdrop();
 
   QSharedPointer<UIKit::ViewController> controller();

@@ -26,7 +26,7 @@ InputDialogActivityInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new InputDialogActivityData(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

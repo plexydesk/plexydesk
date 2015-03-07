@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DataSource> RestInterface::model()
 {
   QSharedPointer<UIKit::DataSource> obj =
     QSharedPointer<UIKit::DataSource>(new RestData(),
-                                   &QObject::deleteLater);
+                                      &QObject::deleteLater);
 
   return obj;
 }

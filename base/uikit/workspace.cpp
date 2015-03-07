@@ -30,7 +30,7 @@ public:
   bool m_opengl_on;
 };
 
-void WorkSpace::setWorkspaceGeometry()
+void WorkSpace::set_workspace_geometry()
 {
   QRect _current_desktop_geometry = QApplication::desktop()->screenGeometry();
 
@@ -50,10 +50,10 @@ void WorkSpace::setWorkspaceGeometry()
   setGeometry(_current_desktop_geometry);
 }
 
-WorkSpace::WorkSpace(QGraphicsScene *scene, QWidget *parent)
-  : QGraphicsView(scene, parent), d(new PrivateWorkSpace)
+WorkSpace::WorkSpace(QGraphicsScene *a_graphics_scene_ptr, QWidget *a_parent_ptr)
+  : QGraphicsView(a_graphics_scene_ptr, a_parent_ptr), m_priv_impl(new PrivateWorkSpace)
 {
-  d->m_opengl_on = false;
+  m_priv_impl->m_opengl_on = false;
   setAttribute(Qt::WA_AcceptTouchEvents);
   setAttribute(Qt::WA_TranslucentBackground);
 
@@ -71,22 +71,22 @@ WorkSpace::WorkSpace(QGraphicsScene *scene, QWidget *parent)
 
   setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
-  d->m_space_count = 0;
-  d->m_current_activty_space_id = 0;
-  d->m_workspace_left_margine = 0;
+  m_priv_impl->m_space_count = 0;
+  m_priv_impl->m_current_activty_space_id = 0;
+  m_priv_impl->m_workspace_left_margine = 0;
 
-  setWorkspaceGeometry();
+  set_workspace_geometry();
   setAcceptDrops(true);
 }
 
-WorkSpace::~WorkSpace() { delete d; }
+WorkSpace::~WorkSpace() { delete m_priv_impl; }
 
-void WorkSpace::addDefaultController(const QString &name)
+void WorkSpace::add_default_controller(const QString &a_controller_name)
 {
-  d->m_default_controller_name_list << name;
+  m_priv_impl->m_default_controller_name_list << a_controller_name;
 }
 
-void WorkSpace::restoreSession()
+void WorkSpace::restore_session()
 {
   QuetzalKit::DataStore *_data_store =
     new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
@@ -106,23 +106,23 @@ void WorkSpace::restoreSession()
       QString _space_name = _object->attributeValue("name").toString();
 
       qDebug() << Q_FUNC_INFO << "Adding Space : " << _space_name;
-      revokeSpace(_space_name, _object->key());
+      revoke_space(_space_name, _object->key());
     }
   }
 
   delete _data_store;
 }
 
-uint WorkSpace::spaceCount() const { return d->m_desktop_space_list.count(); }
+uint WorkSpace::space_count() const { return m_priv_impl->m_desktop_space_list.count(); }
 
-Space *WorkSpace::currentVisibleSpace() const
+Space *WorkSpace::current_active_space() const
 {
-  if (d->m_desktop_space_list.count() <= 0) {
+  if (m_priv_impl->m_desktop_space_list.count() <= 0) {
     return 0;
   }
 
   Space *_current_space =
-    d->m_desktop_space_list.at(d->m_current_activty_space_id);
+    m_priv_impl->m_desktop_space_list.at(m_priv_impl->m_current_activty_space_id);
 
   if (!_current_space) {
     qWarning() << Q_FUNC_INFO << "Error: Invalid Space Found.";
@@ -132,14 +132,18 @@ Space *WorkSpace::currentVisibleSpace() const
   return _current_space;
 }
 
-void WorkSpace::setAcceleratedRendering(bool on)
+void WorkSpace::set_accelerated_rendering(bool a_on)
 {
-  d->m_opengl_on = on;
+  m_priv_impl->m_opengl_on = a_on;
 
-  if (d->m_opengl_on) {
+  if (m_priv_impl->m_opengl_on) {
     setViewport(new QGLWidget(
-                  QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
-                            QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
+                  QGLFormat(QGL::SampleBuffers |
+                            QGL::DoubleBuffer |
+                            QGL::DepthBuffer |
+                            QGL::Rgba |
+                            QGL::StencilBuffer |
+                            QGL::AlphaChannel)));
     setCacheMode(QGraphicsView::CacheNone);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setOptimizationFlag(QGraphicsView::DontClipPainter);
@@ -151,9 +155,9 @@ void WorkSpace::setAcceleratedRendering(bool on)
   }
 }
 
-bool WorkSpace::isAcceleratedRenderingOn() const { return d->m_opengl_on; }
+bool WorkSpace::is_accelerated_rendering_on() const { return m_priv_impl->m_opengl_on; }
 
-void WorkSpace::switchSpace()
+void WorkSpace::auto_switch()
 {
   QScroller::grabGesture(this, QScroller::TouchGesture);
 
@@ -161,10 +165,10 @@ void WorkSpace::switchSpace()
     QScroller *_activeScroller = QScroller::scroller(this);
     if (_activeScroller) {
       QRectF r;
-      r.setX(d->m_workspace_left_margine);
+      r.setX(m_priv_impl->m_workspace_left_margine);
       r.setY(0.0);
       r.setHeight(this->geometry().height());
-      r.setWidth(this->geometry().width() + d->m_workspace_left_margine);
+      r.setWidth(this->geometry().width() + m_priv_impl->m_workspace_left_margine);
 
       _activeScroller->ensureVisible(r, 0, 0);
     }
@@ -173,13 +177,13 @@ void WorkSpace::switchSpace()
   QScroller::ungrabGesture(this);
 }
 
-void WorkSpace::exposeSubRegion(const QRectF &rect)
+void WorkSpace::expose_sub_region(const QRectF &a_region)
 {
   QScroller::grabGesture(this, QScroller::TouchGesture);
   if (QScroller::hasScroller(this)) {
     QScroller *_active_scroller = QScroller::scroller(this);
     if (_active_scroller) {
-      _active_scroller->ensureVisible(rect, 0, 0);
+      _active_scroller->ensureVisible(a_region, 0, 0);
     }
   } else {
     qDebug() << Q_FUNC_INFO << "No Active Scroller Found;";
@@ -190,7 +194,7 @@ void WorkSpace::exposeSubRegion(const QRectF &rect)
 
 void WorkSpace::paintEvent(QPaintEvent *event)
 {
-  if (!d->m_opengl_on) {
+  if (!m_priv_impl->m_opengl_on) {
     QPainter p;
     p.begin(viewport());
     p.save();
@@ -223,14 +227,14 @@ void WorkSpace::dropEvent(QDropEvent *event)
   QPoint _global_drop_pos = event->pos();
   QPointF _scene_drop_pos = mapToScene(mapFromGlobal(_global_drop_pos));
 
-  for (int i = 0; i < d->m_desktop_space_list.count(); i++) {
-    Space *_space = d->m_desktop_space_list.at(i);
+  for (int i = 0; i < m_priv_impl->m_desktop_space_list.count(); i++) {
+    Space *_space = m_priv_impl->m_desktop_space_list.at(i);
     if (!_space) {
       continue;
     }
 
     if (_space->geometry().contains(_scene_drop_pos)) {
-      _space->handleDropEvent(event, _scene_drop_pos);
+      _space->drop_event_handler(event, _scene_drop_pos);
     }
   }
 
@@ -244,83 +248,83 @@ void WorkSpace::wheelEvent(QWheelEvent *event)
   event->accept();
 }
 
-void WorkSpace::revokeSpace(const QString &name, int id)
+void WorkSpace::revoke_space(const QString &name, int id)
 {
-  Space *_space = createEmptySpace();
+  Space *_space = create_blank_space();
 
-  _space->setWorkspace(this);
-  _space->setScene(this->scene());
-  _space->setName(name);
-  _space->setId(id);
-  _space->restoreSession();
+  _space->set_workspace(this);
+  _space->set_qt_graphics_scene(scene());
+  _space->set_name(name);
+  _space->set_id(id);
+  _space->restore_session();
 
   QRectF _space_geometry;
-  _space_geometry.setX(d->m_workspace_left_margine);
-  _space_geometry.setY((d->m_workspace_geometry.height()) -
+  _space_geometry.setX(m_priv_impl->m_workspace_left_margine);
+  _space_geometry.setY((m_priv_impl->m_workspace_geometry.height()) -
                        geometry().height());
   _space_geometry.setHeight(this->geometry().height());
-  _space_geometry.setWidth(geometry().width() + d->m_workspace_left_margine);
+  _space_geometry.setWidth(geometry().width() + m_priv_impl->m_workspace_left_margine);
 
   _space->setGeometry(_space_geometry);
 
-  d->m_desktop_space_list << _space;
+  m_priv_impl->m_desktop_space_list << _space;
 }
 
-Space *WorkSpace::createEmptySpace()
+Space *WorkSpace::create_blank_space()
 {
   Space *_space = new Space(this);
 
-  _space->setWorkspace(this);
-  _space->setScene(scene());
+  _space->set_workspace(this);
+  _space->set_qt_graphics_scene(scene());
 
-  d->m_space_count += 1;
+  m_priv_impl->m_space_count += 1;
 
-  d->m_workspace_geometry.setHeight(geometry().height() * d->m_space_count);
-  d->m_workspace_geometry.setWidth(geometry().width());
-  d->m_workspace_geometry.setX(0.0);
-  d->m_workspace_geometry.setY(0.0);
+  m_priv_impl->m_workspace_geometry.setHeight(geometry().height() * m_priv_impl->m_space_count);
+  m_priv_impl->m_workspace_geometry.setWidth(geometry().width());
+  m_priv_impl->m_workspace_geometry.setX(0.0);
+  m_priv_impl->m_workspace_geometry.setY(0.0);
 
-  setSceneRect(d->m_workspace_geometry);
+  setSceneRect(m_priv_impl->m_workspace_geometry);
 
   return _space;
 }
 
-QRectF WorkSpace::workspaceGeometry() const { return d->m_workspace_geometry; }
+QRectF WorkSpace::workspace_geometry() const { return m_priv_impl->m_workspace_geometry; }
 
-void WorkSpace::exposeSpace(uint id)
+void WorkSpace::expose(uint a_space_id)
 {
-  uint _current_space_count = d->m_desktop_space_list.count();
+  uint _current_space_count = m_priv_impl->m_desktop_space_list.count();
 
-  if (id > _current_space_count) {
+  if (a_space_id > _current_space_count) {
     return;
   }
 
-  Space *_space = d->m_desktop_space_list.at(id);
+  Space *_space = m_priv_impl->m_desktop_space_list.at(a_space_id);
 
   if (_space) {
     QRectF _space_rect = _space->geometry();
-    d->m_current_activty_space_id = id;
-    exposeSubRegion(_space_rect);
+    m_priv_impl->m_current_activty_space_id = a_space_id;
+    expose_sub_region(_space_rect);
   }
 }
 
-Space *WorkSpace::exposeNextSpace()
+Space *WorkSpace::expose_next()
 {
-  if (d->m_current_activty_space_id == d->m_desktop_space_list.count()) {
+  if (m_priv_impl->m_current_activty_space_id == m_priv_impl->m_desktop_space_list.count()) {
     qDebug() << Q_FUNC_INFO << "Maximum Space Count Reached";
     return 0;
   }
 
   QRectF _space_geometry;
-  d->m_current_activty_space_id = d->m_current_activty_space_id + 1;
+  m_priv_impl->m_current_activty_space_id = m_priv_impl->m_current_activty_space_id + 1;
 
-  if (d->m_current_activty_space_id >= d->m_desktop_space_list.count()) {
-    d->m_current_activty_space_id = d->m_desktop_space_list.count() - 1;
+  if (m_priv_impl->m_current_activty_space_id >= m_priv_impl->m_desktop_space_list.count()) {
+    m_priv_impl->m_current_activty_space_id = m_priv_impl->m_desktop_space_list.count() - 1;
     return 0;
   }
 
   Space *_next_space =
-    d->m_desktop_space_list.at(d->m_current_activty_space_id);
+    m_priv_impl->m_desktop_space_list.at(m_priv_impl->m_current_activty_space_id);
 
   if (!_next_space) {
     qDebug() << Q_FUNC_INFO << "Invalid Space";
@@ -330,61 +334,62 @@ Space *WorkSpace::exposeNextSpace()
   _space_geometry = _next_space->geometry();
   _space_geometry.setX(_space_geometry.width());
 
-  this->exposeSubRegion(_space_geometry);
+  this->expose_sub_region(_space_geometry);
 
   return _next_space;
 }
 
-Space *WorkSpace::exposePreviousSpace()
+Space *WorkSpace::expose_previous()
 {
   QRectF _space_geometry;
 
-  d->m_current_activty_space_id = d->m_current_activty_space_id - 1;
+  m_priv_impl->m_current_activty_space_id = m_priv_impl->m_current_activty_space_id - 1;
 
-  if (d->m_current_activty_space_id < 0) {
-    d->m_current_activty_space_id = 0;
+  if (m_priv_impl->m_current_activty_space_id < 0) {
+    m_priv_impl->m_current_activty_space_id = 0;
   }
 
   Space *_prev_space =
-    d->m_desktop_space_list.at(d->m_current_activty_space_id);
+    m_priv_impl->m_desktop_space_list.at(m_priv_impl->m_current_activty_space_id);
 
   if (!_prev_space) {
     return 0;
   }
 
   _space_geometry = _prev_space->geometry();
-  _space_geometry.setX(_space_geometry.width() - d->m_workspace_left_margine);
-  this->exposeSubRegion(_space_geometry);
+  _space_geometry.setX(_space_geometry.width() - m_priv_impl->m_workspace_left_margine);
+  this->expose_sub_region(_space_geometry);
 
   return _prev_space;
 }
 
-void WorkSpace::updateSpaceGeometry(Space *space, QRectF _deleted_geometry)
+void WorkSpace::update_space_geometry(Space *a_space_ptr,
+                                      QRectF a_deleted_geometry)
 {
-  for (int i = 0; i < d->m_desktop_space_list.count(); i++) {
-    Space *__space = d->m_desktop_space_list.at(i);
+  for (int i = 0; i < m_priv_impl->m_desktop_space_list.count(); i++) {
+    Space *__space = m_priv_impl->m_desktop_space_list.at(i);
     if (!__space) {
       continue;
     }
-    if (__space == space) {
-      d->m_desktop_space_list.removeAt(i);
+    if (__space == a_space_ptr) {
+      m_priv_impl->m_desktop_space_list.removeAt(i);
     }
   }
 
-  foreach(Space * _space, d->m_desktop_space_list) {
+  foreach(Space * _space, m_priv_impl->m_desktop_space_list) {
     if (!_space) {
       continue;
     }
-    if (_deleted_geometry.y() < _space->geometry().y()) {
+    if (a_deleted_geometry.y() < _space->geometry().y()) {
       QRectF _move_geometry = _space->geometry();
-      _move_geometry.setY(_move_geometry.y() - _deleted_geometry.height());
+      _move_geometry.setY(_move_geometry.y() - a_deleted_geometry.height());
       _move_geometry.setHeight(this->geometry().height());
       _space->setGeometry(_move_geometry);
     }
   }
 }
 
-void WorkSpace::saveSpaceRemovalSessionData(QString _space_ref)
+void WorkSpace::save_space_removal_session_data(const QString &a_space_name)
 {
   QuetzalKit::DataStore *_data_store =
     new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
@@ -403,7 +408,7 @@ void WorkSpace::saveSpaceRemovalSessionData(QString _space_ref)
       }
       QString _space_name = _object->attributeValue("ref").toString();
 
-      if (_space_name == _space_ref) {
+      if (_space_name == a_space_name) {
         _data_store->deleteObject(_object);
       }
     }
@@ -412,51 +417,53 @@ void WorkSpace::saveSpaceRemovalSessionData(QString _space_ref)
   delete _data_store;
 }
 
-void WorkSpace::removeSpace(Space *space)
+void WorkSpace::remove(Space *a_space_ptr)
 {
-  if (!space) {
+  if (!a_space_ptr) {
     return;
   }
 
-  QRectF _deleted_geometry = space->geometry();
-  QString _space_ref = space->sessionName();
+  QRectF _deleted_geometry = a_space_ptr->geometry();
+  QString _space_ref = a_space_ptr->session_name();
 
-  d->m_workspace_geometry.setHeight(d->m_workspace_geometry.height() -
-                                    space->geometry().height());
+  m_priv_impl->m_workspace_geometry.setHeight(
+              m_priv_impl->m_workspace_geometry.height() -
+      a_space_ptr->geometry().height());
 
-  setSceneRect(d->m_workspace_geometry);
+  setSceneRect(m_priv_impl->m_workspace_geometry);
 
-  d->m_current_activty_space_id = d->m_current_activty_space_id - 1;
+  m_priv_impl->m_current_activty_space_id =
+          m_priv_impl->m_current_activty_space_id - 1;
 
-  if (d->m_current_activty_space_id < 0) {
-    d->m_current_activty_space_id = 0;
+  if (m_priv_impl->m_current_activty_space_id < 0) {
+    m_priv_impl->m_current_activty_space_id = 0;
   }
 
-  d->m_space_count = d->m_space_count - 1;
+  m_priv_impl->m_space_count = m_priv_impl->m_space_count - 1;
 
-  delete space;
+  delete a_space_ptr;
 
   // adjust geometry of the remaining spaces.
-  updateSpaceGeometry(space, _deleted_geometry);
+  update_space_geometry(a_space_ptr, _deleted_geometry);
 
   // update the removed spaces into session
-  saveSpaceRemovalSessionData(_space_ref);
+  save_space_removal_session_data(_space_ref);
 }
 
-QPixmap WorkSpace::thumbnail(Space *space, int scaleFactor)
+QPixmap WorkSpace::thumbnail(Space *a_space, int a_scale_factor)
 {
-  if (!space) {
+  if (!a_space) {
     return QPixmap();
   }
 
-  QImage _thumbnail(geometry().width() / scaleFactor,
-                    geometry().height() / scaleFactor,
+  QImage _thumbnail(geometry().width() / a_scale_factor,
+                    geometry().height() / a_scale_factor,
                     QImage::Format_ARGB32_Premultiplied);
-  QRectF _source_rect = space->geometry();
+  QRectF _source_rect = a_space->geometry();
   QRectF _thumbnail_geometry(0.0, 0.0, _thumbnail.width(), _thumbnail.height());
-  _source_rect.setX(d->m_workspace_left_margine);
-  _source_rect.setWidth(space->geometry().width() -
-                        d->m_workspace_left_margine);
+  _source_rect.setX(m_priv_impl->m_workspace_left_margine);
+  _source_rect.setWidth(a_space->geometry().width() -
+                        m_priv_impl->m_workspace_left_margine);
 
   QPainter _desktop_preview;
 
@@ -495,32 +502,32 @@ QPixmap WorkSpace::thumbnail(Space *space, int scaleFactor)
   return QPixmap::fromImage(_thumbnail);
 }
 
-SpacesList WorkSpace::currentSpaces() { return d->m_desktop_space_list; }
+SpacesList WorkSpace::current_spaces() { return m_priv_impl->m_desktop_space_list; }
 
-void WorkSpace::addSpace()
+void WorkSpace::add_default_space()
 {
-  Space *_space = createEmptySpace();
+  Space *_space = create_blank_space();
 
-  _space->setName("default");
-  _space->setId(d->m_desktop_space_list.count());
+  _space->set_name("default");
+  _space->set_id(m_priv_impl->m_desktop_space_list.count());
 
-  Q_FOREACH(const QString & controllerName, d->m_default_controller_name_list) {
-    _space->addController(controllerName);
+  Q_FOREACH(const QString & controllerName, m_priv_impl->m_default_controller_name_list) {
+    _space->add_controller(controllerName);
   }
 
-  d->m_desktop_space_list << _space;
+  m_priv_impl->m_desktop_space_list << _space;
 
   QRectF _space_geometry;
-  _space_geometry.setX(d->m_workspace_left_margine);
-  _space_geometry.setY((d->m_workspace_geometry.height()) -
+  _space_geometry.setX(m_priv_impl->m_workspace_left_margine);
+  _space_geometry.setY((m_priv_impl->m_workspace_geometry.height()) -
                        geometry().height());
   _space_geometry.setHeight(geometry().height());
-  _space_geometry.setWidth(geometry().width() + d->m_workspace_left_margine);
+  _space_geometry.setWidth(geometry().width() + m_priv_impl->m_workspace_left_margine);
 
   _space->setGeometry(_space_geometry);
 
-  this->exposeSubRegion(_space_geometry);
-  d->m_current_activty_space_id = _space->id();
+  this->expose_sub_region(_space_geometry);
+  m_priv_impl->m_current_activty_space_id = _space->id();
 
   // Add this space to Session
   QuetzalKit::DataStore *_data_store =
@@ -534,13 +541,11 @@ void WorkSpace::addSpace()
   QuetzalKit::SyncObject *_new_space_ptr =
     _session_list_ptr->createNewObject("Space");
 
-  _new_space_ptr->setObjectAttribute("ref", _space->sessionName());
+  _new_space_ptr->setObjectAttribute("ref", _space->session_name());
   _new_space_ptr->setObjectAttribute("name", _space->name());
 
   _data_store->insert(_new_space_ptr);
 
   delete _data_store;
-
-  Q_EMIT workspaceChange();
 }
 }

@@ -16,7 +16,7 @@ class DECL_UI_KIT_EXPORT TableViewItem : public QGraphicsObject,
   Q_INTERFACES(QGraphicsLayoutItem)
 
 public:
-  TableViewItem(const QRectF &rect, QGraphicsItem *parent = 0);
+  TableViewItem(const QRectF &rect, QGraphicsItem *a_parent_ptr = 0);
 
   virtual ~TableViewItem();
 

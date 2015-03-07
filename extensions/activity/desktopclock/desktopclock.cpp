@@ -127,8 +127,8 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 
-  d->mMainWindow->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  d->mMainWindow->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 }
 
@@ -136,15 +136,16 @@ QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
 
 UIKit::Window *DesktopClockActivity::window() const
 {
-    return d->mMainWindow;
+  return d->mMainWindow;
 }
 
 void DesktopClockActivity::cleanup()
 {
-    if (d->mMainWindow)
-        delete d->mMainWindow;
+  if (d->mMainWindow) {
+    delete d->mMainWindow;
+  }
 
-    d->mMainWindow = 0;
+  d->mMainWindow = 0;
 }
 
 void DesktopClockActivity::onToolBarAction(const QString &str)
@@ -156,11 +157,11 @@ void DesktopClockActivity::onToolBarAction(const QString &str)
       UIKit::Space *_space = qobject_cast<UIKit::Space *>(viewport());
       if (_space) {
         UIKit::DesktopActivityPtr _timezone =
-                viewport()->createActivity(
-                    "timezone", tr("TimeZone"),
-                    _space->mousePointerPos(),
-                    QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
-        _space->addActivity(_timezone);
+          viewport()->create_activity(
+            "timezone", tr("TimeZone"),
+            _space->cursor_pos(),
+            QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
+        _space->add_activity(_timezone);
       }
     } else {
       qWarning() << Q_FUNC_INFO << "Viewport not found for this activity";

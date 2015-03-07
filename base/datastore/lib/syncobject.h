@@ -22,7 +22,7 @@ public:
       *
       * @param parent
       */
-  explicit SyncObject(QObject *parent = 0);
+  explicit SyncObject(QObject *a_parent_ptr = 0);
 
   /**
       * @brief
@@ -71,7 +71,7 @@ public:
 
   SyncObject *parentObject() const;
 
-  void setParentObject(SyncObject *parent);
+  void setParentObject(SyncObject *a_parent_ptr);
 
   void setObjectAttribute(const QString &name, const QVariant &attributeValue);
 

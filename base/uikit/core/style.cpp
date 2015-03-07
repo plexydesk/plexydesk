@@ -28,6 +28,6 @@ Style::Style() {}
 Style::~Style() {}
 
 QVariant Style::attrbute(
-        const QString &type,
-        const QString &name) const { return attributeMap(type)[name];}
+  const QString &type,
+  const QString &name) const { return attributeMap(type)[name];}
 }

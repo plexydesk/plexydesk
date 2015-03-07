@@ -112,8 +112,8 @@ class Widget::PrivateAbstractDesktopWidget
 {
 public:
   PrivateAbstractDesktopWidget() :
-      m_widget_controller(0),
-      mWidgetID(0){}
+    m_widget_controller(0),
+    mWidgetID(0) {}
   ~PrivateAbstractDesktopWidget() {}
 
   QVariantMap mStyleAttributeMap;
@@ -151,13 +151,13 @@ Widget::Widget(QGraphicsObject *parent)
 
 Widget::~Widget()
 {
-    qDebug() << Q_FUNC_INFO;
-    delete d;
+  qDebug() << Q_FUNC_INFO;
+  delete d;
 }
 
 QRectF Widget::boundingRect() const
 {
-    return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
+  return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
 }
 
 void Widget::setWindowFlag(int flags, bool enable)
@@ -165,19 +165,19 @@ void Widget::setWindowFlag(int flags, bool enable)
 }
 
 void Widget::onInputEvent(
-        std::function<void (InputEvent, const Widget *)> aCallback)
+  std::function<void (InputEvent, const Widget *)> aCallback)
 {
-    d->mEventCallback = aCallback;
+  d->mEventCallback = aCallback;
 }
 
 void Widget::setStyleAttribute(const QString &aKey, QVariant aData)
 {
-    d->mStyleAttributeMap[aKey] = aData;
+  d->mStyleAttributeMap[aKey] = aData;
 }
 
 QVariant Widget::styleAttribute(const QString &aKey)
 {
-    return d->mStyleAttributeMap[aKey];
+  return d->mStyleAttributeMap[aKey];
 }
 
 void Widget::setMinimizedGeometry(const QRectF &rect)
@@ -193,17 +193,17 @@ QString Widget::label() const { return d->m_widget_name; }
 
 void Widget::setWidgetID(unsigned int aID)
 {
-   d->mWidgetID = aID;
+  d->mWidgetID = aID;
 }
 
 unsigned Widget::widgetID() const
 {
-    return d->mWidgetID;
+  return d->mWidgetID;
 }
 
 StylePtr Widget::style() const
 {
-    return Theme::style();
+  return Theme::style();
 }
 
 Widget::RenderLevel Widget::layerType() const
@@ -263,12 +263,12 @@ QSizeF Widget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
 
 void Widget::paintView(QPainter *painter, const QRectF &rect)
 {
-    /*
+  /*
   StyleFeatures feature;
   feature.geometry = rect;
 
   if (style()) {
-    style()->draw("window_frame", feature, painter);
+  style()->draw("window_frame", feature, painter);
   }
   */
 
@@ -276,10 +276,10 @@ void Widget::paintView(QPainter *painter, const QRectF &rect)
 
 void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    //todo : check why mouse release events are not called.
-    //https://github.com/plexydesk/plexydesk/issues/7
+  //todo : check why mouse release events are not called.
+  //https://github.com/plexydesk/plexydesk/issues/7
   if (d->mEventCallback) {
-      d->mEventCallback(kMousePressedEvent, this);
+    d->mEventCallback(kMousePressedEvent, this);
   }
 
   setFocus(Qt::MouseFocusReason);
@@ -290,7 +290,7 @@ void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
   qDebug() << Q_FUNC_INFO << metaObject()->className();
   if (d->mEventCallback) {
-      d->mEventCallback(kMouseReleaseEvent, this);
+    d->mEventCallback(kMouseReleaseEvent, this);
   }
 
   //QGraphicsObject::mouseReleaseEvent(event);
@@ -301,7 +301,7 @@ void Widget::focusOutEvent(QFocusEvent *event)
   event->accept();
 
   if (d->mEventCallback) {
-      d->mEventCallback(kFocusOutEvent, this);
+    d->mEventCallback(kFocusOutEvent, this);
   }
 
   QGraphicsObject::focusOutEvent(event);

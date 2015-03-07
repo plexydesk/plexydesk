@@ -8,7 +8,7 @@ class SocialTestRunner : public QObject
 {
   Q_OBJECT
 public:
-  explicit SocialTestRunner(QObject *parent = 0);
+  explicit SocialTestRunner(QObject *a_parent_ptr = 0);
 
   virtual ~SocialTestRunner();
 

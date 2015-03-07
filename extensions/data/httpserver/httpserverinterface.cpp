@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DataSource> HttpServerInterface::model()
 {
   QSharedPointer<UIKit::DataSource> obj =
     QSharedPointer<UIKit::DataSource>(new HttpServerData(),
-                                   &QObject::deleteLater);
+                                      &QObject::deleteLater);
 
   return obj;
 }

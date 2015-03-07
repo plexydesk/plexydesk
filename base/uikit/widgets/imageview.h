@@ -7,12 +7,13 @@
 #include <QGraphicsLayoutItem>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace UIKit
+{
 class DECL_UI_KIT_EXPORT ImageView : public Widget
 {
   Q_OBJECT
 public:
-  explicit ImageView(QGraphicsObject *parent = 0);
+  explicit ImageView(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ImageView();
 
   virtual void setSize(const QSizeF &size);

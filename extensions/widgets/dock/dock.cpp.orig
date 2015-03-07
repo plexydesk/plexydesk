@@ -21,7 +21,6 @@
 // Qt
 #include <QGraphicsLinearLayout>
 
-#include <menu.h>
 #include <toolbar.h>
 #include <imagebutton.h>
 #include <tableview.h>
@@ -38,31 +37,33 @@
 #include <extensionmanager.h>
 #include <imageview.h>
 
-using namespace UI;
+using namespace UIKit;
 
-class DockControllerImpl::PrivateDock {
+class DockControllerImpl::PrivateDock
+{
 public:
   PrivateDock() {}
-
   ~PrivateDock() { qDebug() << Q_FUNC_INFO; }
 
 public:
-  QGraphicsLinearLayout* m_linear_layout;
-  UI::ToolBar* m_navigation_dock;
+  Window *m_dock_window;
+  Window *m_preview_window;
+
+  UIKit::ToolBar *m_navigation_dock;
+  UIKit::ModelView *m_preview_widget;
+
   QMap<QString, int> m_actions_map;
   QStringList m_controller_name_list;
   bool m_main_panel_is_hidden;
-  UI::DesktopActivityPtr m_action_activity;
-  UI::ImageButton* m_add_new_workspace_button_ptr;
-  QSharedPointer<UI::DesktopActivityMenu> m_desktop_actions_popup;
-  UI::ActionList m_supported_action_list;
 
-  //spaces preview
-  UI::ModelView *m_preview_widget;
+  UIKit::DesktopActivityPtr m_action_activity;
+  UIKit::ImageButton *m_add_new_workspace_button_ptr;
+  UIKit::ActionList m_supported_action_list;
 };
 
-DockControllerImpl::DockControllerImpl(QObject* object)
-    : UI::ViewController(object), d(new PrivateDock) {
+DockControllerImpl::DockControllerImpl(QObject *object)
+  : UIKit::ViewController(object), d(new PrivateDock)
+{
   d->m_actions_map["ToggleDock"] = 1;
   d->m_actions_map["ShowDock"] = 2;
   d->m_actions_map["HideDock"] = 3;
@@ -71,7 +72,7 @@ DockControllerImpl::DockControllerImpl(QObject* object)
 
   d->m_main_panel_is_hidden = true;
   // navigation
-  d->m_navigation_dock = new UI::ToolBar();
+  d->m_navigation_dock = new UIKit::ToolBar();
   d->m_navigation_dock->setController(this);
   d->m_navigation_dock->setOrientation(Qt::Vertical);
   d->m_navigation_dock->setIconResolution("mdpi");
@@ -90,19 +91,27 @@ DockControllerImpl::DockControllerImpl(QObject* object)
   connect(d->m_navigation_dock, SIGNAL(action(QString)), this,
           SLOT(onNavigationPanelClicked(QString)));
   // menu
-  d->m_preview_widget = new UI::ModelView();
-  d->m_preview_widget->hide();
+  d->m_preview_widget = new UIKit::ModelView();
+  d->m_preview_widget->onActivated([this](int index) {
+      if (this->viewport() && this->viewport()->workspace()) {
+          UIKit::WorkSpace *_workspace =
+                  qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
-  d->m_desktop_actions_popup = QSharedPointer<UI::DesktopActivityMenu>(
-      new UI::DesktopActivityMenu(this));
+          if (_workspace) {
+              _workspace->expose(index);
+          }
+      }
+  });
 }
 
-DockControllerImpl::~DockControllerImpl() {
+DockControllerImpl::~DockControllerImpl()
+{
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-void DockControllerImpl::init() {
+void DockControllerImpl::init()
+{
   d->m_supported_action_list << createAction(1, tr("Menu"), "pd_menu_icon.png");
   d->m_supported_action_list
       << createAction(2, tr("show-dock"), "pd_menu_icon.png");
@@ -113,64 +122,96 @@ void DockControllerImpl::init() {
   d->m_supported_action_list
       << createAction(5, tr("hide-expose"), "pd_menu_icon.png");
 
-  if (!viewport())
+  if (!viewport()) {
     return;
+  }
 
-  UI::Space* _space = qobject_cast<UI::Space*>(viewport());
+  UIKit::Space *_space = qobject_cast<UIKit::Space *>(viewport());
   if (_space) {
     d->m_action_activity =
-        createActivity("", "icongrid", "", QPoint(), QVariantMap());
-    d->m_desktop_actions_popup->setSpace(_space);
-    d->m_desktop_actions_popup->setActivity(d->m_action_activity);
-    _space->addActivityPoupToView(d->m_desktop_actions_popup);
+      createActivity("", "icongrid", "", QPoint(), QVariantMap());
+
+    if (d->m_action_activity && d->m_action_activity->window()) {
+        d->m_action_activity->window()->setWindowType(Window::kPopupWindow);
+        d->m_action_activity->window()->setVisible(false);
+    }
+
   }
 
   // loads the controllers before dock was created;
-  Q_FOREACH(const QString & name, viewport()->getSessionControllers()) {
-    this->onControllerAdded(name);
+  Q_FOREACH(const QString & name, viewport()->current_controller_list()) {
+    loadControllerActions(name);
   }
 
-  connect(viewport(), SIGNAL(controllerAdded(QString)), this,
-          SLOT(onControllerAdded(QString)));
+  viewport()->on_viewport_event_notify([this](Space::ViewportNotificationType aType,
+                                    const QVariant &aData,
+                                    const Space *aSpace) {
 
-  insert(d->m_navigation_dock);
-  insert(d->m_preview_widget);
+      if (aType == Space::kControllerAddedNotification)
+        loadControllerActions(aData.toString());
+  });
 
-  d->m_preview_widget->hide();
+  d->m_dock_window = new UIKit::Window();
+  d->m_preview_window = new UIKit::Window();
+
+  d->m_dock_window->setWindowType(Window::kPanelWindow);
+  d->m_preview_window->setWindowType(Window::kPopupWindow);
+  d->m_preview_window->setEnableWindowBackground(false);
+
+  d->m_dock_window->setWindowContent(d->m_navigation_dock);
+  d->m_preview_window->setWindowContent(d->m_preview_widget);
+
+  insert(d->m_dock_window);
+  insert(d->m_preview_window);
+
+  d->m_preview_window->hide();
+  d->m_navigation_dock->show();
 }
 
-void DockControllerImpl::revokeSession(const QVariantMap& args) {}
+void DockControllerImpl::revokeSession(const QVariantMap &args) {}
 
-void DockControllerImpl::setViewRect(const QRectF& rect) {
-  if (!viewport())
+void DockControllerImpl::setViewRect(const QRectF &rect)
+{
+  if (!viewport()) {
     return;
+  }
 
-  d->m_navigation_dock->setPos(
-      viewport()->center(d->m_navigation_dock->frameGeometry(),
-                         Space::kCenterOnViewportLeft));
+  d->m_dock_window->setPos(
+    viewport()->center(d->m_dock_window->geometry(),
+                       Space::kCenterOnViewportLeft));
 
   d->m_preview_widget->setViewGeometry(
-      QRectF(0.0, 0.0, 256, rect.height() - 24.0));
+    QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
-  d->m_preview_widget->setPos(
-      rect.x() + d->m_navigation_dock->frameGeometry().width() + 5,
-      rect.y() + 24.0);
+  d->m_preview_window->setGeometry(
+    QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
- d->m_preview_widget->hide();
+  d->m_preview_window->setPos(
+    rect.x() + d->m_navigation_dock->frameGeometry().width() + 5,
+    rect.y() + 24.0);
+
+  d->m_preview_window->hide();
 
   if (d->m_action_activity) {
     d->m_action_activity->window()->setPos(0.0, 0.0);
   }
 }
 
-ActionList DockControllerImpl::actions() const {
+ActionList DockControllerImpl::actions() const
+{
   return d->m_supported_action_list;
 }
 
-void DockControllerImpl::requestAction(const QString& actionName,
-                                       const QVariantMap& args) {
+void DockControllerImpl::requestAction(const QString &actionName,
+                                       const QVariantMap &args)
+{
   if (actionName.toLower() == "menu") {
-    d->m_desktop_actions_popup->exec(args["menu_pos"].toPoint());
+
+    if (d->m_action_activity && d->m_action_activity->window()) {
+        d->m_action_activity->window()->setPos(args["menu_pos"].toPoint());
+        d->m_action_activity->window()->show();
+    }
+
     return;
   } else if (actionName.toLower() == "show-dock") {
     d->m_navigation_dock->show();
@@ -179,30 +220,35 @@ void DockControllerImpl::requestAction(const QString& actionName,
     d->m_navigation_dock->hide();
     return;
   } else if (actionName.toLower() == "show-expose") {
-      if (d->m_preview_widget->isVisible()) {
-          d->m_preview_widget->hide();
-      } else {
-          updatePreview();
-          d->m_preview_widget->show();
-      }
+    if (d->m_preview_window->isVisible()) {
+      d->m_preview_window->hide();
+    } else {
+      updatePreview();
+      d->m_preview_window->show();
+    }
   } else if (actionName.toLower() == "hide-expose") {
-      d->m_preview_widget->hide();
+    d->m_preview_window->hide();
   }
 
   if (viewport() && viewport()->controller(args["controller"].toString())) {
+      qDebug() << Q_FUNC_INFO << actionName;
+      qDebug() << Q_FUNC_INFO << args;
+
     viewport()->controller(args["controller"].toString())->requestAction(
-        actionName, args);
+      actionName, args);
   } else {
     qWarning() << Q_FUNC_INFO << "Unknown Action";
   }
 }
 
-QString DockControllerImpl::icon() const {
+QString DockControllerImpl::icon() const
+{
   return QString("pd_desktop_icon.png");
 }
 
-void DockControllerImpl::createActionForController(const QString& name,
-                                                   const QPointF& pos) {
+void DockControllerImpl::createActionForController(const QString &name,
+    const QPointF &pos)
+{
   if (!viewport()) {
     return;
   }
@@ -210,71 +256,52 @@ void DockControllerImpl::createActionForController(const QString& name,
   viewport()->controller(name)->configure(pos);
 }
 
-void DockControllerImpl::createActivityForController(const QString& name) {
+void DockControllerImpl::createActivityForController(const QString &name)
+{
   if (!viewport()) {
     return;
   }
 }
 
 DesktopActivityPtr DockControllerImpl::createActivity(
-    const QString& controllerName, const QString& activity,
-    const QString& title, const QPoint& pos, const QVariantMap& dataItem) {
-  UI::DesktopActivityPtr _intent =
-      UI::ExtensionManager::instance()->activity(activity);
-
-  if (!_intent) {
-    qWarning() << Q_FUNC_INFO << "No such Activity: " << activity;
-    return DesktopActivityPtr();
-  }
-
+  const QString &controllerName, const QString &activity,
+  const QString &title, const QPoint &pos, const QVariantMap &dataItem)
+{
   QPoint _activity_location = pos;
-
   _activity_location.setY(viewport()->geometry().y());
+
+  UIKit::DesktopActivityPtr _intent =
+          viewport()->create_activity(activity, title, _activity_location,
+                                     QRectF(0, _activity_location.y(), 330, 320),
+                                     dataItem);
+  _intent->setController(UIKit::ViewControllerPtr(this));
   _intent->setActivityAttribute("data", QVariant(dataItem));
   _intent->setActivityAttribute("auto_scale", QVariant(1));
-
-  _intent->setController(UI::ViewControllerPtr(this));
-
-  connect(_intent.data(), SIGNAL(showAnimationFinished()), this,
-          SLOT(onActivityAnimationFinished()));
-
-  _intent->createWindow(QRectF(0.0, _activity_location.y(), 330.0, 320.0),
-                        title, QPointF());
-
-  UI::UIWidget* _activity_widget =
-      qobject_cast<UI::UIWidget*>(_intent->window());
-
-  if (_activity_widget) {
-    _activity_widget->setWindowFlag(UI::UIWidget::kRenderDropShadow, true);
-    _activity_widget->setWindowFlag(UI::UIWidget::kConvertToWindowType,
-                                    false);
-    _activity_widget->setWindowFlag(UI::UIWidget::kTopLevelWindow, true);
-    _activity_widget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
-    _activity_widget->setWindowFlag(UI::UIWidget::kRenderWindowTitle,
-                                    true);
-  }
 
   return _intent;
 }
 
-void DockControllerImpl::nextSpace() {
+void DockControllerImpl::nextSpace()
+{
   if (this->viewport() && this->viewport()->workspace()) {
-    UI::WorkSpace* _workspace =
-        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
+    UIKit::WorkSpace *_workspace =
+      qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
     if (_workspace) {
       toggleDesktopPanel();
-      _workspace->exposeNextSpace();
+      _workspace->expose_next();
     }
   }
 }
 
-void DockControllerImpl::toggleSeamless() {
-  if (!viewport())
+void DockControllerImpl::toggleSeamless()
+{
+  if (!viewport()) {
     return;
+  }
 
-  UI::ViewControllerPtr controller =
-      viewport()->controller("classicbackdrop");
+  UIKit::ViewControllerPtr controller =
+    viewport()->controller("classicbackdrop");
 
   if (!controller) {
     qWarning() << Q_FUNC_INFO << "Controller Not Found";
@@ -284,18 +311,14 @@ void DockControllerImpl::toggleSeamless() {
   controller->requestAction("Seamless");
 }
 
-void DockControllerImpl::prepareRemoval() {
+void DockControllerImpl::prepareRemoval()
+{
   if (viewport() && viewport()->workspace()) {
-    QGraphicsView* _workspace =
-        qobject_cast<QGraphicsView*>(viewport()->workspace());
+    QGraphicsView *_workspace =
+      qobject_cast<QGraphicsView *>(viewport()->workspace());
 
     if (_workspace) {
-      if (d->m_action_activity->window()) {
         d->m_action_activity.clear();
-      }
-
-      d->m_desktop_actions_popup.clear();
-      d->m_action_activity.clear();
     } else {
       if (d->m_action_activity) {
         d->m_action_activity.clear();
@@ -306,22 +329,24 @@ void DockControllerImpl::prepareRemoval() {
   }
 }
 
-void DockControllerImpl::previousSpace() {
+void DockControllerImpl::previousSpace()
+{
   if (this->viewport() && this->viewport()->workspace()) {
-    UI::WorkSpace* _workspace =
-        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
+    UIKit::WorkSpace *_workspace =
+      qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
     if (_workspace) {
       toggleDesktopPanel();
-      _workspace->exposePreviousSpace();
+      _workspace->expose_previous();
     }
   }
 }
 
-void DockControllerImpl::toggleDesktopPanel() {
+void DockControllerImpl::toggleDesktopPanel()
+{
   if (this->viewport() && this->viewport()->workspace()) {
-    UI::WorkSpace* _workspace =
-        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
+    UIKit::WorkSpace *_workspace =
+      qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
     if (_workspace) {
       QRectF _work_area = viewport()->geometry();
@@ -333,35 +358,41 @@ void DockControllerImpl::toggleDesktopPanel() {
 
       d->m_main_panel_is_hidden = !d->m_main_panel_is_hidden;
 
-      _workspace->exposeSubRegion(_work_area);
+      _workspace->expose_sub_region(_work_area);
     }
   }
 }
 
-void DockControllerImpl::onControllerAdded(const QString& name) {
-  if (d->m_controller_name_list.contains(name) || !viewport())
+void DockControllerImpl::loadControllerActions(const QString &name)
+{
+  if (d->m_controller_name_list.contains(name) || !viewport()) {
     return;
+  }
 
-  UI::ViewControllerPtr controller = viewport()->controller(name);
+  UIKit::ViewControllerPtr controller = viewport()->controller(name);
 
-  if (!controller)
+  if (!controller) {
     return;
+  }
 
-  if (controller->actions().count() <= 0)
+  if (controller->actions().count() <= 0) {
     return;
+  }
 
   QVariantMap _data;
 
   Q_FOREACH(QAction * action, controller->actions()) {
-    if (!action)
+    if (!action) {
       continue;
+    }
 
     QVariantMap _item;
 
     bool _is_hidden = action->property("hidden").toBool();
 
-    if (_is_hidden)
+    if (_is_hidden) {
       continue;
+    }
 
     _item["label"] = action->text();
     _item["icon"] = action->property("icon_name");
@@ -371,68 +402,73 @@ void DockControllerImpl::onControllerAdded(const QString& name) {
     _data[QString("%1.%2").arg(name).arg(action->text())] = _item;
   }
 
-  if (_data.keys().count() <= 0)
+  if (_data.keys().count() <= 0) {
     return;
+  }
 
   d->m_action_activity->updateAttribute("data", _data);
 }
 
-void DockControllerImpl::onActivityAnimationFinished() {
-  if (!sender())
+void DockControllerImpl::onActivityAnimationFinished()
+{
+  if (!sender()) {
     return;
+  }
 
-  UI::DesktopActivity* activity =
-      qobject_cast<UI::DesktopActivity*>(sender());
+  UIKit::DesktopActivity *activity =
+    qobject_cast<UIKit::DesktopActivity *>(sender());
 
-  if (!activity)
+  if (!activity) {
     return;
+  }
 
-  UI::UIWidget* _activity_widget =
-      qobject_cast<UI::UIWidget*>(activity->window());
+  UIKit::Widget *_activity_widget =
+    qobject_cast<UIKit::Widget *>(activity->window());
 
   if (_activity_widget) {
-    _activity_widget->setWindowFlag(UI::UIWidget::kRenderDropShadow,
+    _activity_widget->setWindowFlag(UIKit::Widget::kRenderDropShadow,
                                     false);
-    _activity_widget->setWindowFlag(UI::UIWidget::kConvertToWindowType,
+    _activity_widget->setWindowFlag(UIKit::Widget::kConvertToWindowType,
                                     false);
-    _activity_widget->setWindowFlag(UI::UIWidget::kTopLevelWindow, false);
-    _activity_widget->setWindowFlag(UI::UIWidget::kRenderBackground, true);
-    _activity_widget->setWindowFlag(UI::UIWidget::kRenderWindowTitle,
-                                    true);
-
+    _activity_widget->setWindowFlag(UIKit::Widget::kRenderBackground, true);
     _activity_widget->setFlag(QGraphicsItem::ItemIsMovable, false);
     _activity_widget->setPos(QPoint());
   }
 }
 
-void DockControllerImpl::onActivityFinished() {
-  UI::DesktopActivity* _activity =
-      qobject_cast<UI::DesktopActivity*>(sender());
+void DockControllerImpl::onActivityFinished()
+{
+  UIKit::DesktopActivity *_activity =
+    qobject_cast<UIKit::DesktopActivity *>(sender());
 
-  if (!_activity)
+  if (!_activity) {
     return;
+  }
 
-  UI::ViewControllerPtr _controller =
-      viewport()->controller(_activity->result()["controller"].toString());
+  UIKit::ViewControllerPtr _controller =
+    viewport()->controller(_activity->result()["controller"].toString());
 
-  if (!_controller)
+  if (!_controller) {
     return;
+  }
 
   _controller->requestAction(_activity->result()["action"].toString(),
                              QVariantMap());
 }
 
-void DockControllerImpl::removeSpace() {
+void DockControllerImpl::removeSpace()
+{
   if (this->viewport() && this->viewport()->workspace()) {
-    UI::WorkSpace* _workspace =
-        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
+    UIKit::WorkSpace *_workspace =
+      qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
     if (_workspace) {
-      _workspace->removeSpace(qobject_cast<UI::Space*>(viewport()));
+      _workspace->remove(qobject_cast<UIKit::Space *>(viewport()));
     }
   }
 }
 
-void DockControllerImpl::onNavigationPanelClicked(const QString& action) {
+void DockControllerImpl::onNavigationPanelClicked(const QString &action)
+{
   if (action == tr("Close")) {
     removeSpace();
     return;
@@ -443,42 +479,51 @@ void DockControllerImpl::onNavigationPanelClicked(const QString& action) {
   } else if (action == tr("Seamless")) {
     this->toggleSeamless();
   } else if (action == tr("Expose")) {
-    if (d->m_preview_widget->isVisible()) {
-        qDebug() << Q_FUNC_INFO << "curren visible";
-        d->m_preview_widget->hide();
+    if (d->m_preview_window->isVisible()) {
+      qDebug() << Q_FUNC_INFO << "curren visible";
+      d->m_preview_window->hide();
     } else {
-        updatePreview();
-        d->m_preview_widget->show();
+      updatePreview();
+      d->m_preview_window->show();
     }
+
     return;
   } else if (action == tr("Menu")) {
-    if (!viewport() || !viewport()->workspace())
+    if (!viewport() || !viewport()->workspace()) {
       return;
+    }
 
     QPointF _menu_pos =
-        viewport()->center(d->m_action_activity->window()->boundingRect(),
-                           UI::Space::kCenterOnViewportLeft);
+      viewport()->center(d->m_action_activity->window()->boundingRect(),
+                         UIKit::Space::kCenterOnViewportLeft);
     _menu_pos.setX(d->m_navigation_dock->frameGeometry().width() + 5);
-    d->m_desktop_actions_popup->exec(_menu_pos);
+
+    if (d->m_action_activity && d->m_action_activity->window()) {
+        d->m_action_activity->window()->setPos(_menu_pos);
+        d->m_action_activity->window()->show();
+    }
+
   } else if (action == tr("Add")) {
     onAddSpaceButtonClicked();
   }
 }
 
-void DockControllerImpl::onAddSpaceButtonClicked() {
+void DockControllerImpl::onAddSpaceButtonClicked()
+{
   if (this->viewport() && this->viewport()->workspace()) {
-    UI::WorkSpace* _workspace =
-        qobject_cast<UI::WorkSpace*>(viewport()->workspace());
+    UIKit::WorkSpace *_workspace =
+      qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
     if (_workspace) {
-      _workspace->addSpace();
+      _workspace->add_default_space();
     }
   }
 }
 
-QAction* DockControllerImpl::createAction(int id, const QString& action_name,
-                                          const QString& icon_name) {
-  QAction* _add_clock_action = new QAction(this);
+QAction *DockControllerImpl::createAction(int id, const QString &action_name,
+    const QString &icon_name)
+{
+  QAction *_add_clock_action = new QAction(this);
   _add_clock_action->setText(action_name);
   _add_clock_action->setProperty("id", QVariant(id));
   _add_clock_action->setProperty("icon_name", icon_name);
@@ -489,28 +534,42 @@ QAction* DockControllerImpl::createAction(int id, const QString& action_name,
 
 void DockControllerImpl::updatePreview()
 {
-    d->m_preview_widget->clear();
+  d->m_preview_widget->clear();
 
-    if (this->viewport() && this->viewport()->workspace()) {
-        UI::WorkSpace* _workspace =
-                qobject_cast<UI::WorkSpace*>(viewport()->workspace());
+  if (this->viewport() && this->viewport()->workspace()) {
+    UIKit::WorkSpace *_workspace =
+      qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
-        if (_workspace) {
-            foreach(UI::Space * _space, _workspace->currentSpaces()) {
-                QPixmap _preview = _workspace->previewSpace(_space);
+    float lHeight = 10;
+    float lWidth = 0;
 
-                UI::ImageView *p = new UI::ImageView();
-                p->setMinimumSize(_preview.size());
-                p->setPixmap(_preview);
+    if (_workspace) {
+      foreach(UIKit::Space * _space, _workspace->current_spaces()) {
+        QPixmap _preview = _workspace->thumbnail(_space);
 
-                d->m_preview_widget->insert(p);
-            }
-        }
+        UIKit::ImageView *p = new UIKit::ImageView();
+
+        p->setMinimumSize(_preview.size());
+        p->setPixmap(_preview);
+        lHeight += _preview.size().height();
+        lWidth = _preview.size().width();
+        d->m_preview_widget->insert(p);
+      }
     }
+
+    QPointF lMenuPos =
+    viewport()->center(d->m_action_activity->window()->boundingRect(),
+                         UIKit::Space::kCenterOnViewportLeft);
+
+    lMenuPos.setX(d->m_navigation_dock->geometry().width() + 5.0);
+    d->m_preview_window->setGeometry(
+                QRectF(lMenuPos.x(), lMenuPos.y(), lWidth, lHeight));
+  }
 }
 
-void DockControllerImpl::onPreviewItemClicked(TableViewItem* item) {
-  DefaultTableComponent* _item = qobject_cast<DefaultTableComponent*>(item);
+void DockControllerImpl::onPreviewItemClicked(TableViewItem *item)
+{
+  DefaultTableComponent *_item = qobject_cast<DefaultTableComponent *>(item);
 
   if (_item) {
     bool _ok = false;
@@ -518,11 +577,11 @@ void DockControllerImpl::onPreviewItemClicked(TableViewItem* item) {
 
     if (_ok) {
       if (this->viewport() && this->viewport()->workspace()) {
-        UI::WorkSpace* _workspace =
-            qobject_cast<UI::WorkSpace*>(viewport()->workspace());
+        UIKit::WorkSpace *_workspace =
+          qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
 
         if (_workspace) {
-          _workspace->exposeSpace(_space_id);
+          _workspace->expose(_space_id);
         }
       }
     }

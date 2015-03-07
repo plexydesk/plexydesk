@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> IconGridInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new IconGridActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

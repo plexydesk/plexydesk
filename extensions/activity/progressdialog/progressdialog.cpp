@@ -87,8 +87,8 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
 
   showActivity();
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 }
 
@@ -120,9 +120,10 @@ UIKit::Window *ProgressDialogActivity::window() const { return d->mFrame; }
 
 void ProgressDialogActivity::cleanup()
 {
-    if (d->mFrame)
-        delete d->mFrame;
-    d->mFrame = 0;
+  if (d->mFrame) {
+    delete d->mFrame;
+  }
+  d->mFrame = 0;
 }
 
 void ProgressDialogActivity::onWidgetClosed(UIKit::Widget *widget)
