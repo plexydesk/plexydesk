@@ -67,7 +67,7 @@ void ImageView::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
   QGraphicsObject::hoverMoveEvent(event);
 }
 
-void ImageView::paintView(QPainter *painter, const QRectF &exposeRect)
+void ImageView::paint_view(QPainter *painter, const QRectF &exposeRect)
 {
   int marginLeft = (exposeRect.width() - d->mPixmap.width()) / 2;
 

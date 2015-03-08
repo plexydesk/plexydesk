@@ -40,7 +40,7 @@ protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
   virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
   virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-  virtual void paintView(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *painter, const QRectF &rect);
 
 private:
   class PrivateImageButton;

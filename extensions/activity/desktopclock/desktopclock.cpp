@@ -86,7 +86,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   d->m_main_layout->setGeometry(_layout_geometry);
   d->m_main_layout->setOrientation(Qt::Vertical);
 
-  d->mMainWindow->setWindowContent(d->mWindowContentWidget);
+  d->mMainWindow->set_window_content(d->mWindowContentWidget);
 
   /* add clock widget */
   d->m_clock_widget = new ClockWidget(d->mLayoutWidget);
@@ -127,7 +127,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 
-  d->mMainWindow->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->mMainWindow->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 }

@@ -132,7 +132,7 @@ void DockControllerImpl::init()
       createActivity("", "icongrid", "", QPoint(), QVariantMap());
 
     if (d->m_action_activity && d->m_action_activity->window()) {
-      d->m_action_activity->window()->setWindowType(Window::kPopupWindow);
+      d->m_action_activity->window()->set_window_type(Window::kPopupWindow);
       d->m_action_activity->window()->setVisible(false);
     }
 
@@ -155,12 +155,12 @@ void DockControllerImpl::init()
   d->m_dock_window = new UIKit::Window();
   d->m_preview_window = new UIKit::Window();
 
-  d->m_dock_window->setWindowType(Window::kPanelWindow);
-  d->m_preview_window->setWindowType(Window::kPopupWindow);
-  d->m_preview_window->setEnableWindowBackground(false);
+  d->m_dock_window->set_window_type(Window::kPanelWindow);
+  d->m_preview_window->set_window_type(Window::kPopupWindow);
+  d->m_preview_window->enable_window_background(false);
 
-  d->m_dock_window->setWindowContent(d->m_navigation_dock);
-  d->m_preview_window->setWindowContent(d->m_preview_widget);
+  d->m_dock_window->set_window_content(d->m_navigation_dock);
+  d->m_preview_window->set_window_content(d->m_preview_widget);
 
   insert(d->m_dock_window);
   insert(d->m_preview_window);

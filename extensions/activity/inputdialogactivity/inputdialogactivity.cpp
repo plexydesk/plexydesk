@@ -140,7 +140,7 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   this->exec();
   showActivity();
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 }

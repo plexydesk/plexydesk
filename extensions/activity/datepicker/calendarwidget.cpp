@@ -337,7 +337,7 @@ void CalendarWidget::onCellClicked()
 
 void CalendarWidget::onOkButtonClicked() { Q_EMIT done(); }
 
-void CalendarWidget::paintView(QPainter *painter, const QRectF &rect)
+void CalendarWidget::paint_view(QPainter *painter, const QRectF &rect)
 {
   painter->save();
 

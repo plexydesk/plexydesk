@@ -87,7 +87,7 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
 
   showActivity();
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 }

@@ -111,7 +111,7 @@ void Button::onButtonPressed(std::function<void ()> aHandler)
 {
 }
 
-void Button::paintView(QPainter *painter, const QRectF &rect)
+void Button::paint_view(QPainter *painter, const QRectF &rect)
 {
   switch (d->mState) {
   case PrivateButton::NORMAL:

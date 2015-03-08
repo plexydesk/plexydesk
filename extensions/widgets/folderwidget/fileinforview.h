@@ -47,7 +47,7 @@ public Q_SLOTS:
   void onCloseButtonClicked();
 
 protected:
-  virtual void paintView(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *painter, const QRectF &rect);
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:

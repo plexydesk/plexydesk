@@ -79,7 +79,7 @@ protected:
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
   virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
   virtual void scrollBy(int x, int y);
-  virtual void paintView(QPainter *painter, const QRectF &exposeRect);
+  virtual void paint_view(QPainter *painter, const QRectF &exposeRect);
 
 private:
   class PrivateTableView;

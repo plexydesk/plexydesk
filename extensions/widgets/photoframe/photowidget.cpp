@@ -63,7 +63,7 @@ QRectF PhotoWidget::scaledDockRect(const QPixmap &pixmap) const
   return rect;
 }
 
-void PhotoWidget::paintView(QPainter *painter, const QRectF &rect)
+void PhotoWidget::paint_view(QPainter *painter, const QRectF &rect)
 {
   painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
   painter->setRenderHint(QPainter::Antialiasing);
@@ -73,10 +73,10 @@ void PhotoWidget::paintView(QPainter *painter, const QRectF &rect)
   painter->setOpacity(1.0);
 
   if (mContentPixmap.isNull()) {
-    UIKit::Widget::paintView(painter, rect);
+    UIKit::Widget::paint_view(painter, rect);
     painter->drawText(QRect(0, 0, 190, 180), Qt::AlignCenter | Qt::AlignRight,
                       QLatin1String("Drag and Drop a Photo Here!"));
-    UIKit::Widget::paintView(painter, rect);
+    UIKit::Widget::paint_view(painter, rect);
   } else {
     // experimental photo frame around the image
     // painter->fillRect(rect.x(), rect.y(), rect.width(), rect.height(),

@@ -40,7 +40,7 @@ Q_SIGNALS:
   void action(const QString &actionName);
 
 protected:
-  virtual void paintView(QPainter *painter, const QRectF &exposeRect);
+  virtual void paint_view(QPainter *painter, const QRectF &exposeRect);
 
   void toolButtonPressHandler(const Widget *aWidget);
 private:

@@ -38,33 +38,33 @@ public:
   std::function<void (Window *)> m_window_discard_callback;
 };
 
-Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
+Window::Window(QGraphicsObject *parent) : Widget(parent), m_priv_impl(new PrivateWindow)
 {
   setWindowFlag(Widget::kRenderBackground, true);
   setFlag(QGraphicsItem::ItemIsMovable, true);
   setGeometry(QRectF(0, 0, 400, 400));
-  setWindowTitle("");
-  d->m_window_type = kApplicationWindow;
+  set_window_title("");
+  m_priv_impl->m_window_type = kApplicationWindow;
 
-  d->m_window_close_button = new WindowButton(this);
-  d->m_window_close_button->setPos(5, 5);
-  d->m_window_close_button->show();
-  d->m_window_close_button->setZValue(10000);
+  m_priv_impl->m_window_close_button = new WindowButton(this);
+  m_priv_impl->m_window_close_button->setPos(5, 5);
+  m_priv_impl->m_window_close_button->show();
+  m_priv_impl->m_window_close_button->setZValue(10000);
 
   setFocus(Qt::MouseFocusReason);
 
   onInputEvent([this](Widget::InputEvent aEvent, const Widget * aWidget) {
     if (aEvent == Widget::kFocusOutEvent &&
-        d->m_window_type == kPopupWindow) {
+        m_priv_impl->m_window_type == kPopupWindow) {
       hide();
     }
   });
 
-  d->m_window_close_button->onInputEvent([this](Widget::InputEvent aEvent,
+  m_priv_impl->m_window_close_button->onInputEvent([this](Widget::InputEvent aEvent,
   const Widget * aWidget) {
     if (aEvent == Widget::kMouseReleaseEvent) {
-      if (d->m_window_close_callback) {
-        d->m_window_close_callback(this);
+      if (m_priv_impl->m_window_close_callback) {
+        m_priv_impl->m_window_close_callback(this);
       }
 
     }
@@ -74,19 +74,19 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), d(new PrivateWindow)
 Window::~Window()
 {
   qDebug() << Q_FUNC_INFO;
-  delete d;
+  delete m_priv_impl;
 }
 
-void Window::setWindowContent(Widget *widget)
+void Window::set_window_content(Widget *a_widget)
 {
-  if (d->m_window_content) {
+  if (m_priv_impl->m_window_content) {
     return;
   }
 
-  d->m_window_content = widget;
-  d->m_window_content->setParentItem(this);
+  m_priv_impl->m_window_content = a_widget;
+  m_priv_impl->m_window_content->setParentItem(this);
 
-  this->setGeometry(d->m_window_content->boundingRect());
+  this->setGeometry(m_priv_impl->m_window_content->boundingRect());
 
   float sWindowTitleHeight = 0;
 
@@ -96,13 +96,13 @@ void Window::setWindowContent(Widget *widget)
                          .toFloat();
   }
 
-  if (d->m_window_type == kApplicationWindow) {
-    d->m_window_content->setPos(0.0, sWindowTitleHeight);
+  if (m_priv_impl->m_window_type == kApplicationWindow) {
+    m_priv_impl->m_window_content->setPos(0.0, sWindowTitleHeight);
   } else {
-    d->m_window_close_button->hide();
+    m_priv_impl->m_window_close_button->hide();
   }
 
-  if (d->m_window_type != kFramelessWindow) {
+  if (m_priv_impl->m_window_type != kFramelessWindow) {
     QGraphicsDropShadowEffect *lEffect = new QGraphicsDropShadowEffect(this);
     lEffect->setColor(QColor("#111111"));
     lEffect->setBlurRadius(26);
@@ -112,72 +112,72 @@ void Window::setWindowContent(Widget *widget)
   }
 }
 
-void Window::setWindowViewport(Space *space)
+void Window::set_window_viewport(Space *a_space)
 {
-  d->m_window_viewport = space;
+  m_priv_impl->m_window_viewport = a_space;
 }
 
-void Window::setWindowTitle(const QString &a_window_title)
+void Window::set_window_title(const QString &a_window_title)
 {
-  d->m_window_title = a_window_title;
+  m_priv_impl->m_window_title = a_window_title;
 }
 
-QString Window::windowTitlte() const
+QString Window::window_title() const
 {
-  return d->m_window_title;
+  return m_priv_impl->m_window_title;
 }
 
-Window::WindowType Window::windowType()
+Window::WindowType Window::window_type()
 {
-  return d->m_window_type;
+  return m_priv_impl->m_window_type;
 }
 
-void Window::setWindowType(Window::WindowType a_window_type)
+void Window::set_window_type(Window::WindowType a_window_type)
 {
-  d->m_window_type = a_window_type;
+  m_priv_impl->m_window_type = a_window_type;
 
   if (a_window_type == kApplicationWindow &&
-      d->m_window_content) {
-    d->m_window_content->setPos(0.0, 72.0);
+      m_priv_impl->m_window_content) {
+    m_priv_impl->m_window_content->setPos(0.0, 72.0);
   } else {
-    d->m_window_close_button->hide();
+    m_priv_impl->m_window_close_button->hide();
   }
 
-  if (d->m_window_type == kPopupWindow) {
+  if (m_priv_impl->m_window_type == kPopupWindow) {
     setZValue(10000);
   }
 }
 
-void Window::setWindowResizeCallback(
+void Window::on_window_resized(
   std::function<void (const QSizeF &)> handler)
 {
-  d->m_window_size_callback = handler;
+  m_priv_impl->m_window_size_callback = handler;
 }
 
-void Window::setWindowMoveCallback(std::function<void (const QPointF &)> handler)
+void Window::on_window_moved(std::function<void (const QPointF &)> a_handler)
 {
-  d->m_window_move_callback = handler;
+  m_priv_impl->m_window_move_callback = a_handler;
 }
 
-void Window::onWindowClosed(std::function<void (Window *)> aCallback)
+void Window::on_window_closed(std::function<void (Window *)> a_handler)
 {
-  d->m_window_close_callback = aCallback;
+  m_priv_impl->m_window_close_callback = a_handler;
 }
 
-void Window::onWindowDiscarded(std::function<void (Window *)> aCallback)
+void Window::on_window_discarded(std::function<void (Window *)> a_handler)
 {
-  d->m_window_discard_callback = aCallback;
+  m_priv_impl->m_window_discard_callback = a_handler;
 }
 
-void Window::paintView(QPainter *painter, const QRectF &rect)
+void Window::paint_view(QPainter *painter, const QRectF &rect)
 {
-  if (!d->mWindowBackgroundVisibility) {
+  if (!m_priv_impl->mWindowBackgroundVisibility) {
     return;
   }
 
   StyleFeatures feature;
   feature.geometry = rect;
-  feature.text_data = d->m_window_title;
+  feature.text_data = m_priv_impl->m_window_title;
 
   if (style()) {
     style()->draw("window_frame", feature, painter);
@@ -206,16 +206,16 @@ void Window::hide()
 
 void Window::discard()
 {
-  if (d->m_window_discard_callback) {
+  if (m_priv_impl->m_window_discard_callback) {
     qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
-    d->m_window_discard_callback(this);
+    m_priv_impl->m_window_discard_callback(this);
   }
 
 }
 
-void Window::setEnableWindowBackground(bool aVisible)
+void Window::enable_window_background(bool a_visibility)
 {
-  d->mWindowBackgroundVisibility = aVisible;
+  m_priv_impl->mWindowBackgroundVisibility = a_visibility;
 }
 
 void Window::mousePressEvent(QGraphicsSceneMouseEvent *event)

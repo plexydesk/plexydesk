@@ -227,7 +227,7 @@ void Widget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   }
 
   painter->setClipRect(boundingRect());
-  paintView(painter, boundingRect());
+  paint_view(painter, boundingRect());
 }
 
 void Widget::setGeometry(const QRectF &rect)
@@ -261,7 +261,7 @@ QSizeF Widget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
   return sh;
 }
 
-void Widget::paintView(QPainter *painter, const QRectF &rect)
+void Widget::paint_view(QPainter *painter, const QRectF &rect)
 {
   /*
   StyleFeatures feature;

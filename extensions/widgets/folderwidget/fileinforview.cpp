@@ -157,7 +157,7 @@ void FileInforView::onClicked()
 
 void FileInforView::onCloseButtonClicked() { push(); }
 
-void FileInforView::paintView(QPainter *painter, const QRectF &rect)
+void FileInforView::paint_view(QPainter *painter, const QRectF &rect)
 {
   painter->fillRect(rect, QColor(236, 236, 236));
 

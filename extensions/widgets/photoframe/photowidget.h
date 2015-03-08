@@ -27,7 +27,7 @@ private:
 
   // virtual void paintRotatedView(QPainter *painter, const QRectF &rect);
 
-  virtual void paintView(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *painter, const QRectF &rect);
 
   // virtual void paintMinimizedView(QPainter *painter, const QRectF &rect);
 

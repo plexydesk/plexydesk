@@ -65,7 +65,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   foreach(const QString & str, photoList) {
     UIKit::Window *window = new UIKit::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
-    window->setWindowContent(photoWidget);
+    window->set_window_content(photoWidget);
 
     photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
     photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
@@ -173,7 +173,7 @@ void PhotoFrameController::requestAction(const QString &actionName,
     UIKit::Window *window = new UIKit::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
 
-    window->setWindowContent(photoWidget);
+    window->set_window_content(photoWidget);
 
     photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
     photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);

@@ -26,7 +26,7 @@ Q_SIGNALS:
   void value(float value);
 
 protected:
-  virtual void paintView(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *painter, const QRectF &rect);
   virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);

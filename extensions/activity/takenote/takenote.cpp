@@ -100,7 +100,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 

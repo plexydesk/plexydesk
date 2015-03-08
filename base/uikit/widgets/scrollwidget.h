@@ -39,7 +39,7 @@ public:
   void setViewport(QGraphicsObject *widget);
   void scrollBy(int x, int y);
 
-  virtual void paintView(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *painter, const QRectF &rect);
 
 private:
   virtual void wheelEvent(QGraphicsSceneWheelEvent *event);

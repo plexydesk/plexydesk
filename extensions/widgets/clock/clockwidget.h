@@ -34,7 +34,7 @@ public:
 
   virtual ~ClockWidget();
 
-  void paintView(QPainter *painter, const QRectF &r);
+  void paint_view(QPainter *painter, const QRectF &r);
 
   void paintMinimizedView(QPainter *painter, const QRectF &rect);
 

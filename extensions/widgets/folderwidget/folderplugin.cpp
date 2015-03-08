@@ -83,13 +83,13 @@ void DirectoryController::requestAction(const QString &actionName,
   } else if (actionName == tr("Folder")) {
     UIKit::Window *window = new UIKit::Window();
 
-    window->onWindowClosed([&](UIKit::Window * aWindow) {
+    window->on_window_closed([&](UIKit::Window * aWindow) {
       delete aWindow;
     });
 
     UIKit::Widget *parent = new UIKit::Widget();
 
-    window->setWindowContent(parent);
+    window->set_window_content(parent);
 
     IconWidgetView *view = new IconWidgetView(parent);
 
@@ -98,7 +98,7 @@ void DirectoryController::requestAction(const QString &actionName,
 
     QFileInfo info(args["path"].toString());
 
-    window->setWindowTitle(info.baseName());
+    window->set_window_title(info.baseName());
 
     mFolderViewList.append(parent);
 

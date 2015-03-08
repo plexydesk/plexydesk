@@ -52,20 +52,20 @@ void TimeZoneActivity::createWindow(const QRectF &aWindowGeometry,
 {
   mPrivConstPtr->mWindowPtr = new UIKit::Window();
 
-  mPrivConstPtr->mWindowPtr->setWindowTitle(aWindowTitle);
+  mPrivConstPtr->mWindowPtr->set_window_title(aWindowTitle);
   mPrivConstPtr->mTimeZoneBrowserPtr =
     new UIKit::ModelView(mPrivConstPtr->mWindowPtr);
   mPrivConstPtr->mTimeZoneBrowserPtr->setGeometry(aWindowGeometry);
   mPrivConstPtr->mTimeZoneBrowserPtr->setViewGeometry(aWindowGeometry);
 
-  mPrivConstPtr->mWindowPtr->setWindowContent(
+  mPrivConstPtr->mWindowPtr->set_window_content(
     mPrivConstPtr->mTimeZoneBrowserPtr);
 
   setGeometry(aWindowGeometry);
 
   exec(aWindowPos);
 
-  mPrivConstPtr->mWindowPtr->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  mPrivConstPtr->mWindowPtr->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 

@@ -123,7 +123,7 @@ void RangeWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
   */
 }
 
-void RangeWidget::paintView(QPainter *painter, const QRectF &rect)
+void RangeWidget::paint_view(QPainter *painter, const QRectF &rect)
 {
   QPen pen;
   pen.setColor(QColor("#F28585"));

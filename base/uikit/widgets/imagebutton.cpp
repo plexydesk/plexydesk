@@ -141,7 +141,7 @@ void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
   Widget::hoverLeaveEvent(event);
 }
 
-void ImageButton::paintView(QPainter *painter, const QRectF &rect)
+void ImageButton::paint_view(QPainter *painter, const QRectF &rect)
 {
   painter->save();
 

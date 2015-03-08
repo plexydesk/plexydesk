@@ -67,7 +67,7 @@ void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
   // todo: invoke UI
   d->mWindowFrame = new UIKit::Window();
   d->mWindowFrame->setGeometry(aWindowGeometry);
-  d->mWindowFrame->setWindowTitle(aWindowTitle);
+  d->mWindowFrame->set_window_title(aWindowTitle);
 
   // table
   d->mTable = new UIKit::TableView(d->mWindowFrame);
@@ -76,7 +76,7 @@ void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
   d->mTable->setModel(d->mFactory);
   d->mTable->setGeometry(aWindowGeometry);
 
-  d->mWindowFrame->setWindowContent(d->mTable);
+  d->mWindowFrame->set_window_content(d->mTable);
 
   connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
           SLOT(onClicked(TableViewItem *)));
@@ -87,7 +87,7 @@ void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
 
   exec(window_pos);
 
-  d->mWindowFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->mWindowFrame->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 }

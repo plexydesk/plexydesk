@@ -113,8 +113,8 @@ UIKit::DesktopActivityPtr Space::create_activity(const QString &a_activity,
   intent->createWindow(a_rect, a_title, QPointF(a_pos.x(), a_pos.y()));
 
   if (intent->window()) {
-    intent->window()->setWindowTitle(a_title);
-    intent->window()->setWindowViewport(this);
+    intent->window()->set_window_title(a_title);
+    intent->window()->set_window_viewport(this);
   }
 
   add_activity(intent);
@@ -219,7 +219,7 @@ void Space::insert_window_to_view(Window *a_window)
 
   m_priv_impl->mWindowList.push_front(a_window);
 
-  a_window->onWindowClosed([this](Window * window) {
+  a_window->on_window_closed([this](Window * window) {
     qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
     remove_window_from_view(window);
   });

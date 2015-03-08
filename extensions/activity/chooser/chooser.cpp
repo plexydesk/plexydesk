@@ -105,7 +105,7 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
   d->m_auto_scale_frame = false;
 
   d->m_activity_window_ptr = new UIKit::Window();
-  d->m_activity_window_ptr->setWindowTitle(window_title);
+  d->m_activity_window_ptr->set_window_title(window_title);
   d->m_activity_window_ptr->setGeometry(window_geometry);
 
 
@@ -151,8 +151,8 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
     }
   });
 
-  d->m_activity_window_ptr->setWindowContent(d->m_grid_view);
-  d->m_activity_window_ptr->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->m_activity_window_ptr->set_window_content(d->m_grid_view);
+  d->m_activity_window_ptr->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 
