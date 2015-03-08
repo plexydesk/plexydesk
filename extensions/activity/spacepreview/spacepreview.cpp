@@ -50,7 +50,7 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  d->m_main_window->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->m_main_window->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 }

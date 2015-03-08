@@ -90,7 +90,7 @@ void ClockWidget::updateNow()
   update();
 }
 
-void ClockWidget::paintView(QPainter *p, const QRectF &r)
+void ClockWidget::paint_view(QPainter *p, const QRectF &r)
 {
   QRectF rect(r.x() + 8, r.y() + 8, r.width() - 16, r.height() - 16);
 

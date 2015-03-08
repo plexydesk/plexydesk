@@ -117,12 +117,12 @@ void DesktopNotesControllerImpl::createNoteUI()
   note->setViewport(viewport());
 
   window->setGeometry(note->geometry());
-  window->setWindowTitle("Note");
-  window->setWindowContent(note);
+  window->set_window_title("Note");
+  window->set_window_content(note);
 
   insert(window);
 
-  window->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  window->on_window_discarded([this](UIKit::Window * aWindow) {
     delete aWindow;
   });
 }
@@ -135,12 +135,12 @@ void DesktopNotesControllerImpl::createReminderUI()
   reminder->setController(this);
 
   window->setGeometry(reminder->geometry());
-  window->setWindowTitle("Reminder");
-  window->setWindowContent(reminder);
+  window->set_window_title("Reminder");
+  window->set_window_content(reminder);
 
   insert(window);
 
-  window->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  window->on_window_discarded([this](UIKit::Window * aWindow) {
     delete aWindow;
   });
 }

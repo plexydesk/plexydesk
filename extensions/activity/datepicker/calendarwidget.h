@@ -36,7 +36,7 @@ private Q_SLOTS:
   void onOkButtonClicked();
 
 protected:
-  virtual void paintView(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *painter, const QRectF &rect);
 
 private:
   class PrivateCalendarWidget;

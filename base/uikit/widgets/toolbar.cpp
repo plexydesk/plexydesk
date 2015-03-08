@@ -124,7 +124,7 @@ QSizeF ToolBar::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
   return d->frameGeometry().size();
 }
 
-void ToolBar::paintView(QPainter *painter, const QRectF &exposeRect)
+void ToolBar::paint_view(QPainter *painter, const QRectF &exposeRect)
 {
   QPen pen;
   painter->save();

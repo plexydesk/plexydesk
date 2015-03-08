@@ -43,7 +43,7 @@ public:
   void setSeamLessMode(bool value);
 
 protected:
-  void paintView(QPainter *painter, const QRectF &rect);
+  void paint_view(QPainter *painter, const QRectF &rect);
   void paintMinimizedView(QPainter *painter, const QRectF &rect);
   void drawBackroundFrame(QPainter *painter, const QRectF &rect);
   void mousePressEvent(QGraphicsSceneMouseEvent *event);

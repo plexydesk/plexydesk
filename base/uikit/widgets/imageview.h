@@ -33,7 +33,7 @@ private:
   virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
   virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
 
-  virtual void paintView(QPainter *painter, const QRectF &exposeRect);
+  virtual void paint_view(QPainter *painter, const QRectF &exposeRect);
 private:
   class PrivateImageView;
   PrivateImageView *const d;

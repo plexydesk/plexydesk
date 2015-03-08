@@ -49,7 +49,7 @@ void ClockWidget::updateTime(const QVariantMap &data)
 
 ClockWidget::~ClockWidget() {}
 
-void ClockWidget::paintView(QPainter *p, const QRectF &r)
+void ClockWidget::paint_view(QPainter *p, const QRectF &r)
 {
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);

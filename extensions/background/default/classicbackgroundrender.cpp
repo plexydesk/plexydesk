@@ -15,8 +15,8 @@ ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
   mBackgroundImage = background_image;
   mScalingMode = None;
   mSeamLessMode = false;
-  setWindowType(UIKit::Window::kFramelessWindow);
-  setEnableWindowBackground(false);
+  set_window_type(UIKit::Window::kFramelessWindow);
+  enable_window_background(false);
 }
 
 void ClassicBackgroundRender::setBackgroundImage(const QString &path)
@@ -108,7 +108,7 @@ void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event)
   UIKit::Window::mousePressEvent(event);
 }
 
-void ClassicBackgroundRender::paintView(QPainter *painter,
+void ClassicBackgroundRender::paint_view(QPainter *painter,
                                         const QRectF &rect /*rect*/)
 {
   if (mSeamLessMode) {

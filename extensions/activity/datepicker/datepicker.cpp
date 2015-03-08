@@ -56,16 +56,16 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
 {
   d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(window_geometry);
-  d->mFrame->setWindowTitle(window_title);
+  d->mFrame->set_window_title(window_title);
   setGeometry(window_geometry);
 
   d->mCalendarWidget = new CalendarWidget(d->mFrame);
   d->mCalendarWidget->setGeometry(window_geometry);
 
-  d->mFrame->setWindowContent(d->mCalendarWidget);
+  d->mFrame->set_window_content(d->mCalendarWidget);
   exec(window_pos);
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 }

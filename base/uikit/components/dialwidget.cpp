@@ -122,7 +122,7 @@ void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
   Q_EMIT value(d->mProgressValue);
 }
 
-void DialWidget::paintView(QPainter *painter, const QRectF &rect)
+void DialWidget::paint_view(QPainter *painter, const QRectF &rect)
 {
   QPen pen;
   pen.setColor(QColor("#F28585"));

@@ -92,7 +92,7 @@ void FlickrSearchActivity::createWindow(const QRectF &aWindowGeometry,
   d->m_main_frame_widget->setGeometry(aWindowGeometry);
   d->mWindowContentWidget->setGeometry(aWindowGeometry);
 
-  d->m_view_delegate_window->setWindowContent(d->mWindowContentWidget);
+  d->m_view_delegate_window->set_window_content(d->mWindowContentWidget);
 
   d->m_top_toolbar = new UIKit::ToolBar(d->m_main_frame_widget);
   d->m_top_toolbar->setIconSize(QSize(32, 32));
@@ -158,7 +158,7 @@ void FlickrSearchActivity::createWindow(const QRectF &aWindowGeometry,
 
   d->m_image_cell_model->setSearchQuery("nature");
 
-  d->m_view_delegate_window->onWindowDiscarded([this](UIKit::Window * aWindow) {
+  d->m_view_delegate_window->on_window_discarded([this](UIKit::Window * aWindow) {
     discardActivity();
   });
 }

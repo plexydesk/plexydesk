@@ -34,7 +34,7 @@ public:
 
   virtual ~ClockWidget();
 
-  void paintView(QPainter *painter, const QRectF &r);
+  void paint_view(QPainter *painter, const QRectF &r);
   void updateTime(const QVariantMap &data);
   void drawClockHand(QPainter *p, QRectF rect, int factor, float angle,
                      QColor hand_color, int thikness);

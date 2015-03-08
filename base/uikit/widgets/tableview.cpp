@@ -179,7 +179,7 @@ void TableView::scrollBy(int x, int y)
   // todo: manual scrolling probably with scrollbars ?
 }
 
-void TableView::paintView(QPainter *painter, const QRectF &exposeRect) {}
+void TableView::paint_view(QPainter *painter, const QRectF &exposeRect) {}
 
 TableViewItem *TableView::itemAt(uint i)
 {

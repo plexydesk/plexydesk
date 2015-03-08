@@ -84,7 +84,7 @@ void ScrollWidget::scrollBy(int x, int y)
   }
 }
 
-void ScrollWidget::paintView(QPainter *painter, const QRectF &rect) {}
+void ScrollWidget::paint_view(QPainter *painter, const QRectF &rect) {}
 
 void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
