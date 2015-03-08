@@ -29,7 +29,6 @@
 
 #include <QNetworkAccessManager>
 
-#include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
 
 namespace UIKit
@@ -39,23 +38,24 @@ class DECL_UI_KIT_EXPORT Config : public QObject
   Q_OBJECT
 
 public:
-  static Config *getInstance();
+  static Config *instance();
 
   virtual ~Config();
 
   QString prefix();
 
-  static QString cacheDir(const QString &folder = QString());
+  static QString cache_dir(const QString &folder = QString());
 
-  static QNetworkAccessManager *getNetworkAccessManager();
+  static QNetworkAccessManager *network_access_manager();
 
 private:
-  Config(const QString &organization, const QString &application = QString(),
+  Config(const QString &a_organization,
+         const QString &a_application = QString(),
          QObject *a_parent_ptr = 0);
   Config();
   Config(Config &config);
   static Config *config;
-  static QNetworkAccessManager *networkaccessmanager;
+  static QNetworkAccessManager *m_networkaccessmanager;
 
   class Private;
   Private *const d;

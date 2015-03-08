@@ -35,6 +35,8 @@ public:
   ~Private() {}
   QHash<QString, QString> fileHash;
   QSvgRenderer render;
+
+  QList<std::function<void ()>> m_load_handler;
 };
 
 void ImageCache::clear() { d->fileHash.clear(); }
@@ -88,7 +90,12 @@ void ImageCache::add_to_cache(const QString &imgfile, const QString &filename,
 
 QPixmap ImageCache::get(const QString &name)
 {
-  return QPixmap(d->fileHash[name]);
+    return QPixmap(d->fileHash[name]);
+}
+
+void ImageCache::onLoaderReady(std::function<void ()> a_handler)
+{
+    d->m_load_handler.append(a_handler);
 }
 
 bool ImageCache::is_cached(QString &filename) const

@@ -1,7 +1,6 @@
 #ifndef THEMEPACKLOADER_H
 #define THEMEPACKLOADER_H
 
-#include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
 
 #include <QObject>

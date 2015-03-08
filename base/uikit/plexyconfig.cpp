@@ -42,9 +42,9 @@ public:
 };
 
 Config *Config::config = 0;
-QNetworkAccessManager *Config::networkaccessmanager = 0;
+QNetworkAccessManager *Config::m_networkaccessmanager = 0;
 
-Config *Config::getInstance()
+Config *Config::instance()
 {
   if (config == 0) {
     config =
@@ -55,7 +55,7 @@ Config *Config::getInstance()
   }
 }
 
-Config::Config(const QString &organization, const QString &application,
+Config::Config(const QString &a_organization, const QString &a_application,
                QObject *parent)
   : QObject(parent), d(new Private) {}
 
@@ -93,7 +93,7 @@ QString Config::prefix()
   return QString();
 }
 
-QString Config::cacheDir(const QString &folder)
+QString Config::cache_dir(const QString &folder)
 {
   QString rv = QDir::toNativeSeparators(QDir::homePath() + "/" +
                                         ".plexydesk/cache/" + folder);
@@ -101,14 +101,14 @@ QString Config::cacheDir(const QString &folder)
   return rv;
 }
 
-QNetworkAccessManager *Config::getNetworkAccessManager()
+QNetworkAccessManager *Config::network_access_manager()
 {
-  if (networkaccessmanager == 0) {
-    networkaccessmanager = new QNetworkAccessManager(getInstance());
+  if (m_networkaccessmanager == 0) {
+    m_networkaccessmanager = new QNetworkAccessManager(instance());
     // networkaccessmanager->setCookieJar(getCookieJar());
-    return networkaccessmanager;
+    return m_networkaccessmanager;
   } else {
-    return networkaccessmanager;
+    return m_networkaccessmanager;
   }
 }
 }
