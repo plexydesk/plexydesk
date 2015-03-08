@@ -87,8 +87,8 @@ void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
 
   exec(window_pos);
 
-  d->mWindowFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  d->mWindowFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 }
 
@@ -100,10 +100,11 @@ Window *PhotoSearchActivity::window() const { return d->mWindowFrame; }
 
 void PhotoSearchActivity::cleanup()
 {
-    if (d->mWindowFrame)
-        delete d->mWindowFrame;
+  if (d->mWindowFrame) {
+    delete d->mWindowFrame;
+  }
 
-    d->mWindowFrame = 0;
+  d->mWindowFrame = 0;
 }
 
 void PhotoSearchActivity::onShowAnimationFinished()

@@ -10,7 +10,7 @@ class PhotoWidget : public UIKit::Widget
   Q_OBJECT
 
 public:
-  PhotoWidget(QGraphicsObject *parent = 0);
+  PhotoWidget(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~PhotoWidget();
 

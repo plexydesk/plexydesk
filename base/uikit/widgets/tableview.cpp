@@ -218,7 +218,7 @@ uint TableView::count() const
 
 void TableView::setItemActivationCallback(std::function<void (TableViewItem *)> aCallback)
 {
-    d->mItemActivationCallback = aCallback;
+  d->mItemActivationCallback = aCallback;
 }
 
 void TableView::onItemClick(TableViewItem *component)
@@ -232,8 +232,9 @@ void TableView::onItemClick(TableViewItem *component)
   //todo: Remove this depricated method.
   Q_EMIT activated(component);
 
-  if (d->mItemActivationCallback)
-      d->mItemActivationCallback(component);
+  if (d->mItemActivationCallback) {
+    d->mItemActivationCallback(component);
+  }
 
   qDebug() << Q_FUNC_INFO << " Activated :";
 }

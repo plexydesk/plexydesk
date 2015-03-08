@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> TemplateInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new TemplateActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

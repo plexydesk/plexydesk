@@ -31,8 +31,7 @@ class DesktopManager : public UIKit::WorkSpace
 {
   Q_OBJECT
 public:
-  explicit DesktopManager(QWidget *parent = 0);
-
+  explicit DesktopManager(QWidget *a_parent_ptr = 0);
   virtual ~DesktopManager();
 
 protected:
@@ -40,7 +39,7 @@ protected:
 
 private:
   class PrivateDesktopManager;
-  PrivateDesktopManager *const d;
+  PrivateDesktopManager *const m_priv_impl;
 };
 
 #endif // DESKTOPMANAGER_H

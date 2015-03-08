@@ -78,32 +78,32 @@ UIKit::ActionList DirectoryController::actions() const
 void DirectoryController::requestAction(const QString &actionName,
                                         const QVariantMap &args)
 {
-    if (actionName == CREATE_DIR) {
-        qDebug() << "Not supported yet";
-    } else if (actionName == tr("Folder")) {
-        UIKit::Window *window = new UIKit::Window();
+  if (actionName == CREATE_DIR) {
+    qDebug() << "Not supported yet";
+  } else if (actionName == tr("Folder")) {
+    UIKit::Window *window = new UIKit::Window();
 
-        window->onWindowClosed([&](UIKit::Window *aWindow) {
-            delete aWindow;
-        });
+    window->onWindowClosed([&](UIKit::Window * aWindow) {
+      delete aWindow;
+    });
 
-        UIKit::Widget *parent = new UIKit::Widget();
+    UIKit::Widget *parent = new UIKit::Widget();
 
-        window->setWindowContent(parent);
+    window->setWindowContent(parent);
 
-        IconWidgetView *view = new IconWidgetView(parent);
+    IconWidgetView *view = new IconWidgetView(parent);
 
-        view->setDirectoryPath(args["path"].toString());
-        view->setController(this);
+    view->setDirectoryPath(args["path"].toString());
+    view->setController(this);
 
-        QFileInfo info(args["path"].toString());
+    QFileInfo info(args["path"].toString());
 
-        window->setWindowTitle(info.baseName());
+    window->setWindowTitle(info.baseName());
 
-        mFolderViewList.append(parent);
+    mFolderViewList.append(parent);
 
-        insert(window);
-    }
+    insert(window);
+  }
 }
 
 void DirectoryController::handleDropEvent(UIKit::Widget *widget,

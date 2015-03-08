@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DataSource> TimerInterface::model()
 {
   QSharedPointer<UIKit::DataSource> obj =
     QSharedPointer<UIKit::DataSource>(new TimerData(),
-                                   &QObject::deleteLater);
+                                      &QObject::deleteLater);
 
   return obj;
 }

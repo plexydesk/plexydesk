@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> ProgressDialogInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new ProgressDialogActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

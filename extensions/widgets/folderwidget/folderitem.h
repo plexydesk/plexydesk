@@ -13,7 +13,7 @@ class FolderItem : public UIKit::TableViewItem
 {
   Q_OBJECT
 public:
-  explicit FolderItem(const QRectF &rect, QGraphicsItem *parent = 0);
+  explicit FolderItem(const QRectF &rect, QGraphicsItem *a_parent_ptr = 0);
 
   QRectF boundingRect() const;
   virtual QSizeF sizeHint(Qt::SizeHint hint, const QSizeF &size) const;

@@ -36,10 +36,10 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_MAC
   UIKit::ExtensionManager *loader = UIKit::ExtensionManager::instance(
-                                   QDir::toNativeSeparators(
-                                     (pathPtr) + QLatin1String("/Contents/share/plexy/ext/groups/")),
-                                   QDir::toNativeSeparators((pathPtr) +
-                                       QLatin1String("/Contents/lib/plexyext/")));
+                                      QDir::toNativeSeparators(
+                                        (pathPtr) + QLatin1String("/Contents/share/plexy/ext/groups/")),
+                                      QDir::toNativeSeparators((pathPtr) +
+                                          QLatin1String("/Contents/lib/plexyext/")));
 #endif
 
 #ifdef Q_OS_LINUX

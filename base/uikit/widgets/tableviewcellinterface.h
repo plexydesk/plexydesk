@@ -50,7 +50,7 @@ public:
       * @param rect Recangular size of of the initial TableCellArea.
       * @param parent Parent of the TableViewCellInterface
       */
-  TableModel(QObject *parent = 0);
+  TableModel(QObject *a_parent_ptr = 0);
 
   /**
       * @brief  Class Distructor

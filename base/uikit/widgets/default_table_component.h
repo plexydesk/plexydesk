@@ -16,7 +16,7 @@ public:
 
   DefaultTableComponent(const QRectF &rect,
                         LayoutType = kListLayout,
-                        QGraphicsItem *parent = 0);
+                        QGraphicsItem *a_parent_ptr = 0);
   virtual ~DefaultTableComponent();
 
   QRectF boundingRect() const;

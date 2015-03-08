@@ -12,7 +12,7 @@ class QuetzalSocialKit_EXPORT ServiceDefinition : public QObject
 {
   Q_OBJECT
 public:
-  ServiceDefinition(const QString &input, QObject *parent = 0);
+  ServiceDefinition(const QString &input, QObject *a_parent_ptr = 0);
 
   virtual ~ServiceDefinition();
 

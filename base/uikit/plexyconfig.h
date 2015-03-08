@@ -51,7 +51,7 @@ public:
 
 private:
   Config(const QString &organization, const QString &application = QString(),
-         QObject *parent = 0);
+         QObject *a_parent_ptr = 0);
   Config();
   Config(Config &config);
   static Config *config;

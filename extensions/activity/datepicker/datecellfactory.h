@@ -10,7 +10,7 @@ class DateCellFactory : public TableModel
   Q_OBJECT
 
 public:
-  DateCellFactory(QGraphicsObject *parent = 0);
+  DateCellFactory(QGraphicsObject *a_parent_ptr = 0);
   virtual ~DateCellFactory();
 
   QList<UIKit::TableViewItem *> componentList();

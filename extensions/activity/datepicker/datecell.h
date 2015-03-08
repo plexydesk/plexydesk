@@ -9,7 +9,7 @@ class DateCell : public UIKit::TableViewItem
 public:
   typedef enum { List = 0, Grid } ItemLayout;
 
-  DateCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *parent = 0);
+  DateCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *a_parent_ptr = 0);
   virtual ~DateCell();
 
   QRectF boundingRect() const;

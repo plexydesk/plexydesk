@@ -14,48 +14,34 @@ class DECL_UI_KIT_EXPORT WorkSpace : public QGraphicsView
 {
   Q_OBJECT
 public:
-  WorkSpace(QGraphicsScene *scene, QWidget *parent = 0);
-
+  WorkSpace(QGraphicsScene *a_graphics_scene_ptr, QWidget *a_parent_ptr = 0);
   virtual ~WorkSpace();
 
-  virtual void addDefaultController(const QString &name);
+  virtual void add_default_controller(const QString &a_controller_name);
 
-  virtual Space *createEmptySpace();
+  virtual Space *create_blank_space();
+  virtual void add_default_space();
 
-  virtual void removeSpace(Space *space);
+  virtual void remove(Space *a_space_ptr);
+  virtual void auto_switch();
+  virtual void expose(uint a_space_id);
+  virtual Space *expose_next();
+  virtual Space *expose_previous();
+  virtual void expose_sub_region(const QRectF &a_region);
 
-  virtual void restoreSession();
+  virtual SpacesList current_spaces();
+  virtual Space *current_active_space() const;
+  virtual uint space_count() const;
 
-  virtual void switchSpace();
+  virtual void restore_session();
+  void revoke_space(const QString &name, int id);
 
-  virtual void exposeSpace(uint id);
+  virtual QRectF workspace_geometry() const;
 
-  virtual Space *exposeNextSpace();
+  virtual QPixmap thumbnail(Space *a_space, int a_scale_factor = 10);
 
-  virtual Space *exposePreviousSpace();
-
-  virtual void exposeSubRegion(const QRectF &rect);
-
-  virtual QRectF workspaceGeometry() const;
-
-  virtual QPixmap thumbnail(Space *space, int scaleFactor = 10);
-
-  virtual SpacesList currentSpaces();
-
-  virtual uint spaceCount() const;
-
-  virtual Space *currentVisibleSpace() const;
-
-  virtual void setAcceleratedRendering(bool on = true);
-
-  virtual bool isAcceleratedRenderingOn() const;
-
-Q_SIGNALS:
-  void workspaceChange();
-
-public Q_SLOTS:
-  void addSpace();
-  void revokeSpace(const QString &name, int id);
+  virtual void set_accelerated_rendering(bool a_on = true);
+  virtual bool is_accelerated_rendering_on() const;
 
 protected:
   virtual void paintEvent(QPaintEvent *event);
@@ -66,11 +52,12 @@ protected:
 
 private:
   class PrivateWorkSpace;
-  PrivateWorkSpace *const d;
+  PrivateWorkSpace *const m_priv_impl;
 
-  void updateSpaceGeometry(Space *space, QRectF _deleted_geometry);
-  void saveSpaceRemovalSessionData(QString _space_ref);
-  void setWorkspaceGeometry();
+  void update_space_geometry(Space *a_space_ptr, QRectF a_deleted_geometry);
+  void set_workspace_geometry();
+
+  void save_space_removal_session_data(const QString &a_space_name);
 };
 }
 #endif // WORKSPACE_H

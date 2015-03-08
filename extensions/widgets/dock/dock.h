@@ -89,10 +89,10 @@ private:
   PrivateDock *const d;
 
   UIKit::DesktopActivityPtr createActivity(const QString &controllerName,
-                                        const QString &activity,
-                                        const QString &title,
-                                        const QPoint &pos,
-                                        const QVariantMap &dataItem);
+      const QString &activity,
+      const QString &title,
+      const QPoint &pos,
+      const QVariantMap &dataItem);
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
 };

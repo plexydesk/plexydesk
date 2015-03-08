@@ -8,7 +8,7 @@ class TimeZoneModel : public UIKit::TableModel
   Q_OBJECT
 
 public:
-  TimeZoneModel(QGraphicsObject *parent = 0);
+  TimeZoneModel(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~TimeZoneModel();
 

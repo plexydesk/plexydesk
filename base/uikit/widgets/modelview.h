@@ -6,7 +6,8 @@
 
 #include <functional>
 
-namespace UIKit {
+namespace UIKit
+{
 class ModelView : public Widget
 {
   Q_OBJECT
@@ -17,7 +18,7 @@ public:
     kTableModel
   } ModelType;
 
-  ModelView(QGraphicsObject *parent = 0, ModelType aModelType = kListModel);
+  ModelView(QGraphicsObject *a_parent_ptr = 0, ModelType aModelType = kListModel);
   virtual ~ModelView();
 
   virtual void insert(Widget *widget);

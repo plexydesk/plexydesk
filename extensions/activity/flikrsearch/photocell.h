@@ -9,7 +9,7 @@ class PhotoCell : public UIKit::TableViewItem
 public:
   typedef enum { List = 0, Grid } ItemLayout;
 
-  PhotoCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *parent = 0);
+  PhotoCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *a_parent_ptr = 0);
   virtual ~PhotoCell();
 
   QRectF boundingRect() const;

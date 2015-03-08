@@ -8,56 +8,57 @@ class QRectF;
 class QPointF;
 class QSizeF;
 
-namespace UIKit {
+namespace UIKit
+{
 class Space;
 
 class Window : public Widget
 {
 public:
-    typedef enum {
-        kFramelessWindow,
-        kPanelWindow,
-        kApplicationWindow,
-        kNotificationWindow,
-        kDialogWindow,
-        kMessageWindow,
-        kPopupWindow
-    } WindowType;
+  typedef enum {
+    kFramelessWindow,
+    kPanelWindow,
+    kApplicationWindow,
+    kNotificationWindow,
+    kDialogWindow,
+    kMessageWindow,
+    kPopupWindow
+  } WindowType;
 
-    Window(QGraphicsObject *parent = 0);
-    virtual ~Window();
+  Window(QGraphicsObject *a_parent_ptr = 0);
+  virtual ~Window();
 
-    virtual void setWindowContent(Widget *widget);
-    virtual void setWindowViewport(Space *space);
+  virtual void setWindowContent(Widget *widget);
+  virtual void setWindowViewport(Space *space);
 
-    virtual void setWindowTitle(const QString &a_window_title);
-    virtual QString windowTitlte() const;
+  virtual void setWindowTitle(const QString &a_window_title);
+  virtual QString windowTitlte() const;
 
-    virtual WindowType windowType();
-    virtual void setWindowType(WindowType a_window_type);
+  virtual WindowType windowType();
+  virtual void setWindowType(WindowType a_window_type);
 
-    virtual void setWindowResizeCallback(
-            std::function<void (const QSizeF &size)> handler);
-    virtual void setWindowMoveCallback(
-            std::function<void (const QPointF &pos)> handler);
-    virtual void onWindowClosed(
-            std::function<void (Window *)> aCallback);
-    virtual void onWindowDiscarded(
-            std::function<void (Window *)> aCallback);
+  virtual void setWindowResizeCallback(
+    std::function<void (const QSizeF &size)> handler);
+  virtual void setWindowMoveCallback(
+    std::function<void (const QPointF &pos)> handler);
+  virtual void onWindowClosed(
+    std::function<void (Window *)> aCallback);
+  virtual void onWindowDiscarded(
+    std::function<void (Window *)> aCallback);
 
-    virtual void show();
-    virtual void hide();
-    virtual void discard();
+  virtual void show();
+  virtual void hide();
+  virtual void discard();
 
-    virtual void setEnableWindowBackground(bool aVisible = true);
+  virtual void setEnableWindowBackground(bool aVisible = true);
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
   virtual void paintView(QPainter *painter, const QRectF &rect);
 
 private:
-    class PrivateWindow;
-    PrivateWindow * const d;
+  class PrivateWindow;
+  PrivateWindow *const d;
 };
 }
 #endif // WINDOW_H

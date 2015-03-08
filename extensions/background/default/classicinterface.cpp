@@ -31,7 +31,7 @@ QSharedPointer<UIKit::ViewController> ClassicBackdrop::controller()
 {
   QSharedPointer<UIKit::ViewController> obj =
     QSharedPointer<UIKit::ViewController>(new BackgroundController(),
-                                       &QObject::deleteLater);
+                                          &QObject::deleteLater);
 
   return obj;
 }

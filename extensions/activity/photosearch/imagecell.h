@@ -9,7 +9,7 @@ class ImageCell : public UIKit::TableViewItem
 public:
   typedef enum { List = 0, Grid } ItemLayout;
 
-  ImageCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *parent = 0);
+  ImageCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *a_parent_ptr = 0);
   virtual ~ImageCell();
 
   QRectF boundingRect() const;

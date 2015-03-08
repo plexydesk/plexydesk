@@ -33,16 +33,16 @@ public:
 
 DesktopManager::DesktopManager(QWidget *parent)
   : UIKit::WorkSpace(new QGraphicsScene, parent),
-    d(new PrivateDesktopManager) {}
+    m_priv_impl(new PrivateDesktopManager) {}
 
-DesktopManager::~DesktopManager() { delete d; }
+DesktopManager::~DesktopManager() { delete m_priv_impl; }
 
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::RightButton) {
-    if (currentVisibleSpace()) {
+    if (current_active_space()) {
       ViewControllerPtr dock_controller =
-        currentVisibleSpace()->controller("dockwidget");
+        current_active_space()->controller("dockwidget");
 
       if (dock_controller) {
         QVariantMap menu_argument;

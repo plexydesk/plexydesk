@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> SocialAuthInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new SocialAuthActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

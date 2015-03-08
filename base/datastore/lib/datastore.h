@@ -14,7 +14,7 @@ class QuetzalDataKit_EXPORT DataStore : public QObject
 {
   Q_OBJECT
 public:
-  explicit DataStore(const QString &name, QObject *parent = 0);
+  explicit DataStore(const QString &name, QObject *a_parent_ptr = 0);
 
   virtual ~DataStore();
 

@@ -7,7 +7,7 @@ class LocalWallPapers : public QThread
 {
   Q_OBJECT
 public:
-  explicit LocalWallPapers(QObject *parent = 0);
+  explicit LocalWallPapers(QObject *a_parent_ptr = 0);
   virtual ~LocalWallPapers();
 
   QList<QImage> thumbNails() const;

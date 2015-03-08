@@ -140,8 +140,8 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   this->exec();
   showActivity();
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 }
 
@@ -162,10 +162,11 @@ UIKit::Window *InputDialogActivityData::window() const { return d->mFrame; }
 
 void InputDialogActivityData::cleanup()
 {
-    if (d->mFrame)
-        delete d->mFrame;
+  if (d->mFrame) {
+    delete d->mFrame;
+  }
 
-    d->mFrame = 0;
+  d->mFrame = 0;
 }
 
 void InputDialogActivityData::onWidgetClosed(UIKit::Widget *widget)

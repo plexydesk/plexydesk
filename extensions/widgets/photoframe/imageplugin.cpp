@@ -63,7 +63,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   }
 
   foreach(const QString & str, photoList) {
-      UIKit::Window *window = new UIKit::Window();
+    UIKit::Window *window = new UIKit::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
     window->setWindowContent(photoWidget);
 
@@ -112,8 +112,8 @@ void PhotoFrameController::handleDropEvent(UIKit::Widget *widget,
       if (viewport()) {
         UIKit::Space *view = qobject_cast<UIKit::Space *>(viewport());
         if (view) {
-          view->updateSessionValue(controllerName(), "photos",
-                                   m_current_url_list.join(","));
+          view->update_session_value(controllerName(), "photos",
+                                     m_current_url_list.join(","));
         }
       } else {
         qDebug() << Q_FUNC_INFO << "Saving session Failed";
@@ -148,8 +148,8 @@ bool PhotoFrameController::removeWidget(UIKit::Widget *widget)
   mPhotoList.removeAll(_widget_to_delete);
 
   if (viewport())
-    viewport()->updateSessionValue(controllerName(), "photos",
-                                   m_current_url_list.join(","));
+    viewport()->update_session_value(controllerName(), "photos",
+                                     m_current_url_list.join(","));
   if (widget) {
     if (widget->scene()) {
       widget->scene()->removeItem(widget);
@@ -167,23 +167,23 @@ UIKit::ActionList PhotoFrameController::actions() const
 }
 
 void PhotoFrameController::requestAction(const QString &actionName,
-                                         const QVariantMap &args)
+    const QVariantMap &args)
 {
-    if (actionName == tr("Photo")) {
-        UIKit::Window *window = new UIKit::Window();
-        PhotoWidget *photoWidget = new PhotoWidget();
+  if (actionName == tr("Photo")) {
+    UIKit::Window *window = new UIKit::Window();
+    PhotoWidget *photoWidget = new PhotoWidget();
 
-        window->setWindowContent(photoWidget);
+    window->setWindowContent(photoWidget);
 
-        photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
-        photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
-        photoWidget->setController(this);
-        photoWidget->setLabelName("Photo");
-        mPhotoList.append(photoWidget);
-        photoWidget->setPhotoURL(QString("ID:%1").arg(mPhotoList.count()));
+    photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
+    photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
+    photoWidget->setController(this);
+    photoWidget->setLabelName("Photo");
+    mPhotoList.append(photoWidget);
+    photoWidget->setPhotoURL(QString("ID:%1").arg(mPhotoList.count()));
 
-        insert(window);
-    }
+    insert(window);
+  }
 }
 
 QString PhotoFrameController::icon() const

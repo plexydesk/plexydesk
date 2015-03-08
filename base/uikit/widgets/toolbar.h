@@ -11,7 +11,7 @@ class DECL_UI_KIT_EXPORT ToolBar : public Widget
   Q_OBJECT
 
 public:
-  ToolBar(QGraphicsObject *parent = 0);
+  ToolBar(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~ToolBar();
 

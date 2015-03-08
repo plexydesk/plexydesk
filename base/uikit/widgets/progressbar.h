@@ -17,7 +17,7 @@ class DECL_UI_KIT_EXPORT ProgressBar : public Widget
   Q_INTERFACES(QGraphicsLayoutItem)
 
 public:
-  explicit ProgressBar(QGraphicsObject *parent = 0);
+  explicit ProgressBar(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ProgressBar();
 
   virtual void setLabel(const QString &txt);

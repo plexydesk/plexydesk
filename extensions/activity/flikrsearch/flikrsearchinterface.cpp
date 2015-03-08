@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> FlikrSearchInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new FlickrSearchActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

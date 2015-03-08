@@ -17,7 +17,7 @@ class QuetzalSocialKit_EXPORT WebService : public QObject
 {
   Q_OBJECT
 public:
-  explicit WebService(QObject *parent = 0);
+  explicit WebService(QObject *a_parent_ptr = 0);
 
   virtual ~WebService();
 

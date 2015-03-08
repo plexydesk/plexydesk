@@ -12,7 +12,7 @@ class DECL_UI_KIT_EXPORT TextEditor : public UIKit::Widget
 {
   Q_OBJECT
 public:
-  TextEditor(QGraphicsObject *parent = 0);
+  TextEditor(QGraphicsObject *a_parent_ptr = 0);
 
   ~TextEditor();
 

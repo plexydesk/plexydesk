@@ -30,7 +30,7 @@ class FileInforView : public UIKit::Widget
 {
   Q_OBJECT
 public:
-  FileInforView(QGraphicsObject *parent = 0);
+  FileInforView(QGraphicsObject *a_parent_ptr = 0);
 
   void setFileInfo(const QFileInfo &info);
 

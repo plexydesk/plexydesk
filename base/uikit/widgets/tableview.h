@@ -40,7 +40,7 @@ class DECL_UI_KIT_EXPORT TableView : public Widget
   Q_INTERFACES(QGraphicsLayoutItem)
 
 public:
-  TableView(QGraphicsObject *parent = 0);
+  TableView(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~TableView();
 
@@ -62,7 +62,7 @@ public:
 
   virtual uint count() const;
 
-  virtual void setItemActivationCallback(std::function<void (TableViewItem* item)> aCallback);
+  virtual void setItemActivationCallback(std::function<void (TableViewItem *item)> aCallback);
 
 private Q_SLOTS:
   virtual void onItemClick(TableViewItem *component);

@@ -12,7 +12,7 @@ class QuetzalSocialKit_EXPORT AsyncImageLoader : public QThread
 {
   Q_OBJECT
 public:
-  AsyncImageLoader(QObject *parent = 0);
+  AsyncImageLoader(QObject *a_parent_ptr = 0);
 
   virtual ~AsyncImageLoader();
 

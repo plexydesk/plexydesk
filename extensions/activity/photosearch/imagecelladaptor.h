@@ -12,7 +12,7 @@ class ImageCellAdaptor : public TableModel
   Q_OBJECT
 
 public:
-  ImageCellAdaptor(QGraphicsObject *parent = 0);
+  ImageCellAdaptor(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ImageCellAdaptor();
 
   float margin() const;

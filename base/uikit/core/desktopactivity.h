@@ -23,7 +23,7 @@ class DECL_UI_KIT_EXPORT DesktopActivity : public QObject
 public:
   enum ResultType { kActivitySucess, mActivityCanceled };
 
-  explicit DesktopActivity(QGraphicsObject *parent = 0);
+  explicit DesktopActivity(QGraphicsObject *a_parent_ptr = 0);
   virtual ~DesktopActivity();
 
   virtual void createWindow(const QRectF &window_geometry,
@@ -52,9 +52,9 @@ public:
   virtual void cleanup() = 0;
 
   virtual void onArgumentsUpdated(
-          std::function<void ()> a_handler);
+    std::function<void ()> a_handler);
   virtual void onActionCompleted(
-          std::function<void (const QVariantMap &result)> a_handler);
+    std::function<void (const QVariantMap &result)> a_handler);
 
 protected:
   virtual void updateAction();

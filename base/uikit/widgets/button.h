@@ -20,7 +20,7 @@ class DECL_UI_KIT_EXPORT Button : public Widget
   Q_OBJECT
 
 public:
-  explicit Button(QGraphicsObject *parent = 0);
+  explicit Button(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Button();
 
   virtual void setLabel(const QString &txt);

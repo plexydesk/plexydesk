@@ -8,7 +8,7 @@ class ExtLaoderTestRunner : public QObject
 {
   Q_OBJECT
 public:
-  explicit ExtLaoderTestRunner(QObject *parent = 0);
+  explicit ExtLaoderTestRunner(QObject *a_parent_ptr = 0);
 
   virtual ~ExtLaoderTestRunner();
 

@@ -32,7 +32,7 @@ class TimeZoneActivity : public UIKit::DesktopActivity
   Q_OBJECT
 
 public:
-  TimeZoneActivity(QGraphicsObject *aParent= 0);
+  TimeZoneActivity(QGraphicsObject *aParent = 0);
 
   virtual ~TimeZoneActivity();
 

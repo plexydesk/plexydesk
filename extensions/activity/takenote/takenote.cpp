@@ -100,8 +100,8 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  d->mFrame->onWindowDiscarded([this](UIKit::Window *aWindow) {
-      discardActivity();
+  d->mFrame->onWindowDiscarded([this](UIKit::Window * aWindow) {
+    discardActivity();
   });
 
   // todo: invoke UI
@@ -130,9 +130,10 @@ UIKit::Window *TakeNoteActivity::window() const { return d->mFrame; }
 
 void TakeNoteActivity::cleanup()
 {
-    if (d->mFrame)
-        delete d->mFrame;
-    d->mFrame = 0;
+  if (d->mFrame) {
+    delete d->mFrame;
+  }
+  d->mFrame = 0;
 }
 
 void TakeNoteActivity::onWidgetClosed(UIKit::Widget *widget)

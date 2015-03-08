@@ -33,66 +33,65 @@ public:
     kObjectDroppedNotification
   } ViewportNotificationType;
 
-  explicit Space(QObject *aParent = 0);
+  explicit Space(QObject *a_parent = 0);
   virtual ~Space();
 
-  virtual void addController(const QString &aName);
-  virtual ViewControllerPtr controller(const QString &aName);
-  virtual QStringList currentControllerList() const;
+  virtual void add_controller(const QString &a_name);
+  virtual ViewControllerPtr controller(const QString &a_name);
+  virtual QStringList current_controller_list() const;
 
-  virtual void setName(const QString &aName);
+  virtual void set_name(const QString &a_name);
   virtual QString name() const;
 
-  virtual void setId(int aId);
+  virtual void set_id(int a_id);
   virtual int id() const;
 
   virtual QObject *workspace();
-  virtual void setWorkspace(WorkSpace *aWorkspace);
+  virtual void set_workspace(WorkSpace *a_workspace_ptr);
 
-  virtual void restoreSession();
+  virtual void restore_session();
 
-  virtual void setScene(QGraphicsScene *aScene);
+  virtual void set_qt_graphics_scene(QGraphicsScene *a_qt_graphics_scene_ptr);
 
-  virtual void setGeometry(const QRectF &aRealRect);
+  virtual void setGeometry(const QRectF &a_geometry);
   virtual QRectF geometry() const;
 
-  QString sessionName() const;
-  virtual void updateSessionValue(const QString &aName,
-                                  const QString &aKey,
-                                  const QString &aValue);
+  QString session_name() const;
+  virtual void update_session_value(const QString &a_name,
+                                    const QString &a_key,
+                                    const QString &a_value);
 
-  virtual void addActivity(UIKit::DesktopActivityPtr aActivity);
-  UIKit::DesktopActivityPtr createActivity(const QString &aActivity,
-                                        const QString &aTitle,
-                                        const QPointF &aPos,
-                                        const QRectF &aRect,
-                                        const QVariantMap &aDataMap);
+  virtual void add_activity(UIKit::DesktopActivityPtr a_activity_ptr);
+  UIKit::DesktopActivityPtr create_activity(const QString &a_activity,
+      const QString &a_title,
+      const QPointF &a_pos,
+      const QRectF &a_rect,
+      const QVariantMap &a_data_map);
 
-  virtual QPointF mousePointerPos() const;
-  virtual QPointF center(const QRectF &aViewGeometry,
-                         const ViewportLocation&aLocation = kCenterOnViewport
-          ) const;
+  virtual QPointF cursor_pos() const;
+  virtual QPointF center(const QRectF &a_view_geometry,
+                         const ViewportLocation &a_location = kCenterOnViewport
+                        ) const;
 
-  virtual void handleDropEvent(QDropEvent *event, const QPointF &event_pos);
+  virtual void drop_event_handler(QDropEvent *event, const QPointF &event_pos);
 
-  virtual void insertWindowToView(Window *aWindow);
-  virtual void removeWindowFromView(Window *aWindow);
+  virtual void insert_window_to_view(Window *a_window);
+  virtual void remove_window_from_view(Window *a_window);
 
-  virtual void onViewportEventNotify(
-          std::function<void (ViewportNotificationType aNotification,
-                              const QVariant &aNotifyData,
-                              const Space *aSpace)> aNotifyHandler);
-
+  virtual void on_viewport_event_notify(
+    std::function<void (ViewportNotificationType,
+                        const QVariant &,
+                        const Space *)> a_notifyHandler);
 public Q_SLOTS:
-  virtual void onActivityFinished();
+  virtual void on_activity_finished();
 
 protected:
   virtual void clear();
-  void registerController(const QString &aControllerName);
+  void register_controller(const QString &aControllerName);
 
 private:
   class PrivateSpace;
-  PrivateSpace *const mPrivImpl;
+  PrivateSpace *const m_priv_impl;
 };
 }
 #endif // SPACE_H

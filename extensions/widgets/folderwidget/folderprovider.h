@@ -10,7 +10,7 @@ class FolderProvider : public UIKit::TableModel
 {
   Q_OBJECT
 public:
-  FolderProvider(const QRectF &rect, QGraphicsObject *parent = 0);
+  FolderProvider(const QRectF &rect, QGraphicsObject *a_parent_ptr = 0);
   virtual ~FolderProvider();
 
   virtual bool init();

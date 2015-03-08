@@ -11,7 +11,7 @@ class QuetzalSocialKit_EXPORT WebServer : public QTcpServer
 {
   Q_OBJECT
 public:
-  explicit WebServer(QObject *parent = 0);
+  explicit WebServer(QObject *a_parent_ptr = 0);
   virtual ~WebServer();
 
   virtual void incomingConnection(qintptr socketDescriptor);

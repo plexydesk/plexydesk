@@ -260,8 +260,8 @@ void BackgroundController::handleDropEvent(UIKit::Widget * /*widget*/,
       if (viewport()) {
         UIKit::Space *space = viewport();
         if (space)
-          space->updateSessionValue(controllerName(), "background",
-                                    fileUrl.toString());
+          space->update_session_value(controllerName(), "background",
+                                      fileUrl.toString());
       }
     }
   }
@@ -340,10 +340,10 @@ void BackgroundController::onImageSaveReady()
 
     if (viewport()) {
       if (!c->offline()) {
-        viewport()->updateSessionValue(controllerName(), "background",
-                                       c->metaData()["url"].toString());
+        viewport()->update_session_value(controllerName(), "background",
+                                         c->metaData()["url"].toString());
       } else {
-        viewport()->updateSessionValue(
+        viewport()->update_session_value(
           controllerName(), "background",
           QDir::toNativeSeparators("file://" + c->imagePath()));
       }
@@ -404,8 +404,8 @@ void BackgroundController::configure(const QPointF &pos)
   data["Adjust"] = "pd_quit_icon.png";
   data["Seamless"] = "pd_desktop_icon.png";
 
-  viewport()->createActivity("icongrind", "Desktop", _activity_pos,
-                             QRectF(0, 0, 330, 192), data);
+  viewport()->create_activity("icongrind", "Desktop", _activity_pos,
+                              QRectF(0, 0, 330, 192), data);
 }
 
 void BackgroundController::prepareRemoval()
@@ -495,10 +495,10 @@ void BackgroundController::createModeActivity(const QString &activity,
 
   QRectF _view_geometry(0.0, 0.0, 420.0, 192.0);
 
-  UIKit::DesktopActivityPtr intent = viewport()->createActivity(activity, title,
-                             viewport()->center(_view_geometry),
-                             _view_geometry,
-                             data);
+  UIKit::DesktopActivityPtr intent = viewport()->create_activity(activity, title,
+                                     viewport()->center(_view_geometry),
+                                     _view_geometry,
+                                     data);
   intent->setController(viewport()->controller("classicbackdrop"));
 }
 
@@ -506,15 +506,15 @@ void BackgroundController::createWallpaperActivity(const QString &activity,
     const QString &title,
     const QVariantMap &data)
 {
-  if (!viewport()) return;
+  if (!viewport()) { return; }
 
   QRectF _view_geometry(0.0, 0.0, 600, 480);
 
   UIKit::DesktopActivityPtr intent =
-          viewport()->createActivity("photosearchactivity", title,
-                                     viewport()->center(_view_geometry),
-                                     _view_geometry,
-                                     data);
+    viewport()->create_activity("photosearchactivity", title,
+                                viewport()->center(_view_geometry),
+                                _view_geometry,
+                                data);
   intent->setController(viewport()->controller("classicbackdrop"));
 }
 
@@ -522,15 +522,15 @@ void BackgroundController::createSearchActivity(const QString &activity,
     const QString &title,
     const QVariantMap &data)
 {
-  if (!viewport()) return;
+  if (!viewport()) { return; }
 
   QRectF _activity_geometry(0.0, 0.0, 572, 480);
 
   UIKit::DesktopActivityPtr intent =
-          viewport()->createActivity("flikrsearchactivity", title,
-                                     viewport()->center(_activity_geometry),
-                                     _activity_geometry,
-                                     data);
+    viewport()->create_activity("flikrsearchactivity", title,
+                                viewport()->center(_activity_geometry),
+                                _activity_geometry,
+                                data);
   intent->setController(viewport()->controller("classicbackdrop"));
 }
 
@@ -540,7 +540,7 @@ void BackgroundController::saveSession(const QString &key,
   UIKit::Space *view = viewport();
 
   if (view) {
-    view->updateSessionValue(controllerName(), key, value.toString());
+    view->update_session_value(controllerName(), key, value.toString());
   }
 }
 

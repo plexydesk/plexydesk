@@ -10,7 +10,7 @@ class ChooserActionDelegate : public TableModel
   Q_OBJECT
 
 public:
-  ChooserActionDelegate(QGraphicsObject *parent = 0);
+  ChooserActionDelegate(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ChooserActionDelegate();
 
   float margin() const;

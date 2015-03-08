@@ -12,7 +12,7 @@ class PhotoCellAdaptor : public TableModel
   Q_OBJECT
 
 public:
-  PhotoCellAdaptor(QObject *parent = 0);
+  PhotoCellAdaptor(QObject *a_parent_ptr = 0);
   virtual ~PhotoCellAdaptor();
 
   QList<UIKit::TableViewItem *> componentList();

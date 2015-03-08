@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> DatePickerInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new DatePickerActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

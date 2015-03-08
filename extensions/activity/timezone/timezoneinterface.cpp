@@ -25,7 +25,7 @@ QSharedPointer<UIKit::DesktopActivity> TimeZoneInterface::activity()
 {
   QSharedPointer<UIKit::DesktopActivity> obj =
     QSharedPointer<UIKit::DesktopActivity>(new TimeZoneActivity(),
-                                        &QObject::deleteLater);
+        &QObject::deleteLater);
 
   return obj;
 }

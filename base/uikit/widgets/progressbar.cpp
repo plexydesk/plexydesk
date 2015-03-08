@@ -153,7 +153,7 @@ void ProgressBar::paint(QPainter *painter,
 
   if (UIKit::Theme::style()) {
     UIKit::Theme::style()->draw("linear_progress_bar", progressFeatures,
-                             painter);
+                                painter);
   }
 
   painter->restore();
