@@ -80,7 +80,7 @@ BackgroundController::~BackgroundController()
 void BackgroundController::init()
 {
   QString wallpaperPath = QDir::toNativeSeparators(
-                            UIKit::Config::getInstance()->prefix() +
+                            UIKit::Config::instance()->prefix() +
                             QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
   d->m_background_render_item = new ClassicBackgroundRender(
@@ -230,7 +230,7 @@ void BackgroundController::handleDropEvent(UIKit::Widget * /*widget*/,
 
     if (!image.isNull()) {
       qDebug() << Q_FUNC_INFO << "Request Save Image Locally";
-      saveImageLocally(image, UIKit::Config::cacheDir("wallpaper"), true);
+      saveImageLocally(image, UIKit::Config::cache_dir("wallpaper"), true);
     }
     return;
   }
@@ -288,7 +288,7 @@ void BackgroundController::saveImageLocally(const QByteArray &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, UIKit::Config::cacheDir("wallpaper"),
+  imageSave->setData(data, UIKit::Config::cache_dir("wallpaper"),
                      saveLocally);
   imageSave->start();
 }
@@ -305,7 +305,7 @@ void BackgroundController::saveImageLocally(const QImage &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, UIKit::Config::cacheDir("wallpaper"),
+  imageSave->setData(data, UIKit::Config::cache_dir("wallpaper"),
                      saveLocally);
   imageSave->start();
 }

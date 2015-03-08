@@ -152,7 +152,7 @@ void ImageCellAdaptor::getImageFromPath(const QString &str)
                             localPictureDir.absolutePath() + "/" + pictureName);
       QuetzalSocialKit::AsyncImageCreator *creator =
         new QuetzalSocialKit::AsyncImageCreator(this);
-      creator->setData(imageFile, UIKit::Config::cacheDir());
+      creator->setData(imageFile, UIKit::Config::cache_dir());
       connect(creator, SIGNAL(ready()), this, SLOT(onImageRady()));
 
       d->mCreatorList << creator;
