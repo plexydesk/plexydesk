@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef Q_OS_LINUX
-  UI::ExtensionManager *loader = UI::ExtensionManager::instance(
+  UIKit::ExtensionManager *loader = UIKit::ExtensionManager::instance(
                                    QDir::toNativeSeparators((pathPtr) +
                                        QLatin1String("/share/plexy/ext/groups/")),
                                    QDir::toNativeSeparators((pathPtr) + QLatin1String("/lib/plexyext/")));

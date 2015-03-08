@@ -129,17 +129,17 @@ getLastErrorText(  // converts "Lasr Error" code into text
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  PlexyDesk::ExtensionManager *loader = 0;
+  UIKit::ExtensionManager *loader = 0;
 
-  loader = PlexyDesk::ExtensionManager::instance(
-             QDir::toNativeSeparators(PlexyDesk::Config::getInstance()->prefix() +
+  loader = UIKit::ExtensionManager::instance(
+             QDir::toNativeSeparators(UIKit::Config::getInstance()->prefix() +
                                       QLatin1String("/share/plexy/ext/groups/")),
-             QDir::toNativeSeparators(PlexyDesk::Config::getInstance()->prefix() +
+             QDir::toNativeSeparators(UIKit::Config::getInstance()->prefix() +
                                       QLatin1String("/lib/plexyext/")));
 
 #ifndef Q_WS_QPA
   QString appIconPath =
-    PlexyDesk::Config::getInstance()->prefix() + "/share/plexy/plexydesk.png";
+    UIKit::Config::getInstance()->prefix() + "/share/plexy/plexydesk.png";
   QIcon appIcon = QIcon(QDir::toNativeSeparators(appIconPath));
   app.setWindowIcon(appIcon);
   app.setApplicationName(QString(PLEXYNAME));

@@ -110,9 +110,9 @@ IF (NOT APPLE)
     SET(RESOURCES_DEST_DIR share/plexy/themepack/default/resources)
 ENDIF (NOT APPLE)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS})
+#set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS})
 IF (NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 ENDIF (NOT WIN32)
 
 IF (APPLE)
@@ -200,13 +200,6 @@ CONFIGURE_FILE(
     "${CMAKE_CURRENT_BINARY_DIR}/runner/plexydesk.desktop"
     @ONLY)
 
-if (NOT APPLE)
-    CONFIGURE_FILE(
-        "${CMAKE_CURRENT_SOURCE_DIR}/activity-runner/activity-runner.cmake.desktop"
-        "${CMAKE_CURRENT_BINARY_DIR}/activity-runner/activity-runner.desktop"
-        @ONLY)
-endif(NOT APPLE)
-
 CONFIGURE_FILE(
     "${CMAKE_CURRENT_SOURCE_DIR}/dist/windows/make_nsis_installer.cmake.nsi"
     "${CMAKE_CURRENT_BINARY_DIR}/dist/windows/make_nsis_installer.nsi"
@@ -273,10 +266,6 @@ endif()
 if (APPLE)
     ADD_SUBDIRECTORY(runner/apple)
 endif()
-
-if (NOT APPLE)
-    ADD_SUBDIRECTORY(activity-runner)
-endif (NOT APPLE)
 
 ADD_SUBDIRECTORY(extensions/runtime)
 
