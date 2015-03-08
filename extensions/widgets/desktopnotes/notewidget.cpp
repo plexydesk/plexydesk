@@ -423,7 +423,7 @@ void NoteWidget::onImageReady()
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UIKit::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UIKit::Config::cache_dir(), true);
     imageSave->setCrop(QRectF(0.0, 0.0, 300.0, 300.0));
     imageSave->start();
 

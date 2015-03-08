@@ -248,14 +248,14 @@ void WorkSpace::wheelEvent(QWheelEvent *event)
   event->accept();
 }
 
-void WorkSpace::revoke_space(const QString &name, int id)
+void WorkSpace::revoke_space(const QString &a_name, int a_id)
 {
   Space *_space = create_blank_space();
 
   _space->set_workspace(this);
   _space->set_qt_graphics_scene(scene());
-  _space->set_name(name);
-  _space->set_id(id);
+  _space->set_name(a_name);
+  _space->set_id(a_id);
   _space->restore_session();
 
   QRectF _space_geometry;

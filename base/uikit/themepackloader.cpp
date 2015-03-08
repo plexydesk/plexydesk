@@ -69,7 +69,7 @@ Theme::Theme(const QString &themeName, QObject *parent)
   : QObject(parent), d(new ThemepackLoaderPrivate)
 {
   d->mThemePackPath = QDir::toNativeSeparators(
-                        QString("%1/%2").arg(UIKit::Config::getInstance()->prefix()).arg(
+                        QString("%1/%2").arg(UIKit::Config::instance()->prefix()).arg(
                           "/share/plexy/themepack"));
 
   d->mThemeName = themeName;
@@ -477,7 +477,7 @@ void Theme::onImageReady()
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UIKit::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UIKit::Config::cache_dir(), true);
     imageSave->setCrop(QRectF(0.0, 0.0, 440, 440.0));
     imageSave->start();
 

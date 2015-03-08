@@ -151,7 +151,7 @@ void PhotoSearchActivity::locateLocalFiles() const
   pathList << url;
 #endif
 
-  pathList << UIKit::Config::cacheDir("wallpaper");
+  pathList << UIKit::Config::cache_dir("wallpaper");
 
   d->mFactory->addPathList(pathList);
 }

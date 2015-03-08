@@ -35,6 +35,8 @@ public:
   ~Private() {}
   QHash<QString, QString> fileHash;
   QSvgRenderer render;
+
+  QList<std::function<void ()>> m_load_handler;
 };
 
 void ImageCache::clear() { d->fileHash.clear(); }
@@ -43,7 +45,7 @@ ImageCache::ImageCache() : QObject(0), d(new Private) { load("default"); }
 
 ImageCache::~ImageCache() { delete d; }
 
-QPixmap ImageCache::requestPixmap(const QString &id, QSize *size,
+QPixmap ImageCache::pixmap(const QString &id, QSize *size,
                                   const QSize &requestedSize)
 {
   if (size->width() <= 0 && size->height() <= 0) {
@@ -58,7 +60,7 @@ QPixmap ImageCache::requestPixmap(const QString &id, QSize *size,
 void ImageCache::load(const QString &themename)
 {
   QString prefix =
-    QDir::toNativeSeparators(Config::getInstance()->prefix() +
+    QDir::toNativeSeparators(Config::instance()->prefix() +
                              QLatin1String("/share/plexy/themepack/") +
                              themename + QLatin1String("/resources/"));
 
@@ -74,11 +76,11 @@ void ImageCache::load(const QString &themename)
   Q_EMIT ready();
 }
 
-void ImageCache::addToCached(const QString &imgfile, const QString &filename,
+void ImageCache::add_to_cache(const QString &imgfile, const QString &filename,
                              const QString &themename)
 {
   QString prefix =
-    QDir::toNativeSeparators(Config::getInstance()->prefix() +
+    QDir::toNativeSeparators(Config::instance()->prefix() +
                              QLatin1String("/share/plexy/themepack/") +
                              themename + QLatin1String("/resources/"));
 
@@ -88,10 +90,15 @@ void ImageCache::addToCached(const QString &imgfile, const QString &filename,
 
 QPixmap ImageCache::get(const QString &name)
 {
-  return QPixmap(d->fileHash[name]);
+    return QPixmap(d->fileHash[name]);
 }
 
-bool ImageCache::isCached(QString &filename) const
+void ImageCache::onLoaderReady(std::function<void ()> a_handler)
+{
+    d->m_load_handler.append(a_handler);
+}
+
+bool ImageCache::is_cached(QString &filename) const
 {
   if ((d->fileHash[filename]).isNull()) {
     return false;
@@ -100,7 +107,7 @@ bool ImageCache::isCached(QString &filename) const
   return true;
 }
 
-bool ImageCache::drawSvg(QPainter *p, QRectF rect, const QString &file,
+bool ImageCache::render_svg(QPainter *p, QRectF rect, const QString &file,
                          const QString &elementId)
 {
   QString svgFile = d->fileHash[file];

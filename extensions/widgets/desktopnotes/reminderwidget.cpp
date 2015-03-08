@@ -312,7 +312,7 @@ void ReminderWidget::onImageReady()
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UIKit::Config::cacheDir(), true);
+    imageSave->setData(downloader->data(), UIKit::Config::cache_dir(), true);
     imageSave->setCrop(QRectF(100, 0.0, 64.0, boundingRect().height()));
     imageSave->start();
 

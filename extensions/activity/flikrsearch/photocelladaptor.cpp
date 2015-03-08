@@ -265,7 +265,7 @@ void PhotoCellAdaptor::onImageReady()
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UIKit::Config::cacheDir(),
+    imageSave->setData(downloader->data(), UIKit::Config::cache_dir(),
                        false);
     imageSave->start();
     downloader->deleteLater();

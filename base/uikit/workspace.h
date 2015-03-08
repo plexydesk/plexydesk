@@ -34,7 +34,7 @@ public:
   virtual uint space_count() const;
 
   virtual void restore_session();
-  void revoke_space(const QString &name, int id);
+  void revoke_space(const QString &a_name, int a_id);
 
   virtual QRectF workspace_geometry() const;
 
