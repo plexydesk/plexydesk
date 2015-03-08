@@ -42,8 +42,6 @@ public:
   PrivateInputDialogActivity() {}
   ~PrivateInputDialogActivity() {}
 
-  StylePtr mStyle;
-
   UIKit::Window *mFrame;
   QGraphicsBlurEffect *mBackgroundEffect;
 
@@ -68,7 +66,6 @@ public:
 InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
   : UIKit::DesktopActivity(object), d(new PrivateInputDialogActivity)
 {
-  d->mStyle = UIKit::Theme::instance()->defaultDesktopStyle();
   d->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
 }
 

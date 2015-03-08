@@ -49,7 +49,7 @@ void ImageButton::setBackgroundColor(const QColor &color)
 
 StylePtr ImageButton::style() const
 {
-  return Theme::instance()->defaultDesktopStyle();
+  return Theme::style();
 }
 
 ImageButton::ImageButton(QGraphicsObject *parent)

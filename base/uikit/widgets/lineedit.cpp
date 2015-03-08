@@ -38,7 +38,7 @@ LineEdit::LineEdit(QGraphicsObject *parent)
   : Widget(parent), d(new PrivateLineEdit)
 {
   d->mState = PrivateLineEdit::NORMAL;
-  d->mStyle = Theme::instance()->defaultDesktopStyle();
+  d->mStyle = Theme::style();
 
   setSize(
     QSize(Theme::style()->attrbute("widget", "line_edit_width").toInt(),

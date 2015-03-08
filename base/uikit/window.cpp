@@ -210,7 +210,6 @@ void Window::discard()
     qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
     m_priv_impl->m_window_discard_callback(this);
   }
-
 }
 
 void Window::enable_window_background(bool a_visibility)

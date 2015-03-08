@@ -68,8 +68,8 @@ void Button::paintNormalButton(QPainter *painter, const QRectF &rect)
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (UIKit::Theme::instance()->defaultDesktopStyle()) {
-    UIKit::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("button", feature,
         painter);
   }
 }
@@ -82,15 +82,15 @@ void Button::paintSunkenButton(QPainter *painter, const QRectF &rect)
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderPressed;
 
-  if (UIKit::Theme::instance()->defaultDesktopStyle()) {
-    UIKit::Theme::instance()->defaultDesktopStyle()->draw("button", feature,
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("button", feature,
         painter);
   }
 }
 
 StylePtr Button::style() const
 {
-  return UIKit::Theme::instance()->defaultDesktopStyle();
+  return UIKit::Theme::style();
 }
 
 void Button::setSize(const QSize &size)

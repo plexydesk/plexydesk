@@ -16,59 +16,27 @@ namespace UIKit
 class DECL_UI_KIT_EXPORT Theme : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(QString themeName READ QString WRITE setThemeName)
+  Q_PROPERTY(QString themeName READ QString WRITE set_theme_name)
 
 public:
   Theme(const QString &themeName, QObject *a_parent_ptr = 0);
-
   virtual ~Theme();
-
-  void setThemeName(const QString &name);
-
-  QStringList desktopWidgets() const;
-
-  QString desktopBackgroundController() const;
-
-  QRectF widgetPos(const QString &name, const QRectF &screen_rect);
-
-  QRectF backgroundPos(const QString &name, const QRectF &screen_rect);
-
-  QString desktopSessionData() const;
-
-  void commitSessionData(const QString &data);
-
-  QPixmap drawable(const QString &fileName, const QString &resoution);
-
-  StylePtr defaultDesktopStyle();
-
-  static StylePtr style();
 
   static Theme *instance();
 
+  virtual void set_theme_name(const QString &name);
+
+  static StylePtr style();
   static QPixmap icon(const QString &name, const QString &resolution);
 
-  void requestNoteSideImageFromWebService(const QString &key);
-
-  void requestPhotoSizes(const QString &photoID);
-
-public Q_SLOTS:
-  void onImageReadyJson(const QString &fileName);
-  void onImageSaveReadyJson();
-  void onImageReady();
-  void onDownloadCompleteJson(QuetzalSocialKit::WebService *service);
-  void onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service);
-  void onServiceCompleteJson(QuetzalSocialKit::WebService *service);
-
-Q_SIGNALS:
-  void ready();
-  void imageSearchDone(const QImage &pixmap);
-
+  virtual QPixmap drawable(const QString &fileName, const QString &resoution);
 private:
-  void scanThemepackPrefix();
-  int toScreenValue(const QString &val, int max_distance);
+  void scane_resources();
+  StylePtr default_desktop_style();
 
   class ThemepackLoaderPrivate;
   ThemepackLoaderPrivate *const d;
+
   static Theme *s_theme_instance;
 };
 
