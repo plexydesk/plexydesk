@@ -120,10 +120,9 @@ public:
 
   RenderLevel m_current_layer_type;
   QString m_widget_name;
-  QRectF m_minized_view_geometry;
-  ViewController *m_widget_controller;
-
   unsigned int mWidgetID;
+
+  ViewController *m_widget_controller;
 
   std::function<void (InputEvent type, const Widget *ptr)> mEventCallback;
 };
@@ -135,7 +134,6 @@ Widget::Widget(QGraphicsObject *parent)
 {
   d->m_widget_name = QLatin1String("Widget");
   d->m_current_layer_type = kRenderAtForgroundLevel;
-  d->m_minized_view_geometry = QRectF(0.0, 0.0, 64, 64);
 
   setCacheMode(DeviceCoordinateCache);
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -179,13 +177,6 @@ QVariant Widget::styleAttribute(const QString &aKey)
 {
   return d->mStyleAttributeMap[aKey];
 }
-
-void Widget::setMinimizedGeometry(const QRectF &rect)
-{
-  d->m_minized_view_geometry = rect;
-}
-
-QRectF Widget::minimizedGeometry() const { return d->m_minized_view_geometry; }
 
 void Widget::setLabelName(const QString &name) { d->m_widget_name = name; }
 

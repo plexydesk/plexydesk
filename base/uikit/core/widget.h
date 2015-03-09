@@ -37,11 +37,6 @@ class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
   public QGraphicsLayoutItem
 {
   Q_OBJECT
-
-  Q_ENUMS(RenderLevel)
-  Q_ENUMS(WidgetFlags)
-  //Q_PROPERTY(QPointF pos READ pos WRITE setPos)
-
   Q_INTERFACES(QGraphicsLayoutItem)
 public:
   typedef enum {
@@ -68,8 +63,6 @@ public:
 
   void setGeometry(const QRectF &rect);
   virtual QRectF boundingRect() const;
-  virtual void setMinimizedGeometry(const QRectF &rect);
-  virtual QRectF minimizedGeometry() const;
 
   virtual void setController(ViewController *view_controller);
   virtual ViewController *controller() const;

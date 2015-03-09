@@ -29,7 +29,6 @@ void PhotoWidget::setContentImage(const QPixmap &pixmap)
   pixmapRect.setWidth(geometry().width());
   setGeometry(pixmapRect);
 
-  setMinimizedGeometry(scaledDockRect(mContentPixmap));
   mValid = 1;
   update();
 }
