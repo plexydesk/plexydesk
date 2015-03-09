@@ -158,36 +158,36 @@ QRectF Widget::boundingRect() const
   return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
 }
 
-void Widget::setWindowFlag(int flags, bool enable)
+void Widget::set_widget_flag(int a_flags, bool a_enable)
 {
 }
 
-void Widget::onInputEvent(
-  std::function<void (InputEvent, const Widget *)> aCallback)
+void Widget::on_input_event(std::function<void (InputEvent,
+                                                const Widget *)> a_callback)
 {
-  d->mEventCallback = aCallback;
+  d->mEventCallback = a_callback;
 }
 
-void Widget::setStyleAttribute(const QString &aKey, QVariant aData)
+void Widget::set_style_attribute(const QString &a_key, QVariant a_data)
 {
-  d->mStyleAttributeMap[aKey] = aData;
+  d->mStyleAttributeMap[a_key] = a_data;
 }
 
-QVariant Widget::styleAttribute(const QString &aKey)
+QVariant Widget::style_attribute(const QString &aKey)
 {
   return d->mStyleAttributeMap[aKey];
 }
 
-void Widget::setLabelName(const QString &name) { d->m_widget_name = name; }
+void Widget::set_widget_name(const QString &a_name) { d->m_widget_name = a_name; }
 
 QString Widget::label() const { return d->m_widget_name; }
 
-void Widget::setWidgetID(unsigned int aID)
+void Widget::set_widget_id(unsigned int a_id)
 {
-  d->mWidgetID = aID;
+  d->mWidgetID = a_id;
 }
 
-unsigned Widget::widgetID() const
+unsigned Widget::widget_id() const
 {
   return d->mWidgetID;
 }

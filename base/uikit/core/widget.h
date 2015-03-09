@@ -61,50 +61,51 @@ public:
   Widget(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Widget();
 
-  void setGeometry(const QRectF &rect);
+  void setGeometry(const QRectF &a_rect);
   virtual QRectF boundingRect() const;
 
-  virtual void setController(ViewController *view_controller);
+  virtual void set_controller(ViewController *a_view_controller_ptr);
   virtual ViewController *controller() const;
 
-  virtual void setLabelName(const QString &name);
+  virtual void set_widget_name(const QString &a_name);
   virtual QString label() const;
 
-  virtual void setWidgetID(unsigned int aID);
-  virtual unsigned widgetID() const;
+  virtual void set_widget_id(unsigned int a_id);
+  virtual unsigned widget_id() const;
 
   virtual StylePtr style() const;
 
-  virtual RenderLevel layerType() const;
-  virtual void setLayerType(RenderLevel level) const;
+  virtual RenderLevel layer_type() const;
+  virtual void set_layer_type(RenderLevel a_level) const;
 
-  virtual void setWindowFlag(int flags, bool enable = true);
+  virtual void set_widget_flag(int a_flags, bool a_enable = true);
 
-  virtual void onInputEvent(
-    std::function<void (InputEvent type, const Widget *ptr)> aCallback);
+  virtual void on_input_event(
+    std::function<void (InputEvent a_type,
+                        const Widget *a_widget_ptr)> a_callback);
 
-  virtual void setStyleAttribute(const QString &aKey, QVariant aData);
-  virtual QVariant styleAttribute(const QString &aKey);
+  virtual void set_style_attribute(const QString &a_key, QVariant a_data);
+  virtual QVariant style_attribute(const QString &a_key);
 
 Q_SIGNALS:
   void clicked();
   void focusLost();
 
 protected:
-  virtual void paint_view(QPainter *painter, const QRectF &rect);
-  virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                     QWidget *widget = 0);
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
+  virtual void paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
+                     QWidget *a_widget_ptr = 0);
 
-  virtual QSizeF sizeHint(Qt::SizeHint which,
-                          const QSizeF &constraint = QSizeF()) const;
+  virtual QSizeF sizeHint(Qt::SizeHint a_which,
+                          const QSizeF &a_constraint = QSizeF()) const;
 
-  virtual void focusOutEvent(QFocusEvent *event);
-  virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+  virtual void focusOutEvent(QFocusEvent *a_event_ptr);
+  virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
 
-  virtual float scaleFactorForWidth() const;
-  virtual float scaleFactorForHeight() const;
-  virtual void setChildWidetVisibility(bool show);
+  virtual float scale_factor_for_width() const;
+  virtual float scale_factor_for_height() const;
+  virtual void set_child_widet_visibility(bool a_visibility);
 private:
   class PrivateAbstractDesktopWidget;
   PrivateAbstractDesktopWidget *const d;
