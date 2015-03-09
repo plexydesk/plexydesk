@@ -11,7 +11,7 @@ public:
 PhotoWidget::PhotoWidget(QGraphicsObject *parent)
   : UIKit::Widget(parent), d(new PrivatePhotoFrame)
 {
-  setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
+  set_widget_flag(UIKit::Widget::kRenderDropShadow, true);
   mValid = 0;
 }
 

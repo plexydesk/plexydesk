@@ -61,14 +61,14 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   d->mFrame->setVisible(true);
   setGeometry(window_geometry);
 
-  d->mFrame->setLabelName("Message Dialog");
+  d->mFrame->set_widget_name("Message Dialog");
 
   if (hasAttribute("title")) {
   }
 
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground);
-  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
+  d->mFrame->set_widget_flag(UIKit::Widget::kRenderBackground);
+  d->mFrame->set_widget_flag(UIKit::Widget::kConvertToWindowType);
+  d->mFrame->set_widget_flag(UIKit::Widget::kRenderDropShadow);
 
   d->mLayoutBase = new QGraphicsWidget(0);
   d->mLayoutBase->setParentItem(d->mFrame);

@@ -85,8 +85,8 @@ void BackgroundController::init()
 
   d->m_background_render_item = new ClassicBackgroundRender(
     QRectF(0.0, 0.0, 0.0, 0.0), 0, QImage(wallpaperPath));
-  d->m_background_render_item->setController(this);
-  d->m_background_render_item->setLabelName("classic Backdrop");
+  d->m_background_render_item->set_controller(this);
+  d->m_background_render_item->set_widget_name("classic Backdrop");
   /*
   d->m_background_render_item->setLayerType(
       UI::UIWidget::kRenderAtBackgroundLevel);

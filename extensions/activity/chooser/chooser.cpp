@@ -198,7 +198,7 @@ Widget *Action::createActionItem(const QString &aIcon,
   UIKit::ImageView *l_image_view = new UIKit::ImageView(l_rv);
   UIKit::Label *l_action_label = new UIKit::Label(l_rv);
   l_action_label->setLabel(aLabel);
-  l_action_label->setLabelName(aLabel);
+  l_action_label->set_widget_name(aLabel);
 
   QPixmap l_view_pixmap(UIKit::Theme::instance()->drawable(
                           aIcon, "hdpi"));
@@ -218,7 +218,7 @@ Widget *Action::createActionItem(const QString &aIcon,
 
   l_rv->setMinimumSize(l_action_item_size);
 
-  l_image_view->onInputEvent([this](UIKit::Widget::InputEvent aEvent,
+  l_image_view->on_input_event([this](UIKit::Widget::InputEvent aEvent,
   const Widget * aWidget) {
     if (aEvent == UIKit::Widget::kMouseReleaseEvent) {
       if (m_action_handler) {

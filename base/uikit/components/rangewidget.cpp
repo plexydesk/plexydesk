@@ -26,9 +26,9 @@ public:
 RangeWidget::RangeWidget(QGraphicsObject *parent)
   : UIKit::Widget(parent), d(new PrivateRangeWidget)
 {
-  this->setWindowFlag(UIKit::Widget::kRenderBackground);
-  this->setWindowFlag(UIKit::Widget::kConvertToWindowType, false);
-  this->setWindowFlag(UIKit::Widget::kRenderDropShadow, false);
+  this->set_widget_flag(UIKit::Widget::kRenderBackground);
+  this->set_widget_flag(UIKit::Widget::kConvertToWindowType, false);
+  this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsSelectable, true);
 

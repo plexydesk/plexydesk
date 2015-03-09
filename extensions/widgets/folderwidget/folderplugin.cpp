@@ -37,16 +37,12 @@ DirectoryController::DirectoryController(QObject *object)
 
   UIKit::Widget *parent = new UIKit::Widget();
 
-  parent->setWindowFlag(UIKit::Widget::kRenderBackground);
-  parent->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  parent->setWindowFlag(UIKit::Widget::kRenderDropShadow);
-
   IconWidgetView *view = new IconWidgetView(parent);
   view->setPos(0.0, 64.0);
 
   view->setDirectoryPath(QDir::homePath());
-  view->setController(this);
-  parent->setLabelName("Home");
+  view->set_controller(this);
+  parent->set_widget_name("Home");
 
   QFileInfo info(
     QDir::toNativeSeparators(QDir::homePath() + QLatin1String("/Desktop/")));
@@ -94,7 +90,7 @@ void DirectoryController::requestAction(const QString &actionName,
     IconWidgetView *view = new IconWidgetView(parent);
 
     view->setDirectoryPath(args["path"].toString());
-    view->setController(this);
+    view->set_controller(this);
 
     QFileInfo info(args["path"].toString());
 

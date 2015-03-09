@@ -73,7 +73,7 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   d->m_main_panel_is_hidden = true;
   // navigation
   d->m_navigation_dock = new UIKit::ToolBar();
-  d->m_navigation_dock->setController(this);
+  d->m_navigation_dock->set_controller(this);
   d->m_navigation_dock->setOrientation(Qt::Vertical);
   d->m_navigation_dock->setIconResolution("mdpi");
   d->m_navigation_dock->setIconSize(QSize(32, 32));
@@ -427,11 +427,11 @@ void DockControllerImpl::onActivityAnimationFinished()
     qobject_cast<UIKit::Widget *>(activity->window());
 
   if (_activity_widget) {
-    _activity_widget->setWindowFlag(UIKit::Widget::kRenderDropShadow,
+    _activity_widget->set_widget_flag(UIKit::Widget::kRenderDropShadow,
                                     false);
-    _activity_widget->setWindowFlag(UIKit::Widget::kConvertToWindowType,
+    _activity_widget->set_widget_flag(UIKit::Widget::kConvertToWindowType,
                                     false);
-    _activity_widget->setWindowFlag(UIKit::Widget::kRenderBackground, true);
+    _activity_widget->set_widget_flag(UIKit::Widget::kRenderBackground, true);
     _activity_widget->setFlag(QGraphicsItem::ItemIsMovable, false);
     _activity_widget->setPos(QPoint());
   }

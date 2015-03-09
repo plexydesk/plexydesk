@@ -56,8 +56,8 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   d->mProxyWidget->setPos(0.0, 0.0);
 
   d->mTextScaleFactor = 1.0;
-  setWindowFlag(UIKit::Widget::kRenderDropShadow, false);
-  setWindowFlag(UIKit::Widget::kRenderBackground, false);
+  set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
+  set_widget_flag(UIKit::Widget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
   connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(onTextUpdated()));

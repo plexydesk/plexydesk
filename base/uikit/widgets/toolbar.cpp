@@ -62,7 +62,7 @@ void ToolBar::addAction(const QString &lable, const QString &icon,
   button->setGeometry(QRectF(QPointF(), d->m_icon_size));
   button->setMinimumSize(d->m_icon_size);
 
-  button->onInputEvent([this](Widget::InputEvent aEventType,
+  button->on_input_event([this](Widget::InputEvent aEventType,
   const Widget * aWidget) {
     if (aEventType == kMouseReleaseEvent) {
       toolButtonPressHandler(aWidget);

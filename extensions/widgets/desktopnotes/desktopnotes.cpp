@@ -113,7 +113,7 @@ void DesktopNotesControllerImpl::createNoteUI()
 
   NoteWidget *note = new NoteWidget(window);
   note->resize(QSizeF(320, 320));
-  note->setController(this);
+  note->set_controller(this);
   note->setViewport(viewport());
 
   window->setGeometry(note->geometry());
@@ -132,7 +132,7 @@ void DesktopNotesControllerImpl::createReminderUI()
   UIKit::Window *window = new UIKit::Window();
 
   ReminderWidget *reminder = new ReminderWidget(window);
-  reminder->setController(this);
+  reminder->set_controller(this);
 
   window->setGeometry(reminder->geometry());
   window->set_window_title("Reminder");

@@ -40,7 +40,7 @@ public:
 
 Window::Window(QGraphicsObject *parent) : Widget(parent), m_priv_impl(new PrivateWindow)
 {
-  setWindowFlag(Widget::kRenderBackground, true);
+  set_widget_flag(Widget::kRenderBackground, true);
   setFlag(QGraphicsItem::ItemIsMovable, true);
   setGeometry(QRectF(0, 0, 400, 400));
   set_window_title("");
@@ -53,14 +53,14 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), m_priv_impl(new Privat
 
   setFocus(Qt::MouseFocusReason);
 
-  onInputEvent([this](Widget::InputEvent aEvent, const Widget * aWidget) {
+  on_input_event([this](Widget::InputEvent aEvent, const Widget * aWidget) {
     if (aEvent == Widget::kFocusOutEvent &&
         m_priv_impl->m_window_type == kPopupWindow) {
       hide();
     }
   });
 
-  m_priv_impl->m_window_close_button->onInputEvent([this](Widget::InputEvent aEvent,
+  m_priv_impl->m_window_close_button->on_input_event([this](Widget::InputEvent aEvent,
   const Widget * aWidget) {
     if (aEvent == Widget::kMouseReleaseEvent) {
       if (m_priv_impl->m_window_close_callback) {
