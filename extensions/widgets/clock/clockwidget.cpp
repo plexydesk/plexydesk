@@ -34,7 +34,7 @@
 
 ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
 {
-  setLabelName("Clock");
+  set_widget_name("Clock");
 }
 
 void ClockWidget::updateTime(const QVariantMap &data)

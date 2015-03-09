@@ -40,9 +40,9 @@ ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
   connect(mTimer, SIGNAL(timeout()), this, SLOT(updateNow()));
   mTimer->start(1000);
 
-  setWindowFlag(Widget::kRenderDropShadow, false);
+  set_widget_flag(Widget::kRenderDropShadow, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
-  setLabelName("Clock");
+  set_widget_name("Clock");
   updateNow();
 }
 

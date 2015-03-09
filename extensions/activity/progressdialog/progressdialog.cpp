@@ -54,10 +54,10 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   d->mFrame = new UIKit::Window();
   setGeometry(window_geometry);
 
-  d->mFrame->setLabelName("Progress Dialog");
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground, true);
-  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
+  d->mFrame->set_widget_name("Progress Dialog");
+  d->mFrame->set_widget_flag(UIKit::Widget::kRenderBackground, true);
+  d->mFrame->set_widget_flag(UIKit::Widget::kConvertToWindowType, true);
+  d->mFrame->set_widget_flag(UIKit::Widget::kRenderDropShadow, true);
 
   d->m_task_completed = 0;
 

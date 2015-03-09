@@ -85,11 +85,11 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(geometry());
   d->mFrame->setVisible(true);
-  d->mFrame->setLabelName("Message Dialog");
+  d->mFrame->set_widget_name("Message Dialog");
 
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderBackground);
-  d->mFrame->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  d->mFrame->setWindowFlag(UIKit::Widget::kRenderDropShadow);
+  d->mFrame->set_widget_flag(UIKit::Widget::kRenderBackground);
+  d->mFrame->set_widget_flag(UIKit::Widget::kConvertToWindowType);
+  d->mFrame->set_widget_flag(UIKit::Widget::kRenderDropShadow);
 
   d->mBackgroundEffect = new QGraphicsBlurEffect(this);
   d->mBackgroundEffect->setBlurHints(QGraphicsBlurEffect::PerformanceHint);

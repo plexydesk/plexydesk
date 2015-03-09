@@ -41,9 +41,9 @@ void TemplateActivity::createWindow(const QRectF &window_geometry,
 {
   d->m_main_window = new UIKit::Window();
 
-  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderBackground);
-  d->m_main_window->setWindowFlag(UIKit::Widget::kConvertToWindowType);
-  d->m_main_window->setWindowFlag(UIKit::Widget::kRenderDropShadow);
+  d->m_main_window->set_widget_flag(UIKit::Widget::kRenderBackground);
+  d->m_main_window->set_widget_flag(UIKit::Widget::kConvertToWindowType);
+  d->m_main_window->set_widget_flag(UIKit::Widget::kRenderDropShadow);
 
   setGeometry(window_geometry);
   updateContentGeometry(d->m_main_window);

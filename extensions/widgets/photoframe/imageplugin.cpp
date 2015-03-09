@@ -67,17 +67,15 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
     PhotoWidget *photoWidget = new PhotoWidget();
     window->set_window_content(photoWidget);
 
-    photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
-    photoWidget->setController(this);
-    photoWidget->setLabelName("Photo");
+    photoWidget->set_controller(this);
+    photoWidget->set_widget_name("Photo");
     mPhotoList.append(photoWidget);
     photoWidget->setPhotoURL(str);
 
     m_current_url_list << str;
 
     QFileInfo info(str);
-    photoWidget->setLabelName(info.baseName());
+    photoWidget->set_widget_name(info.baseName());
 
     QPixmap image(str);
 
@@ -103,7 +101,7 @@ void PhotoFrameController::handleDropEvent(UIKit::Widget *widget,
     if (!info.isDir() && !droppedPixmap.isNull() && handler) {
       handler->setContentImage(droppedPixmap);
       handler->setPhotoURL(droppedFile);
-      handler->setLabelName(info.baseName());
+      handler->set_widget_name(info.baseName());
 
       if (!m_current_url_list.contains(droppedFile)) {
         m_current_url_list << droppedFile;
@@ -175,10 +173,8 @@ void PhotoFrameController::requestAction(const QString &actionName,
 
     window->set_window_content(photoWidget);
 
-    photoWidget->setWindowFlag(UIKit::Widget::kRenderDropShadow, true);
-    photoWidget->setWindowFlag(UIKit::Widget::kConvertToWindowType, true);
-    photoWidget->setController(this);
-    photoWidget->setLabelName("Photo");
+    photoWidget->set_controller(this);
+    photoWidget->set_widget_name("Photo");
     mPhotoList.append(photoWidget);
     photoWidget->setPhotoURL(QString("ID:%1").arg(mPhotoList.count()));
 

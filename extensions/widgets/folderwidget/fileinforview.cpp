@@ -64,7 +64,7 @@ FileInforView::FileInforView(QGraphicsObject *parent)
   : UIKit::Widget(parent), d(new PrivateFileInforView)
 {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setWindowFlag(UIKit::Widget::kRenderDropShadow, false);
+  this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
 
   d->mSlideAnimation = new QPropertyAnimation(this, "pos");
   d->mSlideAnimation->setDuration(500);

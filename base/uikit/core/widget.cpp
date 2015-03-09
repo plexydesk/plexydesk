@@ -206,44 +206,44 @@ StylePtr Widget::style() const
   return Theme::style();
 }
 
-Widget::RenderLevel Widget::layerType() const
+Widget::RenderLevel Widget::layer_type() const
 {
   return d->m_current_layer_type;
 }
 
-void Widget::setLayerType(RenderLevel level) const
+void Widget::set_layer_type(RenderLevel a_level) const
 {
-  d->m_current_layer_type = level;
+  d->m_current_layer_type = a_level;
 }
 
-void Widget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+void Widget::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
                    QWidget * /*widget*/)
 {
-  if (!painter->isActive()) {
+  if (!a_painter_ptr->isActive()) {
     return;
   }
   if (isObscured()) {
     return;
   }
 
-  painter->setClipRect(boundingRect());
-  paint_view(painter, boundingRect());
+  a_painter_ptr->setClipRect(boundingRect());
+  paint_view(a_painter_ptr, boundingRect());
 }
 
-void Widget::setGeometry(const QRectF &rect)
+void Widget::setGeometry(const QRectF &a_rect)
 {
   // d->m_content_geometry = rect;
   prepareGeometryChange();
-  QGraphicsLayoutItem::setGeometry(rect);
-  setPos(rect.topLeft());
+  QGraphicsLayoutItem::setGeometry(a_rect);
+  setPos(a_rect.topLeft());
 }
 
-QSizeF Widget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF Widget::sizeHint(Qt::SizeHint a_which, const QSizeF &a_constraint) const
 {
   // todo: ignoreing which for now. we will return based on
   // return geometry().size();
   QSizeF sh;
-  switch (which) {
+  switch (a_which) {
   case Qt::MinimumSize:
     sh = QSizeF(0, 0);
     break;
@@ -261,7 +261,7 @@ QSizeF Widget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
   return sh;
 }
 
-void Widget::paint_view(QPainter *painter, const QRectF &rect)
+void Widget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect)
 {
   /*
   StyleFeatures feature;
@@ -274,7 +274,7 @@ void Widget::paint_view(QPainter *painter, const QRectF &rect)
 
 }
 
-void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   //todo : check why mouse release events are not called.
   //https://github.com/plexydesk/plexydesk/issues/7
@@ -286,7 +286,7 @@ void Widget::mousePressEvent(QGraphicsSceneMouseEvent *event)
   //QGraphicsObject::mousePressEvent(event);
 }
 
-void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   qDebug() << Q_FUNC_INFO << metaObject()->className();
   if (d->mEventCallback) {
@@ -307,26 +307,26 @@ void Widget::focusOutEvent(QFocusEvent *event)
   QGraphicsObject::focusOutEvent(event);
 }
 
-float Widget::scaleFactorForWidth() const
+float Widget::scale_factor_for_width() const
 {
   return geometry().width() / boundingRect().width();
 }
 
-float Widget::scaleFactorForHeight() const
+float Widget::scale_factor_for_height() const
 {
   return geometry().height() / boundingRect().height();
 }
 
-void Widget::setChildWidetVisibility(bool show)
+void Widget::set_child_widet_visibility(bool a_visibility)
 {
   Q_FOREACH(QGraphicsItem * item, this->childItems()) {
-    (show) ? item->show() : item->hide();
+    (a_visibility) ? item->show() : item->hide();
   }
 }
 
-void Widget::setController(ViewController *view_controller)
+void Widget::set_controller(ViewController *a_view_controller_ptr)
 {
-  d->m_widget_controller = view_controller;
+  d->m_widget_controller = a_view_controller_ptr;
 }
 
 ViewController *Widget::controller() const

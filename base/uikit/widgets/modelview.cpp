@@ -63,7 +63,7 @@ ModelView::~ModelView()
 
 void ModelView::insert_to_list_view(Widget *widget)
 {
-  widget->setWidgetID(d->m_list_layout->count());
+  widget->set_widget_id(d->m_list_layout->count());
 
   d->m_list_layout->addItem(widget);
   d->m_list_layout->updateGeometry();
@@ -78,7 +78,7 @@ void ModelView::insert_to_grid_view(Widget *widget)
     return;
   }
 
-  widget->setWidgetID(d->m_grid_layout->count());
+  widget->set_widget_id(d->m_grid_layout->count());
 
   int l_item_per_row =
     d->m_viewport_geometry.width() /
@@ -103,10 +103,10 @@ void ModelView::insert(Widget *widget)
   widget->setParentItem(d->m_scroll_frame);
   widget->setParent(d->m_scroll_frame);
 
-  widget->onInputEvent([this](int type, const Widget * widget) {
+  widget->on_input_event([this](int type, const Widget * widget) {
     if (type == Widget::kMouseReleaseEvent) {
       if (d->m_activation_handler) {
-        d->m_activation_handler(widget->widgetID());
+        d->m_activation_handler(widget->widget_id());
       }
     }
   });
