@@ -23,6 +23,8 @@
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
+#include <functional>
+
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 

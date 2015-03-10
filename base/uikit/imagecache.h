@@ -21,11 +21,13 @@
 #ifndef IMAGE_CACHE_H
 #define IMAGE_CACHE_H
 
-#include <QtCore/QObject>
-#include <QtGui/QPainter>
-
 #include <plexy.h>
 #include <plexyconfig.h>
+
+#include <functional>
+
+#include <QObject>
+#include <QPainter>
 
 #include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
