@@ -46,7 +46,7 @@ TimeZoneActivity::TimeZoneActivity(QGraphicsObject *aParent)
 
 TimeZoneActivity::~TimeZoneActivity() { delete mPrivConstPtr; }
 
-void TimeZoneActivity::createWindow(const QRectF &aWindowGeometry,
+void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
                                     const QString &aWindowTitle,
                                     const QPointF &aWindowPos)
 {
@@ -61,12 +61,12 @@ void TimeZoneActivity::createWindow(const QRectF &aWindowGeometry,
   mPrivConstPtr->mWindowPtr->set_window_content(
     mPrivConstPtr->mTimeZoneBrowserPtr);
 
-  setGeometry(aWindowGeometry);
+  set_geometry(aWindowGeometry);
 
   exec(aWindowPos);
 
   mPrivConstPtr->mWindowPtr->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 
   mPrivConstPtr->loadTimeZones();
@@ -74,7 +74,7 @@ void TimeZoneActivity::createWindow(const QRectF &aWindowGeometry,
 
 QVariantMap TimeZoneActivity::result() const { return QVariantMap(); }
 
-void TimeZoneActivity::updateAttribute(const QString &aName,
+void TimeZoneActivity::update_attribute(const QString &aName,
                                        const QVariant &aVariantData) {}
 
 UIKit::Window *TimeZoneActivity::window() const { return mPrivConstPtr->mWindowPtr; }

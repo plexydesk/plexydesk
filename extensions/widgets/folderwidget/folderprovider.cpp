@@ -114,7 +114,7 @@ UIKit::DataSourcePtr FolderProvider::loadDataSourceEngine(
   const QString &engine)
 {
   QSharedPointer<UIKit::DataSource> dataSource =
-    UIKit::ExtensionManager::instance()->dataEngine(engine);
+    UIKit::ExtensionManager::instance()->data_engine(engine);
 
   // connect(d->mDataSource.data(), SIGNAL(ready()), this, SLOT(onReady()));
   d->mEngines[engine] = dataSource;

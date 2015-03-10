@@ -41,13 +41,13 @@ public:
 
   void init();
 
-  void revokeSession(const QVariantMap &args);
+  void revoke_session(const QVariantMap &args);
 
-  void setViewRect(const QRectF &rect);
+  void set_view_rect(const QRectF &rect);
 
   UIKit::ActionList actions() const;
 
-  void requestAction(const QString &actionName, const QVariantMap &args);
+  void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;
 
@@ -61,7 +61,7 @@ public:
 
   void toggleSeamless();
 
-  void prepareRemoval();
+  void prepare_removal();
 
 public Q_SLOTS:
 
@@ -88,7 +88,7 @@ private:
   class PrivateDock;
   PrivateDock *const d;
 
-  UIKit::DesktopActivityPtr createActivity(const QString &controllerName,
+  UIKit::DesktopActivityPtr createActivity(const QString &controller_name,
       const QString &activity,
       const QString &title,
       const QPoint &pos,

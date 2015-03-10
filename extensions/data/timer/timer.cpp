@@ -42,7 +42,7 @@ TimerData::~TimerData()
   delete d;
 }
 
-void TimerData::setArguments(QVariant arg) {}
+void TimerData::set_arguments(QVariant arg) {}
 
 QVariantMap TimerData::readAll()
 {
@@ -57,5 +57,5 @@ QVariantMap TimerData::readAll()
 
 void TimerData::timerEvent(QTimerEvent *event)
 {
-  Q_EMIT sourceUpdated(readAll());
+  Q_EMIT source_updated(readAll());
 }

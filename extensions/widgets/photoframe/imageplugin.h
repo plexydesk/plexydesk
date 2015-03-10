@@ -36,21 +36,21 @@ public:
 
   void init();
 
-  virtual void revokeSession(const QVariantMap &args);
+  virtual void revoke_session(const QVariantMap &args);
 
-  virtual void handleDropEvent(UIKit::Widget *widget, QDropEvent *event);
+  virtual void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
 
-  virtual void setViewRect(const QRectF &rect);
+  virtual void set_view_rect(const QRectF &rect);
 
-  bool removeWidget(UIKit::Widget *widget);
+  bool remove_widget(UIKit::Widget *widget);
 
   UIKit::ActionList actions() const;
 
-  void requestAction(const QString &actionName, const QVariantMap &args);
+  void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;
 
-  void prepareRemoval();
+  void prepare_removal();
 
 private:
   PhotoWidget *mFrameParentitem;

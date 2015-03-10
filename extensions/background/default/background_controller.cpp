@@ -100,7 +100,7 @@ void BackgroundController::init()
   insert(d->m_background_render_item);
 }
 
-void BackgroundController::revokeSession(const QVariantMap &args)
+void BackgroundController::revoke_session(const QVariantMap &args)
 {
   QUrl backgroundUrl = args["background"].toString();
   QString mode = args["mode"].toString();
@@ -163,7 +163,7 @@ void BackgroundController::createSeamlessDesktop()
       !(d->m_background_render_item->isSeamlessModeSet()));
 }
 
-void BackgroundController::requestAction(const QString &actionName,
+void BackgroundController::request_action(const QString &actionName,
     const QVariantMap &data)
 {
   if (actionName == tr("Adjust")) {
@@ -177,7 +177,7 @@ void BackgroundController::requestAction(const QString &actionName,
   } else if (actionName == tr("Seamless")) {
     createSeamlessDesktop();
   } else if (actionName == tr("Change Background")) {
-    revokeSession(data);
+    revoke_session(data);
     saveSession("background", QVariant(data["background"].toString()));
   } else if (actionName == tr("Fit Height")) {
   }
@@ -220,7 +220,7 @@ void BackgroundController::setScaleMode(
   }
 }
 
-void BackgroundController::handleDropEvent(UIKit::Widget * /*widget*/,
+void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
     QDropEvent *event)
 {
   qDebug() << Q_FUNC_INFO;
@@ -260,14 +260,14 @@ void BackgroundController::handleDropEvent(UIKit::Widget * /*widget*/,
       if (viewport()) {
         UIKit::Space *space = viewport();
         if (space)
-          space->update_session_value(controllerName(), "background",
+          space->update_session_value(controller_name(), "background",
                                       fileUrl.toString());
       }
     }
   }
 }
 
-void BackgroundController::setViewRect(const QRectF &rect)
+void BackgroundController::set_view_rect(const QRectF &rect)
 {
   if (d->m_background_render_item) {
     d->m_background_render_item->setBackgroundGeometry(rect);
@@ -340,11 +340,11 @@ void BackgroundController::onImageSaveReady()
 
     if (viewport()) {
       if (!c->offline()) {
-        viewport()->update_session_value(controllerName(), "background",
+        viewport()->update_session_value(controller_name(), "background",
                                          c->metaData()["url"].toString());
       } else {
         viewport()->update_session_value(
-          controllerName(), "background",
+          controller_name(), "background",
           QDir::toNativeSeparators("file://" + c->imagePath()));
       }
     }
@@ -408,7 +408,7 @@ void BackgroundController::configure(const QPointF &pos)
                               QRectF(0, 0, 330, 192), data);
 }
 
-void BackgroundController::prepareRemoval()
+void BackgroundController::prepare_removal()
 {
 }
 
@@ -439,7 +439,7 @@ void BackgroundController::onWallpaperActivityFinished()
     if (activity) {
       QVariantMap resultData = activity->result();
 
-      revokeSession(resultData);
+      revoke_session(resultData);
       saveSession("background", QVariant(resultData["background"].toString()));
     }
   }
@@ -454,7 +454,7 @@ void BackgroundController::onSearchFinished()
     if (activity) {
       QVariantMap resultData = activity->result();
       qDebug() << Q_FUNC_INFO << resultData;
-      revokeSession(resultData);
+      revoke_session(resultData);
     }
   }
 }
@@ -499,7 +499,7 @@ void BackgroundController::createModeActivity(const QString &activity,
                                      viewport()->center(_view_geometry),
                                      _view_geometry,
                                      data);
-  intent->setController(viewport()->controller("classicbackdrop"));
+  intent->set_controller(viewport()->controller("classicbackdrop"));
 }
 
 void BackgroundController::createWallpaperActivity(const QString &activity,
@@ -515,7 +515,7 @@ void BackgroundController::createWallpaperActivity(const QString &activity,
                                 viewport()->center(_view_geometry),
                                 _view_geometry,
                                 data);
-  intent->setController(viewport()->controller("classicbackdrop"));
+  intent->set_controller(viewport()->controller("classicbackdrop"));
 }
 
 void BackgroundController::createSearchActivity(const QString &activity,
@@ -531,7 +531,7 @@ void BackgroundController::createSearchActivity(const QString &activity,
                                 viewport()->center(_activity_geometry),
                                 _activity_geometry,
                                 data);
-  intent->setController(viewport()->controller("classicbackdrop"));
+  intent->set_controller(viewport()->controller("classicbackdrop"));
 }
 
 void BackgroundController::saveSession(const QString &key,
@@ -540,7 +540,7 @@ void BackgroundController::saveSession(const QString &key,
   UIKit::Space *view = viewport();
 
   if (view) {
-    view->update_session_value(controllerName(), key, value.toString());
+    view->update_session_value(controller_name(), key, value.toString());
   }
 }
 

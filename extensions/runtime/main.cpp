@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   // runner.connectToDataSource(args[0]);
   runner.loadtest(args[0]);
 
-  loader->destroyInstance();
+  loader->destroy_instance();
 
   return app.exec();
 }

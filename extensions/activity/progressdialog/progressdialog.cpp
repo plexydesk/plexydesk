@@ -44,7 +44,7 @@ ProgressDialogActivity::~ProgressDialogActivity()
   delete d;
 }
 
-void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
+void ProgressDialogActivity::create_window(const QRectF &window_geometry,
     const QString &window_title,
     const QPointF &window_pos)
 {
@@ -52,7 +52,7 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   qDebug() << Q_FUNC_INFO << window_pos;
 
   d->mFrame = new UIKit::Window();
-  setGeometry(window_geometry);
+  set_geometry(window_geometry);
 
   d->mFrame->set_widget_name("Progress Dialog");
   d->mFrame->set_widget_flag(UIKit::Widget::kRenderBackground, true);
@@ -67,11 +67,11 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   d->mMax = 100.0;
   d->mMin = 0.0;
 
-  if (hasAttribute("max")) {
+  if (has_attribute("max")) {
     d->mMax = attributes()["max"].toFloat();
   }
 
-  if (hasAttribute("min")) {
+  if (has_attribute("min")) {
     d->mMin = attributes()["min"].toFloat();
   }
 
@@ -82,19 +82,19 @@ void ProgressDialogActivity::createWindow(const QRectF &window_geometry,
   d->m_progress_bar_widget->setPos(5.0, 64.0);
   d->m_progress_bar_widget->show();
 
-  updateContentGeometry(d->mFrame);
+  update_content_geometry(d->mFrame);
   exec(window_pos);
 
-  showActivity();
+  show_activity();
 
   d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 
 QVariantMap ProgressDialogActivity::result() const { return QVariantMap(); }
 
-void ProgressDialogActivity::updateAttribute(const QString &name,
+void ProgressDialogActivity::update_attribute(const QString &name,
     const QVariant &data)
 {
   if (!d->mFrame) {
@@ -112,7 +112,7 @@ void ProgressDialogActivity::updateAttribute(const QString &name,
   }
 
   if (d->mMax == progress) {
-    discardActivity();
+    discard_activity();
   }
 }
 
@@ -129,7 +129,7 @@ void ProgressDialogActivity::cleanup()
 void ProgressDialogActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
+  discard_activity();
 }
 
 void ProgressDialogActivity::onHideAnimationFinished()

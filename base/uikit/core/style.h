@@ -36,14 +36,14 @@ public:
 
   virtual ~Style();
 
-  virtual QVariant attrbute(const QString &type, const QString &name) const;
+  virtual QVariant attribute(const QString &a_type, const QString &a_name) const;
 
-  virtual QVariantMap attributeMap(const QString &type) const = 0;
+  virtual QVariantMap attribute_map(const QString &a_type) const = 0;
 
-  virtual void draw(const QString &type,
-                    const StyleFeatures &options,
-                    QPainter *painter,
-                    const Widget *aWidget = 0) = 0;
+  virtual void draw(const QString &a_type,
+                    const StyleFeatures &a_options,
+                    QPainter *a_painter_ptr,
+                    const Widget *a_widget_ptr = 0) = 0;
 };
 }
 

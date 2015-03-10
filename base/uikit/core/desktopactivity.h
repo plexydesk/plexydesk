@@ -26,49 +26,49 @@ public:
   explicit DesktopActivity(QGraphicsObject *a_parent_ptr = 0);
   virtual ~DesktopActivity();
 
-  virtual void createWindow(const QRectF &window_geometry,
-                            const QString &window_title,
-                            const QPointF &window_pos) = 0;
+  virtual void create_window(const QRectF &a_window_geometry,
+                            const QString &a_window_title,
+                            const QPointF &a_window_pos) = 0;
   virtual Window *window() const = 0;
 
-  virtual void setActivityAttribute(const QString &name, const QVariant &data);
-  virtual void updateAttribute(const QString &name, const QVariant &data);
-  virtual bool hasAttribute(const QString &arg);
+  virtual void set_activity_attribute(const QString &a_name, const QVariant &a_data);
+  virtual void update_attribute(const QString &a_name, const QVariant &a_data);
+  virtual bool has_attribute(const QString &a_arg);
   virtual QVariantMap attributes() const;
 
-  virtual QString getErrorMessage() const;
+  virtual QString error_message() const;
   virtual QVariantMap result() const = 0;
 
-  virtual void exec(const QPointF &pos = QCursor::pos());
-  virtual void showActivity();
+  virtual void exec(const QPointF &a_pos = QCursor::pos());
+  virtual void show_activity();
   virtual void hide();
 
-  virtual void setController(const ViewControllerPtr &controller);
+  virtual void set_controller(const ViewControllerPtr &a_controller);
   virtual ViewControllerPtr controller() const;
 
-  virtual void setViewport(Space *viewport);
+  virtual void set_viewport(Space *a_viewport_ptr);
   virtual Space *viewport() const;
 
   virtual void cleanup() = 0;
 
-  virtual void onArgumentsUpdated(
+  virtual void on_arguments_updated(
     std::function<void ()> a_handler);
-  virtual void onActionCompleted(
-    std::function<void (const QVariantMap &result)> a_handler);
+  virtual void on_action_completed(
+    std::function<void (const QVariantMap &a_result)> a_handler);
 
 protected:
-  virtual void updateAction();
-  virtual void discardActivity();
+  virtual void update_action();
+  virtual void discard_activity();
   virtual QRectF geometry() const;
-  virtual void setGeometry(const QRectF &geometry);
-  virtual void updateContentGeometry(Widget *widget);
+  virtual void set_geometry(const QRectF &a_geometry);
+  virtual void update_content_geometry(Widget *a_widget_ptr);
 
 Q_SIGNALS:
   void finished();
   void canceled();
   void discarded();
   void resultsReady();
-  void attributeChanged();
+  void attribute_changed();
 
 private:
   class PrivateDesktopActivity;

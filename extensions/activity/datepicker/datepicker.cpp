@@ -50,14 +50,14 @@ DatePickerActivity::DatePickerActivity(QGraphicsObject *object)
 
 DatePickerActivity::~DatePickerActivity() { delete d; }
 
-void DatePickerActivity::createWindow(const QRectF &window_geometry,
+void DatePickerActivity::create_window(const QRectF &window_geometry,
                                       const QString &window_title,
                                       const QPointF &window_pos)
 {
   d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->set_window_title(window_title);
-  setGeometry(window_geometry);
+  set_geometry(window_geometry);
 
   d->mCalendarWidget = new CalendarWidget(d->mFrame);
   d->mCalendarWidget->setGeometry(window_geometry);
@@ -66,7 +66,7 @@ void DatePickerActivity::createWindow(const QRectF &window_geometry,
   exec(window_pos);
 
   d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 
@@ -86,7 +86,7 @@ void DatePickerActivity::cleanup()
 void DatePickerActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
+  discard_activity();
 }
 
 void DatePickerActivity::onHideAnimationFinished() { Q_EMIT finished(); }
@@ -109,5 +109,5 @@ void DatePickerActivity::onCalendarReady()
   }
 
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
+  discard_activity();
 }

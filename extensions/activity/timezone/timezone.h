@@ -36,14 +36,14 @@ public:
 
   virtual ~TimeZoneActivity();
 
-  void createWindow(const QRectF &aWindowGeometry,
+  void create_window(const QRectF &aWindowGeometry,
                     const QString &aWindowTitle,
                     const QPointF &aWindowPos);
   UIKit::Window *window() const;
   void cleanup();
 
   QVariantMap result() const;
-  virtual void updateAttribute(const QString &aName, const QVariant &aVariantData);
+  virtual void update_attribute(const QString &aName, const QVariant &aVariantData);
 
 private:
   class PrivateTimeZone;

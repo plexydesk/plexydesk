@@ -11,10 +11,10 @@ public:
   ~PrivateDataSource() {}
 };
 
-DataSource::DataSource(QObject *object)
-  : QObject(object), d(new PrivateDataSource) {}
+DataSource::DataSource(QObject *a_object_ptr)
+  : QObject(a_object_ptr), d(new PrivateDataSource) {}
 
 DataSource::~DataSource() { delete d; }
 
-void DataSource::requestData(QVariant args) { setArguments(args); }
+void DataSource::request_data(QVariant a_args) { set_arguments(a_args); }
 }

@@ -63,10 +63,10 @@ void DesktopClockActivity::createFrameWindow(const QRectF &window_geometry,
   d->mMainWindow = new UIKit::Window();
   d->mMainWindow->setGeometry(window_geometry);
 
-  setGeometry(window_geometry);
+  set_geometry(window_geometry);
 }
 
-void DesktopClockActivity::createWindow(const QRectF &window_geometry,
+void DesktopClockActivity::create_window(const QRectF &window_geometry,
                                         const QString &window_title,
                                         const QPointF &window_pos)
 {
@@ -128,7 +128,7 @@ void DesktopClockActivity::createWindow(const QRectF &window_geometry,
           SLOT(onToolBarAction(QString)));
 
   d->mMainWindow->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 

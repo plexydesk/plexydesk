@@ -33,7 +33,7 @@ TimePickerActivity::TimePickerActivity(QGraphicsObject *object)
 
 TimePickerActivity::~TimePickerActivity() { delete d; }
 
-void TimePickerActivity::createWindow(const QRectF &window_geometry,
+void TimePickerActivity::create_window(const QRectF &window_geometry,
                                       const QString &window_title,
                                       const QPointF &window_pos)
 {

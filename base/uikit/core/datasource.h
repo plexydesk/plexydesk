@@ -95,20 +95,20 @@ class DECL_UI_KIT_EXPORT DataSource : public QObject
   Q_OBJECT
 
 public:
-  DataSource(QObject *object = 0);
+  DataSource(QObject *a_object_ptr = 0);
 
   virtual ~DataSource();
 
   virtual QVariantMap readAll() = 0;
 
-  virtual void requestData(QVariant args);
+  virtual void request_data(QVariant a_args);
 
 public Q_SLOTS:
-  virtual void setArguments(QVariant args) = 0;
+  virtual void set_arguments(QVariant a_args) = 0;
 
 Q_SIGNALS:
   void ready();
-  void sourceUpdated(const QVariantMap &sourceUpdated);
+  void source_updated(const QVariantMap &a_source_updated);
 
 private:
   class PrivateDataSource;

@@ -41,8 +41,8 @@ LineEdit::LineEdit(QGraphicsObject *parent)
   d->mStyle = Theme::style();
 
   setSize(
-    QSize(Theme::style()->attrbute("widget", "line_edit_width").toInt(),
-          Theme::style()->attrbute("widget", "line_edit_height").toInt()));
+    QSize(Theme::style()->attribute("widget", "line_edit_width").toInt(),
+          Theme::style()->attribute("widget", "line_edit_height").toInt()));
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setAcceptHoverEvents(true);

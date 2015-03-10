@@ -36,12 +36,12 @@ public:
 
   virtual ~ProgressDialogActivity();
 
-  void createWindow(const QRectF &window_geometry, const QString &window_title,
+  void create_window(const QRectF &window_geometry, const QString &window_title,
                     const QPointF &window_pos);
 
   QVariantMap result() const;
 
-  virtual void updateAttribute(const QString &name, const QVariant &data);
+  virtual void update_attribute(const QString &name, const QVariant &data);
 
   UIKit::Window *window() const;
   void cleanup();

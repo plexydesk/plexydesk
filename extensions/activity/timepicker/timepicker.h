@@ -36,7 +36,7 @@ public:
 
   virtual ~TimePickerActivity();
 
-  void createWindow(const QRectF &window_geometry, const QString &window_title,
+  void create_window(const QRectF &window_geometry, const QString &window_title,
                     const QPointF &window_pos);
 
   virtual QRectF geometry() const;

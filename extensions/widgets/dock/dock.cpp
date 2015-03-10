@@ -169,9 +169,9 @@ void DockControllerImpl::init()
   d->m_navigation_dock->show();
 }
 
-void DockControllerImpl::revokeSession(const QVariantMap &args) {}
+void DockControllerImpl::revoke_session(const QVariantMap &args) {}
 
-void DockControllerImpl::setViewRect(const QRectF &rect)
+void DockControllerImpl::set_view_rect(const QRectF &rect)
 {
   if (!viewport()) {
     return;
@@ -203,7 +203,7 @@ ActionList DockControllerImpl::actions() const
   return d->m_supported_action_list;
 }
 
-void DockControllerImpl::requestAction(const QString &actionName,
+void DockControllerImpl::request_action(const QString &actionName,
                                        const QVariantMap &args)
 {
   if (actionName.toLower() == "menu") {
@@ -235,7 +235,7 @@ void DockControllerImpl::requestAction(const QString &actionName,
     qDebug() << Q_FUNC_INFO << actionName;
     qDebug() << Q_FUNC_INFO << args;
 
-    viewport()->controller(args["controller"].toString())->requestAction(
+    viewport()->controller(args["controller"].toString())->request_action(
       actionName, args);
   } else {
     qWarning() << Q_FUNC_INFO << "Unknown Action";
@@ -275,9 +275,9 @@ DesktopActivityPtr DockControllerImpl::createActivity(
     viewport()->create_activity(activity, title, _activity_location,
                                 QRectF(0, _activity_location.y(), 330, 320),
                                 dataItem);
-  _intent->setController(UIKit::ViewControllerPtr(this));
-  _intent->setActivityAttribute("data", QVariant(dataItem));
-  _intent->setActivityAttribute("auto_scale", QVariant(1));
+  _intent->set_controller(UIKit::ViewControllerPtr(this));
+  _intent->set_activity_attribute("data", QVariant(dataItem));
+  _intent->set_activity_attribute("auto_scale", QVariant(1));
 
   return _intent;
 }
@@ -309,10 +309,10 @@ void DockControllerImpl::toggleSeamless()
     return;
   }
 
-  controller->requestAction("Seamless");
+  controller->request_action("Seamless");
 }
 
-void DockControllerImpl::prepareRemoval()
+void DockControllerImpl::prepare_removal()
 {
   if (viewport() && viewport()->workspace()) {
     QGraphicsView *_workspace =
@@ -407,7 +407,7 @@ void DockControllerImpl::loadControllerActions(const QString &name)
     return;
   }
 
-  d->m_action_activity->updateAttribute("data", _data);
+  d->m_action_activity->update_attribute("data", _data);
 }
 
 void DockControllerImpl::onActivityAnimationFinished()
@@ -453,7 +453,7 @@ void DockControllerImpl::onActivityFinished()
     return;
   }
 
-  _controller->requestAction(_activity->result()["action"].toString(),
+  _controller->request_action(_activity->result()["action"].toString(),
                              QVariantMap());
 }
 

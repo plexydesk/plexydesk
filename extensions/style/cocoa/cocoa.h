@@ -35,7 +35,7 @@ public:
 
   virtual ~CocoaStyle();
 
-  QVariantMap attributeMap(const QString &type) const;
+  QVariantMap attribute_map(const QString &type) const;
 
   virtual void draw(const QString &type,
                     const StyleFeatures &options,

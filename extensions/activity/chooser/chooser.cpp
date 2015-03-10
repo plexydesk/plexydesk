@@ -94,7 +94,7 @@ IconGridActivity::~IconGridActivity()
   delete d;
 }
 
-void IconGridActivity::createWindow(const QRectF &window_geometry,
+void IconGridActivity::create_window(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
@@ -113,8 +113,8 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
                                         UIKit::ModelView::kGridModel);
   d->m_grid_view->setViewGeometry(window_geometry);
 
-  onArgumentsUpdated([this]() {
-    if (hasAttribute("data")) {
+  on_arguments_updated([this]() {
+    if (has_attribute("data")) {
       QVariantMap data = attributes()["data"].toMap();
 
       foreach(const QVariant & var, data.values()) {
@@ -129,7 +129,7 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
             aAction->controller_name();
           d->m_activity_result["action"] = aAction->label();
           d->mSelection = aAction->label();
-          updateAction();
+          update_action();
         });
 
         d->m_grid_view->insert(
@@ -139,21 +139,21 @@ void IconGridActivity::createWindow(const QRectF &window_geometry,
       }
     }
 
-    if (hasAttribute("auto_scale")) {
+    if (has_attribute("auto_scale")) {
       d->m_auto_scale_frame = attributes()["auto_scale"].toBool();
     }
 
     if (d->m_auto_scale_frame) {
       QRectF _content_rect = d->m_grid_view->boundingRect();
       _content_rect.setHeight(_content_rect.height() + 64);
-      setGeometry(_content_rect);
+      set_geometry(_content_rect);
       d->m_activity_window_ptr->setGeometry(_content_rect);
     }
   });
 
   d->m_activity_window_ptr->set_window_content(d->m_grid_view);
   d->m_activity_window_ptr->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 
   exec(window_pos);
@@ -179,7 +179,7 @@ void IconGridActivity::cleanup()
 void IconGridActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
-  discardActivity();
+  discard_activity();
 }
 
 void IconGridActivity::onDiscard() { Q_EMIT finished(); }

@@ -37,10 +37,10 @@ public:
 
   virtual ~InputDialogActivityData();
 
-  void createWindow(const QRectF &window_geometry, const QString &window_title,
+  void create_window(const QRectF &window_geometry, const QString &window_title,
                     const QPointF &window_pos);
 
-  virtual QString getErrorMessage() const;
+  virtual QString error_message() const;
 
   virtual QVariantMap activityResult() const;
 

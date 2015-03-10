@@ -49,7 +49,7 @@ void PhotoFrameController::init()
   m_supported_action_list << _add_dir_action;
 }
 
-void PhotoFrameController::revokeSession(const QVariantMap &args)
+void PhotoFrameController::revoke_session(const QVariantMap &args)
 {
   QStringList photoList = args["photos"].toString().split(",");
 
@@ -87,7 +87,7 @@ void PhotoFrameController::revokeSession(const QVariantMap &args)
   }
 }
 
-void PhotoFrameController::handleDropEvent(UIKit::Widget *widget,
+void PhotoFrameController::handle_drop_event(UIKit::Widget *widget,
     QDropEvent *event)
 {
   if (event->mimeData()->urls().count() >= 0) {
@@ -110,7 +110,7 @@ void PhotoFrameController::handleDropEvent(UIKit::Widget *widget,
       if (viewport()) {
         UIKit::Space *view = qobject_cast<UIKit::Space *>(viewport());
         if (view) {
-          view->update_session_value(controllerName(), "photos",
+          view->update_session_value(controller_name(), "photos",
                                      m_current_url_list.join(","));
         }
       } else {
@@ -120,14 +120,14 @@ void PhotoFrameController::handleDropEvent(UIKit::Widget *widget,
   }
 }
 
-void PhotoFrameController::setViewRect(const QRectF &rect)
+void PhotoFrameController::set_view_rect(const QRectF &rect)
 {
   if (mFrameParentitem) {
     mFrameParentitem->setPos(rect.x(), rect.y());
   }
 }
 
-bool PhotoFrameController::removeWidget(UIKit::Widget *widget)
+bool PhotoFrameController::remove_widget(UIKit::Widget *widget)
 {
   if (!widget) {
     return 1;
@@ -146,7 +146,7 @@ bool PhotoFrameController::removeWidget(UIKit::Widget *widget)
   mPhotoList.removeAll(_widget_to_delete);
 
   if (viewport())
-    viewport()->update_session_value(controllerName(), "photos",
+    viewport()->update_session_value(controller_name(), "photos",
                                      m_current_url_list.join(","));
   if (widget) {
     if (widget->scene()) {
@@ -164,7 +164,7 @@ UIKit::ActionList PhotoFrameController::actions() const
   return m_supported_action_list;
 }
 
-void PhotoFrameController::requestAction(const QString &actionName,
+void PhotoFrameController::request_action(const QString &actionName,
     const QVariantMap &args)
 {
   if (actionName == tr("Photo")) {
@@ -187,7 +187,7 @@ QString PhotoFrameController::icon() const
   return QString("pd_image_icon.png");
 }
 
-void PhotoFrameController::prepareRemoval()
+void PhotoFrameController::prepare_removal()
 {
-  foreach(PhotoWidget * _widget, mPhotoList) { this->removeWidget(_widget); }
+  foreach(PhotoWidget * _widget, mPhotoList) { this->remove_widget(_widget); }
 }

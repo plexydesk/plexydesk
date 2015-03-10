@@ -64,14 +64,14 @@ void DirectoryController::init()
   m_supported_action_list << _add_dir_action;
 }
 
-void DirectoryController::revokeSession(const QVariantMap &args) {}
+void DirectoryController::revoke_session(const QVariantMap &args) {}
 
 UIKit::ActionList DirectoryController::actions() const
 {
   return m_supported_action_list;
 }
 
-void DirectoryController::requestAction(const QString &actionName,
+void DirectoryController::request_action(const QString &actionName,
                                         const QVariantMap &args)
 {
   if (actionName == CREATE_DIR) {
@@ -102,7 +102,7 @@ void DirectoryController::requestAction(const QString &actionName,
   }
 }
 
-void DirectoryController::handleDropEvent(UIKit::Widget *widget,
+void DirectoryController::handle_drop_event(UIKit::Widget *widget,
     QDropEvent *event)
 {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
@@ -119,7 +119,7 @@ void DirectoryController::handleDropEvent(UIKit::Widget *widget,
   }
 }
 
-void DirectoryController::setViewRect(const QRectF &rect)
+void DirectoryController::set_view_rect(const QRectF &rect)
 {
   Q_FOREACH(UIKit::Widget * view, mFolderViewList) {
     if (view) {

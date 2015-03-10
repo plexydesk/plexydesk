@@ -58,9 +58,9 @@ QRectF WindowButton::boundingRect() const
 
   return QRectF(
            0.0, 0.0,
-           Theme::style()->attrbute("frame", "window_close_button_width").toFloat(),
+           Theme::style()->attribute("frame", "window_close_button_width").toFloat(),
            Theme::style()
-           ->attrbute("frame", "window_close_button_height")
+           ->attribute("frame", "window_close_button_height")
            .toFloat());
 }
 
