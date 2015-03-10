@@ -39,7 +39,7 @@ void HttpServerData::init() {}
 
 HttpServerData::~HttpServerData() { delete d; }
 
-void HttpServerData::setArguments(QVariant arg) {}
+void HttpServerData::set_arguments(QVariant arg) {}
 
 QVariantMap HttpServerData::readAll()
 {
@@ -54,5 +54,5 @@ QVariantMap HttpServerData::readAll()
 
 void HttpServerData::timerEvent(QTimerEvent *event)
 {
-  Q_EMIT sourceUpdated(readAll());
+  Q_EMIT source_updated(readAll());
 }

@@ -61,12 +61,11 @@ public:
       * @param libPrefix
       * @return ExtensionManager
       */
-  static ExtensionManager *instance(const QString &desktopPrefix,
-                                    const QString &prefix);
+  static ExtensionManager *instance(const QString &a_desktopPrefix,
+                                    const QString &a_prefix);
 
-
-  static ExtensionManager *init(const QString &desktopPrefix,
-                                const QString &prefix);
+  static ExtensionManager *init(const QString &a_desktopPrefix,
+                                const QString &a_prefix);
 
   /**
       * @brief
@@ -75,93 +74,93 @@ public:
       */
   static ExtensionManager *instance();
 
-  static void destroyInstance();
+  static void destroy_instance();
   /**
       * @brief
       *
       * @param types
       * @return QStringList
       */
-  QStringList extensionList(const QString &types);
+  QStringList extension_list(const QString &a_types);
   /**
       * @brief
       *
       * @param name
       * @return DataSourcePtr
       */
-  DataSourcePtr dataEngine(const QString &name);
+  DataSourcePtr data_engine(const QString &a_name);
   /**
       * @brief
       *
       * @param name
       * @return ControllerPtr
       */
-  ViewControllerPtr controller(const QString &name);
+  ViewControllerPtr controller(const QString &a_name);
   /**
       * @brief
       *
       * @param name
       * @return DesktopActivityPtr
       */
-  UIKit::DesktopActivityPtr activity(const QString &name);
+  UIKit::DesktopActivityPtr activity(const QString &a_name);
   /**
       * @brief
       *
       * @param name
       * @return StylePtr
       */
-  StylePtr style(const QString &name);
+  StylePtr style(const QString &a_name);
   /**
     * @brief
     *
     * @param key
     * @return QString
     */
-  QString desktopControllerExtensionInfo(const QString &key) const;
+  QString desktop_controller_extension_info(const QString &a_key) const;
 
 private:
   /**
       * @brief
       *
       */
-  void scanForPlugins();
+  void scan_for_plugins();
   /**
       * @brief
       *
       * @param path
       */
-  void loadDesktop(const QString &path);
+  void load_desktop(const QString &a_path);
   /**
       * @brief
       *
       * @param _interface
       * @param plugin
       */
-  void load(const QString &_interface, const QString &plugin);
+  void load(const QString &a_interface, const QString &a_plugin_name);
   /**
       * @brief
       *
       * @param path
       */
-  void setPluginPrefix(const QString &path);
+  void set_plugin_prefix(const QString &a_path);
   /**
       * @brief
       *
       * @param path
       */
-  void setPluginInfoPrefix(const QString &path);
+  void set_plugin_info_prefix(const QString &a_path);
   /**
       * @brief
       *
       * @return QString
       */
-  QString pluginInforPrefix() const;
+  QString plugin_info_prefix() const;
   /**
       * @brief
       *
       * @return QString
       */
-  QString pluginPrefix() const;
+  QString plugin_prefix() const;
 
   class PrivateExtManager;
   PrivateExtManager *const d; /**< TODO */
@@ -169,9 +168,8 @@ private:
 #ifdef Q_OS_WIN
   static ExtensionManager *mInstance;
 #else
-  static PLEXYDESKCORE_EXPORT ExtensionManager *mInstance; /**< TODO */
+  static DECL_UI_KIT_EXPORT ExtensionManager *mInstance; /**< TODO */
 #endif
 };
-
 } // namespace PlexDesk
 #endif

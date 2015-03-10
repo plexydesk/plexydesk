@@ -35,15 +35,15 @@ public:
 
   void init();
 
-  void revokeSession(const QVariantMap &args);
+  void revoke_session(const QVariantMap &args);
 
-  void setViewRect(const QRectF &rect);
+  void set_view_rect(const QRectF &rect);
 
-  bool removeWidget(UIKit::Widget *widget);
+  bool remove_widget(UIKit::Widget *widget);
 
   UIKit::ActionList actions() const;
 
-  void requestAction(const QString &actionName, const QVariantMap &args);
+  void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;
 

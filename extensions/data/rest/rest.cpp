@@ -48,7 +48,7 @@ void RestData::init() { qDebug() << Q_FUNC_INFO; }
 
 RestData::~RestData() { delete d; }
 
-void RestData::setArguments(QVariant arg)
+void RestData::set_arguments(QVariant arg)
 {
   qDebug() << Q_FUNC_INFO << arg;
   QVariantMap param = arg.toMap();

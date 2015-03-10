@@ -94,7 +94,7 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa)
 
 CocoaStyle::~CocoaStyle() { delete d; }
 
-QVariantMap CocoaStyle::attributeMap(const QString &type) const
+QVariantMap CocoaStyle::attribute_map(const QString &type) const
 {
   return d->m_attribute_map[type].toMap();
 }

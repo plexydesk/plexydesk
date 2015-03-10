@@ -30,8 +30,8 @@ Button::Button(QGraphicsObject *parent) : Widget(parent),
   d->mState = PrivateButton::NORMAL;
 
   if (Theme::style()) {
-    setSize(QSize(Theme::style()->attrbute("button", "width").toFloat(),
-                  Theme::style()->attrbute("button", "height").toFloat()));
+    setSize(QSize(Theme::style()->attribute("button", "width").toFloat(),
+                  Theme::style()->attribute("button", "height").toFloat()));
   }
 
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);

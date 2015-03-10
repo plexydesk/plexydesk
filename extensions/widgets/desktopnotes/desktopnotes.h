@@ -37,13 +37,13 @@ public:
 
   void init();
 
-  virtual void revokeSession(const QVariantMap &args);
-  virtual void setViewRect(const QRectF &rect);
+  virtual void revoke_session(const QVariantMap &args);
+  virtual void set_view_rect(const QRectF &rect);
 
   UIKit::ActionList actions() const;
 
-  virtual void requestAction(const QString &actionName, const QVariantMap &args);
-  virtual void handleDropEvent(UIKit::Widget *widget, QDropEvent *event);
+  virtual void request_action(const QString &actionName, const QVariantMap &args);
+  virtual void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
 
   QString icon() const;
 

@@ -35,7 +35,7 @@ SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
 
 SpacePreviewActivity::~SpacePreviewActivity() { delete d; }
 
-void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
+void SpacePreviewActivity::create_window(const QRectF &window_geometry,
                                         const QString &window_title,
                                         const QPointF &window_pos)
 {
@@ -45,19 +45,19 @@ void SpacePreviewActivity::createWindow(const QRectF &window_geometry,
   d->m_main_window->set_widget_flag(UIKit::Widget::kConvertToWindowType);
   d->m_main_window->set_widget_flag(UIKit::Widget::kRenderDropShadow);
 
-  setGeometry(window_geometry);
-  updateContentGeometry(d->m_main_window);
+  set_geometry(window_geometry);
+  update_content_geometry(d->m_main_window);
 
   exec(window_pos);
 
   d->m_main_window->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 
-void SpacePreviewActivity::updateAttribute(const QString &name,
+void SpacePreviewActivity::update_attribute(const QString &name,
     const QVariant &data) {}
 
 UIKit::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
@@ -74,7 +74,7 @@ void SpacePreviewActivity::cleanup()
 void SpacePreviewActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
+  discard_activity();
 }
 
 void SpacePreviewActivity::onHideAnimationFinished() { Q_EMIT finished(); }

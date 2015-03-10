@@ -48,7 +48,7 @@ void DesktopManager::mouseReleaseEvent(QMouseEvent *event)
         QVariantMap menu_argument;
         menu_argument["menu_pos"] = mapToScene(event->pos());
 
-        dock_controller->requestAction(tr("Menu"), menu_argument);
+        dock_controller->request_action(tr("Menu"), menu_argument);
       }
     }
   }

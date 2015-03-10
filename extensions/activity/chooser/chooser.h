@@ -40,7 +40,7 @@ public:
 
   virtual ~IconGridActivity();
 
-  void createWindow(const QRectF &window_geometry, const QString &window_title,
+  void create_window(const QRectF &window_geometry, const QString &window_title,
                     const QPointF &window_pos);
   QVariantMap result() const;
   Window *window() const;

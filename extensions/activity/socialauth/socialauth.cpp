@@ -35,11 +35,11 @@ SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
 
 SocialAuthActivity::~SocialAuthActivity() { delete d; }
 
-void SocialAuthActivity::createWindow(const QRectF &window_geometry,
+void SocialAuthActivity::create_window(const QRectF &window_geometry,
                                       const QString &window_title,
                                       const QPointF &window_pos)
 {
-  setGeometry(window_geometry);
+  set_geometry(window_geometry);
 
   d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(geometry());
@@ -50,13 +50,13 @@ void SocialAuthActivity::createWindow(const QRectF &window_geometry,
   d->mFrame->set_widget_flag(UIKit::Widget::kConvertToWindowType);
   d->mFrame->set_widget_flag(UIKit::Widget::kRenderDropShadow);
 
-  updateContentGeometry(d->mFrame);
+  update_content_geometry(d->mFrame);
   exec();
 
-  showActivity();
+  show_activity();
 
   d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 

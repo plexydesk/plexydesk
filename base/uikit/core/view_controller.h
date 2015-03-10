@@ -74,14 +74,14 @@ public:
       *
       * @param rect
       */
-  virtual void setViewRect(const QRectF &rect) = 0;
+  virtual void set_view_rect(const QRectF &a_rect) = 0;
 
   /**
       * @brief
       *
       * @param view
       */
-  void setViewport(Space *view);
+  void set_viewport(Space *a_view_ptr);
 
   /**
       * @brief This method returns the current viewport of the controller. this
@@ -97,7 +97,7 @@ public:
       *
       * @param args
       */
-  virtual void revokeSession(const QVariantMap &args) = 0;
+  virtual void revoke_session(const QVariantMap &a_args) = 0;
 
   /**
       * @brief
@@ -112,8 +112,8 @@ public:
       * @param actionName
       * @param args
       */
-  virtual void requestAction(const QString &actionName,
-                             const QVariantMap &args = QVariantMap());
+  virtual void request_action(const QString &a_actionName,
+                             const QVariantMap &a_args = QVariantMap());
 
   /**
       * @brief
@@ -121,7 +121,7 @@ public:
       * @param widget
       * @param event
       */
-  virtual void handleDropEvent(Widget *widget, QDropEvent *event);
+  virtual void handle_drop_event(Widget *a_widget_ptr, QDropEvent *a_event_ptr);
 
   /**
       * @brief
@@ -136,31 +136,31 @@ public:
       * @param widget
       * @return bool
       */
-  virtual bool removeWidget(Widget *widget);
+  virtual bool remove_widget(Widget *a_widget_ptr);
 
-  virtual void insert(Window *window);
+  virtual void insert(Window *a_window_ptr);
 
   /**
       * @brief
       *
       * @param name
       */
-  virtual void setControllerName(const QString &name);
+  virtual void set_controller_name(const QString &a_name);
 
   /**
       * @brief
       *
       * @return QString
       */
-  virtual QString controllerName() const;
+  virtual QString controller_name() const;
 
   virtual QString icon() const = 0;
 
   virtual QString label() const;
 
-  virtual void configure(const QPointF &pos);
+  virtual void configure(const QPointF &a_pos);
 
-  virtual void prepareRemoval();
+  virtual void prepare_removal();
 
 protected:
   /**
@@ -176,7 +176,7 @@ protected:
       * @param source
       * @return bool
       */
-  virtual bool connectToDataSource(const QString &source);
+  virtual bool connect_to_data_source(const QString &a_source);
 
 Q_SIGNALS:
   /**
@@ -185,7 +185,7 @@ Q_SIGNALS:
       * @param source Emits the DataSource when the controller is ready
       * \sa onReady()
       */
-  void data(const DataSource *source);
+  void data(const DataSource *a_source_ptr);
 
 
 private Q_SLOTS:
@@ -193,7 +193,7 @@ private Q_SLOTS:
       * @brief
       *
       */
-  virtual void onReady();
+  virtual void on_ready();
 
 private:
   class PrivateViewControllerPlugin;

@@ -27,7 +27,6 @@ Style::Style() {}
 
 Style::~Style() {}
 
-QVariant Style::attrbute(
-  const QString &type,
-  const QString &name) const { return attributeMap(type)[name];}
+QVariant Style::attribute(const QString &a_type,
+  const QString &a_name) const { return attribute_map(a_type)[a_name];}
 }

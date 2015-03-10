@@ -16,17 +16,17 @@ public:
 
   virtual std::string name() const;
 
-  virtual void setName(const std::string &name);
+  virtual void setName(const std::string &a_name);
 
   virtual unsigned int id() const;
 
-  virtual void setId(unsigned int id);
+  virtual void setId(unsigned int a_id);
 
-  virtual void setVisibility(bool visibility = true);
+  virtual void setVisibility(bool a_visibility = true);
 
   virtual bool isVisibile() const;
 
-  virtual void setIcon(const std::string icon);
+  virtual void setIcon(const std::string a_icon);
 
   virtual std::string icon() const;
 

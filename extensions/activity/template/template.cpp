@@ -35,7 +35,7 @@ TemplateActivity::TemplateActivity(QGraphicsObject *object)
 
 TemplateActivity::~TemplateActivity() { delete d; }
 
-void TemplateActivity::createWindow(const QRectF &window_geometry,
+void TemplateActivity::create_window(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
@@ -45,19 +45,19 @@ void TemplateActivity::createWindow(const QRectF &window_geometry,
   d->m_main_window->set_widget_flag(UIKit::Widget::kConvertToWindowType);
   d->m_main_window->set_widget_flag(UIKit::Widget::kRenderDropShadow);
 
-  setGeometry(window_geometry);
-  updateContentGeometry(d->m_main_window);
+  set_geometry(window_geometry);
+  update_content_geometry(d->m_main_window);
 
   exec(window_pos);
 
   d->m_main_window->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 
 QVariantMap TemplateActivity::result() const { return QVariantMap(); }
 
-void TemplateActivity::updateAttribute(const QString &name,
+void TemplateActivity::update_attribute(const QString &name,
                                        const QVariant &data) {}
 
 UIKit::Window *TemplateActivity::window() const { return d->m_main_window; }
@@ -73,7 +73,7 @@ void TemplateActivity::cleanup()
 void TemplateActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
+  discard_activity();
 }
 
 void TemplateActivity::onHideAnimationFinished() { Q_EMIT finished(); }

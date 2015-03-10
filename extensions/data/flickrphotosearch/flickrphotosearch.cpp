@@ -39,7 +39,7 @@ void FlickrPhotoSearchData::init() {}
 
 FlickrPhotoSearchData::~FlickrPhotoSearchData() { delete d; }
 
-void FlickrPhotoSearchData::setArguments(QVariant arg)
+void FlickrPhotoSearchData::set_arguments(QVariant arg)
 {
   QVariantMap data = arg.toMap();
   QuetzalSocialKit::WebService *service =

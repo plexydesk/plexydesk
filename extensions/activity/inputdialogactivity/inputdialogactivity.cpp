@@ -71,11 +71,11 @@ InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
 
 InputDialogActivityData::~InputDialogActivityData() { delete d; }
 
-void InputDialogActivityData::createWindow(const QRectF &window_geometry,
+void InputDialogActivityData::create_window(const QRectF &window_geometry,
     const QString &window_title,
     const QPointF &window_pos)
 {
-  if (hasAttribute("geometry")) {
+  if (has_attribute("geometry")) {
     d->mBoundingRect = attributes()["geometry"].toRect();
   } else {
     d->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
@@ -135,14 +135,14 @@ void InputDialogActivityData::createWindow(const QRectF &window_geometry,
   connect(d->mOkButton, SIGNAL(clicked()), this, SLOT(onOkButtonPressed()));
 
   this->exec();
-  showActivity();
+  show_activity();
 
   d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 
-QString InputDialogActivityData::getErrorMessage() const { return QString(); }
+QString InputDialogActivityData::error_message() const { return QString(); }
 
 QVariantMap InputDialogActivityData::activityResult() const
 {
@@ -169,7 +169,7 @@ void InputDialogActivityData::cleanup()
 void InputDialogActivityData::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
-  discardActivity();
+  discard_activity();
 }
 
 void InputDialogActivityData::onMotionAnimFinished() { Q_EMIT finished(); }
@@ -179,7 +179,7 @@ void InputDialogActivityData::onOkButtonPressed()
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   d->mCurrentText = d->mEditor->text();
   Q_EMIT finished();
-  discardActivity();
+  discard_activity();
 }
 
 void InputDialogActivityData::paint(QPainter *painter,

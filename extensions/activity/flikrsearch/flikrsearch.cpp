@@ -77,7 +77,7 @@ FlickrSearchActivity::~FlickrSearchActivity()
   delete d;
 }
 
-void FlickrSearchActivity::createWindow(const QRectF &aWindowGeometry,
+void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
                                         const QString &window_title,
                                         const QPointF &window_pos)
 {
@@ -159,7 +159,7 @@ void FlickrSearchActivity::createWindow(const QRectF &aWindowGeometry,
   d->m_image_cell_model->setSearchQuery("nature");
 
   d->m_view_delegate_window->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 
@@ -186,7 +186,7 @@ void FlickrSearchActivity::cleanup()
 void FlickrSearchActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
+  discard_activity();
 }
 
 void FlickrSearchActivity::photoItemClicked(UIKit::TableViewItem *item)
@@ -198,7 +198,7 @@ void FlickrSearchActivity::photoItemClicked(UIKit::TableViewItem *item)
     QUrl url = d->m_image_cell_model->requestImageUrl(i->label(), "Original");
     if (url.isValid()) {
       d->m_activity_result_map["background"] = url.toString();
-      updateAction();
+      update_action();
       // d->m_view_delegate_window->hide();
       // connect(this, SIGNAL(discarded()), this,
       // SLOT(onHideAnimationFinished()));

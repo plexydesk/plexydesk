@@ -71,16 +71,16 @@ void Clock::init()
                                           "pd_clock_frame_icon.png");
 }
 
-void Clock::revokeSession(const QVariantMap & /*args*/) {}
+void Clock::revoke_session(const QVariantMap & /*args*/) {}
 
-void Clock::setViewRect(const QRectF &rect)
+void Clock::set_view_rect(const QRectF &rect)
 {
   if (clock) {
     clock->setPos(rect.x(), rect.y());
   }
 }
 
-bool Clock::removeWidget(UIKit::Widget *widget)
+bool Clock::remove_widget(UIKit::Widget *widget)
 {
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
@@ -107,7 +107,7 @@ bool Clock::removeWidget(UIKit::Widget *widget)
 
 UIKit::ActionList Clock::actions() const { return m_supported_action_list; }
 
-void Clock::requestAction(const QString &actionName, const QVariantMap &args)
+void Clock::request_action(const QString &actionName, const QVariantMap &args)
 {
   if (!viewport()) {
     return;
@@ -119,7 +119,7 @@ void Clock::requestAction(const QString &actionName, const QVariantMap &args)
     UIKit::DesktopActivityPtr _clock_activity =
       UIKit::ExtensionManager::instance()->activity("desktopclock");
 
-    _clock_activity->createWindow(_view_geomeetry, "Montreal",
+    _clock_activity->create_window(_view_geomeetry, "Montreal",
                                   viewport()->center(_view_geomeetry));
     if (viewport()) {
       viewport()->add_activity(_clock_activity);

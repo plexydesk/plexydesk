@@ -51,7 +51,7 @@ TakeNoteActivity::TakeNoteActivity(QGraphicsObject *object)
 
 TakeNoteActivity::~TakeNoteActivity() { delete d; }
 
-void TakeNoteActivity::createWindow(const QRectF &window_geometry,
+void TakeNoteActivity::create_window(const QRectF &window_geometry,
                                     const QString &window_title,
                                     const QPointF &window_pos)
 {
@@ -59,11 +59,11 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->setVisible(true);
-  setGeometry(window_geometry);
+  set_geometry(window_geometry);
 
   d->mFrame->set_widget_name("Message Dialog");
 
-  if (hasAttribute("title")) {
+  if (has_attribute("title")) {
   }
 
   d->mFrame->set_widget_flag(UIKit::Widget::kRenderBackground);
@@ -93,7 +93,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   d->mLayout->addItem(d->mAddTaskBtn);
   d->mLayout->addItem(d->mAddReminderBtn);
 
-  if (hasAttribute("pos")) {
+  if (has_attribute("pos")) {
     QPoint point = attributes()["pos"].toPoint();
     exec(point);
   } else {
@@ -101,7 +101,7 @@ void TakeNoteActivity::createWindow(const QRectF &window_geometry,
   }
 
   d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 
   // todo: invoke UI
@@ -139,7 +139,7 @@ void TakeNoteActivity::cleanup()
 void TakeNoteActivity::onWidgetClosed(UIKit::Widget *widget)
 {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discardActivity();
+  discard_activity();
 }
 
 void TakeNoteActivity::onHideAnimationFinished() { Q_EMIT finished(); }

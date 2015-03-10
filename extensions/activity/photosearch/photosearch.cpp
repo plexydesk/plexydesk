@@ -58,7 +58,7 @@ PhotoSearchActivity::~PhotoSearchActivity()
   delete d;
 }
 
-void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
+void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
                                        const QString &aWindowTitle,
                                        const QPointF &window_pos)
 {
@@ -88,7 +88,7 @@ void PhotoSearchActivity::createWindow(const QRectF &aWindowGeometry,
   exec(window_pos);
 
   d->mWindowFrame->on_window_discarded([this](UIKit::Window * aWindow) {
-    discardActivity();
+    discard_activity();
   });
 }
 
@@ -122,7 +122,7 @@ void PhotoSearchActivity::onClicked(TableViewItem *item)
   if (i) {
     d->mResult["action"] = QString("Change Background");
     d->mResult["background"] = "file://" + i->label();
-    updateAction();
+    update_action();
   }
 }
 
@@ -130,7 +130,7 @@ void PhotoSearchActivity::onProgressValue(int value)
 {
   if (value == 100) {
     if (d->mWindowFrame) {
-      if (hasAttribute("title")) {
+      if (has_attribute("title")) {
       }
     }
   }

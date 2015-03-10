@@ -92,7 +92,7 @@ void Window::set_window_content(Widget *a_widget)
 
   if (UIKit::Theme::style()) {
     sWindowTitleHeight = UIKit::Theme::style()
-                         ->attrbute("frame", "window_title_height")
+                         ->attribute("frame", "window_title_height")
                          .toFloat();
   }
 

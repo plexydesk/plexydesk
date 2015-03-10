@@ -39,15 +39,15 @@ public:
 
   void init();
 
-  void revokeSession(const QVariantMap &args);
+  void revoke_session(const QVariantMap &args);
 
   UIKit::ActionList actions() const;
 
-  void requestAction(const QString &actionName, const QVariantMap &data);
+  void request_action(const QString &actionName, const QVariantMap &data);
 
-  void handleDropEvent(UIKit::Widget *widget, QDropEvent *event);
+  void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
 
-  void setViewRect(const QRectF &rect);
+  void set_view_rect(const QRectF &rect);
 
   QString icon() const;
 
@@ -55,7 +55,7 @@ public:
 
   void configure(const QPointF &pos);
 
-  void prepareRemoval();
+  void prepare_removal();
 
   void createSeamlessDesktop();
 private Q_SLOTS:

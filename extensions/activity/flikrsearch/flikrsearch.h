@@ -37,7 +37,7 @@ public:
   FlickrSearchActivity(QGraphicsObject *object = 0);
   virtual ~FlickrSearchActivity();
 
-  void createWindow(const QRectF &aWindowGeometry, const QString &window_title,
+  void create_window(const QRectF &aWindowGeometry, const QString &window_title,
                     const QPointF &window_pos);
   Window *window() const;
 

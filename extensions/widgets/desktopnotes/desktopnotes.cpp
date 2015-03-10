@@ -58,9 +58,9 @@ void DesktopNotesControllerImpl::init()
   d->m_supported_action_list << _add_note_action;
 }
 
-void DesktopNotesControllerImpl::revokeSession(const QVariantMap &args) {}
+void DesktopNotesControllerImpl::revoke_session(const QVariantMap &args) {}
 
-void DesktopNotesControllerImpl::setViewRect(const QRectF &rect) {}
+void DesktopNotesControllerImpl::set_view_rect(const QRectF &rect) {}
 
 UIKit::ActionList DesktopNotesControllerImpl::actions() const
 {
@@ -68,7 +68,7 @@ UIKit::ActionList DesktopNotesControllerImpl::actions() const
   return d->m_supported_action_list;
 }
 
-void DesktopNotesControllerImpl::requestAction(const QString &actionName,
+void DesktopNotesControllerImpl::request_action(const QString &actionName,
     const QVariantMap &args)
 {
   switch (d->mNoteActions[actionName]) {
@@ -85,7 +85,7 @@ void DesktopNotesControllerImpl::requestAction(const QString &actionName,
   }
 }
 
-void DesktopNotesControllerImpl::handleDropEvent(UIKit::Widget *widget,
+void DesktopNotesControllerImpl::handle_drop_event(UIKit::Widget *widget,
     QDropEvent *event)
 {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();

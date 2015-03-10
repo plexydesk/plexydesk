@@ -77,8 +77,8 @@ void Space::add_controller(const QString &a_name)
 
   m_priv_impl->mCurrentControllerMap[a_name] = controllerPtr;
 
-  controllerPtr->setViewport(this);
-  controllerPtr->setControllerName(a_name);
+  controllerPtr->set_viewport(this);
+  controllerPtr->set_controller_name(a_name);
 
   controllerPtr->init();
 
@@ -108,9 +108,9 @@ UIKit::DesktopActivityPtr Space::create_activity(const QString &a_activity,
     return UIKit::DesktopActivityPtr();
   }
 
-  intent->setActivityAttribute("data", QVariant(a_data_map));
+  intent->set_activity_attribute("data", QVariant(a_data_map));
 
-  intent->createWindow(a_rect, a_title, QPointF(a_pos.x(), a_pos.y()));
+  intent->create_window(a_rect, a_title, QPointF(a_pos.x(), a_pos.y()));
 
   if (intent->window()) {
     intent->window()->set_window_title(a_title);
@@ -180,7 +180,7 @@ void Space::add_activity(UIKit::DesktopActivityPtr a_activity_ptr)
 
     m_priv_impl->mActivityList << a_activity_ptr;
 
-    a_activity_ptr->setViewport(this);
+    a_activity_ptr->set_viewport(this);
 
     insert_window_to_view(a_activity_ptr->window());
   }
@@ -214,7 +214,7 @@ void Space::insert_window_to_view(Window *a_window)
   a_window->show();
 
   if (a_window->controller()) {
-    a_window->controller()->setViewRect(m_priv_impl->mDesktopRect);
+    a_window->controller()->set_view_rect(m_priv_impl->mDesktopRect);
   }
 
   m_priv_impl->mWindowList.push_front(a_window);
@@ -236,7 +236,7 @@ void Space::remove_window_from_view(Window *a_window)
   }
 
   if (a_window->controller()) {
-    if (a_window->controller()->removeWidget(a_window)) {
+    if (a_window->controller()->remove_widget(a_window)) {
       return;
     }
   }
@@ -265,7 +265,7 @@ void Space::on_activity_finished()
   if (activity) {
 
     if (activity->controller()) {
-      activity->controller()->requestAction(
+      activity->controller()->request_action(
         activity->result()["action"].toString(), activity->result());
     }
 
@@ -353,7 +353,7 @@ void Space::register_controller(const QString &aControllerName)
   }
 
   if (controller(aControllerName)) {
-    controller(aControllerName)->revokeSession(_session_data);
+    controller(aControllerName)->revoke_session(_session_data);
   }
 
   delete _linked_sub_store;
@@ -446,7 +446,7 @@ void Space::clear()
   foreach(const QString & _key, m_priv_impl->mCurrentControllerMap.keys()) {
     qDebug() << Q_FUNC_INFO << _key;
     ViewControllerPtr _controller_ptr = m_priv_impl->mCurrentControllerMap[_key];
-    _controller_ptr->prepareRemoval();
+    _controller_ptr->prepare_removal();
     qDebug() << Q_FUNC_INFO
              << "Before Removal:" << m_priv_impl->mCurrentControllerMap.count();
     m_priv_impl->mCurrentControllerMap.remove(_key);
@@ -550,7 +550,7 @@ void Space::setGeometry(const QRectF &a_geometry)
 
   foreach(const QString & _key, m_priv_impl->mCurrentControllerMap.keys()) {
     ViewControllerPtr _controller_ptr = m_priv_impl->mCurrentControllerMap[_key];
-    _controller_ptr->setViewRect(m_priv_impl->mDesktopRect);
+    _controller_ptr->set_view_rect(m_priv_impl->mDesktopRect);
   }
 }
 
@@ -588,7 +588,7 @@ void Space::drop_event_handler(QDropEvent *event,
         continue;
       }
 
-      widget->controller()->handleDropEvent(widget, event);
+      widget->controller()->handle_drop_event(widget, event);
       return;
     }
   }

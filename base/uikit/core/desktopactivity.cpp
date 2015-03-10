@@ -38,18 +38,18 @@ DesktopActivity::DesktopActivity(QGraphicsObject *parent)
 
 DesktopActivity::~DesktopActivity() { delete d; }
 
-void DesktopActivity::setActivityAttribute(const QString &name,
-    const QVariant &data)
+void DesktopActivity::set_activity_attribute(const QString &a_name,
+    const QVariant &a_data)
 {
-  d->m_arguments[name] = data;
+  d->m_arguments[a_name] = a_data;
 }
 
 QVariantMap DesktopActivity::attributes() const { return d->m_arguments; }
 
-void DesktopActivity::updateAttribute(const QString &name, const QVariant &data)
+void DesktopActivity::update_attribute(const QString &a_name, const QVariant &a_data)
 {
-  setActivityAttribute(name, data);
-  Q_EMIT attributeChanged();
+  set_activity_attribute(a_name, a_data);
+  Q_EMIT attribute_changed();
 
   foreach(std::function<void ()> l_handler, d->m_arg_handler_list) {
     if (l_handler) {
@@ -58,39 +58,39 @@ void DesktopActivity::updateAttribute(const QString &name, const QVariant &data)
   }
 }
 
-QString DesktopActivity::getErrorMessage() const { return QString(); }
+QString DesktopActivity::error_message() const { return QString(); }
 
-void DesktopActivity::setGeometry(const QRectF &geometry)
+void DesktopActivity::set_geometry(const QRectF &a_geometry)
 {
-  d->m_geometry = geometry;
+  d->m_geometry = a_geometry;
 
   if (window()) {
-    window()->setGeometry(geometry);
+    window()->setGeometry(a_geometry);
   }
 }
 
 QRectF DesktopActivity::geometry() const { return d->m_geometry; }
 
-bool DesktopActivity::hasAttribute(const QString &arg)
+bool DesktopActivity::has_attribute(const QString &a_arg)
 {
-  return d->m_arguments.keys().contains(arg);
+  return d->m_arguments.keys().contains(a_arg);
 }
 
-void DesktopActivity::exec(const QPointF &pos)
+void DesktopActivity::exec(const QPointF &a_pos)
 {
   if (window()) {
-    window()->setPos(pos);
+    window()->setPos(a_pos);
   }
 }
 
-void DesktopActivity::showActivity()
+void DesktopActivity::show_activity()
 {
   if (window()) {
     window()->show();
   }
 }
 
-void DesktopActivity::discardActivity()
+void DesktopActivity::discard_activity()
 {
   hide();
   if (window()) {
@@ -105,9 +105,9 @@ void DesktopActivity::hide()
   }
 }
 
-void DesktopActivity::setController(const ViewControllerPtr &controller)
+void DesktopActivity::set_controller(const ViewControllerPtr &a_controller)
 {
-  d->m_controller_ptr = controller;
+  d->m_controller_ptr = a_controller;
 }
 
 ViewControllerPtr DesktopActivity::controller() const
@@ -115,13 +115,13 @@ ViewControllerPtr DesktopActivity::controller() const
   return d->m_controller_ptr;
 }
 
-void DesktopActivity::setViewport(Space *viewport)
+void DesktopActivity::set_viewport(Space *a_viewport_ptr)
 {
   if (d->m_current_viewport) {
     return;
   }
 
-  d->m_current_viewport = viewport;
+  d->m_current_viewport = a_viewport_ptr;
 }
 
 Space *DesktopActivity::viewport() const
@@ -129,33 +129,33 @@ Space *DesktopActivity::viewport() const
   return d->m_current_viewport;
 }
 
-void DesktopActivity::onArgumentsUpdated(std::function<void ()> a_handler)
+void DesktopActivity::on_arguments_updated(std::function<void ()> a_handler)
 {
   d->m_arg_handler_list.append(a_handler);
 }
 
-void DesktopActivity::onActionCompleted(
+void DesktopActivity::on_action_completed(
   std::function<void (const QVariantMap &)> a_handler)
 {
 }
 
-void DesktopActivity::updateAction()
+void DesktopActivity::update_action()
 {
   if (!d->m_controller_ptr.data()) {
     qWarning() << Q_FUNC_INFO << "Error: Controller Not Set";
     return;
   }
 
-  d->m_controller_ptr->requestAction(result()["action"].toString(), result());
+  d->m_controller_ptr->request_action(result()["action"].toString(), result());
 }
 
 // todo: remove this
-void DesktopActivity::updateContentGeometry(Widget *widget)
+void DesktopActivity::update_content_geometry(Widget *a_widget_ptr)
 {
-  if (!widget) {
+  if (!a_widget_ptr) {
     return;
   }
 
-  widget->setGeometry(geometry());
+  a_widget_ptr->setGeometry(geometry());
 }
 }
