@@ -19,6 +19,7 @@
 #include <config.h>
 
 // qt
+#include <QApplication>
 #include <QGuiApplication>
 #include <QtCore>
 #include <QtGui>
@@ -36,7 +37,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
-#include <QApplication>
 #include <qpa/qplatformnativeinterface.h>
 
 #include <X11/Xlib.h>

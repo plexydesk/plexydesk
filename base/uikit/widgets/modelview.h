@@ -8,7 +8,7 @@
 
 namespace UIKit
 {
-class ModelView : public Widget
+class DECL_UI_KIT_EXPORT ModelView : public Widget
 {
   Q_OBJECT
 public:

@@ -40,9 +40,7 @@ int main(int argc, char *argv[])
                                         (pathPtr) + QLatin1String("/Contents/share/plexy/ext/groups/")),
                                       QDir::toNativeSeparators((pathPtr) +
                                           QLatin1String("/Contents/lib/plexyext/")));
-#endif
-
-#ifdef Q_OS_LINUX
+#else
   UIKit::ExtensionManager *loader = UIKit::ExtensionManager::instance(
                                    QDir::toNativeSeparators((pathPtr) +
                                        QLatin1String("/share/plexy/ext/groups/")),

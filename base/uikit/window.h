@@ -11,7 +11,7 @@ class QSizeF;
 namespace UIKit
 {
 class Space;
-class Window : public Widget
+class DECL_UI_KIT_EXPORT Window : public Widget
 {
 public:
   typedef enum {
