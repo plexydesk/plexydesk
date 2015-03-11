@@ -26,11 +26,11 @@ public:
   std::function<void (int index)> m_activation_handler;
 };
 
-ModelView::ModelView(QGraphicsObject *parent, ModelType aModelType) :
+ModelView::ModelView(QGraphicsObject *parent, ModelType a_model_type) :
   Widget(parent),
   d(new PrivateModelView)
 {
-  d->m_model_view_type = aModelType;
+  d->m_model_view_type = a_model_type;
   d->m_scroll_frame = new QGraphicsWidget(this);
 
   if (d->m_model_view_type == kListModel) {
@@ -61,30 +61,30 @@ ModelView::~ModelView()
   delete d;
 }
 
-void ModelView::insert_to_list_view(Widget *widget)
+void ModelView::insert_to_list_view(Widget *a_widget_ptr)
 {
-  widget->set_widget_id(d->m_list_layout->count());
+  a_widget_ptr->set_widget_id(d->m_list_layout->count());
 
-  d->m_list_layout->addItem(widget);
+  d->m_list_layout->addItem(a_widget_ptr);
   d->m_list_layout->updateGeometry();
   d->m_list_layout->activate();
 
   d->m_scroll_frame->setGeometry(d->m_list_layout->geometry());
 }
 
-void ModelView::insert_to_grid_view(Widget *widget)
+void ModelView::insert_to_grid_view(Widget *a_widget_ptr)
 {
   if (!d->m_grid_layout) {
     return;
   }
 
-  widget->set_widget_id(d->m_grid_layout->count());
+  a_widget_ptr->set_widget_id(d->m_grid_layout->count());
 
   int l_item_per_row =
     d->m_viewport_geometry.width() /
-    widget->boundingRect().width();
+    a_widget_ptr->boundingRect().width();
 
-  d->m_grid_layout->addItem(widget,
+  d->m_grid_layout->addItem(a_widget_ptr,
                             d->m_grid_layout->count() / (l_item_per_row - 1),
                             d->m_grid_layout->count() % (l_item_per_row - 1));
 
@@ -94,16 +94,16 @@ void ModelView::insert_to_grid_view(Widget *widget)
   d->m_scroll_frame->setGeometry(d->m_grid_layout->geometry());
 }
 
-void ModelView::insert_to_table_view(Widget *widget)
+void ModelView::insert_to_table_view(Widget *a_widget_ptr)
 {
 }
 
-void ModelView::insert(Widget *widget)
+void ModelView::insert(Widget *a_widget_ptr)
 {
-  widget->setParentItem(d->m_scroll_frame);
-  widget->setParent(d->m_scroll_frame);
+  a_widget_ptr->setParentItem(d->m_scroll_frame);
+  a_widget_ptr->setParent(d->m_scroll_frame);
 
-  widget->on_input_event([this](int type, const Widget * widget) {
+  a_widget_ptr->on_input_event([this](int type, const Widget * widget) {
     if (type == Widget::kMouseReleaseEvent) {
       if (d->m_activation_handler) {
         d->m_activation_handler(widget->widget_id());
@@ -113,20 +113,20 @@ void ModelView::insert(Widget *widget)
 
   switch (d->m_model_view_type) {
   case kListModel:
-    insert_to_list_view(widget);
+    insert_to_list_view(a_widget_ptr);
     break;
   case kGridModel:
-    insert_to_grid_view(widget);
+    insert_to_grid_view(a_widget_ptr);
     break;
   case kTableModel:
-    insert_to_table_view(widget);
+    insert_to_table_view(a_widget_ptr);
     break;
   }
 
   update();
 }
 
-void ModelView::remove(Widget *widget) {}
+void ModelView::remove(Widget *a_widget_ptr) {}
 
 void ModelView::clear()
 {
@@ -148,9 +148,9 @@ void ModelView::clear()
   d->m_list_layout->updateGeometry();
 }
 
-void ModelView::setViewGeometry(const QRectF &rect)
+void ModelView::set_view_geometry(const QRectF &a_rect)
 {
-  d->m_viewport_geometry = rect;
+  d->m_viewport_geometry = a_rect;
 }
 
 QRectF ModelView::boundingRect() const
@@ -158,20 +158,20 @@ QRectF ModelView::boundingRect() const
   return d->m_viewport_geometry;
 }
 
-void ModelView::setGeometry(const QRectF &rect)
+void ModelView::setGeometry(const QRectF &a_rect)
 {
-  setPos(rect.topLeft());
+  setPos(a_rect.topLeft());
 }
 
 QSizeF ModelView::sizeHint(Qt::SizeHint which,
-                           const QSizeF &constraint) const
+                           const QSizeF &a_constraint) const
 {
   return d->m_list_layout->contentsRect().size();
 }
 
-void ModelView::onActivated(std::function<void (int)> aCallback)
+void ModelView::on_activated(std::function<void (int)> a_callback)
 {
-  d->m_activation_handler = aCallback;
+  d->m_activation_handler = a_callback;
 }
 
 bool ModelView::event(QEvent *e)

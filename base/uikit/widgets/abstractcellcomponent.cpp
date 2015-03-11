@@ -4,7 +4,7 @@
 namespace UIKit
 {
 
-TableViewItem::TableViewItem(const QRectF &rect, QGraphicsItem *parent)
+TableViewItem::TableViewItem(const QRectF &a_rect, QGraphicsItem *parent)
   : QGraphicsObject(parent), QGraphicsLayoutItem(0, false)
 {
   setGraphicsItem(this);
@@ -17,9 +17,9 @@ TableViewItem::~TableViewItem()
 #endif
 }
 
-void TableViewItem::setGeometry(const QRectF &rect)
+void TableViewItem::setGeometry(const QRectF &a_rect)
 {
-  setPos(rect.x(), rect.y());
+  setPos(a_rect.x(), a_rect.y());
 }
 
 QString TableViewItem::name() { return QString(); }

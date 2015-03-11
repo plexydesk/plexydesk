@@ -42,22 +42,22 @@ public:
   ImageCache();
   virtual ~ImageCache();
 
-  QPixmap pixmap(const QString &id, QSize *size,
-                        const QSize &requestedSize);
+  QPixmap pixmap(const QString &a_id, QSize *a_size_ptr,
+                        const QSize &a_requested_size);
 
-  bool is_cached(QString &filename) const;
-  void add_to_cache(const QString &imgfile, const QString &filename,
-                   const QString &themename);
+  bool is_cached(QString &a_filename) const;
+  void add_to_cache(const QString &a_imgfile, const QString &a_filename,
+                   const QString &a_themename);
 
-  QPixmap get(const QString &name);
+  QPixmap get(const QString &a_name);
 
-  virtual void onLoaderReady(std::function<void()> a_handler);
+  virtual void on_loader_ready(std::function<void()> a_handler);
 
 protected:
-  void load(const QString &themename);
+  void load(const QString &ta_themename);
   void clear();
-  bool render_svg(QPainter *painter, QRectF rect, const QString &str,
-               const QString &elementId);
+  bool render_svg(QPainter *a_painter_ptr, QRectF a_rect, const QString &a_str,
+               const QString &a_elementId);
 Q_SIGNALS:
   void ready();
 

@@ -28,9 +28,9 @@ float ChooserActionDelegate::margin() const { return 5.0; }
 
 float ChooserActionDelegate::padding() const { return 10.0; }
 
-float ChooserActionDelegate::leftMargin() const { return 5.0; }
+float ChooserActionDelegate::left_margin() const { return 5.0; }
 
-float ChooserActionDelegate::rightMargin() const { return 5.0; }
+float ChooserActionDelegate::right_margin() const { return 5.0; }
 
 bool ChooserActionDelegate::init()
 {
@@ -39,7 +39,7 @@ bool ChooserActionDelegate::init()
   return true;
 }
 
-TableModel::TableRenderMode ChooserActionDelegate::renderType() const
+TableModel::TableRenderMode ChooserActionDelegate::render_type() const
 {
   return ChooserActionDelegate::kRenderAsGridView;
 }

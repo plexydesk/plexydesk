@@ -19,20 +19,20 @@ public:
 
   float padding() const;
 
-  virtual float leftMargin() const;
+  virtual float left_margin() const;
 
-  virtual float rightMargin() const;
+  virtual float right_margin() const;
 
   virtual bool init();
 
-  virtual TableRenderMode renderType() const;
+  virtual TableRenderMode render_type() const;
 
-  void insertItem(const QString &label, const QPixmap pixmap,
-                  bool selected = false);
+  void insert_item(const QString &a_label, const QPixmap a_pixmap,
+                  bool a_selected = false);
 
-  void setLabelVisibility(bool visibility);
+  void set_label_visibility(bool a_visibility);
 
-  void setCellSize(const QSize &size);
+  void set_cell_size(const QSize &a_size);
 
   void clear();
 

@@ -71,7 +71,7 @@ QSizeF DateCell::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
   return boundingRect().size();
 }
 
-void DateCell::setSelected()
+void DateCell::set_selected()
 {
   d->mIsSelected = true;
   update();
@@ -79,7 +79,7 @@ void DateCell::setSelected()
 
 void DateCell::setLabelVisibility(bool visible) { d->mVisibility = visible; }
 
-void DateCell::clearSelection() { d->mIsSelected = false; }
+void DateCell::clear_selection() { d->mIsSelected = false; }
 
 void DateCell::setLabel(const QString &txt)
 {

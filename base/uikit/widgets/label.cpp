@@ -39,9 +39,9 @@ Label::~Label()
   delete d;
 }
 
-void Label::setLabel(const QString &txt)
+void Label::set_label(const QString &a_txt)
 {
-  d->mString = txt;
+  d->mString = a_txt;
   update();
   Q_EMIT contentBoundingRectChaned();
 }
@@ -61,18 +61,18 @@ QRectF Label::boundingRect() const
   return QRectF(0.0, 0.0, d->mSize.width(), d->mSize.height());
 }
 
-void Label::setSize(const QSizeF &size) { d->mSize = size; }
+void Label::set_size(const QSizeF &_asize) { d->mSize = _asize; }
 
-void Label::setFontSize(uint pixelSize) { d->mFontSize = pixelSize; }
+void Label::set_font_size(uint pixelSize) { d->mFontSize = pixelSize; }
 
-QSizeF Label::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF Label::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const
 {
   return boundingRect().size();
 }
 
-void Label::setGeometry(const QRectF &rect) { setPos(rect.topLeft()); }
+void Label::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
 
-QRectF Label::contentBoundingRect() const
+QRectF Label::contents_bounding_rect() const
 {
   QFont font;
   font.setFamily(font.defaultFamily());
@@ -86,19 +86,19 @@ QRectF Label::contentBoundingRect() const
   return rect;
 }
 
-void Label::setLabelStyle(const QColor &backgroundColor,
-                          const QColor &textColor)
+void Label::set_label_style(const QColor &a_backgroundColor,
+                          const QColor &a_textColor)
 {
-  d->mBgColor = backgroundColor;
-  d->mFgColor = textColor;
+  d->mBgColor = a_backgroundColor;
+  d->mFgColor = a_textColor;
   update();
 }
 
-void Label::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                  QWidget *widget)
+void Label::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
+                  QWidget *a_widget_ptr)
 {
-  painter->save();
-  painter->setPen(d->mFgColor);
+  a_painter_ptr->save();
+  a_painter_ptr->setPen(d->mFgColor);
 
   /*
   QFontMetrics metrics(painter->font());
@@ -116,9 +116,9 @@ void Label::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   painter->fillPath(path, d->mBgColor);
   */
   //painter->fillRect(option->exposedRect, QColor("#ffffff"));
-  painter->drawText(option->exposedRect, d->mString,
+  a_painter_ptr->drawText(a_option_ptr->exposedRect, d->mString,
                     QTextOption(Qt::AlignCenter));
-  painter->restore();
+  a_painter_ptr->restore();
 }
 
 QSizeF Label::PrivateLabel::pixelSizeOfText(const QString &txt)

@@ -16,11 +16,11 @@ public:
 
   virtual QSizeF sizeHint(Qt::SizeHint hint, const QSizeF &size) const;
 
-  void setSelected();
+  void set_selected();
 
   void setLabelVisibility(bool visible);
 
-  void clearSelection();
+  void clear_selection();
 
   void setLabel(const QString &txt);
 

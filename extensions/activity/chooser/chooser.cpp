@@ -111,7 +111,7 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
 
   d->m_grid_view = new UIKit::ModelView(d->m_activity_window_ptr,
                                         UIKit::ModelView::kGridModel);
-  d->m_grid_view->setViewGeometry(window_geometry);
+  d->m_grid_view->set_view_geometry(window_geometry);
 
   on_arguments_updated([this]() {
     if (has_attribute("data")) {
@@ -197,16 +197,16 @@ Widget *Action::createActionItem(const QString &aIcon,
 
   UIKit::ImageView *l_image_view = new UIKit::ImageView(l_rv);
   UIKit::Label *l_action_label = new UIKit::Label(l_rv);
-  l_action_label->setLabel(aLabel);
+  l_action_label->set_label(aLabel);
   l_action_label->set_widget_name(aLabel);
 
   QPixmap l_view_pixmap(UIKit::Theme::instance()->drawable(
                           aIcon, "hdpi"));
   l_image_view->setMinimumSize(l_view_pixmap.size());
-  l_image_view->setSize(l_view_pixmap.size());
-  l_image_view->setPixmap(l_view_pixmap);
+  l_image_view->set_size(l_view_pixmap.size());
+  l_image_view->set_pixmap(l_view_pixmap);
 
-  l_action_label->setSize(QSizeF(l_image_view->boundingRect().width(), 32));
+  l_action_label->set_size(QSizeF(l_image_view->boundingRect().width(), 32));
   l_action_label->setPos(0, l_image_view->boundingRect().height());
 
   l_rv->setGeometry(l_image_view->geometry());

@@ -40,7 +40,7 @@ LineEdit::LineEdit(QGraphicsObject *parent)
   d->mState = PrivateLineEdit::NORMAL;
   d->mStyle = Theme::style();
 
-  setSize(
+  set_size(
     QSize(Theme::style()->attribute("widget", "line_edit_width").toInt(),
           Theme::style()->attribute("widget", "line_edit_height").toInt()));
 
@@ -51,36 +51,36 @@ LineEdit::LineEdit(QGraphicsObject *parent)
 
 LineEdit::~LineEdit() { delete d; }
 
-void LineEdit::setText(const QString &txt) { d->mText = txt; }
+void LineEdit::set_text(const QString &a_txt) { d->mText = a_txt; }
 
 QString LineEdit::text() const { return d->mText; }
 
-void LineEdit::style(StylePtr style) { d->mStyle = style; }
+void LineEdit::style(StylePtr a_style) { d->mStyle = a_style; }
 
-void LineEdit::setSize(const QSizeF &size)
+void LineEdit::set_size(const QSizeF &a_size)
 {
-  setGeometry(QRectF(0, 0, size.width(), size.height()));
+  setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
 }
 
-QSizeF LineEdit::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF LineEdit::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const
 {
   return boundingRect().size();
 }
 
-void LineEdit::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+void LineEdit::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
                      QWidget * /*widget*/)
 {
   switch (d->mState) {
   case PrivateLineEdit::NORMAL:
-    d->paintNormalEdit(painter, option);
+    d->paintNormalEdit(a_painter_ptr, a_option_ptr);
     break;
   case PrivateLineEdit::FOCUSED:
-    d->paintFocusedEdit(painter, option);
+    d->paintFocusedEdit(a_painter_ptr, a_option_ptr);
     break;
   default:
     qDebug() << Q_FUNC_INFO << "Unknown State";
   }
-  QFontMetrics m = painter->fontMetrics();
+  QFontMetrics m = a_painter_ptr->fontMetrics();
   int _text_pixel_width = m.width(d->mText) + 1;
 
   int _text_cursor_width = 10;
@@ -92,42 +92,42 @@ void LineEdit::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   }
 
   QPointF line1(_text_cursor_width, 10);
-  QPointF line2(_text_cursor_width, option->exposedRect.height() - 10);
+  QPointF line2(_text_cursor_width, a_option_ptr->exposedRect.height() - 10);
 
   QPen pen =
     QPen(QColor(98, 101, 108), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-  painter->setPen(pen);
-  painter->drawLine(line1, line2);
+  a_painter_ptr->setPen(pen);
+  a_painter_ptr->drawLine(line1, line2);
 }
 
-void LineEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void LineEdit::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
-  event->accept();
+  a_event_ptr->accept();
   d->mState = PrivateLineEdit::FOCUSED;
   update();
-  Widget::mousePressEvent(event);
+  Widget::mousePressEvent(a_event_ptr);
 }
 
-void LineEdit::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void LineEdit::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
-  Widget::mouseReleaseEvent(event);
+  Widget::mouseReleaseEvent(a_event_ptr);
 }
 
-void LineEdit::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void LineEdit::mouseMoveEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   setCursor(Qt::IBeamCursor);
   d->mState = PrivateLineEdit::FOCUSED;
   update();
-  Widget::mouseMoveEvent(event);
+  Widget::mouseMoveEvent(a_event_ptr);
 }
 
-void LineEdit::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void LineEdit::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr)
 {
   setCursor(Qt::IBeamCursor);
   grabKeyboard();
   d->mState = PrivateLineEdit::FOCUSED;
   update();
-  Widget::hoverEnterEvent(event);
+  Widget::hoverEnterEvent(a_event_ptr);
 }
 
 void LineEdit::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
@@ -139,18 +139,18 @@ void LineEdit::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
   Widget::hoverLeaveEvent(event);
 }
 
-void LineEdit::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+void LineEdit::hoverMoveEvent(QGraphicsSceneHoverEvent *a_event_ptr)
 {
   setCursor(Qt::IBeamCursor);
   d->mState = PrivateLineEdit::FOCUSED;
   update();
-  Widget::hoverMoveEvent(event);
+  Widget::hoverMoveEvent(a_event_ptr);
 }
 
-bool LineEdit::eventFilter(QObject *object, QEvent *event)
+bool LineEdit::eventFilter(QObject *object, QEvent *a_event_ptr)
 {
-  if (event->type() == QEvent::KeyPress) {
-    QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+  if (a_event_ptr->type() == QEvent::KeyPress) {
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>(a_event_ptr);
     if (keyEvent->key() == Qt::Key_Enter) {
       // Special tab handling
       return true;
@@ -161,9 +161,9 @@ bool LineEdit::eventFilter(QObject *object, QEvent *event)
   return false;
 }
 
-void LineEdit::keyPressEvent(QKeyEvent *event)
+void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr)
 {
-  if (event->key() == Qt::Key_Backspace) {
+  if (a_event_ptr->key() == Qt::Key_Backspace) {
     d->mText.remove(d->mKeyCursorLeftLoc - 1, 1);
     if (d->mKeyCursorLeftLoc != 0) {
       d->mKeyCursorLeftLoc--;
@@ -171,24 +171,24 @@ void LineEdit::keyPressEvent(QKeyEvent *event)
     Q_EMIT text(d->mText);
     update();
     return;
-  } else if (event->key() == Qt::Key_Left) {
+  } else if (a_event_ptr->key() == Qt::Key_Left) {
     if (d->mKeyCursorLeftLoc != 0) {
       d->mKeyCursorLeftLoc--;
     }
     update();
     return;
 
-  } else if (event->key() == Qt::Key_Right) {
+  } else if (a_event_ptr->key() == Qt::Key_Right) {
     if (d->mKeyCursorLeftLoc < d->mText.count()) {
       d->mKeyCursorLeftLoc++;
     }
     update();
     return;
-  } else if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+  } else if (a_event_ptr->key() == Qt::Key_Enter || a_event_ptr->key() == Qt::Key_Return) {
     Q_EMIT submit();
     return;
   }
-  d->mText.insert(d->mKeyCursorLeftLoc, event->text());
+  d->mText.insert(d->mKeyCursorLeftLoc, a_event_ptr->text());
   d->mKeyCursorLeftLoc++;
   Q_EMIT text(d->mText);
   update();

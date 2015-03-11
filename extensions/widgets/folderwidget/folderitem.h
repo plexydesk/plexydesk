@@ -25,8 +25,8 @@ public:
   QFileInfo fileInfo() const;
   QIcon icon() const;
 
-  void setSelected();
-  void clearSelection();
+  void set_selected();
+  void clear_selection();
 
 Q_SIGNALS:
   void clicked(FolderItem *);

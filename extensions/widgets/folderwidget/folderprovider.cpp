@@ -65,7 +65,7 @@ float FolderProvider::padding() const
   return 5.0;
 }
 
-float FolderProvider::leftMargin() const
+float FolderProvider::left_margin() const
 {
 #ifdef Q_WS_QPA
   return 20.0;
@@ -74,7 +74,7 @@ float FolderProvider::leftMargin() const
   return 5.0;
 }
 
-float FolderProvider::rightMargin() const
+float FolderProvider::right_margin() const
 {
 #ifdef Q_WS_QPA
   return 20.0;
@@ -122,7 +122,7 @@ UIKit::DataSourcePtr FolderProvider::loadDataSourceEngine(
   return dataSource;
 }
 
-UIKit::TableModel::TableRenderMode FolderProvider::renderType() const
+UIKit::TableModel::TableRenderMode FolderProvider::render_type() const
 {
   return UIKit::TableModel::kRenderAsGridView;
 }

@@ -55,9 +55,9 @@ float DateCellFactory::margin() const { return 0.0; }
 
 float DateCellFactory::padding() const { return 0.0; }
 
-float DateCellFactory::leftMargin() const { return 0.0; }
+float DateCellFactory::left_margin() const { return 0.0; }
 
-float DateCellFactory::rightMargin() const { return 0.0; }
+float DateCellFactory::right_margin() const { return 0.0; }
 
 bool DateCellFactory::init()
 {
@@ -66,7 +66,7 @@ bool DateCellFactory::init()
   return true;
 }
 
-TableModel::TableRenderMode DateCellFactory::renderType() const
+TableModel::TableRenderMode DateCellFactory::render_type() const
 {
   return DateCellFactory::kRenderAsGridView;
 }

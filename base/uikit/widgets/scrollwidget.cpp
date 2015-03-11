@@ -37,23 +37,23 @@ public:
   QGraphicsObject *m_viewport;
 };
 
-ScrollWidget::ScrollWidget(const QRectF &rect, QGraphicsObject *parent)
+ScrollWidget::ScrollWidget(const QRectF &a_rect, QGraphicsObject *parent)
   : Widget(parent), d(new Private)
 {
   d->m_viewport = 0;
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
-  d->m_size = rect.size();
+  d->m_size = a_rect.size();
 }
 
 ScrollWidget::~ScrollWidget() { delete d; }
 
-void ScrollWidget::setViewport(QGraphicsObject *widget)
+void ScrollWidget::set_viewport(QGraphicsObject *a_widget_ptr)
 {
-  if (!widget) {
+  if (!a_widget_ptr) {
     return;
   }
 
-  if (widget == d->m_viewport) {
+  if (a_widget_ptr == d->m_viewport) {
     return;
   }
 
@@ -62,13 +62,13 @@ void ScrollWidget::setViewport(QGraphicsObject *widget)
     delete d->m_viewport;
   }
 
-  if (widget) {
-    widget->setParentItem(this);
-    d->m_viewport = widget;
+  if (a_widget_ptr) {
+    a_widget_ptr->setParentItem(this);
+    d->m_viewport = a_widget_ptr;
   }
 }
 
-void ScrollWidget::scrollBy(int x, int y)
+void ScrollWidget::scroll_by(int x, int y)
 {
   if (d->m_viewport) {
     // resetric to viewport
@@ -84,36 +84,36 @@ void ScrollWidget::scrollBy(int x, int y)
   }
 }
 
-void ScrollWidget::paint_view(QPainter *painter, const QRectF &rect) {}
+void ScrollWidget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {}
 
-void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *event)
+void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr)
 {
-  if (event->delta() < 0) {
-    scrollBy(0, -10);
+  if (a_event_ptr->delta() < 0) {
+    scroll_by(0, -10);
   } else {
-    scrollBy(0, 10);
+    scroll_by(0, 10);
   }
-  event->accept();
+  a_event_ptr->accept();
 
   //?
-  Widget::wheelEvent(event);
+  Widget::wheelEvent(a_event_ptr);
 }
 
-void ScrollWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
+void ScrollWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *a_event_ptr)
 {
-  Widget::dragMoveEvent(event);
+  Widget::dragMoveEvent(a_event_ptr);
 }
 
-bool ScrollWidget::event(QEvent *e)
+bool ScrollWidget::event(QEvent *a_event_ptr)
 {
   if (!d->m_viewport) {
-    return QGraphicsObject::event(e);
+    return QGraphicsObject::event(a_event_ptr);
   }
 
-  switch (e->type()) {
+  switch (a_event_ptr->type()) {
   case QScrollPrepareEvent::ScrollPrepare: {
     qDebug() << Q_FUNC_INFO << "Prepare :";
-    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(e);
+    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(a_event_ptr);
     se->setViewportSize(d->m_size);
     QRectF br = d->m_viewport->boundingRect();
     se->setContentPosRange(
@@ -121,11 +121,11 @@ bool ScrollWidget::event(QEvent *e)
              qMax(qreal(0), br.height() - d->m_size.height())));
     se->setContentPos(-d->m_viewport->pos());
     se->accept();
-    return QGraphicsObject::event(e);
+    return QGraphicsObject::event(a_event_ptr);
   }
   case QScrollEvent::Scroll: {
     qDebug() << Q_FUNC_INFO << "Scroll";
-    QScrollEvent *se = static_cast<QScrollEvent *>(e);
+    QScrollEvent *se = static_cast<QScrollEvent *>(a_event_ptr);
     d->m_viewport->setPos(-se->contentPos() - se->overshootDistance());
     return true;
   }
@@ -133,10 +133,10 @@ bool ScrollWidget::event(QEvent *e)
   default:
     break;
   }
-  return QGraphicsObject::event(e);
+  return QGraphicsObject::event(a_event_ptr);
 }
 
-bool ScrollWidget::sceneEvent(QEvent *e)
+bool ScrollWidget::sceneEvent(QEvent *a_e_ptr)
 {
   /*
   switch (e->type()) {
@@ -160,7 +160,7 @@ bool ScrollWidget::sceneEvent(QEvent *e)
       break;
   }
   */
-  return QGraphicsObject::sceneEvent(e);
+  return QGraphicsObject::sceneEvent(a_e_ptr);
 }
 
 } // namespace PlexyDesk

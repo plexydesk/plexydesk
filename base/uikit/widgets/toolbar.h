@@ -15,34 +15,34 @@ public:
 
   virtual ~ToolBar();
 
-  virtual void addAction(const QString &lable, const QString &icon,
-                         bool togleAction = false);
+  virtual void add_action(const QString &a_lable, const QString &a_icon,
+                         bool a_togle_action = false);
 
-  virtual void insertWidget(Widget *widget);
+  virtual void insert_widget(Widget *a_widget_ptr);
 
-  virtual void setOrientation(Qt::Orientation orientation);
+  virtual void set_orientation(Qt::Orientation a_orientation);
 
-  virtual void setIconResolution(const QString &res);
+  virtual void set_icon_resolution(const QString &a_res);
 
-  virtual void setIconSize(const QSize &size);
+  virtual void set_icon_size(const QSize &a_size);
 
   virtual StylePtr style() const;
 
-  // virtual void setGeometry(const QRectF &rect);
+  // virtual void setGeometry(const QRectF &a_rect);
 
-  virtual QRectF contentGeometry() const;
+  virtual QRectF contents_geometry() const;
 
-  virtual QRectF frameGeometry() const;
+  virtual QRectF frame_geometry() const;
 
-  virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint) const;
+  virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 
 Q_SIGNALS:
-  void action(const QString &actionName);
+  void action(const QString &a_actionName);
 
 protected:
-  virtual void paint_view(QPainter *painter, const QRectF &exposeRect);
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_expose_rect);
 
-  void toolButtonPressHandler(const Widget *aWidget);
+  void tool_button_press_handler(const Widget *a_widget_ptr);
 private:
   class PrivateToolBar;
   PrivateToolBar *const d;

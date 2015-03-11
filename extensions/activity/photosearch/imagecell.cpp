@@ -62,7 +62,7 @@ QSizeF ImageCell::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
   return boundingRect().size();
 }
 
-void ImageCell::setSelected()
+void ImageCell::set_selected()
 {
   d->mIsSelected = true;
   update();
@@ -70,7 +70,7 @@ void ImageCell::setSelected()
 
 void ImageCell::setLabelVisibility(bool visible) { d->mVisibility = visible; }
 
-void ImageCell::clearSelection() { d->mIsSelected = false; }
+void ImageCell::clear_selection() { d->mIsSelected = false; }
 
 void ImageCell::setLabel(const QString &txt)
 {

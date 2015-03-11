@@ -44,7 +44,7 @@ public:
 
   QString prefix();
 
-  static QString cache_dir(const QString &folder = QString());
+  static QString cache_dir(const QString &a_folder = QString());
 
   static QNetworkAccessManager *network_access_manager();
 

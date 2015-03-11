@@ -18,27 +18,27 @@ public:
     kTableModel
   } ModelType;
 
-  ModelView(QGraphicsObject *a_parent_ptr = 0, ModelType aModelType = kListModel);
+  ModelView(QGraphicsObject *a_parent_ptr = 0, ModelType a_model_type = kListModel);
   virtual ~ModelView();
 
-  virtual void insert(Widget *widget);
-  virtual void remove(Widget *widget);
+  virtual void insert(Widget *a_widget_ptr);
+  virtual void remove(Widget *a_widget_ptr);
   virtual void clear();
 
-  virtual void setViewGeometry(const QRectF &rect);
+  virtual void set_view_geometry(const QRectF &a_rect);
   virtual QRectF boundingRect() const;
-  virtual void setGeometry(const QRectF &rect);
+  virtual void setGeometry(const QRectF &a_rect);
   virtual QSizeF sizeHint(Qt::SizeHint which,
-                          const QSizeF &constraint) const;
+                          const QSizeF &a_constraint) const;
 
-  virtual void onActivated(std::function<void (int index)> aCallback);
+  virtual void on_activated(std::function<void (int index)> a_callback);
 protected:
   bool sceneEvent(QEvent *e);
   bool event(QEvent *e);
 
-  void insert_to_list_view(Widget *widget);
-  void insert_to_grid_view(Widget *widget);
-  void insert_to_table_view(Widget *widget);
+  void insert_to_list_view(Widget *a_widget_ptr);
+  void insert_to_grid_view(Widget *a_widget_ptr);
+  void insert_to_table_view(Widget *a_widget_ptr);
 private:
   class PrivateModelView;
   PrivateModelView *const d;

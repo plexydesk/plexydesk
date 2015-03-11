@@ -90,21 +90,21 @@ TableView::~TableView()
   delete d;
 }
 
-void TableView::setModel(TableModel *iface)
+void TableView::set_model(TableModel *a_model_ptr)
 {
   if (d->m_table_delegate_ptr) {
     delete d->m_table_delegate_ptr;
   }
 
-  if (!iface) {
+  if (!a_model_ptr) {
     return;
   }
 
-  d->m_table_delegate_ptr = iface;
+  d->m_table_delegate_ptr = a_model_ptr;
 
-  iface->setParent(this);
+  a_model_ptr->setParent(this);
 
-  if (iface->renderType() == TableModel::kRenderAsListView) {
+  if (a_model_ptr->render_type() == TableModel::kRenderAsListView) {
     d->m_base_list_layout = new QGraphicsLinearLayout(d->m_table_viewport);
     d->m_base_list_layout->setOrientation(Qt::Vertical);
     d->m_base_list_layout->setContentsMargins(0, 0, 0, 0);
@@ -113,37 +113,37 @@ void TableView::setModel(TableModel *iface)
     d->m_base_grid_layout = new QGraphicsGridLayout(d->m_table_viewport);
     d->m_base_grid_layout->setSpacing(d->m_table_delegate_ptr->padding());
     d->m_base_grid_layout->setContentsMargins(
-      d->m_table_delegate_ptr->leftMargin(), 0.0,
-      d->m_table_delegate_ptr->rightMargin(), 0.0);
+      d->m_table_delegate_ptr->left_margin(), 0.0,
+      d->m_table_delegate_ptr->right_margin(), 0.0);
   }
 
-  connect(iface, SIGNAL(cleared()), this, SLOT(onClear()));
-  connect(iface, SIGNAL(add(UIKit::TableViewItem *)), this,
-          SLOT(onAddViewItem(UIKit::TableViewItem *)));
+  connect(a_model_ptr, SIGNAL(cleared()), this, SLOT(on_clear()));
+  connect(a_model_ptr, SIGNAL(add(UIKit::TableViewItem *)), this,
+          SLOT(on_add_viewItem(UIKit::TableViewItem *)));
 
-  if (iface) {
-    iface->init();
+  if (a_model_ptr) {
+    a_model_ptr->init();
   }
 }
 
 TableModel *TableView::model() { return d->m_table_delegate_ptr; }
 
-void TableView::clearSelection()
+void TableView::clear_selection()
 {
   if (!d->m_table_delegate_ptr) {
     return;
   }
 
-  if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsListView) {
+  if (d->m_table_delegate_ptr->render_type() == TableModel::kRenderAsListView) {
     // todo
-  } else if (d->m_table_delegate_ptr->renderType() ==
+  } else if (d->m_table_delegate_ptr->render_type() ==
              TableModel::kRenderAsGridView) {
     for (int i = 0; i < d->m_base_grid_layout->rowCount(); i++) {
       for (int j = 0; j < d->m_base_grid_layout->columnCount(); j++) {
         TableViewItem *cell =
           (TableViewItem *)d->m_base_grid_layout->itemAt(i, j);
         if (cell) {
-          cell->clearSelection();
+          cell->clear_selection();
         }
       }
     }
@@ -158,28 +158,28 @@ QRectF TableView::boundingRect() const
   return rv;
 }
 
-void TableView::setGeometry(const QRectF &rect)
+void TableView::setGeometry(const QRectF &a_rect)
 {
-  qDebug() << Q_FUNC_INFO << rect;
-  d->m_table_viewport->setGeometry(rect);
+  qDebug() << Q_FUNC_INFO << a_rect;
+  d->m_table_viewport->setGeometry(a_rect);
   d->m_table_viewport->setPos(QPointF());
-  d->m_table_view_geometry.setWidth(rect.width());
-  d->m_table_view_geometry.setHeight(rect.height());
-  setPos(rect.topLeft());
-  Widget::setGeometry(rect);
+  d->m_table_view_geometry.setWidth(a_rect.width());
+  d->m_table_view_geometry.setHeight(a_rect.height());
+  setPos(a_rect.topLeft());
+  Widget::setGeometry(a_rect);
 }
 
-QSizeF TableView::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF TableView::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const
 {
   return d->m_table_view_geometry.size();
 }
 
-void TableView::scrollBy(int x, int y)
+void TableView::scrollBy(int a_x, int a_y)
 {
   // todo: manual scrolling probably with scrollbars ?
 }
 
-void TableView::paint_view(QPainter *painter, const QRectF &exposeRect) {}
+void TableView::paint_view(QPainter *painter, const QRectF &a_exposeRect) {}
 
 TableViewItem *TableView::itemAt(uint i)
 {
@@ -198,13 +198,13 @@ uint TableView::count() const
     return 0;
   }
 
-  if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsGridView) {
+  if (d->m_table_delegate_ptr->render_type() == TableModel::kRenderAsGridView) {
     if (!d->m_base_grid_layout) {
       return 0;
     }
 
     return d->m_base_grid_layout->count();
-  } else if (d->m_table_delegate_ptr->renderType() ==
+  } else if (d->m_table_delegate_ptr->render_type() ==
              TableModel::kRenderAsListView) {
     if (!d->m_base_list_layout) {
       return 0;
@@ -216,30 +216,30 @@ uint TableView::count() const
   return 0;
 }
 
-void TableView::setItemActivationCallback(std::function<void (TableViewItem *)> aCallback)
+void TableView::set_item_activation_callback(std::function<void (TableViewItem *)> a_callback)
 {
-  d->mItemActivationCallback = aCallback;
+  d->mItemActivationCallback = a_callback;
 }
 
-void TableView::onItemClick(TableViewItem *component)
+void TableView::on_item_click(TableViewItem *a_component_ptr)
 {
-  clearSelection();
+  clear_selection();
 
-  if (component) {
-    component->setSelected();
+  if (a_component_ptr) {
+    a_component_ptr->set_selected();
   }
 
   //todo: Remove this depricated method.
-  Q_EMIT activated(component);
+  Q_EMIT activated(a_component_ptr);
 
   if (d->mItemActivationCallback) {
-    d->mItemActivationCallback(component);
+    d->mItemActivationCallback(a_component_ptr);
   }
 
   qDebug() << Q_FUNC_INFO << " Activated :";
 }
 
-void TableView::onAddViewItem(UIKit::TableViewItem *item)
+void TableView::on_add_viewItem(UIKit::TableViewItem *a_item_ptr)
 {
   if (!d->m_table_delegate_ptr) {
     return;
@@ -247,26 +247,26 @@ void TableView::onAddViewItem(UIKit::TableViewItem *item)
 
   d->m_current_item_count++;
 
-  if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsListView) {
-    item->setParentItem(d->m_table_viewport);
-    item->setParent(this);
-    d->m_base_list_layout->addItem(item);
-    d->m_base_list_layout->setAlignment(item, Qt::AlignHCenter);
-    connect(item, SIGNAL(clicked(TableViewItem *)), this,
-            SLOT(onItemClick(TableViewItem *)));
+  if (d->m_table_delegate_ptr->render_type() == TableModel::kRenderAsListView) {
+    a_item_ptr->setParentItem(d->m_table_viewport);
+    a_item_ptr->setParent(this);
+    d->m_base_list_layout->addItem(a_item_ptr);
+    d->m_base_list_layout->setAlignment(a_item_ptr, Qt::AlignHCenter);
+    connect(a_item_ptr, SIGNAL(clicked(TableViewItem *)), this,
+            SLOT(on_item_click(TableViewItem *)));
     d->m_base_list_layout->activate();
     d->m_base_list_layout->updateGeometry();
   }
 
-  if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsGridView) {
-    item->setParentItem(d->m_table_viewport);
-    item->setParent(this);
+  if (d->m_table_delegate_ptr->render_type() == TableModel::kRenderAsGridView) {
+    a_item_ptr->setParentItem(d->m_table_viewport);
+    a_item_ptr->setParent(this);
 
     // calculate the number of items per row
     int _item_per_row = (this->boundingRect().width() -
-                         (d->m_table_delegate_ptr->leftMargin() +
-                          d->m_table_delegate_ptr->rightMargin())) /
-                        item->boundingRect().width();
+                         (d->m_table_delegate_ptr->left_margin() +
+                          d->m_table_delegate_ptr->right_margin())) /
+                        a_item_ptr->boundingRect().width();
 
     if (_item_per_row <= 0) {
       _item_per_row = 1;
@@ -275,29 +275,29 @@ void TableView::onAddViewItem(UIKit::TableViewItem *item)
     int totalSpace = ((_item_per_row - 1) * d->m_table_delegate_ptr->padding());
 
     _item_per_row = (this->boundingRect().width() -
-                     (d->m_table_delegate_ptr->leftMargin() + totalSpace +
-                      d->m_table_delegate_ptr->rightMargin())) /
-                    item->boundingRect().width();
+                     (d->m_table_delegate_ptr->left_margin() + totalSpace +
+                      d->m_table_delegate_ptr->right_margin())) /
+                    a_item_ptr->boundingRect().width();
 
     if (_item_per_row <= 0) {
       _item_per_row = 1;
     }
 
-    d->m_base_grid_layout->addItem(item,
+    d->m_base_grid_layout->addItem(a_item_ptr,
                                    d->m_current_item_count / _item_per_row,
                                    d->m_current_item_count % _item_per_row);
-    d->m_base_grid_layout->setAlignment(item, Qt::AlignHCenter);
+    d->m_base_grid_layout->setAlignment(a_item_ptr, Qt::AlignHCenter);
     d->m_base_grid_layout->activate();
     d->m_base_grid_layout->updateGeometry();
 
-    connect(item, SIGNAL(clicked(TableViewItem *)), this,
-            SLOT(onItemClick(TableViewItem *)));
+    connect(a_item_ptr, SIGNAL(clicked(TableViewItem *)), this,
+            SLOT(on_item_click(TableViewItem *)));
   }
 }
 
-void TableView::onClear()
+void TableView::on_clear()
 {
-  if (d->m_table_delegate_ptr->renderType() == TableModel::kRenderAsListView) {
+  if (d->m_table_delegate_ptr->render_type() == TableModel::kRenderAsListView) {
     for (int i = 0; i < d->m_base_list_layout->count(); i++) {
       QGraphicsLayoutItem *item = d->m_base_list_layout->itemAt(i);
 
@@ -323,7 +323,7 @@ void TableView::onClear()
       d->m_base_list_layout->activate();
       d->m_base_list_layout->updateGeometry();
     }
-  } else if (d->m_table_delegate_ptr->renderType() ==
+  } else if (d->m_table_delegate_ptr->render_type() ==
              TableModel::kRenderAsGridView) {
     for (int i = 0; i < d->m_base_grid_layout->rowCount(); i++) {
       for (int j = 0; j < d->m_base_grid_layout->columnCount(); j++) {
@@ -356,7 +356,7 @@ void TableView::onClear()
   d->m_current_item_count = -1;
 }
 
-void TableView::wheelEvent(QGraphicsSceneWheelEvent *event)
+void TableView::wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr)
 {
   if (!d->m_table_viewport) {
     return;
@@ -364,7 +364,7 @@ void TableView::wheelEvent(QGraphicsSceneWheelEvent *event)
 
   QPointF scrollToPos(0.0, 0.0);
 
-  if (event->delta() < 0) {
+  if (a_event_ptr->delta() < 0) {
     scrollToPos.setY(d->m_table_viewport->pos().y() +
                      d->m_table_viewport->boundingRect().height());
   } else {
@@ -372,7 +372,7 @@ void TableView::wheelEvent(QGraphicsSceneWheelEvent *event)
                      d->m_table_viewport->boundingRect().height());
   }
 
-  event->accept();
+  a_event_ptr->accept();
 
   if (QScroller::hasScroller(this)) {
     QScroller *scroller = QScroller::scroller(this);
@@ -382,18 +382,18 @@ void TableView::wheelEvent(QGraphicsSceneWheelEvent *event)
   }
 }
 
-bool TableView::event(QEvent *e)
+bool TableView::event(QEvent *a_event_ptr)
 {
-  switch (e->type()) {
+  switch (a_event_ptr->type()) {
   case QEvent::GraphicsSceneMouseDoubleClick: {
-    return QGraphicsObject::event(e);
+    return QGraphicsObject::event(a_event_ptr);
   }
   case QScrollPrepareEvent::ScrollPrepare: {
     if (!d->m_table_viewport) {
       return false;
     }
 
-    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(e);
+    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(a_event_ptr);
     se->setViewportSize(d->m_table_view_geometry.size());
     QRectF br = d->m_table_viewport->boundingRect();
 
@@ -410,13 +410,13 @@ bool TableView::event(QEvent *e)
     se->setContentPos(-d->m_table_viewport->pos());
 
     se->accept();
-    return QGraphicsObject::event(e);
+    return QGraphicsObject::event(a_event_ptr);
   }
   case QScrollEvent::Scroll: {
     if (!d->m_table_viewport) {
       return false;
     }
-    QScrollEvent *se = static_cast<QScrollEvent *>(e);
+    QScrollEvent *se = static_cast<QScrollEvent *>(a_event_ptr);
     d->m_table_viewport->setPos(-se->contentPos() - se->overshootDistance());
     return true;
   }
@@ -424,12 +424,12 @@ bool TableView::event(QEvent *e)
   default:
     break;
   }
-  return QGraphicsObject::event(e);
+  return QGraphicsObject::event(a_event_ptr);
 }
 
-bool TableView::sceneEvent(QEvent *e)
+bool TableView::sceneEvent(QEvent *a_event_ptr)
 {
-  switch (e->type()) {
+  switch (a_event_ptr->type()) {
   case QEvent::TouchBegin: {
     // We need to return true for the TouchBegin here in the
     // top-most graphics object - otherwise gestures in our parent
@@ -447,17 +447,17 @@ bool TableView::sceneEvent(QEvent *e)
   default:
     break;
   }
-  return QGraphicsObject::sceneEvent(e);
+  return QGraphicsObject::sceneEvent(a_event_ptr);
 }
 
-void TableView::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void TableView::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
-  clearSelection();
-  QGraphicsItem::mousePressEvent(event);
+  clear_selection();
+  QGraphicsItem::mousePressEvent(a_event_ptr);
 }
 
-void TableView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void TableView::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
-  QGraphicsObject::mouseReleaseEvent(event);
+  QGraphicsObject::mouseReleaseEvent(a_event_ptr);
 }
 }

@@ -40,7 +40,7 @@ ProgressBar::ProgressBar(QGraphicsObject *parent)
   d->mProgressAnimation->setStartValue(d->mMinValue);
   d->mProgressAnimation->setEndValue(d->mMaxValue);
 
-  setSize(
+  set_size(
     QSize(Theme::style()->attribute("widget", "line_edit_width").toInt(),
           Theme::style()->attribute("widget", "line_edit_height").toInt()));
 
@@ -56,9 +56,9 @@ ProgressBar::~ProgressBar()
   delete d;
 }
 
-void ProgressBar::setLabel(const QString &txt)
+void ProgressBar::set_label(const QString &a_txt)
 {
-  d->mString = txt;
+  d->mString = a_txt;
   Q_EMIT contentBoundingRectChaned();
 }
 
@@ -68,25 +68,25 @@ void ProgressBar::setLabel(const QString &txt)
 
 QString ProgressBar::label() const { return d->mString; }
 
-void ProgressBar::setSize(const QSizeF &size)
+void ProgressBar::set_size(const QSizeF &size)
 {
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 }
 
 QSizeF ProgressBar::sizeHint(Qt::SizeHint which,
-                             const QSizeF &constraint) const
+                             const QSizeF &a_constraint) const
 {
   return boundingRect().size();
 }
 
-int ProgressBar::maxRange() { return d->mMaxValue; }
+int ProgressBar::max_range() { return d->mMaxValue; }
 
-int ProgressBar::minRange() { return d->mMinValue; }
+int ProgressBar::min_range() { return d->mMinValue; }
 
-void ProgressBar::setRange(int min, int max)
+void ProgressBar::set_range(int a_min, int a_max)
 {
-  d->mMinValue = min;
-  d->mMaxValue = max;
+  d->mMinValue = a_min;
+  d->mMaxValue = a_max;
 
   d->mProgressAnimation->setStartValue(d->mMinValue);
   d->mProgressAnimation->setEndValue(d->mMaxValue);
@@ -94,9 +94,9 @@ void ProgressBar::setRange(int min, int max)
   update();
 }
 
-void ProgressBar::setValue(int value)
+void ProgressBar::set_value(int a_value)
 {
-  if (value > d->mMaxValue) {
+  if (a_value > d->mMaxValue) {
     d->mValue = d->mMaxValue;
     d->mProgressAnimation->setEndValue(d->mValue);
     d->mProgressAnimation->start();
@@ -104,7 +104,7 @@ void ProgressBar::setValue(int value)
     return;
   }
 
-  if (value < d->mMinValue) {
+  if (a_value < d->mMinValue) {
     d->mValue = d->mMinValue;
     d->mProgressAnimation->setEndValue(d->mValue);
     d->mProgressAnimation->start();
@@ -112,51 +112,51 @@ void ProgressBar::setValue(int value)
     return;
   }
 
-  d->mValue = value;
+  d->mValue = a_value;
   d->mProgressAnimation->setEndValue(d->mValue);
   d->mProgressAnimation->start();
   update();
 }
 
-void ProgressBar::onValueChanged(const QVariant &value)
+void ProgressBar::on_value_changed(const QVariant &a_value)
 {
-  d->mValue = value.toFloat();
+  d->mValue = a_value.toFloat();
   update();
 }
 
-void ProgressBar::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void ProgressBar::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
-  Widget::mouseReleaseEvent(event);
+  Widget::mouseReleaseEvent(a_event_ptr);
 }
 
-void ProgressBar::paint(QPainter *painter,
-                        const QStyleOptionGraphicsItem *option,
-                        QWidget *widget)
+void ProgressBar::paint(QPainter *a_painter_ptr,
+                        const QStyleOptionGraphicsItem *a_option_ptr,
+                        QWidget *a_widget_ptr)
 {
-  painter->save();
+  a_painter_ptr->save();
   StyleFeatures features;
   features.render_state = StyleFeatures::kRenderBackground;
-  features.geometry = option->exposedRect;
+  features.geometry = a_option_ptr->exposedRect;
 
   if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("linear_progress_bar", features, painter);
+    UIKit::Theme::style()->draw("linear_progress_bar", features, a_painter_ptr);
   }
 
   float percentage = (d->mValue / d->mMaxValue) * 100;
-  float progressLevel = (option->exposedRect.width() / 100) * percentage;
+  float progressLevel = (a_option_ptr->exposedRect.width() / 100) * percentage;
 
   StyleFeatures progressFeatures;
   progressFeatures.geometry =
-    QRectF(0.0, 0.0, progressLevel, option->exposedRect.height());
+    QRectF(0.0, 0.0, progressLevel, a_option_ptr->exposedRect.height());
 
   progressFeatures.render_state = StyleFeatures::kRenderForground;
 
   if (UIKit::Theme::style()) {
     UIKit::Theme::style()->draw("linear_progress_bar", progressFeatures,
-                                painter);
+                                a_painter_ptr);
   }
 
-  painter->restore();
+  a_painter_ptr->restore();
 }
 
 QSizeF ProgressBar::PrivateProgressBar::pixelSizeOfText(const QString &txt)

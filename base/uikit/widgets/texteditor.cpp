@@ -60,25 +60,25 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   set_widget_flag(UIKit::Widget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
-  connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(onTextUpdated()));
+  connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(on_text_updated()));
   connect(d->mEditor->document(), SIGNAL(blockCountChanged(int)), this,
-          SLOT(onBlockCountChanged(int)));
+          SLOT(on_block_count_changed(int)));
 }
 
 TextEditor::~TextEditor() { delete d; }
 
-void TextEditor::setText(const QString &text) { d->mEditor->setText(text); }
+void TextEditor::set_text(const QString &a_text) { d->mEditor->setText(a_text); }
 
-void TextEditor::setPlaceholderText(const QString &placeholderText)
+void TextEditor::set_placeholder_text(const QString &a_placeholderText)
 {
   // if (d->mEditor)
   //   d->mEditor->setPlaceholderText(placeholderText);
 }
 
-void TextEditor::setFontPointSize(qreal s)
+void TextEditor::set_font_point_size(qreal a_s)
 {
   if (d->mEditor) {
-    d->mEditor->setFontPointSize(s);
+    d->mEditor->setFontPointSize(a_s);
   }
 }
 
@@ -104,20 +104,20 @@ QSizeF TextEditor::sizeHint(Qt::SizeHint which,
   return d->mEditor->size();
 }
 
-void TextEditor::setGeometry(const QRectF &rect)
+void TextEditor::setGeometry(const QRectF &a_rect)
 {
-  qDebug() << Q_FUNC_INFO << "=========================================" << rect
+  qDebug() << Q_FUNC_INFO << "=========================================" << a_rect
            << "=========================================";
 
-  d->mProxyWidget->setMinimumSize(rect.size());
-  d->mProxyWidget->setMaximumSize(rect.size());
-  d->mProxyWidget->resize(rect.size());
+  d->mProxyWidget->setMinimumSize(a_rect.size());
+  d->mProxyWidget->setMaximumSize(a_rect.size());
+  d->mProxyWidget->resize(a_rect.size());
   d->mEditor->move(0.0, 0.0);
 
-  Widget::setGeometry(rect);
+  Widget::setGeometry(a_rect);
 }
 
-void TextEditor::updateTextScale()
+void TextEditor::update_text_scale()
 {
   QRectF bounds = boundingRect();
   const QRectF newBounds(bounds.x(), bounds.y(),
@@ -134,7 +134,7 @@ void TextEditor::updateTextScale()
   setScale(d->mTextScaleFactor);
 }
 
-void TextEditor::beginList()
+void TextEditor::begin_list()
 {
   if (!d->mEditor) {
     return;
@@ -148,14 +148,14 @@ void TextEditor::beginList()
   cursor.endEditBlock();
 }
 
-void TextEditor::endList()
+void TextEditor::end_list()
 {
   if (!d->mEditor) {
     return;
   }
 }
 
-void TextEditor::convertToLink()
+void TextEditor::convert_to_link()
 {
   if (!d->mEditor) {
     return;
@@ -190,15 +190,15 @@ void TextEditor::convertToLink()
   }
 }
 
-void TextEditor::onTextUpdated()
+void TextEditor::on_text_updated()
 {
   QTextDocument *doc = d->mEditor->document();
-  Q_EMIT textUpdated(this->text());
+  Q_EMIT text_updated(this->text());
 }
 
-void TextEditor::onBlockCountChanged(int count)
+void TextEditor::on_block_count_changed(int a_count)
 {
-  if (count == 2) {
+  if (a_count == 2) {
     QTextDocument *document = d->mEditor->document();
     QTextCursor cursor(document);
 
@@ -210,17 +210,17 @@ void TextEditor::onBlockCountChanged(int count)
     // format.setFontPointSize (18);
 
     cursor.mergeCharFormat(format); // do the text as Bold
-    Q_EMIT documentTitleAvailable(document->firstBlock().text());
+    Q_EMIT document_title_available(document->firstBlock().text());
   }
 }
 
-void TextEditor::setTextScaleFactor(qreal scaleFactor)
+void TextEditor::set_text_scale_factor(qreal a_scale_factor)
 {
-  d->mTextScaleFactor = scaleFactor;
-  updateTextScale();
+  d->mTextScaleFactor = a_scale_factor;
+  update_text_scale();
 }
 
-qreal TextEditor::textScaleFactor() const { return d->mTextScaleFactor; }
+qreal TextEditor::text_scale_factor() const { return d->mTextScaleFactor; }
 
 QString TextEditor::PrivateTextEditor::extractHeader(
   const QString &headerText)

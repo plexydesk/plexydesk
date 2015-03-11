@@ -63,12 +63,12 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mNextBtn = new UIKit::ImageButton(d->mBaseTooloBarWidget);
   d->mPrevBtn = new UIKit::ImageButton(d->mBaseTooloBarWidget);
 
-  d->mNextBtn->setLable("Next");
-  d->mNextBtn->setPixmap(
+  d->mNextBtn->set_lable("Next");
+  d->mNextBtn->set_pixmap(
     UIKit::Theme::instance()->drawable("pd_next_icon_white.png", "mdpi"));
 
-  d->mPrevBtn->setLable("Previous");
-  d->mPrevBtn->setPixmap(
+  d->mPrevBtn->set_lable("Previous");
+  d->mPrevBtn->set_pixmap(
     UIKit::Theme::instance()->drawable("pd_prev_icon_white.png", "mdpi"));
 
   d->mPrevBtn->setMinimumSize(QSize(24, 24));
@@ -76,12 +76,12 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   d->mYearLable = new UIKit::Label(d->mBaseTooloBarWidget);
   d->mYearLable->setMinimumSize(QSize(200, 24));
-  d->mYearLable->setSize(QSize(200, 24));
+  d->mYearLable->set_size(QSize(200, 24));
 
-  d->mYearLable->setLabelStyle(Qt::transparent, Qt::white);
-  d->mYearLable->setFontSize(14);
+  d->mYearLable->set_label_style(Qt::transparent, Qt::white);
+  d->mYearLable->set_font_size(14);
 
-  d->mYearLable->setLabel(
+  d->mYearLable->set_label(
     QString("%1 %2")
     .arg(QDate::longMonthName(QDate::currentDate().month()))
     .arg(QDate::currentDate().year()));
@@ -105,7 +105,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mHeaderTable->setPos(0, 48);
   DateCellFactory *headerList = new DateCellFactory(this);
   headerList->setHeaderMode(true);
-  d->mHeaderTable->setModel(headerList);
+  d->mHeaderTable->set_model(headerList);
 
   // data
   DateCellFactory *factory = new DateCellFactory(this);
@@ -114,7 +114,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mDayTable->setGeometry(QRectF(0, 0, 300, 480));
   factory->setLabelVisibility(true);
 
-  d->mDayTable->setModel(factory);
+  d->mDayTable->set_model(factory);
   d->mFrame->setPos(300.0, 0.0);
   d->mDayTable->setPos(0.0, 48.0);
 
@@ -144,17 +144,17 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   d->mTimeLable = new UIKit::Label(this);
   d->mTimeLable->setMinimumSize(QSizeF(300.0, 50));
-  d->mTimeLable->setSize(QSizeF(290.0, 50));
-  d->mTimeLable->setLabelStyle(QColor("#f0f0f0"), QColor(81, 81, 81));
+  d->mTimeLable->set_size(QSizeF(290.0, 50));
+  d->mTimeLable->set_label_style(QColor("#f0f0f0"), QColor(81, 81, 81));
   // d->mTimeLable->setLabelStyle(Qt::white, QColor("#79BCD3"));
-  d->mTimeLable->setLabel(QString(d->mHourLable + ":" + d->mMinLable));
+  d->mTimeLable->set_label(QString(d->mHourLable + ":" + d->mMinLable));
   d->mTimeLable->setPos(0.0, d->mClockHourWidget->boundingRect().height() + 32);
-  d->mTimeLable->setFontSize(32);
+  d->mTimeLable->set_font_size(32);
 
   d->mOkBtn = new UIKit::ImageButton(this);
-  d->mOkBtn->setPixmap(
+  d->mOkBtn->set_pixmap(
     UIKit::Theme::instance()->drawable("pd_arrow_icon.png", "mdpi"));
-  d->mOkBtn->setSize(QSize(48, 48));
+  d->mOkBtn->set_size(QSize(48, 48));
   d->mOkBtn->setMinimumSize(QSize(48, 48));
   d->mOkBtn->setGeometry(QRectF(0, 0, 48, 48));
   d->mOkBtn->show();
@@ -268,7 +268,7 @@ void CalendarWidget::onNextClicked()
 
   d->mCurrentDate.setDate(currentYear, currentMonth, currentDay);
   update();
-  d->mYearLable->setLabel(
+  d->mYearLable->set_label(
     QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
       d->mCurrentDate.year()));
   changeDate(d->mCurrentDate);
@@ -289,7 +289,7 @@ void CalendarWidget::onPrevClicked()
 
   d->mCurrentDate.setDate(currentYear, currentMonth, currentDay);
   update();
-  d->mYearLable->setLabel(
+  d->mYearLable->set_label(
     QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
       d->mCurrentDate.year()));
   changeDate(d->mCurrentDate);
@@ -305,7 +305,7 @@ void CalendarWidget::onHourValueChanged(float value)
     d->mHourLable = QString("%1").arg(value);
   }
 
-  d->mTimeLable->setLabel(QString(d->mHourLable + ":" + d->mMinLable));
+  d->mTimeLable->set_label(QString(d->mHourLable + ":" + d->mMinLable));
 }
 
 void CalendarWidget::onMinValueChanged(float value)
@@ -318,7 +318,7 @@ void CalendarWidget::onMinValueChanged(float value)
     d->mMinLable = QString("%1").arg(value);
   }
 
-  d->mTimeLable->setLabel(QString(d->mHourLable + ":" + d->mMinLable));
+  d->mTimeLable->set_label(QString(d->mHourLable + ":" + d->mMinLable));
 }
 
 void CalendarWidget::onCellClicked()

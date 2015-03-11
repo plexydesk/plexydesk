@@ -77,13 +77,13 @@ Window::~Window()
   delete m_priv_impl;
 }
 
-void Window::set_window_content(Widget *a_widget)
+void Window::set_window_content(Widget *a_widget_ptr)
 {
   if (m_priv_impl->m_window_content) {
     return;
   }
 
-  m_priv_impl->m_window_content = a_widget;
+  m_priv_impl->m_window_content = a_widget_ptr;
   m_priv_impl->m_window_content->setParentItem(this);
 
   this->setGeometry(m_priv_impl->m_window_content->boundingRect());
@@ -169,18 +169,18 @@ void Window::on_window_discarded(std::function<void (Window *)> a_handler)
   m_priv_impl->m_window_discard_callback = a_handler;
 }
 
-void Window::paint_view(QPainter *painter, const QRectF &rect)
+void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr)
 {
   if (!m_priv_impl->mWindowBackgroundVisibility) {
     return;
   }
 
   StyleFeatures feature;
-  feature.geometry = rect;
+  feature.geometry = a_rect_ptr;
   feature.text_data = m_priv_impl->m_window_title;
 
   if (style()) {
-    style()->draw("window_frame", feature, painter);
+    style()->draw("window_frame", feature, a_painter_ptr);
   }
 }
 
@@ -222,9 +222,9 @@ void Window::mousePressEvent(QGraphicsSceneMouseEvent *event)
   QGraphicsObject::mousePressEvent(event);
 }
 
-void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
-  QGraphicsObject::mouseReleaseEvent(event);
+  QGraphicsObject::mouseReleaseEvent(a_event_ptr);
 }
 
 }

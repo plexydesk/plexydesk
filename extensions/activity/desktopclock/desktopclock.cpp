@@ -100,13 +100,13 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   d->m_tool_bar = new UIKit::ToolBar(d->mLayoutWidget);
 
   d->m_timezone_label = new UIKit::Label(d->m_tool_bar);
-  d->m_timezone_label->setSize(QSizeF(window_geometry.width() - 64, 32.0));
-  d->m_timezone_label->setLabel(tr("Time Zone"));
+  d->m_timezone_label->set_size(QSizeF(window_geometry.width() - 64, 32.0));
+  d->m_timezone_label->set_label(tr("Time Zone"));
 
-  d->m_tool_bar->setIconResolution("hdpi");
-  d->m_tool_bar->insertWidget(d->m_timezone_label);
-  d->m_tool_bar->addAction(tr("TimeZone"), "pd_add_new_icon", false);
-  d->m_tool_bar->setGeometry(d->m_tool_bar->frameGeometry());
+  d->m_tool_bar->set_icon_resolution("hdpi");
+  d->m_tool_bar->insert_widget(d->m_timezone_label);
+  d->m_tool_bar->add_action(tr("TimeZone"), "pd_add_new_icon", false);
+  d->m_tool_bar->setGeometry(d->m_tool_bar->frame_geometry());
 
   d->m_main_layout->addItem(d->m_tool_bar);
 
@@ -117,7 +117,7 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   d->m_timezone_table->setGeometry(_timezone_table_rect);
 
   d->m_timezone_model = new TimeZoneModel(d->m_timezone_table);
-  d->m_timezone_table->setModel(d->m_timezone_model);
+  d->m_timezone_table->set_model(d->m_timezone_model);
   d->m_timezone_model->insertItem("OMG", QPixmap(), false);
 
   d->m_main_layout->addItem(d->m_timezone_table);

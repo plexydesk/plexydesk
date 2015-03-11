@@ -36,23 +36,23 @@ public:
   LayoutType m_current_layout_type;
 };
 
-DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
+DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
     LayoutType type,
     QGraphicsItem *parent)
-  : UIKit::TableViewItem(rect, parent), m_priv_ptr(new PrivateTableComponent)
+  : UIKit::TableViewItem(a_rect, parent), m_priv_ptr(new PrivateTableComponent)
 {
-  m_priv_ptr->m_current_geometry = rect;
+  m_priv_ptr->m_current_geometry = a_rect;
   m_priv_ptr->m_current_item_selection = false;
   m_priv_ptr->m_current_item_visibility = true;
   m_priv_ptr->m_current_layout_type = type;
 
   m_priv_ptr->m_layout_base = new QGraphicsWidget(this);
-  m_priv_ptr->m_layout_base->setGeometry(rect);
+  m_priv_ptr->m_layout_base->setGeometry(a_rect);
 
   m_priv_ptr->m_linear_layout = new QGraphicsLinearLayout(m_priv_ptr->m_layout_base);
 
   m_priv_ptr->m_image_view_widget = new UIKit::ImageView(m_priv_ptr->m_layout_base);
-  m_priv_ptr->m_image_view_widget->setPixmap(
+  m_priv_ptr->m_image_view_widget->set_pixmap(
     UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
 
   m_priv_ptr->m_label_widget = new UIKit::Label(m_priv_ptr->m_layout_base);
@@ -68,10 +68,10 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &rect,
     m_priv_ptr->m_linear_layout->addItem(m_priv_ptr->m_image_view_widget);
     m_priv_ptr->m_linear_layout->addItem(m_priv_ptr->m_label_widget);
     m_priv_ptr->m_linear_layout->addItem(m_priv_ptr->m_option_button);
-    m_priv_ptr->m_label_widget->setSize(QSize(64, rect.height()));
+    m_priv_ptr->m_label_widget->set_size(QSize(64, a_rect.height()));
     m_priv_ptr->m_option_button->hide();
   } else {
-    m_priv_ptr->m_label_widget->setSize(QSize(150, rect.height()));
+    m_priv_ptr->m_label_widget->set_size(QSize(150, a_rect.height()));
     // d->m_image_view_widget->setSize(QSizeF(48.0, 48.0));
     m_priv_ptr->m_linear_layout->setOrientation(Qt::Horizontal);
     m_priv_ptr->m_linear_layout->addItem(m_priv_ptr->m_image_view_widget);
@@ -103,64 +103,64 @@ QRectF DefaultTableComponent::boundingRect() const
 }
 
 QSizeF DefaultTableComponent::sizeHint(Qt::SizeHint hint,
-                                       const QSizeF &size) const
+                                       const QSizeF &a_size) const
 {
   return boundingRect().size();
 }
 
-void DefaultTableComponent::setSelected()
+void DefaultTableComponent::set_selected()
 {
   m_priv_ptr->m_current_item_selection = true;
   update();
 }
 
-void DefaultTableComponent::setLabelVisibility(bool visible)
+void DefaultTableComponent::set_label_visibility(bool a_visible)
 {
-  m_priv_ptr->m_current_item_visibility = visible;
+  m_priv_ptr->m_current_item_visibility = a_visible;
 
-  if (visible) {
+  if (a_visible) {
     m_priv_ptr->m_label_widget->show();
   } else {
     m_priv_ptr->m_label_widget->hide();
   }
 }
 
-void DefaultTableComponent::clearSelection()
+void DefaultTableComponent::clear_selection()
 {
   m_priv_ptr->m_current_item_selection = false;
 }
 
-void DefaultTableComponent::setLabel(const QString &txt)
+void DefaultTableComponent::set_label(const QString &a_txt)
 {
   m_priv_ptr->m_option_button->setLabel("+");
-  m_priv_ptr->m_current_label_str = txt;
-  m_priv_ptr->m_label_widget->setLabel(txt);
+  m_priv_ptr->m_current_label_str = a_txt;
+  m_priv_ptr->m_label_widget->set_label(a_txt);
   update();
 }
 
-void DefaultTableComponent::setIcon(const QPixmap &pixmap)
+void DefaultTableComponent::set_icon(const QPixmap &a_pixmap)
 {
-  m_priv_ptr->m_icon_pixmap = pixmap;
-  m_priv_ptr->m_image_view_widget->setPixmap(pixmap);
+  m_priv_ptr->m_icon_pixmap = a_pixmap;
+  m_priv_ptr->m_image_view_widget->set_pixmap(a_pixmap);
 }
 
 QPixmap DefaultTableComponent::icon() { return m_priv_ptr->m_icon_pixmap; }
 
-void DefaultTableComponent::setSelected(bool selection)
+void DefaultTableComponent::set_selected(bool a_selection)
 {
-  m_priv_ptr->m_current_item_selection = selection;
+  m_priv_ptr->m_current_item_selection = a_selection;
 }
 
 QString DefaultTableComponent::label() const { return m_priv_ptr->m_current_label_str; }
 
 QString DefaultTableComponent::name() const { return m_priv_ptr->m_current_label_str; }
 
-void DefaultTableComponent::setData(const QPixmap &pixmap,
-                                    const QString &label)
+void DefaultTableComponent::set_data(const QPixmap &a_pixmap,
+                                    const QString &a_label)
 {
-  m_priv_ptr->m_image_view_widget->setPixmap(pixmap);
-  m_priv_ptr->m_label_widget->setLabel(label);
-  m_priv_ptr->m_current_label_str = label;
+  m_priv_ptr->m_image_view_widget->set_pixmap(a_pixmap);
+  m_priv_ptr->m_label_widget->set_label(a_label);
+  m_priv_ptr->m_current_label_str = a_label;
 }
 
 void DefaultTableComponent::paint(QPainter *painter,

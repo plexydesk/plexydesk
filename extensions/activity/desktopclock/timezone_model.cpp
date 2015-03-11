@@ -28,9 +28,9 @@ float TimeZoneModel::margin() const { return 0.0; }
 
 float TimeZoneModel::padding() const { return 0.0; }
 
-float TimeZoneModel::leftMargin() const { return 0.0; }
+float TimeZoneModel::left_margin() const { return 0.0; }
 
-float TimeZoneModel::rightMargin() const { return 0.0; }
+float TimeZoneModel::right_margin() const { return 0.0; }
 
 bool TimeZoneModel::init()
 {
@@ -50,7 +50,7 @@ bool TimeZoneModel::init()
   return true;
 }
 
-UIKit::TableModel::TableRenderMode TimeZoneModel::renderType() const
+UIKit::TableModel::TableRenderMode TimeZoneModel::render_type() const
 {
   return UIKit::TableModel::kRenderAsListView;
 }
@@ -62,7 +62,7 @@ void TimeZoneModel::insertItem(const QString &label, const QPixmap pixmap,
     QRectF(0.0, 0.0, 240, 32), DefaultTableComponent::kListLayout, 0);
 
   // item->setLabelVisibility(d->m_current_item_label_visibility);
-  item->setData(pixmap, label);
+  item->set_data(pixmap, label);
 
   Q_EMIT add(item);
 }

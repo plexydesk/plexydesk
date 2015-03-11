@@ -33,19 +33,19 @@ class DECL_UI_KIT_EXPORT ScrollWidget : public Widget
 {
   Q_OBJECT
 public:
-  ScrollWidget(const QRectF &rect, QGraphicsObject *a_parent_ptr = 0);
+  ScrollWidget(const QRectF &a_rect, QGraphicsObject *a_parent_ptr = 0);
   virtual ~ScrollWidget();
 
-  void setViewport(QGraphicsObject *widget);
-  void scrollBy(int x, int y);
+  void set_viewport(QGraphicsObject *a_widget_ptr);
+  void scroll_by(int x, int y);
 
-  virtual void paint_view(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 
 private:
-  virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
-  virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
-  virtual bool event(QEvent *event);
-  virtual bool sceneEvent(QEvent *e);
+  virtual void wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr);
+  virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *a_event_ptr);
+  virtual bool event(QEvent *a_event_ptr);
+  virtual bool sceneEvent(QEvent *a_e_ptr);
 
   class Private;
   Private *const d;

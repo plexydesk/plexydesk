@@ -73,7 +73,7 @@ void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->mTable = new UIKit::TableView(d->mWindowFrame);
   d->mFactory = new ImageCellAdaptor(d->mWindowFrame);
 
-  d->mTable->setModel(d->mFactory);
+  d->mTable->set_model(d->mFactory);
   d->mTable->setGeometry(aWindowGeometry);
 
   d->mWindowFrame->set_window_content(d->mTable);

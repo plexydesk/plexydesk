@@ -48,20 +48,20 @@ WebKitWebView::WebKitWebView(QGraphicsObject *parent)
   if (d->mView->page() && d->mView->page()->mainFrame()) {
     connect(d->mView->page()->mainFrame(),
             SIGNAL(javaScriptWindowObjectCleared()), this,
-            SLOT(addJavaScriptObject()));
+            SLOT(add_java_script_object()));
   }
 }
 
 WebKitWebView::~WebKitWebView() { delete d; }
 
-void WebKitWebView::setUrl(const QUrl &url) { d->mView->setUrl(url); }
+void WebKitWebView::set_url(const QUrl &a_url) { d->mView->setUrl(a_url); }
 
-void WebKitWebView::injectQObject(const QString &objectName, QObject *object)
+void WebKitWebView::inject_q_object(const QString &a_object_name, QObject *a_object_ptr)
 {
-  d->mObjects[objectName] = object;
+  d->mObjects[a_object_name] = a_object_ptr;
 }
 
-void WebKitWebView::addJavaScriptObject()
+void WebKitWebView::add_java_script_object()
 {
   qDebug() << Q_FUNC_INFO << "Initiate WebKit Bridge";
 

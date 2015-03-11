@@ -22,31 +22,31 @@ public:
 
   virtual ~Label();
 
-  virtual void setLabel(const QString &txt);
+  virtual void set_label(const QString &a_txt);
 
   virtual QString label() const;
 
   virtual QRectF boundingRect() const;
 
-  virtual void setSize(const QSizeF &size);
+  virtual void set_size(const QSizeF &_asize);
 
-  virtual void setFontSize(uint pixelSize);
+  virtual void set_font_size(uint a_pixelSize);
 
-  virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint) const;
+  virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 
-  virtual void setGeometry(const QRectF &rect);
+  virtual void setGeometry(const QRectF &a_rect);
 
-  virtual QRectF contentBoundingRect() const;
+  virtual QRectF contents_bounding_rect() const;
 
-  virtual void setLabelStyle(const QColor &backgroundColor,
-                             const QColor &textColor);
+  virtual void set_label_style(const QColor &a_backgroundColor,
+                             const QColor &a_textColor);
 
 Q_SIGNALS:
   void contentBoundingRectChaned();
 
 protected:
-  virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                     QWidget *widget = 0);
+  virtual void paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
+                     QWidget *a_widget_ptr = 0);
 
 private:
   class PrivateLabel;

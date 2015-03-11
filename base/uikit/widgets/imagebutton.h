@@ -16,16 +16,16 @@ public:
   explicit ImageButton(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ImageButton();
 
-  virtual void setSize(const QSize &size);
+  virtual void set_size(const QSize &a_size);
   virtual QSizeF sizeHint(Qt::SizeHint which,
-                          const QSizeF &constraint = QSizeF()) const;
+                          const QSizeF &a_constraint = QSizeF()) const;
 
-  virtual void setPixmap(const QPixmap &pixmap);
+  virtual void set_pixmap(const QPixmap &a_pixmap);
 
-  virtual void setLable(const QString &text);
+  virtual void set_lable(const QString &a_text);
   virtual QString label() const;
 
-  void setBackgroundColor(const QColor &color);
+  void set_background_color(const QColor &a_color);
   virtual StylePtr style() const;
 
 Q_SIGNALS:
@@ -36,11 +36,11 @@ private Q_SLOTS:
   void createZoomAnimation();
 
 protected:
-  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-  virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-  virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-  virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-  virtual void paint_view(QPainter *painter, const QRectF &rect);
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
+  virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
+  virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr);
+  virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr);
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 
 private:
   class PrivateImageButton;

@@ -56,7 +56,7 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
   mPrivConstPtr->mTimeZoneBrowserPtr =
     new UIKit::ModelView(mPrivConstPtr->mWindowPtr);
   mPrivConstPtr->mTimeZoneBrowserPtr->setGeometry(aWindowGeometry);
-  mPrivConstPtr->mTimeZoneBrowserPtr->setViewGeometry(aWindowGeometry);
+  mPrivConstPtr->mTimeZoneBrowserPtr->set_view_geometry(aWindowGeometry);
 
   mPrivConstPtr->mWindowPtr->set_window_content(
     mPrivConstPtr->mTimeZoneBrowserPtr);
@@ -95,13 +95,13 @@ void TimeZoneActivity::PrivateTimeZone::loadTimeZones()
     lTimeZoneLabelPtr->setMinimumSize(
       mTimeZoneBrowserPtr->geometry().width(),
       32);
-    lTimeZoneLabelPtr->setSize(QSizeF(mTimeZoneBrowserPtr->boundingRect().width(),
+    lTimeZoneLabelPtr->set_size(QSizeF(mTimeZoneBrowserPtr->boundingRect().width(),
                                       32));
     lTimeZoneLabelPtr->show();
 
     qDebug() << Q_FUNC_INFO << mTimeZoneBrowserPtr->boundingRect();
 
-    lTimeZoneLabelPtr->setLabel(QString(id));
+    lTimeZoneLabelPtr->set_label(QString(id));
     mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
   }
 }

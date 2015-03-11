@@ -78,15 +78,15 @@ void TakeNoteActivity::create_window(const QRectF &window_geometry,
   d->mLayoutBase->moveBy(0.0, 64.0);
 
   d->mAddNoteBtn = new UIKit::ImageButton(d->mLayoutBase);
-  d->mAddNoteBtn->setPixmap(UIKit::Theme::instance()->drawable(
+  d->mAddNoteBtn->set_pixmap(UIKit::Theme::instance()->drawable(
                               "pd_note_add_button_green.png", "hdpi"));
 
   d->mAddTaskBtn = new UIKit::ImageButton(d->mLayoutBase);
-  d->mAddTaskBtn->setPixmap(UIKit::Theme::instance()->drawable(
+  d->mAddTaskBtn->set_pixmap(UIKit::Theme::instance()->drawable(
                               "pd_note_add_button_blue.png", "hdpi"));
 
   d->mAddReminderBtn = new UIKit::ImageButton(d->mLayoutBase);
-  d->mAddReminderBtn->setPixmap(UIKit::Theme::instance()->drawable(
+  d->mAddReminderBtn->set_pixmap(UIKit::Theme::instance()->drawable(
                                   "pd_note_add_button_orange.png", "hdpi"));
 
   d->mLayout->addItem(d->mAddNoteBtn);
@@ -105,9 +105,9 @@ void TakeNoteActivity::create_window(const QRectF &window_geometry,
   });
 
   // todo: invoke UI
-  d->mAddNoteBtn->setLable(QLatin1String("Note"));
-  d->mAddReminderBtn->setLable(QLatin1String("Reminder"));
-  d->mAddTaskBtn->setLable(QLatin1String("Task"));
+  d->mAddNoteBtn->set_lable(QLatin1String("Note"));
+  d->mAddReminderBtn->set_lable(QLatin1String("Reminder"));
+  d->mAddTaskBtn->set_lable(QLatin1String("Task"));
 
   connect(d->mAddNoteBtn, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->mAddTaskBtn, SIGNAL(clicked()), this, SLOT(onClicked()));

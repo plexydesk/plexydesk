@@ -75,13 +75,13 @@ QFileInfo FolderItem::fileInfo() const { return d->mFileInfo; }
 
 QIcon FolderItem::icon() const { return d->mIcon; }
 
-void FolderItem::setSelected()
+void FolderItem::set_selected()
 {
   d->mSelected = true;
   update();
 }
 
-void FolderItem::clearSelection()
+void FolderItem::clear_selection()
 {
   d->mSelected = false;
   update();

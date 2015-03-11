@@ -209,22 +209,22 @@ void WorkSpace::paintEvent(QPaintEvent *event)
   QGraphicsView::paintEvent(event);
 }
 
-void WorkSpace::dragEnterEvent(QDragEnterEvent *event)
+void WorkSpace::dragEnterEvent(QDragEnterEvent *a_event_ptr)
 {
-  QPoint _global_drop_pos = event->pos();
+  QPoint _global_drop_pos = a_event_ptr->pos();
   QPoint _scene_drop_pos = mapFromGlobal(_global_drop_pos);
 
   qDebug() << Q_FUNC_INFO << "Dropped At:" << _scene_drop_pos;
 
-  event->acceptProposedAction();
-  event->accept();
+  a_event_ptr->acceptProposedAction();
+  a_event_ptr->accept();
 }
 
-void WorkSpace::dragMoveEvent(QDragMoveEvent *event) { event->accept(); }
+void WorkSpace::dragMoveEvent(QDragMoveEvent *a_event_ptr) { a_event_ptr->accept(); }
 
-void WorkSpace::dropEvent(QDropEvent *event)
+void WorkSpace::dropEvent(QDropEvent *a_event_ptr)
 {
-  QPoint _global_drop_pos = event->pos();
+  QPoint _global_drop_pos = a_event_ptr->pos();
   QPointF _scene_drop_pos = mapToScene(mapFromGlobal(_global_drop_pos));
 
   for (int i = 0; i < m_priv_impl->m_desktop_space_list.count(); i++) {
@@ -234,18 +234,18 @@ void WorkSpace::dropEvent(QDropEvent *event)
     }
 
     if (_space->geometry().contains(_scene_drop_pos)) {
-      _space->drop_event_handler(event, _scene_drop_pos);
+      _space->drop_event_handler(a_event_ptr, _scene_drop_pos);
     }
   }
 
-  event->setDropAction(Qt::CopyAction);
-  event->accept();
+  a_event_ptr->setDropAction(Qt::CopyAction);
+  a_event_ptr->accept();
 }
 
-void WorkSpace::wheelEvent(QWheelEvent *event)
+void WorkSpace::wheelEvent(QWheelEvent *a_event_ptr)
 {
   // ignore scroll wheel events.
-  event->accept();
+  a_event_ptr->accept();
 }
 
 void WorkSpace::revoke_space(const QString &a_name, int a_id)
