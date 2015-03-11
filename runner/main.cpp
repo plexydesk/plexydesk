@@ -132,14 +132,14 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
   UIKit::ExtensionManager *loader = 0;
 
   loader = UIKit::ExtensionManager::instance(
-             QDir::toNativeSeparators(UIKit::Config::getInstance()->prefix() +
+             QDir::toNativeSeparators(UIKit::Config::instance()->prefix() +
                                       QLatin1String("/share/plexy/ext/groups/")),
-             QDir::toNativeSeparators(UIKit::Config::getInstance()->prefix() +
+             QDir::toNativeSeparators(UIKit::Config::instance()->prefix() +
                                       QLatin1String("/lib/plexyext/")));
 
 #ifndef Q_WS_QPA
   QString appIconPath =
-    UIKit::Config::getInstance()->prefix() + "/share/plexy/plexydesk.png";
+    UIKit::Config::instance()->prefix() + "/share/plexy/plexydesk.png";
   QIcon appIcon = QIcon(QDir::toNativeSeparators(appIconPath));
   app.setWindowIcon(appIcon);
   app.setApplicationName(QString(PLEXYNAME));
@@ -147,17 +147,17 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 #endif
 
   DesktopManager workspace;
-  workspace.addDefaultController("classicbackdrop");
-  workspace.addDefaultController("dockwidget");
-  workspace.addDefaultController("plexyclock");
-  workspace.addDefaultController("desktopnoteswidget");
-  workspace.addDefaultController("folderwidget");
-  workspace.addDefaultController("photoframe");
+  workspace.add_default_controller("classicbackdrop");
+  workspace.add_default_controller("dockwidget");
+  workspace.add_default_controller("plexyclock");
+  workspace.add_default_controller("desktopnoteswidget");
+  workspace.add_default_controller("folderwidget");
+  workspace.add_default_controller("photoframe");
 
-  workspace.restoreSession();
+  workspace.restore_session();
 
-  if (workspace.spaceCount() <= 0) {
-    workspace.addSpace();
+  if (workspace.space_count() <= 0) {
+    workspace.add_default_space();
   }
 
 #ifdef Q_OS_LINUX
