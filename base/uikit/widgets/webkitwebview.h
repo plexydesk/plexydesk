@@ -15,11 +15,11 @@ public:
   WebKitWebView(QGraphicsObject *a_parent_ptr = 0);
   virtual ~WebKitWebView();
 
-  virtual void setUrl(const QUrl &url);
-  virtual void injectQObject(const QString &objectName, QObject *object);
+  virtual void set_url(const QUrl &a_url);
+  virtual void inject_q_object(const QString &a_object_name, QObject *a_object_ptr);
 
 public Q_SLOTS:
-  void addJavaScriptObject();
+  void add_java_script_object();
 
 private:
   class PrivateWebKitWebView;

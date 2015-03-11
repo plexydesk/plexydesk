@@ -62,7 +62,7 @@ QSizeF PhotoCell::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
   return boundingRect().size();
 }
 
-void PhotoCell::setSelected()
+void PhotoCell::set_selected()
 {
   d->mIsSelected = true;
   update();
@@ -70,7 +70,7 @@ void PhotoCell::setSelected()
 
 void PhotoCell::setLabelVisibility(bool visible) { d->mVisibility = visible; }
 
-void PhotoCell::clearSelection() { d->mIsSelected = false; }
+void PhotoCell::clear_selection() { d->mIsSelected = false; }
 
 void PhotoCell::setLabel(const QString &txt)
 {

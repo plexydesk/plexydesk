@@ -65,16 +65,16 @@ public:
   StylePtr mStyle;
 };
 
-Theme::Theme(const QString &themeName, QObject *parent)
+Theme::Theme(const QString &a_theme_name, QObject *parent)
   : QObject(parent), d(new ThemepackLoaderPrivate)
 {
   d->mThemePackPath = QDir::toNativeSeparators(
                         QString("%1/%2").arg(UIKit::Config::instance()->prefix()).arg(
                           "/share/plexy/themepack"));
 
-  d->mThemeName = themeName;
+  d->mThemeName = a_theme_name;
   QDir mainConfig(QDir::toNativeSeparators(
-                    QString("%1/%2/").arg(d->mThemePackPath).arg(themeName)));
+                    QString("%1/%2/").arg(d->mThemePackPath).arg(a_theme_name)));
 
   d->mXmlConfigFile = mainConfig.absoluteFilePath("layout.xml");
   d->mXmlRawFile = new QFile(d->mXmlConfigFile);
@@ -117,18 +117,18 @@ Theme *Theme::instance()
   }
 }
 
-QPixmap Theme::icon(const QString &name, const QString &resolution)
+QPixmap Theme::icon(const QString &a_name, const QString &a_resolution)
 {
-  return instance()->drawable(name, resolution);
+  return instance()->drawable(a_name, a_resolution);
 }
 
-QPixmap Theme::drawable(const QString &fileName, const QString &resoution)
+QPixmap Theme::drawable(const QString &a_fileName, const QString &a_resoution)
 {
   QPixmap rv;
 
   QString iconThemePath =
     QDir::toNativeSeparators(d->mThemePackPath + "/" + d->mThemeName +
-                             "/resources/" + resoution + "/" + fileName);
+                             "/resources/" + a_resoution + "/" + a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
 
@@ -147,6 +147,6 @@ QPixmap Theme::drawable(const QString &fileName, const QString &resoution)
   return rv;
 }
 
-void Theme::set_theme_name(const QString &name) { Q_UNUSED(name); }
+void Theme::set_theme_name(const QString &a_name) { Q_UNUSED(a_name); }
 
 } // namespace plexydesk

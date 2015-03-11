@@ -16,11 +16,11 @@ public:
   explicit ImageView(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ImageView();
 
-  virtual void setSize(const QSizeF &size);
+  virtual void set_size(const QSizeF &a_size);
   virtual QSizeF sizeHint(Qt::SizeHint which,
-                          const QSizeF &constraint = QSizeF()) const;
+                          const QSizeF &a_constraint = QSizeF()) const;
 
-  virtual void setPixmap(const QPixmap &pixmap);
+  virtual void set_pixmap(const QPixmap &a_pixmap);
   virtual StylePtr style() const;
 Q_SIGNALS:
   void mouseOver();
@@ -28,12 +28,12 @@ Q_SIGNALS:
   void mouseEnter();
   void mouseLeave();
 private:
-  virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-  virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-  virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-  virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+  virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *a_event_ptr);
+  virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr);
+  virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr);
+  virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *a_event_ptr);
 
-  virtual void paint_view(QPainter *painter, const QRectF &exposeRect);
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_exposeRect);
 private:
   class PrivateImageView;
   PrivateImageView *const d;

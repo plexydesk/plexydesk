@@ -93,10 +93,10 @@ QString Config::prefix()
   return QString();
 }
 
-QString Config::cache_dir(const QString &folder)
+QString Config::cache_dir(const QString &a_folder)
 {
   QString rv = QDir::toNativeSeparators(QDir::homePath() + "/" +
-                                        ".plexydesk/cache/" + folder);
+                                        ".plexydesk/cache/" + a_folder);
   QDir(QDir::homePath()).mkpath(rv);
   return rv;
 }

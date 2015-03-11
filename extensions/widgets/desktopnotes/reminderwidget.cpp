@@ -76,9 +76,9 @@ ReminderWidget::ReminderWidget(QGraphicsObject *parent)
   d->mSubLayout->setContentsMargins(64.0, 0.0, 0.0, 0.0);
 
   d->mLable = new UIKit::Label(d->mSubLayoutBase);
-  d->mLable->setLabel(QDateTime::currentDateTime().toString());
-  d->mLable->setSize(QSizeF(this->boundingRect().width() - 64.0, 24));
-  d->mLable->setLabelStyle(QColor(254, 254, 254, 128), QColor(0, 0, 0));
+  d->mLable->set_label(QDateTime::currentDateTime().toString());
+  d->mLable->set_size(QSizeF(this->boundingRect().width() - 64.0, 24));
+  d->mLable->set_label_style(QColor(254, 254, 254, 128), QColor(0, 0, 0));
   d->mTextEdit = new UIKit::TextEditor(d->mSubLayoutBase);
   d->mTextEdit->style(
     "border: 0; background: rgba(0,0,0,0); color: rgb(255, 255, 255)");
@@ -87,7 +87,7 @@ ReminderWidget::ReminderWidget(QGraphicsObject *parent)
   d->mSubLayout->addItem(d->mLable);
   d->mMainVerticleLayout->addItem(d->mSubLayoutBase);
 
-  d->mTextEdit->setPlaceholderText("Title :");
+  d->mTextEdit->set_placeholder_text("Title :");
 
   connect(d->mTextEdit, SIGNAL(documentTitleAvailable(QString)), this,
           SLOT(onDocuemntTitleAvailable(QString)));

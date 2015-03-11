@@ -16,13 +16,13 @@ public:
 
   float padding() const;
 
-  virtual float leftMargin() const;
+  virtual float left_margin() const;
 
-  virtual float rightMargin() const;
+  virtual float right_margin() const;
 
   virtual bool init();
 
-  virtual TableRenderMode renderType() const;
+  virtual TableRenderMode render_type() const;
 
   void insertItem(const QString &label, const QPixmap pixmap,
                   bool selected = false);

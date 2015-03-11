@@ -19,17 +19,17 @@ class DECL_UI_KIT_EXPORT Theme : public QObject
   Q_PROPERTY(QString themeName READ QString WRITE set_theme_name)
 
 public:
-  Theme(const QString &themeName, QObject *a_parent_ptr = 0);
+  Theme(const QString &a_theme_name, QObject *a_parent_ptr = 0);
   virtual ~Theme();
 
   static Theme *instance();
 
-  virtual void set_theme_name(const QString &name);
+  virtual void set_theme_name(const QString &a_name);
 
   static StylePtr style();
-  static QPixmap icon(const QString &name, const QString &resolution);
+  static QPixmap icon(const QString &a_name, const QString &a_resolution);
 
-  virtual QPixmap drawable(const QString &fileName, const QString &resoution);
+  virtual QPixmap drawable(const QString &a_fileName, const QString &a_resoution);
 private:
   void scane_resources();
   StylePtr default_desktop_style();

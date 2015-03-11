@@ -24,7 +24,7 @@ public:
   QVariant mData;
 };
 
-Button::Button(QGraphicsObject *parent) : Widget(parent),
+Button::Button(QGraphicsObject *a_parent_ptr) : Widget(a_parent_ptr),
   d(new PrivateButton)
 {
   d->mState = PrivateButton::NORMAL;
@@ -43,43 +43,43 @@ Button::Button(QGraphicsObject *parent) : Widget(parent),
 
 Button::~Button() { delete d; }
 
-void Button::setLabel(const QString &txt) { d->mLabel = txt; }
+void Button::setLabel(const QString &a_txt) { d->mLabel = a_txt; }
 
-void Button::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Button::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   d->mState = PrivateButton::PRESS;
   update();
-  Widget::mousePressEvent(event);
+  Widget::mousePressEvent(a_event_ptr);
 }
 
-void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   d->mState = PrivateButton::NORMAL;
   update();
 
-  Widget::mouseReleaseEvent(event);
+  Widget::mouseReleaseEvent(a_event_ptr);
 }
 
-void Button::paintNormalButton(QPainter *painter, const QRectF &rect)
+void Button::paint_normal_button(QPainter *a_painter_ptr, const QRectF &a_rect)
 {
   StyleFeatures feature;
 
   feature.text_data = d->mLabel;
-  feature.geometry = rect;
+  feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
   if (UIKit::Theme::style()) {
     UIKit::Theme::style()->draw("button", feature,
-        painter);
+        a_painter_ptr);
   }
 }
 
-void Button::paintSunkenButton(QPainter *painter, const QRectF &rect)
+void Button::paint_sunken_button(QPainter *painter, const QRectF &a_rect)
 {
   StyleFeatures feature;
 
   feature.text_data = d->mLabel;
-  feature.geometry = rect;
+  feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderPressed;
 
   if (UIKit::Theme::style()) {
@@ -98,27 +98,27 @@ void Button::setSize(const QSize &size)
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 }
 
-QSizeF Button::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF Button::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const
 {
   return boundingRect().size();
 }
 
-void Button::setActionData(const QVariant &data) { d->mData = data; }
+void Button::set_action_data(const QVariant &a_data) { d->mData = a_data; }
 
-QVariant Button::actionData() const { return d->mData; }
+QVariant Button::action_data() const { return d->mData; }
 
-void Button::onButtonPressed(std::function<void ()> aHandler)
+void Button::on_button_pressed(std::function<void ()> a_handler)
 {
 }
 
-void Button::paint_view(QPainter *painter, const QRectF &rect)
+void Button::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect)
 {
   switch (d->mState) {
   case PrivateButton::NORMAL:
-    paintNormalButton(painter, rect);
+    paint_normal_button(a_painter_ptr, a_rect);
     break;
   case PrivateButton::PRESS:
-    paintSunkenButton(painter, rect);
+    paint_sunken_button(a_painter_ptr, a_rect);
     break;
   default:
     qDebug() << Q_FUNC_INFO << "Unknown Button State";

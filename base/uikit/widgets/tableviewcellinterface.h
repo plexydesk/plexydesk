@@ -93,7 +93,7 @@ public:
       * This method define the left cell margin for the Cell;
       * @return
       */
-  virtual float leftMargin() const;
+  virtual float left_margin() const;
 
   /**
       * @brief Right Cell Margin
@@ -101,7 +101,7 @@ public:
       * Define the right cell margin for the cell item.
       * @return
       */
-  virtual float rightMargin() const;
+  virtual float right_margin() const;
 
   /**
       * @brief returns the Cell types to create
@@ -111,7 +111,7 @@ public:
       * Layout, and List will place them on a Verticle List
       * @return returns the Cell Layout Type
       */
-  virtual TableRenderMode renderType() const;
+  virtual TableRenderMode render_type() const;
 
 Q_SIGNALS:
   /**
@@ -123,9 +123,9 @@ Q_SIGNALS:
       */
   void updated();
 
-  void add(UIKit::TableViewItem *item);
+  void add(UIKit::TableViewItem *a_item_ptr);
 
-  void removed(UIKit::TableViewItem *item);
+  void removed(UIKit::TableViewItem *a_item_ptr);
 
   void cleared();
 };

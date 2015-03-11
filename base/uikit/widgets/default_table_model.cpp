@@ -19,7 +19,7 @@ DefaultTableModel::DefaultTableModel(QGraphicsObject *parent)
   : UIKit::TableModel(parent), d(new PrivateTableDelegate)
 {
   d->m_current_item_label_visibility = false;
-  setCellSize(QSize(96, 96));
+  set_cell_size(QSize(96, 96));
 }
 
 DefaultTableModel::~DefaultTableModel() { delete d; }
@@ -28,39 +28,39 @@ float DefaultTableModel::margin() const { return 0.0; }
 
 float DefaultTableModel::padding() const { return 0.0; }
 
-float DefaultTableModel::leftMargin() const { return 0.0; }
+float DefaultTableModel::left_margin() const { return 0.0; }
 
-float DefaultTableModel::rightMargin() const { return 0.0; }
+float DefaultTableModel::right_margin() const { return 0.0; }
 
 bool DefaultTableModel::init() { return true; }
 
-TableModel::TableRenderMode DefaultTableModel::renderType() const
+TableModel::TableRenderMode DefaultTableModel::render_type() const
 {
   return TableModel::kRenderAsGridView;
 }
 
-void DefaultTableModel::insertItem(const QString &label, const QPixmap pixmap,
-                                   bool selected)
+void DefaultTableModel::insert_item(const QString &a_label, const QPixmap a_pixmap,
+                                   bool a_selected)
 {
   DefaultTableComponent *item =
     new DefaultTableComponent(QRectF(0.0, 0.0, d->m_current_item_size.width(),
                                      d->m_current_item_size.height()),
                               DefaultTableComponent::kGridLayout, 0);
 
-  item->setLabelVisibility(d->m_current_item_label_visibility);
-  item->setData(pixmap, label);
+  item->set_label_visibility(d->m_current_item_label_visibility);
+  item->set_data(a_pixmap, a_label);
 
   Q_EMIT add(item);
 }
 
-void DefaultTableModel::setLabelVisibility(bool visibility)
+void DefaultTableModel::set_label_visibility(bool a_visibility)
 {
-  d->m_current_item_label_visibility = visibility;
+  d->m_current_item_label_visibility = a_visibility;
 }
 
-void DefaultTableModel::setCellSize(const QSize &size)
+void DefaultTableModel::set_cell_size(const QSize &a_size)
 {
-  d->m_current_item_size = size;
+  d->m_current_item_size = a_size;
 }
 
 void DefaultTableModel::clear() { Q_EMIT cleared(); }

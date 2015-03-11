@@ -41,7 +41,7 @@ IconWidgetView::IconWidgetView(QGraphicsObject *parent)
   d->mTableView = new UIKit::TableView(this);
 
   d->mFolderViewSource = new FolderProvider(iconViewRectTable, this);
-  d->mTableView->setModel(d->mFolderViewSource);
+  d->mTableView->set_model(d->mFolderViewSource);
 
   d->mInfoView->hide();
   d->mInfoView->setZValue(d->mTableView->zValue() + 1);
@@ -63,12 +63,12 @@ void IconWidgetView::setDirectoryPath(const QString &path)
 
 void IconWidgetView::onClicked(FolderItem *item)
 {
-  d->mTableView->clearSelection();
+  d->mTableView->clear_selection();
 
   if (item) {
     d->mInfoView->setIcon(item->icon());
     d->mInfoView->setFileInfo(item->fileInfo());
-    item->setSelected();
+    item->set_selected();
   }
 
   d->mInfoView->pop();

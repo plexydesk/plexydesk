@@ -28,11 +28,11 @@ TableModel::~TableModel() {}
 
 float TableModel::padding() const { return 0.0; }
 
-float TableModel::leftMargin() const { return 0.0; }
+float TableModel::left_margin() const { return 0.0; }
 
-float TableModel::rightMargin() const { return 0.0; }
+float TableModel::right_margin() const { return 0.0; }
 
-TableModel::TableRenderMode TableModel::renderType() const
+TableModel::TableRenderMode TableModel::render_type() const
 {
   return kRenderAsListView;
 }

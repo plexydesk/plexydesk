@@ -50,7 +50,7 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
   d->mLayout = new QGraphicsLinearLayout(this);
 
   d->mImageView = new UIKit::ImageView(d->mLayoutBase);
-  d->mImageView->setPixmap(
+  d->mImageView->set_pixmap(
     UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
   d->mLabelView = new UIKit::Label(d->mLayoutBase);
   connect(d->mImageView, SIGNAL(clicked()), this, SLOT(onClicked()));
@@ -61,7 +61,7 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
     d->mImageView->setMinimumSize(QSizeF(72, rect.height() - 32));
     d->mLayout->addItem(d->mImageView);
     d->mLayout->addItem(d->mLabelView);
-    d->mLabelView->setSize(QSize(64, 24));
+    d->mLabelView->set_size(QSize(64, 24));
     d->mImageView->setGeometry(
       QRectF(QPointF(), QSizeF(72, rect.height() - 32)));
   } else {
@@ -106,25 +106,25 @@ QSizeF GridIcon::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
   return boundingRect().size();
 }
 
-void GridIcon::setSelected()
+void GridIcon::set_selected()
 {
   d->mIsSelected = true;
   update();
 }
 
-void GridIcon::clearSelection() { d->mIsSelected = false; }
+void GridIcon::clear_selection() { d->mIsSelected = false; }
 
 void GridIcon::setLabel(const QString &txt)
 {
   // d->mOptButton->setLabel("+");
   d->mLabel = txt;
-  d->mLabelView->setLabel(txt);
+  d->mLabelView->set_label(txt);
   update();
 }
 
 void GridIcon::setIcon(const QPixmap &pixmap)
 {
-  d->mImageView->setPixmap(pixmap);
+  d->mImageView->set_pixmap(pixmap);
 }
 
 void GridIcon::setDefault(bool selection) { d->mIsSelected = selection; }
@@ -134,8 +134,8 @@ QString GridIcon::label() const { return d->mLabel; }
 void GridIcon::setItemProperties(const QPixmap &pixmap, const QString &label,
                                  const QVariantMap &prop)
 {
-  d->mImageView->setPixmap(pixmap);
-  d->mLabelView->setLabel(label);
+  d->mImageView->set_pixmap(pixmap);
+  d->mLabelView->set_label(label);
   d->mLabel = label;
 
   d->m_item_property_map["label"] = label;

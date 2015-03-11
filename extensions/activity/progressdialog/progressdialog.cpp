@@ -76,9 +76,9 @@ void ProgressDialogActivity::create_window(const QRectF &window_geometry,
   }
 
   d->m_progress_bar_widget = new UIKit::ProgressBar(d->mFrame);
-  d->m_progress_bar_widget->setRange(d->mMin, d->mMax);
-  d->m_progress_bar_widget->setSize(QSize(window_geometry.width() - 10, 32));
-  d->m_progress_bar_widget->setValue(0.0);
+  d->m_progress_bar_widget->set_range(d->mMin, d->mMax);
+  d->m_progress_bar_widget->set_size(QSize(window_geometry.width() - 10, 32));
+  d->m_progress_bar_widget->set_value(0.0);
   d->m_progress_bar_widget->setPos(5.0, 64.0);
   d->m_progress_bar_widget->show();
 
@@ -108,7 +108,7 @@ void ProgressDialogActivity::update_attribute(const QString &name,
   float progress = data.toFloat();
 
   if (d->m_progress_bar_widget) {
-    d->m_progress_bar_widget->setValue(progress);
+    d->m_progress_bar_widget->set_value(progress);
   }
 
   if (d->mMax == progress) {

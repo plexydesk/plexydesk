@@ -27,7 +27,7 @@ public:
   Window(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Window();
 
-  virtual void set_window_content(Widget *a_widget);
+  virtual void set_window_content(Widget *a_widget_ptr);
   virtual void set_window_viewport(Space *a_space);
 
   virtual void set_window_title(const QString &a_window_title);
@@ -51,10 +51,10 @@ public:
 
   virtual void enable_window_background(bool a_visibility = true);
 protected:
-  virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+  virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
 
-  virtual void paint_view(QPainter *painter, const QRectF &rect);
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr);
 
 private:
   class PrivateWindow;

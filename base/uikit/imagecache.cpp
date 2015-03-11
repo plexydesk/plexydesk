@@ -45,24 +45,24 @@ ImageCache::ImageCache() : QObject(0), d(new Private) { load("default"); }
 
 ImageCache::~ImageCache() { delete d; }
 
-QPixmap ImageCache::pixmap(const QString &id, QSize *size,
-                                  const QSize &requestedSize)
+QPixmap ImageCache::pixmap(const QString &a_id, QSize *a_size_ptr,
+                                  const QSize &a_requested_size)
 {
-  if (size->width() <= 0 && size->height() <= 0) {
-    return get(id);
+  if (a_size_ptr->width() <= 0 && a_size_ptr->height() <= 0) {
+    return get(a_id);
   }
   QPixmap rv =
-    get(id).scaled(requestedSize.width(), requestedSize.height(),
+    get(a_id).scaled(a_requested_size.width(), a_requested_size.height(),
                    Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
   return rv;
 }
 
-void ImageCache::load(const QString &themename)
+void ImageCache::load(const QString &ta_themename)
 {
   QString prefix =
     QDir::toNativeSeparators(Config::instance()->prefix() +
                              QLatin1String("/share/plexy/themepack/") +
-                             themename + QLatin1String("/resources/"));
+                             ta_themename + QLatin1String("/resources/"));
 
   QDir dir(prefix);
   dir.setFilter(QDir::Files);
@@ -88,34 +88,34 @@ void ImageCache::add_to_cache(const QString &imgfile, const QString &filename,
   d->fileHash[filename] = file.absoluteFilePath();
 }
 
-QPixmap ImageCache::get(const QString &name)
+QPixmap ImageCache::get(const QString &a_name)
 {
-    return QPixmap(d->fileHash[name]);
+    return QPixmap(d->fileHash[a_name]);
 }
 
-void ImageCache::onLoaderReady(std::function<void ()> a_handler)
+void ImageCache::on_loader_ready(std::function<void ()> a_handler)
 {
     d->m_load_handler.append(a_handler);
 }
 
-bool ImageCache::is_cached(QString &filename) const
+bool ImageCache::is_cached(QString &a_filename) const
 {
-  if ((d->fileHash[filename]).isNull()) {
+  if ((d->fileHash[a_filename]).isNull()) {
     return false;
   }
 
   return true;
 }
 
-bool ImageCache::render_svg(QPainter *p, QRectF rect, const QString &file,
-                         const QString &elementId)
+bool ImageCache::render_svg(QPainter *a_painter_ptr, QRectF a_rect, const QString &a_str,
+                         const QString &a_elementId)
 {
-  QString svgFile = d->fileHash[file];
+  QString svgFile = d->fileHash[a_str];
   qDebug() << Q_FUNC_INFO << svgFile;
   QFileInfo fileInfo(svgFile);
   if (fileInfo.exists()) {
     d->render.load(svgFile);
-    d->render.render(p, elementId, rect);
+    d->render.render(a_painter_ptr, a_elementId, a_rect);
     return true;
   }
 

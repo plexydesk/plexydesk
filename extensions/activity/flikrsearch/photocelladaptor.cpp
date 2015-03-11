@@ -64,13 +64,13 @@ float PhotoCellAdaptor::margin() const { return 0.0; }
 
 float PhotoCellAdaptor::padding() const { return 0.0; }
 
-float PhotoCellAdaptor::leftMargin() const { return 0.0; }
+float PhotoCellAdaptor::left_margin() const { return 0.0; }
 
-float PhotoCellAdaptor::rightMargin() const { return 0.0; }
+float PhotoCellAdaptor::right_margin() const { return 0.0; }
 
 bool PhotoCellAdaptor::init() { return true; }
 
-TableModel::TableRenderMode PhotoCellAdaptor::renderType() const
+TableModel::TableRenderMode PhotoCellAdaptor::render_type() const
 {
   return PhotoCellAdaptor::kRenderAsGridView;
 }

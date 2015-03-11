@@ -44,11 +44,11 @@ public:
   virtual bool is_accelerated_rendering_on() const;
 
 protected:
-  virtual void paintEvent(QPaintEvent *event);
-  virtual void dragEnterEvent(QDragEnterEvent *event);
-  virtual void dragMoveEvent(QDragMoveEvent *event);
-  virtual void dropEvent(QDropEvent *event);
-  virtual void wheelEvent(QWheelEvent *event);
+  virtual void paintEvent(QPaintEvent *a_event_ptr);
+  virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);
+  virtual void dragMoveEvent(QDragMoveEvent *a_event_ptr);
+  virtual void dropEvent(QDropEvent *a_event_ptr);
+  virtual void wheelEvent(QWheelEvent *a_event_ptr);
 
 private:
   class PrivateWorkSpace;

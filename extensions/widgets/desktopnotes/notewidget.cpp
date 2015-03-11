@@ -62,15 +62,15 @@ public:
 void NoteWidget::createToolBar()
 {
   d->mToolBar = new UIKit::ToolBar(d->mSubLayoutBase);
-  d->mToolBar->addAction("contact", "pd_add_contact_icon", false);
-  d->mToolBar->addAction("list", "pd_list_icon", false);
-  d->mToolBar->addAction("date", "pd_calendar_icon", false);
-  d->mToolBar->addAction("red", "pd_icon_red_color_action", false);
-  d->mToolBar->addAction("yellow", "pd_icon_yellow_color_action", false);
-  d->mToolBar->addAction("green", "pd_icon_green_color_action", false);
-  d->mToolBar->addAction("blue", "pd_icon_blue_color_action", false);
-  d->mToolBar->addAction("black", "pd_icon_black_color_action", false);
-  d->mToolBar->addAction("delete", "pd_trash_icon", false);
+  d->mToolBar->add_action("contact", "pd_add_contact_icon", false);
+  d->mToolBar->add_action("list", "pd_list_icon", false);
+  d->mToolBar->add_action("date", "pd_calendar_icon", false);
+  d->mToolBar->add_action("red", "pd_icon_red_color_action", false);
+  d->mToolBar->add_action("yellow", "pd_icon_yellow_color_action", false);
+  d->mToolBar->add_action("green", "pd_icon_green_color_action", false);
+  d->mToolBar->add_action("blue", "pd_icon_blue_color_action", false);
+  d->mToolBar->add_action("black", "pd_icon_black_color_action", false);
+  d->mToolBar->add_action("delete", "pd_trash_icon", false);
 }
 
 void NoteWidget::setViewport(UIKit::Space *space)
@@ -106,15 +106,15 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
   d->mSubLayout->addItem(d->mTextEdit);
   d->mSubLayout->addItem(d->mToolBar);
 
-  d->mTextEdit->setPlaceholderText("Title :");
+  d->mTextEdit->set_placeholder_text("Title :");
   d->mMainVerticleLayout->addItem(d->mSubLayoutBase);
 
   d->mCloseButton = new UIKit::ImageButton(this);
-  d->mCloseButton->setPixmap(
+  d->mCloseButton->set_pixmap(
     UIKit::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
-  d->mCloseButton->setSize(QSize(16, 16));
+  d->mCloseButton->set_size(QSize(16, 16));
   d->mCloseButton->hide();
-  d->mCloseButton->setBackgroundColor(Qt::white);
+  d->mCloseButton->set_background_color(Qt::white);
 
   connect(d->mTextEdit, SIGNAL(documentTitleAvailable(QString)), this,
           SLOT(onDocuemntTitleAvailable(QString)));
@@ -341,9 +341,9 @@ void NoteWidget::onToolBarAction(const QString &action)
     }
 
   } else if (action == tr("list")) {
-    d->mTextEdit->beginList();
+    d->mTextEdit->begin_list();
   } else if (action == tr("link")) {
-    d->mTextEdit->convertToLink();
+    d->mTextEdit->convert_to_link();
   } else if (action == tr("red")) {
     d->mTextEdit->style("border: 0; background: #D55521; color: #ffffff");
     d->mCurrentNoteObject->setObjectAttribute("color", "#D55521");

@@ -95,15 +95,15 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->m_view_delegate_window->set_window_content(d->mWindowContentWidget);
 
   d->m_top_toolbar = new UIKit::ToolBar(d->m_main_frame_widget);
-  d->m_top_toolbar->setIconSize(QSize(32, 32));
+  d->m_top_toolbar->set_icon_size(QSize(32, 32));
   d->m_top_toolbar->setMinimumSize(QSizeF(aWindowGeometry.width() - 20, 42));
 
   d->m_search_input_box = new UIKit::LineEdit(d->m_top_toolbar);
   d->m_search_input_box->setMinimumSize(
     QSizeF(aWindowGeometry.width() - 58, 32));
 
-  d->m_top_toolbar->insertWidget(d->m_search_input_box);
-  d->m_top_toolbar->addAction(tr("search"), "pd_out_icon", false);
+  d->m_top_toolbar->insert_widget(d->m_search_input_box);
+  d->m_top_toolbar->add_action(tr("search"), "pd_out_icon", false);
 
   d->m_verticle_layout = new QGraphicsLinearLayout(d->m_main_frame_widget);
   d->m_verticle_layout->setOrientation(Qt::Vertical);
@@ -117,7 +117,7 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->m_image_grid_view = new UIKit::TableView(d->m_main_frame_widget);
   d->m_image_cell_model = new PhotoCellAdaptor(d->m_image_grid_view);
   d->m_image_cell_model->setLabelVisibility(false);
-  d->m_image_grid_view->setModel(d->m_image_cell_model);
+  d->m_image_grid_view->set_model(d->m_image_cell_model);
 
   d->m_image_grid_view->setMinimumSize(QSizeF(aWindowGeometry.width(), 308));
 
@@ -125,18 +125,18 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
 
   // toolbar
   d->m_bottom_toolbar = new UIKit::ToolBar(d->m_main_frame_widget);
-  d->m_bottom_toolbar->setIconSize(QSize(32, 32));
+  d->m_bottom_toolbar->set_icon_size(QSize(32, 32));
   d->m_bottom_toolbar->setMinimumSize(
-    QSizeF(d->m_top_toolbar->frameGeometry().width(),
-           d->m_top_toolbar->frameGeometry().height()));
+    QSizeF(d->m_top_toolbar->frame_geometry().width(),
+           d->m_top_toolbar->frame_geometry().height()));
 
   d->m_progress_widget = new UIKit::ProgressBar(d->m_bottom_toolbar);
   d->m_progress_widget->setMinimumSize(
     QSizeF(aWindowGeometry.width() - 116, 32));
 
-  d->m_bottom_toolbar->addAction(tr("next"), "pd_in_icon", false);
-  d->m_bottom_toolbar->insertWidget(d->m_progress_widget);
-  d->m_bottom_toolbar->addAction(tr("previous"), "pd_out_icon", false);
+  d->m_bottom_toolbar->add_action(tr("next"), "pd_in_icon", false);
+  d->m_bottom_toolbar->insert_widget(d->m_progress_widget);
+  d->m_bottom_toolbar->add_action(tr("previous"), "pd_out_icon", false);
 
   d->m_verticle_layout->addItem(d->m_bottom_toolbar);
 
@@ -252,15 +252,15 @@ void FlickrSearchActivity::onPageCount(int count)
 
 void FlickrSearchActivity::onProgressRange(int range)
 {
-  d->m_progress_widget->setRange(1, range);
+  d->m_progress_widget->set_range(1, range);
   d->m_progress_widget->show();
 }
 
 void FlickrSearchActivity::onCompleted(int count)
 {
-  d->m_progress_widget->setValue(count);
+  d->m_progress_widget->set_value(count);
 
-  if (count == d->m_progress_widget->maxRange()) {
+  if (count == d->m_progress_widget->max_range()) {
     d->m_progress_widget->hide();
   }
 }

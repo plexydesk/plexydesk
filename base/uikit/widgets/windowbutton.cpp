@@ -45,9 +45,9 @@ WindowButton::WindowButton(QGraphicsObject *parent)
 
 WindowButton::~WindowButton() { delete d; }
 
-void WindowButton::setButtonType(WindowButton::WindowButtonType type)
+void WindowButton::set_button_type(WindowButton::WindowButtonType a_type)
 {
-  d->mType = type;
+  d->mType = a_type;
 }
 
 QRectF WindowButton::boundingRect() const
@@ -64,25 +64,25 @@ QRectF WindowButton::boundingRect() const
            .toFloat());
 }
 
-void WindowButton::paintNormalButton(QPainter *painter, const QRectF &rect)
+void WindowButton::paint_normal_button(QPainter *a_painter_ptr, const QRectF &a_rect)
 {
   StyleFeatures feature;
-  feature.geometry = rect;
+  feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
   if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("window_button", feature, painter);
+    UIKit::Theme::style()->draw("window_button", feature, a_painter_ptr);
   }
 }
 
-void WindowButton::paintSunkenButton(QPainter *painter, const QRectF &rect)
+void WindowButton::paint_sunken_button(QPainter *a_painter_ptr, const QRectF &a_rect)
 {
   StyleFeatures feature;
-  feature.geometry = rect;
+  feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderRaised;
 
   if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("window_button", feature, painter);
+    UIKit::Theme::style()->draw("window_button", feature, a_painter_ptr);
   }
 }
 }

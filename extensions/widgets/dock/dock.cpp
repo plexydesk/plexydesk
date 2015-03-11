@@ -74,25 +74,25 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   // navigation
   d->m_navigation_dock = new UIKit::ToolBar();
   d->m_navigation_dock->set_controller(this);
-  d->m_navigation_dock->setOrientation(Qt::Vertical);
-  d->m_navigation_dock->setIconResolution("mdpi");
-  d->m_navigation_dock->setIconSize(QSize(32, 32));
+  d->m_navigation_dock->set_orientation(Qt::Vertical);
+  d->m_navigation_dock->set_icon_resolution("mdpi");
+  d->m_navigation_dock->set_icon_size(QSize(32, 32));
 
-  d->m_navigation_dock->addAction(tr("Up"), "pd_up_icon", false);
-  d->m_navigation_dock->addAction(tr("Expose"), "pd_space_icon", false);
-  d->m_navigation_dock->addAction(tr("Add"), "pd_add_new_icon", false);
-  d->m_navigation_dock->addAction(tr("Menu"), "pd_menu_icon", false);
-  d->m_navigation_dock->addAction(tr("Seamless"), "pd_eye_icon", false);
-  d->m_navigation_dock->addAction(tr("Close"), "pd_eye_icon", false);
-  d->m_navigation_dock->addAction(tr("Down"), "pd_down_icon", false);
+  d->m_navigation_dock->add_action(tr("Up"), "pd_up_icon", false);
+  d->m_navigation_dock->add_action(tr("Expose"), "pd_space_icon", false);
+  d->m_navigation_dock->add_action(tr("Add"), "pd_add_new_icon", false);
+  d->m_navigation_dock->add_action(tr("Menu"), "pd_menu_icon", false);
+  d->m_navigation_dock->add_action(tr("Seamless"), "pd_eye_icon", false);
+  d->m_navigation_dock->add_action(tr("Close"), "pd_eye_icon", false);
+  d->m_navigation_dock->add_action(tr("Down"), "pd_down_icon", false);
 
-  d->m_navigation_dock->setGeometry(d->m_navigation_dock->frameGeometry());
+  d->m_navigation_dock->setGeometry(d->m_navigation_dock->frame_geometry());
 
   connect(d->m_navigation_dock, SIGNAL(action(QString)), this,
           SLOT(onNavigationPanelClicked(QString)));
   // menu
   d->m_preview_widget = new UIKit::ModelView();
-  d->m_preview_widget->onActivated([this](int index) {
+  d->m_preview_widget->on_activated([this](int index) {
     if (this->viewport() && this->viewport()->workspace()) {
       UIKit::WorkSpace *_workspace =
         qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
@@ -181,14 +181,14 @@ void DockControllerImpl::set_view_rect(const QRectF &rect)
     viewport()->center(d->m_dock_window->geometry(),
                        Space::kCenterOnViewportLeft));
 
-  d->m_preview_widget->setViewGeometry(
+  d->m_preview_widget->set_view_geometry(
     QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
   d->m_preview_window->setGeometry(
     QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
   d->m_preview_window->setPos(
-    rect.x() + d->m_navigation_dock->frameGeometry().width() + 5,
+    rect.x() + d->m_navigation_dock->frame_geometry().width() + 5,
     rect.y() + 24.0);
 
   d->m_preview_window->hide();
@@ -497,7 +497,7 @@ void DockControllerImpl::onNavigationPanelClicked(const QString &action)
     QPointF _menu_pos =
       viewport()->center(d->m_action_activity->window()->boundingRect(),
                          UIKit::Space::kCenterOnViewportLeft);
-    _menu_pos.setX(d->m_navigation_dock->frameGeometry().width() + 5);
+    _menu_pos.setX(d->m_navigation_dock->frame_geometry().width() + 5);
 
     if (d->m_action_activity && d->m_action_activity->window()) {
       d->m_action_activity->window()->setPos(_menu_pos);
@@ -551,7 +551,7 @@ void DockControllerImpl::updatePreview()
         UIKit::ImageView *p = new UIKit::ImageView();
 
         p->setMinimumSize(_preview.size());
-        p->setPixmap(_preview);
+        p->set_pixmap(_preview);
         lHeight += _preview.size().height();
         lWidth = _preview.size().width();
         d->m_preview_widget->insert(p);

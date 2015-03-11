@@ -14,32 +14,32 @@ public:
     kGridLayout
   } LayoutType;
 
-  DefaultTableComponent(const QRectF &rect,
+  DefaultTableComponent(const QRectF &a_rect,
                         LayoutType = kListLayout,
                         QGraphicsItem *a_parent_ptr = 0);
   virtual ~DefaultTableComponent();
 
   QRectF boundingRect() const;
-  virtual QSizeF sizeHint(Qt::SizeHint hint, const QSizeF &size) const;
+  virtual QSizeF sizeHint(Qt::SizeHint a_hint, const QSizeF &a_size) const;
 
-  void setSelected();
-  void clearSelection();
-  void setSelected(bool selection);
+  void set_selected();
+  void clear_selection();
+  void set_selected(bool a_selection);
 
-  void setLabelVisibility(bool visible);
+  void set_label_visibility(bool a_visible);
 
-  void setLabel(const QString &txt);
+  void set_label(const QString &a_txt);
   QString name() const;
   QString label() const;
 
-  void setIcon(const QPixmap &pixmap);
+  void set_icon(const QPixmap &a_pixmap);
   QPixmap icon();
 
-  void setData(const QPixmap &pixmap, const QString &label);
+  void set_data(const QPixmap &a_pixmap, const QString &a_label);
 protected:
-  virtual void paint(QPainter *painter,
-                     const QStyleOptionGraphicsItem *option,
-                     QWidget *widget = 0);
+  virtual void paint(QPainter *a_painter_ptr,
+                     const QStyleOptionGraphicsItem *a_option_ptr,
+                     QWidget *a_widget_ptr = 0);
 private Q_SLOTS:
   void onClicked();
 private:

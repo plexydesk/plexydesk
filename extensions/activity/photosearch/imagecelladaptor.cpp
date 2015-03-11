@@ -50,13 +50,13 @@ float ImageCellAdaptor::margin() const { return 0.0; }
 
 float ImageCellAdaptor::padding() const { return 0.0; }
 
-float ImageCellAdaptor::leftMargin() const { return 0.0; }
+float ImageCellAdaptor::left_margin() const { return 0.0; }
 
-float ImageCellAdaptor::rightMargin() const { return 0.0; }
+float ImageCellAdaptor::right_margin() const { return 0.0; }
 
 bool ImageCellAdaptor::init() { return true; }
 
-TableModel::TableRenderMode ImageCellAdaptor::renderType() const
+TableModel::TableRenderMode ImageCellAdaptor::render_type() const
 {
   return ImageCellAdaptor::kRenderAsGridView;
 }

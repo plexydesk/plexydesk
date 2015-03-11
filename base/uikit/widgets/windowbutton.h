@@ -37,13 +37,13 @@ public:
   explicit WindowButton(QGraphicsObject *a_parent_ptr = 0);
   ~WindowButton();
 
-  void setButtonType(WindowButtonType type);
+  void set_button_type(WindowButtonType a_type);
 
   virtual QRectF boundingRect() const;
 
 protected:
-  virtual void paintNormalButton(QPainter *painter, const QRectF &rect);
-  virtual void paintSunkenButton(QPainter *painter, const QRectF &rect);
+  virtual void paint_normal_button(QPainter *a_painter_ptr, const QRectF &a_rect);
+  virtual void paint_sunken_button(QPainter *a_painter_ptr, const QRectF &a_rect);
 
 private:
   class PrivateWindowButton;

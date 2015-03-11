@@ -41,9 +41,9 @@ void ImageButton::createZoomAnimation()
   d->mZoomAnimation->setEndValue(1.1);
 }
 
-void ImageButton::setBackgroundColor(const QColor &color)
+void ImageButton::set_background_color(const QColor &a_color)
 {
-  d->mBgColor = color;
+  d->mBgColor = a_color;
   update();
 }
 
@@ -52,8 +52,8 @@ StylePtr ImageButton::style() const
   return Theme::style();
 }
 
-ImageButton::ImageButton(QGraphicsObject *parent)
-  : Widget(parent), d(new PrivateImageButton)
+ImageButton::ImageButton(QGraphicsObject *a_parent_ptr)
+  : Widget(a_parent_ptr), d(new PrivateImageButton)
 {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
@@ -73,24 +73,24 @@ ImageButton::ImageButton(QGraphicsObject *parent)
 
 ImageButton::~ImageButton() { delete d; }
 
-void ImageButton::setSize(const QSize &size)
+void ImageButton::set_size(const QSize &a_size)
 {
-  setGeometry(QRectF(0, 0, size.width(), size.height()));
+  setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
 }
 
 QSizeF ImageButton::sizeHint(Qt::SizeHint which,
-                             const QSizeF &constraint) const
+                             const QSizeF &a_constraint) const
 {
   return geometry().size();
 }
 
-void ImageButton::setPixmap(const QPixmap &pixmap)
+void ImageButton::set_pixmap(const QPixmap &a_pixmap)
 {
-  d->mPixmap = pixmap;
+  d->mPixmap = a_pixmap;
   // QGraphicsItem::setTransformOriginPoint(boundingRect().center());
 }
 
-void ImageButton::setLable(const QString &text) { d->mLabel = text; }
+void ImageButton::set_lable(const QString &a_text) { d->mLabel = a_text; }
 
 QString ImageButton::label() const { return d->mLabel; }
 
@@ -98,7 +98,7 @@ void ImageButton::onZoomDone() {}
 
 void ImageButton::onZoomOutDone() {}
 
-void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
@@ -106,55 +106,55 @@ void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
   }
 
   qDebug() << Q_FUNC_INFO;
-  Widget::mouseReleaseEvent(event);
+  Widget::mouseReleaseEvent(a_event_ptr);
 }
 
-void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   Q_EMIT selected(true);
-  Widget::mousePressEvent(event);
+  Widget::mousePressEvent(a_event_ptr);
 }
 
-void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr)
 {
   if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Forward);
     d->mZoomAnimation->start();
   }
 
-  event->accept();
+  a_event_ptr->accept();
 
-  Widget::hoverEnterEvent(event);
+  Widget::hoverEnterEvent(a_event_ptr);
 }
 
-void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr)
 {
   if (scale() > 1.0) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
     d->mZoomAnimation->start();
   }
 
-  event->accept();
+  a_event_ptr->accept();
 
   Q_EMIT selected(false);
 
-  Widget::hoverLeaveEvent(event);
+  Widget::hoverLeaveEvent(a_event_ptr);
 }
 
-void ImageButton::paint_view(QPainter *painter, const QRectF &rect)
+void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect)
 {
-  painter->save();
+  a_painter_ptr->save();
 
-  painter->setRenderHints(QPainter::SmoothPixmapTransform |
+  a_painter_ptr->setRenderHints(QPainter::SmoothPixmapTransform |
                           QPainter::Antialiasing |
                           QPainter::HighQualityAntialiasing);
 
   QPainterPath bgPath;
 
-  bgPath.addEllipse(rect);
-  painter->fillPath(bgPath, d->mBgColor);
+  bgPath.addEllipse(a_rect);
+  a_painter_ptr->fillPath(bgPath, d->mBgColor);
 
-  painter->drawPixmap(rect.toRect(), d->mPixmap);
-  painter->restore();
+  a_painter_ptr->drawPixmap(a_rect.toRect(), d->mPixmap);
+  a_painter_ptr->restore();
 }
 }

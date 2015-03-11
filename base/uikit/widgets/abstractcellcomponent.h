@@ -16,20 +16,20 @@ class DECL_UI_KIT_EXPORT TableViewItem : public QGraphicsObject,
   Q_INTERFACES(QGraphicsLayoutItem)
 
 public:
-  TableViewItem(const QRectF &rect, QGraphicsItem *a_parent_ptr = 0);
+  TableViewItem(const QRectF &a_rect, QGraphicsItem *a_parent_ptr = 0);
 
   virtual ~TableViewItem();
 
-  virtual void setGeometry(const QRectF &rect);
+  virtual void setGeometry(const QRectF &a_rect);
 
-  virtual void setSelected() = 0;
+  virtual void set_selected() = 0;
 
-  virtual void clearSelection() = 0;
+  virtual void clear_selection() = 0;
 
   virtual QString name();
 
 Q_SIGNALS:
-  void clicked(TableViewItem *component);
+  void clicked(TableViewItem *a_component_ptr);
 };
 }
 #endif // ABSTRACTCELLCOMPONENT_H

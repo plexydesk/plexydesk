@@ -252,9 +252,9 @@ void Space::remove_window_from_view(Window *a_window)
 
 void Space::on_viewport_event_notify(std::function<void (ViewportNotificationType,
                                      const QVariant &,
-                                     const Space *)> a_notifyHandler)
+                                     const Space *)> a_notify_handler)
 {
-  m_priv_impl->m_notify_chain.append(a_notifyHandler);
+  m_priv_impl->m_notify_chain.append(a_notify_handler);
 }
 
 void Space::on_activity_finished()
@@ -283,9 +283,9 @@ void Space::on_activity_finished()
   }
 }
 
-void Space::register_controller(const QString &aControllerName)
+void Space::register_controller(const QString &a_controller_name)
 {
-  qDebug() << Q_FUNC_INFO << "Controller :" << aControllerName;
+  qDebug() << Q_FUNC_INFO << "Controller :" << a_controller_name;
   QuetzalKit::DataStore *_data_store =
     new QuetzalKit::DataStore(m_priv_impl->sessionNameForSpace(), this);
   QuetzalKit::DiskSyncEngine *_engine =
@@ -304,7 +304,7 @@ void Space::register_controller(const QString &aControllerName)
       continue;
     }
 
-    if (_child_object_ptr->attributeValue("name").toString() == aControllerName) {
+    if (_child_object_ptr->attributeValue("name").toString() == a_controller_name) {
       _has_controller = true;
     }
   }
@@ -313,7 +313,7 @@ void Space::register_controller(const QString &aControllerName)
     QuetzalKit::SyncObject *_controller_ptr =
       _session_list_ptr->createNewObject("Controller");
 
-    _controller_ptr->setObjectAttribute("name", aControllerName);
+    _controller_ptr->setObjectAttribute("name", a_controller_name);
     _data_store->insert(_controller_ptr);
   }
 
@@ -321,7 +321,7 @@ void Space::register_controller(const QString &aControllerName)
 
   // create a new data  Store to link it to this store.
   QuetzalKit::DataStore *_linked_sub_store = new QuetzalKit::DataStore(
-    m_priv_impl->sessionNameForController(aControllerName), this);
+    m_priv_impl->sessionNameForController(a_controller_name), this);
   _engine = new QuetzalKit::DiskSyncEngine(_linked_sub_store);
   _linked_sub_store->setSyncEngine(_engine);
 
@@ -352,8 +352,8 @@ void Space::register_controller(const QString &aControllerName)
     }
   }
 
-  if (controller(aControllerName)) {
-    controller(aControllerName)->revoke_session(_session_data);
+  if (controller(a_controller_name)) {
+    controller(a_controller_name)->revoke_session(_session_data);
   }
 
   delete _linked_sub_store;
