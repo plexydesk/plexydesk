@@ -122,7 +122,7 @@ void PhotoSearchActivity::onClicked(TableViewItem *item)
   if (i) {
     d->mResult["action"] = QString("Change Background");
     d->mResult["background"] = "file:///" + i->label();
-    updateAction();
+    update_action();
   }
 }
 
