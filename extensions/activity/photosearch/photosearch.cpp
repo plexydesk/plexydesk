@@ -121,8 +121,8 @@ void PhotoSearchActivity::onClicked(TableViewItem *item)
   ImageCell *i = qobject_cast<ImageCell *>(item);
   if (i) {
     d->mResult["action"] = QString("Change Background");
-    d->mResult["background"] = "file://" + i->label();
-    update_action();
+    d->mResult["background"] = "file:///" + i->label();
+    updateAction();
   }
 }
 
@@ -138,17 +138,17 @@ void PhotoSearchActivity::onProgressValue(int value)
 
 void PhotoSearchActivity::locateLocalFiles() const
 {
-  QString url;
   QStringList pathList;
-#ifdef Q_OS_LINUX
-  url = QLatin1String("/usr/share/backgrounds/");
-  pathList << url;
-  pathList << QLatin1String("/usr/share/backgrounds/gnome");
-#endif
 
-#ifdef Q_OS_MAC
-  url = QLatin1String("/Library/Desktop Pictures/");
-  pathList << url;
+#ifdef Q_OS_LINUX
+  pathList << QLatin1String("/usr/share/backgrounds/");
+  pathList << QLatin1String("/usr/share/backgrounds/gnome");
+#elif defined(Q_OS_MAC)
+  pathList << QLatin1String("/Library/Desktop Pictures/");
+#elif defined(Q_OS_WIN)
+  pathList << QLatin1String("C:\\Windows\\Web\\Wallpaper\\Theme1\\");
+  pathList << QLatin1String("C:\\Windows\\Web\\Wallpaper\\Theme2\\");
+  pathList << QLatin1String("C:\\Windows\\Web\\Wallpaper\\Windows\\");
 #endif
 
   pathList << UIKit::Config::cache_dir("wallpaper");

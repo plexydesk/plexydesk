@@ -345,7 +345,7 @@ void BackgroundController::onImageSaveReady()
       } else {
         viewport()->update_session_value(
           controller_name(), "background",
-          QDir::toNativeSeparators("file://" + c->imagePath()));
+          QDir::toNativeSeparators("file:///" + c->imagePath()));
       }
     }
 
