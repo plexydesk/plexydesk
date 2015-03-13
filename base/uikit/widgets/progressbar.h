@@ -1,21 +1,16 @@
 #ifndef PROGRESS_BAR_H
 #define PROGRESS_BAR_H
 
-#include <QGraphicsObject>
-#include <QGraphicsLayoutItem>
-
 #include <style.h>
-#include <plexydesk_ui_exports.h>
 #include <widget.h>
+
+#include <plexydesk_ui_exports.h>
 
 namespace UIKit
 {
-
 class DECL_UI_KIT_EXPORT ProgressBar : public Widget
 {
   Q_OBJECT
-  Q_INTERFACES(QGraphicsLayoutItem)
-
 public:
   explicit ProgressBar(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ProgressBar();
@@ -28,20 +23,16 @@ public:
 
   virtual int max_range();
   virtual int min_range();
-
 public Q_SLOTS:
   void set_range(int a_min, int a_max);
   void set_value(int a_value);
   void on_value_changed(const QVariant &a_value);
-
 Q_SIGNALS:
   void contentBoundingRectChaned();
-
 protected:
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
                      QWidget *a_widget_ptr = 0);
-
 private:
   class PrivateProgressBar;
   PrivateProgressBar *const d;

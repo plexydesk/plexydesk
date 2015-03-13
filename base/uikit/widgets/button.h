@@ -2,15 +2,14 @@
 #define UI_BUTTON_H
 
 #include <plexy.h>
+
 #include <QGraphicsScene>
-#include <QGraphicsObject>
-#include <QGraphicsLayoutItem>
 
 #include <functional>
 
 #include <widget.h>
-#include <widget.h>
 #include <style.h>
+
 #include <plexydesk_ui_exports.h>
 
 namespace UIKit
@@ -18,7 +17,6 @@ namespace UIKit
 class DECL_UI_KIT_EXPORT Button : public Widget
 {
   Q_OBJECT
-
 public:
   explicit Button(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Button();

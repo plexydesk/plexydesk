@@ -4,11 +4,12 @@
 #include <plexydesk_ui_exports.h>
 
 #include <QObject>
-#include <QSettings>
-#include <QPoint>
+
 #include <widget.h>
 #include <style.h>
+
 #include <datastore.h>
+
 #include <webservice.h>
 
 namespace UIKit
@@ -17,7 +18,6 @@ class DECL_UI_KIT_EXPORT Theme : public QObject
 {
   Q_OBJECT
   Q_PROPERTY(QString themeName READ QString WRITE set_theme_name)
-
 public:
   Theme(const QString &a_theme_name, QObject *a_parent_ptr = 0);
   virtual ~Theme();

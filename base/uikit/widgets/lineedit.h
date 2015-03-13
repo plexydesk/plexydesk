@@ -2,20 +2,17 @@
 #define LINEEDIT_H
 
 #include <plexy.h>
-#include <style.h>
 
-#include <QGraphicsObject>
-#include <QGraphicsLayoutItem>
-#include <plexydesk_ui_exports.h>
+#include <style.h>
 #include <widget.h>
+
+#include <plexydesk_ui_exports.h>
 
 namespace UIKit
 {
 class DECL_UI_KIT_EXPORT LineEdit : public Widget
 {
   Q_OBJECT
-  Q_INTERFACES(QGraphicsLayoutItem)
-
 public:
   explicit LineEdit(QGraphicsObject *a_parent_ptr = 0);
   virtual ~LineEdit();
@@ -41,11 +38,9 @@ protected:
   virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr);
   virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *a_event_ptr);
   virtual void keyPressEvent(QKeyEvent *a_event_ptr);
-
 private:
   class PrivateLineEdit;
   PrivateLineEdit *const d;
 };
 }
-
 #endif // LINEEDIT_H

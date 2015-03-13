@@ -29,7 +29,6 @@
 #include <QObject>
 #include <QPainter>
 
-#include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
 
 namespace UIKit
@@ -37,7 +36,6 @@ namespace UIKit
 class DECL_UI_KIT_EXPORT ImageCache : public QObject
 {
   Q_OBJECT
-
 public:
   ImageCache();
   virtual ~ImageCache();
@@ -66,5 +64,4 @@ private:
   Private *const d;
 };
 }
-
 #endif

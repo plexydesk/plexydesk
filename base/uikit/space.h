@@ -84,11 +84,9 @@ public:
                         const Space *)> a_notify_handler);
 public Q_SLOTS:
   virtual void on_activity_finished();
-
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
-
 private:
   class PrivateSpace;
   PrivateSpace *const m_priv_impl;

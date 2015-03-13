@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <functional>
+
 #include <widget.h>
 
 class QRectF;
@@ -55,7 +56,6 @@ protected:
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
 
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr);
-
 private:
   class PrivateWindow;
   PrivateWindow *const m_priv_impl;

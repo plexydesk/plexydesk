@@ -9,10 +9,8 @@ namespace UIKit
 class DECL_UI_KIT_EXPORT ToolBar : public Widget
 {
   Q_OBJECT
-
 public:
   ToolBar(QGraphicsObject *a_parent_ptr = 0);
-
   virtual ~ToolBar();
 
   virtual void add_action(const QString &a_lable, const QString &a_icon,
@@ -29,16 +27,11 @@ public:
   virtual StylePtr style() const;
 
   // virtual void setGeometry(const QRectF &a_rect);
-
   virtual QRectF contents_geometry() const;
-
   virtual QRectF frame_geometry() const;
-
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
-
 Q_SIGNALS:
   void action(const QString &a_actionName);
-
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_expose_rect);
 

@@ -43,6 +43,5 @@ private:
   class PrivateModelView;
   PrivateModelView *const d;
 };
-
 }
 #endif // MODELVIEW_H
