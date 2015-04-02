@@ -18,7 +18,11 @@
 #include "timezone.h"
 #include <widget.h>
 #include <plexyconfig.h>
+
 #include <QTimer>
+#include <QTimeZone>
+#include <QLocale>
+
 #include <view_controller.h>
 #include <modelview.h>
 #include <label.h>
@@ -66,7 +70,8 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
 
   exec(aWindowPos);
 
-  mPrivConstPtr->mWindowPtr->on_window_discarded([this](UIKit::Window * aWindow) {
+  mPrivConstPtr->mWindowPtr->on_window_discarded(
+              [this](UIKit::Window * aWindow) {
     discard_activity();
   });
 
@@ -96,9 +101,22 @@ void TimeZoneActivity::cleanup()
 
 void TimeZoneActivity::loadTimeZones()
 {
+  QStringList l_timezone_list;
   foreach(const QByteArray id,  QTimeZone::availableTimeZoneIds()) {
+   QLocale::Country l_country_locale = QTimeZone(id).country();
+   QString l_time_zone_lable_str =
+           QLocale::countryToString(l_country_locale);
+   l_timezone_list << l_time_zone_lable_str + " " + QTimeZone(id).displayName(
+                          QDateTime::currentDateTime(), QTimeZone::OffsetName);
+  }
+
+  l_timezone_list.sort();
+
+  foreach(const QString &label, l_timezone_list) {
     UIKit::Label *lTimeZoneLabelPtr =
       new UIKit::Label(mPrivConstPtr->mTimeZoneBrowserPtr);
+
+    lTimeZoneLabelPtr->set_alignment(Qt::AlignLeft);
 
     lTimeZoneLabelPtr->setMinimumSize(
       mPrivConstPtr->mTimeZoneBrowserPtr->geometry().width(),
@@ -107,7 +125,7 @@ void TimeZoneActivity::loadTimeZones()
                 QSizeF(
                     mPrivConstPtr->mTimeZoneBrowserPtr->boundingRect().width(),
                     32));
-    lTimeZoneLabelPtr->set_label(QString(id));
+    lTimeZoneLabelPtr->set_label(label);
     mPrivConstPtr->mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
 
     lTimeZoneLabelPtr->on_input_event([this](UIKit::Widget::InputEvent a_type,
