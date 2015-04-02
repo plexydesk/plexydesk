@@ -53,23 +53,22 @@ public:
 
   virtual void on_arguments_updated(
     std::function<void ()> a_handler);
+
   virtual void on_action_completed(
     std::function<void (const QVariantMap &a_result)> a_handler);
-
 protected:
   virtual void update_action();
   virtual void discard_activity();
   virtual QRectF geometry() const;
   virtual void set_geometry(const QRectF &a_geometry);
   virtual void update_content_geometry(Widget *a_widget_ptr);
-
+  virtual void activate_response();
 Q_SIGNALS:
   void finished();
   void canceled();
   void discarded();
   void resultsReady();
   void attribute_changed();
-
 private:
   class PrivateDesktopActivity;
   PrivateDesktopActivity *const d;

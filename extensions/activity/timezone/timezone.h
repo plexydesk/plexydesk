@@ -48,6 +48,7 @@ public:
 private:
   class PrivateTimeZone;
   PrivateTimeZone *const mPrivConstPtr;
+  void loadTimeZones();
 };
 
 #endif

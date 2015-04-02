@@ -22,6 +22,7 @@
 #include <view_controller.h>
 #include <modelview.h>
 #include <label.h>
+#include <button.h>
 
 class TimeZoneActivity::PrivateTimeZone
 {
@@ -35,10 +36,10 @@ public:
     qDebug() << Q_FUNC_INFO << "Delete TimeZone Activity";
   }
 
-  void loadTimeZones();
-
   UIKit::Window *mWindowPtr;
   UIKit::ModelView *mTimeZoneBrowserPtr;
+
+  QVariantMap m_result_data;
 };
 
 TimeZoneActivity::TimeZoneActivity(QGraphicsObject *aParent)
@@ -69,15 +70,21 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
     discard_activity();
   });
 
-  mPrivConstPtr->loadTimeZones();
+  loadTimeZones();
 }
 
-QVariantMap TimeZoneActivity::result() const { return QVariantMap(); }
+QVariantMap TimeZoneActivity::result() const
+{
+    return mPrivConstPtr->m_result_data;
+}
 
 void TimeZoneActivity::update_attribute(const QString &aName,
                                        const QVariant &aVariantData) {}
 
-UIKit::Window *TimeZoneActivity::window() const { return mPrivConstPtr->mWindowPtr; }
+UIKit::Window *TimeZoneActivity::window() const
+{
+    return mPrivConstPtr->mWindowPtr;
+}
 
 void TimeZoneActivity::cleanup()
 {
@@ -87,21 +94,35 @@ void TimeZoneActivity::cleanup()
   mPrivConstPtr->mWindowPtr = 0;
 }
 
-void TimeZoneActivity::PrivateTimeZone::loadTimeZones()
+void TimeZoneActivity::loadTimeZones()
 {
   foreach(const QByteArray id,  QTimeZone::availableTimeZoneIds()) {
     UIKit::Label *lTimeZoneLabelPtr =
-      new UIKit::Label(mTimeZoneBrowserPtr);
+      new UIKit::Label(mPrivConstPtr->mTimeZoneBrowserPtr);
+
     lTimeZoneLabelPtr->setMinimumSize(
-      mTimeZoneBrowserPtr->geometry().width(),
+      mPrivConstPtr->mTimeZoneBrowserPtr->geometry().width(),
       32);
-    lTimeZoneLabelPtr->set_size(QSizeF(mTimeZoneBrowserPtr->boundingRect().width(),
-                                      32));
-    lTimeZoneLabelPtr->show();
-
-    qDebug() << Q_FUNC_INFO << mTimeZoneBrowserPtr->boundingRect();
-
+    lTimeZoneLabelPtr->set_size(
+                QSizeF(
+                    mPrivConstPtr->mTimeZoneBrowserPtr->boundingRect().width(),
+                    32));
     lTimeZoneLabelPtr->set_label(QString(id));
-    mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
+    mPrivConstPtr->mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
+
+    lTimeZoneLabelPtr->on_input_event([this](UIKit::Widget::InputEvent a_type,
+                                      const UIKit::Widget *a_widget_ptr) {
+        if (a_type != UIKit::Widget::kMouseReleaseEvent)
+            return;
+
+        if (a_widget_ptr) {
+            const UIKit::Label *l_label_ptr =
+                    qobject_cast<const UIKit::Label *>(a_widget_ptr);
+            if (l_label_ptr) {
+                mPrivConstPtr->m_result_data["timezone"] = l_label_ptr->label();
+                activate_response();
+            }
+        }
+    });
   }
 }

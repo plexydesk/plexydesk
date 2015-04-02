@@ -35,8 +35,9 @@ class DesktopClockActivity::PrivateDesktopClock
 {
 public:
   PrivateDesktopClock() {}
-
   ~PrivateDesktopClock() {}
+
+  void add_time_zone(const QString &a_time_zone);
 
   UIKit::Window *mMainWindow;
   UIKit::Widget *mWindowContentWidget;
@@ -118,18 +119,24 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
 
   d->m_timezone_model = new TimeZoneModel(d->m_timezone_table);
   d->m_timezone_table->set_model(d->m_timezone_model);
-  d->m_timezone_model->insertItem("OMG", QPixmap(), false);
 
   d->m_main_layout->addItem(d->m_timezone_table);
 
   exec(window_pos);
-
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
 
   d->mMainWindow->on_window_discarded([this](UIKit::Window * aWindow) {
     discard_activity();
   });
+}
+
+void DesktopClockActivity::PrivateDesktopClock::add_time_zone(const QString &a_time_zone_label)
+{
+  if (!m_timezone_model)
+    return;
+
+  m_timezone_model->insertItem(a_time_zone_label, QPixmap(), false);
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
@@ -162,6 +169,10 @@ void DesktopClockActivity::onToolBarAction(const QString &str)
             _space->cursor_pos(),
             QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
         _space->add_activity(_timezone);
+
+       _timezone->on_action_completed([this](const QVariantMap &a_data) {
+          d->add_time_zone(a_data["timezone"].toString());
+       });
       }
     } else {
       qWarning() << Q_FUNC_INFO << "Viewport not found for this activity";
