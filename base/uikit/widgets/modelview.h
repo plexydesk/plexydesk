@@ -2,7 +2,9 @@
 #define MODELVIEW_H
 
 #include <QGraphicsObject>
+
 #include <widget.h>
+#include <model_view_item.h>
 
 #include <functional>
 
@@ -23,6 +25,12 @@ public:
 
   virtual void insert(Widget *a_widget_ptr);
   virtual void remove(Widget *a_widget_ptr);
+
+  virtual void insert(ModelViewItem *a_item_ptr);
+  virtual void remove(ModelViewItem *a_item_ptr);
+
+  virtual ModelViewItem *at(int index);
+
   virtual void clear();
 
   virtual void set_view_geometry(const QRectF &a_rect);

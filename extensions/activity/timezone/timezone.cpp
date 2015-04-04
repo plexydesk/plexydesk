@@ -102,45 +102,57 @@ void TimeZoneActivity::cleanup()
 void TimeZoneActivity::loadTimeZones()
 {
   QStringList l_timezone_list;
+  std::vector<UIKit::ModelViewItem *> _item_list;
+
   foreach(const QByteArray id,  QTimeZone::availableTimeZoneIds()) {
-   QLocale::Country l_country_locale = QTimeZone(id).country();
-   QString l_time_zone_lable_str =
-           QLocale::countryToString(l_country_locale);
-   l_timezone_list << l_time_zone_lable_str + " " + QTimeZone(id).displayName(
-                          QDateTime::currentDateTime(), QTimeZone::OffsetName);
-  }
+      QLocale::Country l_country_locale = QTimeZone(id).country();
+      QString l_time_zone_lable_str =
+          QLocale::countryToString(l_country_locale);
+      l_time_zone_lable_str += " " + QTimeZone(id).displayName(
+            QDateTime::currentDateTime(), QTimeZone::OffsetName);
 
-  l_timezone_list.sort();
+      UIKit::Label *lTimeZoneLabelPtr =
+          new UIKit::Label(mPrivConstPtr->mTimeZoneBrowserPtr);
+      UIKit::ModelViewItem *l_item = new UIKit::ModelViewItem();
 
-  foreach(const QString &label, l_timezone_list) {
-    UIKit::Label *lTimeZoneLabelPtr =
-      new UIKit::Label(mPrivConstPtr->mTimeZoneBrowserPtr);
+      l_item->set_data("label", l_time_zone_lable_str);
+      l_item->set_data("id", id);
+      l_item->on_activated([&](UIKit::ModelViewItem *a_item) {
+        if (a_item) {
+            mPrivConstPtr->m_result_data["timezone"] =
+                a_item->data("label").toString();
+            mPrivConstPtr->m_result_data["id"] =
+                a_item->data("id").toByteArray();
+          }
+      });
 
-    lTimeZoneLabelPtr->set_alignment(Qt::AlignLeft);
+      l_item->set_view(lTimeZoneLabelPtr);
 
-    lTimeZoneLabelPtr->setMinimumSize(
-      mPrivConstPtr->mTimeZoneBrowserPtr->geometry().width(),
-      32);
-    lTimeZoneLabelPtr->set_size(
-                QSizeF(
-                    mPrivConstPtr->mTimeZoneBrowserPtr->boundingRect().width(),
-                    32));
-    lTimeZoneLabelPtr->set_label(label);
-    mPrivConstPtr->mTimeZoneBrowserPtr->insert(lTimeZoneLabelPtr);
+      lTimeZoneLabelPtr->set_alignment(Qt::AlignLeft);
 
-    lTimeZoneLabelPtr->on_input_event([this](UIKit::Widget::InputEvent a_type,
-                                      const UIKit::Widget *a_widget_ptr) {
-        if (a_type != UIKit::Widget::kMouseReleaseEvent)
-            return;
+      lTimeZoneLabelPtr->setMinimumSize(
+            mPrivConstPtr->mTimeZoneBrowserPtr->geometry().width(),
+            32);
+      lTimeZoneLabelPtr->set_size(
+            QSizeF(
+              mPrivConstPtr->mTimeZoneBrowserPtr->boundingRect().width(),
+              32));
+      lTimeZoneLabelPtr->set_label(l_time_zone_lable_str);
+      _item_list.push_back(l_item);
+    }
 
-        if (a_widget_ptr) {
-            const UIKit::Label *l_label_ptr =
-                    qobject_cast<const UIKit::Label *>(a_widget_ptr);
-            if (l_label_ptr) {
-                mPrivConstPtr->m_result_data["timezone"] = l_label_ptr->label();
-                activate_response();
-            }
-        }
+  std::sort(_item_list.begin(), _item_list.end(),
+            [](UIKit::ModelViewItem *a_a, UIKit::ModelViewItem *a_b) {
+      return a_a->data("label").toString() < a_b->data("label").toString();
     });
-  }
+
+  std::for_each(_item_list.begin(), _item_list.end(), [this](UIKit::ModelViewItem *a) {
+   if (a) {
+       mPrivConstPtr->mTimeZoneBrowserPtr->insert(a);
+   }
+  });
+
+  //mPrivConstPtr->mTimeZoneBrowserPtr->insert(l_item);
+
+
 }

@@ -107,14 +107,18 @@
 
 namespace UIKit
 {
+typedef std::function<void (Widget::InputEvent, const Widget *)> EventCallbackFunc;
 
 class Widget::PrivateAbstractDesktopWidget
 {
 public:
   PrivateAbstractDesktopWidget() :
     m_widget_controller(0),
+    m_callback_count(0),
     mWidgetID(0) {}
   ~PrivateAbstractDesktopWidget() {}
+
+  void _exec_func(Widget::InputEvent a_type, const Widget *a_widget_ptr);
 
   QVariantMap mStyleAttributeMap;
 
@@ -124,7 +128,8 @@ public:
 
   ViewController *m_widget_controller;
 
-  std::function<void (InputEvent type, const Widget *ptr)> mEventCallback;
+  QList<EventCallbackFunc> m_handler_list;
+  int m_callback_count;
 };
 
 Widget::Widget(QGraphicsObject *parent)
@@ -165,7 +170,8 @@ void Widget::set_widget_flag(int a_flags, bool a_enable)
 void Widget::on_input_event(std::function<void (InputEvent,
                                                 const Widget *)> a_callback)
 {
-  d->mEventCallback = a_callback;
+  d->m_callback_count++;
+  d->m_handler_list.append(a_callback);
 }
 
 void Widget::set_style_attribute(const QString &a_key, QVariant a_data)
@@ -269,9 +275,7 @@ void Widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   //todo : check why mouse release events are not called.
   //https://github.com/plexydesk/plexydesk/issues/7
-  if (d->mEventCallback) {
-    d->mEventCallback(kMousePressedEvent, this);
-  }
+  d->_exec_func(kMousePressedEvent, this);
 
   setFocus(Qt::MouseFocusReason);
   //QGraphicsObject::mousePressEvent(event);
@@ -280,9 +284,8 @@ void Widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
 {
   qDebug() << Q_FUNC_INFO << metaObject()->className();
-  if (d->mEventCallback) {
-    d->mEventCallback(kMouseReleaseEvent, this);
-  }
+
+  d->_exec_func(kMouseReleaseEvent, this);
 
   //QGraphicsObject::mouseReleaseEvent(event);
 }
@@ -291,9 +294,7 @@ void Widget::focusOutEvent(QFocusEvent *event)
 {
   event->accept();
 
-  if (d->mEventCallback) {
-    d->mEventCallback(kFocusOutEvent, this);
-  }
+  d->_exec_func(kFocusOutEvent, this);
 
   QGraphicsObject::focusOutEvent(event);
 }
@@ -323,6 +324,16 @@ void Widget::set_controller(ViewController *a_view_controller_ptr)
 ViewController *Widget::controller() const
 {
   return d->m_widget_controller;
+}
+
+void Widget::PrivateAbstractDesktopWidget::_exec_func(InputEvent a_type,
+                                                      const Widget *a_widget_ptr)
+{
+  foreach(EventCallbackFunc l_func, m_handler_list) {
+    if (l_func) {
+      l_func(a_type, a_widget_ptr);
+    }
+  }
 }
 
 } // namespace PlexyDesk

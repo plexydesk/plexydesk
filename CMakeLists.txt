@@ -246,6 +246,8 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/base/uikit
     ${CMAKE_SOURCE_DIR}/base/uikit/widgets/
     ${CMAKE_BINARY_DIR}/base/uikit/widets/
+    ${CMAKE_BINARY_DIR}/base/uikit/components/
+    ${CMAKE_SOURCE_DIR}/base/uikit/components/
     ${CMAKE_SOURCE_DIR}/base/uikit/core
     ${CMAKE_BINARY_DIR}/base/uikit/core
     ${CMAKE_SOURCE_DIR}/base/social/lib
