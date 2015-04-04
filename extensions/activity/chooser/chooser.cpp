@@ -229,6 +229,7 @@ Widget *Action::createActionItem(const QString &aIcon,
 
   return l_rv;
 }
+
 QString Action::label() const
 {
   return m_label;

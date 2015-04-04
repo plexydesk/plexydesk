@@ -22,6 +22,7 @@ public:
   QString mString;
   QColor mBgColor, mFgColor;
   uint mFontSize;
+  Qt::Alignment m_alignment;
 };
 
 Label::Label(QGraphicsObject *parent) : Widget(parent), d(new PrivateLabel)
@@ -29,6 +30,7 @@ Label::Label(QGraphicsObject *parent) : Widget(parent), d(new PrivateLabel)
   d->mBgColor = Qt::transparent;
   d->mFgColor = QColor(88, 88, 88);
   d->mFontSize = 14;
+  d->m_alignment = Qt::AlignCenter;
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
@@ -94,6 +96,16 @@ void Label::set_label_style(const QColor &a_backgroundColor,
   update();
 }
 
+int Label::alignment()
+{
+  return d->m_alignment;
+}
+
+void Label::set_alignment(int a_alignment)
+{
+  d->m_alignment = (Qt::Alignment) a_alignment;
+}
+
 void Label::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
                   QWidget *a_widget_ptr)
 {
@@ -117,7 +129,7 @@ void Label::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_opt
   */
   //painter->fillRect(option->exposedRect, QColor("#ffffff"));
   a_painter_ptr->drawText(a_option_ptr->exposedRect, d->mString,
-                    QTextOption(Qt::AlignCenter));
+                    QTextOption(d->m_alignment));
   a_painter_ptr->restore();
 }
 

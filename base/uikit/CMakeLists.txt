@@ -80,6 +80,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/modelview.cpp
     components/dialwidget.cpp
     components/rangewidget.cpp
+    components/model_view_item.cpp
     )
 
 set(LIBRARY_SOURCE_FILES
@@ -120,6 +121,7 @@ set(LIBRARY_HEADER_FILES
     widgets/modelview.h
     components/dialwidget.h
     components/rangewidget.h
+    components/model_view_item.h
     workspace.h
     space.h
     ${CORE_LIBRARY_HEADER_FILES}

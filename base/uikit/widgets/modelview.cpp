@@ -23,6 +23,8 @@ public:
   QGraphicsGridLayout *m_grid_layout;
   QRectF m_viewport_geometry;
 
+  QList<ModelViewItem*> m_model_item_list;
+
   std::function<void (int index)> m_activation_handler;
 };
 
@@ -128,6 +130,23 @@ void ModelView::insert(Widget *a_widget_ptr)
 
 void ModelView::remove(Widget *a_widget_ptr) {}
 
+void ModelView::insert(ModelViewItem *a_item_ptr)
+{
+   insert(a_item_ptr->view());
+
+   a_item_ptr->set_index(d->m_model_item_list.count());
+   d->m_model_item_list.append(a_item_ptr);
+}
+
+void ModelView::remove(ModelViewItem *a_item_ptr)
+{
+}
+
+ModelViewItem *ModelView::at(int index)
+{
+  return d->m_model_item_list.at(index);
+}
+
 void ModelView::clear()
 {
   if (d->m_list_layout->count() <= 0) {
@@ -146,6 +165,8 @@ void ModelView::clear()
 
   d->m_list_layout->invalidate();
   d->m_list_layout->updateGeometry();
+
+  qDeleteAll(d->m_model_item_list);
 }
 
 void ModelView::set_view_geometry(const QRectF &a_rect)
