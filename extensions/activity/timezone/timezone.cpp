@@ -123,6 +123,7 @@ void TimeZoneActivity::loadTimeZones()
                 a_item->data("label").toString();
             mPrivConstPtr->m_result_data["id"] =
                 a_item->data("id").toByteArray();
+            activate_response();
           }
       });
 
@@ -151,8 +152,4 @@ void TimeZoneActivity::loadTimeZones()
        mPrivConstPtr->mTimeZoneBrowserPtr->insert(a);
    }
   });
-
-  //mPrivConstPtr->mTimeZoneBrowserPtr->insert(l_item);
-
-
 }
