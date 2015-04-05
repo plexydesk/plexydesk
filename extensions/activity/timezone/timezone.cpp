@@ -27,6 +27,7 @@
 #include <modelview.h>
 #include <label.h>
 #include <button.h>
+#include <lineedit.h>
 
 class TimeZoneActivity::PrivateTimeZone
 {
@@ -34,43 +35,54 @@ public:
   PrivateTimeZone() {}
   ~PrivateTimeZone()
   {
-    if (mWindowPtr) {
-      delete mWindowPtr;
+    if (m_window_ptr) {
+      delete m_window_ptr;
     }
     qDebug() << Q_FUNC_INFO << "Delete TimeZone Activity";
   }
 
-  UIKit::Window *mWindowPtr;
-  UIKit::ModelView *mTimeZoneBrowserPtr;
+  UIKit::Window *m_window_ptr;
+  UIKit::ModelView *m_timezone_browser_ptr;
+  UIKit::LineEdit *m_filter_widget_ptr;
 
   QVariantMap m_result_data;
 };
 
 TimeZoneActivity::TimeZoneActivity(QGraphicsObject *aParent)
-  : UIKit::DesktopActivity(aParent), mPrivConstPtr(new PrivateTimeZone) {}
+  : UIKit::DesktopActivity(aParent), m_priv_ptr(new PrivateTimeZone) {}
 
-TimeZoneActivity::~TimeZoneActivity() { delete mPrivConstPtr; }
+TimeZoneActivity::~TimeZoneActivity() { delete m_priv_ptr; }
 
 void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
                                     const QString &aWindowTitle,
                                     const QPointF &aWindowPos)
 {
-  mPrivConstPtr->mWindowPtr = new UIKit::Window();
+  m_priv_ptr->m_window_ptr = new UIKit::Window();
+  m_priv_ptr->m_window_ptr->set_window_title(aWindowTitle);
 
-  mPrivConstPtr->mWindowPtr->set_window_title(aWindowTitle);
-  mPrivConstPtr->mTimeZoneBrowserPtr =
-    new UIKit::ModelView(mPrivConstPtr->mWindowPtr);
-  mPrivConstPtr->mTimeZoneBrowserPtr->setGeometry(aWindowGeometry);
-  mPrivConstPtr->mTimeZoneBrowserPtr->set_view_geometry(aWindowGeometry);
+  m_priv_ptr->m_timezone_browser_ptr =
+    new UIKit::ModelView(m_priv_ptr->m_window_ptr);
+  m_priv_ptr->m_timezone_browser_ptr->setGeometry(
+        QRectF(0, 32, aWindowGeometry.width(), aWindowGeometry.height() - 32));
+  m_priv_ptr->m_timezone_browser_ptr->set_view_geometry(
+        QRectF(0, 32, aWindowGeometry.width(), aWindowGeometry.height() - 32));
 
-  mPrivConstPtr->mWindowPtr->set_window_content(
-    mPrivConstPtr->mTimeZoneBrowserPtr);
+  m_priv_ptr->m_filter_widget_ptr =
+      new UIKit::LineEdit(m_priv_ptr->m_window_ptr);
+  m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width(), 32);
+
+  m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(0, 64, 100, 200));
+  m_priv_ptr->m_filter_widget_ptr->show();
+
+  //todo : create a parent widget to set as the content widget
+  m_priv_ptr->m_window_ptr->set_window_content(
+    m_priv_ptr->m_timezone_browser_ptr);
 
   set_geometry(aWindowGeometry);
 
   exec(aWindowPos);
 
-  mPrivConstPtr->mWindowPtr->on_window_discarded(
+  m_priv_ptr->m_window_ptr->on_window_discarded(
               [this](UIKit::Window * aWindow) {
     discard_activity();
   });
@@ -80,7 +92,7 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
 
 QVariantMap TimeZoneActivity::result() const
 {
-    return mPrivConstPtr->m_result_data;
+    return m_priv_ptr->m_result_data;
 }
 
 void TimeZoneActivity::update_attribute(const QString &aName,
@@ -88,15 +100,15 @@ void TimeZoneActivity::update_attribute(const QString &aName,
 
 UIKit::Window *TimeZoneActivity::window() const
 {
-    return mPrivConstPtr->mWindowPtr;
+    return m_priv_ptr->m_window_ptr;
 }
 
 void TimeZoneActivity::cleanup()
 {
-  if (mPrivConstPtr->mWindowPtr) {
-    delete mPrivConstPtr->mWindowPtr;
+  if (m_priv_ptr->m_window_ptr) {
+    delete m_priv_ptr->m_window_ptr;
   }
-  mPrivConstPtr->mWindowPtr = 0;
+  m_priv_ptr->m_window_ptr = 0;
 }
 
 void TimeZoneActivity::loadTimeZones()
@@ -112,16 +124,16 @@ void TimeZoneActivity::loadTimeZones()
             QDateTime::currentDateTime(), QTimeZone::OffsetName);
 
       UIKit::Label *lTimeZoneLabelPtr =
-          new UIKit::Label(mPrivConstPtr->mTimeZoneBrowserPtr);
+          new UIKit::Label(m_priv_ptr->m_timezone_browser_ptr);
       UIKit::ModelViewItem *l_item = new UIKit::ModelViewItem();
 
       l_item->set_data("label", l_time_zone_lable_str);
       l_item->set_data("id", id);
       l_item->on_activated([&](UIKit::ModelViewItem *a_item) {
         if (a_item) {
-            mPrivConstPtr->m_result_data["timezone"] =
+            m_priv_ptr->m_result_data["timezone"] =
                 a_item->data("label").toString();
-            mPrivConstPtr->m_result_data["id"] =
+            m_priv_ptr->m_result_data["id"] =
                 a_item->data("id").toByteArray();
             activate_response();
           }
@@ -132,11 +144,11 @@ void TimeZoneActivity::loadTimeZones()
       lTimeZoneLabelPtr->set_alignment(Qt::AlignLeft);
 
       lTimeZoneLabelPtr->setMinimumSize(
-            mPrivConstPtr->mTimeZoneBrowserPtr->geometry().width(),
+            m_priv_ptr->m_timezone_browser_ptr->geometry().width(),
             32);
       lTimeZoneLabelPtr->set_size(
             QSizeF(
-              mPrivConstPtr->mTimeZoneBrowserPtr->boundingRect().width(),
+              m_priv_ptr->m_timezone_browser_ptr->boundingRect().width(),
               32));
       lTimeZoneLabelPtr->set_label(l_time_zone_lable_str);
       _item_list.push_back(l_item);
@@ -149,7 +161,7 @@ void TimeZoneActivity::loadTimeZones()
 
   std::for_each(_item_list.begin(), _item_list.end(), [this](UIKit::ModelViewItem *a) {
    if (a) {
-       mPrivConstPtr->mTimeZoneBrowserPtr->insert(a);
+       m_priv_ptr->m_timezone_browser_ptr->insert(a);
    }
   });
 }
