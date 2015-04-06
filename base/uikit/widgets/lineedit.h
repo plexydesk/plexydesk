@@ -24,9 +24,12 @@ public:
 
   virtual void set_size(const QSizeF &a_size);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
+
+  virtual void on_insert(std::function<void (const QString &a_txt)> a_handler);
 Q_SIGNALS:
   void submit();
   void text(const QString &a_text);
+
 protected:
   virtual bool eventFilter(QObject *a_object_ptr, QEvent *a_event_ptr);
   virtual void paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
