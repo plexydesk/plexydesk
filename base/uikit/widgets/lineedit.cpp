@@ -32,6 +32,7 @@ public:
   QString mText;
   int mLastKey;
   int mKeyCursorLeftLoc;
+  QList<std::function<void (const QString &)>> m_text_handler_list;
 };
 
 LineEdit::LineEdit(QGraphicsObject *parent)
@@ -64,7 +65,12 @@ void LineEdit::set_size(const QSizeF &a_size)
 
 QSizeF LineEdit::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const
 {
-  return boundingRect().size();
+    return boundingRect().size();
+}
+
+void LineEdit::on_insert(std::function<void (const QString &)> a_handler)
+{
+    d->m_text_handler_list.append(a_handler);
 }
 
 void LineEdit::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
@@ -169,6 +175,13 @@ void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr)
       d->mKeyCursorLeftLoc--;
     }
     Q_EMIT text(d->mText);
+
+    foreach(std::function<void (const QString &)> _func, d->m_text_handler_list) {
+        if (_func) {
+            _func(d->mText);
+        }
+    }
+
     update();
     return;
   } else if (a_event_ptr->key() == Qt::Key_Left) {
@@ -190,7 +203,14 @@ void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr)
   }
   d->mText.insert(d->mKeyCursorLeftLoc, a_event_ptr->text());
   d->mKeyCursorLeftLoc++;
+
   Q_EMIT text(d->mText);
+
+  foreach(std::function<void (const QString &)> _func, d->m_text_handler_list) {
+      if (_func) {
+          _func(d->mText);
+      }
+  }
   update();
 }
 
