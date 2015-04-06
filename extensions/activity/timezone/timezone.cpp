@@ -42,6 +42,7 @@ public:
   }
 
   UIKit::Window *m_window_ptr;
+  UIKit::Widget *m_content_widget_ptr;
   UIKit::ModelView *m_timezone_browser_ptr;
   UIKit::LineEdit *m_filter_widget_ptr;
 
@@ -60,23 +61,35 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
   m_priv_ptr->m_window_ptr = new UIKit::Window();
   m_priv_ptr->m_window_ptr->set_window_title(aWindowTitle);
 
-  m_priv_ptr->m_timezone_browser_ptr =
-    new UIKit::ModelView(m_priv_ptr->m_window_ptr);
-  m_priv_ptr->m_timezone_browser_ptr->setGeometry(
-        QRectF(0, 32, aWindowGeometry.width(), aWindowGeometry.height() - 32));
-  m_priv_ptr->m_timezone_browser_ptr->set_view_geometry(
-        QRectF(0, 32, aWindowGeometry.width(), aWindowGeometry.height() - 32));
+  m_priv_ptr->m_content_widget_ptr =
+          new UIKit::Widget(m_priv_ptr->m_window_ptr);
+  m_priv_ptr->m_content_widget_ptr->setGeometry(aWindowGeometry);
 
   m_priv_ptr->m_filter_widget_ptr =
-      new UIKit::LineEdit(m_priv_ptr->m_window_ptr);
-  m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width(), 32);
+      new UIKit::LineEdit(m_priv_ptr->m_content_widget_ptr);
+  m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width() - 16,
+                                                  32);
+  m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(8, 0, 0, 0));
 
-  m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(0, 64, 100, 200));
+  m_priv_ptr->m_timezone_browser_ptr =
+    new UIKit::ModelView(m_priv_ptr->m_content_widget_ptr);
+  m_priv_ptr->m_timezone_browser_ptr->setGeometry(
+        QRectF(0, 0, aWindowGeometry.width(),
+               aWindowGeometry.height() -
+               m_priv_ptr->m_filter_widget_ptr->minimumHeight()));
+  m_priv_ptr->m_timezone_browser_ptr->set_view_geometry(
+        QRectF(0, 0, aWindowGeometry.width() - 16,
+               aWindowGeometry.height() -
+               m_priv_ptr->m_filter_widget_ptr->minimumHeight()));
+
+  m_priv_ptr->m_timezone_browser_ptr->setPos(
+              18,
+              m_priv_ptr->m_filter_widget_ptr->minimumHeight() + 8);
+
   m_priv_ptr->m_filter_widget_ptr->show();
 
-  //todo : create a parent widget to set as the content widget
   m_priv_ptr->m_window_ptr->set_window_content(
-    m_priv_ptr->m_timezone_browser_ptr);
+              m_priv_ptr->m_content_widget_ptr);
 
   set_geometry(aWindowGeometry);
 
