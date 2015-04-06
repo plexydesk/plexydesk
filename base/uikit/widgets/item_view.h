@@ -10,7 +10,7 @@
 
 namespace UIKit
 {
-class DECL_UI_KIT_EXPORT ModelView : public Widget
+class DECL_UI_KIT_EXPORT ItemView : public Widget
 {
   Q_OBJECT
 public:
@@ -20,8 +20,8 @@ public:
     kTableModel
   } ModelType;
 
-  ModelView(QGraphicsObject *a_parent_ptr = 0, ModelType a_model_type = kListModel);
-  virtual ~ModelView();
+  ItemView(QGraphicsObject *a_parent_ptr = 0, ModelType a_model_type = kListModel);
+  virtual ~ItemView();
 
   virtual void insert(Widget *a_widget_ptr);
   virtual void remove(Widget *a_widget_ptr);

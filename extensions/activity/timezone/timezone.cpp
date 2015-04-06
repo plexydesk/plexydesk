@@ -24,7 +24,7 @@
 #include <QLocale>
 
 #include <view_controller.h>
-#include <modelview.h>
+#include <item_view.h>
 #include <label.h>
 #include <button.h>
 #include <lineedit.h>
@@ -43,7 +43,7 @@ public:
 
   UIKit::Window *m_window_ptr;
   UIKit::Widget *m_content_widget_ptr;
-  UIKit::ModelView *m_timezone_browser_ptr;
+  UIKit::ItemView *m_timezone_browser_ptr;
   UIKit::LineEdit *m_filter_widget_ptr;
 
   QVariantMap m_result_data;
@@ -72,11 +72,13 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
   m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(8, 0, 0, 0));
 
   m_priv_ptr->m_timezone_browser_ptr =
-    new UIKit::ModelView(m_priv_ptr->m_content_widget_ptr);
+    new UIKit::ItemView(m_priv_ptr->m_content_widget_ptr);
+  /*
   m_priv_ptr->m_timezone_browser_ptr->setGeometry(
         QRectF(0, 0, aWindowGeometry.width(),
                aWindowGeometry.height() -
                m_priv_ptr->m_filter_widget_ptr->minimumHeight()));
+               */
   m_priv_ptr->m_timezone_browser_ptr->set_view_geometry(
         QRectF(0, 0, aWindowGeometry.width() - 16,
                aWindowGeometry.height() -

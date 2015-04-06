@@ -26,7 +26,7 @@
 #include <widget.h>
 #include <imageview.h>
 #include <themepackloader.h>
-#include <modelview.h>
+#include <item_view.h>
 #include <label.h>
 #include "chooseritem.h"
 #include "chooseractiondelegate.h"
@@ -71,7 +71,7 @@ public:
 
   UIKit::Window *m_activity_window_ptr;
   UIKit::TableView *mTable;
-  UIKit::ModelView *m_grid_view;
+  UIKit::ItemView *m_grid_view;
 
   QString mSelection;
 
@@ -109,8 +109,8 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
   d->m_activity_window_ptr->setGeometry(window_geometry);
 
 
-  d->m_grid_view = new UIKit::ModelView(d->m_activity_window_ptr,
-                                        UIKit::ModelView::kGridModel);
+  d->m_grid_view = new UIKit::ItemView(d->m_activity_window_ptr,
+                                        UIKit::ItemView::kGridModel);
   d->m_grid_view->set_view_geometry(window_geometry);
 
   on_arguments_updated([this]() {

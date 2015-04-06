@@ -30,7 +30,7 @@
 // models
 #include <default_table_model.h>
 #include <default_table_component.h>
-#include <modelview.h>
+#include <item_view.h>
 
 // core
 #include <plexyconfig.h>
@@ -50,7 +50,7 @@ public:
   Window *m_preview_window;
 
   UIKit::ToolBar *m_navigation_dock;
-  UIKit::ModelView *m_preview_widget;
+  UIKit::ItemView *m_preview_widget;
 
   QMap<QString, int> m_actions_map;
   QStringList m_controller_name_list;
@@ -91,7 +91,7 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   connect(d->m_navigation_dock, SIGNAL(action(QString)), this,
           SLOT(onNavigationPanelClicked(QString)));
   // menu
-  d->m_preview_widget = new UIKit::ModelView();
+  d->m_preview_widget = new UIKit::ItemView();
   d->m_preview_widget->on_activated([this](int index) {
     if (this->viewport() && this->viewport()->workspace()) {
       UIKit::WorkSpace *_workspace =

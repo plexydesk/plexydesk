@@ -1,4 +1,4 @@
-#include "modelview.h"
+#include "item_view.h"
 
 #include <QGraphicsLinearLayout>
 #include <QDebug>
@@ -10,7 +10,7 @@
 namespace UIKit
 {
 
-class ModelView::PrivateModelView
+class ItemView::PrivateModelView
 {
 public:
   PrivateModelView() {}
@@ -28,7 +28,7 @@ public:
   std::function<void (int index)> m_activation_handler;
 };
 
-ModelView::ModelView(QGraphicsObject *parent, ModelType a_model_type) :
+ItemView::ItemView(QGraphicsObject *parent, ModelType a_model_type) :
   Widget(parent),
   d(new PrivateModelView)
 {
@@ -57,13 +57,13 @@ ModelView::ModelView(QGraphicsObject *parent, ModelType a_model_type) :
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
 }
 
-ModelView::~ModelView()
+ItemView::~ItemView()
 {
   QScroller::ungrabGesture(this);
   delete d;
 }
 
-void ModelView::insert_to_list_view(Widget *a_widget_ptr)
+void ItemView::insert_to_list_view(Widget *a_widget_ptr)
 {
   a_widget_ptr->set_widget_id(d->m_list_layout->count());
 
@@ -74,7 +74,7 @@ void ModelView::insert_to_list_view(Widget *a_widget_ptr)
   d->m_scroll_frame->setGeometry(d->m_list_layout->geometry());
 }
 
-void ModelView::insert_to_grid_view(Widget *a_widget_ptr)
+void ItemView::insert_to_grid_view(Widget *a_widget_ptr)
 {
   if (!d->m_grid_layout) {
     return;
@@ -96,11 +96,11 @@ void ModelView::insert_to_grid_view(Widget *a_widget_ptr)
   d->m_scroll_frame->setGeometry(d->m_grid_layout->geometry());
 }
 
-void ModelView::insert_to_table_view(Widget *a_widget_ptr)
+void ItemView::insert_to_table_view(Widget *a_widget_ptr)
 {
 }
 
-void ModelView::insert(Widget *a_widget_ptr)
+void ItemView::insert(Widget *a_widget_ptr)
 {
   a_widget_ptr->setParentItem(d->m_scroll_frame);
   a_widget_ptr->setParent(d->m_scroll_frame);
@@ -128,9 +128,9 @@ void ModelView::insert(Widget *a_widget_ptr)
   update();
 }
 
-void ModelView::remove(Widget *a_widget_ptr) {}
+void ItemView::remove(Widget *a_widget_ptr) {}
 
-void ModelView::insert(ModelViewItem *a_item_ptr)
+void ItemView::insert(ModelViewItem *a_item_ptr)
 {
    insert(a_item_ptr->view());
 
@@ -138,16 +138,16 @@ void ModelView::insert(ModelViewItem *a_item_ptr)
    d->m_model_item_list.append(a_item_ptr);
 }
 
-void ModelView::remove(ModelViewItem *a_item_ptr)
+void ItemView::remove(ModelViewItem *a_item_ptr)
 {
 }
 
-ModelViewItem *ModelView::at(int index)
+ModelViewItem *ItemView::at(int index)
 {
   return d->m_model_item_list.at(index);
 }
 
-void ModelView::clear()
+void ItemView::clear()
 {
   if (d->m_list_layout->count() <= 0) {
     return;
@@ -169,33 +169,33 @@ void ModelView::clear()
   qDeleteAll(d->m_model_item_list);
 }
 
-void ModelView::set_view_geometry(const QRectF &a_rect)
+void ItemView::set_view_geometry(const QRectF &a_rect)
 {
   d->m_viewport_geometry = a_rect;
 }
 
-QRectF ModelView::boundingRect() const
+QRectF ItemView::boundingRect() const
 {
   return d->m_viewport_geometry;
 }
 
-void ModelView::setGeometry(const QRectF &a_rect)
+void ItemView::setGeometry(const QRectF &a_rect)
 {
   setPos(a_rect.topLeft());
 }
 
-QSizeF ModelView::sizeHint(Qt::SizeHint which,
+QSizeF ItemView::sizeHint(Qt::SizeHint which,
                            const QSizeF &a_constraint) const
 {
   return d->m_list_layout->contentsRect().size();
 }
 
-void ModelView::on_activated(std::function<void (int)> a_callback)
+void ItemView::on_activated(std::function<void (int)> a_callback)
 {
   d->m_activation_handler = a_callback;
 }
 
-bool ModelView::event(QEvent *e)
+bool ItemView::event(QEvent *e)
 {
   switch (e->type()) {
   case QEvent::GraphicsSceneMouseDoubleClick: {
@@ -230,7 +230,7 @@ bool ModelView::event(QEvent *e)
   return QGraphicsObject::event(e);
 }
 
-bool ModelView::sceneEvent(QEvent *e)
+bool ItemView::sceneEvent(QEvent *e)
 {
   switch (e->type()) {
   case QEvent::TouchBegin: {
