@@ -31,6 +31,8 @@ public:
 
   virtual ModelViewItem *at(int index);
 
+  virtual void set_filter(const QString &a_keyword);
+
   virtual void clear();
 
   virtual void set_view_geometry(const QRectF &a_rect);
@@ -45,6 +47,8 @@ protected:
   bool event(QEvent *e);
 
   void insert_to_list_view(Widget *a_widget_ptr);
+  void remove_from_list_view(Widget *a_widget_ptr);
+
   void insert_to_grid_view(Widget *a_widget_ptr);
   void insert_to_table_view(Widget *a_widget_ptr);
 private:

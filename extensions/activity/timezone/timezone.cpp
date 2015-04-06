@@ -97,6 +97,10 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
 
   exec(aWindowPos);
 
+  m_priv_ptr->m_filter_widget_ptr->on_insert([&](const QString &a_txt) {
+      m_priv_ptr->m_timezone_browser_ptr->set_filter(a_txt);
+  });
+
   m_priv_ptr->m_window_ptr->on_window_discarded(
               [this](UIKit::Window * aWindow) {
     discard_activity();
@@ -155,6 +159,19 @@ void TimeZoneActivity::loadTimeZones()
       });
 
       l_item->set_view(lTimeZoneLabelPtr);
+      l_item->on_filter([&](const UIKit::Widget *a_view, const QString &a_keyword) {
+          const UIKit::Label *_lbl_widget =
+                  dynamic_cast<const UIKit::Label*> (a_view);
+
+          if (_lbl_widget) {
+              if (_lbl_widget->label().toLower().contains(a_keyword.toLower())) {
+                  qDebug() << Q_FUNC_INFO << a_keyword << " VS " << _lbl_widget->label().toLower();
+                  return 1;
+              }
+          }
+
+          return 0;
+      });
 
       lTimeZoneLabelPtr->set_alignment(Qt::AlignLeft);
 
@@ -178,5 +195,5 @@ void TimeZoneActivity::loadTimeZones()
    if (a) {
        m_priv_ptr->m_timezone_browser_ptr->insert(a);
    }
-  });
+  });  
 }

@@ -74,6 +74,13 @@ void ItemView::insert_to_list_view(Widget *a_widget_ptr)
   d->m_scroll_frame->setGeometry(d->m_list_layout->geometry());
 }
 
+void ItemView::remove_from_list_view(Widget *a_widget_ptr)
+{
+    if (!d->m_list_layout)
+        return;
+    d->m_list_layout->removeItem(a_widget_ptr);
+}
+
 void ItemView::insert_to_grid_view(Widget *a_widget_ptr)
 {
   if (!d->m_grid_layout) {
@@ -128,7 +135,21 @@ void ItemView::insert(Widget *a_widget_ptr)
   update();
 }
 
-void ItemView::remove(Widget *a_widget_ptr) {}
+void ItemView::remove(Widget *a_widget_ptr)
+{
+  switch (d->m_model_view_type) {
+  case kListModel:
+    remove_from_list_view(a_widget_ptr);
+    break;
+  case kGridModel:
+    //insert_to_grid_view(a_widget_ptr);
+    break;
+  case kTableModel:
+    //insert_to_table_view(a_widget_ptr);
+    break;
+  }
+
+}
 
 void ItemView::insert(ModelViewItem *a_item_ptr)
 {
@@ -144,7 +165,29 @@ void ItemView::remove(ModelViewItem *a_item_ptr)
 
 ModelViewItem *ItemView::at(int index)
 {
-  return d->m_model_item_list.at(index);
+    return d->m_model_item_list.at(index);
+}
+
+void ItemView::set_filter(const QString &a_keyword)
+{
+    foreach(ModelViewItem *_item, d->m_model_item_list) {
+        if (!_item)
+            continue;
+        if (!_item->view())
+            continue;
+
+        if (!_item->is_a_match(a_keyword)) {
+            _item->view()->hide();
+            remove(_item->view());
+            continue;
+        }
+
+        qDebug() << Q_FUNC_INFO << " Label --->" << _item->view()->label();
+        qDebug() << Q_FUNC_INFO << " Label --->" << _item->view()->isVisible();
+
+        insert(_item->view());
+        _item->view()->show();
+    }
 }
 
 void ItemView::clear()
@@ -252,9 +295,7 @@ bool ItemView::sceneEvent(QEvent *e)
   }
   return QGraphicsObject::sceneEvent(e);
 }
-
 }
-
 /*
   example:
 
