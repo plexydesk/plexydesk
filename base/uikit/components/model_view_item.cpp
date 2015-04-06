@@ -16,6 +16,7 @@ public:
   int m_index;
 
   std::function<void (ModelViewItem *)> m_item_handler;
+  std::function<bool (const Widget *, const QString &)> m_filter_handler;
 };
 
 ModelViewItem::ModelViewItem() : m_priv_ptr(new PrivateModelViewItem)
@@ -65,11 +66,28 @@ void ModelViewItem::set_index(int a_index)
 
 int ModelViewItem::index() const
 {
-  return m_priv_ptr->m_index;
+    return m_priv_ptr->m_index;
 }
 
-void ModelViewItem::on_activated(std::function<void (ModelViewItem *)> a_handler)
+bool ModelViewItem::is_a_match(const QString &a_keyword)
 {
-  m_priv_ptr->m_item_handler = a_handler;
+    if (!m_priv_ptr->m_filter_handler)
+        return 0;
+    if (!m_priv_ptr->m_view_ptr)
+        return 0;
+
+    return m_priv_ptr->m_filter_handler(m_priv_ptr->m_view_ptr, a_keyword);
+}
+
+void ModelViewItem::on_activated(
+        std::function<void (ModelViewItem *)> a_handler)
+{
+    m_priv_ptr->m_item_handler = a_handler;
+}
+
+void ModelViewItem::on_filter(
+        std::function<bool (const Widget *, const QString &)> a_handler)
+{
+    m_priv_ptr->m_filter_handler = a_handler;
 }
 }
