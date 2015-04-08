@@ -6,18 +6,15 @@
 class TimeZoneModel : public UIKit::TableModel
 {
   Q_OBJECT
-
 public:
   TimeZoneModel(QGraphicsObject *a_parent_ptr = 0);
 
   virtual ~TimeZoneModel();
 
   float margin() const;
-
   float padding() const;
 
   virtual float left_margin() const;
-
   virtual float right_margin() const;
 
   virtual bool init();
@@ -28,11 +25,8 @@ public:
                   bool selected = false);
 
   void setLabelVisibility(bool visibility);
-
   void setCellSize(const QSize &size);
-
   void clear();
-
 private:
   class PrivateTableDelegate;
   PrivateTableDelegate *const d;
