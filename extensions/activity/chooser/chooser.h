@@ -46,13 +46,6 @@ public:
   Window *window() const;
   void cleanup();
 
-  /*
-  protected:
-  Widget *createActionItem(const QString &aIcon,
-                           const QString &aLabel,
-                           const QString &aControllerName);
-                           */
-
 private Q_SLOTS:
   void onWidgetClosed(UIKit::Widget *widget);
   void onDiscard();
