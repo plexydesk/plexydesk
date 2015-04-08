@@ -32,15 +32,16 @@
 class Clock::PrivateClockController
 {
 public:
-  PrivateClockController() {}
-
+  PrivateClockController() : m_clock_activity_count(0) {}
   ~PrivateClockController() {}
+
+  UIKit::ActionList m_supported_action_list;
+  int m_clock_activity_count;
 };
 
 Clock::Clock(QObject *parent)
   : UIKit::ViewController(parent), d(new PrivateClockController)
 {
-  clock = 0;
 }
 
 Clock::~Clock()
@@ -63,11 +64,11 @@ QAction *Clock::createAction(int id, const QString &action_name,
 
 void Clock::init()
 {
-  m_supported_action_list << createAction(1, tr("Clock"),
+  d->m_supported_action_list << createAction(1, tr("Clock"),
                                           "pd_clock_frame_icon.png");
-  m_supported_action_list << createAction(2, tr("Timer"),
+  d->m_supported_action_list << createAction(2, tr("Timer"),
                                           "pd_clock_frame_icon.png");
-  m_supported_action_list << createAction(3, tr("Alarm"),
+  d->m_supported_action_list << createAction(3, tr("Alarm"),
                                           "pd_clock_frame_icon.png");
 }
 
@@ -75,9 +76,6 @@ void Clock::revoke_session(const QVariantMap & /*args*/) {}
 
 void Clock::set_view_rect(const QRectF &rect)
 {
-  if (clock) {
-    clock->setPos(rect.x(), rect.y());
-  }
 }
 
 bool Clock::remove_widget(UIKit::Widget *widget)
@@ -85,27 +83,10 @@ bool Clock::remove_widget(UIKit::Widget *widget)
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
 
-  if (widget == clock) {
-    delete clock;
-    clock = 0;
-    return 1;
-  }
-
-  Q_FOREACH(ClockWidget * _clock, mClocks) {
-    if (_clock && _clock == widget) {
-      mClocks.removeAt(index);
-      delete _clock;
-      _clock = 0;
-      return 1;
-    }
-
-    index++;
-  }
-
   return 1;
 }
 
-UIKit::ActionList Clock::actions() const { return m_supported_action_list; }
+UIKit::ActionList Clock::actions() const { return d->m_supported_action_list; }
 
 void Clock::request_action(const QString &actionName, const QVariantMap &args)
 {
@@ -119,8 +100,24 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args)
     UIKit::DesktopActivityPtr _clock_activity =
       UIKit::ExtensionManager::instance()->activity("desktopclock");
 
-    _clock_activity->create_window(_view_geomeetry, "Montreal",
+    _clock_activity->create_window(_view_geomeetry, args["zone_id"].toString(),
                                   viewport()->center(_view_geomeetry));
+    _clock_activity->update_attribute("id",
+                                      QString("clock-%1").arg(
+                                        d->m_clock_activity_count));
+    d->m_clock_activity_count++;
+    _clock_activity->on_discarded([&](const UIKit::DesktopActivity *a_activity) {
+       //remove from current session.
+        if (!a_activity)
+          return;
+
+        QVariantMap attrib = a_activity->attributes();
+        qDebug() << Q_FUNC_INFO << attrib;
+        if (viewport()) {
+            viewport()->update_session_value(controller_name(), "id", "");
+        }
+      });
+
     if (viewport()) {
       viewport()->add_activity(_clock_activity);
     }
@@ -131,13 +128,4 @@ QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
 
 void Clock::onDataUpdated(const QVariantMap &data)
 {
-  if (clock) {
-    clock->updateTime(data);
-  }
-
-  Q_FOREACH(ClockWidget * _clock, mClocks) {
-    if (_clock) {
-      _clock->updateTime(data);
-    }
-  }
 }
