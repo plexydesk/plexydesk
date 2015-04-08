@@ -53,11 +53,6 @@ public Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:
-  QTimer *mTimer;
-  ClockWidget *clock;
-  QList<ClockWidget *> mClocks;
-  UIKit::ActionList m_supported_action_list;
-
   class PrivateClockController;
   PrivateClockController *const d;
 };
