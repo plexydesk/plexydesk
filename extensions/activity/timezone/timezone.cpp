@@ -132,13 +132,11 @@ void TimeZoneActivity::cleanup()
 
 void TimeZoneActivity::loadTimeZones()
 {
-  QStringList l_timezone_list;
   std::vector<UIKit::ModelViewItem *> _item_list;
 
   foreach(const QByteArray id,  QTimeZone::availableTimeZoneIds()) {
       QLocale::Country l_country_locale = QTimeZone(id).country();
-      QString l_time_zone_lable_str =
-          QLocale::countryToString(l_country_locale);
+      QString l_time_zone_lable_str = QString(id);
       l_time_zone_lable_str += " " + QTimeZone(id).displayName(
             QDateTime::currentDateTime(), QTimeZone::OffsetName);
 
@@ -147,13 +145,13 @@ void TimeZoneActivity::loadTimeZones()
       UIKit::ModelViewItem *l_item = new UIKit::ModelViewItem();
 
       l_item->set_data("label", l_time_zone_lable_str);
-      l_item->set_data("id", id);
+      l_item->set_data("zone_id", id);
       l_item->on_activated([&](UIKit::ModelViewItem *a_item) {
         if (a_item) {
             m_priv_ptr->m_result_data["timezone"] =
                 a_item->data("label").toString();
-            m_priv_ptr->m_result_data["id"] =
-                a_item->data("id").toByteArray();
+            m_priv_ptr->m_result_data["zone_id"] =
+                a_item->data("zone_id").toByteArray();
             activate_response();
           }
       });

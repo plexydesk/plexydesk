@@ -27,6 +27,7 @@
 #include <label.h>
 #include <tableview.h>
 #include <space.h>
+#include <item_view.h>
 
 #include "clockwidget.h"
 #include "timezone_model.h"
@@ -37,18 +38,20 @@ public:
   PrivateDesktopClock() {}
   ~PrivateDesktopClock() {}
 
-  void add_time_zone(const QString &a_time_zone);
+  void add_time_zone(const QString &a_time_zone, const QByteArray &a_time_zone_id);
 
   UIKit::Window *mMainWindow;
   UIKit::Widget *mWindowContentWidget;
 
   QGraphicsWidget *mLayoutWidget;
   QGraphicsLinearLayout *m_main_layout;
+
   UIKit::ToolBar *m_tool_bar;
   UIKit::Label *m_timezone_label;
   ClockWidget *m_clock_widget;
-  UIKit::TableView *m_timezone_table;
-  TimeZoneModel *m_timezone_model;
+
+  UIKit::ItemView *m_timezone_list;
+
   QString m_country;
   QString m_city;
 };
@@ -114,13 +117,10 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   /* Add table view */
   QRectF _timezone_table_rect(0.0, 0.0, window_geometry.width(), 128);
 
-  d->m_timezone_table = new UIKit::TableView(d->mLayoutWidget);
-  d->m_timezone_table->setGeometry(_timezone_table_rect);
+  d->m_timezone_list = new UIKit::ItemView(d->mLayoutWidget);
+  d->m_timezone_list->set_view_geometry(_timezone_table_rect);
 
-  d->m_timezone_model = new TimeZoneModel(d->m_timezone_table);
-  d->m_timezone_table->set_model(d->m_timezone_model);
-
-  d->m_main_layout->addItem(d->m_timezone_table);
+  d->m_main_layout->addItem(d->m_timezone_list);
 
   exec(window_pos);
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
@@ -131,12 +131,34 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   });
 }
 
-void DesktopClockActivity::PrivateDesktopClock::add_time_zone(const QString &a_time_zone_label)
+void DesktopClockActivity::PrivateDesktopClock::add_time_zone(
+        const QString &a_time_zone_label,
+        const QByteArray &a_time_zone_id)
 {
-  if (!m_timezone_model)
-    return;
+  UIKit::ModelViewItem *_item_ptr = new UIKit::ModelViewItem();
+  UIKit::Label *_item_label_ptr = new UIKit::Label(m_timezone_list);
 
-  m_timezone_model->insertItem(a_time_zone_label, QPixmap(), false);
+  _item_label_ptr->set_label(a_time_zone_label);
+  _item_label_ptr->set_alignment(Qt::AlignLeft);
+  _item_label_ptr->set_size(QSizeF(m_timezone_list->boundingRect().width(), 48));
+  _item_ptr->set_view(_item_label_ptr);
+
+  _item_ptr->on_activated([&](UIKit::ModelViewItem *a_item) {
+    if (!a_item)
+      return;
+
+    if (m_clock_widget)
+      m_clock_widget->set_timezone_id(a_item->data("zone_id").toByteArray());
+      if (mMainWindow) {
+        mMainWindow->set_window_title(a_item->data("zone_id").toString());
+        mMainWindow->update();
+      }
+  });
+
+  _item_ptr->set_data("zone_id", a_time_zone_id);
+
+  m_timezone_list->insert(_item_ptr);
+  //m_timezone_model->insertItem(a_time_zone_label, QPixmap(), false);
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }
@@ -164,14 +186,15 @@ void DesktopClockActivity::onToolBarAction(const QString &str)
       UIKit::Space *_space = qobject_cast<UIKit::Space *>(viewport());
       if (_space) {
         UIKit::DesktopActivityPtr _timezone =
-          viewport()->create_activity(
-            "timezone", tr("TimeZone"),
-            _space->cursor_pos(),
-            QRectF(0.0, 0.0, 240, 320.0), QVariantMap());
+          viewport()->create_activity("timezone", tr("TimeZone"),
+                                      _space->cursor_pos(),
+                                      QRectF(0.0, 0.0, 240, 320.0),
+                                      QVariantMap());
         _space->add_activity(_timezone);
 
        _timezone->on_action_completed([this](const QVariantMap &a_data) {
-          d->add_time_zone(a_data["timezone"].toString());
+          d->add_time_zone(a_data["timezone"].toString(),
+                  a_data["zone_id"].toByteArray());
        });
       }
     } else {
