@@ -28,8 +28,9 @@ public:
   Space *m_current_viewport;
 
   QList<std::function<void ()>> m_arg_handler_list;
-  QList<std::function<void (const QVariantMap &a_result)>>
-                                                           m_action_completed_list;
+  QList<std::function<
+    void (const QVariantMap &a_result)>> m_action_completed_list;
+  QList<std::function<void (const DesktopActivity *)>> m_discard_handler_list;
 };
 
 DesktopActivity::DesktopActivity(QGraphicsObject *parent)
@@ -94,6 +95,13 @@ void DesktopActivity::show_activity()
 
 void DesktopActivity::discard_activity()
 {
+  foreach (std::function<void (const DesktopActivity *)> func,
+           d->m_discard_handler_list) {
+      if (func) {
+          func(this);
+      }
+  }
+
   hide();
   if (window()) {
     cleanup();
@@ -139,7 +147,13 @@ void DesktopActivity::on_arguments_updated(std::function<void ()> a_handler)
 void DesktopActivity::on_action_completed(
   std::function<void (const QVariantMap &)> a_handler)
 {
-    d->m_action_completed_list.append(a_handler);
+  d->m_action_completed_list.append(a_handler);
+}
+
+void DesktopActivity::on_discarded(
+    std::function<void (const DesktopActivity *)> a_handler)
+{
+  d->m_discard_handler_list.append(a_handler);
 }
 
 void DesktopActivity::update_action()

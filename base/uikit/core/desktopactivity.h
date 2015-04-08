@@ -31,7 +31,8 @@ public:
                             const QPointF &a_window_pos) = 0;
   virtual Window *window() const = 0;
 
-  virtual void set_activity_attribute(const QString &a_name, const QVariant &a_data);
+  virtual void set_activity_attribute(const QString &a_name,
+                                      const QVariant &a_data);
   virtual void update_attribute(const QString &a_name, const QVariant &a_data);
   virtual bool has_attribute(const QString &a_arg);
   virtual QVariantMap attributes() const;
@@ -51,11 +52,13 @@ public:
 
   virtual void cleanup() = 0;
 
-  virtual void on_arguments_updated(
-    std::function<void ()> a_handler);
+  virtual void on_arguments_updated(std::function<void ()> a_handler);
 
   virtual void on_action_completed(
-    std::function<void (const QVariantMap &a_result)> a_handler);
+      std::function<void (const QVariantMap &)> a_handler);
+
+  virtual void on_discarded(
+      std::function<void (const DesktopActivity *)> a_handler);
 protected:
   virtual void update_action();
   virtual void discard_activity();
