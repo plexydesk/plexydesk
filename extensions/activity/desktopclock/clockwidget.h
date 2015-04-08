@@ -23,12 +23,13 @@
 
 #include <widget.h>
 
+#include <QByteArray>
+#include <QTimeZone>
 #include <QTimer>
 
 class ClockWidget : public UIKit::Widget
 {
   Q_OBJECT
-
 public:
   ClockWidget(QGraphicsObject *a_parent_ptr = 0);
 
@@ -36,6 +37,10 @@ public:
 
   void paint_view(QPainter *painter, const QRectF &r);
   void updateTime(const QVariantMap &data);
+
+  void set_timezone_id(const QByteArray &a_timezone_id);
+  QByteArray timezone_id() const;
+
   void drawClockHand(QPainter *p, QRectF rect, int factor, float angle,
                      QColor hand_color, int thikness);
 public Q_SLOTS:
@@ -55,5 +60,8 @@ private:
   QPixmap mClockGlass;
 
   QTimer *mTimer;
+
+  QByteArray m_timezone_id;
+  QTimeZone *m_timezone;
 };
 #endif
