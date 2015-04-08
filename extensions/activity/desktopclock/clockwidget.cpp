@@ -32,7 +32,8 @@
 #include <QDir>
 #include <plexyconfig.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent),
+  m_timezone(0)
 {
   mTimer = new QTimer(this);
   mTimer->setTimerType(Qt::VeryCoarseTimer);
@@ -48,15 +49,45 @@ ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
 
 void ClockWidget::updateTime(const QVariantMap &data)
 {
-  QTime time = QTime::currentTime();
-  mSecondValue = 6.0 * time.second();
-  mMinutesValue = 6.0 * time.minute();
-  mHourValue = 30.0 * time.hour();
+  QDateTime _date_time = QDateTime::currentDateTime();
+
+  if (m_timezone)
+    _date_time = _date_time.toTimeZone(*m_timezone);
+
+  mSecondValue = 6.0 * _date_time.time().second();
+  mMinutesValue = 6.0 * _date_time.time().minute();
+  mHourValue = 30.0 * _date_time.time().hour();
 
   update();
 }
 
-ClockWidget::~ClockWidget() {}
+void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id)
+{
+ m_timezone_id = a_timezone_id;
+
+ mTimer->stop();
+
+ if (m_timezone) {
+   delete m_timezone;
+ }
+
+ m_timezone = new QTimeZone(a_timezone_id);
+ qDebug() << Q_FUNC_INFO << a_timezone_id;
+
+ mTimer->start();
+}
+
+ClockWidget::~ClockWidget()
+{
+  if (mTimer) {
+    mTimer->stop();
+    delete mTimer;
+  }
+
+  if (m_timezone)
+    delete m_timezone;
+  qDebug() << Q_FUNC_INFO;
+}
 
 void ClockWidget::drawClockHand(QPainter *p, QRectF rect, int factor,
                                 float angle, QColor hand_color, int thikness)
