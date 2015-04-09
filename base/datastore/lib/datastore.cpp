@@ -730,6 +730,7 @@ void DataStore::updateNode(SyncObject *object)
 
   if (updatedNode.isNull()) {
     qDebug() << Q_FUNC_INFO << "Matching Node Not Found";
+    insert(object);
   } else {
     qDebug() << Q_FUNC_INFO << "Found Matching Node :" << updatedNode.nodeName()
              << "key: " << object->key();

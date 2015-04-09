@@ -169,7 +169,15 @@ void DockControllerImpl::init()
   d->m_navigation_dock->show();
 }
 
-void DockControllerImpl::revoke_session(const QVariantMap &args) {}
+void DockControllerImpl::session_data_available(
+    QuetzalKit::SyncObject *a_sesion_root)
+{
+}
+
+void DockControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj,
+                                             QuetzalKit::DataStore *a_store)
+{
+}
 
 void DockControllerImpl::set_view_rect(const QRectF &rect)
 {

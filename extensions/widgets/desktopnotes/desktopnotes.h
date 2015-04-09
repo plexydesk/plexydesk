@@ -37,7 +37,10 @@ public:
 
   void init();
 
-  virtual void revoke_session(const QVariantMap &args);
+  void session_data_available(QuetzalKit::SyncObject *a_sesion_root);
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj,
+                                   QuetzalKit::DataStore *a_store);
+
   virtual void set_view_rect(const QRectF &rect);
 
   UIKit::ActionList actions() const;

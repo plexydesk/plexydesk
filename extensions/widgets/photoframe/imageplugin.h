@@ -36,7 +36,9 @@ public:
 
   void init();
 
-  virtual void revoke_session(const QVariantMap &args);
+  void session_data_available(QuetzalKit::SyncObject *a_session_root);
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj,
+                                   QuetzalKit::DataStore *a_store);
 
   virtual void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
 
@@ -53,6 +55,8 @@ public:
   void prepare_removal();
 
 private:
+  virtual void revoke_session(const QVariantMap &args);
+
   PhotoWidget *mFrameParentitem;
   QList<PhotoWidget *> mPhotoList;
   QString mImageSource;

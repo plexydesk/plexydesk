@@ -125,10 +125,6 @@ UIKit::DesktopActivityPtr Space::create_activity(const QString &a_activity,
 void Space::update_session_value(const QString &a_name,
                                  const QString &a_key, const QString &a_value)
 {
-  if (a_key.isEmpty()) {
-    return;
-  }
-
   QuetzalKit::DataStore *dataStore = new QuetzalKit::DataStore(
     m_priv_impl->sessionNameForController(a_name), this);
   QuetzalKit::DiskSyncEngine *engine =
@@ -142,25 +138,9 @@ void Space::update_session_value(const QString &a_name,
     return;
   }
 
-  if (!_session_list_ptr->hasChildren()) {
-    QuetzalKit::SyncObject *_session_object_ptr =
-      _session_list_ptr->createNewObject("Session");
+  controller(a_name)->submit_session_data(_session_list_ptr, dataStore);
 
-    _session_object_ptr->setObjectAttribute(a_key, a_value);
-    dataStore->insert(_session_object_ptr);
-    delete dataStore;
-  } else {
-    Q_FOREACH(QuetzalKit::SyncObject * _child_session_object,
-              _session_list_ptr->childObjects()) {
-      if (!_child_session_object) {
-        continue;
-      }
-      _child_session_object->setObjectAttribute(a_key, a_value);
-      dataStore->updateNode(_child_session_object);
-    }
-
-    delete dataStore;
-  }
+  delete dataStore;
 }
 
 void Space::add_activity(UIKit::DesktopActivityPtr a_activity_ptr)
@@ -335,12 +315,12 @@ void Space::register_controller(const QString &a_controller_name)
 
   QVariantMap _session_data;
   QuetzalKit::SyncObject *_session_attribute_list =
-    _linked_sub_store->begin("SessionData");
+      _linked_sub_store->begin("SessionData");
 
   qDebug() << Q_FUNC_INFO
            << "Child Count:" << _session_attribute_list->childCount();
 
-  Q_FOREACH(QuetzalKit::SyncObject * _session_ptr,
+  Q_FOREACH(QuetzalKit::SyncObject *_session_ptr,
             _session_attribute_list->childObjects()) {
     if (!_session_ptr) {
       continue;
@@ -353,7 +333,9 @@ void Space::register_controller(const QString &a_controller_name)
   }
 
   if (controller(a_controller_name)) {
-    controller(a_controller_name)->revoke_session(_session_data);
+    //controller(a_controller_name)->revoke_session(_session_data);
+    controller(a_controller_name)->session_data_available(
+          _session_attribute_list);
   }
 
   delete _linked_sub_store;

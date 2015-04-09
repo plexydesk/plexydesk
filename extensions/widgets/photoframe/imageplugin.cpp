@@ -84,7 +84,17 @@ void PhotoFrameController::revoke_session(const QVariantMap &args)
     }
 
     insert(window);
-  }
+    }
+}
+
+void PhotoFrameController::session_data_available(
+    QuetzalKit::SyncObject *a_session_root)
+{
+}
+
+void PhotoFrameController::submit_session_data(QuetzalKit::SyncObject *a_obj,
+                                               QuetzalKit::DataStore *a_store)
+{
 }
 
 void PhotoFrameController::handle_drop_event(UIKit::Widget *widget,

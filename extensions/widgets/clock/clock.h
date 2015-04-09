@@ -35,9 +35,10 @@ public:
 
   void init();
 
-  void revoke_session(const QVariantMap &args);
-
   void set_view_rect(const QRectF &rect);
+  void session_data_available(QuetzalKit::SyncObject *a_session_root);
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj,
+                                   QuetzalKit::DataStore *a_store);
 
   bool remove_widget(UIKit::Widget *widget);
 
