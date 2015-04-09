@@ -7,6 +7,7 @@
 #include <view_controller.h>
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
+#include <syncobject.h>
 
 namespace UIKit
 {

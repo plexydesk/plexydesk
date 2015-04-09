@@ -58,7 +58,15 @@ void DesktopNotesControllerImpl::init()
   d->m_supported_action_list << _add_note_action;
 }
 
-void DesktopNotesControllerImpl::revoke_session(const QVariantMap &args) {}
+void DesktopNotesControllerImpl::session_data_available(
+    QuetzalKit::SyncObject *a_sesion_root)
+{
+}
+
+void DesktopNotesControllerImpl::submit_session_data(
+    QuetzalKit::SyncObject *a_obj, QuetzalKit::DataStore *a_store)
+{
+}
 
 void DesktopNotesControllerImpl::set_view_rect(const QRectF &rect) {}
 

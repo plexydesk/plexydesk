@@ -55,6 +55,7 @@ public:
 
   QAction *createAction(BackgroundController *controller, const QString &name,
                         const QString &icon, int id);
+  void save_session(const QString &a_key, const QString &a_value);
 
   void updateProgress(float progress);
 
@@ -62,6 +63,7 @@ public:
 
   UIKit::ActionList mActionList;
   ClassicBackgroundRender *m_background_render_item;
+  QVariantMap m_session_data;
 };
 
 BackgroundController::BackgroundController(QObject *object)
@@ -119,6 +121,55 @@ void BackgroundController::revoke_session(const QVariantMap &args)
   } else {
     downloadRemoteFile(backgroundUrl);
   }
+}
+
+void BackgroundController::session_data_available(
+    QuetzalKit::SyncObject *a_session_root)
+{
+  if (!a_session_root || !a_session_root->hasChildren()) {
+    return;
+  }
+
+  QuetzalKit::SyncObject *_session_object =
+      a_session_root->childObject("Session");
+
+  if (!_session_object)
+    return;
+
+  QUrl backgroundUrl = _session_object->attributeValue("background").toString();
+  QString mode = _session_object->attributeValue("mode").toString();
+
+  if (backgroundUrl.isEmpty()) {
+    return;
+  }
+
+  d->mCurrentMode = mode;
+
+  qDebug() << Q_FUNC_INFO << backgroundUrl.isLocalFile();
+
+  if (backgroundUrl.isLocalFile()) {
+    d->m_background_render_item->setBackgroundImage(backgroundUrl);
+  } else {
+    downloadRemoteFile(backgroundUrl);
+    }
+}
+
+void BackgroundController::submit_session_data(QuetzalKit::SyncObject *a_object,
+                                               QuetzalKit::DataStore *a_store)
+{
+  if (!a_object)
+    return;
+
+  QuetzalKit::SyncObject *session_object = a_object->childObject("Session");
+
+  if (!session_object)
+    return;
+
+  foreach(const QString &key, d->m_session_data.keys()) {
+      session_object->setObjectAttribute(key, d->m_session_data[key]);
+
+  }
+  a_store->updateNode(session_object);
 }
 
 UIKit::ActionList BackgroundController::actions() const
@@ -255,14 +306,7 @@ void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
       }
 
       createModeChooser();
-
-      // todo FIX!
-      if (viewport()) {
-        UIKit::Space *space = viewport();
-        if (space)
-          space->update_session_value(controller_name(), "background",
-                                      fileUrl.toString());
-      }
+      saveSession("background", fileUrl.toString());
     }
   }
 }
@@ -340,12 +384,10 @@ void BackgroundController::onImageSaveReady()
 
     if (viewport()) {
       if (!c->offline()) {
-        viewport()->update_session_value(controller_name(), "background",
-                                         c->metaData()["url"].toString());
+       saveSession("background", c->metaData()["url"].toString());
       } else {
-        viewport()->update_session_value(
-          controller_name(), "background",
-          QDir::toNativeSeparators("file:///" + c->imagePath()));
+        saveSession( "background",
+                     QDir::toNativeSeparators("file:///" + c->imagePath()));
       }
     }
 
@@ -537,11 +579,12 @@ void BackgroundController::createSearchActivity(const QString &activity,
 void BackgroundController::saveSession(const QString &key,
                                        const QVariant &value)
 {
-  UIKit::Space *view = viewport();
+  d->m_session_data[key] = value;
 
-  if (view) {
-    view->update_session_value(controller_name(), key, value.toString());
-  }
+  if (!viewport())
+    return;
+
+  viewport()->update_session_value(controller_name(), key, value.toString());
 }
 
 QVariant BackgroundController::sessionValue(const QString &key)
@@ -561,6 +604,12 @@ QAction *BackgroundController::PrivateBackgroundController::createAction(
   mActionList << action;
 
   return action;
+}
+
+void BackgroundController::PrivateBackgroundController::save_session(
+    const QString &a_key,
+    const QString &a_value)
+{
 }
 
 void BackgroundController::PrivateBackgroundController::updateProgress(

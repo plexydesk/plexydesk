@@ -72,9 +72,16 @@ void Clock::init()
                                           "pd_clock_frame_icon.png");
 }
 
-void Clock::revoke_session(const QVariantMap & /*args*/) {}
-
 void Clock::set_view_rect(const QRectF &rect)
+{
+}
+
+void Clock::session_data_available(QuetzalKit::SyncObject *a_session_root)
+{
+}
+
+void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj,
+                                QuetzalKit::DataStore *a_store)
 {
 }
 

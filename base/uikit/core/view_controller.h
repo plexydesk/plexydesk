@@ -10,6 +10,7 @@
 #include <space.h>
 #include <plexydesk_ui_exports.h>
 #include <QAction>
+#include <syncobject.h>
 
 class QGraphicsItem;
 class QDropEvent;
@@ -97,7 +98,9 @@ public:
       *
       * @param args
       */
-  virtual void revoke_session(const QVariantMap &a_args) = 0;
+  virtual void session_data_available(QuetzalKit::SyncObject *a_root_obj) = 0;
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_root_obj,
+                                   QuetzalKit::DataStore *a_store) = 0;
 
   /**
       * @brief

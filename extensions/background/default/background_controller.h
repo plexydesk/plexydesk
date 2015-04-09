@@ -39,7 +39,9 @@ public:
 
   void init();
 
-  void revoke_session(const QVariantMap &args);
+  void session_data_available(QuetzalKit::SyncObject *a_session_root);
+  void submit_session_data(QuetzalKit::SyncObject *a_object,
+                           QuetzalKit::DataStore *a_store);
 
   UIKit::ActionList actions() const;
 
@@ -73,6 +75,7 @@ private Q_SLOTS:
 
 private:
   void downloadRemoteFile(QUrl fileUrl);
+  void revoke_session(const QVariantMap &args);
 
   void saveImageLocally(const QByteArray &data, const QString &source,
                         bool saveLocally = false);

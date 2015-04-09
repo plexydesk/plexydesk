@@ -64,7 +64,16 @@ void DirectoryController::init()
   m_supported_action_list << _add_dir_action;
 }
 
-void DirectoryController::revoke_session(const QVariantMap &args) {}
+void DirectoryController::session_data_available(
+    QuetzalKit::SyncObject *a_session_root)
+{
+}
+
+void DirectoryController::submit_session_data(QuetzalKit::SyncObject *a_obj,
+                                              QuetzalKit::DataStore *a_store)
+{
+
+}
 
 UIKit::ActionList DirectoryController::actions() const
 {
