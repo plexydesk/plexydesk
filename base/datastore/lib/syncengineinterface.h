@@ -2,6 +2,7 @@
 #define SYNCENGINEINTERFACE_H
 
 #include <QObject>
+#include <syncobject.h>
 #include <QStringList>
 #include <QuetzalDataKit_export.h>
 
@@ -21,6 +22,13 @@ public:
   virtual void sync(const QString &storeName, const QString &data) = 0;
 
   virtual bool hasLock() = 0;
+
+  virtual void set_app_name(const std::string &a_app_name) {}
+
+  virtual void save_request(const SyncObject &a_object) {}
+  virtual void remove_object_request(const SyncObject &a_object) {}
+
+  virtual void find(const std::string &a_object_name) {}
 
 // virtual QStringList storeList() = 0;
 
