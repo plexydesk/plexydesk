@@ -16,6 +16,9 @@ public:
 
   virtual void setEngineName(const QString &name);
 
+  void set_app_name(const std::string &a_app_name);
+  void save_request(const SyncObject &a_obj);
+
   virtual QString data(const QString &fileName);
 
   virtual void sync(const QString &datqstoreName, const QString &data);
