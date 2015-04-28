@@ -70,13 +70,30 @@ void DiskSyncEngine::set_app_name(const std::string &a_app_name)
   d->m_app_name = a_app_name;
 }
 
+QString DiskSyncEngine::db_home_path()
+{
+    QString home_path =
+      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");
+
+    return home_path;
+}
+
+QString DiskSyncEngine::db_app_path()
+{
+    QString db_file_path =
+       QDir::toNativeSeparators(QDir::homePath()
+                                + "/.quetzal/datastore/"
+                                + QString::fromStdString(d->m_app_name) + "/");
+
+    return db_file_path;
+}
+
 void DiskSyncEngine::save_request(const SyncObject &a_obj)
 {
   if (a_obj.name().isNull() || a_obj.name().isEmpty())
     return;
 
-  QString home_path =
-    QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");
+  QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
 
 
@@ -85,11 +102,7 @@ void DiskSyncEngine::save_request(const SyncObject &a_obj)
       QDir::home().mkpath(home_path);
   }
 
- QString db_file_path =
-    QDir::toNativeSeparators(QDir::homePath()
-                             + "/.quetzal/datastore/"
-                             + QString::fromStdString(d->m_app_name) + "/");
-
+ QString db_file_path = db_app_path();
  QFileInfo db_file_path_info(db_file_path);
 
  if (!db_file_path_info.exists()) {
@@ -219,6 +232,87 @@ QString DiskSyncEngine::data(const QString &fileName)
     line = in.readLine();
   }
   return data;
+}
+
+void DiskSyncEngine::find(const std::string &a_object_name)
+{
+  QString home_path = db_home_path();
+  QFileInfo fileInfo(home_path);
+
+  if (!fileInfo.exists()) {
+      qDebug() << Q_FUNC_INFO << "Failed";
+      return;
+  }
+
+  QString db_file_path = db_app_path();
+  QFileInfo db_file_path_info(db_file_path);
+
+  if (!db_file_path_info.exists()) {
+      qDebug() << Q_FUNC_INFO << "Failed";
+      return;
+  }
+
+  QFile object_file;
+  QString object_file_name = QDir::toNativeSeparators(QDir::homePath()
+                                                      + "/.quetzal/datastore/"
+                                                      + QString::fromStdString(d->m_app_name) + "/"
+                                                      + QString::fromStdString(d->m_app_name)
+                                                      + ".xml");
+
+  object_file.setFileName(object_file_name);
+
+  if (object_file.exists()) {
+      if (!object_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+          qDebug() << Q_FUNC_INFO << "Failed";
+          return;
+      }
+
+      QTextStream in(&object_file);
+      QString data = in.readAll();
+      object_file.close();
+
+      QDomDocument dom_doc;
+      QString error_msg;
+      int line;
+      int column;
+      if (!dom_doc.setContent(data, &error_msg, &line, &column)) {
+          qDebug() << Q_FUNC_INFO << "Error :" << error_msg
+                   << " Line : " << line
+                   << " Column : " << column;
+          return;
+        }
+
+      QDomElement root  = dom_doc.firstChildElement(
+            QString::fromStdString(d->m_app_name));
+      if (root.hasChildNodes()) {
+          QDomNodeList node_list = root.childNodes();
+          for (int i = 0 ; i <= node_list.count(); i++) {
+              QDomNode child_node = node_list.at(i);
+
+              QDomElement child_element = child_node.toElement();
+
+              if (QString::fromStdString(a_object_name) == child_element.tagName()) {
+                  QuetzalKit::SyncObject obj;
+                  obj.setName(QString::fromStdString(a_object_name));
+
+                  QDomNamedNodeMap attrMap = child_node.attributes();
+
+                  for (int i = 0; i < attrMap.count(); i++) {
+                      QDomNode attrNode = attrMap.item(i);
+                      if (attrNode.isAttr()) {
+                          QDomAttr attr = attrNode.toAttr();
+
+                          if (!attr.isNull()) {
+                              obj.setObjectAttribute(attr.name(), attr.value());
+                            }
+                        }
+                    }
+
+                  search_request_complete(obj, d->m_app_name);
+                }
+            }
+        }
+    }
 }
 
 void DiskSyncEngine::sync(const QString &datqstoreName, const QString &data)

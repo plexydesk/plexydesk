@@ -21,12 +21,15 @@ public:
 
   virtual QString data(const QString &fileName);
 
+  virtual void find(const std::string &a_object_name);
   virtual void sync(const QString &datqstoreName, const QString &data);
 
   virtual bool hasLock();
 
   void saveDataToDisk(const QString &fileName, const QString &data);
 
+  QString db_home_path();
+  QString db_app_path();
 private Q_SLOTS:
   void onBytesWritten(qint64 bytes);
   void onDirectoryChanged(const QString &name);
