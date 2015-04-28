@@ -18,6 +18,9 @@ namespace QuetzalKit {
     virtual void delete_object(const SyncObject &a_obj);
 
     virtual void find(const std::string &a_object_name);
+    virtual void on_object_found(
+            std::function<void (const std::string &a_app_name,
+                                 const SyncObject &a_object)> a_handler);
 
   private:
     class PrivateDataSync;

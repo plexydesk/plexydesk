@@ -54,6 +54,22 @@ void test_object_update()
   delete sync;
 }
 
+void test_object_find()
+{
+
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+
+  sync->set_sync_engine(engine);
+
+  sync->find("clock");
+
+  sync->on_object_found([&](const std::string &a_app_name,
+                        const QuetzalKit::SyncObject &a_object){
+
+  });
+}
+
 void test_object_add_child()
 {
 }
