@@ -139,6 +139,65 @@ void test_object_add_child()
   delete sync;
 }
 
+void test_save_controller_to_session(const QString &a_controller_name)
+{
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("test_default_space_0");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+      if (!a_found) {
+        QuetzalKit::SyncObject obj;
+        obj.setName("Controller");
+        obj.setObjectAttribute("name", a_controller_name);
+
+        sync->add_object(obj);
+        QZ_ASSERT(a_found == 0, "Object Should not be found Error");
+      }
+
+  });
+
+  sync->find("Controller", "name", a_controller_name.toStdString());
+
+  delete sync;
+}
+
+void test_find_all()
+{
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("test_default_space_0");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+        QZ_ASSERT(a_found == 1, "All Items are Found");
+  });
+
+  sync->find("Controller", "", "");
+
+  delete sync;
+}
+
+void test_session_list()
+{
+  QStringList test_data_list;
+
+  test_data_list << "classicbackdrop"
+                 << "desktopclock"
+                 << "timezone"
+                 << "calendar"
+                 << "dock"
+                 << "fail_dock"
+                 << "panel";
+
+  foreach(const QString &data, test_data_list) {
+      test_save_controller_to_session(data);
+  }
+}
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
@@ -146,11 +205,13 @@ int main(int argc, char *argv[])
   //test cases:
   test_object_create();
   test_object_update();
-  //test_object_find_fail();
+  test_object_find_fail();
   test_object_add_child();
   test_object_add_child();
   test_object_find();
-  //test_object_delete();
+  test_object_delete();
+  test_session_list();
+  test_find_all();
 
   qDebug() << Q_FUNC_INFO << "Done";
 
