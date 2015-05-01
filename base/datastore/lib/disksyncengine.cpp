@@ -344,7 +344,6 @@ void DiskSyncEngine::delete_request(const std::string &a_object_name)
 
 
   if (!fileInfo.exists()) {
-      qDebug() << Q_FUNC_INFO << "Create New Dir" << home_path;
       QDir::home().mkpath(home_path);
   }
 
@@ -393,7 +392,6 @@ void DiskSyncEngine::delete_request(const std::string &a_object_name)
               if (a_object_name.compare(
                     child_node.nodeName().toStdString()) == 0) {
 
-                  qDebug() << Q_FUNC_INFO << "Matching " << child_node.nodeName();
                   root.removeChild(child_node);
               }
               //root.removeChild(child_node);
@@ -412,8 +410,6 @@ void DiskSyncEngine::delete_request(const std::string &a_object_name)
           }
       }
 
-
-      qDebug() << Q_FUNC_INFO << dom_doc.toString();
       return;
 
       object_file.close();
@@ -469,6 +465,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
                           const std::string &a_attrib,
                           const std::string &a_value)
 {
+  bool match_found = false;
   QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
 
@@ -499,9 +496,10 @@ void DiskSyncEngine::find(const std::string &a_object_name,
 
   object_file.setFileName(object_file_name);
 
+
   if (object_file.exists()) {
       if (!object_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-          qDebug() << Q_FUNC_INFO << "Failed";
+          qDebug() << Q_FUNC_INFO << "Failed to open device read-only";
           search_request_complete(SyncObject(), d->m_app_name, 0);
           return;
       }
@@ -526,9 +524,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
             QString::fromStdString(d->m_app_name));
       if (root.hasChildNodes()) {
           QDomNodeList node_list = root.childNodes();
-          qDebug() << Q_FUNC_INFO << "Child Count :"<< node_list.count();
           for (int i = 0 ; i < node_list.count(); i++) {
-              qDebug() << Q_FUNC_INFO << "Count ->" << i;
               QDomNode child_node = node_list.at(i);
 
               QDomElement child_element = child_node.toElement();
@@ -540,17 +536,17 @@ void DiskSyncEngine::find(const std::string &a_object_name,
 
                   QDomNamedNodeMap attrMap = child_node.attributes();
 
+                  if (!a_attrib.empty()) {
+                     if (!attrMap.contains(QString::fromStdString(a_attrib)))
+                       continue;
 
-                  if (!a_attrib.empty() &&
-                          !attrMap.contains(QString::fromStdString(a_attrib)))
-                    continue;
+                     QDomNode value_node = attrMap.namedItem(
+                           QString::fromStdString(a_attrib));
+                     std::string node_value_str =
+                         value_node.nodeValue().toStdString();
 
-                  if (!a_value.empty() &&
-                          a_value.compare(attrMap.namedItem(
-                                        QString::fromStdString(
-                                          a_attrib)).nodeValue().toStdString())
-                      != 0) {
-                      continue;
+                     if (node_value_str.compare(a_value) != 0)
+                       continue;
                   }
 
                   for (int i = 0; i < attrMap.count(); i++) {
@@ -566,14 +562,15 @@ void DiskSyncEngine::find(const std::string &a_object_name,
                         }
                     }
 
-                  search_request_complete(obj, d->m_app_name, 1);
+                  match_found = 1;
+                  search_request_complete(obj, d->m_app_name, match_found);
                 }
             }
-          return;
         }
     }
 
-  search_request_complete(SyncObject(), d->m_app_name, 0);
+  if (!match_found)
+    search_request_complete(SyncObject(), d->m_app_name, match_found);
 }
 
 void DiskSyncEngine::sync(const QString &datqstoreName, const QString &data)
