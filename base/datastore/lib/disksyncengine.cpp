@@ -39,7 +39,7 @@ DiskSyncEngine::DiskSyncEngine(QObject *parent)
           SLOT(onBytesWritten(qint64)));
 }
 
-DiskSyncEngine::~DiskSyncEngine() { delete d; }
+DiskSyncEngine::~DiskSyncEngine() { delete d;}
 
 void DiskSyncEngine::setEngineName(const QString &name)
 {
@@ -53,7 +53,8 @@ void DiskSyncEngine::setEngineName(const QString &name)
   }
 
   QString watchFile = QDir::toNativeSeparators(
-                        QDir::homePath() + "/.quetzal/datastore/" + name + ".xml");
+                        QDir::homePath()
+        + "/.quetzal/datastore/" + name + ".xml");
   QFileInfo info(watchFile);
   qDebug() << Q_FUNC_INFO << watchFile;
 
@@ -68,6 +69,120 @@ void DiskSyncEngine::setEngineName(const QString &name)
 void DiskSyncEngine::set_app_name(const std::string &a_app_name)
 {
   d->m_app_name = a_app_name;
+}
+
+void DiskSyncEngine::insert_request(const SyncObject &a_obj)
+{
+  if (a_obj.name().isNull() || a_obj.name().isEmpty())
+    return;
+
+  QString home_path = db_home_path();
+  QFileInfo fileInfo(home_path);
+
+
+  if (!fileInfo.exists()) {
+      qDebug() << Q_FUNC_INFO << "Create New Dir" << home_path;
+      QDir::home().mkpath(home_path);
+  }
+
+ QString db_file_path = db_app_path();
+ QFileInfo db_file_path_info(db_file_path);
+
+ if (!db_file_path_info.exists()) {
+     QDir::home().mkpath(db_file_path);
+ }
+
+  QFile object_file;
+  QString object_file_name = QDir::toNativeSeparators(QDir::homePath()
+        + "/.quetzal/datastore/"
+        + QString::fromStdString(d->m_app_name) + "/"
+        + QString::fromStdString(d->m_app_name)
+        + ".xml");
+
+  object_file.setFileName(object_file_name);
+
+  if (object_file.exists()) {
+      if (!object_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+          return;
+      }
+      QTextStream in(&object_file);
+      QString data = in.readAll();
+      object_file.close();
+
+      QDomDocument dom_doc;
+      QString error_msg;
+      int line;
+      int column;
+      if (!dom_doc.setContent(data, &error_msg, &line, &column)) {
+          qDebug() << Q_FUNC_INFO << "Error :" << error_msg
+                   << " Line : " << line
+                   << " Column : " << column;
+          return;
+      }
+
+      QDomElement root  = dom_doc.firstChildElement(
+            QString::fromStdString(d->m_app_name));
+      QDomElement main_element = dom_doc.createElement(a_obj.name());
+
+      foreach(const QString &key, a_obj.attributes()) {
+          main_element.setAttribute(key,
+                                    a_obj.attributeValue(key).toString());
+      }
+
+      int index = root.childNodes().count();
+
+      main_element.setAttribute("db_key", index);
+
+      root.appendChild(main_element);
+
+      if (object_file.isOpen())
+        object_file.close();
+
+      if (!object_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+          qDebug() << Q_FUNC_INFO
+                   << "Failed to open the file : " << object_file.errorString();
+          return;
+      }
+
+      QTextStream out(&object_file);
+      out << dom_doc.toString();
+      out.flush();
+
+      object_file.close();
+
+      return;
+    }
+
+  //create xml
+  QDomDocument dom_doc(QString::fromStdString(d->m_app_name));
+  dom_doc.appendChild(dom_doc.createProcessingInstruction(
+                                 "xml", "version=\"1.0\" encoding=\"utf-8\""));
+  QDomElement root_element = dom_doc.createElement(QString::fromStdString(
+                                                     d->m_app_name));
+  dom_doc.appendChild(root_element);
+
+  QDomElement main_element = dom_doc.createElement(a_obj.name());
+
+  foreach(const QString &key, a_obj.attributes()) {
+      main_element.setAttribute(key, a_obj.attributeValue(key).toString());
+  }
+
+  root_element.appendChild(main_element);
+
+  if (!object_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    qDebug() << Q_FUNC_INFO
+             << "Failed to open the file : " << object_file.errorString();
+    return;
+  }
+
+  QTextStream out(&object_file);
+  out << dom_doc.toString();
+  out.flush();
+
+  if (object_file.isOpen())
+    object_file.close();
+
+  qDebug() << Q_FUNC_INFO << "Done";
 }
 
 QString DiskSyncEngine::db_home_path()
@@ -88,7 +203,7 @@ QString DiskSyncEngine::db_app_path()
     return db_file_path;
 }
 
-void DiskSyncEngine::save_request(const SyncObject &a_obj)
+void DiskSyncEngine::update_request(const SyncObject &a_obj)
 {
   if (a_obj.name().isNull() || a_obj.name().isEmpty())
     return;
@@ -154,7 +269,20 @@ void DiskSyncEngine::save_request(const SyncObject &a_obj)
                   }
               }
           }
+      } else {
+          QDomElement main_element = dom_doc.createElement(a_obj.name());
+          foreach(const QString &key, a_obj.attributes()) {
+              main_element.setAttribute(key,
+                                        a_obj.attributeValue(key).toString());
+          }
+
+          int index = root.childNodes().count();
+          main_element.setAttribute("db_key", index);
+          root.appendChild(main_element);
       }
+
+      if (object_file.isOpen())
+        object_file.close();
 
       if (!object_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
           qDebug() << Q_FUNC_INFO
@@ -185,7 +313,13 @@ void DiskSyncEngine::save_request(const SyncObject &a_obj)
       main_element.setAttribute(key, a_obj.attributeValue(key).toString());
   }
 
+  int index = root_element.childNodes().count();
+  main_element.setAttribute("db_key", index);
+
   root_element.appendChild(main_element);
+
+  if (object_file.isOpen())
+    object_file.close();
 
   if (!object_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
     qDebug() << Q_FUNC_INFO
@@ -201,6 +335,103 @@ void DiskSyncEngine::save_request(const SyncObject &a_obj)
     object_file.close();
 
   qDebug() << Q_FUNC_INFO << "Done";
+}
+
+void DiskSyncEngine::delete_request(const std::string &a_object_name)
+{
+  QString home_path = db_home_path();
+  QFileInfo fileInfo(home_path);
+
+
+  if (!fileInfo.exists()) {
+      qDebug() << Q_FUNC_INFO << "Create New Dir" << home_path;
+      QDir::home().mkpath(home_path);
+  }
+
+ QString db_file_path = db_app_path();
+ QFileInfo db_file_path_info(db_file_path);
+
+ if (!db_file_path_info.exists()) {
+     QDir::home().mkpath(db_file_path);
+ }
+
+  QFile object_file;
+  QString object_file_name = QDir::toNativeSeparators(QDir::homePath()
+        + "/.quetzal/datastore/"
+        + QString::fromStdString(d->m_app_name) + "/"
+        + QString::fromStdString(d->m_app_name)
+        + ".xml");
+
+  object_file.setFileName(object_file_name);
+
+  if (object_file.exists()) {
+      if (!object_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+          return;
+      }
+      QTextStream in(&object_file);
+      QString data = in.readAll();
+      object_file.close();
+
+      QDomDocument dom_doc;
+      QString error_msg;
+      int line;
+      int column;
+      if (!dom_doc.setContent(data, &error_msg, &line, &column)) {
+          qDebug() << Q_FUNC_INFO << "Error :" << error_msg
+                   << " Line : " << line
+                   << " Column : " << column;
+          return;
+      }
+
+      QDomElement root  = dom_doc.firstChildElement(
+            QString::fromStdString(d->m_app_name));
+      if (root.hasChildNodes()) {
+          QDomNodeList node_list = root.childNodes();
+
+          for (int i = 0 ; i < node_list.count(); i++) {
+              QDomNode child_node = node_list.at(i);
+              if (a_object_name.compare(
+                    child_node.nodeName().toStdString()) == 0) {
+
+                  qDebug() << Q_FUNC_INFO << "Matching " << child_node.nodeName();
+                  root.removeChild(child_node);
+              }
+              //root.removeChild(child_node);
+
+              /*
+              qDebug() << Q_FUNC_INFO << "Child Nodes" << dom_doc.toString();
+              if (a_object_name.compare(
+                    child_node.nodeName().toStdString()) == 0) {
+                               root.removeChild(child_node);
+                  qDebug() << Q_FUNC_INFO << "Child Nodes" << child_element.tagName();
+              } else {
+                  qDebug() << Q_FUNC_INFO << "NOt Matching " << child_node.nodeName();
+              }
+              */
+
+          }
+      }
+
+
+      qDebug() << Q_FUNC_INFO << dom_doc.toString();
+      return;
+
+      object_file.close();
+
+      if (!object_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+          qDebug() << Q_FUNC_INFO
+                   << "Failed to open the file : " << object_file.errorString();
+          return;
+      }
+
+      QTextStream out(&object_file);
+      out << dom_doc.toString();
+      out.flush();
+
+      object_file.close();
+
+      return;
+    }
 }
 
 QString DiskSyncEngine::data(const QString &fileName)
@@ -234,13 +465,17 @@ QString DiskSyncEngine::data(const QString &fileName)
   return data;
 }
 
-void DiskSyncEngine::find(const std::string &a_object_name)
+void DiskSyncEngine::find(const std::string &a_object_name,
+                          const std::string &a_attrib,
+                          const std::string &a_value)
 {
   QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
 
   if (!fileInfo.exists()) {
       qDebug() << Q_FUNC_INFO << "Failed";
+
+      search_request_complete(SyncObject(), d->m_app_name, 0);
       return;
   }
 
@@ -249,21 +484,25 @@ void DiskSyncEngine::find(const std::string &a_object_name)
 
   if (!db_file_path_info.exists()) {
       qDebug() << Q_FUNC_INFO << "Failed";
+
+      search_request_complete(SyncObject(), d->m_app_name, 0);
       return;
   }
 
   QFile object_file;
-  QString object_file_name = QDir::toNativeSeparators(QDir::homePath()
-                                                      + "/.quetzal/datastore/"
-                                                      + QString::fromStdString(d->m_app_name) + "/"
-                                                      + QString::fromStdString(d->m_app_name)
-                                                      + ".xml");
+  QString object_file_name = QDir::toNativeSeparators(
+        QDir::homePath()
+        + "/.quetzal/datastore/"
+        + QString::fromStdString(d->m_app_name) + "/"
+        + QString::fromStdString(d->m_app_name)
+        + ".xml");
 
   object_file.setFileName(object_file_name);
 
   if (object_file.exists()) {
       if (!object_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
           qDebug() << Q_FUNC_INFO << "Failed";
+          search_request_complete(SyncObject(), d->m_app_name, 0);
           return;
       }
 
@@ -279,6 +518,7 @@ void DiskSyncEngine::find(const std::string &a_object_name)
           qDebug() << Q_FUNC_INFO << "Error :" << error_msg
                    << " Line : " << line
                    << " Column : " << column;
+          search_request_complete(SyncObject(), d->m_app_name, 0);
           return;
         }
 
@@ -286,16 +526,32 @@ void DiskSyncEngine::find(const std::string &a_object_name)
             QString::fromStdString(d->m_app_name));
       if (root.hasChildNodes()) {
           QDomNodeList node_list = root.childNodes();
-          for (int i = 0 ; i <= node_list.count(); i++) {
+          qDebug() << Q_FUNC_INFO << "Child Count :"<< node_list.count();
+          for (int i = 0 ; i < node_list.count(); i++) {
+              qDebug() << Q_FUNC_INFO << "Count ->" << i;
               QDomNode child_node = node_list.at(i);
 
               QDomElement child_element = child_node.toElement();
 
-              if (QString::fromStdString(a_object_name) == child_element.tagName()) {
+              if (QString::fromStdString(a_object_name) ==
+                     child_element.tagName()) {
                   QuetzalKit::SyncObject obj;
                   obj.setName(QString::fromStdString(a_object_name));
 
                   QDomNamedNodeMap attrMap = child_node.attributes();
+
+
+                  if (!a_attrib.empty() &&
+                          !attrMap.contains(QString::fromStdString(a_attrib)))
+                    continue;
+
+                  if (!a_value.empty() &&
+                          a_value.compare(attrMap.namedItem(
+                                        QString::fromStdString(
+                                          a_attrib)).nodeValue().toStdString())
+                      != 0) {
+                      continue;
+                  }
 
                   for (int i = 0; i < attrMap.count(); i++) {
                       QDomNode attrNode = attrMap.item(i);
@@ -303,16 +559,21 @@ void DiskSyncEngine::find(const std::string &a_object_name)
                           QDomAttr attr = attrNode.toAttr();
 
                           if (!attr.isNull()) {
+                              if (attr.name() == "db_key")
+                                continue;
                               obj.setObjectAttribute(attr.name(), attr.value());
                             }
                         }
                     }
 
-                  search_request_complete(obj, d->m_app_name);
+                  search_request_complete(obj, d->m_app_name, 1);
                 }
             }
+          return;
         }
     }
+
+  search_request_complete(SyncObject(), d->m_app_name, 0);
 }
 
 void DiskSyncEngine::sync(const QString &datqstoreName, const QString &data)
@@ -336,7 +597,8 @@ void DiskSyncEngine::saveDataToDisk(const QString &fileName,
   }
 
   QString watchFile = QDir::toNativeSeparators(
-                        QDir::homePath() + "/.quetzal/datastore/" + fileName + ".xml");
+                        QDir::homePath()
+        + "/.quetzal/datastore/" + fileName + ".xml");
   d->mFile->setFileName(watchFile);
 
   connect(d->mFile, SIGNAL(bytesWritten(qint64)), this,
