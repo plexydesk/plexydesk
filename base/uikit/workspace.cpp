@@ -8,6 +8,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QGLWidget>
+#include <datasync.h>
 
 #include <disksyncengine.h>
 #include <imagebutton.h>
@@ -415,6 +416,13 @@ void WorkSpace::save_space_removal_session_data(const QString &a_space_name)
   }
 
   delete _data_store;
+
+  //new API
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  sync->set_sync_engine(engine);
+
+  delete sync;
 }
 
 void WorkSpace::remove(Space *a_space_ptr)
@@ -547,5 +555,19 @@ void WorkSpace::add_default_space()
   _data_store->insert(_new_space_ptr);
 
   delete _data_store;
+
+  //new APi
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  sync->set_sync_engine(engine);
+
+  QuetzalKit::SyncObject obj;
+  obj.setName("space");
+  obj.setObjectAttribute("ref", _space->session_name());
+  obj.setObjectAttribute("name", _space->name());
+
+  sync->save_object(obj);
+
+  delete sync;
 }
 }

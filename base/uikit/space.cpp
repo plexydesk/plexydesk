@@ -11,6 +11,7 @@
 #include <QGraphicsScene>
 #include <QWeakPointer>
 #include <widget.h>
+#include <datasync.h>
 
 #include "window.h"
 #include "workspace.h"
@@ -263,82 +264,64 @@ void Space::on_activity_finished()
   }
 }
 
+void Space::save_controller_to_session(const QString &a_controller_name)
+{
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+        m_priv_impl->sessionNameForSpace().toStdString());
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+      if (!a_found) {
+        QuetzalKit::SyncObject obj;
+        obj.setName("Controller");
+        obj.setObjectAttribute("name", a_controller_name);
+
+        sync->add_object(obj);
+      }
+  });
+
+  sync->find("Controller", "name", a_controller_name.toStdString());
+
+  delete sync;
+}
+
+void Space::revoke_controller_session_attributes(
+    const QString &a_controller_name)
+{
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+         m_priv_impl->sessionNameForController(a_controller_name).toStdString());
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+      if (!a_found) {
+          QuetzalKit::SyncObject obj;
+          obj.setName("SessionData");
+          obj.setObjectAttribute("name", a_controller_name);
+
+          sync->add_object(obj);
+        } else {
+          if (controller(a_controller_name)) {
+              //controller(a_controller_name)->revoke_session(_session_data);
+              //controller(a_controller_name)->session_data_available();
+            }
+        }
+    });
+
+  sync->find("SessionData", "name", a_controller_name.toStdString());
+
+  delete sync;
+}
+
 void Space::register_controller(const QString &a_controller_name)
 {
-  qDebug() << Q_FUNC_INFO << "Controller :" << a_controller_name;
-  QuetzalKit::DataStore *_data_store =
-    new QuetzalKit::DataStore(m_priv_impl->sessionNameForSpace(), this);
-  QuetzalKit::DiskSyncEngine *_engine =
-    new QuetzalKit::DiskSyncEngine(_data_store);
-
-  _data_store->setSyncEngine(_engine);
-
-  QuetzalKit::SyncObject *_session_list_ptr =
-    _data_store->begin("ControllerList");
-
-  bool _has_controller = false;
-
-  Q_FOREACH(QuetzalKit::SyncObject * _child_object_ptr,
-            _session_list_ptr->childObjects()) {
-    if (!_child_object_ptr) {
-      continue;
-    }
-
-    if (_child_object_ptr->attributeValue("name").toString() == a_controller_name) {
-      _has_controller = true;
-    }
-  }
-
-  if (!_has_controller) {
-    QuetzalKit::SyncObject *_controller_ptr =
-      _session_list_ptr->createNewObject("Controller");
-
-    _controller_ptr->setObjectAttribute("name", a_controller_name);
-    _data_store->insert(_controller_ptr);
-  }
-
-  delete _data_store;
-
-  // create a new data  Store to link it to this store.
-  QuetzalKit::DataStore *_linked_sub_store = new QuetzalKit::DataStore(
-    m_priv_impl->sessionNameForController(a_controller_name), this);
-  _engine = new QuetzalKit::DiskSyncEngine(_linked_sub_store);
-  _linked_sub_store->setSyncEngine(_engine);
-
-  if (!_linked_sub_store->beginsWith("SessionData")) {
-    // create blank root
-    QuetzalKit::SyncObject *_attribute_list =
-      _linked_sub_store->begin("SessionData");
-    delete _linked_sub_store;
-    return;
-  }
-
-  QVariantMap _session_data;
-  QuetzalKit::SyncObject *_session_attribute_list =
-      _linked_sub_store->begin("SessionData");
-
-  qDebug() << Q_FUNC_INFO
-           << "Child Count:" << _session_attribute_list->childCount();
-
-  Q_FOREACH(QuetzalKit::SyncObject *_session_ptr,
-            _session_attribute_list->childObjects()) {
-    if (!_session_ptr) {
-      continue;
-    }
-
-    Q_FOREACH(const QString & attribute, _session_ptr->attributes()) {
-      _session_data[attribute] =
-        _session_ptr->attributeValue(attribute).toString();
-    }
-  }
-
-  if (controller(a_controller_name)) {
-    //controller(a_controller_name)->revoke_session(_session_data);
-    controller(a_controller_name)->session_data_available(
-          _session_attribute_list);
-  }
-
-  delete _linked_sub_store;
+  save_controller_to_session(a_controller_name);
+  revoke_controller_session_attributes(a_controller_name);
 }
 
 void Space::PrivateSpace::createActionsFromController(const Space *space,
@@ -352,6 +335,7 @@ void Space::PrivateSpace::createActionsFromController(const Space *space,
 
 void Space::PrivateSpace::initSessionStorage(Space *space)
 {
+  /*
   QuetzalKit::DataStore *_data_store =
     new QuetzalKit::DataStore(sessionNameForSpace(), space);
   QuetzalKit::DiskSyncEngine *_engine =
@@ -383,6 +367,34 @@ void Space::PrivateSpace::initSessionStorage(Space *space)
   }
 
   delete _data_store;
+  */
+  //new API
+
+  //new APi
+
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+        sessionNameForSpace().toStdString());
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found) {
+      if (a_found) {
+          QString _current_controller_name =
+              a_object.attributeValue("name").toString();
+
+          ViewControllerPtr _controller_ptr =
+              space->controller(_current_controller_name);
+
+          if (!_controller_ptr) {
+              space->add_controller(_current_controller_name);
+            }
+        }
+    });
+
+  sync->find("Controller", "", "");
+
+  delete sync;
 }
 
 Space::PrivateSpace::~PrivateSpace() { mCurrentControllerMap.clear(); }

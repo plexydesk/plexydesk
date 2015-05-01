@@ -83,6 +83,8 @@ public:
     std::function<void (ViewportNotificationType,
                         const QVariant &,
                         const Space *)> a_notify_handler);
+  void save_controller_to_session(const QString &a_controller_name);
+  void revoke_controller_session_attributes(const QString &a_controller_name);
 public Q_SLOTS:
   virtual void on_activity_finished();
 protected:
