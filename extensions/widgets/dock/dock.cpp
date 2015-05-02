@@ -170,12 +170,11 @@ void DockControllerImpl::init()
 }
 
 void DockControllerImpl::session_data_available(
-    QuetzalKit::SyncObject *a_sesion_root)
+    const QuetzalKit::SyncObject &a_sesion_root)
 {
 }
 
-void DockControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj,
-                                             QuetzalKit::DataStore *a_store)
+void DockControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj)
 {
 }
 

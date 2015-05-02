@@ -37,9 +37,8 @@ public:
 
   void init();
 
-  void session_data_available(QuetzalKit::SyncObject *a_sesion_root);
-  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj,
-                                   QuetzalKit::DataStore *a_store);
+  void session_data_available(const QuetzalKit::SyncObject &a_sesion_root);
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj);
 
   virtual void set_view_rect(const QRectF &rect);
 

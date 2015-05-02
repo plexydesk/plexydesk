@@ -65,12 +65,11 @@ void DirectoryController::init()
 }
 
 void DirectoryController::session_data_available(
-    QuetzalKit::SyncObject *a_session_root)
+    const QuetzalKit::SyncObject &a_session_root)
 {
 }
 
-void DirectoryController::submit_session_data(QuetzalKit::SyncObject *a_obj,
-                                              QuetzalKit::DataStore *a_store)
+void DirectoryController::submit_session_data(QuetzalKit::SyncObject *a_obj)
 {
 
 }

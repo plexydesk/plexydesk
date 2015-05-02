@@ -50,7 +50,6 @@ void DataSyncRuntime::testCreateDataStore()
 
   object.setObjectAttribute("src", "http://www.google.com");
   // child object
-
   QuetzalKit::SyncObject childObject;
 
   childObject.setName("size");
@@ -58,7 +57,6 @@ void DataSyncRuntime::testCreateDataStore()
   childObject.setObjectAttribute("height", 1920);
 
   // meta object
-
   QuetzalKit::SyncObject metaData;
 
   metaData.setName("metadata");

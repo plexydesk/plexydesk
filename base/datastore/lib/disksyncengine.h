@@ -16,14 +16,24 @@ public:
 
   virtual void setEngineName(const QString &name);
 
+  void set_app_name(const std::string &a_app_name);
+
+  void insert_request(const SyncObject &a_obj);
+  void update_request(const SyncObject &a_obj);
+  void delete_request(const std::string &a_object_name);
+
   virtual QString data(const QString &fileName);
 
+  virtual void find(const std::string &a_object_name,
+                    const std::string &a_attrib, const std::string &a_value);
   virtual void sync(const QString &datqstoreName, const QString &data);
 
   virtual bool hasLock();
 
   void saveDataToDisk(const QString &fileName, const QString &data);
 
+  QString db_home_path();
+  QString db_app_path();
 private Q_SLOTS:
   void onBytesWritten(qint64 bytes);
   void onDirectoryChanged(const QString &name);

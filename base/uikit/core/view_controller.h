@@ -98,9 +98,9 @@ public:
       *
       * @param args
       */
-  virtual void session_data_available(QuetzalKit::SyncObject *a_root_obj) = 0;
-  virtual void submit_session_data(QuetzalKit::SyncObject *a_root_obj,
-                                   QuetzalKit::DataStore *a_store) = 0;
+  virtual void session_data_available(
+      const QuetzalKit::SyncObject &a_root_obj) = 0;
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_root_obj) = 0;
 
   /**
       * @brief

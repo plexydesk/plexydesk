@@ -36,9 +36,8 @@ public:
   void init();
 
   void set_view_rect(const QRectF &rect);
-  void session_data_available(QuetzalKit::SyncObject *a_session_root);
-  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj,
-                                   QuetzalKit::DataStore *a_store);
+  void session_data_available(const QuetzalKit::SyncObject &a_session_root);
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj);
 
   bool remove_widget(UIKit::Widget *widget);
 
@@ -50,6 +49,7 @@ public:
 
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
+  void sync_session();
 public Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 

@@ -26,17 +26,32 @@ SET(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 
 ########### prepare files ###############
 ADD_EXECUTABLE(datasync_runtime ${WIN_APPLICATION} ${sourceFiles})
-SET_PROPERTY(TARGET datasync_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
-QT5_USE_MODULES(datasync_runtime Widgets Xml OpenGL Core)
+
+#target properties for OS X
+if(APPLE)
+    set_target_properties(datasync_runtime PROPERTIES SKIP_BUILD_RPATH FALSE)
+    set_target_properties(datasync_runtime PROPERTIES SKIP_INSTALL_RPATH FALSE)
+    set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
+endif()
+
+#SET_PROPERTY(TARGET datasync_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
+#QT5_USE_MODULES(datasync_runtime Widgets Xml OpenGL Core)
 
 IF(MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(datasync_runtime)
 ENDIF(MSVC)
 
-TARGET_LINK_LIBRARIES(datasync_runtime
-    ${PLEXY_UI_CORE_LIBRARY}
+TARGET_LINK_LIBRARIES(datasync_runtime LINK_PUBLIC
     ${QUETZAL_DATA_KIT_LIBRARY}
     )
 
 ########### Install files ###############
-INSTALL(TARGETS datasync_runtime DESTINATION bin)
+if(APPLE)
+   install(TARGETS datasync_runtime
+                            BUNDLE DESTINATION . COMPONENT Runtime
+                            RUNTIME DESTINATION bin COMPONENT Runtime)
+endif(APPLE)
+
+if (NOT APPLE)
+  INSTALL(TARGETS datasync_runtime DESTINATION bin)
+endif()

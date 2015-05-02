@@ -57,6 +57,7 @@ ADD_DEFINITIONS(-DPLEXYPREFIX="${CMAKE_INSTALL_PREFIX}"
 
 SET(sourceFiles
     datastore.cpp
+    datasync.cpp
     syncobject.cpp
     syncengineinterface.cpp
     memorysyncengine.cpp
@@ -65,6 +66,7 @@ SET(sourceFiles
 
 SET(headerFiles
     datastore.h
+    datasync.h
     syncobject.h
     memorysyncengine.h
     syncengineinterface.h
@@ -88,7 +90,7 @@ ADD_LIBRARY(${QUETZAL_DATA_KIT_LIBRARY} SHARED ${sourceFiles})
 
 
 IF(APPLE)
-    SET_TARGET_PROPERTIES(${QUETZAL_DATA_KIT_LIBRARY} PROPERTIES FRAMEWORK 1)
+    SET_TARGET_PROPERTIES(${QUETZAL_DATA_KIT_LIBRARY} PROPERTIES FRAMEWORK 0)
 endif(APPLE)
 
 
