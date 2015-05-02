@@ -4,11 +4,9 @@
 #include <syncengineinterface.h>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit
-{
+namespace QuetzalKit {
 
-class QuetzalDataKit_EXPORT DiskSyncEngine : public SyncEngineInterface
-{
+class QuetzalDataKit_EXPORT DiskSyncEngine : public SyncEngineInterface {
   Q_OBJECT
 public:
   explicit DiskSyncEngine(QObject *a_parent_ptr = 0);
@@ -21,8 +19,7 @@ public:
   void insert_request(const SyncObject &a_obj);
   void update_request(const SyncObject &a_obj);
   void delete_request(const std::string &a_object_name,
-                      const std::string &a_key,
-                      const std::string &a_value);
+                      const std::string &a_key, const std::string &a_value);
 
   virtual QString data(const QString &fileName);
 
@@ -36,7 +33,8 @@ public:
 
   QString db_home_path();
   QString db_app_path();
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onBytesWritten(qint64 bytes);
   void onDirectoryChanged(const QString &name);
 

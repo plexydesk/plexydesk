@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> LocationDataInterface::model()
-{
+QSharedPointer<PlexyDesk::DataSource> LocationDataInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =
-    QSharedPointer<PlexyDesk::DataSource>(new LocatoinData(),
-                                          &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DataSource>(new LocatoinData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

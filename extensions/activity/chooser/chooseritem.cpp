@@ -13,8 +13,7 @@
 #include <label.h>
 #include <themepackloader.h>
 
-class GridIcon::PrivateChooserItem
-{
+class GridIcon::PrivateChooserItem {
 
 public:
   PrivateChooserItem() {}
@@ -39,8 +38,7 @@ public:
 };
 
 GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-  : UIKit::TableViewItem(rect, parent), d(new PrivateChooserItem)
-{
+    : UIKit::TableViewItem(rect, parent), d(new PrivateChooserItem) {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mType = type;
@@ -51,7 +49,7 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
 
   d->mImageView = new UIKit::ImageView(d->mLayoutBase);
   d->mImageView->set_pixmap(
-    UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+      UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
   d->mLabelView = new UIKit::Label(d->mLayoutBase);
   connect(d->mImageView, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->mLabelView, SIGNAL(clicked()), this, SLOT(onClicked()));
@@ -63,7 +61,7 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
     d->mLayout->addItem(d->mLabelView);
     d->mLabelView->set_size(QSize(64, 24));
     d->mImageView->setGeometry(
-      QRectF(QPointF(), QSizeF(72, rect.height() - 32)));
+        QRectF(QPointF(), QSizeF(72, rect.height() - 32)));
   } else {
     // d->mLabelView->setSize(QSize(150, rect.height()));
     d->mLayout->setOrientation(Qt::Horizontal);
@@ -84,14 +82,12 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
   setAcceptHoverEvents(true);
 }
 
-GridIcon::~GridIcon()
-{
+GridIcon::~GridIcon() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-QRectF GridIcon::boundingRect() const
-{
+QRectF GridIcon::boundingRect() const {
   QRectF rect;
   if (d->mType == List) {
     rect = QRectF(0.0, 0.0, d->mBoundingRect.width(), 64);
@@ -101,29 +97,25 @@ QRectF GridIcon::boundingRect() const
   return rect;
 }
 
-QSizeF GridIcon::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
-{
+QSizeF GridIcon::sizeHint(Qt::SizeHint hint, const QSizeF &size) const {
   return boundingRect().size();
 }
 
-void GridIcon::set_selected()
-{
+void GridIcon::set_selected() {
   d->mIsSelected = true;
   update();
 }
 
 void GridIcon::clear_selection() { d->mIsSelected = false; }
 
-void GridIcon::setLabel(const QString &txt)
-{
+void GridIcon::setLabel(const QString &txt) {
   // d->mOptButton->setLabel("+");
   d->mLabel = txt;
   d->mLabelView->set_label(txt);
   update();
 }
 
-void GridIcon::setIcon(const QPixmap &pixmap)
-{
+void GridIcon::setIcon(const QPixmap &pixmap) {
   d->mImageView->set_pixmap(pixmap);
 }
 
@@ -132,8 +124,7 @@ void GridIcon::setDefault(bool selection) { d->mIsSelected = selection; }
 QString GridIcon::label() const { return d->mLabel; }
 
 void GridIcon::setItemProperties(const QPixmap &pixmap, const QString &label,
-                                 const QVariantMap &prop)
-{
+                                 const QVariantMap &prop) {
   d->mImageView->set_pixmap(pixmap);
   d->mLabelView->set_label(label);
   d->mLabel = label;
@@ -150,16 +141,14 @@ void GridIcon::setItemProperties(const QPixmap &pixmap, const QString &label,
   qDebug() << Q_FUNC_INFO << "END Trace:" << d->m_item_property_map;
 }
 
-void GridIcon::setItemProperty(const QString &key, const QVariant &value)
-{
+void GridIcon::setItemProperty(const QString &key, const QVariant &value) {
   d->m_item_property_map[key] = value;
 }
 
 QVariantMap GridIcon::itemProperties() const { return d->m_item_property_map; }
 
 void GridIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                     QWidget *widget)
-{
+                     QWidget *widget) {
   /* Painter settings */
   if (d->mType == List || d->mIsSelected) {
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -174,8 +163,7 @@ void GridIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   // painter->drawRect(option->exposedRect);
 }
 
-void GridIcon::onClicked()
-{
+void GridIcon::onClicked() {
   qDebug() << Q_FUNC_INFO << "Item Clicked";
   Q_EMIT clicked(this);
 }

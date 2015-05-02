@@ -27,8 +27,7 @@
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl : public UIKit::ViewController
-{
+class DesktopNotesControllerImpl : public UIKit::ViewController {
   Q_OBJECT
 
 public:
@@ -44,12 +43,14 @@ public:
 
   UIKit::ActionList actions() const;
 
-  virtual void request_action(const QString &actionName, const QVariantMap &args);
+  virtual void request_action(const QString &actionName,
+                              const QVariantMap &args);
   virtual void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
 
   QString icon() const;
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:

@@ -4,8 +4,7 @@
 #include <QObject>
 #include <webservice.h>
 
-class SocialTestRunner : public QObject
-{
+class SocialTestRunner : public QObject {
   Q_OBJECT
 public:
   explicit SocialTestRunner(QObject *a_parent_ptr = 0);
@@ -32,7 +31,8 @@ public:
 
 signals:
 
-public slots:
+public
+slots:
   void onServiceComplete(QuetzalSocialKit::WebService *service);
   void onSizeServiceComplete(QuetzalSocialKit::WebService *service);
   void onDownloadComplete(QuetzalSocialKit::WebService *service);
@@ -56,7 +56,7 @@ public slots:
   // dropbox
   void onDropBoxAuthServiceComplete(QuetzalSocialKit::WebService *service);
   void onDropBoxAccountInfoServiceComplete(
-    QuetzalSocialKit::WebService *service);
+      QuetzalSocialKit::WebService *service);
 
 private:
   class PrivateSocialTestRunner;

@@ -25,8 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class HttpServerData : public UIKit::DataSource
-{
+class HttpServerData : public UIKit::DataSource {
   Q_OBJECT
 
 public:
@@ -37,7 +36,8 @@ public:
 
   void timerEvent(QTimerEvent *event);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void set_arguments(QVariant source_updated);
 
 private:

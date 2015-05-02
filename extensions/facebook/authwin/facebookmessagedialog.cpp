@@ -3,8 +3,7 @@
 #include <lineedit.h>
 #include <texteditor.h>
 
-class FacebookMessageDialog::PrivateFacebookMessageDialog
-{
+class FacebookMessageDialog::PrivateFacebookMessageDialog {
 public:
   PrivateFacebookMessageDialog() {}
   ~PrivateFacebookMessageDialog() {}
@@ -15,10 +14,9 @@ public:
 };
 
 FacebookMessageDialog::FacebookMessageDialog(const QRectF &rect,
-    QGraphicsObject *parent)
-  : PlexyDesk::DesktopWidget(rect, parent),
-    d(new PrivateFacebookMessageDialog)
-{
+                                             QGraphicsObject *parent)
+    : PlexyDesk::DesktopWidget(rect, parent),
+      d(new PrivateFacebookMessageDialog) {
   d->mSearchButton = new PlexyDesk::Button(this);
   d->mSearchButton->show();
   d->mSearchButton->setPos(rect.width() - 110, rect.height() - 40);
@@ -38,8 +36,7 @@ FacebookMessageDialog::~FacebookMessageDialog() { delete d; }
 
 QString FacebookMessageDialog::message() const { return d->mMessage; }
 
-void FacebookMessageDialog::onClicked()
-{
+void FacebookMessageDialog::onClicked() {
   d->mMessage = d->mEditor->text();
 
   Q_EMIT messageRequested();

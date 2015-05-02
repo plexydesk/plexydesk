@@ -19,8 +19,7 @@
 
 #include "tableviewcellinterface.h"
 
-namespace UIKit
-{
+namespace UIKit {
 
 TableModel::TableModel(QObject *parent) : QObject(parent) {}
 
@@ -32,8 +31,7 @@ float TableModel::left_margin() const { return 0.0; }
 
 float TableModel::right_margin() const { return 0.0; }
 
-TableModel::TableRenderMode TableModel::render_type() const
-{
+TableModel::TableRenderMode TableModel::render_type() const {
   return kRenderAsListView;
 }
 

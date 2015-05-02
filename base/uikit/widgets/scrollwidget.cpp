@@ -23,11 +23,9 @@
 
 #include "scrollwidget.h"
 
-namespace UIKit
-{
+namespace UIKit {
 
-class ScrollWidget::Private
-{
+class ScrollWidget::Private {
 
 public:
   Private() {}
@@ -38,8 +36,7 @@ public:
 };
 
 ScrollWidget::ScrollWidget(const QRectF &a_rect, QGraphicsObject *parent)
-  : Widget(parent), d(new Private)
-{
+    : Widget(parent), d(new Private) {
   d->m_viewport = 0;
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
   d->m_size = a_rect.size();
@@ -47,8 +44,7 @@ ScrollWidget::ScrollWidget(const QRectF &a_rect, QGraphicsObject *parent)
 
 ScrollWidget::~ScrollWidget() { delete d; }
 
-void ScrollWidget::set_viewport(QGraphicsObject *a_widget_ptr)
-{
+void ScrollWidget::set_viewport(QGraphicsObject *a_widget_ptr) {
   if (!a_widget_ptr) {
     return;
   }
@@ -68,8 +64,7 @@ void ScrollWidget::set_viewport(QGraphicsObject *a_widget_ptr)
   }
 }
 
-void ScrollWidget::scroll_by(int x, int y)
-{
+void ScrollWidget::scroll_by(int x, int y) {
   if (d->m_viewport) {
     // resetric to viewport
     int y_pos = d->m_viewport->y() + y;
@@ -86,8 +81,7 @@ void ScrollWidget::scroll_by(int x, int y)
 
 void ScrollWidget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {}
 
-void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr)
-{
+void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr) {
   if (a_event_ptr->delta() < 0) {
     scroll_by(0, -10);
   } else {
@@ -99,45 +93,42 @@ void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr)
   Widget::wheelEvent(a_event_ptr);
 }
 
-void ScrollWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *a_event_ptr)
-{
+void ScrollWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *a_event_ptr) {
   Widget::dragMoveEvent(a_event_ptr);
 }
 
-bool ScrollWidget::event(QEvent *a_event_ptr)
-{
+bool ScrollWidget::event(QEvent *a_event_ptr) {
   if (!d->m_viewport) {
     return QGraphicsObject::event(a_event_ptr);
   }
 
   switch (a_event_ptr->type()) {
-  case QScrollPrepareEvent::ScrollPrepare: {
-    qDebug() << Q_FUNC_INFO << "Prepare :";
-    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(a_event_ptr);
-    se->setViewportSize(d->m_size);
-    QRectF br = d->m_viewport->boundingRect();
-    se->setContentPosRange(
-      QRectF(0, 0, qMax(qreal(0), br.width() - d->m_size.width()),
-             qMax(qreal(0), br.height() - d->m_size.height())));
-    se->setContentPos(-d->m_viewport->pos());
-    se->accept();
-    return QGraphicsObject::event(a_event_ptr);
-  }
-  case QScrollEvent::Scroll: {
-    qDebug() << Q_FUNC_INFO << "Scroll";
-    QScrollEvent *se = static_cast<QScrollEvent *>(a_event_ptr);
-    d->m_viewport->setPos(-se->contentPos() - se->overshootDistance());
-    return true;
-  }
+    case QScrollPrepareEvent::ScrollPrepare: {
+      qDebug() << Q_FUNC_INFO << "Prepare :";
+      QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(a_event_ptr);
+      se->setViewportSize(d->m_size);
+      QRectF br = d->m_viewport->boundingRect();
+      se->setContentPosRange(
+          QRectF(0, 0, qMax(qreal(0), br.width() - d->m_size.width()),
+                 qMax(qreal(0), br.height() - d->m_size.height())));
+      se->setContentPos(-d->m_viewport->pos());
+      se->accept();
+      return QGraphicsObject::event(a_event_ptr);
+    }
+    case QScrollEvent::Scroll: {
+      qDebug() << Q_FUNC_INFO << "Scroll";
+      QScrollEvent *se = static_cast<QScrollEvent *>(a_event_ptr);
+      d->m_viewport->setPos(-se->contentPos() - se->overshootDistance());
+      return true;
+    }
 
-  default:
-    break;
+    default:
+      break;
   }
   return QGraphicsObject::event(a_event_ptr);
 }
 
-bool ScrollWidget::sceneEvent(QEvent *a_e_ptr)
-{
+bool ScrollWidget::sceneEvent(QEvent *a_e_ptr) {
   /*
   switch (e->type()) {
   case QEvent::TouchBegin: {

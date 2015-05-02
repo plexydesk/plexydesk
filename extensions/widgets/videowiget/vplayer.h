@@ -24,10 +24,8 @@
 #include <QtGui>
 #include <plexy.h>
 
-namespace PlexyDesk
-{
-class VISIBLE_SYM VPlayer : public QObject
-{
+namespace PlexyDesk {
+class VISIBLE_SYM VPlayer : public QObject {
   Q_OBJECT
 public:
   VPlayer(QObject *parent = 0);
@@ -37,7 +35,8 @@ public:
 
   //        void fileName();
 
-public slots:
+public
+slots:
   // void pull() {}
   void decode();
 signals:

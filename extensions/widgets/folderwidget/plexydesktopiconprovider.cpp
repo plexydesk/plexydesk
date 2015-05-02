@@ -25,19 +25,16 @@ PlexyDesktopIconProvider::PlexyDesktopIconProvider() {}
 
 PlexyDesktopIconProvider::~PlexyDesktopIconProvider() {}
 
-QIcon PlexyDesktopIconProvider::icon(QFileIconProvider::IconType type) const
-{
+QIcon PlexyDesktopIconProvider::icon(QFileIconProvider::IconType type) const {
   QIcon rv = QFileIconProvider::icon(type);
   return QIcon::fromTheme(rv.name(), rv);
 }
 
-QIcon PlexyDesktopIconProvider::icon(const QFileInfo &info) const
-{
+QIcon PlexyDesktopIconProvider::icon(const QFileInfo &info) const {
   QIcon rv = QFileIconProvider::icon(info);
   return QIcon::fromTheme(rv.name(), rv);
 }
 
-QString PlexyDesktopIconProvider::type(const QFileInfo &info) const
-{
+QString PlexyDesktopIconProvider::type(const QFileInfo &info) const {
   return QFileIconProvider::type(info);
 }

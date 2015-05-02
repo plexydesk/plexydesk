@@ -31,8 +31,7 @@
  * \class Youtube API Interface for Plexydesk
  * \brief
  */
-class YouTubeDataInterface : public PlexyDesk::DataInterface
-{
+class YouTubeDataInterface : public PlexyDesk::DataInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

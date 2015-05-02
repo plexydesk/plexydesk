@@ -9,8 +9,7 @@
 #include <webservice.h>
 #include <desktopactivity.h>
 
-class NoteWidget : public UIKit::Widget
-{
+class NoteWidget : public UIKit::Widget {
   Q_OBJECT
 public:
   explicit NoteWidget(QGraphicsObject *a_parent_ptr = 0);
@@ -41,7 +40,8 @@ public:
 Q_SIGNALS:
   void clicked(NoteWidget *item);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onClicked();
   void onTextUpdated(const QString &text);
   void onDocuemntTitleAvailable(const QString &title);

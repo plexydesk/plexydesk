@@ -3,13 +3,16 @@
 
 #include <abstractcellcomponent.h>
 
-class DateCell : public UIKit::TableViewItem
-{
+class DateCell : public UIKit::TableViewItem {
   Q_OBJECT
 public:
-  typedef enum { List = 0, Grid } ItemLayout;
+  typedef enum {
+    List = 0,
+    Grid
+  } ItemLayout;
 
-  DateCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *a_parent_ptr = 0);
+  DateCell(const QRectF &rect, ItemLayout = List,
+           QGraphicsItem *a_parent_ptr = 0);
   virtual ~DateCell();
 
   QRectF boundingRect() const;
@@ -44,7 +47,8 @@ protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onClicked();
 
 private:

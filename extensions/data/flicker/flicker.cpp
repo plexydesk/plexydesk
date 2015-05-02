@@ -23,8 +23,7 @@
 #include <QHttp>
 #include <QTimer>
 
-FlickerData::FlickerData(QObject *object)
-{
+FlickerData::FlickerData(QObject *object) {
   slideCount = 0;
   currentSlide = 0;
   searchkey = "fresh morning";
@@ -34,8 +33,7 @@ FlickerData::FlickerData(QObject *object)
   connect(imageTimer, SIGNAL(timeout()), this, SLOT(nextImage()));
 }
 
-void FlickerData::init()
-{
+void FlickerData::init() {
 
   if (PlexyDesk::Config::getInstance()->m_proxyOn) {
     QNetworkProxy NtProxy(PlexyDesk::Config::getInstance()->proxyType,
@@ -57,8 +55,7 @@ void FlickerData::init()
 
 FlickerData::~FlickerData() { delete http; }
 
-void FlickerData::nextImage()
-{
+void FlickerData::nextImage() {
 
   QString hostURL = images.at(currentSlide);
   QString host(hostURL.mid(7, 23));
@@ -73,15 +70,13 @@ void FlickerData::nextImage()
   }
 }
 
-void FlickerData::pushData(QVariant &str)
-{
+void FlickerData::pushData(QVariant &str) {
   http->abort();
   searchkey = str.toString();
   init();
 }
 
-void FlickerData::loadImages(int id, bool stat)
-{
+void FlickerData::loadImages(int id, bool stat) {
 
   if (id == requestID) {
     if (http->bytesAvailable() > 0) {
@@ -134,8 +129,7 @@ void FlickerData::loadImages(int id, bool stat)
   }
 }
 
-QVariantMap FlickerData::readAll()
-{
+QVariantMap FlickerData::readAll() {
   QVariantMap map;
   map["image"] = dataItem;
   return map;

@@ -43,11 +43,9 @@
 #include <QPixmap>
 #include <QImage>
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 
-class FriendItem : public QObject, public QGraphicsItem
-{
+class FriendItem : public QObject, public QGraphicsItem {
   Q_OBJECT
 
 public:

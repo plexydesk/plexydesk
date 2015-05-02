@@ -21,63 +21,59 @@
 #include <QTimer>
 #include <controllerinterface.h>
 
-class ubuntuStyle::Privateubuntu
-{
+class ubuntuStyle::Privateubuntu {
 public:
   Privateubuntu() {}
   ~Privateubuntu() {}
 };
 
 ubuntuStyle::ubuntuStyle(QObject *parent)
-  : PlexyDesk::Style(parent), d(new Privateubuntu) {}
+    : PlexyDesk::Style(parent), d(new Privateubuntu) {}
 
 ubuntuStyle::~ubuntuStyle() { delete d; }
 
 void ubuntuStyle::paintControlElement(Style::ControlElement element,
                                       const StyleFeatures &feature,
-                                      QPainter *painter)
-{
+                                      QPainter *painter) {
   switch (element) {
-  case CE_PushButton:
-    drawPushButton(feature, painter);
-    break;
-  case CE_Frame:
-    drawFrame(feature, painter);
-    break;
-  case CE_LineEdit:
-    drawLineEdit(feature, painter);
-    break;
-  case CE_Seperator:
-    drawSeperatorLine(feature, painter);
-    break;
-  default:
-    qWarning() << Q_FUNC_INFO << "Unknown Control Element";
+    case CE_PushButton:
+      drawPushButton(feature, painter);
+      break;
+    case CE_Frame:
+      drawFrame(feature, painter);
+      break;
+    case CE_LineEdit:
+      drawLineEdit(feature, painter);
+      break;
+    case CE_Seperator:
+      drawSeperatorLine(feature, painter);
+      break;
+    default:
+      qWarning() << Q_FUNC_INFO << "Unknown Control Element";
   }
 }
 
 void ubuntuStyle::paintControlElementText(Style::ControlElement element,
-    const StyleFeatures &feature,
-    const QString &text,
-    QPainter *painter)
-{
+                                          const StyleFeatures &feature,
+                                          const QString &text,
+                                          QPainter *painter) {
   switch (element) {
-  case CE_PushButton:
-    drawPushButtonText(feature, text, painter);
-    break;
-  case CE_LineEdit:
-    drawLineEditText(feature, text, painter);
-    break;
-  case CE_Label:
-    drawLabelEditText(feature, text, painter);
-    break;
-  default:
-    qWarning() << Q_FUNC_INFO << "Unknown Control Element";
+    case CE_PushButton:
+      drawPushButtonText(feature, text, painter);
+      break;
+    case CE_LineEdit:
+      drawLineEditText(feature, text, painter);
+      break;
+    case CE_Label:
+      drawLabelEditText(feature, text, painter);
+      break;
+    default:
+      qWarning() << Q_FUNC_INFO << "Unknown Control Element";
   }
 }
 
 StyleFeatures ubuntuStyle::controlElementFeatures(
-  Style::ControlElement element)
-{
+    Style::ControlElement element) {
   StyleFeatures style;
 
   style.windowTitleHeight = 16;
@@ -118,8 +114,7 @@ StyleFeatures ubuntuStyle::controlElementFeatures(
 }
 
 void ubuntuStyle::drawPushButton(const StyleFeatures &features,
-                                 QPainter *painter)
-{
+                                 QPainter *painter) {
   QRectF rect = features.exposeRect;
 
   /* Painter settings */
@@ -146,8 +141,7 @@ void ubuntuStyle::drawPushButton(const StyleFeatures &features,
   }
 }
 
-void ubuntuStyle::drawFrame(const StyleFeatures &features, QPainter *painter)
-{
+void ubuntuStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
   QRectF rect = features.exposeRect;
 
   /* Painter settings */
@@ -181,8 +175,7 @@ void ubuntuStyle::drawFrame(const StyleFeatures &features, QPainter *painter)
 }
 
 void ubuntuStyle::drawPushButtonText(const StyleFeatures &features,
-                                     const QString &text, QPainter *painter)
-{
+                                     const QString &text, QPainter *painter) {
   /* Painter settings */
   painter->setRenderHint(QPainter::Antialiasing, true);
   painter->setRenderHint(QPainter::TextAntialiasing, true);
@@ -195,8 +188,7 @@ void ubuntuStyle::drawPushButtonText(const StyleFeatures &features,
 }
 
 void ubuntuStyle::drawLineEdit(const StyleFeatures &features,
-                               QPainter *painter)
-{
+                               QPainter *painter) {
   QRectF rect = features.exposeRect;
 
   /* Painter settings */
@@ -226,14 +218,13 @@ void ubuntuStyle::drawLineEdit(const StyleFeatures &features,
 }
 
 void ubuntuStyle::drawLineEditText(const StyleFeatures &features,
-                                   const QString &text, QPainter *painter)
-{
+                                   const QString &text, QPainter *painter) {
   /* Painter settings */
   painter->setRenderHint(QPainter::Antialiasing, true);
   painter->setRenderHint(QPainter::TextAntialiasing, true);
   painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
-  QPen
-  pen; // pen(QColor(0, 0, 0), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  QPen pen; // pen(QColor(0, 0, 0), 1, Qt::SolidLine, Qt::RoundCap,
+            // Qt::RoundJoin);
 
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
@@ -252,15 +243,14 @@ void ubuntuStyle::drawLineEditText(const StyleFeatures &features,
                     Qt::AlignLeft | Qt::AlignVCenter, text);
 
   pen =
-    QPen(QColor(98, 101, 108), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      QPen(QColor(98, 101, 108), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   painter->setPen(pen);
   painter->drawLine(QPoint(width + 11, 4),
                     QPoint(width + 11, features.exposeRect.height() - 4));
 }
 
 void ubuntuStyle::drawLabelEditText(const StyleFeatures &features,
-                                    const QString &text, QPainter *painter)
-{
+                                    const QString &text, QPainter *painter) {
   QPen pen;
 
   /* Painter settings */
@@ -283,21 +273,20 @@ void ubuntuStyle::drawLabelEditText(const StyleFeatures &features,
 }
 
 void ubuntuStyle::drawSeperatorLine(const StyleFeatures &features,
-                                    QPainter *painter)
-{
+                                    QPainter *painter) {
   painter->save();
   QPen pen = QPen(QColor(217, 217, 217), 1, Qt::SolidLine, Qt::RoundCap,
                   Qt::RoundJoin);
   painter->setPen(pen);
   painter->drawLine(
-    QPoint(features.exposeRect.x(), features.exposeRect.y()),
-    QPoint(features.exposeRect.width(), features.exposeRect.height()));
+      QPoint(features.exposeRect.x(), features.exposeRect.y()),
+      QPoint(features.exposeRect.width(), features.exposeRect.height()));
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
   painter->setPen(pen);
   painter->drawLine(
-    QPoint(features.exposeRect.x() + 1, features.exposeRect.y() + 1),
-    QPoint(features.exposeRect.width() + 1,
-           features.exposeRect.height() + 1));
+      QPoint(features.exposeRect.x() + 1, features.exposeRect.y() + 1),
+      QPoint(features.exposeRect.width() + 1,
+             features.exposeRect.height() + 1));
   painter->restore();
 }

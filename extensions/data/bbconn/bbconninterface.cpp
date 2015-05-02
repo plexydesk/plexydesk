@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> BBConnInterface::model()
-{
+QSharedPointer<PlexyDesk::DataSource> BBConnInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =
-    QSharedPointer<PlexyDesk::DataSource>(new BBConnData(),
-                                          &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DataSource>(new BBConnData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

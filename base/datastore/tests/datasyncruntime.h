@@ -5,8 +5,7 @@
 
 #include <syncobject.h>
 
-class DataSyncRuntime : public QObject
-{
+class DataSyncRuntime : public QObject {
   Q_OBJECT
 
 public:
@@ -31,7 +30,8 @@ public:
 
   void updateTest();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onStoreUpdated(QuetzalKit::SyncObject *object);
 
 private:

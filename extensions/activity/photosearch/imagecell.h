@@ -3,13 +3,16 @@
 
 #include <abstractcellcomponent.h>
 
-class ImageCell : public UIKit::TableViewItem
-{
+class ImageCell : public UIKit::TableViewItem {
   Q_OBJECT
 public:
-  typedef enum { List = 0, Grid } ItemLayout;
+  typedef enum {
+    List = 0,
+    Grid
+  } ItemLayout;
 
-  ImageCell(const QRectF &rect, ItemLayout = List, QGraphicsItem *a_parent_ptr = 0);
+  ImageCell(const QRectF &rect, ItemLayout = List,
+            QGraphicsItem *a_parent_ptr = 0);
   virtual ~ImageCell();
 
   QRectF boundingRect() const;
@@ -41,7 +44,8 @@ protected:
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onClicked();
 
 private:

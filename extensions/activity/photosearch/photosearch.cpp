@@ -35,8 +35,7 @@
 
 #include "localwallpapers.h"
 
-class PhotoSearchActivity::PrivatePhotoSearch
-{
+class PhotoSearchActivity::PrivatePhotoSearch {
 public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
@@ -50,18 +49,16 @@ public:
 };
 
 PhotoSearchActivity::PhotoSearchActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivatePhotoSearch) {}
+    : UIKit::DesktopActivity(object), d(new PrivatePhotoSearch) {}
 
-PhotoSearchActivity::~PhotoSearchActivity()
-{
+PhotoSearchActivity::~PhotoSearchActivity() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
-                                       const QString &aWindowTitle,
-                                       const QPointF &window_pos)
-{
+                                        const QString &aWindowTitle,
+                                        const QPointF &window_pos) {
   d->mGeometry = aWindowGeometry;
 
   // todo: invoke UI
@@ -87,7 +84,7 @@ void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
 
   exec(window_pos);
 
-  d->mWindowFrame->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->mWindowFrame->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
@@ -98,8 +95,7 @@ QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
 
 Window *PhotoSearchActivity::window() const { return d->mWindowFrame; }
 
-void PhotoSearchActivity::cleanup()
-{
+void PhotoSearchActivity::cleanup() {
   if (d->mWindowFrame) {
     delete d->mWindowFrame;
   }
@@ -107,13 +103,11 @@ void PhotoSearchActivity::cleanup()
   d->mWindowFrame = 0;
 }
 
-void PhotoSearchActivity::onShowAnimationFinished()
-{
+void PhotoSearchActivity::onShowAnimationFinished() {
   this->locateLocalFiles();
 }
 
-void PhotoSearchActivity::onClicked(TableViewItem *item)
-{
+void PhotoSearchActivity::onClicked(TableViewItem *item) {
   if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;
   }
@@ -126,8 +120,7 @@ void PhotoSearchActivity::onClicked(TableViewItem *item)
   }
 }
 
-void PhotoSearchActivity::onProgressValue(int value)
-{
+void PhotoSearchActivity::onProgressValue(int value) {
   if (value == 100) {
     if (d->mWindowFrame) {
       if (has_attribute("title")) {
@@ -136,8 +129,7 @@ void PhotoSearchActivity::onProgressValue(int value)
   }
 }
 
-void PhotoSearchActivity::locateLocalFiles() const
-{
+void PhotoSearchActivity::locateLocalFiles() const {
   QStringList pathList;
 
 #ifdef Q_OS_LINUX

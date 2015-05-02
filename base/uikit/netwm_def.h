@@ -173,18 +173,18 @@ struct NETExtendedStrut {
   Constructor to initialize this struct to 0,0,0,0
   **/
   NETExtendedStrut()
-    : left_width(0),
-      left_start(0),
-      left_end(0),
-      right_width(0),
-      right_start(0),
-      right_end(0),
-      top_width(0),
-      top_start(0),
-      top_end(0),
-      bottom_width(0),
-      bottom_start(0),
-      bottom_end(0) {}
+      : left_width(0),
+        left_start(0),
+        left_end(0),
+        right_width(0),
+        right_start(0),
+        right_end(0),
+        top_width(0),
+        top_start(0),
+        top_end(0),
+        bottom_width(0),
+        bottom_start(0),
+        bottom_end(0) {}
 
   /**
   Left border of the strut, width and range.
@@ -257,8 +257,7 @@ the namespace relatively clean, all enums are defined here.
 @see http://www.freedesktop.org/standards/wm-spec/
 **/
 
-class DECL_UI_KIT_EXPORT NET
-{
+class DECL_UI_KIT_EXPORT NET {
 public:
   /**
   Application role.  This is used internally to determine how several action
@@ -270,7 +269,10 @@ public:
   application.
   **/
 
-  enum Role { Client, WindowManager };
+  enum Role {
+    Client,
+    WindowManager
+  };
 
   /**
   Window type.
@@ -338,7 +340,9 @@ public:
   };
 
   // KDE4 move to WindowTypeMask
-  enum { AllTypesMask = 0LU - 1 };
+  enum {
+    AllTypesMask = 0LU - 1
+  };
 
   /**
   * Returns true if the given window type matches the mask given
@@ -625,7 +629,9 @@ public:
   all desktops.
   @since 3.2
   **/
-  enum { OnAllDesktops = -1 };
+  enum {
+    OnAllDesktops = -1
+  };
 
   /**
   Source of the request.

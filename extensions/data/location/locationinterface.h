@@ -25,8 +25,7 @@
 #include <QtNetwork>
 
 class LocationDataInterface : public QObject,
-  public PlexyDesk::DataPluginInterface
-{
+                              public PlexyDesk::DataPluginInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::DataPluginInterface)
 

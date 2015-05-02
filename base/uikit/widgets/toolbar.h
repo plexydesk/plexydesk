@@ -4,17 +4,15 @@
 #include <widget.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT ToolBar : public Widget
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT ToolBar : public Widget {
   Q_OBJECT
 public:
   ToolBar(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ToolBar();
 
   virtual void add_action(const QString &a_lable, const QString &a_icon,
-                         bool a_togle_action = false);
+                          bool a_togle_action = false);
 
   virtual void insert_widget(Widget *a_widget_ptr);
 
@@ -32,10 +30,12 @@ public:
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 Q_SIGNALS:
   void action(const QString &a_actionName);
+
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_expose_rect);
 
   void tool_button_press_handler(const Widget *a_widget_ptr);
+
 private:
   class PrivateToolBar;
   PrivateToolBar *const d;

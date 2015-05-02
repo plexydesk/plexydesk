@@ -28,25 +28,22 @@
 #include "mac_background.h"
 
 MacBackgroundController::MacBackgroundController(QObject *object)
-  : PlexyDesk::ControllerInterface(object)
-{
+    : PlexyDesk::ControllerInterface(object) {
   mMacDesktopRectItem = new MacBackgroundRender(QRectF(), 0);
 }
 
-MacBackgroundController::~MacBackgroundController()
-{
+MacBackgroundController::~MacBackgroundController() {
   if (mMacDesktopRectItem) {
     delete mMacDesktopRectItem;
   }
 }
 
-void MacBackgroundController::init()
-{
+void MacBackgroundController::init() {
   QSizeF desktopSize = mDesktopScreenRect.size();
   mMacDesktopRectItem->setContentRect(
-    QRectF(0.0, 0, desktopSize.width(), desktopSize.height()));
+      QRectF(0.0, 0, desktopSize.width(), desktopSize.height()));
   mMacDesktopRectItem->setLayerType(
-    PlexyDesk::AbstractDesktopWidget::Background);
+      PlexyDesk::AbstractDesktopWidget::Background);
   Q_EMIT spawnView(mMacDesktopRectItem);
 }
 
@@ -54,14 +51,13 @@ void MacBackgroundController::revokeSession(const QVariantMap &args) {}
 
 QStringList MacBackgroundController::actions() const { return QStringList(); }
 
-void MacBackgroundController::setViewRect(const QRectF &rect)
-{
+void MacBackgroundController::setViewRect(const QRectF &rect) {
   mDesktopScreenRect = rect;
   mMacDesktopRectItem->setContentRect(rect);
 }
 
 void MacBackgroundController::handleDropEvent(
-  PlexyDesk::AbstractDesktopWidget *widget, QDropEvent *event) {}
+    PlexyDesk::AbstractDesktopWidget *widget, QDropEvent *event) {}
 
 void MacBackgroundController::requestAction(const QString &actionName,
-    const QVariantMap &args) {}
+                                            const QVariantMap &args) {}

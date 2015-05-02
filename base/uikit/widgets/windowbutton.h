@@ -25,14 +25,16 @@
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class DECL_UI_KIT_EXPORT WindowButton : public UIKit::Button
-{
+class DECL_UI_KIT_EXPORT WindowButton : public UIKit::Button {
   Q_OBJECT
 public:
-  typedef enum { CLOSE, ZOOM, MINIMIZE } WindowButtonType;
+  typedef enum {
+    CLOSE,
+    ZOOM,
+    MINIMIZE
+  } WindowButtonType;
 
   explicit WindowButton(QGraphicsObject *a_parent_ptr = 0);
   ~WindowButton();
@@ -42,8 +44,10 @@ public:
   virtual QRectF boundingRect() const;
 
 protected:
-  virtual void paint_normal_button(QPainter *a_painter_ptr, const QRectF &a_rect);
-  virtual void paint_sunken_button(QPainter *a_painter_ptr, const QRectF &a_rect);
+  virtual void paint_normal_button(QPainter *a_painter_ptr,
+                                   const QRectF &a_rect);
+  virtual void paint_sunken_button(QPainter *a_painter_ptr,
+                                   const QRectF &a_rect);
 
 private:
   class PrivateWindowButton;

@@ -27,8 +27,7 @@
 #include <QtDebug>
 #include <QVariant>
 
-class PresenceData::PresenceDataPrivate
-{
+class PresenceData::PresenceDataPrivate {
   PresenceData *parent;
 
 public:
@@ -36,8 +35,7 @@ public:
 
   Telepathy::Client::AccountManager *m_accountManager;
 
-  void createAccountDataSource(const QString &path)
-  {
+  void createAccountDataSource(const QString &path) {
     qDebug() << "createAccountDataSource called";
     qDebug() << path;
     Telepathy::Client::Account *account = accountFromPath(path);
@@ -58,8 +56,7 @@ public:
     emit parent->data(sendData);
   }
 
-  void removeAccountDataSource(const QString &path)
-  {
+  void removeAccountDataSource(const QString &path) {
     qDebug() << "removeAccountDataSource called";
     qDebug() << path;
 
@@ -68,14 +65,12 @@ public:
     // parent->removeSource(identifier);
   }
 
-  Telepathy::Client::Account *accountFromPath(const QString &path)
-  {
+  Telepathy::Client::Account *accountFromPath(const QString &path) {
     return m_accountManager->accountForPath(path);
   }
 };
 
-PresenceData::PresenceData(QObject *parent) : d(new PresenceDataPrivate(this))
-{
+PresenceData::PresenceData(QObject *parent) : d(new PresenceDataPrivate(this)) {
   // Register custom types:
   Telepathy::registerTypes();
 }
@@ -88,8 +83,7 @@ PresenceData::~PresenceData() { delete d; }
 /**
  * Initialize Presence.
  */
-void PresenceData::init()
-{
+void PresenceData::init() {
   qDebug() << "init() started";
   /*
    * check that we are connected to the session
@@ -105,7 +99,7 @@ void PresenceData::init()
    * data engine.
    */
   d->m_accountManager =
-    new Telepathy::Client::AccountManager(QDBusConnection::sessionBus());
+      new Telepathy::Client::AccountManager(QDBusConnection::sessionBus());
 
   /*
    * connect signal from the account manager
@@ -134,8 +128,7 @@ void PresenceData::init()
 }
 
 void PresenceData::onAccountReady(
-  Telepathy::Client::PendingOperation *operation)
-{
+    Telepathy::Client::PendingOperation *operation) {
   qDebug() << "onAccountReady() called";
   if (operation->isError()) {
     qDebug() << operation->errorName() << ": " << operation->errorMessage();
@@ -150,7 +143,7 @@ void PresenceData::onAccountReady(
    * are all ready there
    */
   QList<Telepathy::Client::Account *> accounts =
-    d->m_accountManager->allAccounts();
+      d->m_accountManager->allAccounts();
   qDebug() << "accounts: " << accounts.size();
 
   /*
@@ -165,8 +158,7 @@ void PresenceData::onAccountReady(
  *
  * \param path QDBusObjectPath to created account.
  */
-void PresenceData::accountCreated(const QString &path)
-{
+void PresenceData::accountCreated(const QString &path) {
   qDebug() << "accountCreated() called";
   // Load the data for the new account. To avoid duplicating code, we treat
   // this just as if an account was updated, and call the method to handle
@@ -180,8 +172,7 @@ void PresenceData::accountCreated(const QString &path)
  * \param QDBusObjectPath Name of the account path.
  * \param valid true if the account is valid.
  */
-void PresenceData::accountValidityChanged(const QString &path, bool valid)
-{
+void PresenceData::accountValidityChanged(const QString &path, bool valid) {
   Q_UNUSED(valid);
   qDebug() << "accountValidityChanged() called";
   /*
@@ -196,8 +187,7 @@ void PresenceData::accountValidityChanged(const QString &path, bool valid)
  *
  * \param QDBusObjectPath Name of the account path.
  */
-void PresenceData::accountRemoved(const QString &path)
-{
+void PresenceData::accountRemoved(const QString &path) {
   qDebug() << "accountRemoved() called";
   /*
    * slot called when an account has been deleted

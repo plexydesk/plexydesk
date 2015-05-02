@@ -22,8 +22,7 @@
 
 #include <QFileIconProvider>
 
-class PlexyDesktopIconProvider : public QFileIconProvider
-{
+class PlexyDesktopIconProvider : public QFileIconProvider {
 public:
   PlexyDesktopIconProvider();
   virtual ~PlexyDesktopIconProvider();

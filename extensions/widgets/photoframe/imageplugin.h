@@ -26,8 +26,7 @@
 #include <themepackloader.h>
 #include "photowidget.h"
 
-class PhotoFrameController : public UIKit::ViewController
-{
+class PhotoFrameController : public UIKit::ViewController {
   Q_OBJECT
 
 public:

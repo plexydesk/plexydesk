@@ -21,31 +21,27 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class TimerData::Private
-{
+class TimerData::Private {
 public:
   Private() {}
   ~Private() {}
 };
 
 TimerData::TimerData(QObject *object)
-  : UIKit::DataSource(object), d(new Private)
-{
+    : UIKit::DataSource(object), d(new Private) {
   startTimer(1000);
 }
 
 void TimerData::init() { qDebug() << Q_FUNC_INFO; }
 
-TimerData::~TimerData()
-{
+TimerData::~TimerData() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void TimerData::set_arguments(QVariant arg) {}
 
-QVariantMap TimerData::readAll()
-{
+QVariantMap TimerData::readAll() {
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -55,7 +51,6 @@ QVariantMap TimerData::readAll()
   return dataMap;
 }
 
-void TimerData::timerEvent(QTimerEvent *event)
-{
+void TimerData::timerEvent(QTimerEvent *event) {
   Q_EMIT source_updated(readAll());
 }

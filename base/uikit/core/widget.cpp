@@ -105,17 +105,14 @@
   * Label to display when the widget is in dock mode
   */
 
-namespace UIKit
-{
-typedef std::function<void (Widget::InputEvent, const Widget *)> EventCallbackFunc;
+namespace UIKit {
+typedef std::function<void(Widget::InputEvent, const Widget *)>
+EventCallbackFunc;
 
-class Widget::PrivateAbstractDesktopWidget
-{
+class Widget::PrivateAbstractDesktopWidget {
 public:
-  PrivateAbstractDesktopWidget() :
-    m_widget_controller(0),
-    m_callback_count(0),
-    mWidgetID(0) {}
+  PrivateAbstractDesktopWidget()
+      : m_widget_controller(0), m_callback_count(0), mWidgetID(0) {}
   ~PrivateAbstractDesktopWidget() {}
 
   void _exec_func(Widget::InputEvent a_type, const Widget *a_widget_ptr);
@@ -133,10 +130,9 @@ public:
 };
 
 Widget::Widget(QGraphicsObject *parent)
-  : QGraphicsObject(parent),
-    QGraphicsLayoutItem(0),
-    d(new PrivateAbstractDesktopWidget)
-{
+    : QGraphicsObject(parent),
+      QGraphicsLayoutItem(0),
+      d(new PrivateAbstractDesktopWidget) {
   d->m_widget_name = QLatin1String("Widget");
   d->m_current_layer_type = kRenderAtForgroundLevel;
 
@@ -152,70 +148,54 @@ Widget::Widget(QGraphicsObject *parent)
   setGraphicsItem(this);
 }
 
-Widget::~Widget()
-{
+Widget::~Widget() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-QRectF Widget::boundingRect() const
-{
+QRectF Widget::boundingRect() const {
   return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
 }
 
-void Widget::set_widget_flag(int a_flags, bool a_enable)
-{
-}
+void Widget::set_widget_flag(int a_flags, bool a_enable) {}
 
-void Widget::on_input_event(std::function<void (InputEvent,
-                                                const Widget *)> a_callback)
-{
+void Widget::on_input_event(
+    std::function<void(InputEvent, const Widget *)> a_callback) {
   d->m_callback_count++;
   d->m_handler_list.append(a_callback);
 }
 
-void Widget::set_style_attribute(const QString &a_key, QVariant a_data)
-{
+void Widget::set_style_attribute(const QString &a_key, QVariant a_data) {
   d->mStyleAttributeMap[a_key] = a_data;
 }
 
-QVariant Widget::style_attribute(const QString &aKey)
-{
+QVariant Widget::style_attribute(const QString &aKey) {
   return d->mStyleAttributeMap[aKey];
 }
 
-void Widget::set_widget_name(const QString &a_name) { d->m_widget_name = a_name; }
+void Widget::set_widget_name(const QString &a_name) {
+  d->m_widget_name = a_name;
+}
 
 QString Widget::label() const { return d->m_widget_name; }
 
-void Widget::set_widget_id(unsigned int a_id)
-{
-  d->mWidgetID = a_id;
-}
+void Widget::set_widget_id(unsigned int a_id) { d->mWidgetID = a_id; }
 
-unsigned Widget::widget_id() const
-{
-  return d->mWidgetID;
-}
+unsigned Widget::widget_id() const { return d->mWidgetID; }
 
-StylePtr Widget::style() const
-{
-  return Theme::style();
-}
+StylePtr Widget::style() const { return Theme::style(); }
 
-Widget::RenderLevel Widget::layer_type() const
-{
+Widget::RenderLevel Widget::layer_type() const {
   return d->m_current_layer_type;
 }
 
-void Widget::set_layer_type(RenderLevel a_level) const
-{
+void Widget::set_layer_type(RenderLevel a_level) const {
   d->m_current_layer_type = a_level;
 }
 
-void Widget::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
-                   QWidget * /*widget*/)
-{
+void Widget::paint(QPainter *a_painter_ptr,
+                   const QStyleOptionGraphicsItem *a_option_ptr,
+                   QWidget * /*widget*/) {
   if (!a_painter_ptr->isActive()) {
     return;
   }
@@ -227,39 +207,37 @@ void Widget::paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_op
   paint_view(a_painter_ptr, boundingRect());
 }
 
-void Widget::setGeometry(const QRectF &a_rect)
-{
+void Widget::setGeometry(const QRectF &a_rect) {
   // d->m_content_geometry = rect;
   prepareGeometryChange();
   QGraphicsLayoutItem::setGeometry(a_rect);
   setPos(a_rect.topLeft());
 }
 
-QSizeF Widget::sizeHint(Qt::SizeHint a_which, const QSizeF &a_constraint) const
-{
+QSizeF Widget::sizeHint(Qt::SizeHint a_which,
+                        const QSizeF &a_constraint) const {
   // todo: ignoreing which for now. we will return based on
   // return geometry().size();
   QSizeF sh;
   switch (a_which) {
-  case Qt::MinimumSize:
-    sh = QSizeF(0, 0);
-    break;
-  case Qt::PreferredSize:
-    sh = QSizeF(50, 50); // rather arbitrary
-    break;
-  case Qt::MaximumSize:
-    sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    break;
-  default:
-    qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
-             "value of 'which'");
-    break;
+    case Qt::MinimumSize:
+      sh = QSizeF(0, 0);
+      break;
+    case Qt::PreferredSize:
+      sh = QSizeF(50, 50); // rather arbitrary
+      break;
+    case Qt::MaximumSize:
+      sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+      break;
+    default:
+      qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
+               "value of 'which'");
+      break;
   }
   return sh;
 }
 
-void Widget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect)
-{
+void Widget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   /*
   StyleFeatures feature;
   feature.geometry = rect;
@@ -268,30 +246,26 @@ void Widget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect)
   style()->draw("window_frame", feature, painter);
   }
   */
-
 }
 
-void Widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
-{
-  //todo : check why mouse release events are not called.
-  //https://github.com/plexydesk/plexydesk/issues/7
+void Widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
+  // todo : check why mouse release events are not called.
+  // https://github.com/plexydesk/plexydesk/issues/7
   d->_exec_func(kMousePressedEvent, this);
 
   setFocus(Qt::MouseFocusReason);
-  //QGraphicsObject::mousePressEvent(event);
+  // QGraphicsObject::mousePressEvent(event);
 }
 
-void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
-{
+void Widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   qDebug() << Q_FUNC_INFO << metaObject()->className();
 
   d->_exec_func(kMouseReleaseEvent, this);
 
-  //QGraphicsObject::mouseReleaseEvent(event);
+  // QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void Widget::focusOutEvent(QFocusEvent *event)
-{
+void Widget::focusOutEvent(QFocusEvent *event) {
   event->accept();
 
   d->_exec_func(kFocusOutEvent, this);
@@ -299,36 +273,28 @@ void Widget::focusOutEvent(QFocusEvent *event)
   QGraphicsObject::focusOutEvent(event);
 }
 
-float Widget::scale_factor_for_width() const
-{
+float Widget::scale_factor_for_width() const {
   return geometry().width() / boundingRect().width();
 }
 
-float Widget::scale_factor_for_height() const
-{
+float Widget::scale_factor_for_height() const {
   return geometry().height() / boundingRect().height();
 }
 
-void Widget::set_child_widet_visibility(bool a_visibility)
-{
+void Widget::set_child_widet_visibility(bool a_visibility) {
   Q_FOREACH(QGraphicsItem * item, this->childItems()) {
     (a_visibility) ? item->show() : item->hide();
   }
 }
 
-void Widget::set_controller(ViewController *a_view_controller_ptr)
-{
+void Widget::set_controller(ViewController *a_view_controller_ptr) {
   d->m_widget_controller = a_view_controller_ptr;
 }
 
-ViewController *Widget::controller() const
-{
-  return d->m_widget_controller;
-}
+ViewController *Widget::controller() const { return d->m_widget_controller; }
 
-void Widget::PrivateAbstractDesktopWidget::_exec_func(InputEvent a_type,
-                                                      const Widget *a_widget_ptr)
-{
+void Widget::PrivateAbstractDesktopWidget::_exec_func(
+    InputEvent a_type, const Widget *a_widget_ptr) {
   foreach(EventCallbackFunc l_func, m_handler_list) {
     if (l_func) {
       l_func(a_type, a_widget_ptr);

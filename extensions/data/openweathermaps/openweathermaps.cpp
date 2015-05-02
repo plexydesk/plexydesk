@@ -29,8 +29,7 @@
 
 #include <json.h>
 
-class openweathermapsData::Privateopenweathermaps
-{
+class openweathermapsData::Privateopenweathermaps {
 public:
   Privateopenweathermaps() {}
   ~Privateopenweathermaps() {}
@@ -41,8 +40,7 @@ public:
 };
 
 openweathermapsData::openweathermapsData(QObject *object)
-  : PlexyDesk::DataSource(object), d(new Privateopenweathermaps)
-{
+    : PlexyDesk::DataSource(object), d(new Privateopenweathermaps) {
   d->mBaseUrlStr = "http://api.openweathermap.org/data/2.5/weather?q=";
   ;
   d->mManager = new QNetworkAccessManager(this);
@@ -53,9 +51,8 @@ void openweathermapsData::init() {}
 openweathermapsData::~openweathermapsData() { delete d; }
 
 void openweathermapsData::getCurrentWeather(QVariantMap param,
-    const QString &apiKey,
-    const QString &request)
-{
+                                            const QString &apiKey,
+                                            const QString &request) {
   QString requestURL = d->mBaseUrlStr;
 
   /* Request for Current weather data*/
@@ -82,15 +79,13 @@ void openweathermapsData::getCurrentWeather(QVariantMap param,
   }
 }
 
-void openweathermapsData::setArguments(QVariant args)
-{
+void openweathermapsData::setArguments(QVariant args) {
   qDebug() << Q_FUNC_INFO << "Start Weather Engine" << args;
   QString apiKey = "APPID=" + QString(OPEN_WEATHER_MAP_API_KEY);
   getCurrentWeather(args.toMap(), apiKey, args.toMap()["request"].toString());
 }
 
-void openweathermapsData::onDataReadyForCityName()
-{
+void openweathermapsData::onDataReadyForCityName() {
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
@@ -117,8 +112,7 @@ void openweathermapsData::onDataReadyForCityName()
   }
 }
 
-QVariantMap openweathermapsData::readAll()
-{
+QVariantMap openweathermapsData::readAll() {
   QVariant timeVariant;
   QVariantMap dataMap;
 

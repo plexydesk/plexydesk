@@ -21,8 +21,7 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class HttpServerData::PrivateHttpServer
-{
+class HttpServerData::PrivateHttpServer {
 public:
   PrivateHttpServer() {}
   ~PrivateHttpServer() {}
@@ -30,8 +29,7 @@ public:
 };
 
 HttpServerData::HttpServerData(QObject *object)
-  : UIKit::DataSource(object), d(new PrivateHttpServer)
-{
+    : UIKit::DataSource(object), d(new PrivateHttpServer) {
   startTimer(1000);
 }
 
@@ -41,8 +39,7 @@ HttpServerData::~HttpServerData() { delete d; }
 
 void HttpServerData::set_arguments(QVariant arg) {}
 
-QVariantMap HttpServerData::readAll()
-{
+QVariantMap HttpServerData::readAll() {
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -52,7 +49,6 @@ QVariantMap HttpServerData::readAll()
   return dataMap;
 }
 
-void HttpServerData::timerEvent(QTimerEvent *event)
-{
+void HttpServerData::timerEvent(QTimerEvent *event) {
   Q_EMIT source_updated(readAll());
 }

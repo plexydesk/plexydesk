@@ -30,8 +30,7 @@
 // plexy
 #include <datainterface.h>
 
-class UtubeData : public PlexyDesk::DataPlugin
-{
+class UtubeData : public PlexyDesk::DataPlugin {
   Q_OBJECT
 
 public:
@@ -40,7 +39,8 @@ public:
   void init();
   QVariantMap readAll();
 
-public slots:
+public
+slots:
   void fetch();
   void finished(int id, bool error);
   void readData(const QHttpResponseHeader &);

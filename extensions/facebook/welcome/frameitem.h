@@ -9,16 +9,14 @@
 
 #include <plexyconfig.h>
 
-class Frame : public QGraphicsRectItem
-{
+class Frame : public QGraphicsRectItem {
 public:
   Frame(const QRectF &rect, QGraphicsItem *parent = 0)
-    : QGraphicsRectItem(rect, parent)
-  {
+      : QGraphicsRectItem(rect, parent) {
     setFlag(QGraphicsItem::ItemIsMovable, true);
     render.load(QDir::toNativeSeparators(
-                  PlexyDesk::Config::getInstance()->plexydeskBasePath() +
-                  "/share/plexy/skins/default/welcome/welcome.svg"));
+        PlexyDesk::Config::getInstance()->plexydeskBasePath() +
+        "/share/plexy/skins/default/welcome/welcome.svg"));
   }
   void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
              QWidget *widget = 0);

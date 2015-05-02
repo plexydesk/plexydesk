@@ -27,8 +27,7 @@
 
 #include "connection.h"
 
-class BBConnData : public PlexyDesk::DataSource
-{
+class BBConnData : public PlexyDesk::DataSource {
   Q_OBJECT
 
 public:
@@ -42,7 +41,8 @@ public:
   void startService(const QString &token);
   QString encrypt(const QString &token) const;
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void setArguments(QVariant sourceUpdated);
   void onNewMessage(const QString &from, const QString &message);
   void newParticipant(const QString &nick);

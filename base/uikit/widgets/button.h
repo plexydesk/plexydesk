@@ -12,10 +12,8 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT Button : public Widget
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT Button : public Widget {
   Q_OBJECT
 public:
   explicit Button(QGraphicsObject *a_parent_ptr = 0);
@@ -34,14 +32,17 @@ public:
   void set_action_data(const QVariant &a_data);
   QVariant action_data() const;
 
-  virtual void on_button_pressed(std::function<void ()> a_handler);
+  virtual void on_button_pressed(std::function<void()> a_handler);
+
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
 
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
-  virtual void paint_normal_button(QPainter *a_painter_ptr, const QRectF &a_rect);
+  virtual void paint_normal_button(QPainter *a_painter_ptr,
+                                   const QRectF &a_rect);
   virtual void paint_sunken_button(QPainter *a_painter, const QRectF &a_rect);
+
 private:
   class PrivateButton;
   PrivateButton *const d;

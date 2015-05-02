@@ -23,8 +23,7 @@
 #include <plexy.h>
 #include <widgetstyleinterface.h>
 
-class ubuntuInterface : public QObject, public PlexyDesk::WidgetStyleInterface
-{
+class ubuntuInterface : public QObject, public PlexyDesk::WidgetStyleInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::WidgetStyleInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.ubuntu")

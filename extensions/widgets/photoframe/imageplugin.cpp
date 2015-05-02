@@ -30,16 +30,14 @@
 #include <QAction>
 
 PhotoFrameController::PhotoFrameController(QObject * /*object*/)
-  : mFrameParentitem(0) {}
+    : mFrameParentitem(0) {}
 
-PhotoFrameController::~PhotoFrameController()
-{
+PhotoFrameController::~PhotoFrameController() {
   mPhotoList.clear();
   qDeleteAll(mPhotoList);
 }
 
-void PhotoFrameController::init()
-{
+void PhotoFrameController::init() {
   QAction *_add_dir_action = new QAction(this);
   _add_dir_action->setText(tr("Photo"));
 
@@ -49,8 +47,7 @@ void PhotoFrameController::init()
   m_supported_action_list << _add_dir_action;
 }
 
-void PhotoFrameController::revoke_session(const QVariantMap &args)
-{
+void PhotoFrameController::revoke_session(const QVariantMap &args) {
   QStringList photoList = args["photos"].toString().split(",");
 
   if (args["photos"].toString().isEmpty()) {
@@ -84,24 +81,19 @@ void PhotoFrameController::revoke_session(const QVariantMap &args)
     }
 
     insert(window);
-    }
+  }
 }
 
 void PhotoFrameController::session_data_available(
-    const QuetzalKit::SyncObject &a_session_root)
-{
-}
+    const QuetzalKit::SyncObject &a_session_root) {}
 
-void PhotoFrameController::submit_session_data(QuetzalKit::SyncObject *a_obj)
-{
-}
+void PhotoFrameController::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
 
 void PhotoFrameController::handle_drop_event(UIKit::Widget *widget,
-    QDropEvent *event)
-{
+                                             QDropEvent *event) {
   if (event->mimeData()->urls().count() >= 0) {
     const QString droppedFile =
-      event->mimeData()->urls().value(0).toLocalFile();
+        event->mimeData()->urls().value(0).toLocalFile();
 
     QFileInfo info(droppedFile);
     QPixmap droppedPixmap(droppedFile);
@@ -129,15 +121,13 @@ void PhotoFrameController::handle_drop_event(UIKit::Widget *widget,
   }
 }
 
-void PhotoFrameController::set_view_rect(const QRectF &rect)
-{
+void PhotoFrameController::set_view_rect(const QRectF &rect) {
   if (mFrameParentitem) {
     mFrameParentitem->setPos(rect.x(), rect.y());
   }
 }
 
-bool PhotoFrameController::remove_widget(UIKit::Widget *widget)
-{
+bool PhotoFrameController::remove_widget(UIKit::Widget *widget) {
   if (!widget) {
     return 1;
   }
@@ -168,14 +158,12 @@ bool PhotoFrameController::remove_widget(UIKit::Widget *widget)
   return 1;
 }
 
-UIKit::ActionList PhotoFrameController::actions() const
-{
+UIKit::ActionList PhotoFrameController::actions() const {
   return m_supported_action_list;
 }
 
 void PhotoFrameController::request_action(const QString &actionName,
-    const QVariantMap &args)
-{
+                                          const QVariantMap &args) {
   if (actionName == tr("Photo")) {
     UIKit::Window *window = new UIKit::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
@@ -191,12 +179,10 @@ void PhotoFrameController::request_action(const QString &actionName,
   }
 }
 
-QString PhotoFrameController::icon() const
-{
+QString PhotoFrameController::icon() const {
   return QString("pd_image_icon.png");
 }
 
-void PhotoFrameController::prepare_removal()
-{
+void PhotoFrameController::prepare_removal() {
   foreach(PhotoWidget * _widget, mPhotoList) { this->remove_widget(_widget); }
 }

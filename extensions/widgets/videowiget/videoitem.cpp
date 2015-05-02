@@ -20,11 +20,9 @@
 #include <QtCore>
 #include <QtGui>
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 VideoItem::VideoItem(const QRectF &rect, QWidget *widget)
-  : DesktopWidget(rect, widget)
-{
+    : DesktopWidget(rect, widget) {
   vid = new VPlayer();
   vid->setFileName("/home/siraj/dwhelper/Java_Everywhere.flv");
   connect(vid, SIGNAL(frameReady(QImage &)), this, SLOT(getImage(QImage &)));
@@ -37,11 +35,10 @@ VideoItem::VideoItem(const QRectF &rect, QWidget *widget)
   frameno = 0;
   setDockImage(QPixmap("/usr/share/plexy/skins/widgets/base-widget/xine.png"));
   setFaceImage(
-    QPixmap("/usr/share/plexy/skins/widgets/base-widget/filmback.png"));
+      QPixmap("/usr/share/plexy/skins/widgets/base-widget/filmback.png"));
 }
 
-VideoItem::~VideoItem()
-{
+VideoItem::~VideoItem() {
   if (vid) {
     delete vid;
   }
@@ -50,8 +47,7 @@ VideoItem::~VideoItem()
     delete vidsurf;
   }
 }
-void VideoItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
+void VideoItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
   if (vidsurf) {
     snap = QPixmap().fromImage(*vidsurf);
     ;
@@ -65,15 +61,13 @@ void VideoItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
   DesktopWidget::mouseDoubleClickEvent(event);
 }
 
-void VideoItem::loop()
-{
+void VideoItem::loop() {
   delete vid;
   vid = new VPlayer();
   vid->setFileName("/home/siraj/dwhelper/Java_Everywhere.flv");
 }
 
-void VideoItem::getImage(QImage &img)
-{
+void VideoItem::getImage(QImage &img) {
   if (vidsurf) {
     delete vidsurf;
   }
@@ -85,8 +79,7 @@ void VideoItem::getImage(QImage &img)
 }
 
 void VideoItem::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
-                             QWidget *widget)
-{
+                             QWidget *widget) {
 
   // p->setRenderHints(QPainter::SmoothPixmapTransform);
   p->save();
@@ -103,8 +96,7 @@ void VideoItem::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
 }
 
 void VideoItem::paintExtDockFace(QPainter *p, const QStyleOptionGraphicsItem *e,
-                                 QWidget *widget)
-{
+                                 QWidget *widget) {
 
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);

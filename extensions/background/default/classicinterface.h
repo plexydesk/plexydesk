@@ -25,8 +25,7 @@
 #include <controllerplugininterface.h>
 
 class ClassicBackdrop : public QObject,
-  public UIKit::ControllerPluginInterface
-{
+                        public UIKit::ControllerPluginInterface {
   Q_OBJECT
   Q_INTERFACES(UIKit::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.classicbackground")

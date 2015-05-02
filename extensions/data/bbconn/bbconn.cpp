@@ -32,13 +32,11 @@
 
 #endif
 
-class BBConnData::Private
-{
+class BBConnData::Private {
 public:
   Private() {}
 
-  ~Private()
-  {
+  ~Private() {
     if (mClient) {
       delete mClient;
     }
@@ -58,8 +56,7 @@ public:
   QList<SSLClient *> mSSLClientList;
 };
 
-void BBConnData::startService(const QString &token)
-{
+void BBConnData::startService(const QString &token) {
   if (d->mClient) {
     return;
   }
@@ -80,8 +77,7 @@ void BBConnData::startService(const QString &token)
 }
 
 BBConnData::BBConnData(QObject *object)
-  : PlexyDesk::DataSource(object), d(new Private)
-{
+    : PlexyDesk::DataSource(object), d(new Private) {
   d->mClient = 0;
 
   d->mServer.listen(QHostAddress::Any, 32234);
@@ -93,8 +89,7 @@ void BBConnData::init() {}
 
 BBConnData::~BBConnData() { delete d; }
 
-void BBConnData::setArguments(QVariant arg)
-{
+void BBConnData::setArguments(QVariant arg) {
   qDebug() << Q_FUNC_INFO << arg;
   QVariantMap map = arg.toMap();
 
@@ -118,8 +113,7 @@ void BBConnData::setArguments(QVariant arg)
   }
 }
 
-void BBConnData::onNewMessage(const QString &from, const QString &message)
-{
+void BBConnData::onNewMessage(const QString &from, const QString &message) {
   QStringList hostInfo = message.split(":");
 
   qDebug() << Q_FUNC_INFO << hostInfo;
@@ -135,8 +129,7 @@ void BBConnData::onNewMessage(const QString &from, const QString &message)
   client->connectToHost(from, hostInfo[1]);
 }
 
-void BBConnData::newParticipant(const QString &nick)
-{
+void BBConnData::newParticipant(const QString &nick) {
   qDebug() << Q_FUNC_INFO;
   QVariant timeVariant;
   QVariantMap dataMap;
@@ -150,8 +143,7 @@ void BBConnData::newParticipant(const QString &nick)
 
 void BBConnData::participantLeft(const QString &nick) {}
 
-QString BBConnData::encrypt(const QString &token) const
-{
+QString BBConnData::encrypt(const QString &token) const {
   QCryptographicHash hash(QCryptographicHash::Md5);
   hash.addData(token.toUtf8());
   qDebug() << Q_FUNC_INFO << "Token" << (QString(hash.result().toHex()));
@@ -159,8 +151,7 @@ QString BBConnData::encrypt(const QString &token) const
   return QString(hash.result().toHex());
 }
 
-void BBConnData::onApprovalRequested(const QString &token, Connection *conn)
-{
+void BBConnData::onApprovalRequested(const QString &token, Connection *conn) {
   bool approval = (token == d->mToken);
 
   d->mClient->approveGreeting(conn, approval);
@@ -173,14 +164,13 @@ void BBConnData::onApprovalRequested(const QString &token, Connection *conn)
   }
 }
 
-void BBConnData::loadKeys()
-{
+void BBConnData::loadKeys() {
   QString homePath = QDir::homePath();
   QString result;
 
   QString cert = homePath + QLatin1String("/.plexydesk/plexydesk-server.crt");
   QString privateKey =
-    homePath + QLatin1String("/.plexydesk/plexydesk-private-key.rsa");
+      homePath + QLatin1String("/.plexydesk/plexydesk-private-key.rsa");
 
   QFileInfo certInfo(cert);
   QFileInfo privateKeyInfo(privateKey);
@@ -191,10 +181,9 @@ void BBConnData::loadKeys()
   }
 }
 
-void BBConnData::acceptConnection()
-{
+void BBConnData::acceptConnection() {
   QSslSocket *socket =
-    dynamic_cast<QSslSocket *>(d->mServer.nextPendingConnection());
+      dynamic_cast<QSslSocket *>(d->mServer.nextPendingConnection());
 
   // QSslSocket emits the encrypted() signal after the encrypted connection is
   // established
@@ -218,8 +207,7 @@ void BBConnData::acceptConnection()
   socket->startServerEncryption();
 }
 
-void BBConnData::handshakeComplete()
-{
+void BBConnData::handshakeComplete() {
   QSslSocket *socket = dynamic_cast<QSslSocket *>(sender());
 
   connect(socket, SIGNAL(disconnected()), this, SLOT(connectionClosed()));
@@ -228,8 +216,7 @@ void BBConnData::handshakeComplete()
   d->mSocketList.push_back(socket);
 }
 
-void BBConnData::sslErrors(const QList<QSslError> &errors)
-{
+void BBConnData::sslErrors(const QList<QSslError> &errors) {
   QSslSocket *socket = dynamic_cast<QSslSocket *>(sender());
 
   QString errorStrings;
@@ -247,11 +234,11 @@ void BBConnData::sslErrors(const QList<QSslError> &errors)
 
   qDebug() << Q_FUNC_INFO
            << (QString("[%1] %2:%3 reported the following SSL errors: %4")
-               .arg(QDateTime::currentDateTime().toString(
-                      "hh:mm:ss.zzz ap"))
-               .arg(socket->peerAddress().toString())
-               .arg(socket->peerPort())
-               .arg(errorStrings));
+                   .arg(QDateTime::currentDateTime().toString(
+                        "hh:mm:ss.zzz ap"))
+                   .arg(socket->peerAddress().toString())
+                   .arg(socket->peerPort())
+                   .arg(errorStrings));
 }
 
 void BBConnData::receiveMessage() {}
@@ -260,19 +247,17 @@ void BBConnData::connectionClosed() {}
 
 void BBConnData::connectionFailure() { qDebug() << Q_FUNC_INFO; }
 
-QString BBConnData::mapToXml(QVariantMap map) const
-{
+QString BBConnData::mapToXml(QVariantMap map) const {
   QDomDocument *mSessionTree = new QDomDocument("notes");
   mSessionTree->appendChild(mSessionTree->createProcessingInstruction(
-                              "xml", "version=\"1.0\" encoding=\"utf-8\""));
+      "xml", "version=\"1.0\" encoding=\"utf-8\""));
   QDomElement mRootElement = mSessionTree->createElement("note");
   mSessionTree->appendChild(mRootElement);
 
   return mSessionTree->toString();
 }
 
-QVariantMap BBConnData::readAll()
-{
+QVariantMap BBConnData::readAll() {
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -282,7 +267,6 @@ QVariantMap BBConnData::readAll()
   return dataMap;
 }
 
-void BBConnData::timerEvent(QTimerEvent *event)
-{
+void BBConnData::timerEvent(QTimerEvent *event) {
   // Q_EMIT sourceUpdated(readAll());
 }

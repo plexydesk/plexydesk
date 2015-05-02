@@ -6,8 +6,7 @@
 #include <button.h>
 #include <texteditor.h>
 
-class Note::PrivateNote
-{
+class Note::PrivateNote {
 public:
   PrivateNote() {}
   ~PrivateNote() {}
@@ -27,8 +26,7 @@ public:
 };
 
 Note::Note(const QRectF &rect, QGraphicsObject *parent)
-  : PlexyDesk::DesktopWidget(rect, parent), d(new PrivateNote)
-{
+    : PlexyDesk::DesktopWidget(rect, parent), d(new PrivateNote) {
   setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
   d->mTextEdit = new PlexyDesk::TextEditor(rect, this);
@@ -38,14 +36,12 @@ Note::Note(const QRectF &rect, QGraphicsObject *parent)
 
 Note::~Note() { delete d; }
 
-void Note::setTitle(const QString &name)
-{
+void Note::setTitle(const QString &name) {
   d->mName = name;
   update();
 }
 
-void Note::setNoteContent(const QString &status)
-{
+void Note::setNoteContent(const QString &status) {
   d->mStatusMessage = status;
   update();
 }
@@ -58,22 +54,19 @@ QString Note::id() { return d->mID; }
 
 QString Note::noteContent() const { return d->mStatusMessage; }
 
-void Note::setPixmap(const QPixmap &pixmap)
-{
+void Note::setPixmap(const QPixmap &pixmap) {
   d->mPixmap = pixmap;
   update();
 }
 
 void Note::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                 QWidget *widget)
-{
+                 QWidget *widget) {
   painter->fillRect(option->exposedRect, QColor(250, 243, 78));
 }
 
 QPixmap Note::PrivateNote::genShadowImage(const QRect &rect,
-    const QPainterPath &path,
-    const QPixmap &pixmap)
-{
+                                          const QPainterPath &path,
+                                          const QPixmap &pixmap) {
   QPixmap canvasSource(rect.size());
 
   QPainter painter;

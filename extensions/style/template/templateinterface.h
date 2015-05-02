@@ -24,8 +24,7 @@
 #include <widgetstyleinterface.h>
 
 class TemplateInterface : public QObject,
-  public PlexyDesk::WidgetStyleInterface
-{
+                          public PlexyDesk::WidgetStyleInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::WidgetStyleInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.template")

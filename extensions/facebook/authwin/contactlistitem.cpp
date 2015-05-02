@@ -5,8 +5,7 @@
 
 #include <button.h>
 
-class ContactListItem::PrivateContactListItem
-{
+class ContactListItem::PrivateContactListItem {
 public:
   PrivateContactListItem() {}
   ~PrivateContactListItem() {}
@@ -25,16 +24,15 @@ public:
 };
 
 ContactListItem::ContactListItem(QGraphicsObject *parent)
-  : QGraphicsObject(parent), d(new PrivateContactListItem)
-{
+    : QGraphicsObject(parent), d(new PrivateContactListItem) {
   d->mStyle = new PlexyDesk::NativeStyle(this);
   d->mButton = new PlexyDesk::Button(this);
   d->mButton->setLabel(tr("Add"));
   d->mButton->setSize(QSize(65, 20));
   d->mButton->setPos(
-    (boundingRect().width() - d->mButton->boundingRect().width()) - 10,
-    (boundingRect().height() / 2) -
-    (d->mButton->boundingRect().height() / 2));
+      (boundingRect().width() - d->mButton->boundingRect().width()) - 10,
+      (boundingRect().height() / 2) -
+          (d->mButton->boundingRect().height() / 2));
 
   d->mButton->show();
 
@@ -48,19 +46,16 @@ ContactListItem::ContactListItem(QGraphicsObject *parent)
 
 ContactListItem::~ContactListItem() { delete d; }
 
-QRectF ContactListItem::boundingRect() const
-{
+QRectF ContactListItem::boundingRect() const {
   return QRectF(4.0, 0.0, 480, 48);
 }
 
-void ContactListItem::setName(const QString &name)
-{
+void ContactListItem::setName(const QString &name) {
   d->mName = name;
   update();
 }
 
-void ContactListItem::setStatusMessage(const QString &status)
-{
+void ContactListItem::setStatusMessage(const QString &status) {
   d->mStatusMessage = status;
   update();
 }
@@ -73,16 +68,14 @@ QString ContactListItem::id() { return d->mID; }
 
 QString ContactListItem::statusMessage() const { return d->mStatusMessage; }
 
-void ContactListItem::setPixmap(const QPixmap &pixmap)
-{
+void ContactListItem::setPixmap(const QPixmap &pixmap) {
   d->mPixmap = pixmap;
   update();
 }
 
 void ContactListItem::paint(QPainter *painter,
                             const QStyleOptionGraphicsItem *option,
-                            QWidget *widget)
-{
+                            QWidget *widget) {
   PlexyDesk::StyleFeatures feature;
   feature.exposeRect = QRectF(option->exposedRect.bottomRight().x() - 2,
                               option->exposedRect.bottomRight().y() - 2,
@@ -121,9 +114,9 @@ void ContactListItem::paint(QPainter *painter,
   // / 2);
   painter->setFont(font);
   QRectF nameRect =
-    QRectF((offset + avatarWidth + 10),
-           option->exposedRect.center().y() - (nameHeight / 2),
-           option->exposedRect.width(), option->exposedRect.height() / 2);
+      QRectF((offset + avatarWidth + 10),
+             option->exposedRect.center().y() - (nameHeight / 2),
+             option->exposedRect.width(), option->exposedRect.height() / 2);
 
   painter->setPen(shadowPen);
   painter->drawText(nameRect.adjusted(1, 1, 1, 1), Qt::AlignVCenter, d->mName);
@@ -132,22 +125,19 @@ void ContactListItem::paint(QPainter *painter,
   painter->drawText(nameRect, Qt::AlignVCenter, d->mName);
 }
 
-void ContactListItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void ContactListItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
   QGraphicsObject::mousePressEvent(event);
 }
 
-void ContactListItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void ContactListItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
   // event->accept();
   // Q_EMIT clicked(this);
   QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void ContactListItem::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
-{
+void ContactListItem::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
   qDebug() << Q_FUNC_INFO;
 }
 
@@ -156,8 +146,7 @@ void ContactListItem::dragEnterEvent(QGraphicsSceneDragDropEvent *event) {}
 void ContactListItem::dragLeaveEvent(QGraphicsSceneDragDropEvent *event) {}
 
 QPixmap ContactListItem::PrivateContactListItem::genShadowImage(
-  const QRect &rect, const QPainterPath &path, const QPixmap &pixmap)
-{
+    const QRect &rect, const QPainterPath &path, const QPixmap &pixmap) {
   QPixmap canvasSource(rect.size());
 
   QPainter painter;

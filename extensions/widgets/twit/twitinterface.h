@@ -7,8 +7,7 @@
 #include <datainterface.h>
 #include <widgetinterface.h>
 
-class VISIBLE_SYM TwitInterface : public PlexyDesk::AbstractPluginInterface
-{
+class VISIBLE_SYM TwitInterface : public PlexyDesk::AbstractPluginInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

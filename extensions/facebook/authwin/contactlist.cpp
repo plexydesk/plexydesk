@@ -3,8 +3,7 @@
 
 #include <desktopwidget.h>
 
-class ContactList::PrivateContactList
-{
+class ContactList::PrivateContactList {
 public:
   PrivateContactList() {}
   ~PrivateContactList() {}
@@ -14,10 +13,9 @@ public:
 };
 
 ContactList::ContactList(const QRectF &rect, QGraphicsObject *parent)
-  : PlexyDesk::ScrollWidget(rect, parent), d(new PrivateContactList)
-{
+    : PlexyDesk::ScrollWidget(rect, parent), d(new PrivateContactList) {
   d->mFrame =
-    new PlexyDesk::DesktopWidget(QRectF(rect.x(), rect.y(), 0.0, 24), this);
+      new PlexyDesk::DesktopWidget(QRectF(rect.x(), rect.y(), 0.0, 24), this);
   d->mFrame->setWidgetFlag(PlexyDesk::DesktopWidget::SHADOW, false);
   d->mFrame->setWidgetFlag(PlexyDesk::DesktopWidget::BACKGROUND, false);
   d->mFrame->setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -26,16 +24,14 @@ ContactList::ContactList(const QRectF &rect, QGraphicsObject *parent)
   setViewport(d->mFrame);
 }
 
-ContactList::~ContactList()
-{
+ContactList::~ContactList() {
   qDeleteAll(d->mContacts);
   delete d;
 }
 
 void ContactList::addContact(const QString &id, const QString &contactName,
                              const QString &statusMessage,
-                             const QPixmap &pixmap)
-{
+                             const QPixmap &pixmap) {
   Q_FOREACH(ContactListItem * contact, d->mContacts) {
     if (contact->name() != contactName) {
       continue;
@@ -54,8 +50,8 @@ void ContactList::addContact(const QString &id, const QString &contactName,
   contact->setID(id);
   contact->setPos(0.0, d->mFrame->contentRect().height());
   d->mFrame->setContentRect(QRectF(
-                              0.0, boundingRect().y(), boundingRect().width(),
-                              d->mFrame->contentRect().height() + contact->boundingRect().height()));
+      0.0, boundingRect().y(), boundingRect().width(),
+      d->mFrame->contentRect().height() + contact->boundingRect().height()));
   d->mContacts.append(contact);
 
   connect(contact, SIGNAL(clicked(ContactListItem *)), this,
@@ -64,18 +60,16 @@ void ContactList::addContact(const QString &id, const QString &contactName,
 
 void ContactList::setStyle(StylePtr style) { Q_UNUSED(style) }
 
-void ContactList::clear()
-{
+void ContactList::clear() {
   Q_FOREACH(ContactListItem * contact, d->mContacts) {
     contact->hide();
     d->mFrame->setContentRect(QRectF(
-                                0.0, boundingRect().y(), boundingRect().width(),
-                                d->mFrame->contentRect().height() - contact->boundingRect().height()));
+        0.0, boundingRect().y(), boundingRect().width(),
+        d->mFrame->contentRect().height() - contact->boundingRect().height()));
   }
 }
 
-void ContactList::filter(const QString &filterString)
-{
+void ContactList::filter(const QString &filterString) {
   clear();
   Q_FOREACH(ContactListItem * contact, d->mContacts) {
 
@@ -99,7 +93,7 @@ void ContactList::filter(const QString &filterString)
       contact->show();
 
       d->mFrame->setContentRect(
-        QRectF(0.0, boundingRect().y(), boundingRect().width(), frameHeight));
+          QRectF(0.0, boundingRect().y(), boundingRect().width(), frameHeight));
       qDebug() << Q_FUNC_INFO << contact->pos() << ":" << contact->isVisible()
                << ":" << contact->boundingRect();
       qDebug() << Q_FUNC_INFO << d->mFrame->contentRect();
@@ -107,30 +101,25 @@ void ContactList::filter(const QString &filterString)
   }
 }
 
-void ContactList::onItemClicked(ContactListItem *item)
-{
+void ContactList::onItemClicked(ContactListItem *item) {
   qDebug() << Q_FUNC_INFO << item->id();
   Q_EMIT clicked(item->id());
 }
 
-void ContactList::paintFrontView(QPainter *painter, const QRectF &rect)
-{
+void ContactList::paintFrontView(QPainter *painter, const QRectF &rect) {
   QPainterPath backgroundPath;
   backgroundPath.addRect(rect);
   painter->fillPath(backgroundPath, QColor(235, 235, 235));
 }
 
-void ContactList::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void ContactList::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
 }
 
-void ContactList::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void ContactList::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
 }
 
-void ContactList::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void ContactList::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
 }

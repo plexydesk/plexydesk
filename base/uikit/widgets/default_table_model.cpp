@@ -3,8 +3,7 @@
 #include <themepackloader.h>
 #include <QHash>
 
-class DefaultTableModel::PrivateTableDelegate
-{
+class DefaultTableModel::PrivateTableDelegate {
 public:
   PrivateTableDelegate() {}
   ~PrivateTableDelegate() { m_data_map.clear(); }
@@ -16,8 +15,7 @@ public:
 };
 
 DefaultTableModel::DefaultTableModel(QGraphicsObject *parent)
-  : UIKit::TableModel(parent), d(new PrivateTableDelegate)
-{
+    : UIKit::TableModel(parent), d(new PrivateTableDelegate) {
   d->m_current_item_label_visibility = false;
   set_cell_size(QSize(96, 96));
 }
@@ -34,18 +32,16 @@ float DefaultTableModel::right_margin() const { return 0.0; }
 
 bool DefaultTableModel::init() { return true; }
 
-TableModel::TableRenderMode DefaultTableModel::render_type() const
-{
+TableModel::TableRenderMode DefaultTableModel::render_type() const {
   return TableModel::kRenderAsGridView;
 }
 
-void DefaultTableModel::insert_item(const QString &a_label, const QPixmap a_pixmap,
-                                   bool a_selected)
-{
+void DefaultTableModel::insert_item(const QString &a_label,
+                                    const QPixmap a_pixmap, bool a_selected) {
   DefaultTableComponent *item =
-    new DefaultTableComponent(QRectF(0.0, 0.0, d->m_current_item_size.width(),
-                                     d->m_current_item_size.height()),
-                              DefaultTableComponent::kGridLayout, 0);
+      new DefaultTableComponent(QRectF(0.0, 0.0, d->m_current_item_size.width(),
+                                       d->m_current_item_size.height()),
+                                DefaultTableComponent::kGridLayout, 0);
 
   item->set_label_visibility(d->m_current_item_label_visibility);
   item->set_data(a_pixmap, a_label);
@@ -53,13 +49,11 @@ void DefaultTableModel::insert_item(const QString &a_label, const QPixmap a_pixm
   Q_EMIT add(item);
 }
 
-void DefaultTableModel::set_label_visibility(bool a_visibility)
-{
+void DefaultTableModel::set_label_visibility(bool a_visibility) {
   d->m_current_item_label_visibility = a_visibility;
 }
 
-void DefaultTableModel::set_cell_size(const QSize &a_size)
-{
+void DefaultTableModel::set_cell_size(const QSize &a_size) {
   d->m_current_item_size = a_size;
 }
 

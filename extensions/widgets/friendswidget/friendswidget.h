@@ -56,11 +56,9 @@
 
 class QTimer;
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 
-class FriendsWidget : public DesktopWidget
-{
+class FriendsWidget : public DesktopWidget {
   Q_OBJECT
 
 public:

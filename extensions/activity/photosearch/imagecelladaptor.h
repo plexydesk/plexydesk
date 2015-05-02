@@ -7,8 +7,7 @@
 
 using namespace UIKit;
 
-class ImageCellAdaptor : public TableModel
-{
+class ImageCellAdaptor : public TableModel {
   Q_OBJECT
 
 public:
@@ -50,7 +49,8 @@ Q_SIGNALS:
   void progressRange(int range);
   void completed(int count);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onImageRady();
 
 private:

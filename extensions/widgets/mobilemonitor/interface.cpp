@@ -28,17 +28,16 @@
 #endif
 
 QSharedPointer<PlexyDesk::ControllerInterface>
-MobileMonInterface::controller()
-{
+MobileMonInterface::controller() {
 #ifdef Q_WS_QPA
   QSharedPointer<PlexyDesk::ControllerInterface> obj =
-    QSharedPointer<PlexyDesk::ControllerInterface>(new BlackBerryPlugin(this),
-        &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::ControllerInterface>(new BlackBerryPlugin(this),
+                                                     &QObject::deleteLater);
   return obj;
 #else
   QSharedPointer<PlexyDesk::ControllerInterface> obj =
-    QSharedPointer<PlexyDesk::ControllerInterface>(
-      new MobileMonController(this), &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::ControllerInterface>(
+          new MobileMonController(this), &QObject::deleteLater);
 
   return obj;
 #endif

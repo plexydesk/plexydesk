@@ -21,8 +21,7 @@
 #include <QTimer>
 #include <controllerinterface.h>
 
-class TemplateData::PrivateTemplate
-{
+class TemplateData::PrivateTemplate {
 public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
@@ -30,8 +29,7 @@ public:
 };
 
 TemplateData::TemplateData(QObject *object)
-  : PlexyDesk::DataSource(object), d(new PrivateTemplate)
-{
+    : PlexyDesk::DataSource(object), d(new PrivateTemplate) {
   startTimer(1000);
 }
 
@@ -41,8 +39,7 @@ TemplateData::~TemplateData() { delete d; }
 
 void TemplateData::setArguments(QVariant arg) {}
 
-QVariantMap TemplateData::readAll()
-{
+QVariantMap TemplateData::readAll() {
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -52,7 +49,6 @@ QVariantMap TemplateData::readAll()
   return dataMap;
 }
 
-void TemplateData::timerEvent(QTimerEvent *event)
-{
+void TemplateData::timerEvent(QTimerEvent *event) {
   Q_EMIT sourceUpdated(readAll());
 }

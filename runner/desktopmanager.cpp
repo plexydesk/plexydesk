@@ -24,25 +24,23 @@
 #include <space.h>
 #include <workspace.h>
 
-class DesktopManager::PrivateDesktopManager
-{
+class DesktopManager::PrivateDesktopManager {
 public:
   PrivateDesktopManager() {}
   ~PrivateDesktopManager() {}
 };
 
 DesktopManager::DesktopManager(QWidget *parent)
-  : UIKit::WorkSpace(new QGraphicsScene, parent),
-    m_priv_impl(new PrivateDesktopManager) {}
+    : UIKit::WorkSpace(new QGraphicsScene, parent),
+      m_priv_impl(new PrivateDesktopManager) {}
 
 DesktopManager::~DesktopManager() { delete m_priv_impl; }
 
-void DesktopManager::mouseReleaseEvent(QMouseEvent *event)
-{
+void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
   if (event->button() == Qt::RightButton) {
     if (current_active_space()) {
       ViewControllerPtr dock_controller =
-        current_active_space()->controller("dockwidget");
+          current_active_space()->controller("dockwidget");
 
       if (dock_controller) {
         QVariantMap menu_argument;

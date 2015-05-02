@@ -13,13 +13,10 @@
 #include <QTimer>
 #include <QGraphicsDropShadowEffect>
 
-namespace UIKit
-{
-class Window::PrivateWindow
-{
+namespace UIKit {
+class Window::PrivateWindow {
 public:
-  PrivateWindow() :  m_window_content(0),
-    mWindowBackgroundVisibility(true) {}
+  PrivateWindow() : m_window_content(0), mWindowBackgroundVisibility(true) {}
   ~PrivateWindow() {}
 
   QRectF m_window_geometry;
@@ -32,14 +29,14 @@ public:
 
   WindowButton *m_window_close_button;
 
-  std::function<void (const QSizeF &size)> m_window_size_callback;
-  std::function<void (const QPointF &size)> m_window_move_callback;
-  std::function<void (Window *)> m_window_close_callback;
-  std::function<void (Window *)> m_window_discard_callback;
+  std::function<void(const QSizeF &size)> m_window_size_callback;
+  std::function<void(const QPointF &size)> m_window_move_callback;
+  std::function<void(Window *)> m_window_close_callback;
+  std::function<void(Window *)> m_window_discard_callback;
 };
 
-Window::Window(QGraphicsObject *parent) : Widget(parent), m_priv_impl(new PrivateWindow)
-{
+Window::Window(QGraphicsObject *parent)
+    : Widget(parent), m_priv_impl(new PrivateWindow) {
   set_widget_flag(Widget::kRenderBackground, true);
   setFlag(QGraphicsItem::ItemIsMovable, true);
   setGeometry(QRectF(0, 0, 400, 400));
@@ -53,32 +50,29 @@ Window::Window(QGraphicsObject *parent) : Widget(parent), m_priv_impl(new Privat
 
   setFocus(Qt::MouseFocusReason);
 
-  on_input_event([this](Widget::InputEvent aEvent, const Widget * aWidget) {
+  on_input_event([this](Widget::InputEvent aEvent, const Widget *aWidget) {
     if (aEvent == Widget::kFocusOutEvent &&
         m_priv_impl->m_window_type == kPopupWindow) {
       hide();
     }
   });
 
-  m_priv_impl->m_window_close_button->on_input_event([this](Widget::InputEvent aEvent,
-  const Widget * aWidget) {
+  m_priv_impl->m_window_close_button->on_input_event([this](
+      Widget::InputEvent aEvent, const Widget *aWidget) {
     if (aEvent == Widget::kMouseReleaseEvent) {
       if (m_priv_impl->m_window_close_callback) {
         m_priv_impl->m_window_close_callback(this);
       }
-
     }
   });
 }
 
-Window::~Window()
-{
+Window::~Window() {
   qDebug() << Q_FUNC_INFO;
   delete m_priv_impl;
 }
 
-void Window::set_window_content(Widget *a_widget_ptr)
-{
+void Window::set_window_content(Widget *a_widget_ptr) {
   if (m_priv_impl->m_window_content) {
     return;
   }
@@ -92,8 +86,8 @@ void Window::set_window_content(Widget *a_widget_ptr)
 
   if (UIKit::Theme::style()) {
     sWindowTitleHeight = UIKit::Theme::style()
-                         ->attribute("frame", "window_title_height")
-                         .toFloat();
+                             ->attribute("frame", "window_title_height")
+                             .toFloat();
   }
 
   if (m_priv_impl->m_window_type == kApplicationWindow) {
@@ -112,32 +106,22 @@ void Window::set_window_content(Widget *a_widget_ptr)
   }
 }
 
-void Window::set_window_viewport(Space *a_space)
-{
+void Window::set_window_viewport(Space *a_space) {
   m_priv_impl->m_window_viewport = a_space;
 }
 
-void Window::set_window_title(const QString &a_window_title)
-{
+void Window::set_window_title(const QString &a_window_title) {
   m_priv_impl->m_window_title = a_window_title;
 }
 
-QString Window::window_title() const
-{
-  return m_priv_impl->m_window_title;
-}
+QString Window::window_title() const { return m_priv_impl->m_window_title; }
 
-Window::WindowType Window::window_type()
-{
-  return m_priv_impl->m_window_type;
-}
+Window::WindowType Window::window_type() { return m_priv_impl->m_window_type; }
 
-void Window::set_window_type(Window::WindowType a_window_type)
-{
+void Window::set_window_type(Window::WindowType a_window_type) {
   m_priv_impl->m_window_type = a_window_type;
 
-  if (a_window_type == kApplicationWindow &&
-      m_priv_impl->m_window_content) {
+  if (a_window_type == kApplicationWindow && m_priv_impl->m_window_content) {
     m_priv_impl->m_window_content->setPos(0.0, 72.0);
   } else {
     m_priv_impl->m_window_close_button->hide();
@@ -148,29 +132,23 @@ void Window::set_window_type(Window::WindowType a_window_type)
   }
 }
 
-void Window::on_window_resized(
-  std::function<void (const QSizeF &)> handler)
-{
+void Window::on_window_resized(std::function<void(const QSizeF &)> handler) {
   m_priv_impl->m_window_size_callback = handler;
 }
 
-void Window::on_window_moved(std::function<void (const QPointF &)> a_handler)
-{
+void Window::on_window_moved(std::function<void(const QPointF &)> a_handler) {
   m_priv_impl->m_window_move_callback = a_handler;
 }
 
-void Window::on_window_closed(std::function<void (Window *)> a_handler)
-{
+void Window::on_window_closed(std::function<void(Window *)> a_handler) {
   m_priv_impl->m_window_close_callback = a_handler;
 }
 
-void Window::on_window_discarded(std::function<void (Window *)> a_handler)
-{
+void Window::on_window_discarded(std::function<void(Window *)> a_handler) {
   m_priv_impl->m_window_discard_callback = a_handler;
 }
 
-void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr)
-{
+void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
   if (!m_priv_impl->mWindowBackgroundVisibility) {
     return;
   }
@@ -184,19 +162,17 @@ void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr)
   }
 }
 
-void Window::show()
-{
+void Window::show() {
   setVisible(true);
   setFocus(Qt::MouseFocusReason);
 }
 
-void Window::hide()
-{
+void Window::hide() {
   // Qt 5.4 -> QTimer::singleShot(250, []() { windowHide(); } );
   QTimer *lTimer = new QTimer(this);
   lTimer->setSingleShot(true);
 
-  connect(lTimer, &QTimer::timeout, [ = ]() {
+  connect(lTimer, &QTimer::timeout, [=]() {
     setVisible(false);
     delete lTimer;
   });
@@ -204,27 +180,22 @@ void Window::hide()
   lTimer->start(250);
 }
 
-void Window::discard()
-{
+void Window::discard() {
   if (m_priv_impl->m_window_discard_callback) {
     qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
     m_priv_impl->m_window_discard_callback(this);
   }
 }
 
-void Window::enable_window_background(bool a_visibility)
-{
+void Window::enable_window_background(bool a_visibility) {
   m_priv_impl->mWindowBackgroundVisibility = a_visibility;
 }
 
-void Window::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   QGraphicsObject::mousePressEvent(event);
 }
 
-void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
-{
+void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   QGraphicsObject::mouseReleaseEvent(a_event_ptr);
 }
-
 }

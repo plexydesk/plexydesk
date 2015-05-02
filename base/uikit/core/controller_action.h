@@ -4,11 +4,9 @@
 #include <cstring>
 #include <string>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class ControllerAction
-{
+class ControllerAction {
 public:
   ControllerAction();
 

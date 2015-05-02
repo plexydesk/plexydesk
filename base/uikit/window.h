@@ -9,11 +9,9 @@ class QRectF;
 class QPointF;
 class QSizeF;
 
-namespace UIKit
-{
+namespace UIKit {
 class Space;
-class DECL_UI_KIT_EXPORT Window : public Widget
-{
+class DECL_UI_KIT_EXPORT Window : public Widget {
 public:
   typedef enum {
     kFramelessWindow,
@@ -38,24 +36,24 @@ public:
   virtual void set_window_type(WindowType a_window_type);
 
   virtual void on_window_resized(
-    std::function<void (const QSizeF &size)> a_handler);
+      std::function<void(const QSizeF &size)> a_handler);
   virtual void on_window_moved(
-    std::function<void (const QPointF &pos)> a_handler);
-  virtual void on_window_closed(
-    std::function<void (Window *)> a_handler);
-  virtual void on_window_discarded(
-    std::function<void (Window *)> a_handler);
+      std::function<void(const QPointF &pos)> a_handler);
+  virtual void on_window_closed(std::function<void(Window *)> a_handler);
+  virtual void on_window_discarded(std::function<void(Window *)> a_handler);
 
   virtual void show();
   virtual void hide();
   virtual void discard();
 
   virtual void enable_window_background(bool a_visibility = true);
+
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
 
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr);
+
 private:
   class PrivateWindow;
   PrivateWindow *const m_priv_impl;

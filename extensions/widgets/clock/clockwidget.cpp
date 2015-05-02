@@ -32,13 +32,11 @@
 #include <QDir>
 #include <plexyconfig.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent)
-{
+ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent) {
   set_widget_name("Clock");
 }
 
-void ClockWidget::updateTime(const QVariantMap &data)
-{
+void ClockWidget::updateTime(const QVariantMap &data) {
   QTime time = data["currentTime"].toTime();
   mSecondValue = 6.0 * time.second();
   mMinutesValue = 6.0 * time.minute();
@@ -49,8 +47,7 @@ void ClockWidget::updateTime(const QVariantMap &data)
 
 ClockWidget::~ClockWidget() {}
 
-void ClockWidget::paint_view(QPainter *p, const QRectF &r)
-{
+void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);
   p->setCompositionMode(QPainter::CompositionMode_Source);

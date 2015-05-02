@@ -29,8 +29,7 @@
 #include <abstractcellcomponent.h>
 
 using namespace UIKit;
-class PhotoSearchActivity : public UIKit::DesktopActivity
-{
+class PhotoSearchActivity : public UIKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -39,7 +38,7 @@ public:
   virtual ~PhotoSearchActivity();
 
   void create_window(const QRectF &window_geometry, const QString &aWindowTitle,
-                    const QPointF &window_pos);
+                     const QPointF &window_pos);
 
   virtual QRectF geometry() const;
 
@@ -48,7 +47,8 @@ public:
   Window *window() const;
   void cleanup();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
 
   void onShowAnimationFinished();
   void onClicked(TableViewItem *item);

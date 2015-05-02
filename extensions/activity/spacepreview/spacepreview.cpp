@@ -21,8 +21,7 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class SpacePreviewActivity::PrivateSpacePreview
-{
+class SpacePreviewActivity::PrivateSpacePreview {
 public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
@@ -31,14 +30,13 @@ public:
 };
 
 SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateSpacePreview) {}
+    : UIKit::DesktopActivity(object), d(new PrivateSpacePreview) {}
 
 SpacePreviewActivity::~SpacePreviewActivity() { delete d; }
 
 void SpacePreviewActivity::create_window(const QRectF &window_geometry,
-                                        const QString &window_title,
-                                        const QPointF &window_pos)
-{
+                                         const QString &window_title,
+                                         const QPointF &window_pos) {
   d->m_main_window = new UIKit::Window();
 
   d->m_main_window->set_widget_flag(UIKit::Widget::kRenderBackground);
@@ -50,7 +48,7 @@ void SpacePreviewActivity::create_window(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  d->m_main_window->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->m_main_window->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
@@ -58,12 +56,11 @@ void SpacePreviewActivity::create_window(const QRectF &window_geometry,
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 
 void SpacePreviewActivity::update_attribute(const QString &name,
-    const QVariant &data) {}
+                                            const QVariant &data) {}
 
 UIKit::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
 
-void SpacePreviewActivity::cleanup()
-{
+void SpacePreviewActivity::cleanup() {
   if (d->m_main_window) {
     delete d->m_main_window;
   }
@@ -71,8 +68,7 @@ void SpacePreviewActivity::cleanup()
   d->m_main_window = 0;
 }
 
-void SpacePreviewActivity::onWidgetClosed(UIKit::Widget *widget)
-{
+void SpacePreviewActivity::onWidgetClosed(UIKit::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }

@@ -21,11 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity> IconGridInterface::activity()
-{
+QSharedPointer<UIKit::DesktopActivity> IconGridInterface::activity() {
   QSharedPointer<UIKit::DesktopActivity> obj =
-    QSharedPointer<UIKit::DesktopActivity>(new IconGridActivity(),
-        &QObject::deleteLater);
+      QSharedPointer<UIKit::DesktopActivity>(new IconGridActivity(),
+                                             &QObject::deleteLater);
 
   return obj;
 }

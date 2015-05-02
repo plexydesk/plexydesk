@@ -28,8 +28,7 @@
 #include "plexynowwidget.h"
 #include "notebookbase.h"
 
-class MobileMonController : public PlexyDesk::ControllerInterface
-{
+class MobileMonController : public PlexyDesk::ControllerInterface {
   Q_OBJECT
 
 public:
@@ -51,7 +50,8 @@ public:
 
   bool deleteWidget(PlexyDesk::AbstractDesktopWidget *widget);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void setApprovedToken(const QString &token);
 
 private:

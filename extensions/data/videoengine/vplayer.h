@@ -27,17 +27,16 @@
 
 #include <plexy.h>
 
-namespace PlexyDesk
-{
-class VIDEOENGINE_EXPORT VPlayer : public QObject
-{
+namespace PlexyDesk {
+class VIDEOENGINE_EXPORT VPlayer : public QObject {
   Q_OBJECT
 
 public:
   VPlayer(QObject *parent = 0);
   ~VPlayer();
   void setFileName(const QString &Path);
-public slots:
+public
+slots:
   void decode();
 signals:
   void videoDone();

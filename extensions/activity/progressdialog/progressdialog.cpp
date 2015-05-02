@@ -22,8 +22,7 @@
 #include <view_controller.h>
 #include <progressbar.h>
 
-class ProgressDialogActivity::PrivateProgressDialog
-{
+class ProgressDialogActivity::PrivateProgressDialog {
 public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
@@ -36,18 +35,16 @@ public:
 };
 
 ProgressDialogActivity::ProgressDialogActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateProgressDialog) {}
+    : UIKit::DesktopActivity(object), d(new PrivateProgressDialog) {}
 
-ProgressDialogActivity::~ProgressDialogActivity()
-{
+ProgressDialogActivity::~ProgressDialogActivity() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void ProgressDialogActivity::create_window(const QRectF &window_geometry,
-    const QString &window_title,
-    const QPointF &window_pos)
-{
+                                           const QString &window_title,
+                                           const QPointF &window_pos) {
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
@@ -87,7 +84,7 @@ void ProgressDialogActivity::create_window(const QRectF &window_geometry,
 
   show_activity();
 
-  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
@@ -95,8 +92,7 @@ void ProgressDialogActivity::create_window(const QRectF &window_geometry,
 QVariantMap ProgressDialogActivity::result() const { return QVariantMap(); }
 
 void ProgressDialogActivity::update_attribute(const QString &name,
-    const QVariant &data)
-{
+                                              const QVariant &data) {
   if (!d->mFrame) {
     return;
   }
@@ -118,22 +114,19 @@ void ProgressDialogActivity::update_attribute(const QString &name,
 
 UIKit::Window *ProgressDialogActivity::window() const { return d->mFrame; }
 
-void ProgressDialogActivity::cleanup()
-{
+void ProgressDialogActivity::cleanup() {
   if (d->mFrame) {
     delete d->mFrame;
   }
   d->mFrame = 0;
 }
 
-void ProgressDialogActivity::onWidgetClosed(UIKit::Widget *widget)
-{
+void ProgressDialogActivity::onWidgetClosed(UIKit::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }
 
-void ProgressDialogActivity::onHideAnimationFinished()
-{
+void ProgressDialogActivity::onHideAnimationFinished() {
   d->m_task_completed = 1;
   Q_EMIT finished();
 }

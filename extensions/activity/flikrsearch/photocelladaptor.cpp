@@ -11,8 +11,7 @@
 #include <asyncimageloader.h>
 #include <plexyconfig.h>
 
-class ResultCache
-{
+class ResultCache {
 public:
   QString id;
   QString url;
@@ -21,8 +20,7 @@ public:
   int height;
 };
 
-class PhotoCellAdaptor::PrivatePhotoCellAdaptor
-{
+class PhotoCellAdaptor::PrivatePhotoCellAdaptor {
 public:
   PrivatePhotoCellAdaptor() {}
   ~PrivatePhotoCellAdaptor() { mData.clear(); }
@@ -37,21 +35,19 @@ public:
 };
 
 PhotoCellAdaptor::PhotoCellAdaptor(QObject *parent)
-  : UIKit::TableModel(parent), d(new PrivatePhotoCellAdaptor)
-{
+    : UIKit::TableModel(parent), d(new PrivatePhotoCellAdaptor) {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
 }
 
 PhotoCellAdaptor::~PhotoCellAdaptor() { delete d; }
 
-QList<TableViewItem *> PhotoCellAdaptor::componentList()
-{
+QList<TableViewItem *> PhotoCellAdaptor::componentList() {
   QList<TableViewItem *> list;
   Q_FOREACH(QString key, d->mData.keys()) {
     PhotoCell *item = new PhotoCell(
-      QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
-      PhotoCell::Grid, 0);
+        QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
+        PhotoCell::Grid, 0);
     item->setLabelVisibility(d->mLablelVisibility);
     item->addDataItem(d->mData[key], key, d->mMetaData[key]);
     list.append(item);
@@ -70,17 +66,15 @@ float PhotoCellAdaptor::right_margin() const { return 0.0; }
 
 bool PhotoCellAdaptor::init() { return true; }
 
-TableModel::TableRenderMode PhotoCellAdaptor::render_type() const
-{
+TableModel::TableRenderMode PhotoCellAdaptor::render_type() const {
   return PhotoCellAdaptor::kRenderAsGridView;
 }
 
 void PhotoCellAdaptor::addDataItem(const QString &label, const QImage &pixmap,
-                                   bool selected, const QVariantMap &metaData)
-{
+                                   bool selected, const QVariantMap &metaData) {
   PhotoCell *item = new PhotoCell(
-    QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
-    PhotoCell::Grid, 0);
+      QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
+      PhotoCell::Grid, 0);
 
   item->setLabelVisibility(d->mLablelVisibility);
   item->addDataItem(pixmap, label, metaData);
@@ -88,15 +82,13 @@ void PhotoCellAdaptor::addDataItem(const QString &label, const QImage &pixmap,
   Q_EMIT add(item);
 }
 
-void PhotoCellAdaptor::setLabelVisibility(bool visibility)
-{
+void PhotoCellAdaptor::setLabelVisibility(bool visibility) {
   d->mLablelVisibility = visibility;
 }
 
 void PhotoCellAdaptor::setCellSize(const QSize &size) { d->mCellSize = size; }
 
-void PhotoCellAdaptor::setSearchQuery(const QString &query, int pageNumber)
-{
+void PhotoCellAdaptor::setSearchQuery(const QString &query, int pageNumber) {
   Q_EMIT completed(0);
   d->mCompleted = 0;
   d->mData.clear();
@@ -106,7 +98,7 @@ void PhotoCellAdaptor::setSearchQuery(const QString &query, int pageNumber)
   Q_EMIT progressRange(100);
 
   QuetzalSocialKit::WebService *service =
-    new QuetzalSocialKit::WebService(this);
+      new QuetzalSocialKit::WebService(this);
   service->create("com.flickr.json.api");
 
   QVariantMap args;
@@ -126,8 +118,7 @@ void PhotoCellAdaptor::setSearchQuery(const QString &query, int pageNumber)
 }
 
 QUrl PhotoCellAdaptor::requestImageUrl(const QString &id,
-                                       const QString &size) const
-{
+                                       const QString &size) const {
   QUrl rv;
   QMultiMap<QString, ResultCache>::iterator i = d->mSizesMap.find(id);
 
@@ -146,8 +137,7 @@ QUrl PhotoCellAdaptor::requestImageUrl(const QString &id,
   return rv;
 }
 
-QList<QString> PhotoCellAdaptor::availableSizesForImage(const QString &id)
-{
+QList<QString> PhotoCellAdaptor::availableSizesForImage(const QString &id) {
   QList<QString> rv;
 
   QMultiMap<QString, ResultCache>::iterator i = d->mSizesMap.find(id);
@@ -168,8 +158,7 @@ QList<QString> PhotoCellAdaptor::availableSizesForImage(const QString &id)
 }
 
 void PhotoCellAdaptor::onServiceComplete(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
   if (service->methodData("photos").count() > 0) {
@@ -182,7 +171,7 @@ void PhotoCellAdaptor::onServiceComplete(
 
   foreach(const QVariantMap & map, photoList) {
     QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+        new QuetzalSocialKit::WebService(this);
 
     service->create("com.flickr.json.api");
 
@@ -200,8 +189,7 @@ void PhotoCellAdaptor::onServiceComplete(
 }
 
 void PhotoCellAdaptor::onSizeServiceComplete(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   if (service->methodData("sizes").count() == 0) {
     Q_EMIT completed(10);
     service->deleteLater();
@@ -209,7 +197,7 @@ void PhotoCellAdaptor::onSizeServiceComplete(
   }
 
   QString canDownloadStr =
-    service->methodData("sizes")[0]["candownload"].toString();
+      service->methodData("sizes")[0]["candownload"].toString();
   bool ok;
   bool canDownload = canDownloadStr.toInt(&ok, 10);
 
@@ -221,11 +209,11 @@ void PhotoCellAdaptor::onSizeServiceComplete(
   Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     if (map["label"].toString() == "Large Square") {
       QuetzalSocialKit::AsyncDataDownloader *downloader =
-        new QuetzalSocialKit::AsyncDataDownloader(this);
+          new QuetzalSocialKit::AsyncDataDownloader(this);
       QVariantMap metaData;
       metaData["method"] = service->methodName();
       metaData["id"] =
-        service->inputArgumentForMethod(service->methodName())["photo_id"];
+          service->inputArgumentForMethod(service->methodName())["photo_id"];
       metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
@@ -235,7 +223,7 @@ void PhotoCellAdaptor::onSizeServiceComplete(
 
     ResultCache cache;
     cache.id = service->inputArgumentForMethod(
-                 service->methodName())["photo_id"].toString();
+                            service->methodName())["photo_id"].toString();
     cache.size = map["label"].toString();
     cache.url = map["source"].toString();
 
@@ -253,20 +241,18 @@ void PhotoCellAdaptor::onSizeServiceComplete(
   service->deleteLater();
 }
 
-void PhotoCellAdaptor::onImageReady()
-{
+void PhotoCellAdaptor::onImageReady() {
   QuetzalSocialKit::AsyncDataDownloader *downloader =
-    qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
     QuetzalSocialKit::AsyncImageCreator *imageSave =
-      new QuetzalSocialKit::AsyncImageCreator(this);
+        new QuetzalSocialKit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UIKit::Config::cache_dir(),
-                       false);
+    imageSave->setData(downloader->data(), UIKit::Config::cache_dir(), false);
     imageSave->start();
     downloader->deleteLater();
 
@@ -275,10 +261,9 @@ void PhotoCellAdaptor::onImageReady()
   }
 }
 
-void PhotoCellAdaptor::onImageSaveReady()
-{
+void PhotoCellAdaptor::onImageSaveReady() {
   QuetzalSocialKit::AsyncImageCreator *c =
-    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
   if (c) {
     // qDebug() << Q_FUNC_INFO << "File Saved to: " << c->imagePath();

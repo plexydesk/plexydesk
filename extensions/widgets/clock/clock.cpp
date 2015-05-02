@@ -31,8 +31,8 @@
 
 class _clock_session {
 public:
-  _clock_session() : m_purged(0){}
-  ~_clock_session(){}
+  _clock_session() : m_purged(0) {}
+  ~_clock_session() {}
 
   void set_session_data(const QString &a_key, const QVariant &a_data);
   QVariant session_data(const QString &a_key) const;
@@ -50,8 +50,7 @@ private:
   bool m_purged;
 };
 
-class Clock::PrivateClockController
-{
+class Clock::PrivateClockController {
 public:
   PrivateClockController() : m_clock_activity_count(0) {}
   ~PrivateClockController() {}
@@ -67,19 +66,15 @@ public:
 };
 
 Clock::Clock(QObject *parent)
-  : UIKit::ViewController(parent), d(new PrivateClockController)
-{
-}
+    : UIKit::ViewController(parent), d(new PrivateClockController) {}
 
-Clock::~Clock()
-{
+Clock::~Clock() {
   qDebug() << Q_FUNC_INFO << "Deleted";
   delete d;
 }
 
 QAction *Clock::createAction(int id, const QString &action_name,
-                             const QString &icon_name)
-{
+                             const QString &icon_name) {
   QAction *_add_clock_action = new QAction(this);
   _add_clock_action->setText(action_name);
   _add_clock_action->setProperty("id", QVariant(id));
@@ -89,54 +84,48 @@ QAction *Clock::createAction(int id, const QString &action_name,
   return _add_clock_action;
 }
 
-void Clock::init()
-{
+void Clock::init() {
   d->m_supported_action_list << createAction(1, tr("Clock"),
-                                          "pd_clock_frame_icon.png");
+                                             "pd_clock_frame_icon.png");
   d->m_supported_action_list << createAction(2, tr("Timer"),
-                                          "pd_clock_frame_icon.png");
+                                             "pd_clock_frame_icon.png");
   d->m_supported_action_list << createAction(3, tr("Alarm"),
-                                          "pd_clock_frame_icon.png");
+                                             "pd_clock_frame_icon.png");
 }
 
-void Clock::set_view_rect(const QRectF &rect)
-{
+void Clock::set_view_rect(const QRectF &rect) {}
+
+void Clock::session_data_available(
+    const QuetzalKit::SyncObject &a_session_root) {
+  // todo: look for clock objects.
 }
 
-void Clock::session_data_available(const QuetzalKit::SyncObject &a_session_root)
-{
-  //todo: look for clock objects.
-}
-
-void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj)
-{
+void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj) {
   qDebug() << Q_FUNC_INFO
-           << "Start Session Item List :"
-           << d->m_session_list.count();
+           << "Start Session Item List :" << d->m_session_list.count();
 
   if (!a_obj) {
     qDebug() << Q_FUNC_INFO << "Invalid session object root";
     return;
   }
 
-  qDebug() << Q_FUNC_INFO << "Start Session (item count): "
-           << d->m_session_list.count();
+  qDebug() << Q_FUNC_INFO
+           << "Start Session (item count): " << d->m_session_list.count();
 
   a_obj->setObjectAttribute("count", d->m_session_list.count());
 
   foreach(_clock_session session_ref, d->m_session_list) {
-      if (session_ref.is_purged())
-        continue;
+    if (session_ref.is_purged())
+      continue;
 
-      //todo add clock objects.
-      qDebug() << Q_FUNC_INFO << "insert new clock to Session";
+    // todo add clock objects.
+    qDebug() << Q_FUNC_INFO << "insert new clock to Session";
   }
 
   a_obj->sync();
 }
 
-bool Clock::remove_widget(UIKit::Widget *widget)
-{
+bool Clock::remove_widget(UIKit::Widget *widget) {
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
 
@@ -145,16 +134,14 @@ bool Clock::remove_widget(UIKit::Widget *widget)
 
 UIKit::ActionList Clock::actions() const { return d->m_supported_action_list; }
 
-void Clock::sync_session()
-{
+void Clock::sync_session() {
   if (viewport()) {
-      viewport()->update_session_value(controller_name(), "id", "");
-      qDebug() << Q_FUNC_INFO;
+    viewport()->update_session_value(controller_name(), "id", "");
+    qDebug() << Q_FUNC_INFO;
   }
 }
 
-void Clock::request_action(const QString &actionName, const QVariantMap &args)
-{
+void Clock::request_action(const QString &actionName, const QVariantMap &args) {
   if (!viewport()) {
     return;
   }
@@ -163,28 +150,28 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args)
     QRectF _view_geomeetry(0.0, 0.0, 260.0, 512.0);
 
     UIKit::DesktopActivityPtr _clock_activity =
-      UIKit::ExtensionManager::instance()->activity("desktopclock");
+        UIKit::ExtensionManager::instance()->activity("desktopclock");
 
     _clock_activity->create_window(_view_geomeetry, args["zone_id"].toString(),
-                                  viewport()->center(_view_geomeetry));
-    _clock_activity->update_attribute("id",
-                                      QString("clock-%1").arg(
-                                        d->m_clock_activity_count));
+                                   viewport()->center(_view_geomeetry));
+    _clock_activity->update_attribute(
+        "id", QString("clock-%1").arg(d->m_clock_activity_count));
     d->_new_session();
 
     d->m_clock_activity_count++;
-    _clock_activity->on_discarded([&](const UIKit::DesktopActivity *a_activity) {
-       //remove from current session.
-        if (!a_activity)
-          return;
+    _clock_activity->on_discarded([&](
+        const UIKit::DesktopActivity *a_activity) {
+      // remove from current session.
+      if (!a_activity)
+        return;
 
-        QVariantMap attrib = a_activity->attributes();
+      QVariantMap attrib = a_activity->attributes();
 
-        qDebug() << Q_FUNC_INFO << attrib;
-        d->_end_session(0);
+      qDebug() << Q_FUNC_INFO << attrib;
+      d->_end_session(0);
 
-        sync_session();
-      });
+      sync_session();
+    });
 
     if (viewport()) {
       viewport()->add_activity(_clock_activity);
@@ -195,64 +182,43 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args)
 
 QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
 
-void Clock::onDataUpdated(const QVariantMap &data)
-{
-}
+void Clock::onDataUpdated(const QVariantMap &data) {}
 
-void Clock::PrivateClockController::_new_session()
-{
+void Clock::PrivateClockController::_new_session() {
   _clock_session session_ref;
   session_ref.set_session_id(m_session_list.count());
   m_session_list.push_back(session_ref);
   qDebug() << Q_FUNC_INFO << "New Session ID :" << m_session_list.count();
 }
 
-void Clock::PrivateClockController::_end_session(int a_id)
-{
-  foreach (_clock_session session_ref, m_session_list) {
-      if (session_ref.session_id() == a_id) {
-          session_ref.mark();
-          qDebug() << Q_FUNC_INFO << " Delete from Session !";
-      }
+void Clock::PrivateClockController::_end_session(int a_id) {
+  foreach(_clock_session session_ref, m_session_list) {
+    if (session_ref.session_id() == a_id) {
+      session_ref.mark();
+      qDebug() << Q_FUNC_INFO << " Delete from Session !";
+    }
   }
 }
 
-void Clock::PrivateClockController::_save_session()
-{
-}
+void Clock::PrivateClockController::_save_session() {}
 
 void _clock_session::set_session_data(const QString &a_key,
-                                      const QVariant &a_data)
-{
+                                      const QVariant &a_data) {
   m_session_data[a_key] = a_data;
 }
 
-QVariant _clock_session::session_data(const QString &a_key) const
-{
+QVariant _clock_session::session_data(const QString &a_key) const {
   return m_session_data[a_key];
 }
 
-QList<QString> _clock_session::session_keys() const
-{
+QList<QString> _clock_session::session_keys() const {
   return m_session_data.keys();
 }
 
-void _clock_session::mark()
-{
-  m_purged = true;
-}
+void _clock_session::mark() { m_purged = true; }
 
-bool _clock_session::is_purged()
-{
-  return m_purged;
-}
+bool _clock_session::is_purged() { return m_purged; }
 
-void _clock_session::set_session_id(int a_id)
-{
-  m_session_id = a_id;
-}
+void _clock_session::set_session_id(int a_id) { m_session_id = a_id; }
 
-int _clock_session::session_id()
-{
-  return m_session_id;
-}
+int _clock_session::session_id() { return m_session_id; }

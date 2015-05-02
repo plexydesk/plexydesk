@@ -21,22 +21,20 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class TimePickerActivity::PrivateTimePicker
-{
+class TimePickerActivity::PrivateTimePicker {
 public:
   PrivateTimePicker() {}
   ~PrivateTimePicker() {}
 };
 
 TimePickerActivity::TimePickerActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateTimePicker) {}
+    : UIKit::DesktopActivity(object), d(new PrivateTimePicker) {}
 
 TimePickerActivity::~TimePickerActivity() { delete d; }
 
 void TimePickerActivity::create_window(const QRectF &window_geometry,
-                                      const QString &window_title,
-                                      const QPointF &window_pos)
-{
+                                       const QString &window_title,
+                                       const QPointF &window_pos) {
   // todo: invoke UI
 }
 
@@ -46,9 +44,7 @@ QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
 
 UIKit::Window *TimePickerActivity::window() const { return 0; }
 
-void TimePickerActivity::cleanup()
-{
-}
+void TimePickerActivity::cleanup() {}
 
 void TimePickerActivity::onWidgetClosed(UIKit::Widget *widget) {}
 

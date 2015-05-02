@@ -28,8 +28,7 @@ Welcome::Welcome(QObject *object) {}
 
 Welcome::~Welcome() {}
 
-QGraphicsItem *Welcome::item()
-{
+QGraphicsItem *Welcome::item() {
 
   return new WelcomeWidget(QRect(0, 0, 140 * 4, 128 * 3), new Login);
 }

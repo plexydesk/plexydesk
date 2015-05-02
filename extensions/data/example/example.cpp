@@ -20,8 +20,7 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-ExampleData::ExampleData(QObject *object)
-{
+ExampleData::ExampleData(QObject *object) {
   slideCount = 0;
   currentSlide = 0;
   searchkey = "fresh morning";
@@ -31,8 +30,7 @@ ExampleData::ExampleData(QObject *object)
   connect(imageTimer, SIGNAL(timeout()), this, SLOT(nextImage()));
 }
 
-void ExampleData::init()
-{
+void ExampleData::init() {
 
   if (PlexyDesk::Config::getInstance()->proxyOn) {
     QNetworkProxy NtProxy(PlexyDesk::Config::getInstance()->proxyType,
@@ -56,15 +54,13 @@ void ExampleData::init()
 
 ExampleData::~ExampleData() { delete http; }
 
-void ExampleData::pushData(QVariant &str)
-{
+void ExampleData::pushData(QVariant &str) {
   http->abort();
   searchkey = str.toString();
   init();
 }
 
-void ExampleData::loadCallback(int id, bool stat)
-{
+void ExampleData::loadCallback(int id, bool stat) {
   if (id == requestID) { /* this is a id we know  , and set on init() */
     if (stat) {          /*our request had no errors*/
       qDebug() << http->readAll() << endl; // print all the data we got from url

@@ -6,16 +6,13 @@
 #include <QDomElement>
 #include <QDebug>
 
-namespace QuetzalKit
-{
+namespace QuetzalKit {
 
-class DataStore::PrivateDataStore
-{
+class DataStore::PrivateDataStore {
 public:
   PrivateDataStore() {}
 
-  ~PrivateDataStore()
-  {
+  ~PrivateDataStore() {
     if (mDomDocument) {
       delete mDomDocument;
     }
@@ -66,12 +63,11 @@ public:
 };
 
 DataStore::DataStore(const QString &name, QObject *parent)
-  : QObject(parent), d(new PrivateDataStore)
-{
+    : QObject(parent), d(new PrivateDataStore) {
   d->mDataStoreName = name;
   d->mDomDocument = new QDomDocument(name);
   d->mDomDocument->appendChild(d->mDomDocument->createProcessingInstruction(
-                                 "xml", "version=\"1.0\" encoding=\"utf-8\""));
+      "xml", "version=\"1.0\" encoding=\"utf-8\""));
   d->mRootElement = d->mDomDocument->createElement(name);
   d->mDomDocument->appendChild(d->mRootElement);
   d->mSyncEngine = 0;
@@ -81,8 +77,7 @@ DataStore::DataStore(const QString &name, QObject *parent)
 
 DataStore::~DataStore() { delete d; }
 
-void DataStore::setSyncEngine(SyncEngineInterface *iface)
-{
+void DataStore::setSyncEngine(SyncEngineInterface *iface) {
   d->mSyncEngine = iface;
   d->mSyncEngine->setEngineName(d->mDataStoreName);
 
@@ -113,8 +108,7 @@ void DataStore::setSyncEngine(SyncEngineInterface *iface)
 
 QString DataStore::name() const { return d->mDataStoreName; }
 
-SyncObject *DataStore::begin(const QString &name)
-{
+SyncObject *DataStore::begin(const QString &name) {
   qDebug() << Q_FUNC_INFO << "Requesting:" << name;
 
   if (d->mDomDocument->isNull()) {
@@ -162,8 +156,7 @@ void DataStore::linkToStore(const QString &name, const QStringList &keyList) {}
 SyncObject *DataStore::rootObject() { return d->mRootObject; }
 
 SyncObject *DataStore::PrivateDataStore::findObjectByName(const QString &name,
-    SyncObject *root)
-{
+                                                          SyncObject *root) {
   qDebug() << Q_FUNC_INFO << "Name:" << name;
   if (!root) {
     return 0;
@@ -189,8 +182,7 @@ SyncObject *DataStore::PrivateDataStore::findObjectByName(const QString &name,
   return 0;
 }
 
-void DataStore::PrivateDataStore::addSyncObject(SyncObject *object)
-{
+void DataStore::PrivateDataStore::addSyncObject(SyncObject *object) {
   SyncObject *parent = 0;
 
   if (object->parentObject()) {
@@ -226,8 +218,7 @@ void DataStore::PrivateDataStore::addSyncObject(SyncObject *object)
   }
 }
 
-QDomNode DataStore::PrivateDataStore::findNodeByName(const QString &name)
-{
+QDomNode DataStore::PrivateDataStore::findNodeByName(const QString &name) {
   qDebug() << Q_FUNC_INFO << "Look for Node : " << name;
   QDomNode n = mDomDocument->documentElement().firstChild();
   while (!n.isNull()) {
@@ -249,8 +240,7 @@ QDomNode DataStore::PrivateDataStore::findNodeByName(const QString &name)
 }
 
 QDomNode DataStore::PrivateDataStore::findMatchingNode(
-  const QDomDocument &doc, const SyncObject &object)
-{
+    const QDomDocument &doc, const SyncObject &object) {
   QDomNodeList list = doc.documentElement().elementsByTagName(object.name());
 
   qDebug() << Q_FUNC_INFO << "Found Object Count of :" << list.count()
@@ -292,8 +282,7 @@ QDomNode DataStore::PrivateDataStore::findMatchingNode(
   return QDomNode();
 }
 
-void DataStore::PrivateDataStore::printObject(SyncObject &object)
-{
+void DataStore::PrivateDataStore::printObject(SyncObject &object) {
   if (object.hasChildren()) {
     Q_FOREACH(SyncObject * child, object.childObjects()) {
       printObject(*child);
@@ -304,8 +293,7 @@ void DataStore::PrivateDataStore::printObject(SyncObject &object)
 }
 
 uint DataStore::PrivateDataStore::childCount(const SyncObject &object,
-    uint count)
-{
+                                             uint count) {
   if (!object.hasChildren()) {
     return count;
   }
@@ -321,13 +309,11 @@ uint DataStore::PrivateDataStore::childCount(const SyncObject &object,
   return _childCount;
 }
 
-uint DataStore::childCount(const SyncObject &object) const
-{
+uint DataStore::childCount(const SyncObject &object) const {
   return d->childCount(object, 0);
 }
 
-uint DataStore::keyForObject(const SyncObject &object)
-{
+uint DataStore::keyForObject(const SyncObject &object) {
   if (object.parentObject()) {
     SyncObject *parent = object.parentObject();
     uint childCountOfParent = childCount(*parent);
@@ -339,8 +325,7 @@ uint DataStore::keyForObject(const SyncObject &object)
 
 void DataStore::printObject(SyncObject *object) { d->printObject(*object); }
 
-bool DataStore::beginsWith(const QString &name) const
-{
+bool DataStore::beginsWith(const QString &name) const {
   if (!d->mRootObject) {
     return false;
   }
@@ -352,13 +337,11 @@ bool DataStore::beginsWith(const QString &name) const
   return false;
 }
 
-void DataStore::onChildObjectAdded()
-{
+void DataStore::onChildObjectAdded() {
   // TODO: Handle Child Object updates?
 }
 
-void DataStore::onChildCreated()
-{
+void DataStore::onChildCreated() {
   if (d->mSyncEngine) {
     d->mSyncEngine->sync(d->mDataStoreName, d->mDomDocument->toString());
   }
@@ -366,8 +349,7 @@ void DataStore::onChildCreated()
 
 void DataStore::onChildUpdated() { qDebug() << Q_FUNC_INFO << "Not Impl"; }
 
-void DataStore::onEngineModified()
-{
+void DataStore::onEngineModified() {
   QDomDocument doy;
 
   doy.setContent(d->mSyncEngine->data(d->mDataStoreName));
@@ -382,10 +364,9 @@ void DataStore::onEngineModified()
 }
 
 QDomElement DataStore::PrivateDataStore::addChildObject(
-  const SyncObject *object, QDomElement *parent)
-{
+    const SyncObject *object, QDomElement *parent) {
   QDomElement objectElem =
-    objectToElement(object); // mDomDocument->createElement(object->name());
+      objectToElement(object); // mDomDocument->createElement(object->name());
 
   Q_FOREACH(SyncObject * child, object->childObjects()) {
 
@@ -404,8 +385,7 @@ QDomElement DataStore::PrivateDataStore::addChildObject(
 }
 
 QDomElement DataStore::PrivateDataStore::objectToElement(
-  const SyncObject *object)
-{
+    const SyncObject *object) {
   QDomElement objectElem = mDomDocument->createElement(object->name());
   objectElem.setAttribute("timestamp", object->timeStamp());
   objectElem.setAttribute("key", object->key());
@@ -417,8 +397,7 @@ QDomElement DataStore::PrivateDataStore::objectToElement(
   return objectElem;
 }
 
-SyncObject *DataStore::PrivateDataStore::objectFromNode(const QDomNode &node)
-{
+SyncObject *DataStore::PrivateDataStore::objectFromNode(const QDomNode &node) {
   SyncObject *rootObject = new SyncObject(mPriv);
   rootObject->setName(node.toElement().tagName());
   rootObject->setDomNode(node);
@@ -440,8 +419,7 @@ SyncObject *DataStore::PrivateDataStore::objectFromNode(const QDomNode &node)
   return rootObject;
 }
 
-SyncObject *DataStore::PrivateDataStore::toSyncObject(const QString &data)
-{
+SyncObject *DataStore::PrivateDataStore::toSyncObject(const QString &data) {
   qDebug() << Q_FUNC_INFO << "Load Data From Engine:";
   if (data.isEmpty()) {
     return 0;
@@ -482,8 +460,7 @@ SyncObject *DataStore::PrivateDataStore::toSyncObject(const QString &data)
 }
 
 SyncObject *DataStore::PrivateDataStore::findObject(const SyncObject *src,
-    SyncObject *root)
-{
+                                                    SyncObject *root) {
   if (!root) {
     return 0;
   }
@@ -507,8 +484,7 @@ SyncObject *DataStore::PrivateDataStore::findObject(const SyncObject *src,
 }
 
 void DataStore::PrivateDataStore::setObjectProperties(const QDomNode &node,
-    SyncObject *object)
-{
+                                                      SyncObject *object) {
   QDomNamedNodeMap attrMap = node.attributes();
 
   for (int i = 0; i < attrMap.count(); i++) {
@@ -526,8 +502,7 @@ void DataStore::PrivateDataStore::setObjectProperties(const QDomNode &node,
   }
 }
 
-void DataStore::update()
-{
+void DataStore::update() {
   if (d->mSyncEngine) {
     d->mergeData(d->mSyncEngine->data(d->mDataStoreName),
                  d->mDomDocument->toString());
@@ -535,8 +510,7 @@ void DataStore::update()
 }
 
 void DataStore::PrivateDataStore::mergeData(const QString &src_x,
-    const QString &src_y)
-{
+                                            const QString &src_y) {
   QDomDocument dox;
   QDomDocument doy;
 
@@ -569,8 +543,7 @@ void DataStore::PrivateDataStore::mergeData(const QString &src_x,
   }
 }
 
-SyncObject *DataStore::PrivateDataStore::constructObjectTree()
-{
+SyncObject *DataStore::PrivateDataStore::constructObjectTree() {
   if (!mSyncEngine->data(mDataStoreName).isEmpty() &&
       !mSyncEngine->data(mDataStoreName).isNull()) {
     QString errorMessage;
@@ -606,8 +579,7 @@ SyncObject *DataStore::PrivateDataStore::constructObjectTree()
 }
 
 void DataStore::PrivateDataStore::deleteChildObjects(QDomDocument &doc,
-    QDomNode &node)
-{
+                                                     QDomNode &node) {
   if (node.hasChildNodes()) {
     QDomNode n = node.firstChild();
     while (!n.isNull()) {
@@ -622,8 +594,7 @@ void DataStore::PrivateDataStore::deleteChildObjects(QDomDocument &doc,
 }
 
 bool DataStore::PrivateDataStore::compareObject(SyncObject *object,
-    SyncObject *clone)
-{
+                                                SyncObject *clone) {
   if (object->name() != clone->name()) {
     return false;
   }
@@ -651,8 +622,7 @@ bool DataStore::PrivateDataStore::compareObject(SyncObject *object,
 }
 
 void DataStore::PrivateDataStore::inspecObject(SyncObject *object,
-    SyncObject *clone)
-{
+                                               SyncObject *clone) {
   if (object->hasChildren()) {
     Q_FOREACH(SyncObject * child, object->childObjects()) {
       inspecObject(child, clone);
@@ -693,8 +663,7 @@ void DataStore::PrivateDataStore::inspecObject(SyncObject *object,
 
 // last try
 
-void DataStore::insert(SyncObject *object)
-{
+void DataStore::insert(SyncObject *object) {
   if (!d->mSyncEngine) {
     return;
   }
@@ -717,8 +686,7 @@ void DataStore::insert(SyncObject *object)
   d->mSyncEngine->sync(d->mDataStoreName, doc.toString());
 }
 
-void DataStore::updateNode(SyncObject *object)
-{
+void DataStore::updateNode(SyncObject *object) {
   if (!d->mSyncEngine) {
     return;
   }
@@ -757,8 +725,7 @@ void DataStore::updateNode(SyncObject *object)
   }
 }
 
-void DataStore::deleteObject(SyncObject *object)
-{
+void DataStore::deleteObject(SyncObject *object) {
   if (!d->mSyncEngine) {
     return;
   }

@@ -26,11 +26,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtWidgets/QGraphicsObject>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class DECL_UI_KIT_EXPORT ScrollWidget : public Widget
-{
+class DECL_UI_KIT_EXPORT ScrollWidget : public Widget {
   Q_OBJECT
 public:
   ScrollWidget(const QRectF &a_rect, QGraphicsObject *a_parent_ptr = 0);

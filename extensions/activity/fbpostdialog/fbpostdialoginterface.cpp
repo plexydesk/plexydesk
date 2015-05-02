@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DesktopActivity> FBPostDialogInterface::activity()
-{
+QSharedPointer<PlexyDesk::DesktopActivity> FBPostDialogInterface::activity() {
   QSharedPointer<PlexyDesk::DesktopActivity> obj =
-    QSharedPointer<PlexyDesk::DesktopActivity>(new FBPostDialogActivity(),
-        &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DesktopActivity>(new FBPostDialogActivity(),
+                                                 &QObject::deleteLater);
 
   return obj;
 }

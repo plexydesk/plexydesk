@@ -28,8 +28,7 @@
 
 using namespace UIKit;
 
-class CocoaStyle : public UIKit::Style
-{
+class CocoaStyle : public UIKit::Style {
 public:
   CocoaStyle();
 
@@ -37,10 +36,8 @@ public:
 
   QVariantMap attribute_map(const QString &type) const;
 
-  virtual void draw(const QString &type,
-                    const StyleFeatures &options,
-                    QPainter *painter,
-                    const UIKit::Widget *aWidget = 0);
+  virtual void draw(const QString &type, const StyleFeatures &options,
+                    QPainter *painter, const UIKit::Widget *aWidget = 0);
 
 private:
   class PrivateCocoa;
@@ -59,8 +56,7 @@ private:
   void drawProgressBar(const StyleFeatures &features, QPainter *painter);
   void drawVListItem(const StyleFeatures &features, QPainter *painter);
 
-  void drawLabel(const StyleFeatures &aFeatures,
-                 QPainter *aPainterPtr,
+  void drawLabel(const StyleFeatures &aFeatures, QPainter *aPainterPtr,
                  const UIKit::Widget *aWidget);
 };
 

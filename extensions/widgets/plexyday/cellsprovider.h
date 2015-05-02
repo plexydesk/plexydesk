@@ -4,8 +4,7 @@
 #include <tableviewcellinterface.h>
 #include <datasource.h>
 
-class CellsProvider : public PlexyDesk::DelegateInterface
-{
+class CellsProvider : public PlexyDesk::DelegateInterface {
   Q_OBJECT
 public:
   CellsProvider(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -23,12 +22,13 @@ public:
 
   virtual float rightMargin() const;
 
-  PlexyDesk::Widget *loadWidgetControlllerByName(
-    const QString &controllerName) const;
+  PlexyDesk::Widget *loadWidgetControlllerByName(const QString &controllerName)
+      const;
 
   PlexyDesk::DataSourcePtr loadDataSourceEngine(const QString &engine);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onGeoLocationReady();
   void onLocationSourceUpdated(const QVariantMap &data);
 

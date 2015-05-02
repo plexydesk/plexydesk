@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> IdleTimeEngineInterface::model()
-{
+QSharedPointer<PlexyDesk::DataSource> IdleTimeEngineInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =
-    QSharedPointer<PlexyDesk::DataSource>(new IdleTimeEngineData(),
-                                          &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DataSource>(new IdleTimeEngineData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

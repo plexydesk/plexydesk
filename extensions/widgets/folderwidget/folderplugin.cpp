@@ -31,8 +31,7 @@
 #include <functional>
 
 DirectoryController::DirectoryController(QObject *object)
-  : UIKit::ViewController(object)
-{
+    : UIKit::ViewController(object) {
   mThemePack = UIKit::Theme::instance();
 
   UIKit::Widget *parent = new UIKit::Widget();
@@ -45,7 +44,7 @@ DirectoryController::DirectoryController(QObject *object)
   parent->set_widget_name("Home");
 
   QFileInfo info(
-    QDir::toNativeSeparators(QDir::homePath() + QLatin1String("/Desktop/")));
+      QDir::toNativeSeparators(QDir::homePath() + QLatin1String("/Desktop/")));
 
   // parent->setLabelName(info.completeSuffix());
   mFolderViewList.append(parent);
@@ -53,8 +52,7 @@ DirectoryController::DirectoryController(QObject *object)
 
 DirectoryController::~DirectoryController() {}
 
-void DirectoryController::init()
-{
+void DirectoryController::init() {
   QAction *_add_dir_action = new QAction(this);
   _add_dir_action->setText(tr("Folder"));
 
@@ -65,31 +63,22 @@ void DirectoryController::init()
 }
 
 void DirectoryController::session_data_available(
-    const QuetzalKit::SyncObject &a_session_root)
-{
-}
+    const QuetzalKit::SyncObject &a_session_root) {}
 
-void DirectoryController::submit_session_data(QuetzalKit::SyncObject *a_obj)
-{
+void DirectoryController::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
 
-}
-
-UIKit::ActionList DirectoryController::actions() const
-{
+UIKit::ActionList DirectoryController::actions() const {
   return m_supported_action_list;
 }
 
 void DirectoryController::request_action(const QString &actionName,
-                                        const QVariantMap &args)
-{
+                                         const QVariantMap &args) {
   if (actionName == CREATE_DIR) {
     qDebug() << "Not supported yet";
   } else if (actionName == tr("Folder")) {
     UIKit::Window *window = new UIKit::Window();
 
-    window->on_window_closed([&](UIKit::Window * aWindow) {
-      delete aWindow;
-    });
+    window->on_window_closed([&](UIKit::Window *aWindow) { delete aWindow; });
 
     UIKit::Widget *parent = new UIKit::Widget();
 
@@ -111,8 +100,7 @@ void DirectoryController::request_action(const QString &actionName,
 }
 
 void DirectoryController::handle_drop_event(UIKit::Widget *widget,
-    QDropEvent *event)
-{
+                                            QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
 
@@ -127,8 +115,7 @@ void DirectoryController::handle_drop_event(UIKit::Widget *widget,
   }
 }
 
-void DirectoryController::set_view_rect(const QRectF &rect)
-{
+void DirectoryController::set_view_rect(const QRectF &rect) {
   Q_FOREACH(UIKit::Widget * view, mFolderViewList) {
     if (view) {
       view->setPos(rect.x(), rect.y());
@@ -136,7 +123,6 @@ void DirectoryController::set_view_rect(const QRectF &rect)
   }
 }
 
-QString DirectoryController::icon() const
-{
+QString DirectoryController::icon() const {
   return QString("pd_add_folder_icon.png");
 }

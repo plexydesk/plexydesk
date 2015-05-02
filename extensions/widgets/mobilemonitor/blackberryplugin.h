@@ -4,8 +4,7 @@
 #include <plexy.h>
 #include <controllerinterface.h>
 
-class BlackBerryPlugin : public PlexyDesk::ControllerInterface
-{
+class BlackBerryPlugin : public PlexyDesk::ControllerInterface {
   Q_OBJECT
 public:
   explicit BlackBerryPlugin(QObject *parent = 0);
@@ -28,7 +27,8 @@ public:
 
   void createNoteEditor();
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onPinCanceled();
 
   void onActionSetPin();

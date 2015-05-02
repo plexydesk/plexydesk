@@ -1,6 +1,5 @@
 #include "model_view_item.h"
 
-
 #include <QDebug>
 
 namespace UIKit {
@@ -15,25 +14,19 @@ public:
 
   int m_index;
 
-  std::function<void (ModelViewItem *)> m_item_handler;
-  std::function<bool (const Widget *, const QString &)> m_filter_handler;
+  std::function<void(ModelViewItem *)> m_item_handler;
+  std::function<bool(const Widget *, const QString &)> m_filter_handler;
 };
 
-ModelViewItem::ModelViewItem() : m_priv_ptr(new PrivateModelViewItem)
-{
-}
+ModelViewItem::ModelViewItem() : m_priv_ptr(new PrivateModelViewItem) {}
 
-ModelViewItem::~ModelViewItem()
-{
-  delete m_priv_ptr;
-}
+ModelViewItem::~ModelViewItem() { delete m_priv_ptr; }
 
-void ModelViewItem::set_view(Widget *a_widget)
-{
+void ModelViewItem::set_view(Widget *a_widget) {
   m_priv_ptr->m_view_ptr = a_widget;
 
   a_widget->on_input_event([&](Widget::InputEvent a_event,
-                                         const Widget *a_widget) {
+                               const Widget *a_widget) {
     qDebug() << Q_FUNC_INFO << "Model view register";
     if (a_event != Widget::kMouseReleaseEvent)
       return;
@@ -44,50 +37,36 @@ void ModelViewItem::set_view(Widget *a_widget)
   });
 }
 
-Widget *ModelViewItem::view() const
-{
-  return m_priv_ptr->m_view_ptr;
+Widget *ModelViewItem::view() const { return m_priv_ptr->m_view_ptr; }
+
+void ModelViewItem::set_data(const QString &a_key, const QVariant &a_value) {
+  m_priv_ptr->m_data[a_key] = a_value;
 }
 
-void ModelViewItem::set_data(const QString &a_key, const QVariant &a_value)
-{
- m_priv_ptr->m_data[a_key] = a_value;
-}
-
-QVariant ModelViewItem::data(const QString &a_key) const
-{
+QVariant ModelViewItem::data(const QString &a_key) const {
   return m_priv_ptr->m_data[a_key];
 }
 
-void ModelViewItem::set_index(int a_index)
-{
-  m_priv_ptr->m_index = a_index;
-}
+void ModelViewItem::set_index(int a_index) { m_priv_ptr->m_index = a_index; }
 
-int ModelViewItem::index() const
-{
-    return m_priv_ptr->m_index;
-}
+int ModelViewItem::index() const { return m_priv_ptr->m_index; }
 
-bool ModelViewItem::is_a_match(const QString &a_keyword)
-{
-    if (!m_priv_ptr->m_filter_handler)
-        return 0;
-    if (!m_priv_ptr->m_view_ptr)
-        return 0;
+bool ModelViewItem::is_a_match(const QString &a_keyword) {
+  if (!m_priv_ptr->m_filter_handler)
+    return 0;
+  if (!m_priv_ptr->m_view_ptr)
+    return 0;
 
-    return m_priv_ptr->m_filter_handler(m_priv_ptr->m_view_ptr, a_keyword);
+  return m_priv_ptr->m_filter_handler(m_priv_ptr->m_view_ptr, a_keyword);
 }
 
 void ModelViewItem::on_activated(
-        std::function<void (ModelViewItem *)> a_handler)
-{
-    m_priv_ptr->m_item_handler = a_handler;
+    std::function<void(ModelViewItem *)> a_handler) {
+  m_priv_ptr->m_item_handler = a_handler;
 }
 
 void ModelViewItem::on_filter(
-        std::function<bool (const Widget *, const QString &)> a_handler)
-{
-    m_priv_ptr->m_filter_handler = a_handler;
+    std::function<bool(const Widget *, const QString &)> a_handler) {
+  m_priv_ptr->m_filter_handler = a_handler;
 }
 }

@@ -26,8 +26,7 @@
 #include "reminderwidget.h"
 #include "notewidget.h"
 
-class DesktopNotesControllerImpl::PrivateDesktopNotes
-{
+class DesktopNotesControllerImpl::PrivateDesktopNotes {
 public:
   PrivateDesktopNotes() {}
   ~PrivateDesktopNotes() {}
@@ -37,8 +36,7 @@ public:
 };
 
 DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
-  : UIKit::ViewController(object), d(new PrivateDesktopNotes)
-{
+    : UIKit::ViewController(object), d(new PrivateDesktopNotes) {
   d->mNoteActions["Note"] = 1;
   d->mNoteActions["Task"] = 2;
   d->mNoteActions["Reminder"] = 3;
@@ -46,8 +44,7 @@ DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
 
 DesktopNotesControllerImpl::~DesktopNotesControllerImpl() { delete d; }
 
-void DesktopNotesControllerImpl::init()
-{
+void DesktopNotesControllerImpl::init() {
   // todo
   QAction *_add_note_action = new QAction(this);
   _add_note_action->setText(tr("Note"));
@@ -59,43 +56,36 @@ void DesktopNotesControllerImpl::init()
 }
 
 void DesktopNotesControllerImpl::session_data_available(
-    const QuetzalKit::SyncObject &a_sesion_root)
-{
-}
+    const QuetzalKit::SyncObject &a_sesion_root) {}
 
 void DesktopNotesControllerImpl::submit_session_data(
-    QuetzalKit::SyncObject *a_obj)
-{
-}
+    QuetzalKit::SyncObject *a_obj) {}
 
 void DesktopNotesControllerImpl::set_view_rect(const QRectF &rect) {}
 
-UIKit::ActionList DesktopNotesControllerImpl::actions() const
-{
+UIKit::ActionList DesktopNotesControllerImpl::actions() const {
   // return d->mNoteActions.keys();
   return d->m_supported_action_list;
 }
 
 void DesktopNotesControllerImpl::request_action(const QString &actionName,
-    const QVariantMap &args)
-{
+                                                const QVariantMap &args) {
   switch (d->mNoteActions[actionName]) {
-  case 1:
-    createNoteUI();
-    break;
-  case 2:
-    break;
-  case 3:
-    createReminderUI();
-    break;
-  default:
-    qWarning() << Q_FUNC_INFO << "Unknown Action";
+    case 1:
+      createNoteUI();
+      break;
+    case 2:
+      break;
+    case 3:
+      createReminderUI();
+      break;
+    default:
+      qWarning() << Q_FUNC_INFO << "Unknown Action";
   }
 }
 
 void DesktopNotesControllerImpl::handle_drop_event(UIKit::Widget *widget,
-    QDropEvent *event)
-{
+                                                   QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
 
@@ -108,15 +98,13 @@ void DesktopNotesControllerImpl::handle_drop_event(UIKit::Widget *widget,
   }
 }
 
-QString DesktopNotesControllerImpl::icon() const
-{
+QString DesktopNotesControllerImpl::icon() const {
   return QString("pd_add_note_frame_icon.png");
 }
 
 void DesktopNotesControllerImpl::onDataUpdated(const QVariantMap &data) {}
 
-void DesktopNotesControllerImpl::createNoteUI()
-{
+void DesktopNotesControllerImpl::createNoteUI() {
   UIKit::Window *window = new UIKit::Window();
 
   NoteWidget *note = new NoteWidget(window);
@@ -130,13 +118,12 @@ void DesktopNotesControllerImpl::createNoteUI()
 
   insert(window);
 
-  window->on_window_discarded([this](UIKit::Window * aWindow) {
+  window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
   });
 }
 
-void DesktopNotesControllerImpl::createReminderUI()
-{
+void DesktopNotesControllerImpl::createReminderUI() {
   UIKit::Window *window = new UIKit::Window();
 
   ReminderWidget *reminder = new ReminderWidget(window);
@@ -148,7 +135,7 @@ void DesktopNotesControllerImpl::createReminderUI()
 
   insert(window);
 
-  window->on_window_discarded([this](UIKit::Window * aWindow) {
+  window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
   });
 }

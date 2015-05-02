@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QVariantMap>
 
-class ExtLaoderTestRunner : public QObject
-{
+class ExtLaoderTestRunner : public QObject {
   Q_OBJECT
 public:
   explicit ExtLaoderTestRunner(QObject *a_parent_ptr = 0);
@@ -16,7 +15,8 @@ public:
 
   void loadtest(const QString &source);
 
-public slots:
+public
+slots:
   void onSourceUpdated(const QVariantMap &data);
 
 private:

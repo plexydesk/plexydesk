@@ -28,8 +28,7 @@
 // self
 #include "classicbackgroundrender.h"
 
-class BackgroundController : public UIKit::ViewController
-{
+class BackgroundController : public UIKit::ViewController {
   Q_OBJECT
 
 public:
@@ -59,7 +58,8 @@ public:
   void prepare_removal();
 
   void createSeamlessDesktop();
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onImageReady();
 
   void onImageSaveReady();

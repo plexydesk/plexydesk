@@ -25,8 +25,7 @@
 
 FlickerInterface::FlickerInterface(QObject *object) {}
 
-PlexyDesk::DataPlugin *FlickerInterface::instance()
-{
+PlexyDesk::DataPlugin *FlickerInterface::instance() {
   return new FlickerData();
 }
 

@@ -27,8 +27,7 @@ WallpaperChange::WallpaperChange(QObject *object) {}
 
 WallpaperChange::~WallpaperChange() {}
 
-QGraphicsItem *WallpaperChange::item()
-{
+QGraphicsItem *WallpaperChange::item() {
   QPushButton *button = new QPushButton("Change Wallpaper", 0);
   button->move(10, 10);
   connect(button, SIGNAL(clicked(bool)), this, SLOT(changeWallpaper(bool)));
@@ -36,8 +35,7 @@ QGraphicsItem *WallpaperChange::item()
   return new WallpaperWidget(QRectF(0, 0, 340, 240), button);
 }
 
-void WallpaperChange::changeWallpaper(bool)
-{
+void WallpaperChange::changeWallpaper(bool) {
   QString wallpaperRegPath("HKEY_CURRENT_USER\\Control Panel\\Desktop");
   QSettings settings(wallpaperRegPath, QSettings::NativeFormat);
   QString imagePath = settings.value("Wallpaper").toString();

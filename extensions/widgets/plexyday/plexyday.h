@@ -5,8 +5,7 @@
 #include <controllerinterface.h>
 #include "plexydaywidget.h"
 
-class PlexyDayController : public PlexyDesk::ControllerInterface
-{
+class PlexyDayController : public PlexyDesk::ControllerInterface {
   Q_OBJECT
 
 public:

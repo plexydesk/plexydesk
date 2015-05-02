@@ -21,8 +21,7 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::Style> ubuntuInterface::style()
-{
+QSharedPointer<PlexyDesk::Style> ubuntuInterface::style() {
   QSharedPointer<PlexyDesk::Style> obj = QSharedPointer<PlexyDesk::Style>(
       new ubuntuStyle(), &QObject::deleteLater);
 

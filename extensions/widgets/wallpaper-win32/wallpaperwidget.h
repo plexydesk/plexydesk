@@ -31,8 +31,7 @@ class QWidget;
 class QStyleOptionGraphicsItem;
 class QPainter;
 
-class WALLPAPERCHANGE_EXPORT WallpaperWidget : public PlexyDesk::DesktopWidget
-{
+class WALLPAPERCHANGE_EXPORT WallpaperWidget : public PlexyDesk::DesktopWidget {
   Q_OBJECT
 public:
   WallpaperWidget(const QRectF &rect, QWidget *embeddedWidget = 0);

@@ -49,13 +49,22 @@
 
 static const int MaxBufferSize = 1024000;
 
-class Connection : public QTcpSocket
-{
+class Connection : public QTcpSocket {
   Q_OBJECT
 
 public:
-  enum ConnectionState { WaitingForGreeting, ReadingGreeting, ReadyForUse };
-  enum DataType { PlainText, Ping, Pong, Greeting, Undefined };
+  enum ConnectionState {
+    WaitingForGreeting,
+    ReadingGreeting,
+    ReadyForUse
+  };
+  enum DataType {
+    PlainText,
+    Ping,
+    Pong,
+    Greeting,
+    Undefined
+  };
 
   Connection(QObject *parent = 0);
   virtual ~Connection();
@@ -73,7 +82,8 @@ signals:
 protected:
   void timerEvent(QTimerEvent *timerEvent);
 
-private slots:
+private
+slots:
   void processReadyRead();
   void sendPing();
   void sendGreetingMessage();

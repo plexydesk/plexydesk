@@ -25,8 +25,7 @@
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public UIKit::ViewController
-{
+class Clock : public UIKit::ViewController {
   Q_OBJECT
 
 public:
@@ -50,7 +49,8 @@ public:
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
   void sync_session();
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:

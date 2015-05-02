@@ -21,8 +21,7 @@
 #include <QTimer>
 #include <controllerinterface.h>
 
-class GooglePlacesEngineData::PrivateGooglePlacesEngine
-{
+class GooglePlacesEngineData::PrivateGooglePlacesEngine {
 public:
   PrivateGooglePlacesEngine() {}
   ~PrivateGooglePlacesEngine() {}
@@ -30,8 +29,7 @@ public:
 };
 
 GooglePlacesEngineData::GooglePlacesEngineData(QObject *object)
-  : PlexyDesk::DataSource(object), d(new PrivateGooglePlacesEngine)
-{
+    : PlexyDesk::DataSource(object), d(new PrivateGooglePlacesEngine) {
   startTimer(1000);
 }
 
@@ -41,8 +39,7 @@ GooglePlacesEngineData::~GooglePlacesEngineData() { delete d; }
 
 void GooglePlacesEngineData::setArguments(QVariant arg) {}
 
-QVariantMap GooglePlacesEngineData::readAll()
-{
+QVariantMap GooglePlacesEngineData::readAll() {
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -52,7 +49,6 @@ QVariantMap GooglePlacesEngineData::readAll()
   return dataMap;
 }
 
-void GooglePlacesEngineData::timerEvent(QTimerEvent *event)
-{
+void GooglePlacesEngineData::timerEvent(QTimerEvent *event) {
   Q_EMIT sourceUpdated(readAll());
 }

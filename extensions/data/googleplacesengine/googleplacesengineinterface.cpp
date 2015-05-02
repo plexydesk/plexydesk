@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> GooglePlacesEngineInterface::model()
-{
+QSharedPointer<PlexyDesk::DataSource> GooglePlacesEngineInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =
-    QSharedPointer<PlexyDesk::DataSource>(new GooglePlacesEngineData(),
-                                          &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DataSource>(new GooglePlacesEngineData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

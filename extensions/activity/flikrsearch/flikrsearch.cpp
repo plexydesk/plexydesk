@@ -35,13 +35,11 @@
 
 #include <themepackloader.h>
 
-class FlickrSearchActivity::PrivateFlikrSearch
-{
+class FlickrSearchActivity::PrivateFlikrSearch {
 public:
   PrivateFlikrSearch() {}
 
-  ~PrivateFlikrSearch()
-  {
+  ~PrivateFlikrSearch() {
     // if (m_view_delegate_window)
   }
 
@@ -69,18 +67,16 @@ public:
 };
 
 FlickrSearchActivity::FlickrSearchActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateFlikrSearch) {}
+    : UIKit::DesktopActivity(object), d(new PrivateFlikrSearch) {}
 
-FlickrSearchActivity::~FlickrSearchActivity()
-{
+FlickrSearchActivity::~FlickrSearchActivity() {
   // discardActivity();
   delete d;
 }
 
 void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
-                                        const QString &window_title,
-                                        const QPointF &window_pos)
-{
+                                         const QString &window_title,
+                                         const QPointF &window_pos) {
   d->m_is_new_search = true;
 
   d->m_view_delegate_window = new UIKit::Window();
@@ -100,7 +96,7 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
 
   d->m_search_input_box = new UIKit::LineEdit(d->m_top_toolbar);
   d->m_search_input_box->setMinimumSize(
-    QSizeF(aWindowGeometry.width() - 58, 32));
+      QSizeF(aWindowGeometry.width() - 58, 32));
 
   d->m_top_toolbar->insert_widget(d->m_search_input_box);
   d->m_top_toolbar->add_action(tr("search"), "pd_out_icon", false);
@@ -127,12 +123,12 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->m_bottom_toolbar = new UIKit::ToolBar(d->m_main_frame_widget);
   d->m_bottom_toolbar->set_icon_size(QSize(32, 32));
   d->m_bottom_toolbar->setMinimumSize(
-    QSizeF(d->m_top_toolbar->frame_geometry().width(),
-           d->m_top_toolbar->frame_geometry().height()));
+      QSizeF(d->m_top_toolbar->frame_geometry().width(),
+             d->m_top_toolbar->frame_geometry().height()));
 
   d->m_progress_widget = new UIKit::ProgressBar(d->m_bottom_toolbar);
   d->m_progress_widget->setMinimumSize(
-    QSizeF(aWindowGeometry.width() - 116, 32));
+      QSizeF(aWindowGeometry.width() - 116, 32));
 
   d->m_bottom_toolbar->add_action(tr("next"), "pd_in_icon", false);
   d->m_bottom_toolbar->insert_widget(d->m_progress_widget);
@@ -158,23 +154,19 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
 
   d->m_image_cell_model->setSearchQuery("nature");
 
-  d->m_view_delegate_window->on_window_discarded([this](UIKit::Window * aWindow) {
-    discard_activity();
-  });
+  d->m_view_delegate_window->on_window_discarded([this](
+      UIKit::Window *aWindow) { discard_activity(); });
 }
 
-QVariantMap FlickrSearchActivity::result() const
-{
+QVariantMap FlickrSearchActivity::result() const {
   return d->m_activity_result_map;
 }
 
-Window *FlickrSearchActivity::window() const
-{
+Window *FlickrSearchActivity::window() const {
   return d->m_view_delegate_window;
 }
 
-void FlickrSearchActivity::cleanup()
-{
+void FlickrSearchActivity::cleanup() {
   if (!d->m_view_delegate_window) {
     return;
   }
@@ -183,14 +175,12 @@ void FlickrSearchActivity::cleanup()
   d->m_view_delegate_window = 0;
 }
 
-void FlickrSearchActivity::onWidgetClosed(UIKit::Widget *widget)
-{
+void FlickrSearchActivity::onWidgetClosed(UIKit::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }
 
-void FlickrSearchActivity::photoItemClicked(UIKit::TableViewItem *item)
-{
+void FlickrSearchActivity::photoItemClicked(UIKit::TableViewItem *item) {
   PhotoCell *i = qobject_cast<PhotoCell *>(item);
   if (i) {
     d->m_activity_result_map["action"] = QString("Change Background");
@@ -207,8 +197,7 @@ void FlickrSearchActivity::photoItemClicked(UIKit::TableViewItem *item)
   }
 }
 
-void FlickrSearchActivity::onButtonClicked()
-{
+void FlickrSearchActivity::onButtonClicked() {
   if (d->m_search_input_box) {
     d->m_is_new_search = true;
     d->m_current_search_query_text = d->m_search_input_box->text();
@@ -217,8 +206,7 @@ void FlickrSearchActivity::onButtonClicked()
   }
 }
 
-void FlickrSearchActivity::onNextButtonClicked()
-{
+void FlickrSearchActivity::onNextButtonClicked() {
   d->m_is_new_search = false;
   d->m_current_page_index++;
   d->m_image_cell_model->setSearchQuery(d->m_current_search_query_text,
@@ -226,8 +214,7 @@ void FlickrSearchActivity::onNextButtonClicked()
   d->m_progress_widget->show();
 }
 
-void FlickrSearchActivity::onPreviousButtonClicked()
-{
+void FlickrSearchActivity::onPreviousButtonClicked() {
   d->m_is_new_search = false;
   d->m_current_page_index--;
   d->m_image_cell_model->setSearchQuery(d->m_current_search_query_text,
@@ -235,29 +222,25 @@ void FlickrSearchActivity::onPreviousButtonClicked()
   d->m_progress_widget->show();
 }
 
-void FlickrSearchActivity::onHideAnimationFinished()
-{
+void FlickrSearchActivity::onHideAnimationFinished() {
   // delete d->m_view_delegate_window;
   // d->m_view_delegate_window = 0;
   // Q_EMIT finished();
 }
 
-void FlickrSearchActivity::onPageCount(int count)
-{
+void FlickrSearchActivity::onPageCount(int count) {
   if (d->m_is_new_search) {
     d->m_page_count = count;
     d->m_current_page_index = 1;
   }
 }
 
-void FlickrSearchActivity::onProgressRange(int range)
-{
+void FlickrSearchActivity::onProgressRange(int range) {
   d->m_progress_widget->set_range(1, range);
   d->m_progress_widget->show();
 }
 
-void FlickrSearchActivity::onCompleted(int count)
-{
+void FlickrSearchActivity::onCompleted(int count) {
   d->m_progress_widget->set_value(count);
 
   if (count == d->m_progress_widget->max_range()) {
@@ -265,8 +248,7 @@ void FlickrSearchActivity::onCompleted(int count)
   }
 }
 
-void FlickrSearchActivity::onToolbarAction(const QString &action)
-{
+void FlickrSearchActivity::onToolbarAction(const QString &action) {
   if (action == tr("next")) {
     onNextButtonClicked();
   } else if (action == tr("previous")) {

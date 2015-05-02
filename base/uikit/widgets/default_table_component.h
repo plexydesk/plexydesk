@@ -4,9 +4,7 @@
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 
-class DECL_UI_KIT_EXPORT DefaultTableComponent
-  : public UIKit::TableViewItem
-{
+class DECL_UI_KIT_EXPORT DefaultTableComponent : public UIKit::TableViewItem {
   Q_OBJECT
 public:
   typedef enum {
@@ -14,8 +12,7 @@ public:
     kGridLayout
   } LayoutType;
 
-  DefaultTableComponent(const QRectF &a_rect,
-                        LayoutType = kListLayout,
+  DefaultTableComponent(const QRectF &a_rect, LayoutType = kListLayout,
                         QGraphicsItem *a_parent_ptr = 0);
   virtual ~DefaultTableComponent();
 
@@ -36,12 +33,15 @@ public:
   QPixmap icon();
 
   void set_data(const QPixmap &a_pixmap, const QString &a_label);
+
 protected:
   virtual void paint(QPainter *a_painter_ptr,
                      const QStyleOptionGraphicsItem *a_option_ptr,
                      QWidget *a_widget_ptr = 0);
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onClicked();
+
 private:
   class PrivateTableComponent;
   PrivateTableComponent *const m_priv_ptr;

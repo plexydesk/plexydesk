@@ -5,11 +5,9 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit
-{
+namespace QuetzalSocialKit {
 
-class QuetzalSocialKit_EXPORT AsyncDataDownloader : public QObject
-{
+class QuetzalSocialKit_EXPORT AsyncDataDownloader : public QObject {
   Q_OBJECT
 public:
   explicit AsyncDataDownloader(QObject *a_parent_ptr = 0);
@@ -27,7 +25,8 @@ Q_SIGNALS:
   void progress(float progress);
   void ready();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onDownloadComplete(QNetworkReply *reply);
   void onDownloadProgress(qint64, qint64);
 

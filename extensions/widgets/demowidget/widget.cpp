@@ -24,8 +24,7 @@ WidgetDemo::WidgetDemo(QObject *object) {}
 
 WidgetDemo::~WidgetDemo() {}
 
-QGraphicsItem *WidgetDemo::item()
-{
+QGraphicsItem *WidgetDemo::item() {
   QCalendarWidget *date = new QCalendarWidget(0);
   date->setWindowOpacity(0.2);
   date->resize(300, 200);

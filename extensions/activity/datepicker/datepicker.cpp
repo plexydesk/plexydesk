@@ -27,8 +27,7 @@
 #include "calendarwidget.h"
 #include "datecellfactory.h"
 
-class DatePickerActivity::PrivateDatePicker
-{
+class DatePickerActivity::PrivateDatePicker {
 public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
@@ -46,14 +45,13 @@ public:
 };
 
 DatePickerActivity::DatePickerActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateDatePicker) {}
+    : UIKit::DesktopActivity(object), d(new PrivateDatePicker) {}
 
 DatePickerActivity::~DatePickerActivity() { delete d; }
 
 void DatePickerActivity::create_window(const QRectF &window_geometry,
-                                      const QString &window_title,
-                                      const QPointF &window_pos)
-{
+                                       const QString &window_title,
+                                       const QPointF &window_pos) {
   d->mFrame = new UIKit::Window();
   d->mFrame->setGeometry(window_geometry);
   d->mFrame->set_window_title(window_title);
@@ -65,7 +63,7 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
   d->mFrame->set_window_content(d->mCalendarWidget);
   exec(window_pos);
 
-  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
@@ -74,8 +72,7 @@ QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
 UIKit::Window *DatePickerActivity::window() const { return d->mFrame; }
 
-void DatePickerActivity::cleanup()
-{
+void DatePickerActivity::cleanup() {
   if (d->mFrame) {
     delete d->mFrame;
   }
@@ -83,21 +80,18 @@ void DatePickerActivity::cleanup()
   d->mFrame = 0;
 }
 
-void DatePickerActivity::onWidgetClosed(UIKit::Widget *widget)
-{
+void DatePickerActivity::onWidgetClosed(UIKit::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }
 
 void DatePickerActivity::onHideAnimationFinished() { Q_EMIT finished(); }
 
-void DatePickerActivity::onImageReady(const QImage &img)
-{
+void DatePickerActivity::onImageReady(const QImage &img) {
   d->mCalendarWidget->setBackgroundImage(img);
 }
 
-void DatePickerActivity::onCalendarReady()
-{
+void DatePickerActivity::onCalendarReady() {
   if (!d->mCalendarWidget) {
     d->m_result_data["date"] = QVariant(QDate::currentDate().toString());
     d->m_result_data["hour"] = QVariant(0);

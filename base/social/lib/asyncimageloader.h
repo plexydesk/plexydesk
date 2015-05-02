@@ -5,11 +5,9 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit
-{
+namespace QuetzalSocialKit {
 
-class QuetzalSocialKit_EXPORT AsyncImageLoader : public QThread
-{
+class QuetzalSocialKit_EXPORT AsyncImageLoader : public QThread {
   Q_OBJECT
 public:
   AsyncImageLoader(QObject *a_parent_ptr = 0);
@@ -31,7 +29,8 @@ Q_SIGNALS:
 
   void ready(const QString &key);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onNetworkRequestFinished(QNetworkReply *reply);
 
 private:

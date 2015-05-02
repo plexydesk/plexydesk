@@ -4,8 +4,7 @@
 #include <QObject>
 #include <scrollwidget.h>
 
-class NoteBookBase : public PlexyDesk::ScrollWidget
-{
+class NoteBookBase : public PlexyDesk::ScrollWidget {
   Q_OBJECT
 public:
   NoteBookBase(const QRectF &rect, QGraphicsObject *parent = 0);

@@ -20,20 +20,17 @@
 #include <QtCore>
 #include <QtGui>
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 WidgetItem::WidgetItem(const QRectF &rect, QWidget *widget)
-  : DesktopWidget(rect, widget)
-{
+    : DesktopWidget(rect, widget) {
   setDockImage(
-    QPixmap("/usr/share/plexy/skins/widgets/base-widget/schedule.png"));
+      QPixmap("/usr/share/plexy/skins/widgets/base-widget/schedule.png"));
 }
 
 WidgetItem::~WidgetItem() {}
 
 void WidgetItem::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
-                              QWidget *widget)
-{
+                              QWidget *widget) {
   /*
           p->setRenderHints(QPainter::SmoothPixmapTransform
      |QPainter::Antialiasing |QPainter::HighQualityAntialiasing);
@@ -54,8 +51,7 @@ void WidgetItem::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
 
 void WidgetItem::paintExtDockFace(QPainter *p,
                                   const QStyleOptionGraphicsItem *e,
-                                  QWidget *widget)
-{
+                                  QWidget *widget) {
 
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);

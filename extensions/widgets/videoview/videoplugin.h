@@ -26,8 +26,7 @@
 #include <widgetplugin.h>
 #include "videoitem.h"
 
-class VISIBLE_SYM VideoPlugin : public PlexyDesk::WidgetPlugin
-{
+class VISIBLE_SYM VideoPlugin : public PlexyDesk::WidgetPlugin {
   Q_OBJECT
 
 public:
@@ -35,7 +34,8 @@ public:
   virtual ~VideoPlugin();
   virtual QGraphicsItem *item();
 
-public slots:
+public
+slots:
   void data(QVariant &);
   void searchImage();
 

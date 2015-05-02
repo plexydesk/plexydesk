@@ -8,11 +8,9 @@
 
 #include "webcontentinterface.h"
 
-namespace QuetzalSocialKit
-{
+namespace QuetzalSocialKit {
 
-class WebServer::PrivateWebServer
-{
+class WebServer::PrivateWebServer {
 
 public:
   PrivateWebServer() {}
@@ -21,8 +19,7 @@ public:
 };
 
 WebServer::WebServer(QObject *parent)
-  : QTcpServer(parent), d(new PrivateWebServer)
-{
+    : QTcpServer(parent), d(new PrivateWebServer) {
   setMaxPendingConnections(1000);
   d->mContentIface = 0;
   qDebug() << Q_FUNC_INFO << "Server Start:";
@@ -31,8 +28,7 @@ WebServer::WebServer(QObject *parent)
 
 WebServer::~WebServer() { delete d; }
 
-void WebServer::startService(uint port)
-{
+void WebServer::startService(uint port) {
   bool ok = listen(QHostAddress::Any, port);
 
   if (ok) {
@@ -42,13 +38,11 @@ void WebServer::startService(uint port)
   }
 }
 
-void WebServer::setWebContentDelegate(WebContentInterface *interface)
-{
+void WebServer::setWebContentDelegate(WebContentInterface *interface) {
   d->mContentIface = interface;
 }
 
-void WebServer::incomingConnection(qintptr socketDescriptor)
-{
+void WebServer::incomingConnection(qintptr socketDescriptor) {
   qDebug() << Q_FUNC_INFO << "New Connection";
   QTcpSocket *serverSocket = new QTcpSocket(this);
 
@@ -62,13 +56,12 @@ void WebServer::incomingConnection(qintptr socketDescriptor)
   }
 }
 
-void WebServer::onReadyRead()
-{
+void WebServer::onReadyRead() {
   QTcpSocket *socket = (QTcpSocket *)sender();
 
   if (socket->canReadLine()) {
     QStringList tokens =
-      QString(socket->readLine()).split(QRegExp("[ \r\n][ \r\n]*"));
+        QString(socket->readLine()).split(QRegExp("[ \r\n][ \r\n]*"));
 
     qDebug() << Q_FUNC_INFO << "Token ---->" << tokens;
     QUrl clientURL("http://localhost" + tokens[1]);
@@ -91,11 +84,11 @@ void WebServer::onReadyRead()
         os << d->mContentIface->content();
       } else {
         os << "HTTP/1.0 200 Ok\r\n"
-           "Content-Type: text/html; charset=\"utf-8\"\r\n"
-           "\r\n"
-           "<html><head></head><body onLoad=\"\">"
-           "<h1>Authentication Completed, Please Return to "
-           "PlexyDesk</h1></body></html>\n"
+              "Content-Type: text/html; charset=\"utf-8\"\r\n"
+              "\r\n"
+              "<html><head></head><body onLoad=\"\">"
+              "<h1>Authentication Completed, Please Return to "
+              "PlexyDesk</h1></body></html>\n"
            << QDateTime::currentDateTime().toString() << "\n";
       }
       socket->close();
@@ -107,8 +100,7 @@ void WebServer::onReadyRead()
   }
 }
 
-void WebServer::onDisconnected()
-{
+void WebServer::onDisconnected() {
   qDebug() << Q_FUNC_INFO;
   QTcpSocket *socket = (QTcpSocket *)sender();
 

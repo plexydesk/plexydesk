@@ -25,8 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class RestData : public UIKit::DataSource
-{
+class RestData : public UIKit::DataSource {
   Q_OBJECT
 
 public:
@@ -35,7 +34,8 @@ public:
   void init();
   QVariantMap readAll();
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void set_arguments(QVariant source_updated);
   void replyFinished(QNetworkReply *reply);
   void handleAuth(QNetworkReply *, QAuthenticator *);

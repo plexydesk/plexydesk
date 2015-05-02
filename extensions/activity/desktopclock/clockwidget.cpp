@@ -32,9 +32,8 @@
 #include <QDir>
 #include <plexyconfig.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent),
-  m_timezone(0)
-{
+ClockWidget::ClockWidget(QGraphicsObject *parent)
+    : UIKit::Widget(parent), m_timezone(0) {
   mTimer = new QTimer(this);
   mTimer->setTimerType(Qt::VeryCoarseTimer);
 
@@ -47,8 +46,7 @@ ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent),
   updateNow();
 }
 
-void ClockWidget::updateTime(const QVariantMap &data)
-{
+void ClockWidget::updateTime(const QVariantMap &data) {
   QDateTime _date_time = QDateTime::currentDateTime();
 
   if (m_timezone)
@@ -61,24 +59,22 @@ void ClockWidget::updateTime(const QVariantMap &data)
   update();
 }
 
-void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id)
-{
- m_timezone_id = a_timezone_id;
+void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id) {
+  m_timezone_id = a_timezone_id;
 
- mTimer->stop();
+  mTimer->stop();
 
- if (m_timezone) {
-   delete m_timezone;
- }
+  if (m_timezone) {
+    delete m_timezone;
+  }
 
- m_timezone = new QTimeZone(a_timezone_id);
- qDebug() << Q_FUNC_INFO << a_timezone_id;
+  m_timezone = new QTimeZone(a_timezone_id);
+  qDebug() << Q_FUNC_INFO << a_timezone_id;
 
- mTimer->start();
+  mTimer->start();
 }
 
-ClockWidget::~ClockWidget()
-{
+ClockWidget::~ClockWidget() {
   if (mTimer) {
     mTimer->stop();
     delete mTimer;
@@ -90,8 +86,7 @@ ClockWidget::~ClockWidget()
 }
 
 void ClockWidget::drawClockHand(QPainter *p, QRectF rect, int factor,
-                                float angle, QColor hand_color, int thikness)
-{
+                                float angle, QColor hand_color, int thikness) {
   p->save();
   float _adjustment = rect.width() / factor;
 
@@ -115,14 +110,12 @@ void ClockWidget::drawClockHand(QPainter *p, QRectF rect, int factor,
   p->restore();
 }
 
-void ClockWidget::updateNow()
-{
+void ClockWidget::updateNow() {
   updateTime(QVariantMap());
   update();
 }
 
-void ClockWidget::paint_view(QPainter *p, const QRectF &r)
-{
+void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   QRectF rect(r.x() + 8, r.y() + 8, r.width() - 16, r.height() - 16);
 
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |

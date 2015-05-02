@@ -12,9 +12,7 @@
 #include <QtNetwork>
 #include <QMap>
 
-
-class SocialTestRunner::PrivateSocialTestRunner
-{
+class SocialTestRunner::PrivateSocialTestRunner {
 public:
   PrivateSocialTestRunner() {}
   ~PrivateSocialTestRunner() {}
@@ -23,8 +21,7 @@ public:
 };
 
 SocialTestRunner::SocialTestRunner(QObject *parent)
-  : d(new PrivateSocialTestRunner), QObject(parent)
-{
+    : d(new PrivateSocialTestRunner), QObject(parent) {
   qDebug() << Q_FUNC_INFO << "Runner Started";
 
   testSocialPrefix();
@@ -36,16 +33,14 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
   // testDirLoader("file:///Library/Desktop Pictures/");
 }
 
-SocialTestRunner::~SocialTestRunner()
-{
+SocialTestRunner::~SocialTestRunner() {
   qDebug() << Q_FUNC_INFO << "Runner Ended";
   delete d;
 }
 
-void SocialTestRunner::testSocialPrefix()
-{
+void SocialTestRunner::testSocialPrefix() {
   QuetzalSocialKit::WebService *service =
-    new QuetzalSocialKit::WebService(this);
+      new QuetzalSocialKit::WebService(this);
 
   service->create("com.flikr.api");
 
@@ -63,10 +58,9 @@ void SocialTestRunner::testSocialPrefix()
           SLOT(onServiceComplete(QuetzalSocialKit::WebService *)));
 }
 
-void SocialTestRunner::testJSONHanlding()
-{
+void SocialTestRunner::testJSONHanlding() {
   QuetzalSocialKit::WebService *service =
-    new QuetzalSocialKit::WebService(this);
+      new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -84,10 +78,9 @@ void SocialTestRunner::testJSONHanlding()
           SLOT(onServiceCompleteJson(QuetzalSocialKit::WebService *)));
 }
 
-void SocialTestRunner::testSocialPhotoSizes(const QString &photoID)
-{
+void SocialTestRunner::testSocialPhotoSizes(const QString &photoID) {
   QuetzalSocialKit::WebService *service =
-    new QuetzalSocialKit::WebService(this);
+      new QuetzalSocialKit::WebService(this);
 
   service->create("com.flikr.api");
 
@@ -102,10 +95,9 @@ void SocialTestRunner::testSocialPhotoSizes(const QString &photoID)
           SLOT(onSizeServiceComplete(QuetzalSocialKit::WebService *)));
 }
 
-void SocialTestRunner::testsocialphotosizesJson(const QString &photoID)
-{
+void SocialTestRunner::testsocialphotosizesJson(const QString &photoID) {
   QuetzalSocialKit::WebService *service =
-    new QuetzalSocialKit::WebService(this);
+      new QuetzalSocialKit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -120,10 +112,9 @@ void SocialTestRunner::testsocialphotosizesJson(const QString &photoID)
           SLOT(onSizeServiceCompleteJson(QuetzalSocialKit::WebService *)));
 }
 
-void SocialTestRunner::testDirLoader(const QString &path)
-{
+void SocialTestRunner::testDirLoader(const QString &path) {
   QuetzalSocialKit::AsyncImageLoader *loader =
-    new QuetzalSocialKit::AsyncImageLoader(this);
+      new QuetzalSocialKit::AsyncImageLoader(this);
   loader->setUrl(QUrl(path));
   loader->start();
 
@@ -131,8 +122,7 @@ void SocialTestRunner::testDirLoader(const QString &path)
 }
 
 void SocialTestRunner::onServiceComplete(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO
@@ -152,8 +142,7 @@ void SocialTestRunner::onServiceComplete(
 }
 
 void SocialTestRunner::onSizeServiceComplete(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("size").count();
   qDebug() << Q_FUNC_INFO
@@ -169,12 +158,12 @@ void SocialTestRunner::onSizeServiceComplete(
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
       QuetzalSocialKit::AsyncDataDownloader *downloader =
-        new QuetzalSocialKit::AsyncDataDownloader(this);
+          new QuetzalSocialKit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
       metaData["method"] = service->methodName();
       metaData["id"] =
-        service->inputArgumentForMethod(service->methodName())["photo_id"];
+          service->inputArgumentForMethod(service->methodName())["photo_id"];
       metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
@@ -187,13 +176,12 @@ void SocialTestRunner::onSizeServiceComplete(
 }
 
 void SocialTestRunner::onDownloadComplete(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   if (service) {
     QByteArray data = service->rawServiceData();
 
     QuetzalSocialKit::AsyncImageCreator *imageSave =
-      new QuetzalSocialKit::AsyncImageCreator(this);
+        new QuetzalSocialKit::AsyncImageCreator(this);
     imageSave->setData(data, "/Users/siraj/Desktop/", true);
     imageSave->start();
 
@@ -203,14 +191,13 @@ void SocialTestRunner::onDownloadComplete(
   service->deleteLater();
 }
 
-void SocialTestRunner::onImageReady()
-{
+void SocialTestRunner::onImageReady() {
   QuetzalSocialKit::AsyncDataDownloader *downloader =
-    qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
     QuetzalSocialKit::AsyncImageCreator *imageSave =
-      new QuetzalSocialKit::AsyncImageCreator(this);
+        new QuetzalSocialKit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
@@ -221,10 +208,9 @@ void SocialTestRunner::onImageReady()
   }
 }
 
-void SocialTestRunner::onImageSaveReady()
-{
+void SocialTestRunner::onImageSaveReady() {
   QuetzalSocialKit::AsyncImageCreator *c =
-    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
   if (c) {
     qDebug() << Q_FUNC_INFO << "File Saved to: " << c->imagePath();
@@ -236,8 +222,7 @@ void SocialTestRunner::onImageSaveReady()
 void SocialTestRunner::onImageReady(const QString &fileName) {}
 
 void SocialTestRunner::onServiceCompleteJson(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO
@@ -257,8 +242,7 @@ void SocialTestRunner::onServiceCompleteJson(
 }
 
 void SocialTestRunner::onSizeServiceCompleteJson(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("size").count();
   qDebug() << Q_FUNC_INFO
@@ -274,12 +258,12 @@ void SocialTestRunner::onSizeServiceCompleteJson(
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
       QuetzalSocialKit::AsyncDataDownloader *downloader =
-        new QuetzalSocialKit::AsyncDataDownloader(this);
+          new QuetzalSocialKit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
       metaData["method"] = service->methodName();
       metaData["id"] =
-        service->inputArgumentForMethod(service->methodName())["photo_id"];
+          service->inputArgumentForMethod(service->methodName())["photo_id"];
       metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
@@ -292,7 +276,7 @@ void SocialTestRunner::onSizeServiceCompleteJson(
 }
 
 void SocialTestRunner::onDownloadCompleteJson(
-  QuetzalSocialKit::WebService *service) {}
+    QuetzalSocialKit::WebService *service) {}
 
 void SocialTestRunner::onImageReadyJson() {}
 
@@ -300,8 +284,7 @@ void SocialTestRunner::onImageSaveReadyJson() {}
 
 void SocialTestRunner::onImageReadyJson(const QString &fileName) {}
 
-void SocialTestRunner::onServerRequestCompleted(const QVariantMap &data)
-{
+void SocialTestRunner::onServerRequestCompleted(const QVariantMap &data) {
   // qDebug() << Q_FUNC_INFO << data;
 
   // https://api.dropbox.com/1/oauth2/token
@@ -330,7 +313,7 @@ void SocialTestRunner::onServerRequestCompleted(const QVariantMap &data)
   // social
   qDebug() << Q_FUNC_INFO;
   QuetzalSocialKit::WebService *service =
-    new QuetzalSocialKit::WebService(this);
+      new QuetzalSocialKit::WebService(this);
 
   service->create("com.dropbox.api.v2");
 
@@ -347,13 +330,11 @@ void SocialTestRunner::onServerRequestCompleted(const QVariantMap &data)
           SLOT(onDropBoxAuthServiceComplete(QuetzalSocialKit::WebService *)));
 }
 
-void SocialTestRunner::onDropBoxRequestComplete(const QVariantMap &data)
-{
+void SocialTestRunner::onDropBoxRequestComplete(const QVariantMap &data) {
   qDebug() << Q_FUNC_INFO;
 }
 
-void SocialTestRunner::onFinished(QNetworkReply *reply)
-{
+void SocialTestRunner::onFinished(QNetworkReply *reply) {
   qDebug() << Q_FUNC_INFO;
   if (reply) {
     QByteArray data = reply->readAll();
@@ -362,11 +343,10 @@ void SocialTestRunner::onFinished(QNetworkReply *reply)
 }
 
 void SocialTestRunner::onDropBoxAuthServiceComplete(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   getDropBoxAccountInfo(
-    service->methodData("access_token").at(0)["access_token"].toString(),
-    service->methodData("uid").at(0)["uid"].toString());
+      service->methodData("access_token").at(0)["access_token"].toString(),
+      service->methodData("uid").at(0)["uid"].toString());
   // qDebug() << Q_FUNC_INFO << "Service Complete: " <<
   // service->methodData("uid")["uid"];
   // qDebug() << Q_FUNC_INFO << "Service Complete: " <<
@@ -374,8 +354,7 @@ void SocialTestRunner::onDropBoxAuthServiceComplete(
 }
 
 void SocialTestRunner::onDropBoxAccountInfoServiceComplete(
-  QuetzalSocialKit::WebService *service)
-{
+    QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO << "Done" << service->rawServiceData();
   qDebug() << Q_FUNC_INFO
            << "Account Info:" << service->methodData("referral_link");
@@ -391,8 +370,7 @@ void SocialTestRunner::onDropBoxAccountInfoServiceComplete(
 }
 
 // web server
-void SocialTestRunner::startWebServer()
-{
+void SocialTestRunner::startWebServer() {
   authDropBox();
 
   QuetzalSocialKit::WebServer *server = new QuetzalSocialKit::WebServer(this);
@@ -402,8 +380,7 @@ void SocialTestRunner::startWebServer()
           SLOT(onServerRequestCompleted(QVariantMap)));
 }
 
-void SocialTestRunner::authDropBox()
-{
+void SocialTestRunner::authDropBox() {
   // based on :
   // https://www.dropbox.com/developers/blog/45/using-oauth-20-with-the-core-api;
   qsrand(16);
@@ -424,10 +401,9 @@ void SocialTestRunner::authDropBox()
 }
 
 void SocialTestRunner::getDropBoxAccountInfo(const QString &access_token,
-    const QString &uid)
-{
+                                             const QString &uid) {
   QuetzalSocialKit::WebService *service =
-    new QuetzalSocialKit::WebService(this);
+      new QuetzalSocialKit::WebService(this);
 
   service->create("com.dropbox.api.v2");
 
@@ -440,5 +416,5 @@ void SocialTestRunner::getDropBoxAccountInfo(const QString &access_token,
 
   connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
           SLOT(onDropBoxAccountInfoServiceComplete(
-                 QuetzalSocialKit::WebService *)));
+              QuetzalSocialKit::WebService *)));
 }

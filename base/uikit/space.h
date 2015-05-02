@@ -9,12 +9,10 @@
 #include <widget.h>
 #include <syncobject.h>
 
-namespace UIKit
-{
+namespace UIKit {
 class WorkSpace;
 
-class DECL_UI_KIT_EXPORT Space : public QObject
-{
+class DECL_UI_KIT_EXPORT Space : public QObject {
   Q_OBJECT
 public:
   typedef enum {
@@ -64,15 +62,15 @@ public:
 
   virtual void add_activity(UIKit::DesktopActivityPtr a_activity_ptr);
   UIKit::DesktopActivityPtr create_activity(const QString &a_activity,
-      const QString &a_title,
-      const QPointF &a_pos,
-      const QRectF &a_rect,
-      const QVariantMap &a_data_map);
+                                            const QString &a_title,
+                                            const QPointF &a_pos,
+                                            const QRectF &a_rect,
+                                            const QVariantMap &a_data_map);
 
   virtual QPointF cursor_pos() const;
   virtual QPointF center(const QRectF &a_view_geometry,
-                         const ViewportLocation &a_location = kCenterOnViewport
-                        ) const;
+                         const ViewportLocation &a_location = kCenterOnViewport)
+      const;
 
   virtual void drop_event_handler(QDropEvent *event, const QPointF &event_pos);
 
@@ -80,16 +78,18 @@ public:
   virtual void remove_window_from_view(Window *a_window);
 
   virtual void on_viewport_event_notify(
-    std::function<void (ViewportNotificationType,
-                        const QVariant &,
-                        const Space *)> a_notify_handler);
+      std::function<void(ViewportNotificationType, const QVariant &,
+                         const Space *)> a_notify_handler);
   void save_controller_to_session(const QString &a_controller_name);
   void revoke_controller_session_attributes(const QString &a_controller_name);
-public Q_SLOTS:
+public
+Q_SLOTS:
   virtual void on_activity_finished();
+
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
+
 private:
   class PrivateSpace;
   PrivateSpace *const m_priv_impl;

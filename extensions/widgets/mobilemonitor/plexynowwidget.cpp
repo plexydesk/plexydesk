@@ -7,12 +7,10 @@
 #include <QLineEdit>
 #include <QGraphicsProxyWidget>
 
-class PlexyNowWidget::PrivatePhotoWidget
-{
+class PlexyNowWidget::PrivatePhotoWidget {
 public:
   PrivatePhotoWidget() {}
-  ~PrivatePhotoWidget()
-  {
+  ~PrivatePhotoWidget() {
     if (mEditor) {
       delete mEditor;
     }
@@ -25,8 +23,7 @@ public:
 };
 
 PlexyNowWidget::PlexyNowWidget(const QRectF &rect)
-  : PlexyDesk::DesktopWidget(rect), d(new PrivatePhotoWidget)
-{
+    : PlexyDesk::DesktopWidget(rect), d(new PrivatePhotoWidget) {
   setWidgetFlag(PlexyDesk::DesktopWidget::WINDOW |
                 PlexyDesk::DesktopWidget::SHADOW);
   setLabelName("bbwidget");
@@ -68,7 +65,7 @@ PlexyNowWidget::PlexyNowWidget(const QRectF &rect)
   d->mCancelButton->setLabel("Cancel");
   d->mCancelButton->show();
   d->mCancelButton->setPos((padding) + margine +
-                           d->mButton->boundingRect().width(),
+                               d->mButton->boundingRect().width(),
                            d->mEditor->height() + 22);
   d->mCancelButton->setSize(QSize(80, 32));
 
@@ -78,14 +75,13 @@ PlexyNowWidget::PlexyNowWidget(const QRectF &rect)
 
 PlexyNowWidget::~PlexyNowWidget() { delete d; }
 
-void PlexyNowWidget::setContentImage(const QPixmap &pixmap)
-{
+void PlexyNowWidget::setContentImage(const QPixmap &pixmap) {
   mContentPixmap = pixmap;
   QRectF pixmapRect = pixmap.rect();
 
   /*calculate the new height for the content rect width */
   float pixmapHeight =
-    (pixmapRect.height() / pixmapRect.width()) * contentRect().width();
+      (pixmapRect.height() / pixmapRect.width()) * contentRect().width();
   pixmapRect.setHeight(pixmapHeight);
   pixmapRect.setWidth(contentRect().width());
   setContentRect(pixmapRect);
@@ -93,13 +89,11 @@ void PlexyNowWidget::setContentImage(const QPixmap &pixmap)
   update();
 }
 
-void PlexyNowWidget::paintRotatedView(QPainter *painter, const QRectF &rect)
-{
+void PlexyNowWidget::paintRotatedView(QPainter *painter, const QRectF &rect) {
   PlexyDesk::DesktopWidget::paintRotatedView(painter, rect);
 }
 
-void PlexyNowWidget::paintFrontView(QPainter *painter, const QRectF &rect)
-{
+void PlexyNowWidget::paintFrontView(QPainter *painter, const QRectF &rect) {
   painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
   painter->setRenderHint(QPainter::Antialiasing);
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
@@ -125,13 +119,11 @@ void PlexyNowWidget::paintFrontView(QPainter *painter, const QRectF &rect)
   }
 }
 
-void PlexyNowWidget::paintDockView(QPainter *painter, const QRectF &rect)
-{
+void PlexyNowWidget::paintDockView(QPainter *painter, const QRectF &rect) {
   PlexyDesk::DesktopWidget::paintDockView(painter, rect);
 }
 
-void PlexyNowWidget::onClicked()
-{
+void PlexyNowWidget::onClicked() {
   if (d->mEditor) {
     Q_EMIT approvedToken(d->mEditor->text());
   }

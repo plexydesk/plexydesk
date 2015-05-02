@@ -30,8 +30,7 @@
 
 class QHttp;
 
-class VISIBLE_SYM FlickerData : public PlexyDesk::DataPlugin
-{
+class VISIBLE_SYM FlickerData : public PlexyDesk::DataPlugin {
   Q_OBJECT
 
 public:
@@ -39,7 +38,8 @@ public:
   virtual ~FlickerData();
   void init();
   QVariantMap readAll();
-public slots:
+public
+slots:
   void loadImages(int, bool);
   void nextImage();
   void pushData(QVariant &);

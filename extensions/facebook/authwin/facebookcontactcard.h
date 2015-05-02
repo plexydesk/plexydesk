@@ -5,8 +5,7 @@
 #include <desktopwidget.h>
 #include <datasource.h>
 
-class FacebookContactCard : public PlexyDesk::DesktopWidget
-{
+class FacebookContactCard : public PlexyDesk::DesktopWidget {
   Q_OBJECT
 public:
   FacebookContactCard(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -21,7 +20,8 @@ public:
 
   Q_INVOKABLE QPixmap coverImage() const;
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDataUpdated(QVariantMap);
   void onWeatherDataUpdated(QVariantMap);
   void onStatusUpdated(QVariantMap);

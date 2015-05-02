@@ -36,8 +36,7 @@
 #include <button.h>
 #include <texteditor.h>
 
-class InputDialogActivityData::PrivateInputDialogActivity
-{
+class InputDialogActivityData::PrivateInputDialogActivity {
 public:
   PrivateInputDialogActivity() {}
   ~PrivateInputDialogActivity() {}
@@ -64,17 +63,15 @@ public:
 };
 
 InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateInputDialogActivity)
-{
+    : UIKit::DesktopActivity(object), d(new PrivateInputDialogActivity) {
   d->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
 }
 
 InputDialogActivityData::~InputDialogActivityData() { delete d; }
 
 void InputDialogActivityData::create_window(const QRectF &window_geometry,
-    const QString &window_title,
-    const QPointF &window_pos)
-{
+                                            const QString &window_title,
+                                            const QPointF &window_pos) {
   if (has_attribute("geometry")) {
     d->mBoundingRect = attributes()["geometry"].toRect();
   } else {
@@ -112,7 +109,7 @@ void InputDialogActivityData::create_window(const QRectF &window_geometry,
 
   QRectF _editorRect(0.0, 0.0, geometry().width(),
                      geometry().height() -
-                     (96 + d->mOkButton->boundingRect().height()));
+                         (96 + d->mOkButton->boundingRect().height()));
   d->mEditor = new UIKit::TextEditor(d->mLayoutBase);
   d->mVLayout->addItem(d->mEditor);
 
@@ -137,15 +134,14 @@ void InputDialogActivityData::create_window(const QRectF &window_geometry,
   this->exec();
   show_activity();
 
-  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
 
 QString InputDialogActivityData::error_message() const { return QString(); }
 
-QVariantMap InputDialogActivityData::activityResult() const
-{
+QVariantMap InputDialogActivityData::activityResult() const {
   QVariantMap rv;
   rv["text"] = QVariant(d->mCurrentText);
   return rv;
@@ -157,8 +153,7 @@ QVariantMap InputDialogActivityData::result() const { return QVariantMap(); }
 
 UIKit::Window *InputDialogActivityData::window() const { return d->mFrame; }
 
-void InputDialogActivityData::cleanup()
-{
+void InputDialogActivityData::cleanup() {
   if (d->mFrame) {
     delete d->mFrame;
   }
@@ -166,16 +161,14 @@ void InputDialogActivityData::cleanup()
   d->mFrame = 0;
 }
 
-void InputDialogActivityData::onWidgetClosed(UIKit::Widget *widget)
-{
+void InputDialogActivityData::onWidgetClosed(UIKit::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   discard_activity();
 }
 
 void InputDialogActivityData::onMotionAnimFinished() { Q_EMIT finished(); }
 
-void InputDialogActivityData::onOkButtonPressed()
-{
+void InputDialogActivityData::onOkButtonPressed() {
   connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   d->mCurrentText = d->mEditor->text();
   Q_EMIT finished();
@@ -184,8 +177,7 @@ void InputDialogActivityData::onOkButtonPressed()
 
 void InputDialogActivityData::paint(QPainter *painter,
                                     const QStyleOptionGraphicsItem *option,
-                                    QWidget *widget)
-{
+                                    QWidget *widget) {
   /*
   if (d->mStyle) {
       UI::StyleFeatures feature;

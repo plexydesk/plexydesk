@@ -24,8 +24,7 @@
 #include "platformactivitymonitor.h"
 #include "windowobject.h"
 
-class DesktopActivityMonitorData::PrivateDesktopActivityMonitor
-{
+class DesktopActivityMonitorData::PrivateDesktopActivityMonitor {
 public:
   PrivateDesktopActivityMonitor() {}
 
@@ -40,8 +39,7 @@ public:
 };
 
 DesktopActivityMonitorData::DesktopActivityMonitorData(QObject *object)
-  : PlexyDesk::DataSource(object), d(new PrivateDesktopActivityMonitor)
-{
+    : PlexyDesk::DataSource(object), d(new PrivateDesktopActivityMonitor) {
   d->mDesktopActivityMonitor = new PlatformActivityMonitor(this);
   d->mLastObject = d->mDesktopActivityMonitor->updateWindowList();
   startTimer(1000);
@@ -64,8 +62,7 @@ void DesktopActivityMonitorData::setArguments(QVariant arg) {}
 
 void DesktopActivityMonitorData::onTimeout() { qDebug() << Q_FUNC_INFO; }
 
-QVariantMap DesktopActivityMonitorData::readAll()
-{
+QVariantMap DesktopActivityMonitorData::readAll() {
   QVariantMap dataMap;
 
   // check activities.
@@ -77,8 +74,7 @@ QVariantMap DesktopActivityMonitorData::readAll()
   return dataMap;
 }
 
-void DesktopActivityMonitorData::timerEvent(QTimerEvent *event)
-{
+void DesktopActivityMonitorData::timerEvent(QTimerEvent *event) {
   WindowObject object = d->mDesktopActivityMonitor->updateWindowList();
 
   if (object.name() != d->mLastObject.name() ||

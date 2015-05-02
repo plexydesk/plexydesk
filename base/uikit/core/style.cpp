@@ -20,13 +20,13 @@
 #include <QVariant>
 #include <style.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
 Style::Style() {}
 
 Style::~Style() {}
 
-QVariant Style::attribute(const QString &a_type,
-  const QString &a_name) const { return attribute_map(a_type)[a_name];}
+QVariant Style::attribute(const QString &a_type, const QString &a_name) const {
+  return attribute_map(a_type)[a_name];
+}
 }

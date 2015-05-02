@@ -21,8 +21,7 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class SocialAuthActivity::PrivateSocialAuth
-{
+class SocialAuthActivity::PrivateSocialAuth {
 public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
@@ -31,14 +30,13 @@ public:
 };
 
 SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateSocialAuth) {}
+    : UIKit::DesktopActivity(object), d(new PrivateSocialAuth) {}
 
 SocialAuthActivity::~SocialAuthActivity() { delete d; }
 
 void SocialAuthActivity::create_window(const QRectF &window_geometry,
-                                      const QString &window_title,
-                                      const QPointF &window_pos)
-{
+                                       const QString &window_title,
+                                       const QPointF &window_pos) {
   set_geometry(window_geometry);
 
   d->mFrame = new UIKit::Window();
@@ -55,7 +53,7 @@ void SocialAuthActivity::create_window(const QRectF &window_geometry,
 
   show_activity();
 
-  d->mFrame->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
@@ -64,8 +62,7 @@ QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
 UIKit::Window *SocialAuthActivity::window() const { return d->mFrame; }
 
-void SocialAuthActivity::cleanup()
-{
+void SocialAuthActivity::cleanup() {
   if (d->mFrame) {
     delete d->mFrame;
   }

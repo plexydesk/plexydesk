@@ -14,11 +14,9 @@
 
 #include <widget.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class TextEditor::PrivateTextEditor
-{
+class TextEditor::PrivateTextEditor {
 public:
   PrivateTextEditor() {}
   ~PrivateTextEditor() {}
@@ -31,8 +29,7 @@ public:
 };
 
 TextEditor::TextEditor(QGraphicsObject *parent)
-  : UIKit::Widget(parent), d(new PrivateTextEditor)
-{
+    : UIKit::Widget(parent), d(new PrivateTextEditor) {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
   d->mEditor->setReadOnly(false);
@@ -67,23 +64,22 @@ TextEditor::TextEditor(QGraphicsObject *parent)
 
 TextEditor::~TextEditor() { delete d; }
 
-void TextEditor::set_text(const QString &a_text) { d->mEditor->setText(a_text); }
+void TextEditor::set_text(const QString &a_text) {
+  d->mEditor->setText(a_text);
+}
 
-void TextEditor::set_placeholder_text(const QString &a_placeholderText)
-{
+void TextEditor::set_placeholder_text(const QString &a_placeholderText) {
   // if (d->mEditor)
   //   d->mEditor->setPlaceholderText(placeholderText);
 }
 
-void TextEditor::set_font_point_size(qreal a_s)
-{
+void TextEditor::set_font_point_size(qreal a_s) {
   if (d->mEditor) {
     d->mEditor->setFontPointSize(a_s);
   }
 }
 
-QString TextEditor::text() const
-{
+QString TextEditor::text() const {
   if (d->mEditor) {
     return d->mEditor->toPlainText();
   }
@@ -91,22 +87,20 @@ QString TextEditor::text() const
   return QString();
 }
 
-void TextEditor::style(const QString &style)
-{
+void TextEditor::style(const QString &style) {
   if (d->mEditor) {
     d->mEditor->setStyleSheet(style);
   }
 }
 
 QSizeF TextEditor::sizeHint(Qt::SizeHint which,
-                            const QSizeF &constraint) const
-{
+                            const QSizeF &constraint) const {
   return d->mEditor->size();
 }
 
-void TextEditor::setGeometry(const QRectF &a_rect)
-{
-  qDebug() << Q_FUNC_INFO << "=========================================" << a_rect
+void TextEditor::setGeometry(const QRectF &a_rect) {
+  qDebug() << Q_FUNC_INFO
+           << "=========================================" << a_rect
            << "=========================================";
 
   d->mProxyWidget->setMinimumSize(a_rect.size());
@@ -117,8 +111,7 @@ void TextEditor::setGeometry(const QRectF &a_rect)
   Widget::setGeometry(a_rect);
 }
 
-void TextEditor::update_text_scale()
-{
+void TextEditor::update_text_scale() {
   QRectF bounds = boundingRect();
   const QRectF newBounds(bounds.x(), bounds.y(),
                          bounds.width() / d->mTextScaleFactor,
@@ -134,8 +127,7 @@ void TextEditor::update_text_scale()
   setScale(d->mTextScaleFactor);
 }
 
-void TextEditor::begin_list()
-{
+void TextEditor::begin_list() {
   if (!d->mEditor) {
     return;
   }
@@ -148,15 +140,13 @@ void TextEditor::begin_list()
   cursor.endEditBlock();
 }
 
-void TextEditor::end_list()
-{
+void TextEditor::end_list() {
   if (!d->mEditor) {
     return;
   }
 }
 
-void TextEditor::convert_to_link()
-{
+void TextEditor::convert_to_link() {
   if (!d->mEditor) {
     return;
   }
@@ -171,8 +161,8 @@ void TextEditor::convert_to_link()
       qDebug() << Q_FUNC_INFO << url;
       cursor.beginEditBlock();
       cursor.insertFragment(QTextDocumentFragment::fromHtml(
-                              QString("<a href=\"%1\"> %2</a> <p> </p>").arg(url.toString()).arg(
-                                url.toString())));
+          QString("<a href=\"%1\"> %2</a> <p> </p>").arg(url.toString()).arg(
+              url.toString())));
       cursor.endEditBlock();
     }
   } else if (mimeData->hasText()) {
@@ -183,21 +173,19 @@ void TextEditor::convert_to_link()
     if (proto == "http:" || proto == "https" || proto == "ftp:/") {
       cursor.beginEditBlock();
       cursor.insertFragment(QTextDocumentFragment::fromHtml(
-                              QString("<a href=\"%1\">%2</a> <p> </p>").arg(testUrl.toString()).arg(
-                                testUrl.toString())));
+          QString("<a href=\"%1\">%2</a> <p> </p>").arg(testUrl.toString()).arg(
+              testUrl.toString())));
       cursor.endEditBlock();
     }
   }
 }
 
-void TextEditor::on_text_updated()
-{
+void TextEditor::on_text_updated() {
   QTextDocument *doc = d->mEditor->document();
   Q_EMIT text_updated(this->text());
 }
 
-void TextEditor::on_block_count_changed(int a_count)
-{
+void TextEditor::on_block_count_changed(int a_count) {
   if (a_count == 2) {
     QTextDocument *document = d->mEditor->document();
     QTextCursor cursor(document);
@@ -214,8 +202,7 @@ void TextEditor::on_block_count_changed(int a_count)
   }
 }
 
-void TextEditor::set_text_scale_factor(qreal a_scale_factor)
-{
+void TextEditor::set_text_scale_factor(qreal a_scale_factor) {
   d->mTextScaleFactor = a_scale_factor;
   update_text_scale();
 }
@@ -223,8 +210,7 @@ void TextEditor::set_text_scale_factor(qreal a_scale_factor)
 qreal TextEditor::text_scale_factor() const { return d->mTextScaleFactor; }
 
 QString TextEditor::PrivateTextEditor::extractHeader(
-  const QString &headerText)
-{
+    const QString &headerText) {
   QString headerString = QString("<h1><b>" + headerText + "</b></h1>");
 
   return headerString;

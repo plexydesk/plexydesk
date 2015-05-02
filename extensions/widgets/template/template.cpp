@@ -22,8 +22,7 @@
 #include <controllerinterface.h>
 #include <desktopwidget.h>
 
-class TemplateControllerImpl::PrivateTemplate
-{
+class TemplateControllerImpl::PrivateTemplate {
 public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
@@ -31,15 +30,13 @@ public:
 };
 
 TemplateControllerImpl::TemplateControllerImpl(QObject *object)
-  : PlexyDesk::ControllerInterface(object), d(new PrivateTemplate)
-{
+    : PlexyDesk::ControllerInterface(object), d(new PrivateTemplate) {
   startTimer(1000);
 }
 
 TemplateControllerImpl::~TemplateControllerImpl() { delete d; }
 
-PlexyDesk::AbstractDesktopWidget *TemplateControllerImpl::defaultView()
-{
+PlexyDesk::AbstractDesktopWidget *TemplateControllerImpl::defaultView() {
   return 0;
 }
 
@@ -48,14 +45,13 @@ void TemplateControllerImpl::revokeSession(const QVariantMap &args) {}
 void TemplateControllerImpl::setViewRect(const QRectF &rect) {}
 
 bool TemplateControllerImpl::deleteWidet(
-  PlexyDesk::AbstractDesktopWidget *widget)
-{
+    PlexyDesk::AbstractDesktopWidget *widget) {
   return false;
 }
 
 QStringList TemplateControllerImpl::actions() const { return QStringList(); }
 
 void TemplateControllerImpl::requestAction(const QString &actionName,
-    const QVariantMap &args) {}
+                                           const QVariantMap &args) {}
 
 void TemplateControllerImpl::onDataUpdated(const QVariantMap &data) {}

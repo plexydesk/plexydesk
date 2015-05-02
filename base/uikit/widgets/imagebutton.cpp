@@ -9,15 +9,12 @@
 
 #include <QDebug>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class ImageButton::PrivateImageButton
-{
+class ImageButton::PrivateImageButton {
 public:
   PrivateImageButton() {}
-  ~PrivateImageButton()
-  {
+  ~PrivateImageButton() {
     if (mZoomAnimation) {
       delete mZoomAnimation;
     }
@@ -30,8 +27,7 @@ public:
   QColor mBgColor;
 };
 
-void ImageButton::createZoomAnimation()
-{
+void ImageButton::createZoomAnimation() {
   if (!d->mZoomAnimation) {
     return;
   }
@@ -41,20 +37,15 @@ void ImageButton::createZoomAnimation()
   d->mZoomAnimation->setEndValue(1.1);
 }
 
-void ImageButton::set_background_color(const QColor &a_color)
-{
+void ImageButton::set_background_color(const QColor &a_color) {
   d->mBgColor = a_color;
   update();
 }
 
-StylePtr ImageButton::style() const
-{
-  return Theme::style();
-}
+StylePtr ImageButton::style() const { return Theme::style(); }
 
 ImageButton::ImageButton(QGraphicsObject *a_parent_ptr)
-  : Widget(a_parent_ptr), d(new PrivateImageButton)
-{
+    : Widget(a_parent_ptr), d(new PrivateImageButton) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   setAcceptHoverEvents(true);
@@ -73,19 +64,16 @@ ImageButton::ImageButton(QGraphicsObject *a_parent_ptr)
 
 ImageButton::~ImageButton() { delete d; }
 
-void ImageButton::set_size(const QSize &a_size)
-{
+void ImageButton::set_size(const QSize &a_size) {
   setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
 }
 
 QSizeF ImageButton::sizeHint(Qt::SizeHint which,
-                             const QSizeF &a_constraint) const
-{
+                             const QSizeF &a_constraint) const {
   return geometry().size();
 }
 
-void ImageButton::set_pixmap(const QPixmap &a_pixmap)
-{
+void ImageButton::set_pixmap(const QPixmap &a_pixmap) {
   d->mPixmap = a_pixmap;
   // QGraphicsItem::setTransformOriginPoint(boundingRect().center());
 }
@@ -98,8 +86,7 @@ void ImageButton::onZoomDone() {}
 
 void ImageButton::onZoomOutDone() {}
 
-void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
-{
+void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
     d->mZoomAnimation->start();
@@ -109,14 +96,12 @@ void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr)
   Widget::mouseReleaseEvent(a_event_ptr);
 }
 
-void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr)
-{
+void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   Q_EMIT selected(true);
   Widget::mousePressEvent(a_event_ptr);
 }
 
-void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr)
-{
+void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
   if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Forward);
     d->mZoomAnimation->start();
@@ -127,8 +112,7 @@ void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr)
   Widget::hoverEnterEvent(a_event_ptr);
 }
 
-void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr)
-{
+void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
   if (scale() > 1.0) {
     d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
     d->mZoomAnimation->start();
@@ -141,13 +125,12 @@ void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr)
   Widget::hoverLeaveEvent(a_event_ptr);
 }
 
-void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect)
-{
+void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   a_painter_ptr->save();
 
   a_painter_ptr->setRenderHints(QPainter::SmoothPixmapTransform |
-                          QPainter::Antialiasing |
-                          QPainter::HighQualityAntialiasing);
+                                QPainter::Antialiasing |
+                                QPainter::HighQualityAntialiasing);
 
   QPainterPath bgPath;
 

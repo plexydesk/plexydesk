@@ -21,16 +21,14 @@
 
 #include <QTimer>
 
-UtubeData::UtubeData(QObject *object)
-{
+UtubeData::UtubeData(QObject *object) {
   init();
   mRssTimer = new QTimer(this);
   connect(mRssTimer, SIGNAL(timeout()), this, SLOT(fetch()));
   // mRssTimer->start( 1000*60*60 );
 }
 
-void UtubeData::init()
-{
+void UtubeData::init() {
   mHttp = new QHttp(this);
   connect(mHttp, SIGNAL(readyRead(const QHttpResponseHeader &)), this,
           SLOT(readData(const QHttpResponseHeader &)));
@@ -59,8 +57,7 @@ UtubeData::~UtubeData() {}
 
 /** This method will fetch the
  * rss feed from the given URL */
-void UtubeData::fetch()
-{
+void UtubeData::fetch() {
   qDebug() << "UTUBE: Fetching XML..." << endl;
 
   mXml.clear();
@@ -68,14 +65,12 @@ void UtubeData::fetch()
   // qDebug() << url.toString();
 
   mHttp->setHost("gdata.youtube.com");
-  mConnectionId = mHttp->get(
-                    QString(
-                      "/feeds/api/videos?vq=%1&max-results=20&orderby=viewCount&alt=rss")
-                    .arg("kbfx"));
+  mConnectionId = mHttp->get(QString(
+      "/feeds/api/videos?vq=%1&max-results=20&orderby=viewCount&alt=rss")
+                                 .arg("kbfx"));
 }
 
-void UtubeData::readData(const QHttpResponseHeader &resp)
-{
+void UtubeData::readData(const QHttpResponseHeader &resp) {
   if (resp.statusCode() != 200) {
     mHttp->abort();
     qDebug() << "UTUBE: Error." << endl;
@@ -85,8 +80,7 @@ void UtubeData::readData(const QHttpResponseHeader &resp)
   }
 }
 
-void UtubeData::finished(int id, bool error)
-{
+void UtubeData::finished(int id, bool error) {
   if (error) {
     qDebug() << "UTUBE: Received error during HTTP fetch." << endl;
     // mRssTimer->start( 2000 );
@@ -101,8 +95,7 @@ void UtubeData::finished(int id, bool error)
 
 /** This method will parse the
  * XML and add entries to the QList: mRssEntries*/
-void UtubeData::parseXml()
-{
+void UtubeData::parseXml() {
   while (!mXml.atEnd()) {
     mXml.readNext();
     if (mXml.isStartElement()) {
@@ -163,8 +156,7 @@ void UtubeData::parseXml()
   // emit data(rss);
 }
 
-QVariantMap UtubeData::readAll()
-{
+QVariantMap UtubeData::readAll() {
   QVariantMap map;
   map["data"] = dataItem;
   return map;

@@ -3,8 +3,7 @@
 
 #include <button.h>
 
-class NoteBookBase::PrivateNoteBase
-{
+class NoteBookBase::PrivateNoteBase {
 public:
   PrivateNoteBase() {}
   ~PrivateNoteBase() {}
@@ -13,12 +12,11 @@ public:
 };
 
 NoteBookBase::NoteBookBase(const QRectF &rect, QGraphicsObject *parent)
-  : ScrollWidget(rect, parent), d(new PrivateNoteBase) {}
+    : ScrollWidget(rect, parent), d(new PrivateNoteBase) {}
 
 NoteBookBase::~NoteBookBase() { delete d; }
 
-void NoteBookBase::addNote(const QString &title, const QString &content)
-{
+void NoteBookBase::addNote(const QString &title, const QString &content) {
 
   Note *note = new Note(QRect(0.0, 0.0, 240.0, 240.0));
   note->setTitle(title);

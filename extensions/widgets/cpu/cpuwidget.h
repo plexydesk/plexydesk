@@ -26,8 +26,7 @@
 
 class QTimer;
 
-class CpuWidget : public PlexyDesk::AbstractDesktopWidget
-{
+class CpuWidget : public PlexyDesk::AbstractDesktopWidget {
 
   Q_OBJECT
 
@@ -43,7 +42,8 @@ public:
   void getBaseData();
   void getNxtData();
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void drawMeter();
 
 private:

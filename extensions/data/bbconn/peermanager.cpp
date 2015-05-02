@@ -47,8 +47,7 @@
 static const qint32 BroadcastInterval = 2000;
 static const unsigned broadcastPort = 45000;
 
-PeerManager::PeerManager(Client *client) : QObject(client)
-{
+PeerManager::PeerManager(Client *client) : QObject(client) {
   this->client = client;
 
   QStringList envVariables;
@@ -96,8 +95,7 @@ QByteArray PeerManager::userName() const { return username; }
 
 void PeerManager::startBroadcasting() { broadcastTimer.start(); }
 
-bool PeerManager::isLocalHostAddress(const QHostAddress &address)
-{
+bool PeerManager::isLocalHostAddress(const QHostAddress &address) {
   foreach(QHostAddress localAddress, ipAddresses) {
     if (address == localAddress) {
       return true;
@@ -106,8 +104,7 @@ bool PeerManager::isLocalHostAddress(const QHostAddress &address)
   return false;
 }
 
-void PeerManager::sendBroadcastDatagram()
-{
+void PeerManager::sendBroadcastDatagram() {
   QByteArray datagram(username);
   datagram.append('@');
   datagram.append(QByteArray::number(serverPort));
@@ -124,8 +121,7 @@ void PeerManager::sendBroadcastDatagram()
   }
 }
 
-void PeerManager::readBroadcastDatagram()
-{
+void PeerManager::readBroadcastDatagram() {
   while (broadcastSocket.hasPendingDatagrams()) {
     QHostAddress senderIp;
     quint16 senderPort;
@@ -154,8 +150,7 @@ void PeerManager::readBroadcastDatagram()
   }
 }
 
-void PeerManager::updateAddresses()
-{
+void PeerManager::updateAddresses() {
   broadcastAddresses.clear();
   ipAddresses.clear();
 

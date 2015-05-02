@@ -50,8 +50,7 @@
 
 class PeerManager;
 
-class Client : public QObject
-{
+class Client : public QObject {
   Q_OBJECT
 
 public:
@@ -68,7 +67,8 @@ signals:
   void participantLeft(const QString &nick);
   void greet(const QString &token, Connection *connection);
 
-private slots:
+private
+slots:
   void newConnection(Connection *connection);
   void connectionError(QAbstractSocket::SocketError socketError);
   void disconnected();

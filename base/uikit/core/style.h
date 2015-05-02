@@ -25,23 +25,21 @@
 #include <QPainter>
 #include <QObject>
 
-namespace UIKit
-{
+namespace UIKit {
 class Widget;
 
-class DECL_UI_KIT_EXPORT Style
-{
+class DECL_UI_KIT_EXPORT Style {
 public:
   Style();
 
   virtual ~Style();
 
-  virtual QVariant attribute(const QString &a_type, const QString &a_name) const;
+  virtual QVariant attribute(const QString &a_type,
+                             const QString &a_name) const;
 
   virtual QVariantMap attribute_map(const QString &a_type) const = 0;
 
-  virtual void draw(const QString &a_type,
-                    const StyleFeatures &a_options,
+  virtual void draw(const QString &a_type, const StyleFeatures &a_options,
                     QPainter *a_painter_ptr,
                     const Widget *a_widget_ptr = 0) = 0;
 };

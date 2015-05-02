@@ -8,8 +8,7 @@
 #include <QDebug>
 #include <json.h>
 
-class FacebookUserInfo::PrivateFacebookUserInfo
-{
+class FacebookUserInfo::PrivateFacebookUserInfo {
 public:
   PrivateFacebookUserInfo() {}
   ~PrivateFacebookUserInfo() {}
@@ -25,32 +24,28 @@ FacebookUserInfo::FacebookUserInfo(QNetworkAccessManager *manager,
                                    const QString &facebookID,
                                    const QString &facebookToken,
                                    QObject *parent)
-  : PlexyDesk::PendingJob(parent), d(new PrivateFacebookUserInfo)
-{
+    : PlexyDesk::PendingJob(parent), d(new PrivateFacebookUserInfo) {
   d->mFacebookID = facebookID;
   d->mToken = facebookToken;
   d->data["command"] = QString("userinfo");
   d->manager = manager;
 
-  QUrl url(
-    QString(
+  QUrl url(QString(
       "https://graph.facebook.com/%1?fields=name,picture&access_token=%2")
-    .arg(d->mFacebookID, d->mToken));
+               .arg(d->mFacebookID, d->mToken));
   QNetworkReply *reply = d->manager->get(QNetworkRequest(url));
 
   connect(reply, SIGNAL(finished()), this, SLOT(onUserInfoReady()));
 }
 
-FacebookUserInfo::~FacebookUserInfo()
-{
+FacebookUserInfo::~FacebookUserInfo() {
   d->data.clear();
   delete d;
 }
 
 QVariantMap FacebookUserInfo::userInfo() const { return d->data; }
 
-void FacebookUserInfo::onUserInfoReady()
-{
+void FacebookUserInfo::onUserInfoReady() {
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
@@ -77,8 +72,7 @@ void FacebookUserInfo::onUserInfoReady()
   }
 }
 
-void FacebookUserInfo::onAvatarImageReady()
-{
+void FacebookUserInfo::onAvatarImageReady() {
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
@@ -90,7 +84,7 @@ void FacebookUserInfo::onAvatarImageReady()
       }
 
       QString header =
-        reply->header(QNetworkRequest::ContentTypeHeader).toString();
+          reply->header(QNetworkRequest::ContentTypeHeader).toString();
 
       const QByteArray data = reply->readAll();
       // int bufferSize = reply->bytesAvailable();
@@ -106,7 +100,7 @@ void FacebookUserInfo::onAvatarImageReady()
         /* fetch Status message */
         QUrl url(QString("https://graph.facebook.com/%1/"
                          "statuses?fields=message&limit=1&access_token=%2")
-                 .arg(d->mFacebookID, d->mToken));
+                     .arg(d->mFacebookID, d->mToken));
         QNetworkReply *reply = d->manager->get(QNetworkRequest(url));
 
         connect(reply, SIGNAL(finished()), this, SLOT(onStatusMessageReady()));
@@ -117,8 +111,7 @@ void FacebookUserInfo::onAvatarImageReady()
   }
 }
 
-void FacebookUserInfo::onStatusMessageReady()
-{
+void FacebookUserInfo::onStatusMessageReady() {
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 

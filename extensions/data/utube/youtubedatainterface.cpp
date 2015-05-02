@@ -27,8 +27,7 @@ YouTubeDataInterface::YouTubeDataInterface(QObject *object) {}
 
 YouTubeDataInterface::~YouTubeDataInterface() {}
 
-PlexyDesk::DataPlugin *YouTubeDataInterface::instance()
-{
+PlexyDesk::DataPlugin *YouTubeDataInterface::instance() {
   return new UtubeData();
 }
 

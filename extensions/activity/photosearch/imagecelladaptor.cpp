@@ -11,8 +11,7 @@
 #include <QDir>
 #include <plexyconfig.h>
 
-class ResultCache
-{
+class ResultCache {
 public:
   QString id;
   QString url;
@@ -21,8 +20,7 @@ public:
   int height;
 };
 
-class ImageCellAdaptor::PrivateImageCellAdaptor
-{
+class ImageCellAdaptor::PrivateImageCellAdaptor {
 public:
   PrivateImageCellAdaptor() {}
   ~PrivateImageCellAdaptor() { mData.clear(); }
@@ -38,8 +36,7 @@ public:
 };
 
 ImageCellAdaptor::ImageCellAdaptor(QGraphicsObject *parent)
-  : UIKit::TableModel(parent), d(new PrivateImageCellAdaptor)
-{
+    : UIKit::TableModel(parent), d(new PrivateImageCellAdaptor) {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
 }
@@ -56,28 +53,25 @@ float ImageCellAdaptor::right_margin() const { return 0.0; }
 
 bool ImageCellAdaptor::init() { return true; }
 
-TableModel::TableRenderMode ImageCellAdaptor::render_type() const
-{
+TableModel::TableRenderMode ImageCellAdaptor::render_type() const {
   return ImageCellAdaptor::kRenderAsGridView;
 }
 
 void ImageCellAdaptor::addDataItem(const QString &label, const QImage &pixmap,
-                                   bool selected, const QVariantMap &metaData)
-{
+                                   bool selected, const QVariantMap &metaData) {
   d->mData[label] = pixmap;
   d->mMetaData[label] = metaData;
 
   ImageCell *item = new ImageCell(
-    QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
-    ImageCell::Grid, 0);
+      QRectF(0.0, 0.0, d->mCellSize.width(), d->mCellSize.height()),
+      ImageCell::Grid, 0);
   item->setLabelVisibility(d->mLablelVisibility);
   item->addDataItem(pixmap, label, metaData);
 
   Q_EMIT add(item);
 }
 
-void ImageCellAdaptor::setLabelVisibility(bool visibility)
-{
+void ImageCellAdaptor::setLabelVisibility(bool visibility) {
   d->mLablelVisibility = visibility;
 }
 
@@ -85,16 +79,14 @@ void ImageCellAdaptor::setCellSize(const QSize &size) { d->mCellSize = size; }
 
 void ImageCellAdaptor::setSearchQuery(const QString &query, int pageNumber) {}
 
-void ImageCellAdaptor::addPathList(const QStringList &pathList)
-{
+void ImageCellAdaptor::addPathList(const QStringList &pathList) {
   Q_FOREACH(const QString & str, pathList) {
     qDebug() << Q_FUNC_INFO << str;
     getImageFromPath(str);
   }
 }
 
-bool ImageCellAdaptor::hasRunningThreads()
-{
+bool ImageCellAdaptor::hasRunningThreads() {
   Q_FOREACH(const QuetzalSocialKit::AsyncImageCreator * ptr, d->mCreatorList) {
     if (ptr && ptr->isRunning()) {
       return true;
@@ -104,14 +96,13 @@ bool ImageCellAdaptor::hasRunningThreads()
   return false;
 }
 
-void ImageCellAdaptor::onImageRady()
-{
+void ImageCellAdaptor::onImageRady() {
   if (!sender()) {
     return;
   }
 
   QuetzalSocialKit::AsyncImageCreator *creator =
-    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
   if (!creator) {
     return;
@@ -130,8 +121,7 @@ void ImageCellAdaptor::onImageRady()
 
 void ImageCellAdaptor::loadLocalImageFiles(QList<QUrl> &list) {}
 
-void ImageCellAdaptor::getImageFromPath(const QString &str)
-{
+void ImageCellAdaptor::getImageFromPath(const QString &str) {
   QFileInfo info(str);
   if (info.isDir()) {
     qDebug() << Q_FUNC_INFO << "Local Dir";
@@ -149,9 +139,9 @@ void ImageCellAdaptor::getImageFromPath(const QString &str)
 
     Q_FOREACH(const QString & pictureName, localPictureList) {
       QString imageFile = QDir::toNativeSeparators(
-                            localPictureDir.absolutePath() + "/" + pictureName);
+          localPictureDir.absolutePath() + "/" + pictureName);
       QuetzalSocialKit::AsyncImageCreator *creator =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+          new QuetzalSocialKit::AsyncImageCreator(this);
       creator->setData(imageFile, UIKit::Config::cache_dir());
       connect(creator, SIGNAL(ready()), this, SLOT(onImageRady()));
 

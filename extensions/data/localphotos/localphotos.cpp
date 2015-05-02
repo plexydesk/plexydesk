@@ -20,8 +20,7 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-LPhotoData::LPhotoData(QObject *object)
-{
+LPhotoData::LPhotoData(QObject *object) {
   m_dirpath = QDir::homePath();
   slideCount = 0;
   currentSlide = 0;
@@ -30,8 +29,7 @@ LPhotoData::LPhotoData(QObject *object)
   init();
 }
 
-void LPhotoData::init()
-{
+void LPhotoData::init() {
   if (imageTimer->isActive()) {
     imageTimer->stop();
   }
@@ -60,8 +58,7 @@ void LPhotoData::init()
 
 LPhotoData::~LPhotoData() {}
 
-void LPhotoData::nextImage()
-{
+void LPhotoData::nextImage() {
   if (slideCount > 0) {
     loadImages();
     currentSlide++;
@@ -72,15 +69,13 @@ void LPhotoData::nextImage()
   }
 }
 
-void LPhotoData::pushData(QVariant &str)
-{
+void LPhotoData::pushData(QVariant &str) {
   qDebug() << "pushData: " << str.toString() << endl;
   m_dirpath = str.toString();
   init();
 }
 
-void LPhotoData::loadImages()
-{
+void LPhotoData::loadImages() {
   QFile file(images.at(currentSlide));
 
   if (!file.open(QIODevice::ReadOnly)) {

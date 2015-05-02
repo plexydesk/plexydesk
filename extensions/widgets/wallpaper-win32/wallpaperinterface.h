@@ -8,8 +8,7 @@
 #include "config.h"
 
 class WALLPAPERCHANGE_EXPORT WallpaperInterface
-  : public PlexyDesk::WidgetInterface
-{
+    : public PlexyDesk::WidgetInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

@@ -31,67 +31,67 @@
 #include <typeinfo>
 #include <string>
 
-namespace SocialKit
-{
-class Variant
-{
+namespace SocialKit {
+class Variant {
 public:
-    typedef struct __data__
-    {
-        enum {
-            kUnknownType = 1 << 0,
-            kCharType = 1 << 1,
-            kIntType = 1 << 2,
-            kFloatType = 1 << 3,
-            kDoubleType = 1 << 4,
-            kDataMapType = 1 <<  5,
-            kFloatRectType = 1 << 6,
-            kFloatPointType = 1 << 7,
-            kStringType = 1 << 8
-        } m_variant_type;
-    private:
-        union{
-            std::string m_string_data;
-            std::map<std::string, __data__> m_dict_data;
-            char m_char_data;
-            float m_float_data;
-            double m_double_data;
-            int m_int_data;
-        };
-    public:
-        __data__();
-        ~__data__();
-        __data__(const __data__ &copy);
+  typedef struct __data__ {
+    enum {
+      kUnknownType = 1 << 0,
+      kCharType = 1 << 1,
+      kIntType = 1 << 2,
+      kFloatType = 1 << 3,
+      kDoubleType = 1 << 4,
+      kDataMapType = 1 << 5,
+      kFloatRectType = 1 << 6,
+      kFloatPointType = 1 << 7,
+      kStringType = 1 << 8
+    } m_variant_type;
 
-        __data__& operator=(__data__ &copy);
+  private:
+    union {
+      std::string m_string_data;
+      std::map<std::string, __data__> m_dict_data;
+      char m_char_data;
+      float m_float_data;
+      double m_double_data;
+      int m_int_data;
+    };
 
-        void setValue(float value);
-        void setValue(double value);
-        void setValue(const std::string &value);
+  public:
+    __data__();
+    ~__data__();
+    __data__(const __data__ &copy);
 
-        bool isString() const;
-        bool isFloat();
-        bool isDouble();
-        bool isFloatRect();
-        bool isFloatPoint();
-        bool isDataMap();
-        bool isChar();
+    __data__ &operator=(__data__ &copy);
 
-        std::string toString() const;
-        float toFloat() const;
-        double toDouble() const;
-    } Data;
+    void setValue(float value);
+    void setValue(double value);
+    void setValue(const std::string &value);
 
-    typedef std::map<std::string, std::vector<Data>> ValueMap;
-    typedef std::map<std::string, Data> DataMap;
+    bool isString() const;
+    bool isFloat();
+    bool isDouble();
+    bool isFloatRect();
+    bool isFloatPoint();
+    bool isDataMap();
+    bool isChar();
 
-    Variant();
-    virtual ~Variant();
+    std::string toString() const;
+    float toFloat() const;
+    double toDouble() const;
+  } Data;
 
-    virtual void setDelegate(std::function<void (ValueMap)> target);
+  typedef std::map<std::string, std::vector<Data> > ValueMap;
+  typedef std::map<std::string, Data> DataMap;
+
+  Variant();
+  virtual ~Variant();
+
+  virtual void setDelegate(std::function<void(ValueMap)> target);
+
 private:
-    class PrivateVariant;
-    PrivateVariant *const d;
+  class PrivateVariant;
+  PrivateVariant *const d;
 };
 }
 #endif

@@ -31,21 +31,19 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT ImageCache : public QObject
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT ImageCache : public QObject {
   Q_OBJECT
 public:
   ImageCache();
   virtual ~ImageCache();
 
   QPixmap pixmap(const QString &a_id, QSize *a_size_ptr,
-                        const QSize &a_requested_size);
+                 const QSize &a_requested_size);
 
   bool is_cached(QString &a_filename) const;
   void add_to_cache(const QString &a_imgfile, const QString &a_filename,
-                   const QString &a_themename);
+                    const QString &a_themename);
 
   QPixmap get(const QString &a_name);
 
@@ -55,7 +53,7 @@ protected:
   void load(const QString &ta_themename);
   void clear();
   bool render_svg(QPainter *a_painter_ptr, QRectF a_rect, const QString &a_str,
-               const QString &a_elementId);
+                  const QString &a_elementId);
 Q_SIGNALS:
   void ready();
 

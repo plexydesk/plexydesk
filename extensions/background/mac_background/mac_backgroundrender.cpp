@@ -20,16 +20,14 @@
 #include "mac_backgroundrender.h"
 
 MacBackgroundRender::MacBackgroundRender(const QRectF &rect,
-    QGraphicsObject *parent,
-    const QImage &background_image)
-  : PlexyDesk::AbstractDesktopWidget(rect, parent)
-{
+                                         QGraphicsObject *parent,
+                                         const QImage &background_image)
+    : PlexyDesk::AbstractDesktopWidget(rect, parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   mBackgroundImage = background_image;
 }
 
-void MacBackgroundRender::setBackgroundImage(const QString &path)
-{
+void MacBackgroundRender::setBackgroundImage(const QString &path) {
   if (path.isEmpty() || path.isNull()) {
     return;
   }
@@ -41,11 +39,10 @@ void MacBackgroundRender::setBackgroundImage(const QString &path)
 void MacBackgroundRender::setStyle(StylePtr style) {}
 
 void MacBackgroundRender::paintRotatedView(QPainter * /*painter*/,
-    const QRectF & /*rect*/) {}
+                                           const QRectF & /*rect*/) {}
 
 void MacBackgroundRender::paintFrontView(QPainter *painter,
-    const QRectF & /*rect*/)
-{
+                                         const QRectF & /*rect*/) {
   // painter->drawImage(contentRect(), mBackgroundImage);
   painter->fillRect(contentRect(), Qt::transparent);
 }

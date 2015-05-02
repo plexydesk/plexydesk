@@ -27,8 +27,7 @@
 #include <desktopactivity.h>
 #include <widget.h>
 
-class FBPostDialogActivity : public PlexyDesk::DesktopActivity
-{
+class FBPostDialogActivity : public PlexyDesk::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -45,7 +44,8 @@ public:
 
   QVariantMap result() const;
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onWidgetClosed(PlexyDesk::Widget *widget);
   void onMotionAnimFinished();
 

@@ -4,8 +4,7 @@
 #include <plexy.h>
 #include <desktopwidget.h>
 
-class FacebookAuthenticationWidget : public PlexyDesk::DesktopWidget
-{
+class FacebookAuthenticationWidget : public PlexyDesk::DesktopWidget {
   Q_OBJECT
 public:
   FacebookAuthenticationWidget(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -14,7 +13,8 @@ public:
   QString permissions() const;
   void addPermissions(const QString &perm);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onLoadFinished(bool ok);
   void onUrlChanged(const QUrl &url);
 

@@ -6,8 +6,7 @@
 #include <syncobject.h>
 #include <disksyncengine.h>
 
-class WindowObjectData : public QSharedData
-{
+class WindowObjectData : public QSharedData {
 public:
   QString name;
   QString title;
@@ -17,17 +16,15 @@ public:
   QuetzalKit::SyncObject *mTaskObject;
 };
 
-WindowObject::WindowObject() : data(new WindowObjectData)
-{
+WindowObject::WindowObject() : data(new WindowObjectData) {
   data->duration = 0;
 }
 
 WindowObject::WindowObject(const WindowObject &rhs) : data(rhs.data) {}
 
-WindowObject &WindowObject::operator=(const WindowObject &rhs)
-{
+WindowObject &WindowObject::operator=(const WindowObject &rhs) {
   if (this != &rhs) {
-    data.operator = (rhs.data);
+    data.operator=(rhs.data);
   }
   return *this;
 }
@@ -48,13 +45,12 @@ void WindowObject::setTime(const QTime &time) { data->time = time; }
 
 int WindowObject::duration() const { return data->duration; }
 
-void WindowObject::updateDuration(int duration)
-{
+void WindowObject::updateDuration(int duration) {
   data->duration += duration;
 
   data->mStore = new QuetzalKit::DataStore("DesktopActivity");
   QuetzalKit::DiskSyncEngine *engine =
-    new QuetzalKit::DiskSyncEngine(data->mStore);
+      new QuetzalKit::DiskSyncEngine(data->mStore);
   data->mStore->setSyncEngine(engine);
 
   QuetzalKit::SyncObject *rootObject = data->mStore->begin("WindowList");

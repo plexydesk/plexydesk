@@ -4,11 +4,9 @@
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class DECL_UI_KIT_EXPORT WidgetStyleInterface
-{
+class DECL_UI_KIT_EXPORT WidgetStyleInterface {
 public:
   WidgetStyleInterface() {}
   virtual QSharedPointer<UIKit::Style> style() = 0;

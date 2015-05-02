@@ -25,11 +25,9 @@
 #include <datasource.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class DECL_UI_KIT_EXPORT DataPluginInterface
-{
+class DECL_UI_KIT_EXPORT DataPluginInterface {
 public:
   DataPluginInterface() {}
 

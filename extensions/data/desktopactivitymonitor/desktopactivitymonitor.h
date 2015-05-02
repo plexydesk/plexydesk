@@ -27,8 +27,7 @@
 
 #include <datastore.h>
 
-class DesktopActivityMonitorData : public PlexyDesk::DataSource
-{
+class DesktopActivityMonitorData : public PlexyDesk::DataSource {
   Q_OBJECT
 
 public:
@@ -39,7 +38,8 @@ public:
 
   void timerEvent(QTimerEvent *event);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void setArguments(QVariant sourceUpdated);
   void onTimeout();
 

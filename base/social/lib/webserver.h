@@ -4,11 +4,9 @@
 #include <QTcpServer>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit
-{
+namespace QuetzalSocialKit {
 class WebContentInterface;
-class QuetzalSocialKit_EXPORT WebServer : public QTcpServer
-{
+class QuetzalSocialKit_EXPORT WebServer : public QTcpServer {
   Q_OBJECT
 public:
   explicit WebServer(QObject *a_parent_ptr = 0);
@@ -19,7 +17,8 @@ public:
   virtual void setWebContentDelegate(WebContentInterface *interface);
 Q_SIGNALS:
   void requestCompleted(const QVariantMap &data);
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onReadyRead();
   void onDisconnected();
 

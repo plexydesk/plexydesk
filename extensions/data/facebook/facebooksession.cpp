@@ -6,8 +6,7 @@
 #include <json.h>
 #include "facebookuserinfo.h"
 
-class FacebookSession::Private
-{
+class FacebookSession::Private {
 public:
   Private() {}
   ~Private() {}
@@ -19,8 +18,7 @@ public:
 };
 
 FacebookSession::FacebookSession(QObject *parent)
-  : PlexyDesk::DataSource(parent), d(new Private)
-{
+    : PlexyDesk::DataSource(parent), d(new Private) {
   d->mContactCount = 0;
 
   d->manager = new QNetworkAccessManager(this);
@@ -28,8 +26,7 @@ FacebookSession::FacebookSession(QObject *parent)
 
 QVariantMap FacebookSession::readAll() { return d->data; }
 
-void FacebookSession::setArguments(QVariant args)
-{
+void FacebookSession::setArguments(QVariant args) {
   QVariantMap param = args.toMap();
 
   QString command = param["command"].toString();
@@ -91,9 +88,9 @@ void FacebookSession::setArguments(QVariant args)
 
     // picture.type(small) | picture.type(large);
     QUrl url(
-      QString("https://graph.facebook.com/%1/"
-              "?fields=cover,hometown,location,first_name,last_name,picture,"
-              "picture.type(normal)&limit=1&access_token=%2").arg(id, key));
+        QString("https://graph.facebook.com/%1/"
+                "?fields=cover,hometown,location,first_name,last_name,picture,"
+                "picture.type(normal)&limit=1&access_token=%2").arg(id, key));
     QNetworkReply *reply = d->manager->get(QNetworkRequest(url));
 
     connect(reply, SIGNAL(finished()), this, SLOT(onContactInfoReady()));
@@ -116,7 +113,7 @@ void FacebookSession::setArguments(QVariant args)
     QString id = param["id"].toString();
     QUrl url(QString("https://graph.facebook.com/%1/"
                      "statuses?fields=message,from&limit=1&access_token=%2")
-             .arg(id, key));
+                 .arg(id, key));
     QNetworkReply *reply = d->manager->get(QNetworkRequest(url));
 
     connect(reply, SIGNAL(finished()), this, SLOT(onStatusReady()));
@@ -159,8 +156,7 @@ void FacebookSession::setArguments(QVariant args)
   }
 }
 
-void FacebookSession::onFriendListReady()
-{
+void FacebookSession::onFriendListReady() {
 
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
@@ -184,7 +180,7 @@ void FacebookSession::onFriendListReady()
         for (int index = 0; index < data_list.size(); ++index) {
           const char *friendID = data_list[index]["id"].asCString();
           FacebookUserInfo *info = new FacebookUserInfo(
-            d->manager, QString(friendID), d->mToken, this);
+              d->manager, QString(friendID), d->mToken, this);
           connect(info, SIGNAL(finished(FacebookUserInfo *)), this,
                   SLOT(onUserInfoReady(FacebookUserInfo *)));
         }
@@ -193,8 +189,7 @@ void FacebookSession::onFriendListReady()
   }
 }
 
-void FacebookSession::onUserInfoReady(FacebookUserInfo *job)
-{
+void FacebookSession::onUserInfoReady(FacebookUserInfo *job) {
   FacebookUserInfo *user = job;
 
   if (user) {
@@ -206,8 +201,7 @@ void FacebookSession::onUserInfoReady(FacebookUserInfo *job)
   delete user;
 }
 
-void FacebookSession::onContactInfoReady()
-{
+void FacebookSession::onContactInfoReady() {
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
@@ -249,8 +243,7 @@ void FacebookSession::onContactInfoReady()
   }
 }
 
-void FacebookSession::onStatusReady()
-{
+void FacebookSession::onStatusReady() {
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
@@ -279,8 +272,7 @@ void FacebookSession::onStatusReady()
   }
 }
 
-void FacebookSession::onFeedPublished()
-{
+void FacebookSession::onFeedPublished() {
   qDebug() << Q_FUNC_INFO << "FEED published on Facebook";
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());

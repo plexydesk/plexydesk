@@ -4,8 +4,7 @@
 #include <themepackloader.h>
 #include <QHash>
 
-class ChooserActionDelegate::PrivateChooserActionDelegate
-{
+class ChooserActionDelegate::PrivateChooserActionDelegate {
 public:
   PrivateChooserActionDelegate() {}
   ~PrivateChooserActionDelegate() { mData.clear(); }
@@ -16,10 +15,9 @@ public:
 };
 
 ChooserActionDelegate::ChooserActionDelegate(QGraphicsObject *parent)
-  : UIKit::TableModel(parent), d(new PrivateChooserActionDelegate) {}
+    : UIKit::TableModel(parent), d(new PrivateChooserActionDelegate) {}
 
-ChooserActionDelegate::~ChooserActionDelegate()
-{
+ChooserActionDelegate::~ChooserActionDelegate() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
@@ -32,20 +30,17 @@ float ChooserActionDelegate::left_margin() const { return 5.0; }
 
 float ChooserActionDelegate::right_margin() const { return 5.0; }
 
-bool ChooserActionDelegate::init()
-{
+bool ChooserActionDelegate::init() {
   Q_EMIT updated();
 
   return true;
 }
 
-TableModel::TableRenderMode ChooserActionDelegate::render_type() const
-{
+TableModel::TableRenderMode ChooserActionDelegate::render_type() const {
   return ChooserActionDelegate::kRenderAsGridView;
 }
 
-void ChooserActionDelegate::removeAll()
-{
+void ChooserActionDelegate::removeAll() {
   d->mData.clear();
 
   Q_EMIT updated();
@@ -53,8 +48,7 @@ void ChooserActionDelegate::removeAll()
 
 void ChooserActionDelegate::addDataItem(const QString &label,
                                         const QPixmap pixmap, bool selected,
-                                        const QVariantMap &properties)
-{
+                                        const QVariantMap &properties) {
   d->mData[label] = pixmap;
   d->m_item_properties[label] = properties;
 

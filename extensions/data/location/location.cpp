@@ -28,8 +28,7 @@
 #include <bps/dialog.h>
 #endif
 
-class LocatoinData::Private
-{
+class LocatoinData::Private {
 public:
   Private() {}
   ~Private() {}
@@ -39,8 +38,7 @@ public:
   QTimer *mTimer;
 };
 
-void LocatoinData::startGeoTracking()
-{
+void LocatoinData::startGeoTracking() {
   if (BPS_SUCCESS != geolocation_request_events(0)) {
     qWarning() << "Error requesting geolocation events:" << strerror(errno);
   } else {
@@ -56,8 +54,7 @@ void LocatoinData::startGeoTracking()
 }
 
 LocatoinData::LocatoinData(QObject *object)
-  : PlexyDesk::DataSource(object), d(new Private)
-{
+    : PlexyDesk::DataSource(object), d(new Private) {
   bps_initialize();
 
   startGeoTracking();
@@ -69,8 +66,7 @@ LocatoinData::LocatoinData(QObject *object)
 
 void LocatoinData::init() {}
 
-LocatoinData::~LocatoinData()
-{
+LocatoinData::~LocatoinData() {
   geolocation_stop_events(0);
   bps_shutdown();
   delete d;
@@ -78,8 +74,7 @@ LocatoinData::~LocatoinData()
 
 void LocatoinData::setArguments(QVariant arg) {}
 
-QVariantMap LocatoinData::readAll()
-{
+QVariantMap LocatoinData::readAll() {
   QVariant timeVariant;
   QVariantMap dataMap;
 
@@ -89,8 +84,7 @@ QVariantMap LocatoinData::readAll()
   return dataMap;
 }
 
-void LocatoinData::timerEvent(QTimerEvent *timerevent)
-{
+void LocatoinData::timerEvent(QTimerEvent *timerevent) {
   bps_event_t *event = NULL;
   bps_get_event(&event, -1);
 
@@ -107,8 +101,7 @@ void LocatoinData::timerEvent(QTimerEvent *timerevent)
   }
 }
 
-QVariantMap LocatoinData::Private::geoLocationEvent(bps_event_t *event)
-{
+QVariantMap LocatoinData::Private::geoLocationEvent(bps_event_t *event) {
   static int count = 0;
 
   /* Double check that the event is valid */
@@ -126,15 +119,15 @@ QVariantMap LocatoinData::Private::geoLocationEvent(bps_event_t *event)
   dataMap["altitude_valid"] = geolocation_event_is_altitude_valid(event);
   dataMap["altitude_accuracy"] = geolocation_event_get_altitude_accuracy(event);
   dataMap["altitude_accuracy_valid"] =
-    geolocation_event_is_altitude_accuracy_valid(event);
+      geolocation_event_is_altitude_accuracy_valid(event);
   dataMap["heading"] = geolocation_event_get_heading(event);
   dataMap["heading_valid"] = geolocation_event_is_heading_valid(event);
   dataMap["speed"] = geolocation_event_get_speed(event);
   dataMap["speed_valid"] = geolocation_event_is_speed_valid(event);
   dataMap["num_satellites_used"] =
-    geolocation_event_get_num_satellites_used(event);
+      geolocation_event_get_num_satellites_used(event);
   dataMap["num_satellites_valid"] =
-    geolocation_event_is_num_satellites_valid(event);
+      geolocation_event_is_num_satellites_valid(event);
 
   qDebug() << Q_FUNC_INFO << dataMap;
 

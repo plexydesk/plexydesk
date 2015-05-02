@@ -34,11 +34,9 @@
 
 #include "cellsprovider.h"
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 
-class PlexyDayWidget::PlexyDayWidgetPrivate
-{
+class PlexyDayWidget::PlexyDayWidgetPrivate {
 public:
   PlexyDayWidgetPrivate() {}
   ~PlexyDayWidgetPrivate() {}
@@ -46,8 +44,7 @@ public:
 };
 
 PlexyDayWidget::PlexyDayWidget(const QRectF &rect)
-  : Widget(rect), d(new PlexyDayWidgetPrivate)
-{
+    : Widget(rect), d(new PlexyDayWidgetPrivate) {
   setContentRect(rect);
 
   this->setWidgetFlag(PlexyDesk::Widget::kRenderBackground, false);
@@ -78,8 +75,7 @@ void PlexyDayWidget::onDataReady() {}
 void PlexyDayWidget::buttonClicked() {}
 
 void PlexyDayWidget::drawBox(QPainter *painter, QLinearGradient titleCornerGrad,
-                             const QRectF &rect, QRectF titleCornerRect)
-{
+                             const QRectF &rect, QRectF titleCornerRect) {
   painter->fillRect(titleCornerRect, titleCornerGrad);
 
   PlexyDesk::StyleFeatures feature;
@@ -126,8 +122,7 @@ void PlexyDayWidget::drawBox(QPainter *painter, QLinearGradient titleCornerGrad,
 }
 
 QLinearGradient PlexyDayWidget::genGrad(QPointF start, QPointF end,
-                                        QList<QColor> &colors)
-{
+                                        QList<QColor> &colors) {
   QLinearGradient titleHeaderGrad(start, end);
 
   for (int i = 0; i < colors.count(); i++) {
@@ -137,8 +132,7 @@ QLinearGradient PlexyDayWidget::genGrad(QPointF start, QPointF end,
   return titleHeaderGrad;
 }
 
-void PlexyDayWidget::paintFrontView(QPainter *painter, const QRectF &rect)
-{
+void PlexyDayWidget::paintFrontView(QPainter *painter, const QRectF &rect) {
   if (!painter->isActive()) {
     return;
   }

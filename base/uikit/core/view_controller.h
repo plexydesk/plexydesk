@@ -47,13 +47,11 @@ action.
 \returns A list of action label supported by the widget  plugin
 */
 
-namespace UIKit
-{
+namespace UIKit {
 class Widget;
 typedef QList<QAction *> ActionList;
 
-class DECL_UI_KIT_EXPORT ViewController : public QObject
-{
+class DECL_UI_KIT_EXPORT ViewController : public QObject {
   Q_OBJECT
 
 public:
@@ -116,7 +114,7 @@ public:
       * @param args
       */
   virtual void request_action(const QString &a_actionName,
-                             const QVariantMap &a_args = QVariantMap());
+                              const QVariantMap &a_args = QVariantMap());
 
   /**
       * @brief
@@ -190,8 +188,8 @@ Q_SIGNALS:
       */
   void data(const DataSource *a_source_ptr);
 
-
-private Q_SLOTS:
+private
+Q_SLOTS:
   /**
       * @brief
       *

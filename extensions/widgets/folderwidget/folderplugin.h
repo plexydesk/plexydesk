@@ -21,7 +21,6 @@
 
 #include <plexy.h>
 
-
 #include <view_controller.h>
 #include <themepackloader.h>
 #include "iconwidgetview.h"
@@ -29,8 +28,7 @@
 class QLineEdit;
 class QWidget;
 
-class DirectoryController : public UIKit::ViewController
-{
+class DirectoryController : public UIKit::ViewController {
   Q_OBJECT
 
 public:

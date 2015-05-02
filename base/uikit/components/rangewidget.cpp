@@ -2,10 +2,8 @@
 
 #include <QDebug>
 
-namespace UIKit
-{
-class RangeWidget::PrivateRangeWidget
-{
+namespace UIKit {
+class RangeWidget::PrivateRangeWidget {
 public:
   PrivateRangeWidget() {}
   ~PrivateRangeWidget() {}
@@ -24,8 +22,7 @@ public:
 };
 
 RangeWidget::RangeWidget(QGraphicsObject *parent)
-  : UIKit::Widget(parent), d(new PrivateRangeWidget)
-{
+    : UIKit::Widget(parent), d(new PrivateRangeWidget) {
   this->set_widget_flag(UIKit::Widget::kRenderBackground);
   this->set_widget_flag(UIKit::Widget::kConvertToWindowType, false);
   this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
@@ -47,26 +44,22 @@ float RangeWidget::maxValue() const { return d->mMaxValue; }
 
 float RangeWidget::currentValue() const { return d->mProgressValue; }
 
-void RangeWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
-{
+void RangeWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
   qDebug() << Q_FUNC_INFO << event->pos();
 }
 
-void RangeWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void RangeWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   d->mInitPos = mapToScene(event->pos());
   event->accept();
   QGraphicsItem::mousePressEvent(event);
 }
 
-void RangeWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void RangeWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   event->accept();
   // QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void RangeWidget::PrivateRangeWidget::calculateValue()
-{
+void RangeWidget::PrivateRangeWidget::calculateValue() {
   //
   float decimalValue = (mAngle - mStartAngle) / (mMaxAngle / mMaxValue);
   if (decimalValue < 0) {
@@ -82,8 +75,7 @@ void RangeWidget::PrivateRangeWidget::calculateValue()
   mProgressValue = hours;
 }
 
-QString RangeWidget::PrivateRangeWidget::convertAngleToTimeString(float angle)
-{
+QString RangeWidget::PrivateRangeWidget::convertAngleToTimeString(float angle) {
   QString time = "";
   float decimalValue = (angle - mStartAngle) / 15.0;
   if (decimalValue < 0) {
@@ -101,8 +93,7 @@ QString RangeWidget::PrivateRangeWidget::convertAngleToTimeString(float angle)
   return QString("%1:%2").arg(hours).arg(minutes); // time;
 }
 
-void RangeWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void RangeWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
   /*
   QPointF pos = mapToScene(event->pos());
 
@@ -123,8 +114,7 @@ void RangeWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
   */
 }
 
-void RangeWidget::paint_view(QPainter *painter, const QRectF &rect)
-{
+void RangeWidget::paint_view(QPainter *painter, const QRectF &rect) {
   QPen pen;
   pen.setColor(QColor("#F28585"));
   pen.setWidth(10);
@@ -147,8 +137,8 @@ void RangeWidget::paint_view(QPainter *painter, const QRectF &rect)
   // painter->drawEllipse(borderRect);
 
   painter->drawLine(
-    QPointF(0.0, this->boundingRect().height() / 2),
-    QPointF(this->boundingRect().width(), this->boundingRect().height() / 2));
+      QPointF(0.0, this->boundingRect().height() / 2),
+      QPointF(this->boundingRect().width(), this->boundingRect().height() / 2));
   painter->restore();
 
   /*

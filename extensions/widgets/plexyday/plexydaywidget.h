@@ -38,11 +38,9 @@
 
 class QTimer;
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 
-class PlexyDayWidget : public PlexyDesk::Widget
-{
+class PlexyDayWidget : public PlexyDesk::Widget {
   Q_OBJECT
 
 public:
@@ -57,7 +55,8 @@ public:
 
   QLinearGradient genGrad(QPointF start, QPointF end, QList<QColor> &colors);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDataReady();
 
   void buttonClicked();

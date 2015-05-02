@@ -5,8 +5,7 @@
 
 #include "appleidletimedetector.h"
 
-class IdleTimeDetector : public QObject
-{
+class IdleTimeDetector : public QObject {
   Q_OBJECT
 public:
   explicit IdleTimeDetector(QObject *parent = 0);

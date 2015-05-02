@@ -1,21 +1,18 @@
 #ifndef SYNCOBJECT_H
 #define SYNCOBJECT_H
 
-
 #include <QObject>
 #include <QDomNode>
 #include <datastore.h>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit
-{
+namespace QuetzalKit {
 class DataSync;
 /**
     * @brief
     *
     */
-class QuetzalDataKit_EXPORT SyncObject : public QObject
-{
+class QuetzalDataKit_EXPORT SyncObject : public QObject {
   Q_OBJECT
 public:
   /**
@@ -110,7 +107,6 @@ public:
   bool contains(SyncObject *object);
   bool similarObject(SyncObject *object);
   void replace(SyncObject *object);
-
 
 Q_SIGNALS:
   void childAdded();

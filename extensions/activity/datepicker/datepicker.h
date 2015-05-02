@@ -27,8 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class DatePickerActivity : public UIKit::DesktopActivity
-{
+class DatePickerActivity : public UIKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -37,14 +36,15 @@ public:
   virtual ~DatePickerActivity();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
-                    const QPointF &window_pos);
+                     const QPointF &window_pos);
 
   QVariantMap result() const;
 
   UIKit::Window *window() const;
   void cleanup();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onWidgetClosed(UIKit::Widget *widget);
 
   void onHideAnimationFinished();

@@ -4,14 +4,12 @@
 #include <QObject>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit
-{
+namespace QuetzalKit {
 
 class SyncObject;
 class SyncEngineInterface;
 
-class QuetzalDataKit_EXPORT DataStore : public QObject
-{
+class QuetzalDataKit_EXPORT DataStore : public QObject {
   Q_OBJECT
 public:
   explicit DataStore(const QString &name, QObject *a_parent_ptr = 0);
@@ -102,7 +100,8 @@ public:
 Q_SIGNALS:
   void updated(QuetzalKit::SyncObject *rootObject);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onChildObjectAdded();
 
   void onChildCreated();

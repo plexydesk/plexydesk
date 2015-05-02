@@ -9,26 +9,27 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
 class ViewController;
 class Space;
 class Widget;
 typedef QSharedPointer<ViewController> ViewControllerPtr;
 
-class DECL_UI_KIT_EXPORT DesktopActivity : public QObject
-{
+class DECL_UI_KIT_EXPORT DesktopActivity : public QObject {
   Q_OBJECT
 public:
-  enum ResultType { kActivitySucess, mActivityCanceled };
+  enum ResultType {
+    kActivitySucess,
+    mActivityCanceled
+  };
 
   explicit DesktopActivity(QGraphicsObject *a_parent_ptr = 0);
   virtual ~DesktopActivity();
 
   virtual void create_window(const QRectF &a_window_geometry,
-                            const QString &a_window_title,
-                            const QPointF &a_window_pos) = 0;
+                             const QString &a_window_title,
+                             const QPointF &a_window_pos) = 0;
   virtual Window *window() const = 0;
 
   virtual void set_activity_attribute(const QString &a_name,
@@ -52,13 +53,14 @@ public:
 
   virtual void cleanup() = 0;
 
-  virtual void on_arguments_updated(std::function<void ()> a_handler);
+  virtual void on_arguments_updated(std::function<void()> a_handler);
 
   virtual void on_action_completed(
-      std::function<void (const QVariantMap &)> a_handler);
+      std::function<void(const QVariantMap &)> a_handler);
 
   virtual void on_discarded(
-      std::function<void (const DesktopActivity *)> a_handler);
+      std::function<void(const DesktopActivity *)> a_handler);
+
 protected:
   virtual void update_action();
   virtual void discard_activity();
@@ -72,6 +74,7 @@ Q_SIGNALS:
   void discarded();
   void resultsReady();
   void attribute_changed();
+
 private:
   class PrivateDesktopActivity;
   PrivateDesktopActivity *const d;

@@ -27,8 +27,7 @@
 
 class QTimer;
 
-class WelcomeWidget : public PlexyDesk::DesktopWidget
-{
+class WelcomeWidget : public PlexyDesk::DesktopWidget {
   Q_OBJECT
 public:
   WelcomeWidget(const QRectF &rect, QWidget *widget = 0);
@@ -36,7 +35,8 @@ public:
   void paintBackSide(QPainter *painter, const QRectF &rect);
   void paintViewSide(QPainter *painter, const QRectF &rect);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void data(QVariantMap &);
   void onDataReady();
   void fadeIn();

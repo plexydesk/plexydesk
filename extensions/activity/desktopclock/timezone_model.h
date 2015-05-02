@@ -3,8 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-class TimeZoneModel : public UIKit::TableModel
-{
+class TimeZoneModel : public UIKit::TableModel {
   Q_OBJECT
 public:
   TimeZoneModel(QGraphicsObject *a_parent_ptr = 0);
@@ -27,6 +26,7 @@ public:
   void setLabelVisibility(bool visibility);
   void setCellSize(const QSize &size);
   void clear();
+
 private:
   class PrivateTableDelegate;
   PrivateTableDelegate *const d;

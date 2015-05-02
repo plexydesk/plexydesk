@@ -25,8 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class GooglePlacesEngineData : public PlexyDesk::DataSource
-{
+class GooglePlacesEngineData : public PlexyDesk::DataSource {
   Q_OBJECT
 
 public:
@@ -37,7 +36,8 @@ public:
 
   void timerEvent(QTimerEvent *event);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void setArguments(QVariant sourceUpdated);
 
 private:

@@ -3,8 +3,7 @@
 
 #include <widget.h>
 
-class CalendarWidget : public UIKit::Widget
-{
+class CalendarWidget : public UIKit::Widget {
   Q_OBJECT
 
 public:
@@ -27,7 +26,8 @@ public:
 Q_SIGNALS:
   void done();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onNextClicked();
   void onPrevClicked();
   void onHourValueChanged(float value);

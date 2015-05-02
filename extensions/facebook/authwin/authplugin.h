@@ -6,8 +6,7 @@
 #include "facebookcontactui.h"
 #include "facebookauthenticationwidget.h"
 
-class AuthPlugin : public PlexyDesk::ControllerInterface
-{
+class AuthPlugin : public PlexyDesk::ControllerInterface {
   Q_OBJECT
 
 public:
@@ -33,7 +32,8 @@ public:
 
   void requestFriendsList(QString token, const QVariantMap &args);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDataUpdated(const QVariantMap &map);
   void onFacebookToken(const QString &token);
   void onAddContactCard(const QString &id);

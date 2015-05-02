@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QSslSocket>
 
-class SSLClient : public QObject
-{
+class SSLClient : public QObject {
   Q_OBJECT
 public:
   explicit SSLClient(QObject *parent = 0);
@@ -14,7 +13,8 @@ public:
 
 signals:
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void connectedToServer();
   void sslErrors(const QList<QSslError> &errors);
   void receiveMessage();

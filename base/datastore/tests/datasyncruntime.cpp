@@ -8,8 +8,7 @@
 #include <datastore.h>
 #include <disksyncengine.h>
 
-class DataSyncRuntime::PrivateDataSyncRuntime
-{
+class DataSyncRuntime::PrivateDataSyncRuntime {
 public:
   PrivateDataSyncRuntime() {}
   ~PrivateDataSyncRuntime() {}
@@ -18,8 +17,7 @@ public:
 };
 
 DataSyncRuntime::DataSyncRuntime(QObject *parent)
-  : d(new PrivateDataSyncRuntime), QObject(parent)
-{
+    : d(new PrivateDataSyncRuntime), QObject(parent) {
   qDebug() << Q_FUNC_INFO << "Runner Started";
 
   // testDiskEngine();
@@ -29,18 +27,16 @@ DataSyncRuntime::DataSyncRuntime(QObject *parent)
   updateTest();
 }
 
-DataSyncRuntime::~DataSyncRuntime()
-{
+DataSyncRuntime::~DataSyncRuntime() {
   qDebug() << Q_FUNC_INFO << "Runner Ended";
   delete d;
 }
 
-void DataSyncRuntime::testCreateDataStore()
-{
+void DataSyncRuntime::testCreateDataStore() {
   QuetzalKit::DataStore *store = new QuetzalKit::DataStore("wallpapers", this);
 
   QuetzalKit::MemorySyncEngine *memoryEngine =
-    new QuetzalKit::MemorySyncEngine(this);
+      new QuetzalKit::MemorySyncEngine(this);
   store->setSyncEngine(memoryEngine);
 
   QuetzalKit::SyncObject object;
@@ -126,12 +122,11 @@ void DataSyncRuntime::testCreateDataStore()
   qApp->quit();
 }
 
-void DataSyncRuntime::testDiskEngine()
-{
+void DataSyncRuntime::testDiskEngine() {
   QuetzalKit::DataStore *store = new QuetzalKit::DataStore("NoteDB", this);
 
   QuetzalKit::DiskSyncEngine *memoryEngine =
-    new QuetzalKit::DiskSyncEngine(this);
+      new QuetzalKit::DiskSyncEngine(this);
   store->setSyncEngine(memoryEngine);
 
   // return a valid noteList with a name "NoteList" and key auto;
@@ -144,7 +139,7 @@ void DataSyncRuntime::testDiskEngine()
   }
 
   if (!noteListPtr) {
-    qFatal("Missing Object");  // << Q_FUNC_INFO << "Miss match";
+    qFatal("Missing Object"); // << Q_FUNC_INFO << "Miss match";
   }
 
   if (noteListPtr->childObjects().count() <= 1) {
@@ -202,19 +197,17 @@ void DataSyncRuntime::testDiskEngine()
   qApp->quit();
 }
 
-void DataSyncRuntime::testDataSyncObject()
-{
+void DataSyncRuntime::testDataSyncObject() {
   QuetzalKit::SyncObject *object = new QuetzalKit::SyncObject(this);
   delete object;
 }
 
 void DataSyncRuntime::addTestNoteObejct(const QString &title,
-                                        const QString &content)
-{
+                                        const QString &content) {
   QuetzalKit::DataStore *store = new QuetzalKit::DataStore("NoteDB", this);
 
   QuetzalKit::DiskSyncEngine *memoryEngine =
-    new QuetzalKit::DiskSyncEngine(this);
+      new QuetzalKit::DiskSyncEngine(this);
   store->setSyncEngine(memoryEngine);
 
   QuetzalKit::SyncObject *noteListPtr = store->begin("NoteList");
@@ -226,8 +219,7 @@ void DataSyncRuntime::addTestNoteObejct(const QString &title,
   store->update();
 }
 
-void DataSyncRuntime::runDiskTest()
-{
+void DataSyncRuntime::runDiskTest() {
   QMap<uint, QString> testData;
 
   testData[0] = "Milk";
@@ -244,8 +236,7 @@ void DataSyncRuntime::runDiskTest()
   qFatal("Done");
 }
 
-void DataSyncRuntime::mergeTest()
-{
+void DataSyncRuntime::mergeTest() {
   QuetzalKit::DataStore *store_x = new QuetzalKit::DataStore("NoteDB", this);
   QuetzalKit::DataStore *store_y = new QuetzalKit::DataStore("NoteDB", this);
 
@@ -329,8 +320,7 @@ void DataSyncRuntime::mergeTest()
   }
 }
 
-void DataSyncRuntime::insertTest()
-{
+void DataSyncRuntime::insertTest() {
   QuetzalKit::DataStore *store = new QuetzalKit::DataStore("NoteDB", this);
   QuetzalKit::DiskSyncEngine *diskEngine = new QuetzalKit::DiskSyncEngine(this);
 
@@ -349,8 +339,7 @@ void DataSyncRuntime::insertTest()
   delete store;
 }
 
-void DataSyncRuntime::updateTest()
-{
+void DataSyncRuntime::updateTest() {
   QuetzalKit::DataStore *store = new QuetzalKit::DataStore("NoteDB", this);
   QuetzalKit::DiskSyncEngine *diskEngine = new QuetzalKit::DiskSyncEngine(this);
 
@@ -369,13 +358,11 @@ void DataSyncRuntime::updateTest()
   delete store;
 }
 
-void DataSyncRuntime::onStoreUpdated(QuetzalKit::SyncObject *object)
-{
+void DataSyncRuntime::onStoreUpdated(QuetzalKit::SyncObject *object) {
   // todo:write tests to check store updates.
 }
 
 void DataSyncRuntime::PrivateDataSyncRuntime::printStep(const QString &message,
-    uint step)
-{
+                                                        uint step) {
   qDebug() << Q_FUNC_INFO << message << ": " << step;
 }

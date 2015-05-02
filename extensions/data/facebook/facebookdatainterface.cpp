@@ -2,13 +2,12 @@
 #include "facebooksession.h"
 
 FacebookDataInterface::FacebookDataInterface(QObject *parent)
-  : PlexyDesk::DataPluginInterface() {}
+    : PlexyDesk::DataPluginInterface() {}
 
-QSharedPointer<PlexyDesk::DataSource> FacebookDataInterface::model()
-{
+QSharedPointer<PlexyDesk::DataSource> FacebookDataInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =
-    QSharedPointer<PlexyDesk::DataSource>(new FacebookSession(),
-                                          &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DataSource>(new FacebookSession(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

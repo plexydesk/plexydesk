@@ -8,15 +8,12 @@
 
 #include <datasync.h>
 
-namespace QuetzalKit
-{
+namespace QuetzalKit {
 
-class SyncObject::PrivateSyncObject
-{
+class SyncObject::PrivateSyncObject {
 public:
-  PrivateSyncObject() : m_sync_store(0){}
-  ~PrivateSyncObject()
-  {
+  PrivateSyncObject() : m_sync_store(0) {}
+  ~PrivateSyncObject() {
     // qDeleteAll(mChildList);
     // todo : delete later;
   }
@@ -39,13 +36,11 @@ public:
   DataSync *m_sync_store;
 };
 
-void SyncObject::updateTimeStamp()
-{
+void SyncObject::updateTimeStamp() {
   d->mTimeStamp = QDateTime::currentDateTime().currentMSecsSinceEpoch();
 }
 
-void SyncObject::removeObject(uint key)
-{
+void SyncObject::removeObject(uint key) {
   // todo;
 }
 
@@ -54,8 +49,7 @@ QDomNode SyncObject::node() { return d->mNode; }
 void SyncObject::setDomNode(const QDomNode &node) { d->mNode = node; }
 
 SyncObject::SyncObject(QObject *parent)
-  : QObject(parent), d(new PrivateSyncObject)
-{
+    : QObject(parent), d(new PrivateSyncObject) {
   updateTimeStamp();
   d->mKey = -1;
   d->mCount = -1;
@@ -63,8 +57,7 @@ SyncObject::SyncObject(QObject *parent)
   d->mDataStore = 0;
 }
 
-SyncObject::~SyncObject()
-{
+SyncObject::~SyncObject() {
   // qDebug() << Q_FUNC_INFO << name();
   delete d;
 }
@@ -73,8 +66,7 @@ uint SyncObject::timeStamp() const { return d->mTimeStamp; }
 
 void SyncObject::setTimeStamp(uint timestamp) { d->mTimeStamp = timestamp; }
 
-uint SyncObject::updatedTimeStamp() const
-{
+uint SyncObject::updatedTimeStamp() const {
   return QDateTime::currentDateTime().currentMSecsSinceEpoch();
 }
 
@@ -91,8 +83,7 @@ SyncObject *SyncObject::parentObject() const { return d->mParent; }
 void SyncObject::setParentObject(SyncObject *parent) { d->mParent = parent; }
 
 void SyncObject::setObjectAttribute(const QString &name,
-                                    const QVariant &value)
-{
+                                    const QVariant &value) {
   d->mPropertyMap[name] = value;
 
   if (!d->mNode.isNull()) {
@@ -104,8 +95,7 @@ void SyncObject::setObjectAttribute(const QString &name,
   updateTimeStamp();
 }
 
-void SyncObject::attachTextNode(const QString &data)
-{
+void SyncObject::attachTextNode(const QString &data) {
   d->mTextData = data;
 
   if (!d->mNode.isNull()) {
@@ -146,8 +136,7 @@ void SyncObject::setTextData(const QString &data) { d->mTextData = data; }
 
 QString SyncObject::textData() const { return d->mTextData; }
 
-SyncObject *SyncObject::clone(SyncObject *object)
-{
+SyncObject *SyncObject::clone(SyncObject *object) {
   if (!object) {
     return 0;
   }
@@ -171,36 +160,31 @@ void SyncObject::setDataStore(DataStore *store) { d->mDataStore = store; }
 
 DataStore *SyncObject::store() { return d->mDataStore; }
 
-void SyncObject::set_data_sync(DataSync *a_sync)
-{
+void SyncObject::set_data_sync(DataSync *a_sync) {
   if (d->m_sync_store)
     return;
 
   d->m_sync_store = a_sync;
 }
 
-void SyncObject::sync()
-{
+void SyncObject::sync() {
   if (d->m_sync_store) {
-      qDebug() << Q_FUNC_INFO << "Saved";
+    qDebug() << Q_FUNC_INFO << "Saved";
     d->m_sync_store->save_object(*this);
   }
 }
 
 QStringList SyncObject::attributes() const { return d->mPropertyMap.keys(); }
 
-QVariant SyncObject::attributeValue(const QString &name) const
-{
+QVariant SyncObject::attributeValue(const QString &name) const {
   return d->mPropertyMap[name];
 }
 
-QList<SyncObject *> SyncObject::childObjects() const
-{
+QList<SyncObject *> SyncObject::childObjects() const {
   return d->mChildMap.values();
 }
 
-SyncObject *SyncObject::childObject(uint key)
-{
+SyncObject *SyncObject::childObject(uint key) {
   if (d->mChildMap.keys().contains(key)) {
     return d->mChildMap[key];
   }
@@ -208,8 +192,7 @@ SyncObject *SyncObject::childObject(uint key)
   return 0;
 }
 
-SyncObject *SyncObject::createNewObject(const QString &name)
-{
+SyncObject *SyncObject::createNewObject(const QString &name) {
   SyncObject *rv = new SyncObject(this);
   rv->setName(name);
   d->mCount = d->mCount + 1;
@@ -239,14 +222,12 @@ SyncObject *SyncObject::createNewObject(const QString &name)
   return rv;
 }
 
-QString SyncObject::dumpContent() const
-{
+QString SyncObject::dumpContent() const {
   qDebug() << Q_FUNC_INFO << d->mNode.ownerDocument().toString();
   return d->mNode.ownerDocument().toString();
 }
 
-bool SyncObject::contains(SyncObject *object)
-{
+bool SyncObject::contains(SyncObject *object) {
   if (!this->hasChildren()) {
     qDebug() << Q_FUNC_INFO
              << "Error: No Children for Object : " << object->name();
@@ -267,8 +248,7 @@ bool SyncObject::contains(SyncObject *object)
   return false;
 }
 
-bool SyncObject::similarObject(SyncObject *object)
-{
+bool SyncObject::similarObject(SyncObject *object) {
   if (object->name() != this->name()) {
     return false;
   }
@@ -303,8 +283,7 @@ bool SyncObject::similarObject(SyncObject *object)
   return true;
 }
 
-void SyncObject::replace(SyncObject *object)
-{
+void SyncObject::replace(SyncObject *object) {
   if (!object) {
     return;
   }
@@ -319,11 +298,10 @@ void SyncObject::replace(SyncObject *object)
       QDomElement elm = node.toElement();
       elm.setAttribute(prop, object->attributeValue(prop).toString());
     }
-    }
+  }
 }
 
-SyncObject *SyncObject::childObject(const QString &name)
-{
+SyncObject *SyncObject::childObject(const QString &name) {
   if (!this->hasChildren()) {
     SyncObject *rv = createNewObject(name);
     return rv;
@@ -352,8 +330,7 @@ SyncObject SyncObject::linkedObject() const
 }
 */
 
-bool SyncObject::hasChildren() const
-{
+bool SyncObject::hasChildren() const {
   if (d->mChildMap.keys().count() > 0) {
     return true;
   }
@@ -362,8 +339,7 @@ bool SyncObject::hasChildren() const
 
 uint SyncObject::childCount() const { return d->mChildMap.keys().count(); }
 
-void SyncObject::addChildObject(SyncObject *object)
-{
+void SyncObject::addChildObject(SyncObject *object) {
   d->mCount += 1;
   uint currentKey = d->mCount;
 
@@ -387,8 +363,7 @@ void SyncObject::addChildObject(SyncObject *object)
   updateTimeStamp();
 }
 
-void SyncObject::PrivateSyncObject::addChildNode(SyncObject *object)
-{
+void SyncObject::PrivateSyncObject::addChildNode(SyncObject *object) {
   if (!object) {
     return;
   }

@@ -7,10 +7,8 @@
 #include <QGraphicsLayoutItem>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT ImageView : public Widget
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT ImageView : public Widget {
   Q_OBJECT
 public:
   explicit ImageView(QGraphicsObject *a_parent_ptr = 0);
@@ -27,6 +25,7 @@ Q_SIGNALS:
   void mouseReleased();
   void mouseEnter();
   void mouseLeave();
+
 private:
   virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr);
@@ -34,6 +33,7 @@ private:
   virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *a_event_ptr);
 
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_exposeRect);
+
 private:
   class PrivateImageView;
   PrivateImageView *const d;

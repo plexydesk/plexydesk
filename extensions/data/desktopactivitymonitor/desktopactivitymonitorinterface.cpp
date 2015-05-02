@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> DesktopActivityMonitorInterface::model()
-{
+QSharedPointer<PlexyDesk::DataSource> DesktopActivityMonitorInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =
-    QSharedPointer<PlexyDesk::DataSource>(new DesktopActivityMonitorData(),
-                                          &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DataSource>(new DesktopActivityMonitorData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

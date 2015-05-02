@@ -2,10 +2,8 @@
 
 #include <QDebug>
 
-namespace UIKit
-{
-class DialWidget::PrivateDialWidget
-{
+namespace UIKit {
+class DialWidget::PrivateDialWidget {
 public:
   PrivateDialWidget() {}
   ~PrivateDialWidget() {}
@@ -24,8 +22,7 @@ public:
 };
 
 DialWidget::DialWidget(QGraphicsObject *parent)
-  : UIKit::Widget(parent), d(new PrivateDialWidget)
-{
+    : UIKit::Widget(parent), d(new PrivateDialWidget) {
   this->set_widget_flag(UIKit::Widget::kRenderBackground);
   this->set_widget_flag(UIKit::Widget::kConvertToWindowType, false);
   this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
@@ -47,26 +44,22 @@ float DialWidget::maxValue() const { return d->mMaxValue; }
 
 float DialWidget::currentValue() const { return d->mProgressValue; }
 
-void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
-{
+void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
   qDebug() << Q_FUNC_INFO << event->pos();
 }
 
-void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   d->mInitPos = mapToScene(event->pos());
   event->accept();
   QGraphicsItem::mousePressEvent(event);
 }
 
-void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   event->accept();
   // QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void DialWidget::PrivateDialWidget::calculateValue()
-{
+void DialWidget::PrivateDialWidget::calculateValue() {
   //
   float decimalValue = (mAngle - mStartAngle) / (mMaxAngle / mMaxValue);
   if (decimalValue < 0) {
@@ -82,8 +75,7 @@ void DialWidget::PrivateDialWidget::calculateValue()
   mProgressValue = hours;
 }
 
-QString DialWidget::PrivateDialWidget::convertAngleToTimeString(float angle)
-{
+QString DialWidget::PrivateDialWidget::convertAngleToTimeString(float angle) {
   QString time = "";
   float decimalValue = (angle - mStartAngle) / 15.0;
   if (decimalValue < 0) {
@@ -101,8 +93,7 @@ QString DialWidget::PrivateDialWidget::convertAngleToTimeString(float angle)
   return QString("%1:%2").arg(hours).arg(minutes); // time;
 }
 
-void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
   QPointF pos = mapToScene(event->pos());
 
   QLineF line(boundingRect().center(), event->pos());
@@ -122,8 +113,7 @@ void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
   Q_EMIT value(d->mProgressValue);
 }
 
-void DialWidget::paint_view(QPainter *painter, const QRectF &rect)
-{
+void DialWidget::paint_view(QPainter *painter, const QRectF &rect) {
   QPen pen;
   pen.setColor(QColor("#F28585"));
   pen.setWidth(4);

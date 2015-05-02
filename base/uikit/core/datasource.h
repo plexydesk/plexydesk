@@ -88,10 +88,8 @@ operation.
 \param args The argument to be passed to the data source, The data source should
 define the protocol to be used.
 **/
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT DataSource : public QObject
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT DataSource : public QObject {
   Q_OBJECT
 
 public:
@@ -103,7 +101,8 @@ public:
 
   virtual void request_data(QVariant a_args);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   virtual void set_arguments(QVariant a_args) = 0;
 
 Q_SIGNALS:

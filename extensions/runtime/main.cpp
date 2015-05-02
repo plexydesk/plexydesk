@@ -6,8 +6,7 @@
 #include <QCommandLineParser>
 #include <extensionmanager.h>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
 
   QCoreApplication::setApplicationName("PlexyDesk Engine Loader");
@@ -36,15 +35,15 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_MAC
   UIKit::ExtensionManager *loader = UIKit::ExtensionManager::instance(
-                                      QDir::toNativeSeparators(
-                                        (pathPtr) + QLatin1String("/Contents/share/plexy/ext/groups/")),
-                                      QDir::toNativeSeparators((pathPtr) +
-                                          QLatin1String("/Contents/lib/plexyext/")));
+      QDir::toNativeSeparators(
+          (pathPtr) + QLatin1String("/Contents/share/plexy/ext/groups/")),
+      QDir::toNativeSeparators((pathPtr) +
+                               QLatin1String("/Contents/lib/plexyext/")));
 #else
   UIKit::ExtensionManager *loader = UIKit::ExtensionManager::instance(
-                                   QDir::toNativeSeparators((pathPtr) +
-                                       QLatin1String("/share/plexy/ext/groups/")),
-                                   QDir::toNativeSeparators((pathPtr) + QLatin1String("/lib/plexyext/")));
+      QDir::toNativeSeparators((pathPtr) +
+                               QLatin1String("/share/plexy/ext/groups/")),
+      QDir::toNativeSeparators((pathPtr) + QLatin1String("/lib/plexyext/")));
 #endif
 
   ExtLaoderTestRunner runner;

@@ -4,8 +4,7 @@
 #include <plexy.h>
 #include <desktopwidget.h>
 
-class FacebookMessageDialog : public PlexyDesk::DesktopWidget
-{
+class FacebookMessageDialog : public PlexyDesk::DesktopWidget {
   Q_OBJECT
 public:
   FacebookMessageDialog(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -16,7 +15,8 @@ public:
 Q_SIGNALS:
   void messageRequested();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onClicked();
 
 private:

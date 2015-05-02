@@ -24,11 +24,9 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class WindowButton::PrivateWindowButton
-{
+class WindowButton::PrivateWindowButton {
 public:
   PrivateWindowButton() {}
   ~PrivateWindowButton() {}
@@ -37,35 +35,32 @@ public:
 };
 
 WindowButton::WindowButton(QGraphicsObject *parent)
-  : Button(parent), d(new PrivateWindowButton)
-{
+    : Button(parent), d(new PrivateWindowButton) {
   setGeometry(boundingRect());
   d->mType = CLOSE;
 }
 
 WindowButton::~WindowButton() { delete d; }
 
-void WindowButton::set_button_type(WindowButton::WindowButtonType a_type)
-{
+void WindowButton::set_button_type(WindowButton::WindowButtonType a_type) {
   d->mType = a_type;
 }
 
-QRectF WindowButton::boundingRect() const
-{
+QRectF WindowButton::boundingRect() const {
   if (!Theme::style()) {
     return QRectF();
   }
 
   return QRectF(
-           0.0, 0.0,
-           Theme::style()->attribute("frame", "window_close_button_width").toFloat(),
-           Theme::style()
-           ->attribute("frame", "window_close_button_height")
-           .toFloat());
+      0.0, 0.0,
+      Theme::style()->attribute("frame", "window_close_button_width").toFloat(),
+      Theme::style()
+          ->attribute("frame", "window_close_button_height")
+          .toFloat());
 }
 
-void WindowButton::paint_normal_button(QPainter *a_painter_ptr, const QRectF &a_rect)
-{
+void WindowButton::paint_normal_button(QPainter *a_painter_ptr,
+                                       const QRectF &a_rect) {
   StyleFeatures feature;
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderElement;
@@ -75,8 +70,8 @@ void WindowButton::paint_normal_button(QPainter *a_painter_ptr, const QRectF &a_
   }
 }
 
-void WindowButton::paint_sunken_button(QPainter *a_painter_ptr, const QRectF &a_rect)
-{
+void WindowButton::paint_sunken_button(QPainter *a_painter_ptr,
+                                       const QRectF &a_rect) {
   StyleFeatures feature;
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderRaised;

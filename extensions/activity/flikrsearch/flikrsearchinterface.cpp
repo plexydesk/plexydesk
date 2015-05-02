@@ -21,11 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity> FlikrSearchInterface::activity()
-{
+QSharedPointer<UIKit::DesktopActivity> FlikrSearchInterface::activity() {
   QSharedPointer<UIKit::DesktopActivity> obj =
-    QSharedPointer<UIKit::DesktopActivity>(new FlickrSearchActivity(),
-        &QObject::deleteLater);
+      QSharedPointer<UIKit::DesktopActivity>(new FlickrSearchActivity(),
+                                             &QObject::deleteLater);
 
   return obj;
 }

@@ -25,8 +25,7 @@
 #include <desktopactivity.h>
 
 class FBPostDialogInterface : public QObject,
-  public PlexyDesk::ActivityInterface
-{
+                              public PlexyDesk::ActivityInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.fbpostdialog")

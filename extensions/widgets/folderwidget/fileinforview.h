@@ -26,8 +26,7 @@
 #include <QIcon>
 #include <QFileInfo>
 
-class FileInforView : public UIKit::Widget
-{
+class FileInforView : public UIKit::Widget {
   Q_OBJECT
 public:
   FileInforView(QGraphicsObject *a_parent_ptr = 0);
@@ -42,7 +41,8 @@ public:
 
   void setSliderPos(const QPointF &start, const QPointF &end);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onClicked();
   void onCloseButtonClicked();
 

@@ -3,8 +3,7 @@
 
 #include <button.h>
 
-class FacebookContactCardButton : public PlexyDesk::Button
-{
+class FacebookContactCardButton : public PlexyDesk::Button {
   Q_OBJECT
 public:
   explicit FacebookContactCardButton(QGraphicsObject *parent = 0);

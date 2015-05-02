@@ -3,8 +3,7 @@
 
 #include <QTcpServer>
 
-class SslServer : public QTcpServer
-{
+class SslServer : public QTcpServer {
   Q_OBJECT
 
 public:

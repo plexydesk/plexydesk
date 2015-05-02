@@ -6,8 +6,7 @@
 
 #include "facebookcontactcard.h"
 
-class FacebookContactUI : public PlexyDesk::DesktopWidget
-{
+class FacebookContactUI : public PlexyDesk::DesktopWidget {
   Q_OBJECT
 public:
   explicit FacebookContactUI(const QRectF &rect);
@@ -20,7 +19,8 @@ public:
 Q_SIGNALS:
   void addContactCard(QString);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onViewClicked(QString);
 
 private:

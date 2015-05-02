@@ -6,11 +6,10 @@
 
 PlexyDayInterface::PlexyDayInterface(QObject *object) {}
 
-QSharedPointer<PlexyDesk::ControllerInterface> PlexyDayInterface::controller()
-{
+QSharedPointer<PlexyDesk::ControllerInterface> PlexyDayInterface::controller() {
   QSharedPointer<PlexyDesk::ControllerInterface> obj =
-    QSharedPointer<PlexyDesk::ControllerInterface>(
-      new PlexyDayController(this), &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::ControllerInterface>(
+          new PlexyDayController(this), &QObject::deleteLater);
 
   return obj;
 }

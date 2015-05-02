@@ -7,8 +7,7 @@
 #include <style.h>
 #include <desktopwidget.h>
 
-class Note : public PlexyDesk::DesktopWidget
-{
+class Note : public PlexyDesk::DesktopWidget {
   Q_OBJECT
 public:
   explicit Note(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -26,7 +25,8 @@ public:
 Q_SIGNALS:
   void clicked(Note *item);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onClicked();
 
 protected:

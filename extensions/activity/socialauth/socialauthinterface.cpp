@@ -21,11 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity> SocialAuthInterface::activity()
-{
+QSharedPointer<UIKit::DesktopActivity> SocialAuthInterface::activity() {
   QSharedPointer<UIKit::DesktopActivity> obj =
-    QSharedPointer<UIKit::DesktopActivity>(new SocialAuthActivity(),
-        &QObject::deleteLater);
+      QSharedPointer<UIKit::DesktopActivity>(new SocialAuthActivity(),
+                                             &QObject::deleteLater);
 
   return obj;
 }

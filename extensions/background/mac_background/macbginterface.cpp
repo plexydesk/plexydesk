@@ -22,17 +22,16 @@
 
 #include <QtPlugin>
 
-MacBackgroundPlugin::MacBackgroundPlugin(QObject * /*object*/)
-  : PlexyDesk::ControllerPluginInterface() {}
+MacBackgroundPlugin::MacBackgroundPlugin(QObject* /*object*/)
+    : PlexyDesk::ControllerPluginInterface() {}
 
 MacBackgroundPlugin::~MacBackgroundPlugin() {}
 
 QSharedPointer<PlexyDesk::ControllerInterface>
-MacBackgroundPlugin::controller()
-{
+MacBackgroundPlugin::controller() {
   QSharedPointer<PlexyDesk::ControllerInterface> obj =
-    QSharedPointer<PlexyDesk::ControllerInterface>(
-      new MacBackgroundController(this), &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::ControllerInterface>(
+          new MacBackgroundController(this), &QObject::deleteLater);
 
   return obj;
 }

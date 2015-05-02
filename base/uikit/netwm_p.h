@@ -53,8 +53,7 @@ framework/library.
 @internal
 **/
 
-template <class Z> class NETRArray
-{
+template <class Z> class NETRArray {
 public:
   /**
   Constructs an empty (size == 0) array.
@@ -118,7 +117,7 @@ struct NETRootInfoPrivate {
   int current_desktop;
 
   unsigned long clients_count, stacking_count, virtual_roots_count,
-           kde_system_tray_windows_count;
+      kde_system_tray_windows_count;
   bool showing_desktop;
 
   unsigned long properties[5];

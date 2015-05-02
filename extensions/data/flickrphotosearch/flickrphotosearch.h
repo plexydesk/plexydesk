@@ -26,8 +26,7 @@
 #include <QtNetwork>
 #include <webservice.h>
 
-class FlickrPhotoSearchData : public UIKit::DataSource
-{
+class FlickrPhotoSearchData : public UIKit::DataSource {
   Q_OBJECT
 
 public:
@@ -38,7 +37,8 @@ public:
 
   void timerEvent(QTimerEvent *event);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void set_arguments(QVariant source_updated);
   void onServiceComplete(QuetzalSocialKit::WebService *service);
 

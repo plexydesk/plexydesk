@@ -23,8 +23,7 @@
 #include <plexy.h>
 #include <widgetstyleinterface.h>
 
-class CocoaInterface : public QObject, public UIKit::WidgetStyleInterface
-{
+class CocoaInterface : public QObject, public UIKit::WidgetStyleInterface {
   Q_OBJECT
   Q_INTERFACES(UIKit::WidgetStyleInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.cocoa")

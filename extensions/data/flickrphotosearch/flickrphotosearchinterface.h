@@ -24,8 +24,7 @@
 #include <dataplugininterface.h>
 
 class FlickrPhotoSearchInterface : public QObject,
-  public UIKit::DataPluginInterface
-{
+                                   public UIKit::DataPluginInterface {
   Q_OBJECT
   Q_INTERFACES(UIKit::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.flickrphotosearch")

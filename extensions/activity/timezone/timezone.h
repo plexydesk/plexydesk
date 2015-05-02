@@ -27,8 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class TimeZoneActivity : public UIKit::DesktopActivity
-{
+class TimeZoneActivity : public UIKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -36,14 +35,14 @@ public:
 
   virtual ~TimeZoneActivity();
 
-  void create_window(const QRectF &aWindowGeometry,
-                    const QString &aWindowTitle,
-                    const QPointF &aWindowPos);
+  void create_window(const QRectF &aWindowGeometry, const QString &aWindowTitle,
+                     const QPointF &aWindowPos);
   UIKit::Window *window() const;
   void cleanup();
 
   QVariantMap result() const;
-  virtual void update_attribute(const QString &aName, const QVariant &aVariantData);
+  virtual void update_attribute(const QString &aName,
+                                const QVariant &aVariantData);
 
 private:
   class PrivateTimeZone;

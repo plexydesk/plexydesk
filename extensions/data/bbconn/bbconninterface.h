@@ -24,8 +24,7 @@
 #include <dataplugininterface.h>
 #include <QtNetwork>
 
-class BBConnInterface : public QObject, public PlexyDesk::DataPluginInterface
-{
+class BBConnInterface : public QObject, public PlexyDesk::DataPluginInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.bbconn")

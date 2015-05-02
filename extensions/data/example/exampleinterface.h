@@ -28,8 +28,7 @@
 #include <dataplugin.h>
 #include "flicker.h"
 
-class ExampleInterface : public PlexyDesk::DataInterface
-{
+class ExampleInterface : public PlexyDesk::DataInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 

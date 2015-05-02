@@ -6,11 +6,9 @@
 #include <QtGui/QPainter>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class DECL_UI_KIT_EXPORT StyleFeatures
-{
+class DECL_UI_KIT_EXPORT StyleFeatures {
 
 public:
   typedef enum {

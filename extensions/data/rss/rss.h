@@ -30,8 +30,7 @@
 #include <QMap>
 #include <QList>
 
-class VISIBLE_SYM RssData : public PlexyDesk::DataPlugin
-{
+class VISIBLE_SYM RssData : public PlexyDesk::DataPlugin {
   Q_OBJECT
 
 public:
@@ -42,7 +41,8 @@ public:
   virtual void render(QPainter *p, QRectF r); // {};
   virtual void pushData(QVariant &);
 
-public slots:
+public
+slots:
   void fetch();
   void finished(int id, bool error);
   void readData(const QHttpResponseHeader &);

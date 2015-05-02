@@ -27,8 +27,7 @@
 #include <cv.h>
 #include <highgui.h>
 
-class VISIBLE_SYM WebCamData : public PlexyDesk::DataPlugin
-{
+class VISIBLE_SYM WebCamData : public PlexyDesk::DataPlugin {
   Q_OBJECT
 
 public:
@@ -37,10 +36,12 @@ public:
   void init();
   QVariantMap readAll();
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void pushData(QVariant &data);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void grab();
 
 private:

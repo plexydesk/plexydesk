@@ -4,8 +4,7 @@
 #include <QHash>
 #include <QTimeZone>
 
-class TimeZoneModel::PrivateTableDelegate
-{
+class TimeZoneModel::PrivateTableDelegate {
 public:
   PrivateTableDelegate() {}
   ~PrivateTableDelegate() { m_data_map.clear(); }
@@ -17,8 +16,7 @@ public:
 };
 
 TimeZoneModel::TimeZoneModel(QGraphicsObject *parent)
-  : UIKit::TableModel(parent), d(new PrivateTableDelegate)
-{
+    : UIKit::TableModel(parent), d(new PrivateTableDelegate) {
   d->m_current_item_label_visibility = false;
 }
 
@@ -32,8 +30,7 @@ float TimeZoneModel::left_margin() const { return 0.0; }
 
 float TimeZoneModel::right_margin() const { return 0.0; }
 
-bool TimeZoneModel::init()
-{
+bool TimeZoneModel::init() {
   /*
   Q_FOREACH(const QByteArray &ids, QTimeZone::availableTimeZoneIds()) {
       QTimeZone zone(ids);
@@ -50,16 +47,14 @@ bool TimeZoneModel::init()
   return true;
 }
 
-UIKit::TableModel::TableRenderMode TimeZoneModel::render_type() const
-{
+UIKit::TableModel::TableRenderMode TimeZoneModel::render_type() const {
   return UIKit::TableModel::kRenderAsListView;
 }
 
 void TimeZoneModel::insertItem(const QString &label, const QPixmap pixmap,
-                               bool selected)
-{
+                               bool selected) {
   DefaultTableComponent *item = new DefaultTableComponent(
-    QRectF(0.0, 0.0, 240, 32), DefaultTableComponent::kListLayout, 0);
+      QRectF(0.0, 0.0, 240, 32), DefaultTableComponent::kListLayout, 0);
 
   // item->setLabelVisibility(d->m_current_item_label_visibility);
   item->set_data(pixmap, label);
@@ -67,13 +62,11 @@ void TimeZoneModel::insertItem(const QString &label, const QPixmap pixmap,
   Q_EMIT add(item);
 }
 
-void TimeZoneModel::setLabelVisibility(bool visibility)
-{
+void TimeZoneModel::setLabelVisibility(bool visibility) {
   d->m_current_item_label_visibility = visibility;
 }
 
-void TimeZoneModel::setCellSize(const QSize &size)
-{
+void TimeZoneModel::setCellSize(const QSize &size) {
   d->m_current_item_size = size;
 }
 

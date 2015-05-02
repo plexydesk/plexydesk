@@ -3,13 +3,16 @@
 
 #include <abstractcellcomponent.h>
 
-class GridIcon : public UIKit::TableViewItem
-{
+class GridIcon : public UIKit::TableViewItem {
   Q_OBJECT
 public:
-  typedef enum { List = 0, Grid } ItemLayout;
+  typedef enum {
+    List = 0,
+    Grid
+  } ItemLayout;
 
-  GridIcon(const QRectF &rect, ItemLayout = List, QGraphicsItem *a_parent_ptr = 0);
+  GridIcon(const QRectF &rect, ItemLayout = List,
+           QGraphicsItem *a_parent_ptr = 0);
   ~GridIcon();
 
   QRectF boundingRect() const;
@@ -39,7 +42,8 @@ protected:
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                      QWidget *widget = 0);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onClicked();
 
 private:

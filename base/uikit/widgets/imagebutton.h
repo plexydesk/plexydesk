@@ -6,11 +6,9 @@
 #include <QGraphicsObject>
 #include <widget.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
-class DECL_UI_KIT_EXPORT ImageButton : public Widget
-{
+class DECL_UI_KIT_EXPORT ImageButton : public Widget {
   Q_OBJECT
 public:
   explicit ImageButton(QGraphicsObject *a_parent_ptr = 0);
@@ -30,7 +28,8 @@ public:
 
 Q_SIGNALS:
   void selected(bool);
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onZoomDone();
   void onZoomOutDone();
   void createZoomAnimation();

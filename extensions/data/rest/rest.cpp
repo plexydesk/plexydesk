@@ -23,8 +23,7 @@
 #define POST 0
 #define GET 1
 
-class RestData::Private
-{
+class RestData::Private {
 public:
   Private() {}
   ~Private() {}
@@ -34,8 +33,7 @@ public:
   QVariantMap data;
 };
 
-RestData::RestData(QObject * /*object*/) : d(new Private)
-{
+RestData::RestData(QObject * /*object*/) : d(new Private) {
   d->manager = new QNetworkAccessManager(this);
   connect(d->manager, SIGNAL(finished(QNetworkReply *)), this,
           SLOT(replyFinished(QNetworkReply *)));
@@ -48,8 +46,7 @@ void RestData::init() { qDebug() << Q_FUNC_INFO; }
 
 RestData::~RestData() { delete d; }
 
-void RestData::set_arguments(QVariant arg)
-{
+void RestData::set_arguments(QVariant arg) {
   qDebug() << Q_FUNC_INFO << arg;
   QVariantMap param = arg.toMap();
 
@@ -66,16 +63,14 @@ void RestData::set_arguments(QVariant arg)
   }
 }
 
-void RestData::replyFinished(QNetworkReply *reply)
-{
+void RestData::replyFinished(QNetworkReply *reply) {
   QVariantMap response;
   response["data"] = QVariant(reply->readAll());
   d->data = response;
   Q_EMIT ready();
 }
 
-void RestData::handleAuth(QNetworkReply * /*r*/, QAuthenticator *auth)
-{
+void RestData::handleAuth(QNetworkReply * /*r*/, QAuthenticator *auth) {
   auth->setUser(d->user);
   auth->setPassword(d->pass);
 }

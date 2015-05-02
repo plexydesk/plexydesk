@@ -23,8 +23,7 @@
 
 ExampleInterface::ExampleInterface(QObject *object) {}
 
-PlexyDesk::DataPlugin *ExampleInterface::instance()
-{
+PlexyDesk::DataPlugin *ExampleInterface::instance() {
   /* this is the plugin we are returning since plexy core
      or other plugins will expect this pointer
    */

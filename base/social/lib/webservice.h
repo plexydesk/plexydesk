@@ -6,15 +6,13 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKit_export.h>
 
-namespace QuetzalSocialKit
-{
+namespace QuetzalSocialKit {
 
 class ServiceDefinition;
 
 typedef QSharedPointer<ServiceDefinition> ServiceDefinitionPtr;
 
-class QuetzalSocialKit_EXPORT WebService : public QObject
-{
+class QuetzalSocialKit_EXPORT WebService : public QObject {
   Q_OBJECT
 public:
   explicit WebService(QObject *a_parent_ptr = 0);
@@ -45,7 +43,8 @@ public:
 Q_SIGNALS:
   void finished(QuetzalSocialKit::WebService *service);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onNetworkRequestFinished(QNetworkReply *reply);
 
   void onDownloadRequestComplete();

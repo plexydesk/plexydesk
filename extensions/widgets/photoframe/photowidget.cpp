@@ -1,7 +1,6 @@
 #include "photowidget.h"
 
-class PhotoWidget::PrivatePhotoFrame
-{
+class PhotoWidget::PrivatePhotoFrame {
 public:
   PrivatePhotoFrame() {}
   ~PrivatePhotoFrame() {}
@@ -9,22 +8,20 @@ public:
 };
 
 PhotoWidget::PhotoWidget(QGraphicsObject *parent)
-  : UIKit::Widget(parent), d(new PrivatePhotoFrame)
-{
+    : UIKit::Widget(parent), d(new PrivatePhotoFrame) {
   set_widget_flag(UIKit::Widget::kRenderDropShadow, true);
   mValid = 0;
 }
 
 PhotoWidget::~PhotoWidget() { delete d; }
 
-void PhotoWidget::setContentImage(const QPixmap &pixmap)
-{
+void PhotoWidget::setContentImage(const QPixmap &pixmap) {
   mContentPixmap = pixmap;
   QRectF pixmapRect = pixmap.rect();
 
   /*calculate the new height for the content rect width */
   float pixmapHeight =
-    (pixmapRect.height() / pixmapRect.width()) * geometry().width();
+      (pixmapRect.height() / pixmapRect.width()) * geometry().width();
   pixmapRect.setHeight(pixmapHeight);
   pixmapRect.setWidth(geometry().width());
   setGeometry(pixmapRect);
@@ -39,8 +36,7 @@ QString PhotoWidget::photoURL() const { return d->m_photo_url; }
 
 bool PhotoWidget::validPhotoFrame() { return mValid; }
 
-QRectF PhotoWidget::scaledDockRect(const QPixmap &pixmap) const
-{
+QRectF PhotoWidget::scaledDockRect(const QPixmap &pixmap) const {
   QRectF rect;
   float scaleTo = 128.0;
   QRectF pixmapRect = pixmap.rect();
@@ -62,8 +58,7 @@ QRectF PhotoWidget::scaledDockRect(const QPixmap &pixmap) const
   return rect;
 }
 
-void PhotoWidget::paint_view(QPainter *painter, const QRectF &rect)
-{
+void PhotoWidget::paint_view(QPainter *painter, const QRectF &rect) {
   painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
   painter->setRenderHint(QPainter::Antialiasing);
   painter->setRenderHint(QPainter::SmoothPixmapTransform);

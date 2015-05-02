@@ -19,10 +19,8 @@
 
 #include "videoentity.h"
 
-namespace PlexyDesk
-{
-VideoEntity::VideoEntity()
-{
+namespace PlexyDesk {
+VideoEntity::VideoEntity() {
   title = "";
   link = "";
   desc = "";

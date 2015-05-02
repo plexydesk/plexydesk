@@ -8,15 +8,15 @@
 #include <pendingjob.h>
 #include "facebookuserinfo.h"
 
-class FacebookSession : public PlexyDesk::DataSource
-{
+class FacebookSession : public PlexyDesk::DataSource {
   Q_OBJECT
 public:
   explicit FacebookSession(QObject *parent = 0);
 
   virtual QVariantMap readAll();
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void setArguments(QVariant args);
   void onFriendListReady();
   void onUserInfoReady(FacebookUserInfo *job);

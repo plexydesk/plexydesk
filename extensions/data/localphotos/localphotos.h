@@ -25,15 +25,15 @@
 #include <abstractplugininterface.h>
 #include <datainterface.h>
 
-class VISIBLE_SYM LPhotoData : public PlexyDesk::DataPlugin
-{
+class VISIBLE_SYM LPhotoData : public PlexyDesk::DataPlugin {
   Q_OBJECT
 
 public:
   LPhotoData(QObject *object = 0);
   virtual ~LPhotoData();
   void init();
-public slots:
+public
+slots:
   void loadImages();
   void nextImage();
   void pushData(QVariant &);

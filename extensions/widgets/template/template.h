@@ -27,8 +27,7 @@
 #include <abstractdesktopwidget.h>
 #include <QtNetwork>
 
-class TemplateControllerImpl : public PlexyDesk::ControllerInterface
-{
+class TemplateControllerImpl : public PlexyDesk::ControllerInterface {
   Q_OBJECT
 
 public:
@@ -47,7 +46,8 @@ public:
 
   void requestAction(const QString &actionName, const QVariantMap &args);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:

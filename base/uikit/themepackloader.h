@@ -12,10 +12,8 @@
 
 #include <webservice.h>
 
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT Theme : public QObject
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT Theme : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString themeName READ QString WRITE set_theme_name)
 public:
@@ -29,7 +27,9 @@ public:
   static StylePtr style();
   static QPixmap icon(const QString &a_name, const QString &a_resolution);
 
-  virtual QPixmap drawable(const QString &a_fileName, const QString &a_resoution);
+  virtual QPixmap drawable(const QString &a_fileName,
+                           const QString &a_resoution);
+
 private:
   void scane_resources();
   StylePtr default_desktop_style();

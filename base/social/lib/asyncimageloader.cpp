@@ -10,15 +10,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-namespace QuetzalSocialKit
-{
+namespace QuetzalSocialKit {
 
-class AsyncImageLoader::PrivateAsyncImageLoader
-{
+class AsyncImageLoader::PrivateAsyncImageLoader {
 public:
   PrivateAsyncImageLoader() {}
-  ~PrivateAsyncImageLoader()
-  {
+  ~PrivateAsyncImageLoader() {
     mThumbData.clear();
     mPathData.clear();
   }
@@ -30,33 +27,28 @@ public:
 };
 
 AsyncImageLoader::AsyncImageLoader(QObject *parent)
-  : QThread(parent), d(new PrivateAsyncImageLoader) {}
+    : QThread(parent), d(new PrivateAsyncImageLoader) {}
 
-AsyncImageLoader::~AsyncImageLoader()
-{
+AsyncImageLoader::~AsyncImageLoader() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void AsyncImageLoader::setUrl(const QUrl &url) { d->mUrl = url; }
 
-QList<QImage> AsyncImageLoader::thumbNails() const
-{
+QList<QImage> AsyncImageLoader::thumbNails() const {
   return d->mThumbData.values();
 }
 
-QImage AsyncImageLoader::imageThumbByName(const QString &key) const
-{
+QImage AsyncImageLoader::imageThumbByName(const QString &key) const {
   return d->mThumbData[key];
 }
 
-QString AsyncImageLoader::filePathFromName(const QString &key) const
-{
+QString AsyncImageLoader::filePathFromName(const QString &key) const {
   return d->mPathData[key];
 }
 
-void AsyncImageLoader::run()
-{
+void AsyncImageLoader::run() {
   qDebug() << Q_FUNC_INFO;
   if (!d->mUrl.isValid()) {
     qWarning() << Q_FUNC_INFO << "Invalid URL";
@@ -85,12 +77,12 @@ void AsyncImageLoader::run()
 
       Q_FOREACH(const QString & pictureName, localPictureList) {
         QImage wallpaperImage(QDir::toNativeSeparators(
-                                localPictureDir.absolutePath() + "/" + pictureName));
+            localPictureDir.absolutePath() + "/" + pictureName));
         if (!wallpaperImage.isNull()) {
           // d->mData[pictureName] = wallpaperImage;
           d->mThumbData[pictureName] = wallpaperImage;
           d->mPathData[pictureName] = QDir::toNativeSeparators(
-                                        localPictureDir.absolutePath() + "/" + pictureName);
+              localPictureDir.absolutePath() + "/" + pictureName);
           qDebug() << Q_FUNC_INFO << "Adding new Image" << pictureName;
           // delete wallpaperImage;
           Q_EMIT ready(pictureName);
@@ -101,7 +93,7 @@ void AsyncImageLoader::run()
       QImage *wallpaperImage = new QImage(info.filePath() + info.fileName());
       d->mThumbData[info.fileName()] = wallpaperImage->scaledToWidth(72);
       d->mPathData[info.fileName()] =
-        QDir::toNativeSeparators(info.filePath() + info.fileName());
+          QDir::toNativeSeparators(info.filePath() + info.fileName());
       delete wallpaperImage;
       Q_EMIT ready(info.fileName());
       Q_EMIT ready();
@@ -117,8 +109,7 @@ void AsyncImageLoader::run()
   }
 }
 
-void AsyncImageLoader::onNetworkRequestFinished(QNetworkReply *reply)
-{
+void AsyncImageLoader::onNetworkRequestFinished(QNetworkReply *reply) {
   if (reply) {
     QByteArray data = reply->readAll();
 

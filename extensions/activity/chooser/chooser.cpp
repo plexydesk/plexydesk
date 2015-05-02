@@ -31,8 +31,7 @@
 #include "chooseritem.h"
 #include "chooseractiondelegate.h"
 
-class Action
-{
+class Action {
 public:
   Action() {}
   ~Action() {}
@@ -40,12 +39,9 @@ public:
   QString controller_name() const;
   void set_controller_name(const QString &controller_name);
 
-  Widget *createActionItem(const QString &aIcon,
-                           const QString &aLabel,
+  Widget *createActionItem(const QString &aIcon, const QString &aLabel,
                            const QString &aControllerName);
-  void onActionActivated(
-    std::function<void(const Action *aAction)> aHandler)
-  {
+  void onActionActivated(std::function<void(const Action *aAction)> aHandler) {
     m_action_handler = aHandler;
   }
 
@@ -57,17 +53,13 @@ private:
   QString m_label;
   QString m_icon;
 
-  std::function<void (const Action *aAction)> m_action_handler;
+  std::function<void(const Action *aAction)> m_action_handler;
 };
 
-class IconGridActivity::PrivateIconGrid
-{
+class IconGridActivity::PrivateIconGrid {
 public:
   PrivateIconGrid() : m_activity_window_ptr(0) {}
-  ~PrivateIconGrid()
-  {
-    qDeleteAll(m_action_list);
-  }
+  ~PrivateIconGrid() { qDeleteAll(m_action_list); }
 
   UIKit::Window *m_activity_window_ptr;
   UIKit::TableView *mTable;
@@ -82,22 +74,19 @@ public:
 
   QMap<int, QVariant> m_action_map;
   QList<Action *> m_action_list;
-
 };
 
 IconGridActivity::IconGridActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateIconGrid) {}
+    : UIKit::DesktopActivity(object), d(new PrivateIconGrid) {}
 
-IconGridActivity::~IconGridActivity()
-{
+IconGridActivity::~IconGridActivity() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void IconGridActivity::create_window(const QRectF &window_geometry,
-                                    const QString &window_title,
-                                    const QPointF &window_pos)
-{
+                                     const QString &window_title,
+                                     const QPointF &window_pos) {
   if (d->m_activity_window_ptr) {
     return;
   }
@@ -108,9 +97,8 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
   d->m_activity_window_ptr->set_window_title(window_title);
   d->m_activity_window_ptr->setGeometry(window_geometry);
 
-
   d->m_grid_view = new UIKit::ItemView(d->m_activity_window_ptr,
-                                        UIKit::ItemView::kGridModel);
+                                       UIKit::ItemView::kGridModel);
   d->m_grid_view->set_view_geometry(window_geometry);
 
   on_arguments_updated([this]() {
@@ -121,21 +109,19 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
         QVariantMap _item = var.toMap();
         Action *l_action_item = new Action;
         d->m_action_list.append(l_action_item);
-        l_action_item->onActionActivated([this](const Action * aAction) {
-          qDebug() << Q_FUNC_INFO << "Hello world : " <<
-                   aAction->controller_name();
+        l_action_item->onActionActivated([this](const Action *aAction) {
+          qDebug() << Q_FUNC_INFO
+                   << "Hello world : " << aAction->controller_name();
           d->m_activity_result.clear();
-          d->m_activity_result["controller"] =
-            aAction->controller_name();
+          d->m_activity_result["controller"] = aAction->controller_name();
           d->m_activity_result["action"] = aAction->label();
           d->mSelection = aAction->label();
           update_action();
         });
 
-        d->m_grid_view->insert(
-          l_action_item->createActionItem(_item["icon"].toString(),
-                                          _item["label"].toString(),
-                                          _item["controller"].toString()));
+        d->m_grid_view->insert(l_action_item->createActionItem(
+            _item["icon"].toString(), _item["label"].toString(),
+            _item["controller"].toString()));
       }
     }
 
@@ -152,23 +138,21 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
   });
 
   d->m_activity_window_ptr->set_window_content(d->m_grid_view);
-  d->m_activity_window_ptr->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->m_activity_window_ptr->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 
   exec(window_pos);
 }
 
-QVariantMap IconGridActivity::result() const
-{
+QVariantMap IconGridActivity::result() const {
   d->m_activity_result["action"] = d->mSelection;
   return d->m_activity_result;
 }
 
 Window *IconGridActivity::window() const { return d->m_activity_window_ptr; }
 
-void IconGridActivity::cleanup()
-{
+void IconGridActivity::cleanup() {
   if (d->m_activity_window_ptr) {
     delete d->m_activity_window_ptr;
   }
@@ -176,19 +160,16 @@ void IconGridActivity::cleanup()
   d->m_activity_window_ptr = 0;
 }
 
-void IconGridActivity::onWidgetClosed(UIKit::Widget *widget)
-{
+void IconGridActivity::onWidgetClosed(UIKit::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discard_activity();
 }
 
 void IconGridActivity::onDiscard() { Q_EMIT finished(); }
 
-///action class impl
-Widget *Action::createActionItem(const QString &aIcon,
-                                 const QString &aLabel,
-                                 const QString &aControllerName)
-{
+/// action class impl
+Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
+                                 const QString &aControllerName) {
   m_controller_name = aControllerName;
   m_label = aLabel;
   m_icon = aIcon;
@@ -200,8 +181,7 @@ Widget *Action::createActionItem(const QString &aIcon,
   l_action_label->set_label(aLabel);
   l_action_label->set_widget_name(aLabel);
 
-  QPixmap l_view_pixmap(UIKit::Theme::instance()->drawable(
-                          aIcon, "hdpi"));
+  QPixmap l_view_pixmap(UIKit::Theme::instance()->drawable(aIcon, "hdpi"));
   l_image_view->setMinimumSize(l_view_pixmap.size());
   l_image_view->set_size(l_view_pixmap.size());
   l_image_view->set_pixmap(l_view_pixmap);
@@ -219,7 +199,7 @@ Widget *Action::createActionItem(const QString &aIcon,
   l_rv->setMinimumSize(l_action_item_size);
 
   l_image_view->on_input_event([this](UIKit::Widget::InputEvent aEvent,
-  const Widget * aWidget) {
+                                      const Widget *aWidget) {
     if (aEvent == UIKit::Widget::kMouseReleaseEvent) {
       if (m_action_handler) {
         m_action_handler(this);
@@ -230,22 +210,12 @@ Widget *Action::createActionItem(const QString &aIcon,
   return l_rv;
 }
 
-QString Action::label() const
-{
-  return m_label;
-}
+QString Action::label() const { return m_label; }
 
-void Action::setLabel(const QString &label)
-{
-  m_label = label;
-}
+void Action::setLabel(const QString &label) { m_label = label; }
 
-QString Action::controller_name() const
-{
-  return m_controller_name;
-}
+QString Action::controller_name() const { return m_controller_name; }
 
-void Action::set_controller_name(const QString &controller_name)
-{
+void Action::set_controller_name(const QString &controller_name) {
   m_controller_name = controller_name;
 }

@@ -25,16 +25,14 @@
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 /**
     * \class this is a interface definition cell creators
     *
     * @brief Implement this class to build cells required by
   *UI::TableView
     */
-class DECL_UI_KIT_EXPORT TableModel : public QObject
-{
+class DECL_UI_KIT_EXPORT TableModel : public QObject {
   Q_OBJECT
 
 public:
@@ -43,7 +41,10 @@ public:
       * List for Vriticle list of cell items
       * and Grid to place items on a grid.
       */
-  enum TableRenderMode { kRenderAsListView, kRenderAsGridView };
+  enum TableRenderMode {
+    kRenderAsListView,
+    kRenderAsGridView
+  };
   /**
       * @brief Constructor for TableViewCellInterface
       *

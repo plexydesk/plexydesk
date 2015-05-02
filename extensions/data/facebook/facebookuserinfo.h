@@ -7,8 +7,7 @@
 #include <QNetworkAccessManager>
 #include <QVariantMap>
 
-class FacebookUserInfo : public PlexyDesk::PendingJob
-{
+class FacebookUserInfo : public PlexyDesk::PendingJob {
   Q_OBJECT
 public:
   explicit FacebookUserInfo(QNetworkAccessManager *manager,
@@ -17,7 +16,8 @@ public:
   virtual ~FacebookUserInfo();
   QVariantMap userInfo() const;
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onUserInfoReady();
   void onAvatarImageReady();
   void onStatusMessageReady();

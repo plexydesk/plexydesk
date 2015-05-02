@@ -10,11 +10,14 @@
 #include <QtCore>
 #include <qimageblitz.h>
 
-class WellcomeItem : public QObject, public QGraphicsRectItem
-{
+class WellcomeItem : public QObject, public QGraphicsRectItem {
   Q_OBJECT
 public:
-  typedef enum { REGULAR, OVER, PRESSED } MouseState;
+  typedef enum {
+    REGULAR,
+    OVER,
+    PRESSED
+  } MouseState;
   typedef QHash<MouseState, QString> ThemeNames;
 
   WellcomeItem(const QRectF &rect, QGraphicsItem *parent = 0);
@@ -34,7 +37,8 @@ public:
 
   void setIcon(const QPixmap &icon);
 
-public slots:
+public
+slots:
   void zoom(int step);
 signals:
   void clicked();

@@ -11,8 +11,7 @@
 #include <imageview.h>
 #include <themepackloader.h>
 
-class DefaultTableComponent::PrivateTableComponent
-{
+class DefaultTableComponent::PrivateTableComponent {
 
 public:
   PrivateTableComponent() {}
@@ -37,10 +36,10 @@ public:
 };
 
 DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
-    LayoutType type,
-    QGraphicsItem *parent)
-  : UIKit::TableViewItem(a_rect, parent), m_priv_ptr(new PrivateTableComponent)
-{
+                                             LayoutType type,
+                                             QGraphicsItem *parent)
+    : UIKit::TableViewItem(a_rect, parent),
+      m_priv_ptr(new PrivateTableComponent) {
   m_priv_ptr->m_current_geometry = a_rect;
   m_priv_ptr->m_current_item_selection = false;
   m_priv_ptr->m_current_item_visibility = true;
@@ -49,19 +48,24 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
   m_priv_ptr->m_layout_base = new QGraphicsWidget(this);
   m_priv_ptr->m_layout_base->setGeometry(a_rect);
 
-  m_priv_ptr->m_linear_layout = new QGraphicsLinearLayout(m_priv_ptr->m_layout_base);
+  m_priv_ptr->m_linear_layout =
+      new QGraphicsLinearLayout(m_priv_ptr->m_layout_base);
 
-  m_priv_ptr->m_image_view_widget = new UIKit::ImageView(m_priv_ptr->m_layout_base);
+  m_priv_ptr->m_image_view_widget =
+      new UIKit::ImageView(m_priv_ptr->m_layout_base);
   m_priv_ptr->m_image_view_widget->set_pixmap(
-    UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+      UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
 
   m_priv_ptr->m_label_widget = new UIKit::Label(m_priv_ptr->m_layout_base);
 
   m_priv_ptr->m_option_button = new UIKit::Button(m_priv_ptr->m_layout_base);
 
-  connect(m_priv_ptr->m_image_view_widget, SIGNAL(clicked()), this, SLOT(onClicked()));
-  connect(m_priv_ptr->m_label_widget, SIGNAL(clicked()), this, SLOT(onClicked()));
-  connect(m_priv_ptr->m_option_button, SIGNAL(clicked()), this, SLOT(onClicked()));
+  connect(m_priv_ptr->m_image_view_widget, SIGNAL(clicked()), this,
+          SLOT(onClicked()));
+  connect(m_priv_ptr->m_label_widget, SIGNAL(clicked()), this,
+          SLOT(onClicked()));
+  connect(m_priv_ptr->m_option_button, SIGNAL(clicked()), this,
+          SLOT(onClicked()));
 
   if (type == kGridLayout) {
     m_priv_ptr->m_linear_layout->setOrientation(Qt::Vertical);
@@ -91,8 +95,7 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
 
 DefaultTableComponent::~DefaultTableComponent() { delete m_priv_ptr; }
 
-QRectF DefaultTableComponent::boundingRect() const
-{
+QRectF DefaultTableComponent::boundingRect() const {
   QRectF rect;
   if (m_priv_ptr->m_current_layout_type == kListLayout) {
     rect = QRectF(0.0, 0.0, m_priv_ptr->m_current_geometry.width(), 64);
@@ -103,19 +106,16 @@ QRectF DefaultTableComponent::boundingRect() const
 }
 
 QSizeF DefaultTableComponent::sizeHint(Qt::SizeHint hint,
-                                       const QSizeF &a_size) const
-{
+                                       const QSizeF &a_size) const {
   return boundingRect().size();
 }
 
-void DefaultTableComponent::set_selected()
-{
+void DefaultTableComponent::set_selected() {
   m_priv_ptr->m_current_item_selection = true;
   update();
 }
 
-void DefaultTableComponent::set_label_visibility(bool a_visible)
-{
+void DefaultTableComponent::set_label_visibility(bool a_visible) {
   m_priv_ptr->m_current_item_visibility = a_visible;
 
   if (a_visible) {
@@ -125,39 +125,38 @@ void DefaultTableComponent::set_label_visibility(bool a_visible)
   }
 }
 
-void DefaultTableComponent::clear_selection()
-{
+void DefaultTableComponent::clear_selection() {
   m_priv_ptr->m_current_item_selection = false;
 }
 
-void DefaultTableComponent::set_label(const QString &a_txt)
-{
+void DefaultTableComponent::set_label(const QString &a_txt) {
   m_priv_ptr->m_option_button->setLabel("+");
   m_priv_ptr->m_current_label_str = a_txt;
   m_priv_ptr->m_label_widget->set_label(a_txt);
   update();
 }
 
-void DefaultTableComponent::set_icon(const QPixmap &a_pixmap)
-{
+void DefaultTableComponent::set_icon(const QPixmap &a_pixmap) {
   m_priv_ptr->m_icon_pixmap = a_pixmap;
   m_priv_ptr->m_image_view_widget->set_pixmap(a_pixmap);
 }
 
 QPixmap DefaultTableComponent::icon() { return m_priv_ptr->m_icon_pixmap; }
 
-void DefaultTableComponent::set_selected(bool a_selection)
-{
+void DefaultTableComponent::set_selected(bool a_selection) {
   m_priv_ptr->m_current_item_selection = a_selection;
 }
 
-QString DefaultTableComponent::label() const { return m_priv_ptr->m_current_label_str; }
+QString DefaultTableComponent::label() const {
+  return m_priv_ptr->m_current_label_str;
+}
 
-QString DefaultTableComponent::name() const { return m_priv_ptr->m_current_label_str; }
+QString DefaultTableComponent::name() const {
+  return m_priv_ptr->m_current_label_str;
+}
 
 void DefaultTableComponent::set_data(const QPixmap &a_pixmap,
-                                    const QString &a_label)
-{
+                                     const QString &a_label) {
   m_priv_ptr->m_image_view_widget->set_pixmap(a_pixmap);
   m_priv_ptr->m_label_widget->set_label(a_label);
   m_priv_ptr->m_current_label_str = a_label;
@@ -165,10 +164,10 @@ void DefaultTableComponent::set_data(const QPixmap &a_pixmap,
 
 void DefaultTableComponent::paint(QPainter *painter,
                                   const QStyleOptionGraphicsItem *option,
-                                  QWidget *widget)
-{
+                                  QWidget *widget) {
   /* Painter settings */
-  if (m_priv_ptr->m_current_layout_type == kListLayout || m_priv_ptr->m_current_item_selection) {
+  if (m_priv_ptr->m_current_layout_type == kListLayout ||
+      m_priv_ptr->m_current_item_selection) {
 
     UIKit::StyleFeatures features;
 

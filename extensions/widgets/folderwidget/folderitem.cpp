@@ -14,8 +14,7 @@
 #include <QGraphicsEffect>
 #include <QGraphicsDropShadowEffect>
 
-class FolderItem::PrivateFolderItem
-{
+class FolderItem::PrivateFolderItem {
 public:
   PrivateFolderItem() {}
   ~PrivateFolderItem() {}
@@ -31,8 +30,7 @@ public:
 };
 
 FolderItem::FolderItem(const QRectF &rect, QGraphicsItem *parent)
-  : UIKit::TableViewItem(rect, parent), d(new PrivateFolderItem)
-{
+    : UIKit::TableViewItem(rect, parent), d(new PrivateFolderItem) {
   this->setCacheMode(DeviceCoordinateCache);
   d->mRect = rect;
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -55,15 +53,13 @@ FolderItem::FolderItem(const QRectF &rect, QGraphicsItem *parent)
 
 QRectF FolderItem::boundingRect() const { return QRectF(0.0, 0.0, 96, 96); }
 
-QSizeF FolderItem::sizeHint(Qt::SizeHint hint, const QSizeF &size) const
-{
+QSizeF FolderItem::sizeHint(Qt::SizeHint hint, const QSizeF &size) const {
   return boundingRect().size();
 }
 
 void FolderItem::setIcon(const QIcon &icon) { d->mIcon = icon; }
 
-void FolderItem::setFileName(const QString &fileName)
-{
+void FolderItem::setFileName(const QString &fileName) {
   d->mFileName = fileName;
 }
 
@@ -75,22 +71,19 @@ QFileInfo FolderItem::fileInfo() const { return d->mFileInfo; }
 
 QIcon FolderItem::icon() const { return d->mIcon; }
 
-void FolderItem::set_selected()
-{
+void FolderItem::set_selected() {
   d->mSelected = true;
   update();
 }
 
-void FolderItem::clear_selection()
-{
+void FolderItem::clear_selection() {
   d->mSelected = false;
   update();
 }
 
 void FolderItem::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
-                       QWidget *widget)
-{
+                       QWidget *widget) {
   if (!painter->isActive()) {
     return;
   }
@@ -130,7 +123,7 @@ void FolderItem::paint(QPainter *painter,
 
   QFontMetrics metrics(painter->font());
   QString elidedText =
-    metrics.elidedText(d->mFileName, Qt::ElideMiddle, labelRectF.width());
+      metrics.elidedText(d->mFileName, Qt::ElideMiddle, labelRectF.width());
 
   // Shadow
 
@@ -142,8 +135,7 @@ void FolderItem::paint(QPainter *painter,
   painter->drawText(labelRectF, elidedText, txtOption);
 }
 
-void FolderItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void FolderItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO << endl;
   event->accept();
   if (event->button() == Qt::LeftButton) {
@@ -151,16 +143,14 @@ void FolderItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
   }
 }
 
-void FolderItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void FolderItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO << endl;
   event->accept();
   Q_EMIT clicked(this);
   // QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void FolderItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void FolderItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
   if (!(event->buttons() & Qt::LeftButton)) {
     return;
   }
@@ -182,8 +172,7 @@ void FolderItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
   // Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction);
 }
 
-void FolderItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
+void FolderItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO << "Run File: " << d->mFilePath;
   Q_EMIT doubleClicked(this);
   if (!QDesktopServices::openUrl(QUrl::fromLocalFile(d->mFilePath))) {

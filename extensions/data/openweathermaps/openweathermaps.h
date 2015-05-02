@@ -25,8 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class openweathermapsData : public PlexyDesk::DataSource
-{
+class openweathermapsData : public PlexyDesk::DataSource {
   Q_OBJECT
 
 public:
@@ -37,7 +36,8 @@ public:
 
   void getCurrentWeather(QVariantMap param, const QString &apiKey,
                          const QString &request);
-public Q_SLOTS:
+public
+Q_SLOTS:
   void setArguments(QVariant args);
   void onDataReadyForCityName();
 

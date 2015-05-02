@@ -25,8 +25,7 @@
 
 class QDBusObjectPath;
 
-class VISIBLE_SYM PresenceData : public PlexyDesk::DataPlugin
-{
+class VISIBLE_SYM PresenceData : public PlexyDesk::DataPlugin {
   Q_OBJECT
 
 public:
@@ -39,7 +38,8 @@ public:
 signals:
   void data(QVariant &);
 
-private slots:
+private
+slots:
   void onAccountReady(Telepathy::Client::PendingOperation *operation);
   void accountCreated(const QString &path);
   void accountRemoved(const QString &path);

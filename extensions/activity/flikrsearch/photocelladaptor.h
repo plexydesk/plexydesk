@@ -7,8 +7,7 @@
 
 using namespace UIKit;
 
-class PhotoCellAdaptor : public TableModel
-{
+class PhotoCellAdaptor : public TableModel {
   Q_OBJECT
 
 public:
@@ -48,7 +47,8 @@ Q_SIGNALS:
   void progressRange(int range);
   void completed(int count);
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onServiceComplete(QuetzalSocialKit::WebService *service);
 
   void onSizeServiceComplete(QuetzalSocialKit::WebService *service);

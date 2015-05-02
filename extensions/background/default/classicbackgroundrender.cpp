@@ -6,10 +6,9 @@
 #include <themepackloader.h>
 
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
-    QGraphicsObject *parent,
-    const QImage &background_image)
-  : UIKit::Window(parent)
-{
+                                                 QGraphicsObject *parent,
+                                                 const QImage &background_image)
+    : UIKit::Window(parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   mBackgroundImage = background_image;
@@ -19,8 +18,7 @@ ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
   enable_window_background(false);
 }
 
-void ClassicBackgroundRender::setBackgroundImage(const QString &path)
-{
+void ClassicBackgroundRender::setBackgroundImage(const QString &path) {
   if (path.isEmpty() || path.isNull()) {
     return;
   }
@@ -32,52 +30,46 @@ void ClassicBackgroundRender::setBackgroundImage(const QString &path)
   update();
 }
 
-void ClassicBackgroundRender::setBackgroundImage(const QImage &img)
-{
+void ClassicBackgroundRender::setBackgroundImage(const QImage &img) {
   mScalingMode = None;
   mBackgroundImage = img;
   update();
 }
 
-void ClassicBackgroundRender::setBackgroundImage(const QUrl &url)
-{
+void ClassicBackgroundRender::setBackgroundImage(const QUrl &url) {
   mScalingMode = None;
   qDebug() << Q_FUNC_INFO << url;
   setBackgroundImage(url.toLocalFile());
 }
 
-void ClassicBackgroundRender::setBackgroundGeometry(const QRectF &rect)
-{
+void ClassicBackgroundRender::setBackgroundGeometry(const QRectF &rect) {
   mGeometry = rect;
   setGeometry(rect);
 }
 
 void ClassicBackgroundRender::setBackgroundMode(
-  ClassicBackgroundRender::ScalingMode mode)
-{
+    ClassicBackgroundRender::ScalingMode mode) {
   mScalingMode = mode;
 
   if (mode == FitHeight) {
     mBackgroundImageHeightScaled =
-      mBackgroundImage.scaledToHeight(this->boundingRect().height());
+        mBackgroundImage.scaledToHeight(this->boundingRect().height());
   }
 
   if (mode == FitWidth) {
     mBackgroundImageWidthScaled =
-      mBackgroundImage.scaledToWidth(this->boundingRect().width());
+        mBackgroundImage.scaledToWidth(this->boundingRect().width());
   }
 
   update();
 }
 
-StylePtr ClassicBackgroundRender::style() const
-{
+StylePtr ClassicBackgroundRender::style() const {
   return UIKit::Theme::style();
 }
 
 void ClassicBackgroundRender::drawBackroundFrame(QPainter *painter,
-    const QRectF &rect)
-{
+                                                 const QRectF &rect) {
   painter->fillRect(rect, QColor(0, 0, 0));
   painter->save();
   float xoffset = (rect.width() - mBackgroundImage.width()) / 2;
@@ -90,27 +82,23 @@ void ClassicBackgroundRender::drawBackroundFrame(QPainter *painter,
   painter->drawImage(imageRect, mBackgroundImage);
   painter->restore();
 }
-bool ClassicBackgroundRender::isSeamlessModeSet() const
-{
+bool ClassicBackgroundRender::isSeamlessModeSet() const {
   return mSeamLessMode;
 }
 
-void ClassicBackgroundRender::setSeamLessMode(bool value)
-{
+void ClassicBackgroundRender::setSeamLessMode(bool value) {
   mSeamLessMode = value;
   update();
 }
 
-void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   qDebug() << Q_FUNC_INFO;
   setFocus(Qt::MouseFocusReason);
   UIKit::Window::mousePressEvent(event);
 }
 
 void ClassicBackgroundRender::paint_view(QPainter *painter,
-                                        const QRectF &rect /*rect*/)
-{
+                                         const QRectF &rect /*rect*/) {
   if (mSeamLessMode) {
     painter->save();
     painter->setRenderHints(QPainter::SmoothPixmapTransform |
@@ -128,40 +116,34 @@ void ClassicBackgroundRender::paint_view(QPainter *painter,
   painter->setRenderHint(QPainter::Antialiasing);
 
   switch (mScalingMode) {
-  case None: {
-    painter->drawImage(rect, mBackgroundImage);
-  }
-  break;
-  case Tile: {
-    QBrush brush(mBackgroundImage);
-    painter->setBrush(brush);
-    painter->setBackground(brush);
-    painter->fillRect(rect, painter->background());
-  }
-  break;
-  case Streach: {
-    painter->drawImage(rect, mBackgroundImage);
-  }
-  break;
-  case Frame: {
-    drawBackroundFrame(painter, rect);
-  }
-  break;
-  case FitWidth: {
-    painter->drawImage(rect, mBackgroundImageWidthScaled);
-  }
-  break;
-  case FitHeight: {
-    painter->drawImage(rect, mBackgroundImageHeightScaled);
-  }
-  break;
-  case CenterFocus:
-    painter->drawImage(rect, mBackgroundImage, rect,
-                       Qt::ColorOnly | Qt::DiffuseAlphaDither |
-                       Qt::DiffuseDither | Qt::PreferDither);
-    break;
-  default:
-    break;
+    case None: {
+      painter->drawImage(rect, mBackgroundImage);
+    } break;
+    case Tile: {
+      QBrush brush(mBackgroundImage);
+      painter->setBrush(brush);
+      painter->setBackground(brush);
+      painter->fillRect(rect, painter->background());
+    } break;
+    case Streach: {
+      painter->drawImage(rect, mBackgroundImage);
+    } break;
+    case Frame: {
+      drawBackroundFrame(painter, rect);
+    } break;
+    case FitWidth: {
+      painter->drawImage(rect, mBackgroundImageWidthScaled);
+    } break;
+    case FitHeight: {
+      painter->drawImage(rect, mBackgroundImageHeightScaled);
+    } break;
+    case CenterFocus:
+      painter->drawImage(rect, mBackgroundImage, rect,
+                         Qt::ColorOnly | Qt::DiffuseAlphaDither |
+                             Qt::DiffuseDither | Qt::PreferDither);
+      break;
+    default:
+      break;
   }
   painter->restore();
 }

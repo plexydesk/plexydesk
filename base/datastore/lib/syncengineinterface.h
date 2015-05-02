@@ -6,11 +6,9 @@
 #include <QStringList>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit
-{
+namespace QuetzalKit {
 
-class QuetzalDataKit_EXPORT SyncEngineInterface : public QObject
-{
+class QuetzalDataKit_EXPORT SyncEngineInterface : public QObject {
   Q_OBJECT
 public:
   explicit SyncEngineInterface(QObject *a_parent_ptr = 0);
@@ -33,16 +31,14 @@ public:
                               const std::string &value) {}
 
   virtual void find(const std::string &a_object_name,
-                    const std::string &a_attrib,
-                    const std::string &a_value) {}
+                    const std::string &a_attrib, const std::string &a_value) {}
 
-  virtual void on_search_complete(
-      std::function<void (SyncObject &a_object,
-                                const std::string &a_app_name,
-                          bool)> a_handler);
+  virtual void on_search_complete(std::function<void(
+      SyncObject &a_object, const std::string &a_app_name, bool)> a_handler);
 
   virtual void on_insert_complete(
-      std::function<void (const SyncObject &)> a_handler);
+      std::function<void(const SyncObject &)> a_handler);
+
 protected:
   virtual void search_request_complete(SyncObject &a_object,
                                        std::string &a_app_name, bool a_found);
@@ -50,7 +46,7 @@ protected:
 
 private:
   class PrivateSyncEngineIface;
-  PrivateSyncEngineIface * const d;
+  PrivateSyncEngineIface *const d;
 // virtual QStringList storeList() = 0;
 
 Q_SIGNALS:

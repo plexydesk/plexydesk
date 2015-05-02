@@ -6,8 +6,7 @@
 
 using namespace UIKit;
 
-class DECL_UI_KIT_EXPORT DefaultTableModel : public TableModel
-{
+class DECL_UI_KIT_EXPORT DefaultTableModel : public TableModel {
   Q_OBJECT
 
 public:
@@ -28,7 +27,7 @@ public:
   virtual TableRenderMode render_type() const;
 
   void insert_item(const QString &a_label, const QPixmap a_pixmap,
-                  bool a_selected = false);
+                   bool a_selected = false);
 
   void set_label_visibility(bool a_visibility);
 

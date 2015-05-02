@@ -23,8 +23,7 @@ Twit::Twit(QObject *object) {}
 
 Twit::~Twit() {}
 
-QGraphicsItem *Twit::item()
-{
+QGraphicsItem *Twit::item() {
   //   PlexyDesk::AbstractPluginInterface * utubeEngine =
   // (PlexyDesk::AbstractPluginInterface*)
   //   PlexyDesk::PluginLoader::getInstance()->instance("restengine");

@@ -22,8 +22,7 @@
 #include <QtCore>
 #include <QtGui>
 
-Welcome::Welcome(QObject *object)
-{
+Welcome::Welcome(QObject *object) {
   frm = new Frame(QRect(0, 0, 140 * 4, 128 * 3));
   icon1 = new WellcomeItem(QRect(0, 0, 128, 256), frm);
   icon1->setName("");

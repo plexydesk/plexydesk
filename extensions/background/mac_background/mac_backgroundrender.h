@@ -26,8 +26,7 @@
 
 #include <abstractdesktopwidget.h>
 
-class MacBackgroundRender : public PlexyDesk::AbstractDesktopWidget
-{
+class MacBackgroundRender : public PlexyDesk::AbstractDesktopWidget {
   Q_OBJECT
 public:
   explicit MacBackgroundRender(const QRectF &rect, QGraphicsObject *parent = 0,

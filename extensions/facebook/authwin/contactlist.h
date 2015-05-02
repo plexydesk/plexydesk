@@ -6,8 +6,7 @@
 #include <scrollwidget.h>
 #include "contactlistitem.h"
 
-class ContactList : public PlexyDesk::ScrollWidget
-{
+class ContactList : public PlexyDesk::ScrollWidget {
   Q_OBJECT
 public:
   ContactList(const QRectF &rect, QGraphicsObject *parent = 0);
@@ -22,7 +21,8 @@ public:
 Q_SIGNALS:
   void clicked(QString id);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void clear();
   void filter(const QString &filterString);
   void onItemClicked(ContactListItem *item);

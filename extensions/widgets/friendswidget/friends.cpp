@@ -46,8 +46,7 @@ Friends::Friends(QObject *object) {}
 
 Friends::~Friends() {}
 
-QGraphicsItem *Friends::item()
-{
+QGraphicsItem *Friends::item() {
   return new PlexyDesk::FriendsWidget(QRectF(0, 0, 220, 290), 0);
 }
 

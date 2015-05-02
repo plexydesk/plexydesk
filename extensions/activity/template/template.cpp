@@ -21,8 +21,7 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class TemplateActivity::PrivateTemplate
-{
+class TemplateActivity::PrivateTemplate {
 public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
@@ -31,14 +30,13 @@ public:
 };
 
 TemplateActivity::TemplateActivity(QGraphicsObject *object)
-  : UIKit::DesktopActivity(object), d(new PrivateTemplate) {}
+    : UIKit::DesktopActivity(object), d(new PrivateTemplate) {}
 
 TemplateActivity::~TemplateActivity() { delete d; }
 
 void TemplateActivity::create_window(const QRectF &window_geometry,
-                                    const QString &window_title,
-                                    const QPointF &window_pos)
-{
+                                     const QString &window_title,
+                                     const QPointF &window_pos) {
   d->m_main_window = new UIKit::Window();
 
   d->m_main_window->set_widget_flag(UIKit::Widget::kRenderBackground);
@@ -50,7 +48,7 @@ void TemplateActivity::create_window(const QRectF &window_geometry,
 
   exec(window_pos);
 
-  d->m_main_window->on_window_discarded([this](UIKit::Window * aWindow) {
+  d->m_main_window->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
@@ -58,20 +56,18 @@ void TemplateActivity::create_window(const QRectF &window_geometry,
 QVariantMap TemplateActivity::result() const { return QVariantMap(); }
 
 void TemplateActivity::update_attribute(const QString &name,
-                                       const QVariant &data) {}
+                                        const QVariant &data) {}
 
 UIKit::Window *TemplateActivity::window() const { return d->m_main_window; }
 
-void TemplateActivity::cleanup()
-{
+void TemplateActivity::cleanup() {
   if (d->m_main_window) {
     delete d->m_main_window;
   }
   d->m_main_window = 0;
 }
 
-void TemplateActivity::onWidgetClosed(UIKit::Widget *widget)
-{
+void TemplateActivity::onWidgetClosed(UIKit::Widget *widget) {
   connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }

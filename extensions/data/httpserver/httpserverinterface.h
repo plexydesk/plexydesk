@@ -23,9 +23,7 @@
 #include <plexy.h>
 #include <dataplugininterface.h>
 
-class HttpServerInterface : public QObject,
-  public UIKit::DataPluginInterface
-{
+class HttpServerInterface : public QObject, public UIKit::DataPluginInterface {
   Q_OBJECT
   Q_INTERFACES(UIKit::DataPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.httpserver")

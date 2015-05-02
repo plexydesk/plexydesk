@@ -6,8 +6,7 @@
 #include <widget.h>
 
 namespace UIKit {
-class ModelViewItem
-{
+class ModelViewItem {
 public:
   explicit ModelViewItem();
   virtual ~ModelViewItem();
@@ -25,10 +24,11 @@ public:
 
   virtual void on_activated(std::function<void(ModelViewItem *)> a_handler);
   virtual void on_filter(
-            std::function<bool (const Widget *, const QString &)> a_handler);
+      std::function<bool(const Widget *, const QString &)> a_handler);
+
 private:
   class PrivateModelViewItem;
-  PrivateModelViewItem * const m_priv_ptr;
+  PrivateModelViewItem *const m_priv_ptr;
 };
 }
 

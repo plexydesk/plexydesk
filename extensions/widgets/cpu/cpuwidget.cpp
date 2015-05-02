@@ -24,8 +24,7 @@
 #include <QtGui>
 
 CpuWidget::CpuWidget(const QRectF &rect, QWidget *widget)
-  : PlexyDesk::AbstractDesktopWidget(rect, widget)
-{
+    : PlexyDesk::AbstractDesktopWidget(rect, widget) {
   shade = false;
   getBaseData();
 
@@ -36,8 +35,7 @@ CpuWidget::CpuWidget(const QRectF &rect, QWidget *widget)
 
 void CpuWidget::setPath(QString str) { prefix = str + "/"; }
 
-void CpuWidget::drawCpuWidget()
-{
+void CpuWidget::drawCpuWidget() {
   _cpu_bg = QImage(prefix + "background.png");
 
   /*gloss stuff*/
@@ -54,15 +52,13 @@ void CpuWidget::drawCpuWidget()
 
 CpuWidget::~CpuWidget() {}
 
-void CpuWidget::drawMeter()
-{
+void CpuWidget::drawMeter() {
   update();
   getNxtData();
 }
 
 void CpuWidget::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
-                             QWidget *)
-{
+                             QWidget *) {
 
   QRectF r = e->exposedRect;
   p->setCompositionMode(QPainter::CompositionMode_Source);
@@ -120,8 +116,7 @@ void CpuWidget::paintExtFace(QPainter *p, const QStyleOptionGraphicsItem *e,
 }
 
 void CpuWidget::paintExtDockFace(QPainter *p, const QStyleOptionGraphicsItem *e,
-                                 QWidget *)
-{
+                                 QWidget *) {
   /*p->setRenderHints(QPainter::SmoothPixmapTransform |QPainter::Antialiasing
      |QPainter::HighQualityAntialiasing);
 
@@ -131,8 +126,7 @@ void CpuWidget::paintExtDockFace(QPainter *p, const QStyleOptionGraphicsItem *e,
      ,"Cpu\n"+QString("%1").arg(percen)+"%" );*/
 }
 
-void CpuWidget::getBaseData()
-{
+void CpuWidget::getBaseData() {
   QFile file("/proc/stat");
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     qDebug() << "Error opening /proc/stat !";
@@ -150,8 +144,7 @@ void CpuWidget::getBaseData()
   idle_a = cpu_list.at(5).toLong();
 }
 
-void CpuWidget::getNxtData()
-{
+void CpuWidget::getNxtData() {
   QFile file("/proc/stat");
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     qDebug() << "Error opening /proc/stat !";

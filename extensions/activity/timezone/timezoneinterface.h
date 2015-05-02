@@ -24,8 +24,7 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class TimeZoneInterface : public QObject, public UIKit::ActivityInterface
-{
+class TimeZoneInterface : public QObject, public UIKit::ActivityInterface {
   Q_OBJECT
   Q_INTERFACES(UIKit::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.timezone")

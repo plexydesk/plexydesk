@@ -58,12 +58,11 @@ class PictureFlowPrivate;
    placed at the center.
 
  */
-class PictureFlow : public QWidget
-{
+class PictureFlow : public QWidget {
   Q_OBJECT
 
   Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE
-             setBackgroundColor)
+                 setBackgroundColor)
   Q_PROPERTY(QSize slideSize READ slideSize WRITE setSlideSize)
   Q_PROPERTY(int slideCount READ slideCount)
   Q_PROPERTY(int centerIndex READ centerIndex WRITE setCenterIndex)
@@ -108,7 +107,8 @@ public:
    */
   int centerIndex() const;
 
-public slots:
+public
+slots:
 
   /*!
      Adds a new slide.
@@ -175,7 +175,8 @@ protected:
   void keyPressEvent(QKeyEvent *event);
   void resizeEvent(QResizeEvent *event);
 
-private slots:
+private
+slots:
   void updateAnimation();
 
 private:

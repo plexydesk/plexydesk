@@ -27,8 +27,7 @@
 #include <QTimeZone>
 #include <QTimer>
 
-class ClockWidget : public UIKit::Widget
-{
+class ClockWidget : public UIKit::Widget {
   Q_OBJECT
 public:
   ClockWidget(QGraphicsObject *a_parent_ptr = 0);
@@ -43,7 +42,8 @@ public:
 
   void drawClockHand(QPainter *p, QRectF rect, int factor, float angle,
                      QColor hand_color, int thikness);
-public Q_SLOTS:
+public
+Q_SLOTS:
   void updateNow();
 
 private:

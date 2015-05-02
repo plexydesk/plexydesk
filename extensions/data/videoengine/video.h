@@ -27,8 +27,7 @@
 #include <abstractplugininterface.h>
 #include <datainterface.h>
 
-class VIDEOENGINE_EXPORT VideoData : public PlexyDesk::DataPlugin
-{
+class VIDEOENGINE_EXPORT VideoData : public PlexyDesk::DataPlugin {
   Q_OBJECT
 
 public:
@@ -37,7 +36,8 @@ public:
   void init();
   QVariantMap readAll() { return QVariantMap(); }
 
-public slots:
+public
+slots:
   void pushData(QVariant &);
   void grab(QImage &);
 

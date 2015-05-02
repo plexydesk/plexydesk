@@ -31,16 +31,14 @@
 #include <desktopactivity.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 /**
     * @brief PlexyDesk Plugin Manager Class
     *
     * Supports loading and handling various plexydesk
     * extensions supported by the sytem
     */
-class DECL_UI_KIT_EXPORT ExtensionManager : public QObject
-{
+class DECL_UI_KIT_EXPORT ExtensionManager : public QObject {
   Q_OBJECT
 public:
   /**

@@ -50,8 +50,7 @@
 class Client;
 class Connection;
 
-class PeerManager : public QObject
-{
+class PeerManager : public QObject {
   Q_OBJECT
 
 public:
@@ -65,7 +64,8 @@ public:
 signals:
   void newConnection(Connection *connection);
 
-private slots:
+private
+slots:
   void sendBroadcastDatagram();
   void readBroadcastDatagram();
 

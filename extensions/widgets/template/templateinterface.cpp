@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::ControllerInterface> TemplateInterface::controller()
-{
+QSharedPointer<PlexyDesk::ControllerInterface> TemplateInterface::controller() {
   QSharedPointer<PlexyDesk::ControllerInterface> obj =
-    QSharedPointer<PlexyDesk::ControllerInterface>(
-      new TemplateControllerImpl(this), &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::ControllerInterface>(
+          new TemplateControllerImpl(this), &QObject::deleteLater);
 
   return obj;
 }

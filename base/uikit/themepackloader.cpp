@@ -31,17 +31,14 @@
 
 #include "themepackloader.h"
 
-namespace UIKit
-{
+namespace UIKit {
 
 Theme *Theme::s_theme_instance = 0;
 
-class Theme::ThemepackLoaderPrivate
-{
+class Theme::ThemepackLoaderPrivate {
 public:
   ThemepackLoaderPrivate() {}
-  ~ThemepackLoaderPrivate()
-  {
+  ~ThemepackLoaderPrivate() {
     if (mXmlRawFile) {
       delete mXmlRawFile;
     }
@@ -66,15 +63,14 @@ public:
 };
 
 Theme::Theme(const QString &a_theme_name, QObject *parent)
-  : QObject(parent), d(new ThemepackLoaderPrivate)
-{
+    : QObject(parent), d(new ThemepackLoaderPrivate) {
   d->mThemePackPath = QDir::toNativeSeparators(
-                        QString("%1/%2").arg(UIKit::Config::instance()->prefix()).arg(
-                          "/share/plexy/themepack"));
+      QString("%1/%2").arg(UIKit::Config::instance()->prefix()).arg(
+          "/share/plexy/themepack"));
 
   d->mThemeName = a_theme_name;
   QDir mainConfig(QDir::toNativeSeparators(
-                    QString("%1/%2/").arg(d->mThemePackPath).arg(a_theme_name)));
+      QString("%1/%2/").arg(d->mThemePackPath).arg(a_theme_name)));
 
   d->mXmlConfigFile = mainConfig.absoluteFilePath("layout.xml");
   d->mXmlRawFile = new QFile(d->mXmlConfigFile);
@@ -90,8 +86,7 @@ Theme::Theme(const QString &a_theme_name, QObject *parent)
   d->mStyle = UIKit::ExtensionManager::instance()->style("cocoastyle");
 }
 
-Theme::~Theme()
-{
+Theme::~Theme() {
 
   /*
   if (staticLoader) {
@@ -107,8 +102,7 @@ StylePtr Theme::default_desktop_style() { return d->mStyle; }
 
 StylePtr Theme::style() { return instance()->default_desktop_style(); }
 
-Theme *Theme::instance()
-{
+Theme *Theme::instance() {
   if (!s_theme_instance) {
     s_theme_instance = new Theme("default", 0);
     return s_theme_instance;
@@ -117,18 +111,16 @@ Theme *Theme::instance()
   }
 }
 
-QPixmap Theme::icon(const QString &a_name, const QString &a_resolution)
-{
+QPixmap Theme::icon(const QString &a_name, const QString &a_resolution) {
   return instance()->drawable(a_name, a_resolution);
 }
 
-QPixmap Theme::drawable(const QString &a_fileName, const QString &a_resoution)
-{
+QPixmap Theme::drawable(const QString &a_fileName, const QString &a_resoution) {
   QPixmap rv;
 
   QString iconThemePath =
-    QDir::toNativeSeparators(d->mThemePackPath + "/" + d->mThemeName +
-                             "/resources/" + a_resoution + "/" + a_fileName);
+      QDir::toNativeSeparators(d->mThemePackPath + "/" + d->mThemeName +
+                               "/resources/" + a_resoution + "/" + a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
 

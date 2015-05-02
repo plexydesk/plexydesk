@@ -21,11 +21,10 @@
 #include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::DataSource> openweathermapsInterface::model()
-{
+QSharedPointer<PlexyDesk::DataSource> openweathermapsInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =
-    QSharedPointer<PlexyDesk::DataSource>(new openweathermapsData(),
-                                          &QObject::deleteLater);
+      QSharedPointer<PlexyDesk::DataSource>(new openweathermapsData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

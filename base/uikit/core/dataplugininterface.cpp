@@ -1,6 +1,5 @@
 #include "dataplugininterface.h"
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 DataPluginInterface::DataPluginInterface(QObject *parent) : QObject(parent) {}
 }

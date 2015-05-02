@@ -25,11 +25,9 @@
 #include <desktopwidget.h>
 #include "vplayer.h"
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 
-class VideoItem : public DesktopWidget
-{
+class VideoItem : public DesktopWidget {
 
   Q_OBJECT
 public:
@@ -41,7 +39,8 @@ public:
                         QWidget *);
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
   QRectF boundingRect() const;
-public slots:
+public
+slots:
   void getImage(QImage &img);
   void loop();
 

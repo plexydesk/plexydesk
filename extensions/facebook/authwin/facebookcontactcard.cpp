@@ -15,8 +15,7 @@
 
 //
 // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
-void fastblur(QImage &img, int radius)
-{
+void fastblur(QImage &img, int radius) {
   if (radius < 1) {
     return;
   }
@@ -59,7 +58,7 @@ void fastblur(QImage &img, int radius)
 
   for (y = 0; y < h; ++y) {
     rinsum = ginsum = binsum = routsum = goutsum = boutsum = rsum = gsum =
-                                           bsum = 0;
+        bsum = 0;
     for (i = -radius; i <= radius; ++i) {
       p = pix[yi + qMin(wm, qMax(i, 0))];
       sir = stack[i + radius];
@@ -133,7 +132,7 @@ void fastblur(QImage &img, int radius)
   }
   for (x = 0; x < w; ++x) {
     rinsum = ginsum = binsum = routsum = goutsum = boutsum = rsum = gsum =
-                                           bsum = 0;
+        bsum = 0;
     yp = -radius * w;
     for (i = -radius; i <= radius; ++i) {
       yi = qMax(0, yp) + x;
@@ -226,8 +225,7 @@ void fastblur(QImage &img, int radius)
 }
 
 // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
-void fastbluralpha(QImage &img, int radius)
-{
+void fastbluralpha(QImage &img, int radius) {
   if (radius < 1) {
     return;
   }
@@ -272,7 +270,7 @@ void fastbluralpha(QImage &img, int radius)
 
   for (y = 0; y < h; ++y) {
     rinsum = ginsum = binsum = ainsum = routsum = goutsum = boutsum = aoutsum =
-                                          rsum = gsum = bsum = asum = 0;
+        rsum = gsum = bsum = asum = 0;
     for (i = -radius; i <= radius; ++i) {
       p = pix[yi + qMin(wm, qMax(i, 0))];
       sir = stack[i + radius];
@@ -360,7 +358,7 @@ void fastbluralpha(QImage &img, int radius)
   }
   for (x = 0; x < w; ++x) {
     rinsum = ginsum = binsum = ainsum = routsum = goutsum = boutsum = aoutsum =
-                                          rsum = gsum = bsum = asum = 0;
+        rsum = gsum = bsum = asum = 0;
 
     yp = -radius * w;
 
@@ -468,8 +466,7 @@ void fastbluralpha(QImage &img, int radius)
 
 //
 
-class FacebookContactCard::PrivateFacebookContactCard
-{
+class FacebookContactCard::PrivateFacebookContactCard {
 public:
   PrivateFacebookContactCard() {}
   ~PrivateFacebookContactCard() {}
@@ -510,14 +507,13 @@ public:
 };
 
 FacebookContactCard::FacebookContactCard(const QRectF &rect,
-    QGraphicsObject *parent)
-  : PlexyDesk::DesktopWidget(rect, parent),
-    d(new PrivateFacebookContactCard)
-{
+                                         QGraphicsObject *parent)
+    : PlexyDesk::DesktopWidget(rect, parent),
+      d(new PrivateFacebookContactCard) {
   d->mDataSource = 0;
   d->mWeatherEngine =
-    PlexyDesk::ExtensionManager::instance()->desktopDataEngineExtension(
-      "openweathermapsengine");
+      PlexyDesk::ExtensionManager::instance()->desktopDataEngineExtension(
+          "openweathermapsengine");
 
   d->mNtManager = new QNetworkAccessManager(this);
   d->mUiPixmap = 0;
@@ -528,7 +524,7 @@ FacebookContactCard::FacebookContactCard(const QRectF &rect,
   d->mWallPostButton->show();
   d->mWallPostButton->setLabel(tr("Send Wall Post"));
   d->mPostDialog =
-    new FacebookMessageDialog(QRect(rect.x(), rect.y(), rect.width(), 200));
+      new FacebookMessageDialog(QRect(rect.x(), rect.y(), rect.width(), 200));
   d->mPostDialog->hide();
 
   // flags
@@ -556,15 +552,13 @@ FacebookContactCard::FacebookContactCard(const QRectF &rect,
   }
 }
 
-FacebookContactCard::~FacebookContactCard()
-{
+FacebookContactCard::~FacebookContactCard() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void FacebookContactCard::setDataSource(const QString &id, const QString &token,
-                                        PlexyDesk::DataSource *dataSource)
-{
+                                        PlexyDesk::DataSource *dataSource) {
   if (dataSource) {
     connect(dataSource, SIGNAL(sourceUpdated(QVariantMap)), this,
             SLOT(onDataUpdated(QVariantMap)));
@@ -587,8 +581,8 @@ void FacebookContactCard::setDataSource(const QString &id, const QString &token,
 
       if (controller()) {
         PlexyDesk::AbstractDesktopView *view =
-          qobject_cast<PlexyDesk::AbstractDesktopView *>(
-            controller()->viewport());
+            qobject_cast<PlexyDesk::AbstractDesktopView *>(
+                controller()->viewport());
 
         if (view) {
           view->addWidgetToView(d->mFeedWall);
@@ -615,8 +609,7 @@ QPixmap FacebookContactCard::userImage() const { return d->mUserPicture; }
 
 QPixmap FacebookContactCard::coverImage() const { return d->mCoverPicture; }
 
-void FacebookContactCard::onDataUpdated(QVariantMap map)
-{
+void FacebookContactCard::onDataUpdated(QVariantMap map) {
   if (map["command"] == "userdata" && map["id"] == d->mID) {
     d->mFirstName = map["first_name"].toString();
     d->mLastName = map["last_name"].toString();
@@ -654,26 +647,23 @@ void FacebookContactCard::onDataUpdated(QVariantMap map)
   }
 }
 
-void FacebookContactCard::onWeatherDataUpdated(QVariantMap map)
-{
+void FacebookContactCard::onWeatherDataUpdated(QVariantMap map) {
   // qDebug() << Q_FUNC_INFO << map;
 
   d->mCurrentTemp = map["current_temp"].toString();
   qDebug() << Q_FUNC_INFO << d->mCurrentTemp;
 }
 
-void FacebookContactCard::onStatusUpdated(QVariantMap map)
-{
+void FacebookContactCard::onStatusUpdated(QVariantMap map) {
   if (map["command"].toString() == "status" && map["id"].toString() == d->mID) {
     d->mStatusMessage = map["message"].toString();
     update();
   }
 }
 
-void FacebookContactCard::onCoverReady()
-{
+void FacebookContactCard::onCoverReady() {
   QNetworkReply *reply_img =
-    d->mNtManager->get(QNetworkRequest(QUrl(d->mPicture)));
+      d->mNtManager->get(QNetworkRequest(QUrl(d->mPicture)));
   connect(reply_img, SIGNAL(finished()), this, SLOT(onAvatarReady()));
 
   if (sender()) {
@@ -687,7 +677,7 @@ void FacebookContactCard::onCoverReady()
       }
 
       QString header =
-        reply->header(QNetworkRequest::ContentTypeHeader).toString();
+          reply->header(QNetworkRequest::ContentTypeHeader).toString();
 
       const QByteArray data = reply->readAll();
       int bufferSize = reply->bytesAvailable();
@@ -711,8 +701,7 @@ void FacebookContactCard::onCoverReady()
   }
 }
 
-void FacebookContactCard::onAvatarReady()
-{
+void FacebookContactCard::onAvatarReady() {
   if (sender()) {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
@@ -724,7 +713,7 @@ void FacebookContactCard::onAvatarReady()
       }
 
       QString header =
-        reply->header(QNetworkRequest::ContentTypeHeader).toString();
+          reply->header(QNetworkRequest::ContentTypeHeader).toString();
 
       const QByteArray data = reply->readAll();
       int bufferSize = reply->bytesAvailable();
@@ -745,8 +734,7 @@ void FacebookContactCard::onAvatarReady()
   }
 }
 
-void FacebookContactCard::onWallPostClicked()
-{
+void FacebookContactCard::onWallPostClicked() {
   if (d->mInputDialog) {
     d->mInputDialog->hide();
     d->mInputDialog.clear();
@@ -766,8 +754,7 @@ void FacebookContactCard::onWallPostClicked()
           SLOT(onMessageRestested()));
 }
 
-void FacebookContactCard::feedClicked()
-{
+void FacebookContactCard::feedClicked() {
   qDebug() << Q_FUNC_INFO;
 
   /*
@@ -805,8 +792,7 @@ void FacebookContactCard::feedClicked()
   */
 }
 
-void FacebookContactCard::onMessageRestested()
-{
+void FacebookContactCard::onMessageRestested() {
   if (d->mInputDialog) {
     QVariantMap request;
     QVariant arg;
@@ -829,10 +815,9 @@ void FacebookContactCard::onMessageRestested()
   }
 }
 
-void FacebookContactCard::onWidgetClosed(PlexyDesk::AbstractDesktopWidget *)
-{
+void FacebookContactCard::onWidgetClosed(PlexyDesk::AbstractDesktopWidget *) {
   d->mPostDialog = new FacebookMessageDialog(QRect(
-        boundingRect().x(), boundingRect().y(), boundingRect().width(), 200));
+      boundingRect().x(), boundingRect().y(), boundingRect().width(), 200));
   d->mPostDialog->hide();
   connect(d->mPostDialog, SIGNAL(messageRequested()), this,
           SLOT(onMessageRestested()));
@@ -840,15 +825,13 @@ void FacebookContactCard::onWidgetClosed(PlexyDesk::AbstractDesktopWidget *)
           this, SLOT(onWidgetClosed(PlexyDesk::AbstractDesktopWidget *)));
 }
 
-void FacebookContactCard::onFeedClosed(PlexyDesk::AbstractDesktopWidget *)
-{
+void FacebookContactCard::onFeedClosed(PlexyDesk::AbstractDesktopWidget *) {
   qDebug() << Q_FUNC_INFO;
   d->mFeedWall = 0;
 }
 
 QImage FacebookContactCard::PrivateFacebookContactCard::genShadowImage(
-  const QRect &rect, const QPainterPath &path, const QPixmap &pixmap)
-{
+    const QRect &rect, const QPainterPath &path, const QPixmap &pixmap) {
   QImage canvasSource(rect.size(), QImage::Format_ARGB32_Premultiplied);
 
   if (pixmap.isNull()) {
@@ -890,8 +873,7 @@ QImage FacebookContactCard::PrivateFacebookContactCard::genShadowImage(
 }
 
 void FacebookContactCard::paintFrontView(QPainter *painter,
-    const QRectF &rect)
-{
+                                         const QRectF &rect) {
   QRectF pixmapRect = d->mCoverPicture.rect();
 
   /* Draw background */
@@ -903,7 +885,7 @@ void FacebookContactCard::paintFrontView(QPainter *painter,
 
   /*calculate the new height for the content rect width */
   float pixmapHeight =
-    (pixmapRect.height() / pixmapRect.width()) * contentRect().width();
+      (pixmapRect.height() / pixmapRect.width()) * contentRect().width();
   float coverYOffset = 0;
 
   if (d->mCoverOffset > 0) {
@@ -952,7 +934,7 @@ void FacebookContactCard::paintFrontView(QPainter *painter,
 
   QPainterPath ringPath;
   ringPath.addEllipse(
-    (QRectF(6, offset - 4, avatarWidth + 8, avatarHeight + 8)));
+      (QRectF(6, offset - 4, avatarWidth + 8, avatarHeight + 8)));
   painter->fillPath(ringPath, QColor(255, 255, 255));
 
   painter->restore();
@@ -963,7 +945,7 @@ void FacebookContactCard::paintFrontView(QPainter *painter,
                                        shadowPath, d->mUserPicture));
 
   QRectF detailBackgroundRect = QRectF(
-                                  avatarWidth + 12, 128, rect.width() - avatarWidth + 12, rect.height());
+      avatarWidth + 12, 128, rect.width() - avatarWidth + 12, rect.height());
   painter->fillRect(detailBackgroundRect, QColor(245, 245, 245));
 
   /* Draw Text */
@@ -984,17 +966,17 @@ void FacebookContactCard::paintFrontView(QPainter *painter,
   QRectF statusMessageRect = QRectF(detailBackgroundRect.x(), 10,
                                     detailBackgroundRect.width() - 30, 118);
   QRectF weatherTempRect =
-    QRectF(10.0, detailBackgroundRect.y() + padding + 40, 60, 60);
+      QRectF(10.0, detailBackgroundRect.y() + padding + 40, 60, 60);
   QRectF weatherDegreeMarkRect =
-    QRectF(weatherTempRect.topLeft().x() + (weatherTempRect.width() - 10),
-           weatherTempRect.topLeft().y(), 24, 24);
+      QRectF(weatherTempRect.topLeft().x() + (weatherTempRect.width() - 10),
+             weatherTempRect.topLeft().y(), 24, 24);
 
   if (d->mStyle) {
     feature.font = QFont("Georgia", 16);
     feature.exposeRect = nameRect;
     d->mStyle->paintControlElementText(
-      PlexyDesk::Style::CE_Label, feature,
-      tr(d->mFirstName.toUtf8()) + " " + tr(d->mLastName.toUtf8()), painter);
+        PlexyDesk::Style::CE_Label, feature,
+        tr(d->mFirstName.toUtf8()) + " " + tr(d->mLastName.toUtf8()), painter);
 
     feature.font = QFont("Georgia", 10);
     feature.exposeRect = hometownRect;
@@ -1040,7 +1022,7 @@ void FacebookContactCard::paintFrontView(QPainter *painter,
                                        detailBackgroundRect.y() + padding + 40,
                                        detailBackgroundRect.width() - 40, 24);
     d->mWallPostButton->setSize(
-      QSize(wallpostButtonRect.width(), wallpostButtonRect.height()));
+        QSize(wallpostButtonRect.width(), wallpostButtonRect.height()));
     d->mWallPostButton->setPos(wallpostButtonRect.topLeft());
   }
 
@@ -1049,13 +1031,12 @@ void FacebookContactCard::paintFrontView(QPainter *painter,
                                        detailBackgroundRect.y() + padding + 80,
                                        detailBackgroundRect.width() - 40, 24);
     d->mFeedButton->setSize(
-      QSize(wallpostButtonRect.width(), wallpostButtonRect.height()));
+        QSize(wallpostButtonRect.width(), wallpostButtonRect.height()));
     d->mFeedButton->setPos(wallpostButtonRect.topLeft());
   }
 }
 
-void FacebookContactCard::paintDockView(QPainter *painter, const QRectF &rect)
-{
+void FacebookContactCard::paintDockView(QPainter *painter, const QRectF &rect) {
   // PlexyDesk::DesktopWidget::paintDockView(painter, rect);
 
   /* Draw Avatar */
@@ -1081,8 +1062,8 @@ void FacebookContactCard::paintDockView(QPainter *painter, const QRectF &rect)
 
   painter->setClipPath(mainPath);
   painter->drawPixmap(
-    QRect(rect.x(), rect.y(), rect.width(), rect.height()), d->mUserPicture,
-    QRect(0, 0, dockRect().width() - 4, dockRect().height() - 4));
+      QRect(rect.x(), rect.y(), rect.width(), rect.height()), d->mUserPicture,
+      QRect(0, 0, dockRect().width() - 4, dockRect().height() - 4));
 
   QPainterPath framePath;
   framePath.addRoundRect(rect.adjusted(1.0, 1.0, -1.0, -1.0), 8.0);
@@ -1094,8 +1075,7 @@ void FacebookContactCard::paintDockView(QPainter *painter, const QRectF &rect)
   // painter->fillPath(framePath, QColor(255, 255, 255));
 }
 
-void FacebookContactCard::requestStatusMessage()
-{
+void FacebookContactCard::requestStatusMessage() {
   if (d->mDataSource) {
     QVariantMap request;
     QVariant arg;

@@ -6,10 +6,8 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT TextEditor : public Widget
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT TextEditor : public Widget {
   Q_OBJECT
 public:
   TextEditor(QGraphicsObject *a_parent_ptr = 0);
@@ -35,12 +33,14 @@ public:
   virtual void end_list();
 
   virtual void convert_to_link();
-public Q_SLOTS:
+public
+Q_SLOTS:
   void on_text_updated();
   void on_block_count_changed(int a_count);
 Q_SIGNALS:
   void text_updated(const QString &a_text);
   void document_title_available(const QString &a_title);
+
 private:
   class PrivateTextEditor;
   PrivateTextEditor *const d;

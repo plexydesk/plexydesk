@@ -27,8 +27,7 @@
 
 using namespace UIKit;
 
-class DesktopManager : public UIKit::WorkSpace
-{
+class DesktopManager : public UIKit::WorkSpace {
   Q_OBJECT
 public:
   explicit DesktopManager(QWidget *a_parent_ptr = 0);

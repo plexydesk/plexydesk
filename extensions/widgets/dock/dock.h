@@ -30,8 +30,7 @@
 
 using namespace UIKit;
 
-class DockControllerImpl : public UIKit::ViewController
-{
+class DockControllerImpl : public UIKit::ViewController {
   Q_OBJECT
 
 public:
@@ -64,7 +63,8 @@ public:
 
   void prepare_removal();
 
-public Q_SLOTS:
+public
+Q_SLOTS:
 
   void toggleDesktopPanel();
 
@@ -90,10 +90,10 @@ private:
   PrivateDock *const d;
 
   UIKit::DesktopActivityPtr createActivity(const QString &controller_name,
-      const QString &activity,
-      const QString &title,
-      const QPoint &pos,
-      const QVariantMap &dataItem);
+                                           const QString &activity,
+                                           const QString &title,
+                                           const QPoint &pos,
+                                           const QVariantMap &dataItem);
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
 };

@@ -35,8 +35,7 @@
 #include "welcomeitem.h"
 #include "frameitem.h"
 
-class WelcomeWidget::Private
-{
+class WelcomeWidget::Private {
 public:
   Private() {}
   ~Private() {}
@@ -64,8 +63,7 @@ public:
 };
 
 WelcomeWidget::WelcomeWidget(const QRectF &rect, QWidget *widget)
-  : PlexyDesk::DesktopWidget(rect, widget), d(new Private)
-{
+    : PlexyDesk::DesktopWidget(rect, widget), d(new Private) {
 
   QRectF _rect(0.0, 0.0, 128.0, 128.0);
   d->icon1 = new WelcomeItem(QRect(0, 0, 128, 256), this);
@@ -86,8 +84,7 @@ WelcomeWidget::WelcomeWidget(const QRectF &rect, QWidget *widget)
 
 WelcomeWidget::~WelcomeWidget() { delete d; }
 
-QPixmap WelcomeWidget::fromSvg(QRectF _rect, const QString &file)
-{
+QPixmap WelcomeWidget::fromSvg(QRectF _rect, const QString &file) {
   PlexyDesk::ImageCache *cache = PlexyDesk::ImageCache::instance();
   QImage pixmap(_rect.width(), _rect.height(),
                 QImage::Format_ARGB32_Premultiplied);
@@ -104,8 +101,7 @@ QPixmap WelcomeWidget::fromSvg(QRectF _rect, const QString &file)
 
   return QPixmap::fromImage(pixmap);
 }
-void WelcomeWidget::showLogin()
-{
+void WelcomeWidget::showLogin() {
   // startSpin();
 }
 
@@ -113,15 +109,13 @@ void WelcomeWidget::onDataReady() {}
 
 void WelcomeWidget::fadeIn() {}
 
-void WelcomeWidget::paintBackSide(QPainter *painter, const QRectF &rect)
-{
+void WelcomeWidget::paintBackSide(QPainter *painter, const QRectF &rect) {
   PlexyDesk::DesktopWidget::paintViewSide(painter, rect);
   d->icon1->setVisible(false);
   d->icon2->setVisible(false);
   d->icon3->setVisible(false);
 }
-void WelcomeWidget::paintViewSide(QPainter *painter, const QRectF &rect)
-{
+void WelcomeWidget::paintViewSide(QPainter *painter, const QRectF &rect) {
   d->icon1->setVisible(true);
   d->icon2->setVisible(true);
   d->icon3->setVisible(true);
@@ -129,7 +123,6 @@ void WelcomeWidget::paintViewSide(QPainter *painter, const QRectF &rect)
 
 void WelcomeWidget::fadeOut() {}
 
-void WelcomeWidget::data(QVariantMap &data)
-{
+void WelcomeWidget::data(QVariantMap &data) {
   qDebug() << Q_FUNC_INFO << data["data"];
 }

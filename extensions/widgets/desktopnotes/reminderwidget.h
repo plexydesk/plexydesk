@@ -8,8 +8,7 @@
 #include <widget.h>
 #include <webservice.h>
 
-class ReminderWidget : public UIKit::Widget
-{
+class ReminderWidget : public UIKit::Widget {
   Q_OBJECT
 public:
   explicit ReminderWidget(QGraphicsObject *a_parent_ptr = 0);
@@ -35,7 +34,8 @@ public:
 Q_SIGNALS:
   void clicked(ReminderWidget *item);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onClicked();
   void onTextUpdated(const QString &text);
   void onDocuemntTitleAvailable(const QString &title);

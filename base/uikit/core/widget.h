@@ -28,16 +28,14 @@
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 
-namespace UIKit
-{
+namespace UIKit {
 /*
  * @brief The Base Class for All types of Desktop Widgets.
  */
 class ViewController;
 
 class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
-  public QGraphicsLayoutItem
-{
+                                  public QGraphicsLayoutItem {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)
 public:
@@ -58,7 +56,10 @@ public:
     kKeyPressEvent = 1ul << 4
   } InputEvent;
 
-  enum RenderLevel { kRenderAtBackgroundLevel, kRenderAtForgroundLevel };
+  enum RenderLevel {
+    kRenderAtBackgroundLevel,
+    kRenderAtForgroundLevel
+  };
 
   Widget(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Widget();
@@ -82,9 +83,8 @@ public:
 
   virtual void set_widget_flag(int a_flags, bool a_enable = true);
 
-  virtual void on_input_event(
-    std::function<void (InputEvent a_type,
-                        const Widget *a_widget_ptr)> a_callback);
+  virtual void on_input_event(std::function<
+      void(InputEvent a_type, const Widget *a_widget_ptr)> a_callback);
 
   virtual void set_style_attribute(const QString &a_key, QVariant a_data);
   virtual QVariant style_attribute(const QString &a_key);
@@ -95,7 +95,8 @@ Q_SIGNALS:
 
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
-  virtual void paint(QPainter *a_painter_ptr, const QStyleOptionGraphicsItem *a_option_ptr,
+  virtual void paint(QPainter *a_painter_ptr,
+                     const QStyleOptionGraphicsItem *a_option_ptr,
                      QWidget *a_widget_ptr = 0);
 
   virtual QSizeF sizeHint(Qt::SizeHint a_which,
@@ -108,6 +109,7 @@ protected:
   virtual float scale_factor_for_width() const;
   virtual float scale_factor_for_height() const;
   virtual void set_child_widet_visibility(bool a_visibility);
+
 private:
   class PrivateAbstractDesktopWidget;
   PrivateAbstractDesktopWidget *const d;

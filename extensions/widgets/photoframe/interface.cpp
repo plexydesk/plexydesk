@@ -23,11 +23,10 @@
 #include "imageplugin.h"
 #include "imageplugin.h"
 
-QSharedPointer<UIKit::ViewController> Interface::controller()
-{
+QSharedPointer<UIKit::ViewController> Interface::controller() {
   QSharedPointer<UIKit::ViewController> obj =
-    QSharedPointer<UIKit::ViewController>(
-      new PhotoFrameController(this), &QObject::deleteLater);
+      QSharedPointer<UIKit::ViewController>(new PhotoFrameController(this),
+                                            &QObject::deleteLater);
 
   return obj;
 }

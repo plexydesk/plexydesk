@@ -6,8 +6,7 @@
 #include <plexy.h>
 #include <style.h>
 
-class ContactListItem : public QGraphicsObject
-{
+class ContactListItem : public QGraphicsObject {
   Q_OBJECT
 public:
   explicit ContactListItem(QGraphicsObject *parent = 0);
@@ -25,7 +24,8 @@ public:
 Q_SIGNALS:
   void clicked(ContactListItem *item);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onClicked();
 
 protected:

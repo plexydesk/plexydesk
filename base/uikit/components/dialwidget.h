@@ -6,10 +6,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
-class DECL_UI_KIT_EXPORT DialWidget : public UIKit::Widget
-{
+namespace UIKit {
+class DECL_UI_KIT_EXPORT DialWidget : public UIKit::Widget {
   Q_OBJECT
 public:
   DialWidget(QGraphicsObject *a_parent_ptr = 0);

@@ -9,8 +9,7 @@
 #include <QFileInfo>
 #include <QIcon>
 
-class FolderItem : public UIKit::TableViewItem
-{
+class FolderItem : public UIKit::TableViewItem {
   Q_OBJECT
 public:
   explicit FolderItem(const QRectF &rect, QGraphicsItem *a_parent_ptr = 0);

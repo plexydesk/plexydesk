@@ -46,19 +46,17 @@
 #include <QPaintEvent>
 #include <QStyleOptionGraphicsItem>
 
-namespace PlexyDesk
-{
+namespace PlexyDesk {
 
-FriendItem::FriendItem(QGraphicsItem *parent)
-{
+FriendItem::FriendItem(QGraphicsItem *parent) {
   mShade = 0;
   setParentItem(parent);
   mPanel = QImage(QDir::toNativeSeparators(
-                    PlexyDesk::Config::getInstance()->plexydeskBasePath() +
-                    "/share/plexy/theme/skins/default/widget/friendswidget/panel.png"));
+      PlexyDesk::Config::getInstance()->plexydeskBasePath() +
+      "/share/plexy/theme/skins/default/widget/friendswidget/panel.png"));
   mIcon = QPixmap(QDir::toNativeSeparators(
-                    PlexyDesk::Config::getInstance()->plexydeskBasePath() +
-                    "/share/plexy/theme/skins/default/widget/friendswidget/face.png"));
+      PlexyDesk::Config::getInstance()->plexydeskBasePath() +
+      "/share/plexy/theme/skins/default/widget/friendswidget/face.png"));
 }
 
 FriendItem::~FriendItem() {}
@@ -66,8 +64,7 @@ FriendItem::~FriendItem() {}
 QRectF FriendItem::boundingRect() const { return QRectF(0, 0, 183, 53); }
 
 void FriendItem::paint(QPainter *p, const QStyleOptionGraphicsItem *e,
-                       QWidget *widget)
-{
+                       QWidget *widget) {
   DesktopWidget *dw = static_cast<DesktopWidget *>(parentItem());
 
   if (dw->state() == DesktopWidget::DOCK) {
@@ -103,8 +100,7 @@ void FriendItem::paint(QPainter *p, const QStyleOptionGraphicsItem *e,
   p->drawText(QRect(45, 20, 150, 20), Qt::AlignLeft, mName);
 }
 
-void FriendItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void FriendItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   emit clicked();
 }
 

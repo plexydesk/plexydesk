@@ -24,8 +24,7 @@
 
 PresenceInterface::PresenceInterface(QObject *parent) {}
 
-PlexyDesk::DataPlugin *PresenceInterface::instance()
-{
+PlexyDesk::DataPlugin *PresenceInterface::instance() {
   return new PresenceData();
 }
 

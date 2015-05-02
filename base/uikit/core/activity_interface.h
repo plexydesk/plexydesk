@@ -3,13 +3,11 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit
-{
+namespace UIKit {
 
 class DesktopActivity;
 
-class DECL_UI_KIT_EXPORT ActivityInterface
-{
+class DECL_UI_KIT_EXPORT ActivityInterface {
 public:
   explicit ActivityInterface() {}
 
@@ -17,6 +15,5 @@ public:
 };
 } // namespace PlexyDesk
 
-Q_DECLARE_INTERFACE(UIKit::ActivityInterface,
-                    "org.plexydesk.ActivityInterface")
+Q_DECLARE_INTERFACE(UIKit::ActivityInterface, "org.plexydesk.ActivityInterface")
 #endif // ACTIVITY_INTERFACE_H

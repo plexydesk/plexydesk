@@ -2,13 +2,11 @@
 
 #include <QDateTime>
 
-namespace QuetzalSocialKit
-{
+namespace QuetzalSocialKit {
 
 WebContentInterface::WebContentInterface() {}
 
-QString WebContentInterface::content()
-{
+QString WebContentInterface::content() {
   QString rv("HTTP/1.0 200 Ok\r\n"
              "Content-Type: text/html; charset=\"utf-8\"\r\n"
              "\r\n"

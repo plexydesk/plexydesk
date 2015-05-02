@@ -4,8 +4,7 @@
 #include <datasource.h>
 #include <extensionmanager.h>
 
-class ExtLaoderTestRunner::PrivateExtLaoderTestRunner
-{
+class ExtLaoderTestRunner::PrivateExtLaoderTestRunner {
 public:
   PrivateExtLaoderTestRunner() {}
   ~PrivateExtLaoderTestRunner() {}
@@ -14,19 +13,16 @@ public:
 };
 
 ExtLaoderTestRunner::ExtLaoderTestRunner(QObject *parent)
-  : d(new PrivateExtLaoderTestRunner), QObject(parent)
-{
+    : d(new PrivateExtLaoderTestRunner), QObject(parent) {
   qDebug() << Q_FUNC_INFO << "Runner Started";
 }
 
-ExtLaoderTestRunner::~ExtLaoderTestRunner()
-{
+ExtLaoderTestRunner::~ExtLaoderTestRunner() {
   qDebug() << Q_FUNC_INFO << "Runner Ended";
   delete d;
 }
 
-bool ExtLaoderTestRunner::connectToDataSource(const QString &source)
-{
+bool ExtLaoderTestRunner::connectToDataSource(const QString &source) {
   d->mDataSource = UIKit::ExtensionManager::instance()->data_engine(source);
 
   if (!d->mDataSource.data()) {
@@ -40,10 +36,9 @@ bool ExtLaoderTestRunner::connectToDataSource(const QString &source)
   return true;
 }
 
-void ExtLaoderTestRunner::loadtest(const QString &source)
-{
+void ExtLaoderTestRunner::loadtest(const QString &source) {
   UIKit::DataSourcePtr _source =
-    UIKit::ExtensionManager::instance()->data_engine(source);
+      UIKit::ExtensionManager::instance()->data_engine(source);
 
   if (!_source) {
     return;
@@ -52,7 +47,6 @@ void ExtLaoderTestRunner::loadtest(const QString &source)
   qDebug() << Q_FUNC_INFO << "Complete";
 }
 
-void ExtLaoderTestRunner::onSourceUpdated(const QVariantMap &data)
-{
+void ExtLaoderTestRunner::onSourceUpdated(const QVariantMap &data) {
   qDebug() << Q_FUNC_INFO << data;
 }

@@ -21,11 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity> TemplateInterface::activity()
-{
+QSharedPointer<UIKit::DesktopActivity> TemplateInterface::activity() {
   QSharedPointer<UIKit::DesktopActivity> obj =
-    QSharedPointer<UIKit::DesktopActivity>(new TemplateActivity(),
-        &QObject::deleteLater);
+      QSharedPointer<UIKit::DesktopActivity>(new TemplateActivity(),
+                                             &QObject::deleteLater);
 
   return obj;
 }

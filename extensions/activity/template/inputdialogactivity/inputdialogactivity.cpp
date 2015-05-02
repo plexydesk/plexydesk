@@ -21,19 +21,17 @@
 #include <QTimer>
 #include <controllerinterface.h>
 
-class InputDialogActivityData::PrivateInputDialogActivity
-{
+class InputDialogActivityData::PrivateInputDialogActivity {
 public:
   PrivateInputDialogActivity() {}
   ~PrivateInputDialogActivity() {}
 };
 
 InputDialogActivityData::InputDialogActivityData(QGraphicsObject *object)
-  : PlexyDesk::DesktopActivity(object), d(new PrivateInputDialogActivity) {}
+    : PlexyDesk::DesktopActivity(object), d(new PrivateInputDialogActivity) {}
 
 InputDialogActivityData::~InputDialogActivityData() { delete d; }
 
-void InputDialogActivityData::invoke()
-{
+void InputDialogActivityData::invoke() {
   // todo: invoke UI
 }

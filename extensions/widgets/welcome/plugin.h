@@ -26,8 +26,7 @@
 #include "wellcomeitem.h"
 #include "frameitem.h"
 
-class VISIBLE_SYM Welcome : public PlexyDesk::WidgetPlugin
-{
+class VISIBLE_SYM Welcome : public PlexyDesk::WidgetPlugin {
   Q_OBJECT
 
 public:

@@ -6,8 +6,7 @@
 
 class FolderItem;
 
-class FolderProvider : public UIKit::TableModel
-{
+class FolderProvider : public UIKit::TableModel {
   Q_OBJECT
 public:
   FolderProvider(const QRectF &rect, QGraphicsObject *a_parent_ptr = 0);
@@ -25,8 +24,8 @@ public:
 
   virtual float right_margin() const;
 
-  UIKit::Widget *loadWidgetControlllerByName(
-    const QString &controllerName) const;
+  UIKit::Widget *loadWidgetControlllerByName(const QString &controllerName)
+      const;
 
   UIKit::DataSourcePtr loadDataSourceEngine(const QString &engine);
 
@@ -38,7 +37,8 @@ Q_SIGNALS:
   void itemClicked(FolderItem *);
   void itemDoubleClicked(FolderItem *);
 
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDirectoryReady(const QString &path);
   void onLocationSourceUpdated(const QVariantMap &data);
 

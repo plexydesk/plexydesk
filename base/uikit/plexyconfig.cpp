@@ -31,11 +31,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-namespace UIKit
-{
+namespace UIKit {
 
-class Config::Private
-{
+class Config::Private {
 public:
   Private() {}
   ~Private() {}
@@ -44,11 +42,10 @@ public:
 Config *Config::config = 0;
 QNetworkAccessManager *Config::m_networkaccessmanager = 0;
 
-Config *Config::instance()
-{
+Config *Config::instance() {
   if (config == 0) {
     config =
-      new Config(QLatin1String("plexydesk"), QLatin1String("plexydesktop"));
+        new Config(QLatin1String("plexydesk"), QLatin1String("plexydesktop"));
     return config;
   } else {
     return config;
@@ -57,12 +54,11 @@ Config *Config::instance()
 
 Config::Config(const QString &a_organization, const QString &a_application,
                QObject *parent)
-  : QObject(parent), d(new Private) {}
+    : QObject(parent), d(new Private) {}
 
 Config::~Config() { delete d; }
 
-QString Config::prefix()
-{
+QString Config::prefix() {
 #ifndef Q_OS_LINUX
   QDir binaryPath(QCoreApplication::applicationDirPath());
   if (binaryPath.cdUp()) {
@@ -82,9 +78,9 @@ QString Config::prefix()
 #ifdef Q_OS_MAC
   CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
   CFStringRef macPath =
-    CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
+      CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
   const char *pathPtr =
-    CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+      CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
   CFRelease(appUrlRef);
   CFRelease(macPath);
   return QLatin1String(pathPtr) + QString("/Contents/");
@@ -93,16 +89,14 @@ QString Config::prefix()
   return QString();
 }
 
-QString Config::cache_dir(const QString &a_folder)
-{
+QString Config::cache_dir(const QString &a_folder) {
   QString rv = QDir::toNativeSeparators(QDir::homePath() + "/" +
                                         ".plexydesk/cache/" + a_folder);
   QDir(QDir::homePath()).mkpath(rv);
   return rv;
 }
 
-QNetworkAccessManager *Config::network_access_manager()
-{
+QNetworkAccessManager *Config::network_access_manager() {
   if (m_networkaccessmanager == 0) {
     m_networkaccessmanager = new QNetworkAccessManager(instance());
     // networkaccessmanager->setCookieJar(getCookieJar());

@@ -30,8 +30,7 @@
 #include <datainterface.h>
 #include <dataplugin.h>
 
-class VIDEOENGINE_EXPORT IVideoInterface : public PlexyDesk::DataInterface
-{
+class VIDEOENGINE_EXPORT IVideoInterface : public PlexyDesk::DataInterface {
   Q_OBJECT
   Q_INTERFACES(PlexyDesk::AbstractPluginInterface)
 
