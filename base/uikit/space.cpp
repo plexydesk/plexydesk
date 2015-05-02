@@ -123,25 +123,31 @@ UIKit::DesktopActivityPtr Space::create_activity(const QString &a_activity,
   return intent;
 }
 
-void Space::update_session_value(const QString &a_name,
+void Space::update_session_value(const QString &a_controller_name,
                                  const QString &a_key, const QString &a_value)
 {
-  QuetzalKit::DataStore *dataStore = new QuetzalKit::DataStore(
-    m_priv_impl->sessionNameForController(a_name), this);
-  QuetzalKit::DiskSyncEngine *engine =
-    new QuetzalKit::DiskSyncEngine(dataStore);
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+        m_priv_impl->sessionNameForController(a_controller_name).toStdString());
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
-  dataStore->setSyncEngine(engine);
+  sync->set_sync_engine(engine);
 
-  QuetzalKit::SyncObject *_session_list_ptr = dataStore->begin("SessionData");
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+      if (!a_found) {
+        QuetzalKit::SyncObject obj;
+        obj.setName("AppSession");
+        obj.setObjectAttribute("name", a_controller_name);
 
-  if (!_session_list_ptr) {
-    return;
-  }
+        sync->add_object(obj);
+      }
 
-  controller(a_name)->submit_session_data(_session_list_ptr, dataStore);
+      controller(a_controller_name)->submit_session_data(&a_object);
+  });
 
-  delete dataStore;
+  sync->find("AppSession", "", "");
+
+  delete sync;
 }
 
 void Space::add_activity(UIKit::DesktopActivityPtr a_activity_ptr)
@@ -272,7 +278,7 @@ void Space::save_controller_to_session(const QString &a_controller_name)
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                         const std::string &a_app_name, bool a_found){
       if (!a_found) {
         QuetzalKit::SyncObject obj;
@@ -297,23 +303,22 @@ void Space::revoke_controller_session_attributes(
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                         const std::string &a_app_name, bool a_found){
       if (!a_found) {
           QuetzalKit::SyncObject obj;
-          obj.setName("SessionData");
+          obj.setName("AppSession");
           obj.setObjectAttribute("name", a_controller_name);
 
           sync->add_object(obj);
         } else {
           if (controller(a_controller_name)) {
-              //controller(a_controller_name)->revoke_session(_session_data);
-              //controller(a_controller_name)->session_data_available();
+              controller(a_controller_name)->session_data_available(a_object);
             }
         }
     });
 
-  sync->find("SessionData", "name", a_controller_name.toStdString());
+  sync->find("AppSession", "name", a_controller_name.toStdString());
 
   delete sync;
 }
@@ -335,49 +340,12 @@ void Space::PrivateSpace::createActionsFromController(const Space *space,
 
 void Space::PrivateSpace::initSessionStorage(Space *space)
 {
-  /*
-  QuetzalKit::DataStore *_data_store =
-    new QuetzalKit::DataStore(sessionNameForSpace(), space);
-  QuetzalKit::DiskSyncEngine *_engine =
-    new QuetzalKit::DiskSyncEngine(_data_store);
-
-  _data_store->setSyncEngine(_engine);
-
-  QuetzalKit::SyncObject *_session_list_ptr =
-    _data_store->begin("ControllerList");
-
-  if (_session_list_ptr) {
-    Q_FOREACH(const QuetzalKit::SyncObject * _object,
-              _session_list_ptr->childObjects()) {
-      if (!_object) {
-        continue;
-      }
-
-      QString _current_controller_name =
-        _object->attributeValue("name").toString();
-
-      ViewControllerPtr _controller_ptr =
-        space->controller(_current_controller_name);
-
-      if (!_controller_ptr) {
-        space->add_controller(_current_controller_name);
-        continue;
-      }
-    }
-  }
-
-  delete _data_store;
-  */
-  //new API
-
-  //new APi
-
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
         sessionNameForSpace().toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                         const std::string &a_app_name, bool a_found) {
       if (a_found) {
           QString _current_controller_name =

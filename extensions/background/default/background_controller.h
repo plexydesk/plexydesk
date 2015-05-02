@@ -39,9 +39,8 @@ public:
 
   void init();
 
-  void session_data_available(QuetzalKit::SyncObject *a_session_root);
-  void submit_session_data(QuetzalKit::SyncObject *a_object,
-                           QuetzalKit::DataStore *a_store);
+  void session_data_available(const QuetzalKit::SyncObject &a_session_root);
+  void submit_session_data(QuetzalKit::SyncObject *a_object);
 
   UIKit::ActionList actions() const;
 

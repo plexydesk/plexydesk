@@ -4,7 +4,7 @@
 
 namespace QuetzalKit
 {
-typedef std::function<void (const SyncObject &, const std::string &, bool)> FoundFunc;
+typedef std::function<void (SyncObject &, const std::string &, bool)> FoundFunc;
 
   class DataSync::PrivateDataSync {
   public:
@@ -80,24 +80,25 @@ typedef std::function<void (const SyncObject &, const std::string &, bool)> Foun
     if (m_priv->m_engine) {
 
         m_priv->m_engine->on_search_complete(
-              [this](const QuetzalKit::SyncObject &a_obj,
-                const std::string &a_app_name, bool a_found) {
+              [this](QuetzalKit::SyncObject &a_obj,
+              const std::string &a_app_name, bool a_found) {
 
-            std::for_each(m_priv->m_on_object_found_handler_list.begin(),
-                          m_priv->m_on_object_found_handler_list.end(),
-                          [&](FoundFunc a_func){
-              if (a_func) {
-                  a_func(a_obj, a_app_name, a_found);
-                }
-            });
+          a_obj.set_data_sync(this);
+          std::for_each(m_priv->m_on_object_found_handler_list.begin(),
+                        m_priv->m_on_object_found_handler_list.end(),
+                        [&](FoundFunc a_func){
+            if (a_func) {
+                a_func(a_obj, a_app_name, a_found);
+              }
           });
+        });
 
         m_priv->m_engine->find(a_object_name, a_attrib, a_value);
       }
   }
 
   void DataSync::on_object_found(
-      std::function<void (const SyncObject &,
+      std::function<void (SyncObject &,
                           const std::string &, bool)> a_handler)
   {
     m_priv->m_on_object_found_handler_list.push_back(a_handler);

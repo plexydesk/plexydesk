@@ -35,14 +35,14 @@ public:
                     const std::string &a_value) {}
 
   virtual void on_search_complete(
-      std::function<void (const SyncObject &a_object,
+      std::function<void (SyncObject &a_object,
                                 const std::string &a_app_name,
                           bool)> a_handler);
 
   virtual void on_insert_complete(
       std::function<void (const SyncObject &)> a_handler);
 protected:
-  virtual void search_request_complete(const SyncObject &a_object,
+  virtual void search_request_complete(SyncObject &a_object,
                                        std::string &a_app_name, bool a_found);
   virtual void insert_request_complete(const SyncObject &a_object);
 

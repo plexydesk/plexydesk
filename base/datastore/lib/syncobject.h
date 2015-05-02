@@ -1,6 +1,7 @@
 #ifndef SYNCOBJECT_H
 #define SYNCOBJECT_H
 
+
 #include <QObject>
 #include <QDomNode>
 #include <datastore.h>
@@ -8,7 +9,7 @@
 
 namespace QuetzalKit
 {
-
+class DataSync;
 /**
     * @brief
     *
@@ -66,65 +67,50 @@ public:
   QString name() const;
 
   void setKey(uint key);
-
   uint key() const;
 
   SyncObject *parentObject() const;
-
   void setParentObject(SyncObject *a_parent_ptr);
 
   void setObjectAttribute(const QString &name, const QVariant &attributeValue);
-
   QStringList attributes() const;
-
   QVariant attributeValue(const QString &name) const;
 
+  bool hasChildren() const;
+  uint childCount() const;
   void addChildObject(SyncObject *object);
-
   QList<SyncObject *> childObjects() const;
-
   SyncObject *childObject(uint key);
-
   SyncObject *childObject(const QString &name);
-
   void linksToObject(const QString &dataStoreName, const QString &objectName);
 
   // SyncObject linkedObject() const;
-
-  bool hasChildren() const;
-
-  uint childCount() const;
 
   void updateTimeStamp();
 
   void removeObject(uint key);
 
   void attachTextNode(const QString &data);
-
   void setTextData(const QString &data);
-
   QString textData() const;
 
   SyncObject *clone(SyncObject *object);
 
   void setDataStore(DataStore *store);
-
   DataStore *store();
+
+  void set_data_sync(DataSync *a_sync);
+  virtual void sync();
 
   // protected:
   QDomNode node();
-
   void setDomNode(const QDomNode &node);
-
   SyncObject *createNewObject(const QString &name);
-
   QString dumpContent() const;
-
   bool contains(SyncObject *object);
-
   bool similarObject(SyncObject *object);
-
   void replace(SyncObject *object);
+
 
 Q_SIGNALS:
   void childAdded();

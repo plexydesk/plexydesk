@@ -167,6 +167,9 @@ void DiskSyncEngine::insert_request(const SyncObject &a_obj)
       main_element.setAttribute(key, a_obj.attributeValue(key).toString());
   }
 
+  int index = root_element.childNodes().count();
+  main_element.setAttribute("db_key", index);
+
   root_element.appendChild(main_element);
 
   if (!object_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -472,7 +475,8 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   if (!fileInfo.exists()) {
       qDebug() << Q_FUNC_INFO << "Failed";
 
-      search_request_complete(SyncObject(), d->m_app_name, 0);
+      SyncObject null_obj;
+      search_request_complete(null_obj, d->m_app_name, 0);
       return;
   }
 
@@ -482,7 +486,8 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   if (!db_file_path_info.exists()) {
       qDebug() << Q_FUNC_INFO << "Failed";
 
-      search_request_complete(SyncObject(), d->m_app_name, 0);
+      SyncObject null_obj;
+      search_request_complete(null_obj, d->m_app_name, 0);
       return;
   }
 
@@ -500,7 +505,8 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   if (object_file.exists()) {
       if (!object_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
           qDebug() << Q_FUNC_INFO << "Failed to open device read-only";
-          search_request_complete(SyncObject(), d->m_app_name, 0);
+          SyncObject null_obj;
+          search_request_complete(null_obj, d->m_app_name, 0);
           return;
       }
 
@@ -516,7 +522,9 @@ void DiskSyncEngine::find(const std::string &a_object_name,
           qDebug() << Q_FUNC_INFO << "Error :" << error_msg
                    << " Line : " << line
                    << " Column : " << column;
-          search_request_complete(SyncObject(), d->m_app_name, 0);
+
+          SyncObject null_obj;
+          search_request_complete(null_obj, d->m_app_name, 0);
           return;
         }
 
@@ -569,8 +577,10 @@ void DiskSyncEngine::find(const std::string &a_object_name,
         }
     }
 
-  if (!match_found)
-    search_request_complete(SyncObject(), d->m_app_name, match_found);
+  if (!match_found) {
+      SyncObject null_obj;
+      search_request_complete(null_obj, d->m_app_name, match_found);
+  }
 }
 
 void DiskSyncEngine::sync(const QString &datqstoreName, const QString &data)

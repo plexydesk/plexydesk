@@ -6,13 +6,15 @@
 #include <QStringList>
 #include <QDebug>
 
+#include <datasync.h>
+
 namespace QuetzalKit
 {
 
 class SyncObject::PrivateSyncObject
 {
 public:
-  PrivateSyncObject() {}
+  PrivateSyncObject() : m_sync_store(0){}
   ~PrivateSyncObject()
   {
     // qDeleteAll(mChildList);
@@ -34,6 +36,7 @@ public:
   uint mKey;
 
   DataStore *mDataStore;
+  DataSync *m_sync_store;
 };
 
 void SyncObject::updateTimeStamp()
@@ -168,6 +171,22 @@ void SyncObject::setDataStore(DataStore *store) { d->mDataStore = store; }
 
 DataStore *SyncObject::store() { return d->mDataStore; }
 
+void SyncObject::set_data_sync(DataSync *a_sync)
+{
+  if (d->m_sync_store)
+    return;
+
+  d->m_sync_store = a_sync;
+}
+
+void SyncObject::sync()
+{
+  if (d->m_sync_store) {
+      qDebug() << Q_FUNC_INFO << "Saved";
+    d->m_sync_store->save_object(*this);
+  }
+}
+
 QStringList SyncObject::attributes() const { return d->mPropertyMap.keys(); }
 
 QVariant SyncObject::attributeValue(const QString &name) const
@@ -300,7 +319,7 @@ void SyncObject::replace(SyncObject *object)
       QDomElement elm = node.toElement();
       elm.setAttribute(prop, object->attributeValue(prop).toString());
     }
-  }
+    }
 }
 
 SyncObject *SyncObject::childObject(const QString &name)

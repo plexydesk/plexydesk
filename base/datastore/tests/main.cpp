@@ -63,7 +63,7 @@ void test_object_find()
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                         const std::string &a_app_name, bool a_found){
 
       QZ_ASSERT(a_found == 1, "Expected True");
@@ -85,7 +85,7 @@ void test_object_find_fail()
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                         const std::string &a_app_name, bool a_found){
 
       QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -146,7 +146,7 @@ void test_save_controller_to_session(const QString &a_controller_name)
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                         const std::string &a_app_name, bool a_found){
       if (!a_found) {
         QuetzalKit::SyncObject obj;
@@ -171,7 +171,7 @@ void test_find_all()
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](const QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                         const std::string &a_app_name, bool a_found){
         QZ_ASSERT(a_found == 1, "All Items are Found");
   });

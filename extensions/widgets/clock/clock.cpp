@@ -103,34 +103,12 @@ void Clock::set_view_rect(const QRectF &rect)
 {
 }
 
-void Clock::session_data_available(QuetzalKit::SyncObject *a_session_root)
+void Clock::session_data_available(const QuetzalKit::SyncObject &a_session_root)
 {
-  if (!a_session_root || !a_session_root->hasChildren()) {
-    return;
-  }
-
-  QuetzalKit::SyncObject *_session_object =
-      a_session_root->childObject("Session");
-
-  if (!_session_object || !_session_object->hasChildren())
-    return;
-
-  foreach(QuetzalKit::SyncObject *child_object, _session_object->childObjects()) {
-      if (!child_object)
-        continue;
-      int _id = child_object->attributeValue("clock_id").toInt();
-      QByteArray _zone = child_object->attributeValue("zone").toByteArray();
-
-      QVariantMap _args;
-      _args["id"] = _id;
-      _args["zone_id"] = _zone;
-
-      request_action("Clock", _args);
-  }
+  //todo: look for clock objects.
 }
 
-void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj,
-                                QuetzalKit::DataStore *a_store)
+void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj)
 {
   qDebug() << Q_FUNC_INFO
            << "Start Session Item List :"
@@ -141,33 +119,19 @@ void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj,
     return;
   }
 
-  QuetzalKit::SyncObject *session_object = a_obj->childObject("Session");
-
-  if (!session_object) {
-    qDebug() << Q_FUNC_INFO << "Invalid session object child"
-             << "object name ->"
-             << a_obj->name()
-             << " Child Object count ->"
-             << a_obj->childCount();
-    return;
-  }
-
   qDebug() << Q_FUNC_INFO << "Start Session (item count): "
            << d->m_session_list.count();
+
+  a_obj->setObjectAttribute("count", d->m_session_list.count());
 
   foreach(_clock_session session_ref, d->m_session_list) {
       if (session_ref.is_purged())
         continue;
 
-     QuetzalKit::SyncObject *clock = session_object->createNewObject("clock");
-     clock->setObjectAttribute("zone_id", session_ref.session_data("zone_id"));
-     //session_object->addChildObject(clock);
-     //a_store->insert(session_object);
-     a_store->updateNode(session_object);
-     qDebug() << Q_FUNC_INFO << "insert new clock to Session";
-  }
 
-  a_store->updateNode(session_object);
+      //todo add clock objects.
+      qDebug() << Q_FUNC_INFO << "insert new clock to Session";
+  }
 }
 
 bool Clock::remove_widget(UIKit::Widget *widget)

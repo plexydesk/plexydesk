@@ -22,7 +22,7 @@ namespace QuetzalKit {
                       const std::string &a_attrib,
                       const std::string &a_value);
 
-    virtual void on_object_found(std::function<void (const SyncObject &,
+    virtual void on_object_found(std::function<void (SyncObject &,
                                                 const std::string &, bool)> a_handler);
     virtual void on_object_saved(
         std::function<void (const SyncObject &a_object)> a_handler);

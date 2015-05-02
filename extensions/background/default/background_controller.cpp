@@ -124,52 +124,36 @@ void BackgroundController::revoke_session(const QVariantMap &args)
 }
 
 void BackgroundController::session_data_available(
-    QuetzalKit::SyncObject *a_session_root)
+    const QuetzalKit::SyncObject &a_session_root)
 {
-  if (!a_session_root || !a_session_root->hasChildren()) {
-    return;
-  }
+  QUrl background_url = a_session_root.attributeValue("background").toString();
+  QString mode = a_session_root.attributeValue("mode").toString();
 
-  QuetzalKit::SyncObject *_session_object =
-      a_session_root->childObject("Session");
-
-  if (!_session_object)
-    return;
-
-  QUrl backgroundUrl = _session_object->attributeValue("background").toString();
-  QString mode = _session_object->attributeValue("mode").toString();
-
-  if (backgroundUrl.isEmpty()) {
+  if (background_url.isEmpty()) {
     return;
   }
 
   d->mCurrentMode = mode;
 
-  qDebug() << Q_FUNC_INFO << backgroundUrl.isLocalFile();
+  qDebug() << Q_FUNC_INFO << background_url.isLocalFile();
 
-  if (backgroundUrl.isLocalFile()) {
-    d->m_background_render_item->setBackgroundImage(backgroundUrl);
+  if (background_url.isLocalFile()) {
+    d->m_background_render_item->setBackgroundImage(background_url);
   } else {
-    downloadRemoteFile(backgroundUrl);
-    }
+    downloadRemoteFile(background_url);
+  }
 }
 
-void BackgroundController::submit_session_data(QuetzalKit::SyncObject *a_object,
-                                               QuetzalKit::DataStore *a_store)
+void BackgroundController::submit_session_data(QuetzalKit::SyncObject *a_object)
 {
-  if (!a_object)
-    return;
-
-  QuetzalKit::SyncObject *session_object = a_object->childObject("Session");
-
-  if (!session_object)
-    return;
-
   foreach(const QString &key, d->m_session_data.keys()) {
-      session_object->setObjectAttribute(key, d->m_session_data[key]);
-
+      a_object->setObjectAttribute(key, d->m_session_data[key]);
+      qDebug() << Q_FUNC_INFO << key << " : " << d->m_session_data[key];
   }
-  a_store->updateNode(session_object);
+
+  a_object->sync();
+
+  qDebug() << Q_FUNC_INFO << "Updating session Value End ->";
 }
 
 UIKit::ActionList BackgroundController::actions() const
@@ -585,6 +569,8 @@ void BackgroundController::saveSession(const QString &key,
     return;
 
   viewport()->update_session_value(controller_name(), key, value.toString());
+
+  qDebug() << Q_FUNC_INFO << "Updating session Value Start ->";
 }
 
 QVariant BackgroundController::sessionValue(const QString &key)
