@@ -87,33 +87,6 @@ void WorkSpace::add_default_controller(const QString &a_controller_name)
   m_priv_impl->m_default_controller_name_list << a_controller_name;
 }
 
-void WorkSpace::restore_session()
-{
-  QuetzalKit::DataStore *_data_store =
-    new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
-  QuetzalKit::DiskSyncEngine *_engine =
-    new QuetzalKit::DiskSyncEngine(_data_store);
-
-  _data_store->setSyncEngine(_engine);
-
-  QuetzalKit::SyncObject *_session_list_ptr = _data_store->begin("SpaceList");
-
-  if (_session_list_ptr) {
-    Q_FOREACH(const QuetzalKit::SyncObject * _object,
-              _session_list_ptr->childObjects()) {
-      if (!_object) {
-        continue;
-      }
-      QString _space_name = _object->attributeValue("name").toString();
-
-      qDebug() << Q_FUNC_INFO << "Adding Space : " << _space_name;
-      revoke_space(_space_name, _object->key());
-    }
-  }
-
-  delete _data_store;
-}
-
 uint WorkSpace::space_count() const { return m_priv_impl->m_desktop_space_list.count(); }
 
 Space *WorkSpace::current_active_space() const
@@ -537,37 +510,42 @@ void WorkSpace::add_default_space()
   this->expose_sub_region(_space_geometry);
   m_priv_impl->m_current_activty_space_id = _space->id();
 
-  // Add this space to Session
-  QuetzalKit::DataStore *_data_store =
-    new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
-  QuetzalKit::DiskSyncEngine *_engine =
-    new QuetzalKit::DiskSyncEngine(_data_store);
 
-  _data_store->setSyncEngine(_engine);
-
-  QuetzalKit::SyncObject *_session_list_ptr = _data_store->begin("SpaceList");
-  QuetzalKit::SyncObject *_new_space_ptr =
-    _session_list_ptr->createNewObject("Space");
-
-  _new_space_ptr->setObjectAttribute("ref", _space->session_name());
-  _new_space_ptr->setObjectAttribute("name", _space->name());
-
-  _data_store->insert(_new_space_ptr);
-
-  delete _data_store;
-
-  //new APi
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
   QuetzalKit::SyncObject obj;
-  obj.setName("space");
+  obj.setName("Space");
   obj.setObjectAttribute("ref", _space->session_name());
   obj.setObjectAttribute("name", _space->name());
+  obj.setKey(_space->id());
 
-  sync->save_object(obj);
+  sync->add_object(obj);
 
   delete sync;
 }
+
+void WorkSpace::restore_session()
+{
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+      if (a_found) {
+          qDebug() << Q_FUNC_INFO << "Adding Space ";
+          QString _space_name = a_object.attributeValue("name").toString();
+          revoke_space(_space_name, a_object.key());
+      }
+  });
+
+  sync->find("Space","", "");
+
+  delete sync;
+}
+
+
 }

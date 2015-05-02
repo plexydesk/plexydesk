@@ -473,7 +473,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   QFileInfo fileInfo(home_path);
 
   if (!fileInfo.exists()) {
-      qDebug() << Q_FUNC_INFO << "Failed";
+      qDebug() << Q_FUNC_INFO << "DB File Not found:" << home_path;
 
       SyncObject null_obj;
       search_request_complete(null_obj, d->m_app_name, 0);
@@ -484,7 +484,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   QFileInfo db_file_path_info(db_file_path);
 
   if (!db_file_path_info.exists()) {
-      qDebug() << Q_FUNC_INFO << "Failed";
+      qDebug() << Q_FUNC_INFO << "DB File Not Found :" << db_file_path;;
 
       SyncObject null_obj;
       search_request_complete(null_obj, d->m_app_name, 0);
@@ -563,8 +563,10 @@ void DiskSyncEngine::find(const std::string &a_object_name,
                           QDomAttr attr = attrNode.toAttr();
 
                           if (!attr.isNull()) {
-                              if (attr.name() == "db_key")
+                              if (attr.name() == "db_key") {
+                                  obj.setKey(attr.value().toInt());
                                 continue;
+                              }
                               obj.setObjectAttribute(attr.name(), attr.value());
                             }
                         }

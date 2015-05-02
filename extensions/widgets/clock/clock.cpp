@@ -128,10 +128,11 @@ void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj)
       if (session_ref.is_purged())
         continue;
 
-
       //todo add clock objects.
       qDebug() << Q_FUNC_INFO << "insert new clock to Session";
   }
+
+  a_obj->sync();
 }
 
 bool Clock::remove_widget(UIKit::Widget *widget)

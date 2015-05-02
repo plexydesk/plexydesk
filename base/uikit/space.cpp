@@ -318,7 +318,7 @@ void Space::revoke_controller_session_attributes(
         }
     });
 
-  sync->find("AppSession", "name", a_controller_name.toStdString());
+  sync->find("AppSession", "", "");
 
   delete sync;
 }
@@ -470,7 +470,6 @@ QPointF Space::center(const QRectF &a_view_geometry,
   _rv.setX(_x_location);
 
   return _rv;
-
 }
 
 ViewControllerPtr Space::controller(const QString &a_name)
@@ -518,7 +517,8 @@ void Space::setGeometry(const QRectF &a_geometry)
 
 QObject *Space::workspace() { return m_priv_impl->mWorkSpace; }
 
-void Space::set_workspace(WorkSpace *a_workspace_ptr) { m_priv_impl->mWorkSpace = a_workspace_ptr; }
+void Space::set_workspace(WorkSpace *a_workspace_ptr)
+{ m_priv_impl->mWorkSpace = a_workspace_ptr; }
 
 void Space::restore_session() { m_priv_impl->initSessionStorage(this); }
 
