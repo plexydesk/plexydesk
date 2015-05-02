@@ -28,7 +28,9 @@ public:
 
   virtual void insert_request(const SyncObject &a_object) {}
   virtual void update_request(const SyncObject &a_object) {}
-  virtual void delete_request(const std::string &a_object_name) {}
+  virtual void delete_request(const std::string &a_object_name,
+                              const std::string &a_key,
+                              const std::string &value) {}
 
   virtual void find(const std::string &a_object_name,
                     const std::string &a_attrib,

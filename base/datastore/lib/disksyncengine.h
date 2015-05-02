@@ -20,7 +20,9 @@ public:
 
   void insert_request(const SyncObject &a_obj);
   void update_request(const SyncObject &a_obj);
-  void delete_request(const std::string &a_object_name);
+  void delete_request(const std::string &a_object_name,
+                      const std::string &a_key,
+                      const std::string &a_value);
 
   virtual QString data(const QString &fileName);
 

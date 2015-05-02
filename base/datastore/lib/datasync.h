@@ -16,7 +16,9 @@ namespace QuetzalKit {
 
     virtual void add_object(const SyncObject &a_obj);
     virtual void save_object(const SyncObject &a_obj);
-    virtual void remove_object(const std::string &a_object_name);
+    virtual void remove_object(const std::string &a_object_name,
+                               const std::string &a_key,
+                               const std::string &a_value);
 
     virtual void find(const std::string &a_object_name,
                       const std::string &a_attrib,

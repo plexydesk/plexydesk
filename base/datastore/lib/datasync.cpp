@@ -67,10 +67,12 @@ typedef std::function<void (SyncObject &, const std::string &, bool)> FoundFunc;
     }
   }
 
-  void DataSync::remove_object(const std::string &a_object_name)
+  void DataSync::remove_object(const std::string &a_object_name,
+                               const std::string &a_key,
+                               const std::string &a_value)
   {
     if (m_priv->m_engine) {
-      m_priv->m_engine->delete_request(a_object_name);
+      m_priv->m_engine->delete_request(a_object_name, a_key, a_value);
     }
   }
 

@@ -340,7 +340,9 @@ void DiskSyncEngine::update_request(const SyncObject &a_obj)
   qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void DiskSyncEngine::delete_request(const std::string &a_object_name)
+void DiskSyncEngine::delete_request(const std::string &a_object_name,
+                                    const std::string &a_key,
+                                    const std::string &a_value)
 {
   QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
@@ -385,37 +387,44 @@ void DiskSyncEngine::delete_request(const std::string &a_object_name)
           return;
       }
 
+      object_file.close();
+
       QDomElement root  = dom_doc.firstChildElement(
             QString::fromStdString(d->m_app_name));
       if (root.hasChildNodes()) {
-          QDomNodeList node_list = root.childNodes();
+          QDomNode i = root.firstChild();
+          QString tag_name = QString::fromStdString(a_object_name);
+          QString match_key = QString::fromStdString(a_key);
+          QString match_value = QString::fromStdString(a_value);
 
-          for (int i = 0 ; i < node_list.count(); i++) {
-              QDomNode child_node = node_list.at(i);
-              if (a_object_name.compare(
-                    child_node.nodeName().toStdString()) == 0) {
+          QList<QDomNode> matching_node_list;
 
-                  root.removeChild(child_node);
+          while(!i.isNull()) {
+              if (i.nodeName() == tag_name) {
+                  if (!a_key.empty() && !a_value.empty()) {
+                      QDomNamedNodeMap attr_map = i.attributes();
+
+                      if (!attr_map.contains(match_key)) {
+                          i = i.nextSibling();
+                          continue;
+                      }
+
+                      if (attr_map.namedItem(match_key).nodeValue()
+                            != match_value) {
+                          i = i.nextSibling();
+                          continue;
+                      }
+                  }
+
+                  matching_node_list << i;
               }
-              //root.removeChild(child_node);
+              i = i.nextSibling();
+          }
 
-              /*
-              qDebug() << Q_FUNC_INFO << "Child Nodes" << dom_doc.toString();
-              if (a_object_name.compare(
-                    child_node.nodeName().toStdString()) == 0) {
-                               root.removeChild(child_node);
-                  qDebug() << Q_FUNC_INFO << "Child Nodes" << child_element.tagName();
-              } else {
-                  qDebug() << Q_FUNC_INFO << "NOt Matching " << child_node.nodeName();
-              }
-              */
-
+          foreach(QDomNode node, matching_node_list) {
+             root.removeChild(node);
           }
       }
-
-      return;
-
-      object_file.close();
 
       if (!object_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
           qDebug() << Q_FUNC_INFO

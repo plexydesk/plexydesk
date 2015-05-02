@@ -96,6 +96,26 @@ void test_object_find_fail()
   delete sync;
 }
 
+void test_object_delete_matching()
+{
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+
+  sync->set_sync_engine(engine);
+
+  sync->remove_object("clock", "zone_id", "Asia/South");
+
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+
+      QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
+  });
+
+  sync->find("clock", "zone_id", "Asia/South");
+
+  delete sync;
+}
+
 
 void test_object_delete()
 {
@@ -104,7 +124,15 @@ void test_object_delete()
 
   sync->set_sync_engine(engine);
 
-  sync->remove_object("clock");
+  sync->remove_object("clock", "", "");
+
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+                        const std::string &a_app_name, bool a_found){
+
+      QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
+  });
+
+  sync->find("clock", "", "");
 
   delete sync;
 }
@@ -209,9 +237,12 @@ int main(int argc, char *argv[])
   test_object_add_child();
   test_object_add_child();
   test_object_find();
-  test_object_delete();
   test_session_list();
   test_find_all();
+
+
+  test_object_delete_matching();
+  test_object_delete();
 
   qDebug() << Q_FUNC_INFO << "Done";
 
