@@ -365,35 +365,11 @@ void WorkSpace::update_space_geometry(Space *a_space_ptr,
 
 void WorkSpace::save_space_removal_session_data(const QString &a_space_name)
 {
-  QuetzalKit::DataStore *_data_store =
-    new QuetzalKit::DataStore(QString("DesktopWorkSpace"), this);
-  QuetzalKit::DiskSyncEngine *_engine =
-    new QuetzalKit::DiskSyncEngine(_data_store);
-
-  _data_store->setSyncEngine(_engine);
-
-  QuetzalKit::SyncObject *_session_list_ptr = _data_store->begin("SpaceList");
-
-  if (_session_list_ptr) {
-    Q_FOREACH(QuetzalKit::SyncObject * _object,
-              _session_list_ptr->childObjects()) {
-      if (!_object) {
-        continue;
-      }
-      QString _space_name = _object->attributeValue("ref").toString();
-
-      if (_space_name == a_space_name) {
-        _data_store->deleteObject(_object);
-      }
-    }
-  }
-
-  delete _data_store;
-
-  //new API
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
+
+  sync->remove_object("Space", "ref", a_space_name.toStdString());
 
   delete sync;
 }
