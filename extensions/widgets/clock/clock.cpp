@@ -26,6 +26,10 @@
 #include <view_controller.h>
 #include <extensionmanager.h>
 
+// datakit
+#include <datasync.h>
+#include <disksyncengine.h>
+
 // Qt
 #include <QAction>
 
@@ -97,32 +101,52 @@ void Clock::set_view_rect(const QRectF &rect) {}
 
 void Clock::session_data_available(
     const QuetzalKit::SyncObject &a_session_root) {
-  // todo: look for clock objects.
+
+	qDebug() << Q_FUNC_INFO;
+  QuetzalKit::DataSync *sync =
+		new QuetzalKit::DataSync("org.plexyclock.session");
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+                            const std::string &a_app_name, bool a_found) {
+			if (a_found) {
+			  //create a new clock instance by requesting a new clock.
+			  request_action("Clock", QVariantMap());
+			}
+  });
+
+  sync->find("Clock", "", "");
+  delete sync;
 }
 
 void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj) {
-  qDebug() << Q_FUNC_INFO
-           << "Start Session Item List :" << d->m_session_list.count();
-
-  if (!a_obj) {
-    qDebug() << Q_FUNC_INFO << "Invalid session object root";
-    return;
-  }
-
-  qDebug() << Q_FUNC_INFO
-           << "Start Session (item count): " << d->m_session_list.count();
+	if (!a_obj)
+		return;
 
   a_obj->setObjectAttribute("count", d->m_session_list.count());
 
+	QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+			"org.plexyclock.session");
+	QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+	sync->set_sync_engine(engine);
+
   foreach(_clock_session session_ref, d->m_session_list) {
+		qDebug() << Q_FUNC_INFO << "Check Session List";
     if (session_ref.is_purged())
       continue;
+	 	    
+		QuetzalKit::SyncObject clock_session_obj;
 
-    // todo add clock objects.
-    qDebug() << Q_FUNC_INFO << "insert new clock to Session";
+		clock_session_obj.setName("Clock");
+		clock_session_obj.setObjectAttribute("zone_id", "Asia/South");
+		clock_session_obj.setObjectAttribute("current_zone", "Asia/South");
+
+		sync->add_object(clock_session_obj);
   }
 
   a_obj->sync();
+	delete sync;
 }
 
 bool Clock::remove_widget(UIKit::Widget *widget) {
@@ -136,47 +160,14 @@ UIKit::ActionList Clock::actions() const { return d->m_supported_action_list; }
 
 void Clock::sync_session() {
   if (viewport()) {
-    viewport()->update_session_value(controller_name(), "id", "");
+    viewport()->update_session_value(controller_name(), "", "");
     qDebug() << Q_FUNC_INFO;
   }
 }
 
 void Clock::request_action(const QString &actionName, const QVariantMap &args) {
-  if (!viewport()) {
-    return;
-  }
-
   if (actionName == tr("Clock")) {
-    QRectF _view_geomeetry(0.0, 0.0, 260.0, 512.0);
-
-    UIKit::DesktopActivityPtr _clock_activity =
-        UIKit::ExtensionManager::instance()->activity("desktopclock");
-
-    _clock_activity->create_window(_view_geomeetry, args["zone_id"].toString(),
-                                   viewport()->center(_view_geomeetry));
-    _clock_activity->update_attribute(
-        "id", QString("clock-%1").arg(d->m_clock_activity_count));
-    d->_new_session();
-
-    d->m_clock_activity_count++;
-    _clock_activity->on_discarded([&](
-        const UIKit::DesktopActivity *a_activity) {
-      // remove from current session.
-      if (!a_activity)
-        return;
-
-      QVariantMap attrib = a_activity->attributes();
-
-      qDebug() << Q_FUNC_INFO << attrib;
-      d->_end_session(0);
-
-      sync_session();
-    });
-
-    if (viewport()) {
-      viewport()->add_activity(_clock_activity);
-      sync_session();
-    }
+		//todo create a new clock widget.
   }
 }
 
