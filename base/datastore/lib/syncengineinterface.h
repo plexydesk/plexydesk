@@ -1,6 +1,8 @@
 #ifndef SYNCENGINEINTERFACE_H
 #define SYNCENGINEINTERFACE_H
 
+#include <functional>
+
 #include <QObject>
 #include <syncobject.h>
 #include <QStringList>
