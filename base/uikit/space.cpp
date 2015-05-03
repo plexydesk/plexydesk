@@ -133,6 +133,7 @@ void Space::update_session_value(const QString &a_controller_name,
     }
 
     controller(a_controller_name)->submit_session_data(&a_object);
+		qDebug() << Q_FUNC_INFO << "session data submitted";
   });
 
   sync->find("AppSession", "", "");
@@ -183,9 +184,10 @@ void Space::insert_window_to_view(Window *a_window) {
   m_priv_impl->mMainScene->addItem(a_window);
   a_window->setPos(_widget_location);
 
+	/*
   connect(a_window, SIGNAL(closed(UIKit::Widget *)), this,
           SLOT(remove_window_from_view(UIKit::Widget *)));
-
+	*/
   a_window->show();
 
   if (a_window->controller()) {
@@ -290,6 +292,8 @@ void Space::revoke_controller_session_attributes(
 
   sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
+			qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
+			         << a_controller_name;
     if (!a_found) {
       QuetzalKit::SyncObject obj;
       obj.setName("AppSession");
@@ -316,8 +320,8 @@ void Space::register_controller(const QString &a_controller_name) {
 void Space::PrivateSpace::createActionsFromController(const Space *space,
                                                       ViewControllerPtr ptr) {
   Q_FOREACH(const QAction * action, ptr->actions()) {
-    qDebug() << action->text();
-    qDebug() << action->icon();
+    //qDebug() << action->text();
+    //qDebug() << action->icon();
   }
 }
 
