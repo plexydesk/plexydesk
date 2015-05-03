@@ -1,21 +1,17 @@
 SET (sourceFiles
-    desktopclock.cpp
+	  desktopclock.cpp
     desktopclockinterface.cpp
-    clockwidget.cpp
     timezone_model.cpp
     )
 
 SET(headerFiles
-    desktopclock.h
     desktopclockinterface.h
-    clockwidget.h
     timezone_model.h
     )
 
 SET (QTMOC_SRCS
     desktopclock.h
     desktopclockinterface.h
-    clockwidget.h
     timezone_model.h
     )
 
