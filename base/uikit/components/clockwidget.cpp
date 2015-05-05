@@ -32,29 +32,30 @@
 #include <QDir>
 #include <plexyconfig.h>
 
+namespace UIKit {
 ClockWidget::ClockWidget(QGraphicsObject *parent)
     : UIKit::Widget(parent), m_timezone(0) {
-  mTimer = new QTimer(this);
-  mTimer->setTimerType(Qt::VeryCoarseTimer);
+  m_timer_ptr = new QTimer(this);
+  m_timer_ptr->setTimerType(Qt::VeryCoarseTimer);
 
-  connect(mTimer, SIGNAL(timeout()), this, SLOT(updateNow()));
-  mTimer->start(1000);
+  connect(m_timer_ptr, SIGNAL(timeout()), this, SLOT(on_timout_slot_func()));
+  m_timer_ptr->start(1000);
 
   set_widget_flag(Widget::kRenderDropShadow, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
   set_widget_name("Clock");
-  updateNow();
+  on_timout_slot_func();
 }
 
-void ClockWidget::updateTime(const QVariantMap &data) {
+void ClockWidget::update_time(const QVariantMap &a_data) {
   QDateTime _date_time = QDateTime::currentDateTime();
 
   if (m_timezone)
     _date_time = _date_time.toTimeZone(*m_timezone);
 
-  mSecondValue = 6.0 * _date_time.time().second();
-  mMinutesValue = 6.0 * _date_time.time().minute();
-  mHourValue = 30.0 * _date_time.time().hour();
+  m_second_value = 6.0 * _date_time.time().second();
+  m_minutes_value = 6.0 * _date_time.time().minute();
+  m_hour_value = 30.0 * _date_time.time().hour();
 
   update();
 }
@@ -62,7 +63,7 @@ void ClockWidget::updateTime(const QVariantMap &data) {
 void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id) {
   m_timezone_id = a_timezone_id;
 
-  mTimer->stop();
+  m_timer_ptr->stop();
 
   if (m_timezone) {
     delete m_timezone;
@@ -71,13 +72,13 @@ void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id) {
   m_timezone = new QTimeZone(a_timezone_id);
   qDebug() << Q_FUNC_INFO << a_timezone_id;
 
-  mTimer->start();
+  m_timer_ptr->start();
 }
 
 ClockWidget::~ClockWidget() {
-  if (mTimer) {
-    mTimer->stop();
-    delete mTimer;
+  if (m_timer_ptr) {
+    m_timer_ptr->stop();
+    delete m_timer_ptr;
   }
 
   if (m_timezone)
@@ -85,8 +86,9 @@ ClockWidget::~ClockWidget() {
   qDebug() << Q_FUNC_INFO;
 }
 
-void ClockWidget::drawClockHand(QPainter *p, QRectF rect, int factor,
-                                float angle, QColor hand_color, int thikness) {
+void ClockWidget::draw_clock_hands(QPainter *p, QRectF rect, int factor,
+                                   float angle, QColor hand_color,
+                                   int thikness) {
   p->save();
   float _adjustment = rect.width() / factor;
 
@@ -110,8 +112,8 @@ void ClockWidget::drawClockHand(QPainter *p, QRectF rect, int factor,
   p->restore();
 }
 
-void ClockWidget::updateNow() {
-  updateTime(QVariantMap());
+void ClockWidget::on_timout_slot_func() {
+  update_time(QVariantMap());
   update();
 }
 
@@ -132,9 +134,9 @@ void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   p->drawEllipse(rect);
 
   /* Draw Hour Hand */
-  drawClockHand(p, rect, 3, 45.0 + mHourValue, QColor("#f0f0f0"), 8);
-  drawClockHand(p, rect, 4, 45.0 + mMinutesValue, QColor("#FFFFFF"), 6);
-  drawClockHand(p, rect, 5, 45.0 + mSecondValue, QColor("#d6d6d6"), 2);
+  draw_clock_hands(p, rect, 3, 45.0 + m_hour_value, QColor("#f0f0f0"), 8);
+  draw_clock_hands(p, rect, 4, 45.0 + m_minutes_value, QColor("#FFFFFF"), 6);
+  draw_clock_hands(p, rect, 5, 45.0 + m_second_value, QColor("#d6d6d6"), 2);
 
   QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16,
                            16);
@@ -143,4 +145,5 @@ void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   _clock_wheel_path.addEllipse(_clock_wheel_rect);
 
   p->fillPath(_clock_wheel_path, QColor("#d6d6d6"));
+}
 }

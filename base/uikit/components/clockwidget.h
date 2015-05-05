@@ -18,8 +18,8 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
 ***************************************************************************/
 
-#ifndef CLOCK
-#define CLOCK
+#ifndef CLOCK_WIDGET_H
+#define CLOCK_WIDGET_H
 
 #include <widget.h>
 
@@ -27,41 +27,35 @@
 #include <QTimeZone>
 #include <QTimer>
 
-class ClockWidget : public UIKit::Widget {
+namespace UIKit {
+class ClockWidget : public Widget {
   Q_OBJECT
 public:
   ClockWidget(QGraphicsObject *a_parent_ptr = 0);
-
   virtual ~ClockWidget();
 
-  void paint_view(QPainter *painter, const QRectF &r);
-  void updateTime(const QVariantMap &data);
+  void update_time(const QVariantMap &a_data);
 
   void set_timezone_id(const QByteArray &a_timezone_id);
   QByteArray timezone_id() const;
 
-  void drawClockHand(QPainter *p, QRectF rect, int factor, float angle,
-                     QColor hand_color, int thikness);
-public
-Q_SLOTS:
-  void updateNow();
+public Q_SLOTS:
+  void on_timout_slot_func();
+
+protected:
+  void draw_clock_hands(QPainter *p, QRectF rect, int factor, float angle,
+                        QColor hand_color, int thikness);
+  void paint_view(QPainter *painter, const QRectF &r);
 
 private:
-  double mSecondValue;
-  double mMinutesValue;
-  double mHourValue;
+  double m_second_value;
+  double m_minutes_value;
+  double m_hour_value;
 
-  /*new svg clock */
-  QPixmap mClockBackFace;
-  QPixmap mClockMinuteHand;
-  QPixmap mClockSecondHand;
-  QPixmap mClockHourHand;
-  QPixmap mClockScrew;
-  QPixmap mClockGlass;
-
-  QTimer *mTimer;
+  QTimer *m_timer_ptr;
 
   QByteArray m_timezone_id;
   QTimeZone *m_timezone;
 };
+}
 #endif
