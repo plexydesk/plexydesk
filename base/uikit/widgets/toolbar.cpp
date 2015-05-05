@@ -117,10 +117,12 @@ QSizeF ToolBar::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
 }
 
 void ToolBar::paint_view(QPainter *painter, const QRectF &exposeRect) {
+  /*
   QPen pen;
   painter->save();
   painter->fillRect(frame_geometry(), QColor("#f0f0f0"));
   painter->restore();
+  */
 }
 
 void ToolBar::tool_button_press_handler(const Widget *a_widget_ptr) {
