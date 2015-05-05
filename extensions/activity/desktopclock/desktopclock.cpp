@@ -48,7 +48,7 @@ public:
 
   UIKit::ToolBar *m_tool_bar;
   UIKit::Label *m_timezone_label;
-  ClockWidget *m_clock_widget;
+  UIKit::ClockWidget *m_clock_widget;
 
   UIKit::ItemView *m_timezone_list;
 
@@ -91,7 +91,7 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   d->mMainWindow->set_window_content(d->mWindowContentWidget);
 
   /* add clock widget */
-  d->m_clock_widget = new ClockWidget(d->mLayoutWidget);
+  d->m_clock_widget = new UIKit::ClockWidget(d->mLayoutWidget);
   d->m_clock_widget->setGeometry(_clock_geometry);
   d->m_clock_widget->setMinimumSize(_clock_geometry.size());
   d->m_clock_widget->setMaximumHeight(_clock_geometry.height());
