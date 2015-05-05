@@ -34,10 +34,13 @@ public:
 
   virtual ~CocoaStyle();
 
-  QVariantMap attribute_map(const QString &type) const;
 
   virtual void draw(const QString &type, const StyleFeatures &options,
                     QPainter *painter, const UIKit::Widget *aWidget = 0);
+  void load_default_widget_style_properties();
+protected:
+  QVariantMap attribute_map(const QString &type) const;
+  virtual QVariantMap color_scheme_map() const;
 
 private:
   class PrivateCocoa;

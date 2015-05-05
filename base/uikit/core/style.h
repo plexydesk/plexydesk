@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 * This file is part of PlexyDesk.
 *  Maintained by : Siraj Razick <siraj@plexydesk.org>
 *  Authored By  :
@@ -37,11 +37,15 @@ public:
   virtual QVariant attribute(const QString &a_type,
                              const QString &a_name) const;
 
-  virtual QVariantMap attribute_map(const QString &a_type) const = 0;
+  virtual QString color(const QString &a_element) const;
 
   virtual void draw(const QString &a_type, const StyleFeatures &a_options,
                     QPainter *a_painter_ptr,
                     const Widget *a_widget_ptr = 0) = 0;
+protected:
+  virtual QVariantMap attribute_map(const QString &a_type) const = 0;
+  virtual QVariantMap color_scheme_map() const = 0;
+
 };
 }
 

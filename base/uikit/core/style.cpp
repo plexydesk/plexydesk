@@ -29,4 +29,9 @@ Style::~Style() {}
 QVariant Style::attribute(const QString &a_type, const QString &a_name) const {
   return attribute_map(a_type)[a_name];
 }
+
+QString Style::color(const QString &a_element) const {
+  return color_scheme_map()[a_element].toString();
+}
+
 }

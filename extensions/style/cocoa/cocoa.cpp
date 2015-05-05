@@ -29,9 +29,11 @@ public:
 
   QHash<QString, int> m_type_map;
   QVariantMap m_attribute_map;
+  QVariantMap m_color_map;
 };
 
-CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
+void CocoaStyle::load_default_widget_style_properties()
+{
   d->m_type_map["button"] = 1;
   d->m_type_map["vertical_list_item"] = 2;
   d->m_type_map["window_button"] = 3;
@@ -89,10 +91,42 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
   d->m_attribute_map["size"] = _size_attributes;
 }
 
+CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
+  load_default_widget_style_properties();
+
+  d->m_color_map["primary_forground"] = "#646464";
+  d->m_color_map["primary_background"] = "#ffffff";
+  d->m_color_map["primary_highlight"] = "#646464";
+
+  d->m_color_map["base_forground"] = "#E6E6E6";
+  d->m_color_map["base_background"] = "#ffffff";
+  d->m_color_map["base_highlight"] = "#111111";
+
+  d->m_color_map["soft_forground"] = "#191919";
+  d->m_color_map["soft_background"] = "#ffffff";
+  d->m_color_map["soft_highlight"] = "#111111";
+
+  d->m_color_map["accent_primary_forground"] = "#F0F0F0";
+  d->m_color_map["accent_primary_background"] = "#0092CC";
+  d->m_color_map["accent_primary_highlight"] = "#FF3333";
+
+  d->m_color_map["accent_base_forground"] = "#E6E6E6";
+  d->m_color_map["accent_base_background"] = "#087099";
+  d->m_color_map["accent_base_highlight"] = "#CC3333";
+
+  d->m_color_map["accent_soft_forground"] = "#779933";
+  d->m_color_map["accent_soft_background"] = "#5C7829";
+  d->m_color_map["accent_soft_highlight"] = "#B7B327";
+}
+
 CocoaStyle::~CocoaStyle() { delete d; }
 
 QVariantMap CocoaStyle::attribute_map(const QString &type) const {
   return d->m_attribute_map[type].toMap();
+}
+
+QVariantMap CocoaStyle::color_scheme_map() const {
+  return d->m_color_map;
 }
 
 void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
@@ -137,18 +171,23 @@ void CocoaStyle::drawPushButton(const StyleFeatures &features,
   backgroundPath.addRoundedRect(rect, 0.0, 0.0);
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
-    painter->fillPath(backgroundPath, QColor("#0082EE"));
-    QPen pen(QColor("#F0F0F0"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    painter->fillPath(backgroundPath, QColor(
+                        color("primary_background")));
+    QPen pen(QColor(color("primary_forground")),
+             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   } else if (features.render_state == StyleFeatures::kRenderRaised) {
-    painter->fillPath(backgroundPath, QColor("#0092CC"));
-    QPen pen(QColor("#ffffff"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    painter->fillPath(backgroundPath, QColor(
+                        color("soft_background")));
+    QPen pen(QColor(color("soft_forground")),
+             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   } else {
-    painter->fillPath(backgroundPath, QColor("#0092CC"));
-    QPen pen(QColor("#ffffff"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    painter->fillPath(backgroundPath, QColor(color("base_background")));
+    QPen pen(QColor(color("base_forground")),
+             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   }
@@ -166,17 +205,20 @@ void CocoaStyle::drawWindowButton(const StyleFeatures &features,
   painter->setRenderHint(QPainter::HighQualityAntialiasing);
 
   QPainterPath background;
-  background.addRoundedRect(rect, 3.0, 3.0);
+  background.addRoundedRect(rect, 4.0, 4.0);
 
   if (features.render_state == StyleFeatures::kRenderElement) {
-    painter->fillPath(background, QColor("#CC3333"));
+    painter->fillPath(background, QColor(
+                        color("accent_base_highlight")));
   } else {
-    painter->fillPath(background, QColor("#000000"));
+    painter->fillPath(background, QColor(
+                        color("accent_base_highlight")));
   }
 
   painter->save();
-  QPen white_pen(QColor("#ffffff"), 2, Qt::SolidLine, Qt::RoundCap,
-                 Qt::RoundJoin);
+  QPen white_pen(QColor(
+                   color("accent_primary_forground")),
+                 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   painter->setPen(white_pen);
   QRectF cross_rect(6.0, 6.0, rect.width() - 12, rect.height() - 12);
 
@@ -197,9 +239,9 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
   painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
   QPainterPath backgroundPath;
-  backgroundPath.addRoundedRect(rect, 8.0, 8.0);
+  backgroundPath.addRoundedRect(rect, 4.0, 4.0);
 
-  painter->fillPath(backgroundPath, QColor("#F0F0F0"));
+  painter->fillPath(backgroundPath, QColor(color("base_background")));
 
   // draw seperator
   if (!features.text_data.isNull() || !features.text_data.isEmpty()) {
@@ -207,9 +249,9 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
 
     QLinearGradient _seperator_line_grad(_window_title_rect.bottomLeft(),
                                          _window_title_rect.bottomRight());
-    _seperator_line_grad.setColorAt(0.0, QColor("#F0F0F0"));
-    _seperator_line_grad.setColorAt(0.5, QColor("#d6d6d6"));
-    _seperator_line_grad.setColorAt(1.0, QColor("#F0F0F0"));
+    _seperator_line_grad.setColorAt(0.0, QColor(color("primary_background")));
+    _seperator_line_grad.setColorAt(0.5, QColor(color("accent_primary_forground")));
+    _seperator_line_grad.setColorAt(1.0, QColor(color("primary_background")));
 
     QPen linePen = QPen(_seperator_line_grad, 1, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin);
@@ -224,7 +266,8 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     option.setAlignment(Qt::AlignCenter);
 
     QPen _title_font_pen =
-        QPen(QColor("#969696"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        QPen(QColor(color("primary_forground")),
+             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(_title_font_pen);
 
     painter->drawText(_window_title_rect, features.text_data, option);
@@ -235,6 +278,10 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     painter->setPen(linePen);
     painter->drawLine(_window_title_rect.bottomLeft(),
                       _window_title_rect.bottomRight());
+    /*
+    painter->fillRect(_window_title_rect,
+                      QColor(color("accent_primary_background")));
+                      */
     painter->restore();
   } else {
     // painter->fillRect(QRectF(0.0, 0.0, rect.width(), 10), QColor("#F0F0F0"));
@@ -275,21 +322,23 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
   linearGrad.setColorAt(0, QColor(189, 191, 196));
   linearGrad.setColorAt(1, QColor(255, 255, 255));
 
-  painter->fillPath(backgroundPath, QColor("#F0F0FF"));
+  painter->fillPath(backgroundPath, QColor(color("primary_background")));
 
   QPen pen;
   if (features.render_state == StyleFeatures::kRenderRaised) {
     pen =
-        QPen(QColor("#D1D1D1"), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        QPen(QColor(color("accent_base_forground")),
+             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   } else {
     pen =
-        QPen(QColor("#D0D0D0"), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        QPen(QColor(color("accent_primary_forground")),
+             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   }
   painter->setPen(pen);
   painter->drawPath(backgroundPath);
 
   painter->save();
-  pen.setColor(QColor("#323232"));
+  pen.setColor(QColor(color("primary_forground")));
   painter->setPen(pen);
   painter->drawText(features.geometry.adjusted(10.0, 0.0, 0.0, 0.0),
                     Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
@@ -382,9 +431,9 @@ void CocoaStyle::drawProgressBar(const StyleFeatures &features,
     case StyleFeatures::kRenderBackground: {
       QRectF rect = features.geometry;
       QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-      linearGrad.setColorAt(1, QColor("#F7F7F7"));
-      linearGrad.setColorAt(0.5, QColor("#C2C2C2"));
-      linearGrad.setColorAt(0, QColor("#F7F7F7"));
+      linearGrad.setColorAt(1, QColor(color("primary_background")));
+      linearGrad.setColorAt(0.5, QColor(color("primary_forground")));
+      linearGrad.setColorAt(0, QColor(color("primary_background")));
       QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
                          Qt::RoundJoin);
 
@@ -398,8 +447,8 @@ void CocoaStyle::drawProgressBar(const StyleFeatures &features,
     case StyleFeatures::kRenderForground: {
       QRectF rect = features.geometry;
       QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-      linearGrad.setColorAt(1, QColor("#91B670"));
-      linearGrad.setColorAt(0, QColor("#B3DF89"));
+      linearGrad.setColorAt(1, QColor(color("accent_soft_highlight")));
+      linearGrad.setColorAt(0, QColor(color("accent_soft_forground")));
       QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
                          Qt::RoundJoin);
 
@@ -421,18 +470,22 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
                                QPainter *painter) {
   QRectF rect = features.geometry;
 
-  QPen backgroundPen(QColor("#d6d6d6"), 1, Qt::SolidLine, Qt::RoundCap,
+  QPen backgroundPen(QColor(color("primary_forground")),
+                     1, Qt::SolidLine, Qt::RoundCap,
                      Qt::RoundJoin);
 
   painter->save();
   if (features.render_state == StyleFeatures::kRenderElement) {
     painter->setPen(backgroundPen);
-    painter->fillRect(rect, QColor("#f7f7f7"));
+    painter->fillRect(rect, QColor(color("primary_background")));
 
     QLinearGradient _seperator_line_grad(rect.bottomLeft(), rect.bottomRight());
-    _seperator_line_grad.setColorAt(0.0, QColor("#F0F0F0"));
-    _seperator_line_grad.setColorAt(0.5, QColor("#d6d6d6"));
-    _seperator_line_grad.setColorAt(1.0, QColor("#F0F0F0"));
+    _seperator_line_grad.setColorAt(0.0, QColor(
+                                      color("primary_background")));
+    _seperator_line_grad.setColorAt(0.5,
+                                    QColor(color("accent_primary_forground")));
+    _seperator_line_grad.setColorAt(1.0,
+                                    QColor(color("primary_background")));
 
     QPen linePen = QPen(_seperator_line_grad, 1, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin);
@@ -445,7 +498,7 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
 void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
                            QPainter *aPainterPtr, const Widget *aWidget) {
   aPainterPtr->save();
-  aPainterPtr->fillRect(aFeatures.geometry, QColor("#ffffff"));
+  aPainterPtr->fillRect(aFeatures.geometry, QColor(color("primary_background")));
   aPainterPtr->drawText(aFeatures.geometry, aWidget->label(),
                         QTextOption(Qt::AlignHCenter | Qt::AlignLeft));
   aPainterPtr->restore();
