@@ -221,17 +221,17 @@ void WorkSpace::revoke_space(const QString &a_name, int a_id) {
   _space->set_qt_graphics_scene(scene());
   _space->set_name(a_name);
   _space->set_id(a_id);
-  _space->restore_session();
 
   QRectF _space_geometry;
   _space_geometry.setX(m_priv_impl->m_workspace_left_margine);
   _space_geometry.setY((m_priv_impl->m_workspace_geometry.height()) -
                        geometry().height());
-  _space_geometry.setHeight(this->geometry().height());
+  _space_geometry.setHeight(geometry().height());
   _space_geometry.setWidth(geometry().width() +
                            m_priv_impl->m_workspace_left_margine);
 
   _space->setGeometry(_space_geometry);
+  _space->restore_session();
 
   m_priv_impl->m_desktop_space_list << _space;
 }
