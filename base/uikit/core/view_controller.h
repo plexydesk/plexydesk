@@ -90,7 +90,7 @@ public:
       * @return UI::AbstractDesktopView return the current viewport of
       *  the controller
       */
-  virtual Space *viewport();
+  virtual Space *viewport() const;
   /**
       * @brief
       *

@@ -24,7 +24,7 @@ void ViewController::set_viewport(Space *a_view_ptr) {
   d->mViewport = a_view_ptr;
 }
 
-Space *ViewController::viewport() { return d->mViewport; }
+Space *ViewController::viewport() const { return d->mViewport; }
 
 ActionList ViewController::actions() const { return ActionList(); }
 
