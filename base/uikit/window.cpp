@@ -31,7 +31,9 @@ public:
 
   std::function<void(const QSizeF &size)> m_window_size_callback;
   std::function<void(const QPointF &size)> m_window_move_callback;
-  std::function<void(Window *)> m_window_close_callback;
+
+  std::vector<std::function<void(Window *)>> m_window_close_callback_list;
+
   std::function<void(Window *)> m_window_discard_callback;
 };
 
@@ -60,9 +62,18 @@ Window::Window(QGraphicsObject *parent)
   m_priv_impl->m_window_close_button->on_input_event([this](
       Widget::InputEvent aEvent, const Widget *aWidget) {
     if (aEvent == Widget::kMouseReleaseEvent) {
+      /*
       if (m_priv_impl->m_window_close_callback) {
         m_priv_impl->m_window_close_callback(this);
       }
+      */
+        std::for_each(std::begin(m_priv_impl->m_window_close_callback_list),
+                      std::end(m_priv_impl->m_window_close_callback_list),
+                      [&](std::function<void (Window *a_window)> a_func) {
+          if (a_func)
+            a_func(this);
+        });
+
     }
   });
 }
@@ -80,8 +91,6 @@ void Window::set_window_content(Widget *a_widget_ptr) {
   m_priv_impl->m_window_content = a_widget_ptr;
   m_priv_impl->m_window_content->setParentItem(this);
 
-  this->setGeometry(m_priv_impl->m_window_content->boundingRect());
-
   float sWindowTitleHeight = 0;
 
   if (UIKit::Theme::style()) {
@@ -90,10 +99,17 @@ void Window::set_window_content(Widget *a_widget_ptr) {
                              .toFloat();
   }
 
+  QRectF content_geometry(a_widget_ptr->boundingRect());
+  content_geometry.setHeight(content_geometry.height() + sWindowTitleHeight);
+
+
+
   if (m_priv_impl->m_window_type == kApplicationWindow) {
     m_priv_impl->m_window_content->setPos(0.0, sWindowTitleHeight);
+    setGeometry(content_geometry);
   } else {
     m_priv_impl->m_window_close_button->hide();
+    setGeometry(m_priv_impl->m_window_content->boundingRect());
   }
 
   if (m_priv_impl->m_window_type != kFramelessWindow) {
@@ -141,7 +157,8 @@ void Window::on_window_moved(std::function<void(const QPointF &)> a_handler) {
 }
 
 void Window::on_window_closed(std::function<void(Window *)> a_handler) {
-  m_priv_impl->m_window_close_callback = a_handler;
+  //m_priv_impl->m_window_close_callback = a_handler;
+  m_priv_impl->m_window_close_callback_list.push_back(a_handler);
 }
 
 void Window::on_window_discarded(std::function<void(Window *)> a_handler) {
