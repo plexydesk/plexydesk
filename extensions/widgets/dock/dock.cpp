@@ -189,7 +189,7 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
   d->m_preview_window->hide();
 
   if (d->m_action_activity) {
-    d->m_action_activity->window()->setPos(0.0, 0.0);
+    d->m_action_activity->window()->setPos(rect.x(), rect.y());
   }
 }
 
@@ -258,7 +258,6 @@ DesktopActivityPtr DockControllerImpl::createActivity(
     const QString &controllerName, const QString &activity,
     const QString &title, const QPoint &pos, const QVariantMap &dataItem) {
   QPoint _activity_location = pos;
-  _activity_location.setY(viewport()->geometry().y());
 
   UIKit::DesktopActivityPtr _intent = viewport()->create_activity(
       activity, title, _activity_location,
