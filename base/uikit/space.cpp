@@ -293,21 +293,20 @@ void Space::revoke_controller_session_attributes(
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
-                            const std::string &a_app_name, bool a_found) {
-                        qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
-                                 << a_controller_name;
-    if (!a_found) {
-      QuetzalKit::SyncObject obj;
-      obj.setName("AppSession");
-      obj.setObjectAttribute("name",
-                             m_priv_impl->sessionNameForController(
-                               a_controller_name));
+                        const std::string &a_app_name, bool a_found) {
+    qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
+             << a_controller_name;
 
-      sync->add_object(obj);
-    } else {
-      if (controller(a_controller_name)) {
+    a_object.setObjectAttribute("name",
+                               m_priv_impl->sessionNameForController(
+                                 a_controller_name));
+    if (!a_found) {
+        a_object.setName("AppSession");
+        sync->add_object(a_object);
+    }
+
+    if (controller(a_controller_name)) {
         controller(a_controller_name)->session_data_available(a_object);
-      }
     }
   });
 
