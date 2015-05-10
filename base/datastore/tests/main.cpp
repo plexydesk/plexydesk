@@ -34,9 +34,9 @@ void test_object_create() {
   obj->setName("clock");
 
   obj->setObjectAttribute("zone_id", "America/North");
-  obj->setObjectAttribute("id", 2);
+  obj->setObjectAttribute("id", 1);
 
-  sync->save_object(*obj);
+  sync->add_object(*obj);
   delete sync;
 }
 
@@ -46,13 +46,30 @@ void test_object_update() {
 
   sync->set_sync_engine(engine);
 
-  QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
-  obj->setName("clock");
+  sync->remove_object("clock", "", "");
 
-  obj->setObjectAttribute("zone_id", "Asia/South");
-  obj->setObjectAttribute("id", 1);
+  for (int i = 0 ; i < 10 ; i++ ) {
+      QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
+      obj->setName("clock");
 
-  sync->save_object(*obj);
+      obj->setObjectAttribute("zone_id", "Asia/South");
+      obj->setObjectAttribute("id", i);
+
+      sync->add_object(*obj);
+  }
+
+
+  //test update
+  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+                            const std::string &a_app_name, bool a_found) {
+    QZ_ASSERT(a_found == 1, "Expected True");
+    QZ_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
+    a_object.setObjectAttribute("zone_id", "North/Africa");
+    sync->save_object(a_object);
+  });
+
+  sync->find("clock", "id", "5");
+
   delete sync;
 }
 
@@ -221,6 +238,7 @@ int main(int argc, char *argv[]) {
   // test cases:
   test_object_create();
   test_object_update();
+  /*
   test_object_find_fail();
   test_object_add_child();
   test_object_add_child();
@@ -230,6 +248,7 @@ int main(int argc, char *argv[]) {
 
   test_object_delete_matching();
   test_object_delete();
+  */
 
   qDebug() << Q_FUNC_INFO << "Done";
 

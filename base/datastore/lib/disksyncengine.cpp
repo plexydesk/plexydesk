@@ -239,19 +239,23 @@ void DiskSyncEngine::update_request(const SyncObject &a_obj) {
     QDomElement root =
         dom_doc.firstChildElement(QString::fromStdString(d->m_app_name));
     if (root.hasChildNodes()) {
-      QDomNodeList node_list = root.childNodes();
-      for (int i = 0; i <= node_list.count(); i++) {
-        QDomNode child_node = node_list.at(i);
+        QDomNodeList node_list = root.childNodes();
+        for (int i = 0; i <= node_list.count(); i++) {
+            QDomNode child_node = node_list.at(i);
 
-        QDomElement child_element = child_node.toElement();
+            QDomElement child_element = child_node.toElement();
 
-        if (a_obj.name() == child_element.tagName()) {
-          foreach(const QString & key, a_obj.attributes()) {
-            child_element.setAttribute(key,
-                                       a_obj.attributeValue(key).toString());
+            if (a_obj.name() == child_element.tagName()) {
+                int db_key = child_element.attribute("db_key").toInt();
+
+                if (a_obj.key() == db_key) {
+                    foreach(const QString & key, a_obj.attributes()) {
+                        child_element.setAttribute(key,
+                                                   a_obj.attributeValue(key).toString());
+                    }
+                  }
+              }
           }
-        }
-      }
     } else {
       QDomElement main_element = dom_doc.createElement(a_obj.name());
       foreach(const QString & key, a_obj.attributes()) {
