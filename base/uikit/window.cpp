@@ -32,10 +32,31 @@ public:
   std::function<void(const QSizeF &size)> m_window_size_callback;
   std::function<void(const QPointF &size)> m_window_move_callback;
 
+  std::vector<std::function<void(const QPointF &size)>> m_window_move_cb_list;
   std::vector<std::function<void(Window *)>> m_window_close_callback_list;
 
   std::function<void(Window *)> m_window_discard_callback;
 };
+
+void Window::invoke_window_closed_action()
+{
+  std::for_each(std::begin(m_priv_impl->m_window_close_callback_list),
+                std::end(m_priv_impl->m_window_close_callback_list),
+                [&](std::function<void (Window *)> a_func) {
+    if (a_func)
+      a_func(this);
+  });
+}
+
+void Window::invoke_window_moved_action()
+{
+  std::for_each(std::begin(m_priv_impl->m_window_move_cb_list),
+                std::end(m_priv_impl->m_window_move_cb_list),
+                [&](std::function<void (const QPointF &)> a_func) {
+    if (a_func)
+      a_func(this->pos());
+  });
+}
 
 Window::Window(QGraphicsObject *parent)
     : Widget(parent), m_priv_impl(new PrivateWindow) {
@@ -62,18 +83,8 @@ Window::Window(QGraphicsObject *parent)
   m_priv_impl->m_window_close_button->on_input_event([this](
       Widget::InputEvent aEvent, const Widget *aWidget) {
     if (aEvent == Widget::kMouseReleaseEvent) {
-      /*
-      if (m_priv_impl->m_window_close_callback) {
-        m_priv_impl->m_window_close_callback(this);
-      }
-      */
-        std::for_each(std::begin(m_priv_impl->m_window_close_callback_list),
-                      std::end(m_priv_impl->m_window_close_callback_list),
-                      [&](std::function<void (Window *a_window)> a_func) {
-          if (a_func)
-            a_func(this);
-        });
 
+        invoke_window_closed_action();
     }
   });
 }
@@ -154,6 +165,7 @@ void Window::on_window_resized(std::function<void(const QSizeF &)> handler) {
 
 void Window::on_window_moved(std::function<void(const QPointF &)> a_handler) {
   m_priv_impl->m_window_move_callback = a_handler;
+  m_priv_impl->m_window_move_cb_list.push_back(a_handler);
 }
 
 void Window::on_window_closed(std::function<void(Window *)> a_handler) {
@@ -213,6 +225,7 @@ void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
+  invoke_window_moved_action();
   QGraphicsObject::mouseReleaseEvent(a_event_ptr);
 }
 }

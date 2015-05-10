@@ -54,6 +54,8 @@ protected:
 
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr);
 
+  void invoke_window_closed_action();
+  void invoke_window_moved_action();
 private:
   class PrivateWindow;
   PrivateWindow *const m_priv_impl;
