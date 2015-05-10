@@ -77,6 +77,7 @@ void Space::add_controller(const QString &a_name) {
   controllerPtr->set_controller_name(a_name);
 
   controllerPtr->init();
+  controllerPtr->set_view_rect(geometry());
 
   m_priv_impl->createActionsFromController(this, controllerPtr);
 
@@ -127,13 +128,14 @@ void Space::update_session_value(const QString &a_controller_name,
     if (!a_found) {
       QuetzalKit::SyncObject obj;
       obj.setName("AppSession");
-      obj.setObjectAttribute("name", a_controller_name);
+      obj.setObjectAttribute("name",
+                             m_priv_impl->sessionNameForController(a_controller_name));
 
       sync->add_object(obj);
     }
 
     controller(a_controller_name)->submit_session_data(&a_object);
-		qDebug() << Q_FUNC_INFO << "session data submitted";
+                qDebug() << Q_FUNC_INFO << "session data submitted";
   });
 
   sync->find("AppSession", "", "");
@@ -184,10 +186,10 @@ void Space::insert_window_to_view(Window *a_window) {
   m_priv_impl->mMainScene->addItem(a_window);
   a_window->setPos(_widget_location);
 
-	/*
+        /*
   connect(a_window, SIGNAL(closed(UIKit::Widget *)), this,
           SLOT(remove_window_from_view(UIKit::Widget *)));
-	*/
+        */
   a_window->show();
 
   if (a_window->controller()) {
@@ -292,12 +294,14 @@ void Space::revoke_controller_session_attributes(
 
   sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
-			qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
-			         << a_controller_name;
+                        qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
+                                 << a_controller_name;
     if (!a_found) {
       QuetzalKit::SyncObject obj;
       obj.setName("AppSession");
-      obj.setObjectAttribute("name", a_controller_name);
+      obj.setObjectAttribute("name",
+                             m_priv_impl->sessionNameForController(
+                               a_controller_name));
 
       sync->add_object(obj);
     } else {
