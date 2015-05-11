@@ -21,6 +21,8 @@ public:
   QGraphicsLinearLayout *mLayout;
   QSize m_icon_size;
   QString m_icon_resolution;
+
+  std::vector<std::function<void (const QString &)>> m_action_handler_list;
 };
 
 ToolBar::ToolBar(QGraphicsObject *parent)
@@ -75,7 +77,7 @@ void ToolBar::add_action(const QString &a_lable, const QString &a_icon,
 
 void ToolBar::insert_widget(Widget *a_widget_ptr) {
   if (d->mLayout->count() != 0) {
-    d->mLayout->addStretch();
+    //d->mLayout->addStretch();
   }
 
   d->mLayout->addItem(a_widget_ptr);
@@ -116,11 +118,16 @@ QSizeF ToolBar::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
   return d->frameGeometry().size();
 }
 
+void ToolBar::on_item_activated(std::function<void (const QString &)> a_handler)
+{
+  d->m_action_handler_list.push_back(a_handler);
+}
+
 void ToolBar::paint_view(QPainter *painter, const QRectF &exposeRect) {
   /*
   QPen pen;
   painter->save();
-  painter->fillRect(frame_geometry(), QColor("#f0f0f0"));
+  painter->fillRect(frame_geometry(), QColor("#000000"));
   painter->restore();
   */
 }
@@ -131,6 +138,13 @@ void ToolBar::tool_button_press_handler(const Widget *a_widget_ptr) {
     if (button) {
       qDebug() << Q_FUNC_INFO << button->label();
       Q_EMIT action(button->label());
+
+      std::for_each(std::begin(d->m_action_handler_list),
+                    std::end(d->m_action_handler_list),
+                    [&](std::function<void (const QString &)> a_func) {
+        if (a_func)
+          a_func(button->label());
+      });
     }
   }
 }

@@ -13,13 +13,11 @@ public:
 
   virtual void add_action(const QString &a_lable, const QString &a_icon,
                           bool a_togle_action = false);
-
   virtual void insert_widget(Widget *a_widget_ptr);
 
   virtual void set_orientation(Qt::Orientation a_orientation);
 
   virtual void set_icon_resolution(const QString &a_res);
-
   virtual void set_icon_size(const QSize &a_size);
 
   virtual StylePtr style() const;
@@ -28,6 +26,10 @@ public:
   virtual QRectF contents_geometry() const;
   virtual QRectF frame_geometry() const;
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
+
+  virtual void on_item_activated(
+      std::function<void (const QString &)> a_handler);
+
 Q_SIGNALS:
   void action(const QString &a_actionName);
 
