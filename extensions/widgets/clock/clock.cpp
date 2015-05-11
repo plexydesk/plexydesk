@@ -268,7 +268,7 @@ void Clock::PrivateClockController::_restore_session(Clock *a_controller,
 
   _clock_session *session_ref = new _clock_session(a_controller, session_args);
 
-  session_ref->set_session_id(m_session_list.count());
+  session_ref->set_session_id(a_data["clock_id"].toInt());
 
   //session_ref->set_session_data("database_name", m_session_database_name);
   //session_ref->set_session_data("x", a_data["x"]);

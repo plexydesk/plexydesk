@@ -41,7 +41,6 @@ public:
   bool remove_widget(UIKit::Widget *widget);
 
   UIKit::ActionList actions() const;
-
   void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;
