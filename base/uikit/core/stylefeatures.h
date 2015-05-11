@@ -1,9 +1,10 @@
 #ifndef STYLE_FEATURES_H
 #define STYLE_FEATURES_H
 
-#include <QtCore/QObject>
-#include <QtCore/QRectF>
-#include <QtGui/QPainter>
+#include <QObject>
+#include <QRectF>
+#include <QPainter>
+#include <QVariantMap>
 #include <plexydesk_ui_exports.h>
 
 namespace UIKit {
@@ -23,6 +24,8 @@ public:
   QString text_data;
   QPixmap image_data;
   RenderState render_state;
+
+  QVariantMap attributes;
 };
 }
 #endif

@@ -39,6 +39,7 @@ public:
   void set_timezone_id(const QByteArray &a_timezone_id);
   QByteArray timezone_id() const;
 
+  virtual void add_marker(double a_hour, double a_min);
 public Q_SLOTS:
   void on_timout_slot_func();
 
@@ -51,6 +52,8 @@ private:
   double m_second_value;
   double m_minutes_value;
   double m_hour_value;
+
+  QList<QPair<double, double>> m_marked_time_value_list;
 
   QTimer *m_timer_ptr;
 

@@ -89,6 +89,7 @@ void CocoaStyle::load_default_widget_style_properties()
   d->m_attribute_map["frame"] = _frame_attributes;
   d->m_attribute_map["widget"] = _widget_attributes;
   d->m_attribute_map["size"] = _size_attributes;
+
 }
 
 CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
@@ -146,6 +147,9 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
       break;
     case 9:
       drawLabel(options, painter, aWidget);
+      break;
+    case 10:
+      drawClock(options, painter);
       break;
     case 19:
       drawProgressBar(options, painter);
@@ -287,6 +291,154 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     // painter->fillRect(QRectF(0.0, 0.0, rect.width(), 10), QColor("#F0F0F0"));
   }
   painter->restore();
+}
+
+void CocoaStyle::draw_clock_hands(QPainter *p, QRectF rect, int factor,
+                                   float angle, QColor hand_color,
+                                   int thikness) {
+  p->save();
+  float _adjustment = rect.width() / factor;
+
+  QRectF _clock_hour_rect(rect.x() + _adjustment, rect.y() + _adjustment,
+                          rect.width() - (_adjustment * 2),
+                          rect.height() - (_adjustment * 2));
+
+  QTransform _xform_hour;
+  QPointF _transPos = _clock_hour_rect.center();
+  _xform_hour.translate(_transPos.x(), _transPos.y());
+  _xform_hour.rotate(angle);
+  _xform_hour.translate(-_transPos.x(), -_transPos.y());
+  p->setTransform(_xform_hour);
+
+  QPen _clock_hour_pen(hand_color, thikness, Qt::SolidLine, Qt::RoundCap,
+                       Qt::RoundJoin);
+  p->setPen(_clock_hour_pen);
+
+  // p->drawRect(_clock_hour_rect);
+  p->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
+  p->restore();
+}
+
+void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
+{
+  /* please note that the clock is drawn with the inverted color scheme */
+
+  QRectF rect = features.geometry;
+  double second_value = features.attributes["seconds"].toDouble();
+  double minutes_value = features.attributes["minutes"].toDouble();
+  double hour_value = features.attributes["hour"].toDouble();
+
+  p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
+                    QPainter::HighQualityAntialiasing);
+
+  QPen _clock_frame_pen(QColor(color("primary_forground")), 18, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin);
+  p->setPen(_clock_frame_pen);
+
+  QPainterPath _clock_background;
+  _clock_background.addEllipse(rect);
+
+  p->fillPath(_clock_background, QColor(color("primary_forground")));
+  p->drawEllipse(rect);
+
+  //draw second markers.
+  for (int i = 0; i < 60; i++) {
+      double percent = (i / 60.0);
+      QPointF marker_location = _clock_background.pointAtPercent(percent);
+
+      p->save();
+
+      int thikness = 1;
+      QPen dot_frame_pen(QColor(color("primary_background")),
+                         thikness, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      p->setPen(dot_frame_pen);
+      p->drawPoint(marker_location);
+
+      p->restore();
+  }
+
+  //draw minute markers
+  for (int i = 0; i < 360; i = i + 30) {
+      float percent = (i / 360.0);
+      QPointF marker_location = _clock_background.pointAtPercent(percent);
+
+      p->save();
+      QPen dot_frame_pen(QColor(color("primary_background")),
+                         4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      p->setPen(dot_frame_pen);
+
+      p->drawPoint(marker_location);
+      p->restore();
+  }
+
+  //draw hour markers
+  for (int i = 0; i < 360; i = i + 90) {
+      float percent = (i / 360.0);
+      QPointF marker_location = _clock_background.pointAtPercent(percent);
+
+      p->save();
+      QPen dot_frame_pen(QColor(color("primary_background")),
+                         8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      p->setPen(dot_frame_pen);
+
+      p->drawPoint(marker_location);
+      p->restore();
+  }
+
+  /* Draw Hour Hand */
+  draw_clock_hands(p, rect, 3, 45.0 + hour_value,
+                   QColor(color("primary_background")), 6);
+  draw_clock_hands(p, rect, 4, 45.0 + minutes_value,
+                   QColor(color("primary_background")), 3);
+
+  QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16, 16);
+  QRectF _clock_wheel_inner_rect(rect.center().x() - 4,
+                                 rect.center().y() - 4, 8, 8);
+
+  QPainterPath _clock_wheel_path;
+  QPainterPath _clock_wheel_inner_path;
+
+  _clock_wheel_path.addEllipse(_clock_wheel_rect);
+  _clock_wheel_inner_path.addEllipse(_clock_wheel_inner_rect);
+
+  p->fillPath(_clock_wheel_path, QColor(color("primary_background")));
+
+  QPen wheel_border_pen(QColor(color("base_forground")),
+                         1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  p->save();
+  p->setPen(wheel_border_pen);
+  p->drawPath(_clock_wheel_path);
+  p->restore();
+
+  p->fillPath(_clock_wheel_inner_path, QColor(color("accent_primary_highlight")));
+
+  draw_clock_hands(p, rect, 5, 45.0 + second_value,
+                   QColor(color("accent_primary_highlight")), 2);
+  //draw current second
+  if (second_value != 0) {
+      double current_percent = (second_value / 6.0) / 60.0;
+
+      p->save();
+
+      QTransform _xform_hour;
+      QPointF _transPos = rect.center();
+      _xform_hour.translate(_transPos.x(), _transPos.y());
+      _xform_hour.rotate(-90);
+      _xform_hour.translate(-_transPos.x(), -_transPos.y());
+      p->setTransform(_xform_hour);
+
+      QPointF current_marker_location =
+          _clock_background.pointAtPercent(current_percent);
+
+      QPen current_dot_frame_pen(QColor(color("accent_primary_highlight")), 6,
+                                 Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      p->setPen(current_dot_frame_pen);
+
+      p->drawPoint(current_marker_location);
+
+      p->restore();
+  }
+
 }
 
 void CocoaStyle::drawPushButtonText(const StyleFeatures &features,

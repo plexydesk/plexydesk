@@ -42,12 +42,15 @@ protected:
   QVariantMap attribute_map(const QString &type) const;
   virtual QVariantMap color_scheme_map() const;
 
+
 private:
   class PrivateCocoa;
   PrivateCocoa *const d;
   void drawPushButton(const StyleFeatures &features, QPainter *painter);
   void drawWindowButton(const StyleFeatures &features, QPainter *painter);
   void drawFrame(const StyleFeatures &features, QPainter *painter);
+  void draw_clock_hands(QPainter *p, QRectF rect, int factor, float angle, QColor hand_color, int thikness);
+  void drawClock(const StyleFeatures &features, QPainter *painter);
   void drawPushButtonText(const StyleFeatures &features, const QString &text,
                           QPainter *painter);
   void drawLineEdit(const StyleFeatures &features, QPainter *painter);

@@ -31,8 +31,13 @@
 #include <QDateTime>
 #include <QDir>
 #include <plexyconfig.h>
+#include <themepackloader.h>
 
 namespace UIKit {
+bool double_equals(double a, double b, double epsilon = 0.001) {
+      return std::abs(a - b) < epsilon;
+}
+
 ClockWidget::ClockWidget(QGraphicsObject *parent)
     : UIKit::Widget(parent), m_timezone(0) {
   m_timer_ptr = new QTimer(this);
@@ -73,6 +78,11 @@ void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id) {
   qDebug() << Q_FUNC_INFO << a_timezone_id;
 
   m_timer_ptr->start();
+}
+
+void ClockWidget::add_marker(double a_hour, double a_min)
+{
+  m_marked_time_value_list << QPair<double, double>(a_hour, a_min);
 }
 
 ClockWidget::~ClockWidget() {
@@ -118,32 +128,22 @@ void ClockWidget::on_timout_slot_func() {
 }
 
 void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
-  QRectF rect(r.x() + 8, r.y() + 8, r.width() - 16, r.height() - 16);
+  QRectF rect(r.x() + 16, r.y() + 16, r.width() - 32, r.height() - 32);
 
-  p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
-                    QPainter::HighQualityAntialiasing);
+  StyleFeatures feature;
 
-  QPen _clock_frame_pen(QColor("#646464"), 8, Qt::SolidLine, Qt::RoundCap,
-                        Qt::RoundJoin);
-  p->setPen(_clock_frame_pen);
+  feature.text_data = QString("%1:%2:%3").arg(m_hour_value).
+      arg(m_minutes_value).arg(m_second_value);
 
-  QPainterPath _clock_background;
-  _clock_background.addEllipse(rect);
+  feature.geometry = rect;
+  feature.render_state = StyleFeatures::kRenderElement;
+  feature.attributes["hour"] = m_hour_value;
+  feature.attributes["minutes"] = m_minutes_value;
+  feature.attributes["seconds"] = m_second_value;
 
-  p->fillPath(_clock_background, QColor("#646464"));
-  p->drawEllipse(rect);
-
-  /* Draw Hour Hand */
-  draw_clock_hands(p, rect, 3, 45.0 + m_hour_value, QColor("#f0f0f0"), 8);
-  draw_clock_hands(p, rect, 4, 45.0 + m_minutes_value, QColor("#FFFFFF"), 6);
-  draw_clock_hands(p, rect, 5, 45.0 + m_second_value, QColor("#d6d6d6"), 2);
-
-  QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16,
-                           16);
-  QPainterPath _clock_wheel_path;
-
-  _clock_wheel_path.addEllipse(_clock_wheel_rect);
-
-  p->fillPath(_clock_wheel_path, QColor("#d6d6d6"));
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("clock", feature, p);
+  }
 }
+
 }
