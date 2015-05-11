@@ -61,9 +61,9 @@ public:
   virtual void on_discarded(
       std::function<void(const DesktopActivity *)> a_handler);
 
+  virtual void discard_activity();
 protected:
   virtual void update_action();
-  virtual void discard_activity();
   virtual QRectF geometry() const;
   virtual void set_geometry(const QRectF &a_geometry);
   virtual void update_content_geometry(Widget *a_widget_ptr);
