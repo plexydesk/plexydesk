@@ -44,8 +44,6 @@ public Q_SLOTS:
   void on_timout_slot_func();
 
 protected:
-  void draw_clock_hands(QPainter *p, QRectF rect, int factor, float angle,
-                        QColor hand_color, int thikness);
   void paint_view(QPainter *painter, const QRectF &r);
 
 private:
@@ -53,7 +51,8 @@ private:
   double m_minutes_value;
   double m_hour_value;
 
-  QList<QPair<double, double>> m_marked_time_value_list;
+  double m_mark_hour_value;
+  double m_mark_minutes_value;
 
   QTimer *m_timer_ptr;
 

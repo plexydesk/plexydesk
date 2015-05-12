@@ -22,6 +22,30 @@
 #include <view_controller.h>
 #include <stylefeatures.h>
 
+//for the clock
+int angle_between_hands(double h, double m)
+{
+    // validate the input
+    if (h <0 || m < 0 || h >12 || m > 60)
+        printf("Wrong input");
+
+    if (h == 12) h = 0;
+    if (m == 60) m = 0;
+
+    // Calculate the angles moved by hour and minute hands
+    // with reference to 12:00
+    int hour_angle = 0.5 * (h*60 + m);
+    int minute_angle = 6*m;
+
+    // Find the difference between two angles
+    int angle = abs(hour_angle - minute_angle);
+
+    // Return the smaller angle of two possible angles
+    angle = std::min(360 - angle, angle);
+
+    return angle;
+}
+
 class CocoaStyle::PrivateCocoa {
 public:
   PrivateCocoa() {}
@@ -319,6 +343,62 @@ void CocoaStyle::draw_clock_hands(QPainter *p, QRectF rect, int factor,
   p->restore();
 }
 
+void CocoaStyle::draw_timer_marker(QRectF rect,
+                QTransform _xform_hour,
+                QPainter *p,
+                double mark_minutes,
+                double mark_hour,
+                QPen current_dot_min_pen,
+                QPointF current_marker_location,
+                QPointF _transPos,
+                QPointF current_marker_location_for_min)
+{
+  double hour_angle = (((60.0 * mark_hour) + mark_minutes) / 2);
+  double min_angle =  (6.0 * mark_minutes);
+
+  QPainterPath clock_path;
+  clock_path.addEllipse(rect);
+
+  signed int multiply = 1;
+  if (std::abs(min_angle) > std::abs(hour_angle)) {
+      multiply = - multiply;
+    }
+
+  p->save();
+  p->setPen(current_dot_min_pen);
+
+  _xform_hour.reset();
+
+  _transPos = rect.center();
+  _xform_hour.translate(_transPos.x(), _transPos.y());
+  _xform_hour.rotate(-90);
+  _xform_hour.translate(-_transPos.x(), -_transPos.y());
+
+  p->setTransform(_xform_hour);
+
+  QPen current_timer_pen(QColor(color("accent_soft_highlight")), 2,
+                             Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  p->setPen(current_timer_pen);
+
+  QPainterPath timer_path;
+
+  timer_path.moveTo(rect.center());
+  timer_path.arcTo(rect, -hour_angle,
+                   multiply * angle_between_hands(mark_hour, mark_minutes));
+
+  /*
+        timer_path.moveTo(current_marker_location);
+        timer_path.lineTo(rect.center());
+        timer_path.lineTo(current_marker_location_for_min);
+
+        p->fillPath(timer_path, QColor("#f0f0f0"));
+   */
+
+  p->setOpacity(0.3);
+  p->fillPath(timer_path, QColor(color("primary_background")));
+  p->restore();
+}
+
 void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
 {
   /* please note that the clock is drawn with the inverted color scheme */
@@ -327,12 +407,14 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
   double second_value = features.attributes["seconds"].toDouble();
   double minutes_value = features.attributes["minutes"].toDouble();
   double hour_value = features.attributes["hour"].toDouble();
+  double mark_hour = features.attributes["mark_hour"].toDouble();
+  double mark_minutes = features.attributes["mark_minutes"].toDouble();
 
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);
 
-  QPen _clock_frame_pen(QColor(color("primary_forground")), 18, Qt::SolidLine, Qt::RoundCap,
-                        Qt::RoundJoin);
+  QPen _clock_frame_pen(QColor(color("primary_forground")),
+                        18, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   p->setPen(_clock_frame_pen);
 
   QPainterPath _clock_background;
@@ -385,6 +467,59 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
       p->restore();
   }
 
+  //draw current hour
+  if (std::abs(mark_hour) > 0) {
+      double current_percent = (mark_hour) / 12.0;
+
+      p->save();
+
+      QTransform _xform_hour;
+      QPointF _transPos = rect.center();
+      _xform_hour.translate(_transPos.x(), _transPos.y());
+      _xform_hour.rotate(-90);
+      _xform_hour.translate(-_transPos.x(), -_transPos.y());
+      p->setTransform(_xform_hour);
+
+      QPointF current_marker_location =
+          _clock_background.pointAtPercent(current_percent);
+
+      QPen current_dot_frame_pen(QColor(color("accent_soft_highlight")), 16,
+                                 Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      p->setPen(current_dot_frame_pen);
+                        p->setOpacity(0.9);
+      p->drawPoint(current_marker_location);
+
+      p->restore();
+
+      //draw current second
+      double current_percent_min = (mark_minutes) / 60.0;
+
+      p->save();
+
+      _xform_hour.reset();
+      _transPos = rect.center();
+      _xform_hour.translate(_transPos.x(), _transPos.y());
+      _xform_hour.rotate(-90);
+      _xform_hour.translate(-_transPos.x(), -_transPos.y());
+      p->setTransform(_xform_hour);
+
+      QPointF current_marker_location_for_min =
+          _clock_background.pointAtPercent(current_percent_min);
+
+      QPen current_dot_min_pen(QColor(color("accent_soft_highlight")), 12,
+                               Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+      p->setPen(current_dot_min_pen);
+                        p->setOpacity(0.9);
+      p->drawPoint(current_marker_location_for_min);
+
+      p->restore();
+
+      //experiment
+      draw_timer_marker(rect, _xform_hour, p, mark_minutes, mark_hour,
+                        current_dot_min_pen, current_marker_location, _transPos,
+                        current_marker_location_for_min);
+    }
+
   /* Draw Hour Hand */
   draw_clock_hands(p, rect, 3, 45.0 + hour_value,
                    QColor(color("primary_background")), 6);
@@ -414,32 +549,9 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
 
   draw_clock_hands(p, rect, 5, 45.0 + second_value,
                    QColor(color("accent_primary_highlight")), 2);
-  //draw current second
-  if (second_value != 0) {
-      double current_percent = (second_value / 6.0) / 60.0;
 
-      p->save();
 
-      QTransform _xform_hour;
-      QPointF _transPos = rect.center();
-      _xform_hour.translate(_transPos.x(), _transPos.y());
-      _xform_hour.rotate(-90);
-      _xform_hour.translate(-_transPos.x(), -_transPos.y());
-      p->setTransform(_xform_hour);
-
-      QPointF current_marker_location =
-          _clock_background.pointAtPercent(current_percent);
-
-      QPen current_dot_frame_pen(QColor(color("accent_primary_highlight")), 6,
-                                 Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-      p->setPen(current_dot_frame_pen);
-
-      p->drawPoint(current_marker_location);
-
-      p->restore();
-  }
-
-}
+ }
 
 void CocoaStyle::drawPushButtonText(const StyleFeatures &features,
                                     const QString &text, QPainter *painter) {

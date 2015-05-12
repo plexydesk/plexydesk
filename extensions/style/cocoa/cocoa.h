@@ -38,6 +38,14 @@ public:
   virtual void draw(const QString &type, const StyleFeatures &options,
                     QPainter *painter, const UIKit::Widget *aWidget = 0);
   void load_default_widget_style_properties();
+
+  void draw_timer_marker(QRectF rect, QTransform _xform_hour, QPainter *p,
+                         double mark_minutes,
+                         double mark_hour,
+                         QPen current_dot_min_pen,
+                         QPointF current_marker_location,
+                         QPointF _transPos,
+                         QPointF current_marker_location_for_min);
 protected:
   QVariantMap attribute_map(const QString &type) const;
   virtual QVariantMap color_scheme_map() const;

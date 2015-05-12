@@ -41,6 +41,8 @@ bool double_equals(double a, double b, double epsilon = 0.001) {
 ClockWidget::ClockWidget(QGraphicsObject *parent)
     : UIKit::Widget(parent), m_timezone(0) {
   m_timer_ptr = new QTimer(this);
+  m_mark_hour_value = 0.0;
+  m_mark_minutes_value = 0.0;
   m_timer_ptr->setTimerType(Qt::VeryCoarseTimer);
 
   connect(m_timer_ptr, SIGNAL(timeout()), this, SLOT(on_timout_slot_func()));
@@ -82,7 +84,9 @@ void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id) {
 
 void ClockWidget::add_marker(double a_hour, double a_min)
 {
-  m_marked_time_value_list << QPair<double, double>(a_hour, a_min);
+  m_mark_hour_value = a_hour;
+  m_mark_minutes_value = a_min;
+  update();
 }
 
 ClockWidget::~ClockWidget() {
@@ -94,32 +98,6 @@ ClockWidget::~ClockWidget() {
   if (m_timezone)
     delete m_timezone;
   qDebug() << Q_FUNC_INFO;
-}
-
-void ClockWidget::draw_clock_hands(QPainter *p, QRectF rect, int factor,
-                                   float angle, QColor hand_color,
-                                   int thikness) {
-  p->save();
-  float _adjustment = rect.width() / factor;
-
-  QRectF _clock_hour_rect(rect.x() + _adjustment, rect.y() + _adjustment,
-                          rect.width() - (_adjustment * 2),
-                          rect.height() - (_adjustment * 2));
-
-  QTransform _xform_hour;
-  QPointF _transPos = _clock_hour_rect.center();
-  _xform_hour.translate(_transPos.x(), _transPos.y());
-  _xform_hour.rotate(angle);
-  _xform_hour.translate(-_transPos.x(), -_transPos.y());
-  p->setTransform(_xform_hour);
-
-  QPen _clock_hour_pen(hand_color, thikness, Qt::SolidLine, Qt::RoundCap,
-                       Qt::RoundJoin);
-  p->setPen(_clock_hour_pen);
-
-  // p->drawRect(_clock_hour_rect);
-  p->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
-  p->restore();
 }
 
 void ClockWidget::on_timout_slot_func() {
@@ -140,6 +118,8 @@ void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   feature.attributes["hour"] = m_hour_value;
   feature.attributes["minutes"] = m_minutes_value;
   feature.attributes["seconds"] = m_second_value;
+  feature.attributes["mark_hour"] = m_mark_hour_value;
+  feature.attributes["mark_minutes"] = m_mark_minutes_value;
 
   if (UIKit::Theme::style()) {
     UIKit::Theme::style()->draw("clock", feature, p);
