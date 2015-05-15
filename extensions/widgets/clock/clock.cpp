@@ -38,6 +38,7 @@
 
 //
 #include "session_sync.h"
+#include "clockui.h"
 
 class Clock::PrivateClockController {
 public:
@@ -54,6 +55,7 @@ public:
   QString m_session_database_name;
 
   QList<SessionSync *> m_session_list;
+  QList<ClockUI *> m_clock_ui_list;
 };
 
 Clock::Clock(QObject *parent)
@@ -212,10 +214,13 @@ void Clock::PrivateClockController::_new_session(Clock *a_controller) {
   session_args["y"] = window_location.y();
   session_args["database_name"] = m_session_database_name;
 
-  SessionSync *session_ref = new SessionSync(a_controller, session_args);
+  SessionSync *session_ref = new SessionSync(session_args);
   session_ref->set_session_id(m_session_list.count());
+
+  ClockUI *clock = new ClockUI(session_ref, a_controller);
   //session_ref->set_session_data("database_name", m_session_database_name);
   m_session_list << (session_ref);
+  m_clock_ui_list << clock;
 
   if (a_controller->viewport()) {
       a_controller->viewport()->update_session_value(
@@ -224,8 +229,7 @@ void Clock::PrivateClockController::_new_session(Clock *a_controller) {
 }
 
 void Clock::PrivateClockController::_restore_session(Clock *a_controller,
-                                                     const QVariantMap &a_data)
-{
+                                                     const QVariantMap &a_data) {
   QVariantMap session_args;
 
   session_args["x"] = a_data["x"];
@@ -233,20 +237,19 @@ void Clock::PrivateClockController::_restore_session(Clock *a_controller,
   session_args["zone_id"] = a_data["zone_id"];
   session_args["database_name"] = m_session_database_name;
 
-  SessionSync *session_ref = new SessionSync(a_controller, session_args);
-
+  SessionSync *session_ref = new SessionSync(session_args);
   session_ref->set_session_id(a_data["clock_id"].toInt());
 
-  //session_ref->set_session_data("database_name", m_session_database_name);
-  //session_ref->set_session_data("x", a_data["x"]);
-  //session_ref->set_session_data("y", a_data["y"]);
+  ClockUI *clock = new ClockUI(session_ref, a_controller);
+
   m_session_list << session_ref;
+  m_clock_ui_list << clock;
 }
 
 void Clock::PrivateClockController::_end_session(int a_id) {
   foreach (SessionSync *session_ref, m_session_list) {
     if (session_ref->session_id() == a_id) {
-      session_ref->mark();
+      session_ref->purge();
       qDebug() << Q_FUNC_INFO << " Delete from Session !";
     }
   }

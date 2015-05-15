@@ -28,8 +28,7 @@
 
 class SessionSync {
 public:
-  SessionSync(UIKit::ViewController *a_controller,
-                 const QVariantMap &a_data = QVariantMap());
+  SessionSync(const QVariantMap &a_data = QVariantMap());
   ~SessionSync() {}
 
   virtual void session_init();
@@ -38,7 +37,7 @@ public:
   QVariant session_data(const QString &a_key) const;
   QList<QString> session_keys() const;
 
-  void mark();
+  void purge();
   bool is_purged();
 
   void set_session_id(int a_id);
@@ -46,10 +45,14 @@ public:
 
   virtual void update_session();
 
-  virtual void delete_session_data(const QString &a_session_name);
+  virtual void delete_session_data(const QString &a_session_name, const QString &a_object_name, const QString &a_object_key);
   virtual void save_session_attribute(const QString &a_session_name,
-                              const QString &a_key,
-                              const QString &a_value);
+                                      const QString &a_object_name,
+                                      const QString &a_object_key,
+                                      const QString &a_key,
+                                      const QString &a_value);
+  virtual void on_session_update(std::function<void ()> a_handler);
+
 private:
   class PrivSessionSync;
   PrivSessionSync *const d;

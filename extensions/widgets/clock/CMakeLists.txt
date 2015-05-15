@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(clock)
 
 SET(clocksourceFiles
     clock.cpp
+    clockui.cpp
     clockwidget.cpp
     clockinterface.cpp
     session_sync.cpp
@@ -11,6 +12,7 @@ SET(clocksourceFiles
 
 SET(headerFiles
     clock.h
+    clockui.h
     clockwidget.h
     clockinterface.h
     session_sync.h
