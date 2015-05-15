@@ -73,16 +73,16 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   d->m_navigation_dock = new UIKit::ToolBar();
   d->m_navigation_dock->set_controller(this);
   d->m_navigation_dock->set_orientation(Qt::Vertical);
-  d->m_navigation_dock->set_icon_resolution("mdpi");
-  d->m_navigation_dock->set_icon_size(QSize(32, 32));
+  d->m_navigation_dock->set_icon_resolution("hdpi");
+  d->m_navigation_dock->set_icon_size(QSize(48, 48));
 
-  d->m_navigation_dock->add_action(tr("Up"), "pd_up_icon", false);
-  d->m_navigation_dock->add_action(tr("Expose"), "pd_space_icon", false);
-  d->m_navigation_dock->add_action(tr("Add"), "pd_add_new_icon", false);
-  d->m_navigation_dock->add_action(tr("Menu"), "pd_menu_icon", false);
-  d->m_navigation_dock->add_action(tr("Seamless"), "pd_eye_icon", false);
-  d->m_navigation_dock->add_action(tr("Close"), "pd_eye_icon", false);
-  d->m_navigation_dock->add_action(tr("Down"), "pd_down_icon", false);
+  d->m_navigation_dock->add_action(tr("Up"), "actions/pd_to_top", false);
+  d->m_navigation_dock->add_action(tr("Expose"), "actions/pd_view_grid", false);
+  d->m_navigation_dock->add_action(tr("Add"), "actions/pd_add", false);
+  d->m_navigation_dock->add_action(tr("Menu"), "actions/pd_overflow_tab", false);
+  d->m_navigation_dock->add_action(tr("Seamless"), "actions/pd_browser", false);
+  d->m_navigation_dock->add_action(tr("Close"), "actions/pd_delete", false);
+  d->m_navigation_dock->add_action(tr("Down"), "actions/pd_to_bottom", false);
 
   d->m_navigation_dock->setGeometry(d->m_navigation_dock->frame_geometry());
 

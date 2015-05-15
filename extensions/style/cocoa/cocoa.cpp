@@ -288,7 +288,7 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     painter->save();
     QFont _font = painter->font();
     _font.setBold(true);
-    _font.setPointSize(18 * scaleFactor());
+    _font.setPointSize(18 * scale_factor());
     painter->setFont(_font);
     QTextOption option;
     option.setAlignment(Qt::AlignCenter);
@@ -619,7 +619,7 @@ void CocoaStyle::drawLineEditText(const StyleFeatures &features,
 
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
-  QFont font = QFont("", 18 * scaleFactor());
+  QFont font = QFont("", 18 * scale_factor());
   //QFontMetrics fontMetrics(font);
   // int width = fontMetrics.width(text.left(features.cursorLocation));
   painter->setFont(font);

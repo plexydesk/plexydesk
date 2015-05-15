@@ -95,7 +95,9 @@ void ToolBar::set_icon_resolution(const QString &a_res) {
   d->m_icon_resolution = a_res;
 }
 
-void ToolBar::set_icon_size(const QSize &a_size) { d->m_icon_size = a_size; }
+void ToolBar::set_icon_size(const QSize &a_size) {
+  d->m_icon_size = a_size * Theme::style()->scale_factor();
+}
 
 StylePtr ToolBar::style() const { return Theme::style(); }
 

@@ -43,7 +43,7 @@ public:
                     QPainter *a_painter_ptr,
                     const Widget *a_widget_ptr = 0) = 0;
 
-  static float scaleFactor();
+  static float scale_factor();
 
 protected:
   virtual QVariantMap attribute_map(const QString &a_type) const = 0;
