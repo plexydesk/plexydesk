@@ -30,7 +30,6 @@
 #include <item_view.h>
 
 #include "clockwidget.h"
-#include "timezone_model.h"
 
 class DesktopClockActivity::PrivateDesktopClock {
 public:

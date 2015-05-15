@@ -1,18 +1,15 @@
 SET (sourceFiles
-	  desktopclock.cpp
-    desktopclockinterface.cpp
-    timezone_model.cpp
-    )
+desktopclock.cpp
+desktopclockinterface.cpp
+)
 
 SET(headerFiles
     desktopclockinterface.h
-    timezone_model.h
     )
 
 SET (QTMOC_SRCS
     desktopclock.h
     desktopclockinterface.h
-    timezone_model.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
