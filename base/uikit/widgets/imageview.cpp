@@ -66,6 +66,8 @@ void ImageView::paint_view(QPainter *a_painter_ptr,
              d->mPixmap.height());
 
   a_painter_ptr->save();
+  a_painter_ptr->setRenderHint(QPainter::SmoothPixmapTransform);
+  a_painter_ptr->setRenderHint(QPainter::HighQualityAntialiasing);
   a_painter_ptr->drawPixmap(rect, d->mPixmap);
   a_painter_ptr->restore();
 }

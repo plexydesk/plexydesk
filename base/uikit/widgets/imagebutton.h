@@ -32,7 +32,6 @@ private
 Q_SLOTS:
   void onZoomDone();
   void onZoomOutDone();
-  void createZoomAnimation();
 
 protected:
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);

@@ -13,29 +13,15 @@ namespace UIKit {
 
 class ImageButton::PrivateImageButton {
 public:
-  PrivateImageButton() {}
+  PrivateImageButton() {
+  }
   ~PrivateImageButton() {
-    if (mZoomAnimation) {
-      delete mZoomAnimation;
-    }
   }
 
   QPixmap mPixmap;
-
-  QPropertyAnimation *mZoomAnimation;
   QString mLabel;
   QColor mBgColor;
 };
-
-void ImageButton::createZoomAnimation() {
-  if (!d->mZoomAnimation) {
-    return;
-  }
-
-  d->mZoomAnimation->setDuration(100);
-  d->mZoomAnimation->setStartValue(1.0);
-  d->mZoomAnimation->setEndValue(1.1);
-}
 
 void ImageButton::set_background_color(const QColor &a_color) {
   d->mBgColor = a_color;
@@ -51,15 +37,6 @@ ImageButton::ImageButton(QGraphicsObject *a_parent_ptr)
   setAcceptHoverEvents(true);
 
   d->mBgColor = Qt::transparent;
-
-  /// setSize(QSize(32.0, 32.0));
-
-  d->mZoomAnimation = new QPropertyAnimation(this, "scale");
-  d->mZoomAnimation->setDuration(100);
-  d->mZoomAnimation->setStartValue(1.0);
-  d->mZoomAnimation->setEndValue(1.1);
-
-  connect(d->mZoomAnimation, SIGNAL(finished()), this, SLOT(onZoomDone()));
 }
 
 ImageButton::~ImageButton() { delete d; }
@@ -87,12 +64,6 @@ void ImageButton::onZoomDone() {}
 void ImageButton::onZoomOutDone() {}
 
 void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
-    d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
-    d->mZoomAnimation->start();
-  }
-
-  qDebug() << Q_FUNC_INFO;
   Widget::mouseReleaseEvent(a_event_ptr);
 }
 
@@ -102,26 +73,13 @@ void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
 }
 
 void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
-  if (!(d->mZoomAnimation->state() == QAbstractAnimation::Running)) {
-    d->mZoomAnimation->setDirection(QAbstractAnimation::Forward);
-    d->mZoomAnimation->start();
-  }
-
   a_event_ptr->accept();
-
   Widget::hoverEnterEvent(a_event_ptr);
 }
 
 void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
-  if (scale() > 1.0) {
-    d->mZoomAnimation->setDirection(QAbstractAnimation::Backward);
-    d->mZoomAnimation->start();
-  }
-
   a_event_ptr->accept();
-
   Q_EMIT selected(false);
-
   Widget::hoverLeaveEvent(a_event_ptr);
 }
 
@@ -136,7 +94,6 @@ void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
 
   bgPath.addEllipse(a_rect);
   a_painter_ptr->fillPath(bgPath, d->mBgColor);
-
   a_painter_ptr->drawPixmap(a_rect.toRect(), d->mPixmap);
   a_painter_ptr->restore();
 }
