@@ -42,6 +42,9 @@ public:
   virtual void draw(const QString &a_type, const StyleFeatures &a_options,
                     QPainter *a_painter_ptr,
                     const Widget *a_widget_ptr = 0) = 0;
+
+  static float scaleFactor();
+
 protected:
   virtual QVariantMap attribute_map(const QString &a_type) const = 0;
   virtual QVariantMap color_scheme_map() const = 0;

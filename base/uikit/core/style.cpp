@@ -34,4 +34,9 @@ QString Style::color(const QString &a_element) const {
   return color_scheme_map()[a_element].toString();
 }
 
+float Style::scaleFactor()
+{
+  return 1.0f;
+}
+
 }
