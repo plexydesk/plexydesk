@@ -116,6 +116,7 @@ public:
   ~PrivateAbstractDesktopWidget() {}
 
   void _exec_func(Widget::InputEvent a_type, const Widget *a_widget_ptr);
+  void _inoke_geometry_func(const QRectF &a_rect);
 
   QVariantMap mStyleAttributeMap;
 
@@ -126,6 +127,8 @@ public:
   ViewController *m_widget_controller;
 
   QList<EventCallbackFunc> m_handler_list;
+  std::vector<std::function<void (const QRectF &)>> m_on_geometry_func_list;
+
   int m_callback_count;
 };
 
@@ -163,6 +166,11 @@ void Widget::on_input_event(
     std::function<void(InputEvent, const Widget *)> a_callback) {
   d->m_callback_count++;
   d->m_handler_list.append(a_callback);
+}
+
+void Widget::on_geometry_changed(
+    std::function<void (const QRectF &)> a_callback) {
+  d->m_on_geometry_func_list.push_back(a_callback);
 }
 
 void Widget::set_style_attribute(const QString &a_key, QVariant a_data) {
@@ -212,6 +220,8 @@ void Widget::setGeometry(const QRectF &a_rect) {
   prepareGeometryChange();
   QGraphicsLayoutItem::setGeometry(a_rect);
   setPos(a_rect.topLeft());
+
+  d->_inoke_geometry_func(a_rect);
 }
 
 QSizeF Widget::sizeHint(Qt::SizeHint a_which,
@@ -299,7 +309,17 @@ void Widget::PrivateAbstractDesktopWidget::_exec_func(
     if (l_func) {
       l_func(a_type, a_widget_ptr);
     }
-  }
+    }
+}
+
+void Widget::PrivateAbstractDesktopWidget::_inoke_geometry_func(
+    const QRectF &a_rect) {
+  std::for_each(std::begin(m_on_geometry_func_list),
+                std::end(m_on_geometry_func_list),
+                [&](std::function<void (const QRectF &)> a_func) {
+      if (a_func)
+        a_func(a_rect);
+    });
 }
 
 } // namespace PlexyDesk
