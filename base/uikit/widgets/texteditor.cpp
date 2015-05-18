@@ -13,6 +13,7 @@
 #include <QApplication>
 
 #include <widget.h>
+#include <themepackloader.h>
 
 namespace UIKit {
 
@@ -32,6 +33,7 @@ TextEditor::TextEditor(QGraphicsObject *parent)
     : UIKit::Widget(parent), d(new PrivateTextEditor) {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
+  d->mEditor->setFontPointSize(16 * Theme::style()->scale_factor());
   d->mEditor->setReadOnly(false);
   d->mEditor->setAcceptRichText(true);
   d->mEditor->setAutoFormatting(QTextEdit::AutoAll);
@@ -42,11 +44,6 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   d->mEditor->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
   d->mProxyWidget->setWidget(d->mEditor);
-
-  // QRectF rect (0.0, 0.0, 320.0, 200.0);
-  // d->mProxyWidget->resize(rect.size());
-  // d->mProxyWidget->setMinimumSize(rect.size());
-  // d->mProxyWidget->setMaximumSize(rect.size());
 
   d->mProxyWidget->show();
   d->mEditor->move(0.0, 0.0);
