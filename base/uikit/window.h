@@ -46,8 +46,9 @@ public:
   virtual void hide();
   virtual void discard();
 
-  virtual void enable_window_background(bool a_visibility = true);
+  virtual void resize(float a_width, float a_height);
 
+  virtual void enable_window_background(bool a_visibility = true);
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);

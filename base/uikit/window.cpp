@@ -213,7 +213,18 @@ void Window::discard() {
   if (m_priv_impl->m_window_discard_callback) {
     qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
     m_priv_impl->m_window_discard_callback(this);
-  }
+    }
+}
+
+void Window::resize(float a_width, float a_height) {
+  setGeometry(QRectF(x(), y(),
+                     a_width, a_height + 72.0));
+
+  if (m_priv_impl->m_window_content) {
+       if (m_priv_impl->m_window_type == kApplicationWindow) {
+           m_priv_impl->m_window_content->setPos(0.0, 72.0);
+       }
+   }
 }
 
 void Window::enable_window_background(bool a_visibility) {
