@@ -43,9 +43,9 @@ ClockUI::ClockUI(SessionSync *a_sync, UIKit::ViewController *a_ctr)
 
   // toolbar placement.
   m_toolbar->set_icon_resolution("hdpi");
-  m_toolbar->set_icon_size(QSize(32, 32));
+  m_toolbar->set_icon_size(QSize(24, 24));
 
-  m_toolbar->add_action("TimeZone", "pd_add_new_icon", false);
+  m_toolbar->add_action("TimeZone", "actions/pd_location", false);
   m_toolbar->insert_widget(m_timezone_label);
 
   m_toolbar->setGeometry(m_toolbar->frame_geometry());
