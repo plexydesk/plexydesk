@@ -57,8 +57,10 @@ Q_SLOTS:
   void deleteImageAttachment();
 
 protected:
+  /*
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                      QWidget *widget = 0);
+                     */
   virtual void dropEvent(QGraphicsSceneDragDropEvent *event);
 
 private:
