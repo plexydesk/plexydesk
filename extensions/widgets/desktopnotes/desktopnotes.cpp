@@ -30,7 +30,7 @@ class DesktopNotesControllerImpl::PrivateDesktopNotes {
 public:
   PrivateDesktopNotes() {}
   ~PrivateDesktopNotes() {}
-  QTimer *mDesktopNotes;
+
   QMap<QString, int> mNoteActions;
   UIKit::ActionList m_supported_action_list;
 };
@@ -56,7 +56,9 @@ void DesktopNotesControllerImpl::init() {
 }
 
 void DesktopNotesControllerImpl::session_data_available(
-    const QuetzalKit::SyncObject &a_sesion_root) {}
+    const QuetzalKit::SyncObject &a_sesion_root) {
+
+}
 
 void DesktopNotesControllerImpl::submit_session_data(
     QuetzalKit::SyncObject *a_obj) {}
@@ -86,7 +88,8 @@ void DesktopNotesControllerImpl::request_action(const QString &actionName,
 
 void DesktopNotesControllerImpl::handle_drop_event(UIKit::Widget *widget,
                                                    QDropEvent *event) {
-  const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
+  const QString droppedFile =
+      event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
 
   if (fileInfo.isFile()) {
@@ -108,7 +111,7 @@ void DesktopNotesControllerImpl::createNoteUI() {
   UIKit::Window *window = new UIKit::Window();
 
   NoteWidget *note = new NoteWidget(window);
-  note->resize(QSizeF(320, 320));
+  note->resize(QSizeF(320, 240));
   note->set_controller(this);
   note->setViewport(viewport());
 
@@ -117,6 +120,12 @@ void DesktopNotesControllerImpl::createNoteUI() {
   window->set_window_content(note);
 
   insert(window);
+
+  note->on_geometry_changed([=](const QRectF &a_geometry) {
+      if (window) {
+         window->resize(a_geometry.width(), a_geometry.height());
+      }
+  });
 
   window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
@@ -135,6 +144,11 @@ void DesktopNotesControllerImpl::createReminderUI() {
 
   insert(window);
 
+  reminder->on_geometry_changed([=](const QRectF &a_geometry) {
+      if (reminder && window) {
+         window->resize(a_geometry.width(), a_geometry.height());
+      }
+  });
   window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
   });

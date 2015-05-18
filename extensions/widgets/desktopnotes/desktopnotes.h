@@ -42,7 +42,6 @@ public:
   virtual void set_view_rect(const QRectF &rect);
 
   UIKit::ActionList actions() const;
-
   virtual void request_action(const QString &actionName,
                               const QVariantMap &args);
   virtual void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
