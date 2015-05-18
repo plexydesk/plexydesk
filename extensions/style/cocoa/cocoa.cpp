@@ -22,6 +22,8 @@
 #include <view_controller.h>
 #include <stylefeatures.h>
 
+#include <cmath>
+
 //for the clock
 int angle_between_hands(double h, double m)
 {

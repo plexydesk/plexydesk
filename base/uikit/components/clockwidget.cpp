@@ -33,6 +33,8 @@
 #include <plexyconfig.h>
 #include <themepackloader.h>
 
+#include <cmath>
+
 namespace UIKit {
 bool double_equals(double a, double b, double epsilon = 0.001) {
       return std::abs(a - b) < epsilon;
