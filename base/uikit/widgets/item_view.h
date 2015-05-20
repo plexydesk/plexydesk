@@ -22,9 +22,6 @@ public:
            ModelType a_model_type = kListModel);
   virtual ~ItemView();
 
-  virtual void insert(Widget *a_widget_ptr);
-  virtual void remove(Widget *a_widget_ptr);
-
   virtual void insert(ModelViewItem *a_item_ptr);
   virtual void remove(ModelViewItem *a_item_ptr);
 
@@ -40,8 +37,13 @@ public:
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 
   virtual void on_activated(std::function<void(int index)> a_callback);
+  virtual void on_item_removed(
+      std::function<void (ModelViewItem *item)> a_handler);
 
 protected:
+  virtual void insert(Widget *a_widget_ptr);
+  virtual void remove(Widget *a_widget_ptr);
+
   bool sceneEvent(QEvent *e);
   bool event(QEvent *e);
 

@@ -11,7 +11,8 @@ namespace UIKit {
 
 class ItemView::PrivateModelView {
 public:
-  PrivateModelView() {}
+  PrivateModelView() : m_item_remove_handler(0),
+  m_activation_handler (0) {}
   ~PrivateModelView() {}
 
   ModelType m_model_view_type;
@@ -24,6 +25,7 @@ public:
   QList<ModelViewItem *> m_model_item_list;
 
   std::function<void(int index)> m_activation_handler;
+  std::function<void (ModelViewItem *)> m_item_remove_handler;
 };
 
 ItemView::ItemView(QGraphicsObject *parent, ModelType a_model_type)
@@ -142,6 +144,7 @@ void ItemView::insert(ModelViewItem *a_item_ptr) {
 
   a_item_ptr->set_index(d->m_model_item_list.count());
   d->m_model_item_list.append(a_item_ptr);
+
 }
 
 void ItemView::remove(ModelViewItem *a_item_ptr) {}
@@ -163,33 +166,45 @@ void ItemView::set_filter(const QString &a_keyword) {
       continue;
     }
 
-    qDebug() << Q_FUNC_INFO << " Label --->" << _item->view()->label();
-    qDebug() << Q_FUNC_INFO << " Label --->" << _item->view()->isVisible();
-
     insert(_item->view());
     _item->view()->show();
   }
 }
 
 void ItemView::clear() {
-  if (d->m_list_layout->count() <= 0) {
+  if (d->m_model_item_list.count() <= 0)
     return;
-  }
 
-  while (d->m_list_layout->count() > 0) {
-    int index = d->m_list_layout->count() - 1;
-    Widget *item = (Widget *)(d->m_list_layout->itemAt(index));
-    d->m_list_layout->removeAt(index);
+  if (d->m_model_view_type == kListModel) {
+      if (d->m_list_layout->count() <= 0) {
+          return;
+        }
 
-    if (item) {
-      delete item;
+      while (d->m_list_layout->count() > 0) {
+          d->m_list_layout->removeAt(d->m_list_layout->count() - 1);
+        }
+
+
+      d->m_list_layout->invalidate();
+      d->m_list_layout->updateGeometry();
     }
+
+  if (d->m_model_view_type == kGridModel) {
+      if (d->m_grid_layout->count() <= 0) return;
+
+      while (d->m_grid_layout->count() > 0) {
+          d->m_grid_layout->removeAt(d->m_grid_layout->count() - 1);
+      }
+    }
+
+  Q_FOREACH(ModelViewItem *item, d->m_model_item_list) {
+      if (!item) continue;
+
+      item->remove_view();
+      if (d->m_item_remove_handler) d->m_item_remove_handler(item);
   }
 
-  d->m_list_layout->invalidate();
-  d->m_list_layout->updateGeometry();
-
-  qDeleteAll(d->m_model_item_list);
+  d->m_model_item_list.clear();
 }
 
 void ItemView::set_view_geometry(const QRectF &a_rect) {
@@ -207,6 +222,16 @@ QSizeF ItemView::sizeHint(Qt::SizeHint which,
 
 void ItemView::on_activated(std::function<void(int)> a_callback) {
   d->m_activation_handler = a_callback;
+}
+
+void ItemView::on_item_removed(std::function<void (ModelViewItem *)> a_handler)
+{
+  //please note that the item can be set only once, and can't be over-ridden
+  //once set. without destruction of the class.
+  if (d->m_item_remove_handler)
+    return;
+
+  d->m_item_remove_handler = a_handler;
 }
 
 bool ItemView::event(QEvent *e) {
