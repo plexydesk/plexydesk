@@ -32,7 +32,6 @@ class TimeZoneActivity : public UIKit::DesktopActivity {
 
 public:
   TimeZoneActivity(QGraphicsObject *aParent = 0);
-
   virtual ~TimeZoneActivity();
 
   void create_window(const QRectF &aWindowGeometry, const QString &aWindowTitle,

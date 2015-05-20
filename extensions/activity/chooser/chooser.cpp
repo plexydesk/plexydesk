@@ -100,6 +100,10 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
   d->m_grid_view = new UIKit::ItemView(d->m_activity_window_ptr,
                                        UIKit::ItemView::kGridModel);
   d->m_grid_view->set_view_geometry(window_geometry);
+  d->m_grid_view->on_item_removed([](UIKit::ModelViewItem *a_item) {
+    if (a_item)
+      delete a_item;
+  });
 
   on_arguments_updated([this]() {
     if (has_attribute("data")) {
@@ -119,10 +123,23 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
           update_action();
         });
 
-        d->m_grid_view->insert(l_action_item->createActionItem(
+        UIKit::ModelViewItem *grid_item = new UIKit::ModelViewItem();
+
+        grid_item->on_view_removed([](UIKit::ModelViewItem *a_item) {
+          if (a_item && a_item->view()) {
+              UIKit::Widget *view = a_item->view();
+              if (view)
+                delete view;
+          }
+
+        });
+
+        grid_item->set_view(l_action_item->createActionItem(
             _item["icon"].toString(), _item["label"].toString(),
             _item["controller"].toString()));
-      }
+
+        d->m_grid_view->insert(grid_item);
+        }
     }
 
     if (has_attribute("auto_scale")) {
@@ -139,6 +156,9 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
 
   d->m_activity_window_ptr->set_window_content(d->m_grid_view);
   d->m_activity_window_ptr->on_window_discarded([this](UIKit::Window *aWindow) {
+    if (d->m_grid_view)
+      d->m_grid_view->clear();
+
     discard_activity();
   });
 
@@ -153,6 +173,9 @@ QVariantMap IconGridActivity::result() const {
 Window *IconGridActivity::window() const { return d->m_activity_window_ptr; }
 
 void IconGridActivity::cleanup() {
+  if (d->m_grid_view)
+    d->m_grid_view->clear();
+
   if (d->m_activity_window_ptr) {
     delete d->m_activity_window_ptr;
   }

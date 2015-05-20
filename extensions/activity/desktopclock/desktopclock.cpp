@@ -117,6 +117,11 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   d->m_timezone_list = new UIKit::ItemView(d->mLayoutWidget);
   d->m_timezone_list->set_view_geometry(_timezone_table_rect);
 
+  d->m_timezone_list->on_item_removed([](UIKit::ModelViewItem *a_item) {
+    if (a_item)
+      delete a_item;
+  });
+
   d->m_main_layout->addItem(d->m_timezone_list);
 
   exec(window_pos);
@@ -152,9 +157,16 @@ void DesktopClockActivity::PrivateDesktopClock::add_time_zone(
   });
 
   _item_ptr->set_data("zone_id", a_time_zone_id);
+  _item_ptr->on_view_removed([](UIKit::ModelViewItem *a_item) {
+    if (a_item && a_item->view()) {
+        UIKit::Widget *view = a_item->view();
+        if (view)
+          delete view;
+    }
+  });
+
 
   m_timezone_list->insert(_item_ptr);
-  // m_timezone_model->insertItem(a_time_zone_label, QPixmap(), false);
 }
 
 QVariantMap DesktopClockActivity::result() const { return QVariantMap(); }

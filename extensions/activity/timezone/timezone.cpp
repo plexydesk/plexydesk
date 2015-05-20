@@ -33,6 +33,11 @@ class TimeZoneActivity::PrivateTimeZone {
 public:
   PrivateTimeZone() {}
   ~PrivateTimeZone() {
+    if (m_timezone_browser_ptr) {
+        m_timezone_browser_ptr->clear();
+        delete m_timezone_browser_ptr;
+        m_timezone_browser_ptr = 0;
+    }
     if (m_window_ptr) {
       delete m_window_ptr;
     }
@@ -98,7 +103,18 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
   });
 
   m_priv_ptr->m_window_ptr->on_window_discarded([this](UIKit::Window *aWindow) {
+    if (m_priv_ptr->m_timezone_browser_ptr) {
+        m_priv_ptr->m_timezone_browser_ptr->clear();
+        delete m_priv_ptr->m_timezone_browser_ptr;
+        m_priv_ptr->m_timezone_browser_ptr = 0;
+    }
     discard_activity();
+  });
+
+  m_priv_ptr->m_timezone_browser_ptr->on_item_removed(
+        [](UIKit::ModelViewItem *a_item) {
+     if (a_item)
+       delete a_item;
   });
 
   loadTimeZones();
@@ -116,6 +132,9 @@ UIKit::Window *TimeZoneActivity::window() const {
 }
 
 void TimeZoneActivity::cleanup() {
+  if (m_priv_ptr->m_timezone_browser_ptr)
+    m_priv_ptr->m_timezone_browser_ptr->clear();
+
   if (m_priv_ptr->m_window_ptr) {
     delete m_priv_ptr->m_window_ptr;
   }
@@ -126,7 +145,6 @@ void TimeZoneActivity::loadTimeZones() {
   std::vector<UIKit::ModelViewItem *> _item_list;
 
   foreach(const QByteArray id, QTimeZone::availableTimeZoneIds()) {
-    QLocale::Country l_country_locale = QTimeZone(id).country();
     QString l_time_zone_lable_str = QString(id);
     l_time_zone_lable_str +=
         " " + QTimeZone(id).displayName(QDateTime::currentDateTime(),
@@ -149,6 +167,13 @@ void TimeZoneActivity::loadTimeZones() {
     });
 
     l_item->set_view(lTimeZoneLabelPtr);
+    l_item->on_view_removed([&] (UIKit::ModelViewItem *a_item) {
+      if (a_item && a_item->view()) {
+          UIKit::Widget *view = a_item->view();
+          if (view)
+            delete view;
+      }
+    });
     l_item->on_filter([&](const UIKit::Widget *a_view,
                           const QString &a_keyword) {
       const UIKit::Label *_lbl_widget =
@@ -156,8 +181,6 @@ void TimeZoneActivity::loadTimeZones() {
 
       if (_lbl_widget) {
         if (_lbl_widget->label().toLower().contains(a_keyword.toLower())) {
-          qDebug() << Q_FUNC_INFO << a_keyword << " VS "
-                   << _lbl_widget->label().toLower();
           return 1;
         }
       }
@@ -186,4 +209,6 @@ void TimeZoneActivity::loadTimeZones() {
       m_priv_ptr->m_timezone_browser_ptr->insert(a);
     }
   });
+
+  _item_list.clear();
 }
