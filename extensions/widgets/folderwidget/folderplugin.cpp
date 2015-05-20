@@ -32,6 +32,7 @@
 
 DirectoryController::DirectoryController(QObject *object)
     : UIKit::ViewController(object) {
+  /*
   mThemePack = UIKit::Theme::instance();
 
   UIKit::Widget *parent = new UIKit::Widget();
@@ -48,6 +49,7 @@ DirectoryController::DirectoryController(QObject *object)
 
   // parent->setLabelName(info.completeSuffix());
   mFolderViewList.append(parent);
+  */
 }
 
 DirectoryController::~DirectoryController() {}
@@ -73,6 +75,7 @@ UIKit::ActionList DirectoryController::actions() const {
 
 void DirectoryController::request_action(const QString &actionName,
                                          const QVariantMap &args) {
+  /*
   if (actionName == CREATE_DIR) {
     qDebug() << "Not supported yet";
   } else if (actionName == tr("Folder")) {
@@ -97,10 +100,12 @@ void DirectoryController::request_action(const QString &actionName,
 
     insert(window);
   }
+  */
 }
 
 void DirectoryController::handle_drop_event(UIKit::Widget *widget,
                                             QDropEvent *event) {
+  /*
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
 
@@ -113,14 +118,17 @@ void DirectoryController::handle_drop_event(UIKit::Widget *widget,
       view->setDirectoryPath(droppedFile);
     }
   }
+  */
 }
 
 void DirectoryController::set_view_rect(const QRectF &rect) {
+  /*
   Q_FOREACH(UIKit::Widget * view, mFolderViewList) {
     if (view) {
       view->setPos(rect.x(), rect.y());
     }
   }
+  */
 }
 
 QString DirectoryController::icon() const {

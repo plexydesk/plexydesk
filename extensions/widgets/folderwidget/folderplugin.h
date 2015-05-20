@@ -48,8 +48,8 @@ public:
   QString icon() const;
 
 private:
-  UIKit::Theme *mThemePack;
-  QList<UIKit::Widget *> mFolderViewList;
+  //UIKit::Theme *mThemePack;
+  //QList<UIKit::Widget *> mFolderViewList;
   UIKit::ActionList m_supported_action_list;
 };
 

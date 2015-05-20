@@ -85,11 +85,16 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   d->m_navigation_dock->add_action(tr("Down"), "actions/pd_to_bottom", false);
 
   d->m_navigation_dock->setGeometry(d->m_navigation_dock->frame_geometry());
-
-  connect(d->m_navigation_dock, SIGNAL(action(QString)), this,
-          SLOT(onNavigationPanelClicked(QString)));
+  d->m_navigation_dock->on_item_activated([this](const QString &a_action) {
+      onNavigationPanelClicked(a_action);
+  });
   // menu
   d->m_preview_widget = new UIKit::ItemView();
+  d->m_preview_widget->on_item_removed([this](UIKit::ModelViewItem *a_item) {
+      if (a_item) {
+          delete a_item;
+        }
+  });
   d->m_preview_widget->on_activated([this](int index) {
     if (this->viewport() && this->viewport()->workspace()) {
       UIKit::WorkSpace *_workspace =
@@ -447,42 +452,42 @@ void DockControllerImpl::removeSpace() {
 
 void DockControllerImpl::onNavigationPanelClicked(const QString &action) {
   if (action == tr("Close")) {
-    removeSpace();
-    return;
-  } else if (action == tr("Up")) {
-    this->previousSpace();
-  } else if (action == tr("Down")) {
-    this->nextSpace();
-  } else if (action == tr("Seamless")) {
-    this->toggleSeamless();
-  } else if (action == tr("Expose")) {
-    if (d->m_preview_window->isVisible()) {
-      qDebug() << Q_FUNC_INFO << "curren visible";
-      d->m_preview_window->hide();
-    } else {
-      updatePreview();
-      d->m_preview_window->show();
-    }
-
-    return;
-  } else if (action == tr("Menu")) {
-    if (!viewport() || !viewport()->workspace()) {
+      removeSpace();
       return;
+    } else if (action == tr("Up")) {
+      this->previousSpace();
+    } else if (action == tr("Down")) {
+      this->nextSpace();
+    } else if (action == tr("Seamless")) {
+      this->toggleSeamless();
+    } else if (action == tr("Expose")) {
+      if (d->m_preview_window->isVisible()) {
+          d->m_preview_window->hide();
+          if (d->m_preview_widget)
+            d->m_preview_widget->clear();
+        } else {
+          updatePreview();
+          d->m_preview_window->show();
+        }
+      return;
+    } else if (action == tr("Menu")) {
+      if (!viewport() || !viewport()->workspace()) {
+          return;
+      }
+
+      QPointF _menu_pos =
+          viewport()->center(d->m_action_activity->window()->boundingRect(),
+                             UIKit::Space::kCenterOnViewportLeft);
+      _menu_pos.setX(d->m_navigation_dock->frame_geometry().width() + 5);
+
+      if (d->m_action_activity && d->m_action_activity->window()) {
+          d->m_action_activity->window()->setPos(_menu_pos);
+          d->m_action_activity->window()->show();
+        }
+
+    } else if (action == tr("Add")) {
+      onAddSpaceButtonClicked();
     }
-
-    QPointF _menu_pos =
-        viewport()->center(d->m_action_activity->window()->boundingRect(),
-                           UIKit::Space::kCenterOnViewportLeft);
-    _menu_pos.setX(d->m_navigation_dock->frame_geometry().width() + 5);
-
-    if (d->m_action_activity && d->m_action_activity->window()) {
-      d->m_action_activity->window()->setPos(_menu_pos);
-      d->m_action_activity->window()->show();
-    }
-
-  } else if (action == tr("Add")) {
-    onAddSpaceButtonClicked();
-  }
 }
 
 void DockControllerImpl::onAddSpaceButtonClicked() {
@@ -518,18 +523,29 @@ void DockControllerImpl::updatePreview() {
     float lWidth = 0;
 
     if (_workspace) {
-      foreach(UIKit::Space * _space, _workspace->current_spaces()) {
-        QPixmap _preview = _workspace->thumbnail(_space);
+        foreach(UIKit::Space * _space, _workspace->current_spaces()) {
+            QPixmap _preview = _workspace->thumbnail(_space);
 
-        UIKit::ImageView *p = new UIKit::ImageView();
+            UIKit::ImageView *p = new UIKit::ImageView();
 
-        p->setMinimumSize(_preview.size());
-        p->set_pixmap(_preview);
-        lHeight += _preview.size().height();
-        lWidth = _preview.size().width();
-        d->m_preview_widget->insert(p);
+            p->setMinimumSize(_preview.size());
+            p->set_pixmap(_preview);
+            lHeight += _preview.size().height();
+            lWidth = _preview.size().width();
+
+            UIKit::ModelViewItem *model_item = new UIKit::ModelViewItem();
+            model_item->set_view(p);
+            model_item->on_view_removed([=](UIKit::ModelViewItem *a_item) {
+                if (a_item && a_item->view()) {
+                    UIKit::Widget *view = a_item->view();
+                    if (view)
+                      delete view;
+                  }
+            });
+
+            d->m_preview_widget->insert(model_item);
+          }
       }
-    }
 
     QPointF lMenuPos =
         viewport()->center(d->m_action_activity->window()->boundingRect(),

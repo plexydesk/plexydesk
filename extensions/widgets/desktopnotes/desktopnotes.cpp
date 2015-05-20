@@ -57,7 +57,6 @@ void DesktopNotesControllerImpl::init() {
 
 void DesktopNotesControllerImpl::session_data_available(
     const QuetzalKit::SyncObject &a_sesion_root) {
-
 }
 
 void DesktopNotesControllerImpl::submit_session_data(

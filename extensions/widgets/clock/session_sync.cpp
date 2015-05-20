@@ -34,7 +34,9 @@ public:
   QString m_session_database;
   bool m_purged;
 
+  std::function<void()> m_on_session_init_func;
   std::function<void()> m_on_session_update_func;
+  std::function<void()> m_on_session_end_func;
 };
 
 SessionSync::SessionSync(const QVariantMap &a_data) : d(new PrivSessionSync) {
@@ -120,6 +122,14 @@ void SessionSync::save_session_attribute(const QString &a_session_name,
   delete sync;
 }
 
+void SessionSync::on_session_init(std::function<void ()> a_handler) {
+  d->m_on_session_init_func = a_handler;
+}
+
 void SessionSync::on_session_update(std::function<void()> a_handler) {
   d->m_on_session_update_func = a_handler;
+}
+
+void SessionSync::on_session_end(std::function<void ()> a_handler) {
+  d->m_on_session_end_func = a_handler;
 }

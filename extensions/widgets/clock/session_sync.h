@@ -51,7 +51,10 @@ public:
                                       const QString &a_object_key,
                                       const QString &a_key,
                                       const QString &a_value);
+
+  virtual void on_session_init(std::function<void ()> a_handler);
   virtual void on_session_update(std::function<void ()> a_handler);
+  virtual void on_session_end(std::function<void ()> a_handler);
 
 private:
   class PrivSessionSync;
