@@ -138,8 +138,6 @@ void ToolBar::tool_button_press_handler(const Widget *a_widget_ptr) {
   if (a_widget_ptr) {
     const ImageButton *button = qobject_cast<const ImageButton *>(a_widget_ptr);
     if (button) {
-      qDebug() << Q_FUNC_INFO << button->label();
-      Q_EMIT action(button->label());
 
       std::for_each(std::begin(d->m_action_handler_list),
                     std::end(d->m_action_handler_list),
