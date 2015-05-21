@@ -64,12 +64,16 @@ void ViewController::write_session_data(const std::string& a_session_name) {
                  key_name.end(),
                  key_name.begin(),
                  ::tolower);
+  key_name += "_id";
 
   std::for_each(std::begin(d->m_session_list),
                 std::end(d->m_session_list),
                 [&](UIKit::SessionSync* session_ref) {
     if (session_ref->is_purged())
       return;
+
+    if (session_ref->session_group_key().compare(key_name) != 0)
+        return;
 
     QuetzalKit::DataSync* sync = new QuetzalKit::DataSync(session_name);
     QuetzalKit::DiskSyncEngine* engine = new QuetzalKit::DiskSyncEngine();
