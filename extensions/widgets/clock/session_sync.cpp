@@ -24,6 +24,7 @@
 
 #include <QDebug>
 
+namespace UIKit {
 class SessionSync::PrivSessionSync {
 public:
   PrivSessionSync() : m_purged(0) {}
@@ -176,4 +177,5 @@ void SessionSync::on_session_update(std::function<void()> a_handler) {
 
 void SessionSync::on_session_end(std::function<void ()> a_handler) {
   d->m_on_session_end_func = a_handler;
+}
 }

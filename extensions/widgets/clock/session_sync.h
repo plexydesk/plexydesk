@@ -26,6 +26,7 @@
 #include <label.h>
 #include <clockwidget.h>
 
+namespace UIKit {
 class SessionSync {
 public:
   SessionSync(const QString &a_session_name, const QVariantMap &a_data = QVariantMap());
@@ -67,5 +68,5 @@ private:
   class PrivSessionSync;
   PrivSessionSync *const d;
 };
-
+}
 #endif // SESSIONSYNC_H

@@ -51,13 +51,13 @@ class Clock::PrivateClockController {
   void _start_clock_session(Clock* a_controller,
                             const QVariantMap& a_data,
                             bool a_restore = false);
-  void _create_clock_ui(Clock* a_controller, SessionSync* a_session);
+  void _create_clock_ui(Clock* a_controller, UIKit::SessionSync* a_session);
 
   UIKit::ActionList m_supported_action_list;
   int m_clock_activity_count;
   QString m_session_database_name;
 
-  QList<SessionSync*> m_session_list;
+  QList<UIKit::SessionSync*> m_session_list;
 };
 
 Clock::Clock(QObject* parent)
@@ -142,7 +142,7 @@ void Clock::submit_session_data(QuetzalKit::SyncObject* a_obj) {
 
   QString session_name = session_database_name();
 
-  foreach(SessionSync * session_ref, d->m_session_list) {
+  foreach(UIKit::SessionSync * session_ref, d->m_session_list) {
     if (session_ref->is_purged())
       continue;
 
@@ -222,7 +222,7 @@ void Clock::PrivateClockController::_start_clock_session(
     Clock* a_controller,
     const QVariantMap& a_data,
     bool a_restore) {
-  SessionSync* session_ref = new SessionSync("Clock", a_data);
+  UIKit::SessionSync* session_ref = new UIKit::SessionSync("Clock", a_data);
   session_ref->set_session_id(a_data["clock_id"].toInt());
 
   std::function<void()> bind_func =
@@ -242,7 +242,7 @@ void Clock::PrivateClockController::_start_clock_session(
 }
 
 void Clock::PrivateClockController::_create_clock_ui(Clock* a_controller,
-                                                     SessionSync* a_session) {
+                                                     UIKit::SessionSync* a_session) {
   float window_width = 248;
 
   UIKit::Window* m_clock_session_window = new UIKit::Window();
