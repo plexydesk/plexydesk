@@ -28,8 +28,8 @@
 
 class SessionSync {
 public:
-  SessionSync(const QVariantMap &a_data = QVariantMap());
-  ~SessionSync() {}
+  SessionSync(const QString &a_session_name, const QVariantMap &a_data = QVariantMap());
+  virtual ~SessionSync() {}
 
   virtual void session_init();
 
@@ -42,13 +42,20 @@ public:
 
   void set_session_id(int a_id);
   int session_id();
+  QString session_id_to_string() const;
 
   virtual void update_session();
 
-  virtual void delete_session_data(const QString &a_session_name, const QString &a_object_name, const QString &a_object_key);
+  virtual void bind_to_window(UIKit::Window *a_window);
+
+  virtual void delete_session_data(const QString &a_session_name,
+                                   const QString &a_object_name,
+                                   const QString &a_object_key,
+                                   const QString &a_value);
+
   virtual void save_session_attribute(const QString &a_session_name,
                                       const QString &a_object_name,
-                                      const QString &a_object_key,
+                                      const QString &a_object_key, const QString &a_object_value,
                                       const QString &a_key,
                                       const QString &a_value);
 

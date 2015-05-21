@@ -54,10 +54,7 @@ ClockUI::ClockUI(SessionSync *a_sync, UIKit::ViewController *a_ctr)
 
   m_clock_session_window->set_window_content(m_content_view);
 
-  m_session->on_session_update([&]() {
-    m_session->set_session_data("x", m_clock_session_window->pos().x());
-    m_session->set_session_data("y", m_clock_session_window->pos().y());
-  });
+  m_session->bind_to_window(m_clock_session_window);
 
   m_toolbar->on_item_activated([&](const QString &a_action) {
     if (a_action == "TimeZone") {
@@ -78,39 +75,15 @@ ClockUI::ClockUI(SessionSync *a_sync, UIKit::ViewController *a_ctr)
             return;
           }
 
-          m_session->save_session_attribute(db_name, "Clock", "clock_id",
+          m_session->save_session_attribute(db_name,
+                                            "Clock",
+                                            "clock_id",
+                                            QString("%1").arg(m_session->session_id()),
                                             "zone_id",
                                             a_data["zone_id"].toString());
         });
       }
     }
-  });
-
-  m_clock_session_window->on_window_closed([&](const UIKit::Window *a_window) {
-    QString db_name = m_session->session_data("database_name").toString();
-
-    m_session->purge();
-    if (db_name.isNull() || db_name.isEmpty()) {
-      qDebug() << Q_FUNC_INFO << "Null session database name";
-      return;
-    }
-
-    m_session->delete_session_data(db_name, "Clock", "clock_id");
-  });
-
-  m_clock_session_window->on_window_moved([&](const QPointF &a_pos) {
-    m_session->update_session();
-    QString db_name = m_session->session_data("database_name").toString();
-
-    if (db_name.isNull() || db_name.isEmpty()) {
-      qDebug() << Q_FUNC_INFO << "Null session database name";
-      return;
-    }
-
-    m_session->save_session_attribute(db_name, "Clock", "clock_id", "x",
-                                      m_session->session_data("x").toString());
-    m_session->save_session_attribute(db_name, "Clock", "clock_id", "y",
-                                      m_session->session_data("y").toString());
   });
 
   if (m_controller && m_controller->viewport()) {

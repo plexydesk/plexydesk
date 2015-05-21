@@ -214,7 +214,7 @@ void Clock::PrivateClockController::_new_session(Clock *a_controller) {
   session_args["y"] = window_location.y();
   session_args["database_name"] = m_session_database_name;
 
-  SessionSync *session_ref = new SessionSync(session_args);
+  SessionSync *session_ref = new SessionSync("Clock", session_args);
   session_ref->set_session_id(m_session_list.count());
 
   ClockUI *clock = new ClockUI(session_ref, a_controller);
@@ -237,7 +237,7 @@ void Clock::PrivateClockController::_restore_session(Clock *a_controller,
   session_args["zone_id"] = a_data["zone_id"];
   session_args["database_name"] = m_session_database_name;
 
-  SessionSync *session_ref = new SessionSync(session_args);
+  SessionSync *session_ref = new SessionSync("Clock", session_args);
   session_ref->set_session_id(a_data["clock_id"].toInt());
 
   ClockUI *clock = new ClockUI(session_ref, a_controller);
