@@ -91,6 +91,7 @@ set(LIBRARY_SOURCE_FILES
     plexyconfig.cpp
     window.cpp
     workspace.cpp
+    session_sync.cpp
     space.cpp
     ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
     ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
@@ -125,6 +126,7 @@ set(LIBRARY_HEADER_FILES
     components/rangewidget.h
     components/model_view_item.h
     workspace.h
+    session_sync.h
     space.h
     ${CORE_LIBRARY_HEADER_FILES}
     ${CORE_LIBRARY_INTERFACE_FILES}
