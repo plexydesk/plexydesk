@@ -11,7 +11,7 @@ public:
   unsigned int m_action_id;
   std::string m_action_name;
   std::string m_action_icon;
-  bool m_action_visibility;
+  bool m_action_visibility;  
 };
 
 ControllerAction::ControllerAction() : d(new PrivateControllerAction) {}
