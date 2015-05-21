@@ -367,7 +367,12 @@ QString Space::PrivateSpace::sessionNameForController(
 }
 
 QString Space::session_name() const {
-  return m_priv_impl->sessionNameForSpace();
+    return m_priv_impl->sessionNameForSpace();
+}
+
+QString Space::session_name_for_controller(
+        const QString &a_controller_name) {
+    return m_priv_impl->sessionNameForController(a_controller_name);
 }
 
 void Space::clear() {

@@ -56,6 +56,7 @@ public:
   virtual QRectF geometry() const;
 
   QString session_name() const;
+  QString session_name_for_controller(const QString &a_controller_name);
   virtual void update_session_value(const QString &a_controller_name,
                                     const QString &a_key,
                                     const QString &a_value);
