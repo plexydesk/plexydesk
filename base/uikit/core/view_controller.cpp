@@ -2,6 +2,10 @@
 #include <extensionmanager.h>
 #include <QDebug>
 
+#include <datasync.h>
+#include <disksyncengine.h>
+#include <session_sync.h>
+
 namespace UIKit {
 
 class ViewController::PrivateViewControllerPlugin {
@@ -12,11 +16,87 @@ class ViewController::PrivateViewControllerPlugin {
   QSharedPointer<DataSource> m_data_source;
   Space* m_viewport;
   QString m_name;
+
+  std::vector<SessionSync*> m_session_list;
 };
 
 ViewController::ViewController(QObject* parent)
     : QObject(parent), d(new PrivateViewControllerPlugin) {
   d->m_viewport = 0;
+}
+
+void ViewController::revoke_previous_session(
+    const std::string& a_session_object_name,
+    std::function<void(ViewController*, SessionSync*)> a_callback) {
+  QuetzalKit::DataSync* sync =
+      new QuetzalKit::DataSync(session_database_name(a_session_object_name));
+  QuetzalKit::DiskSyncEngine* engine = new QuetzalKit::DiskSyncEngine();
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](QuetzalKit::SyncObject& a_object,
+                            const std::string& a_app_name,
+                            bool a_found) {
+    if (a_found) {
+      QVariantMap session_data;
+
+      Q_FOREACH(const QString & a_key, a_object.attributes()) {
+        session_data[a_key] = a_object.attributeValue(a_key);
+      }
+
+      start_session(
+          a_session_object_name,
+          session_data,
+          true,
+          [&](ViewController* a_controller, UIKit::SessionSync* a_session) {
+            a_callback(a_controller, a_session);
+          });
+    }
+  });
+
+  sync->find(a_session_object_name, "", "");
+  delete sync;
+}
+
+void ViewController::write_session_data(const std::string& a_session_name) {
+  std::string session_name = session_database_name(a_session_name);
+  std::string key_name = a_session_name;
+  std::transform(key_name.begin(),
+                 key_name.end(),
+                 key_name.begin(),
+                 ::tolower);
+
+  std::for_each(std::begin(d->m_session_list),
+                std::end(d->m_session_list),
+                [&](UIKit::SessionSync* session_ref) {
+    if (session_ref->is_purged())
+      return;
+
+    QuetzalKit::DataSync* sync = new QuetzalKit::DataSync(session_name);
+    QuetzalKit::DiskSyncEngine* engine = new QuetzalKit::DiskSyncEngine();
+    sync->set_sync_engine(engine);
+
+    session_ref->update_session();
+    QuetzalKit::SyncObject clock_session_obj;
+
+    clock_session_obj.setName(QString::fromStdString(a_session_name));
+    Q_FOREACH(const QString & a_key, session_ref->session_keys()) {
+      clock_session_obj.setObjectAttribute(a_key,
+                                           session_ref->session_data(a_key));
+    }
+
+    sync->on_object_found([&](QuetzalKit::SyncObject& a_object,
+                              const std::string& a_app_name,
+                              bool a_found) {
+      if (!a_found) {
+        sync->add_object(clock_session_obj);
+      } else {
+        sync->save_object(clock_session_obj);
+      }
+    });
+
+    sync->find(a_session_name, key_name, session_ref->session_id_to_string());
+    delete sync;
+  });
 }
 
 ViewController::~ViewController() { delete d; }
@@ -27,12 +107,48 @@ void ViewController::set_viewport(Space* a_view_ptr) {
 
 Space* ViewController::viewport() const { return d->m_viewport; }
 
+void ViewController::start_session(
+    const std::string& a_session_name,
+    const QVariantMap& a_data,
+    bool a_restore,
+    std::function<void(ViewController*, SessionSync*)> a_callback) {
+  UIKit::SessionSync* session_ref =
+      new UIKit::SessionSync(a_session_name, a_data);
+  session_ref->set_session_id(
+      a_data[QString::fromStdString(a_session_name).toLower() + "_id"].toInt());
+
+  d->m_session_list.push_back(session_ref);
+
+  std::function<void()> on_session_callback =
+      std::bind(a_callback, this, session_ref);
+
+  session_ref->on_session_init(on_session_callback);
+
+  session_ref->session_init();
+  if (viewport() && a_restore == false) {
+    viewport()->update_session_value(controller_name(), "", "");
+  }
+}
+
+std::string ViewController::session_database_name(
+    const std::string& a_session_name) const {
+  std::string key_name = a_session_name;
+  std::transform(key_name.begin(),
+                 key_name.end(),
+                 key_name.begin(),
+                 ::tolower);
+
+  std::string session_db_name =
+      d->m_viewport->session_name_for_controller(controller_name())
+          .toStdString() +
+      "_org." + key_name + ".data";
+  return session_db_name;
+}
+
 ActionList ViewController::actions() const { return ActionList(); }
 
 void ViewController::request_action(const QString& /*actionName*/,
-                                    const QVariantMap& /*args*/) {
-  // Q_EMIT actionComleted("none", false, QString("Invalid Action"));
-}
+                                    const QVariantMap& /*args*/) {}
 
 void ViewController::handle_drop_event(Widget* /*widget*/,
                                        QDropEvent* /*event*/) {}

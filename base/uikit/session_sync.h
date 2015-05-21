@@ -29,7 +29,8 @@
 namespace UIKit {
 class SessionSync {
 public:
-  SessionSync(const QString &a_session_name, const QVariantMap &a_data = QVariantMap());
+  SessionSync(const std::string &a_session_name,
+              const QVariantMap &a_data = QVariantMap());
   virtual ~SessionSync() {}
 
   virtual void session_init();
@@ -43,27 +44,28 @@ public:
 
   void set_session_id(int a_id);
   int session_id();
-  QString session_id_to_string() const;
+  std::string session_id_to_string() const;
 
   virtual void update_session();
 
   virtual void bind_to_window(UIKit::Window *a_window);
 
-  virtual void delete_session_data(const QString &a_session_name,
-                                   const QString &a_object_name,
-                                   const QString &a_object_key,
-                                   const QString &a_value);
+  virtual void delete_session_data(const std::string &a_session_name,
+                                   const std::string &a_object_name,
+                                   const std::string &a_object_key,
+                                   const std::string &a_value);
 
-  virtual void save_session_attribute(const QString &a_session_name,
-                                      const QString &a_object_name,
-                                      const QString &a_object_key, const QString &a_object_value,
-                                      const QString &a_key,
-                                      const QString &a_value);
+  virtual void save_session_attribute(const std::string &a_session_name,
+                                      const std::string &a_object_name,
+                                      const std::string &a_object_key, const std::string &a_object_value,
+                                      const std::string &a_key,
+                                      const std::string &a_value);
 
   virtual void on_session_init(std::function<void ()> a_handler);
   virtual void on_session_update(std::function<void ()> a_handler);
   virtual void on_session_end(std::function<void ()> a_handler);
 
+  std::string session_group_key() const;
 private:
   class PrivSessionSync;
   PrivSessionSync *const d;

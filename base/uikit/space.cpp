@@ -135,7 +135,8 @@ void Space::update_session_value(const QString &a_controller_name,
     }
 
     controller(a_controller_name)->submit_session_data(&a_object);
-                qDebug() << Q_FUNC_INFO << "session data submitted";
+    a_object.sync();
+
   });
 
   sync->find("AppSession", "", "");

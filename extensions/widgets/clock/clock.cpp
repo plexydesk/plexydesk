@@ -25,6 +25,7 @@
 // uikit
 #include <view_controller.h>
 #include <extensionmanager.h>
+#include <session_sync.h>
 #include <toolbar.h>
 #include <space.h>
 
@@ -37,9 +38,6 @@
 #include <QAction>
 #include <label.h>
 
-//
-#include "session_sync.h"
-
 class Clock::PrivateClockController {
  public:
   PrivateClockController() : m_clock_activity_count(0) {}
@@ -48,9 +46,6 @@ class Clock::PrivateClockController {
     m_session_list.clear();
   }
 
-  void _start_clock_session(Clock* a_controller,
-                            const QVariantMap& a_data,
-                            bool a_restore = false);
   void _create_clock_ui(Clock* a_controller, UIKit::SessionSync* a_session);
 
   UIKit::ActionList m_supported_action_list;
@@ -91,91 +86,18 @@ void Clock::init() {
 
 void Clock::set_view_rect(const QRectF& rect) {}
 
-QString Clock::session_database_name() {
-  UIKit::Space* view = viewport();
-  QString session_name = view->session_name_for_controller(controller_name()) +
-                         "_org." + controller_name() + ".data";
-
-  return session_name;
-}
-
-void Clock::revoke_previous_session(
-    const std::string& a_session_object_name,
-    std::function<void(const QVariantMap&)> a_callback) {
-
-  QuetzalKit::DataSync* sync =
-      new QuetzalKit::DataSync(session_database_name().toStdString());
-  QuetzalKit::DiskSyncEngine* engine = new QuetzalKit::DiskSyncEngine();
-  sync->set_sync_engine(engine);
-
-  sync->on_object_found([&](QuetzalKit::SyncObject& a_object,
-                            const std::string& a_app_name,
-                            bool a_found) {
-    if (a_found) {
-      QVariantMap session_data;
-
-      Q_FOREACH(const QString & a_key, a_object.attributes()) {
-        session_data[a_key] = a_object.attributeValue(a_key);
-      }
-
-      if (a_callback)
-        a_callback(session_data);
-    }
-  });
-
-  sync->find(a_session_object_name, "", "");
-  delete sync;
-}
-
 void Clock::session_data_available(
     const QuetzalKit::SyncObject& a_session_root) {
-  revoke_previous_session("Clock", [this](const QVariantMap& a_session_data) {
-    d->_start_clock_session(this, a_session_data, true);
+  revoke_previous_session("Clock",
+                          [this](UIKit::ViewController* a_controller,
+                                 UIKit::SessionSync* a_session) {
+    d->_create_clock_ui((Clock*)a_controller, a_session);
   });
 }
 
 void Clock::submit_session_data(QuetzalKit::SyncObject* a_obj) {
-  if (!a_obj)
-    return;
-
-  a_obj->setObjectAttribute("count", d->m_session_list.count());
-
-  QString session_name = session_database_name();
-
-  foreach(UIKit::SessionSync * session_ref, d->m_session_list) {
-    if (session_ref->is_purged())
-      continue;
-
-    QuetzalKit::DataSync* sync =
-        new QuetzalKit::DataSync(session_name.toStdString());
-    QuetzalKit::DiskSyncEngine* engine = new QuetzalKit::DiskSyncEngine();
-    sync->set_sync_engine(engine);
-
-    session_ref->update_session();
-    QuetzalKit::SyncObject clock_session_obj;
-
-    clock_session_obj.setName("Clock");
-    Q_FOREACH(const QString & a_key, session_ref->session_keys()) {
-      clock_session_obj.setObjectAttribute(a_key,
-                                           session_ref->session_data(a_key));
-    }
-
-    sync->on_object_found([&](QuetzalKit::SyncObject& a_object,
-                              const std::string& a_app_name,
-                              bool a_found) {
-      if (!a_found) {
-        sync->add_object(clock_session_obj);
-      } else {
-        sync->save_object(clock_session_obj);
-      }
-    });
-
-    sync->find(
-        "Clock", "clock_id", session_ref->session_id_to_string().toStdString());
-    delete sync;
-  }
-
-  a_obj->sync();
+  write_session_data("Clock");
+  write_session_data("Timer");
 }
 
 bool Clock::remove_widget(UIKit::Widget* widget) {
@@ -187,20 +109,12 @@ bool Clock::remove_widget(UIKit::Widget* widget) {
 
 UIKit::ActionList Clock::actions() const { return d->m_supported_action_list; }
 
-void Clock::sync_session() {
-  if (viewport()) {
-    viewport()->update_session_value(controller_name(), "", "");
-    qDebug() << Q_FUNC_INFO;
-  }
-}
-
 void Clock::request_action(const QString& actionName, const QVariantMap& args) {
   if (actionName == tr("Clock")) {
     QPointF window_location;
 
     if (viewport()) {
       window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
-      ;
     }
 
     QVariantMap session_args;
@@ -208,9 +122,16 @@ void Clock::request_action(const QString& actionName, const QVariantMap& args) {
     session_args["x"] = window_location.x();
     session_args["y"] = window_location.y();
     session_args["clock_id"] = d->m_session_list.count();
-    session_args["database_name"] = session_database_name();
+    session_args["database_name"] =
+        QString::fromStdString(session_database_name("clock"));
 
-    d->_start_clock_session(this, session_args, false);
+    start_session("Clock",
+                  session_args,
+                  false,
+                  [this](UIKit::ViewController* a_controller,
+                         UIKit::SessionSync* a_session) {
+      d->_create_clock_ui((Clock*)a_controller, a_session);
+    });
   }
 }
 
@@ -218,31 +139,9 @@ QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
 
 void Clock::onDataUpdated(const QVariantMap& data) {}
 
-void Clock::PrivateClockController::_start_clock_session(
+void Clock::PrivateClockController::_create_clock_ui(
     Clock* a_controller,
-    const QVariantMap& a_data,
-    bool a_restore) {
-  UIKit::SessionSync* session_ref = new UIKit::SessionSync("Clock", a_data);
-  session_ref->set_session_id(a_data["clock_id"].toInt());
-
-  std::function<void()> bind_func =
-      std::bind(&Clock::PrivateClockController::_create_clock_ui,
-                this,
-                a_controller,
-                session_ref);
-  session_ref->on_session_init(bind_func);
-
-  m_session_list << (session_ref);
-  session_ref->session_init();
-
-  if (a_controller->viewport() && a_restore == false) {
-    a_controller->viewport()->update_session_value(
-        a_controller->controller_name(), "", "");
-  }
-}
-
-void Clock::PrivateClockController::_create_clock_ui(Clock* a_controller,
-                                                     UIKit::SessionSync* a_session) {
+    UIKit::SessionSync* a_session) {
   float window_width = 248;
 
   UIKit::Window* m_clock_session_window = new UIKit::Window();
@@ -292,20 +191,15 @@ void Clock::PrivateClockController::_create_clock_ui(Clock* a_controller,
           m_clock_widget->set_timezone_id(a_data["zone_id"].toByteArray());
           m_timezone_label->set_label(a_data["zone_id"].toString());
 
-          QString db_name = a_session->session_data("database_name").toString();
-
-          if (db_name.isNull() || db_name.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Failed to save timezone";
-            return;
-          }
+          std::string zone_id(a_data["zone_id"].toByteArray().data());
 
           a_session->save_session_attribute(
-              db_name,
+              a_controller->session_database_name("clock"),
               "Clock",
               "clock_id",
-              QString("%1").arg(a_session->session_id()),
+              a_session->session_id_to_string(),
               "zone_id",
-              a_data["zone_id"].toString());
+              zone_id);
         });
       }
     }

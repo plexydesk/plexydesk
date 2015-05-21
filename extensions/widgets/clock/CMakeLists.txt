@@ -6,14 +6,12 @@ SET(clocksourceFiles
     clock.cpp
     clockwidget.cpp
     clockinterface.cpp
-    session_sync.cpp
     )
 
 SET(headerFiles
     clock.h
     clockwidget.h
     clockinterface.h
-    session_sync.h
     )
 
 SET(sourceFiles

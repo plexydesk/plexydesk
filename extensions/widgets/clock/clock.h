@@ -50,12 +50,7 @@ public:
 
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
-  void sync_session();
-  QString session_database_name();
-  void revoke_previous_session(const std::string &a_session_object_name,
-                               std::function<void (const QVariantMap &)> a_callback);
-  public
-Q_SLOTS:
+public Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:
