@@ -47,7 +47,10 @@ SessionSync::SessionSync(const QString &a_session_name,
   d->m_session_group_name = a_session_name;
 }
 
-void SessionSync::session_init() {}
+void SessionSync::session_init() {
+    if (d->m_on_session_init_func)
+        d->m_on_session_init_func();
+}
 
 void SessionSync::set_session_data(const QString &a_key,
                                    const QVariant &a_data) {
