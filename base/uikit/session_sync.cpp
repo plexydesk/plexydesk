@@ -174,7 +174,12 @@ void SessionSync::save_session_attribute(const std::string& a_session_name,
                                   QString::fromStdString(a_value));
       sync->save_object(a_object);
     } else {
-      qWarning() << Q_FUNC_INFO << "Object Not Found";
+      qWarning() << Q_FUNC_INFO << "Object Not Found"
+                    << "Key :" << QString::fromStdString(a_object_key)
+                    <<" Value :" << QString::fromStdString(a_object_value)
+                    <<" In Session :" << QString::fromStdString(a_session_name)
+                    <<" Of Object :" << QString::fromStdString(a_object_name)
+                    ;
     }
   });
 

@@ -103,6 +103,10 @@ void ViewController::write_session_data(const std::string& a_session_name) {
   });
 }
 
+int ViewController::session_count() {
+   return d->m_session_list.size();
+}
+
 ViewController::~ViewController() { delete d; }
 
 void ViewController::set_viewport(Space* a_view_ptr) {
