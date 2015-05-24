@@ -181,6 +181,7 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
       const std::string& a_session_object_name,
       std::function<void (ViewController*, SessionSync*)> a_callback);
   virtual void write_session_data(const std::string &a_session_name);
+  virtual int session_count();
 
   /**
       * @brief
