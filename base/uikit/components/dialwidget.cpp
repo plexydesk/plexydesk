@@ -1,11 +1,15 @@
 #include "dialwidget.h"
 
 #include <QDebug>
+#include <themepackloader.h>
+#include <iostream>
+
+#define PI 3.14159258
 
 namespace UIKit {
 class DialWidget::PrivateDialWidget {
-public:
-  PrivateDialWidget() {}
+ public:
+  PrivateDialWidget() : m_is_set(0), m_is_pressed(0) {}
   ~PrivateDialWidget() {}
 
   QString convertAngleToTimeString(float angle);
@@ -19,20 +23,23 @@ public:
   QPointF mInitPos;
 
   int mProgressValue;
+  bool m_is_set;
+  bool m_is_pressed;
 };
 
-DialWidget::DialWidget(QGraphicsObject *parent)
+DialWidget::DialWidget(QGraphicsObject* parent)
     : UIKit::Widget(parent), d(new PrivateDialWidget) {
-  this->set_widget_flag(UIKit::Widget::kRenderBackground);
-  this->set_widget_flag(UIKit::Widget::kConvertToWindowType, false);
-  this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
-  this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->setFlag(QGraphicsItem::ItemIsSelectable, true);
+  set_widget_flag(UIKit::Widget::kRenderBackground, false);
+  set_widget_flag(UIKit::Widget::kConvertToWindowType, false);
+  set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
 
-  d->mAngle = 270;
+  setFlag(QGraphicsItem::ItemIsMovable, false);
+  setFlag(QGraphicsItem::ItemIsSelectable, true);
+
+  d->mAngle = 0;
   d->mMaxAngle = 360;
   d->mProgressValue = 0;
-  d->mStartAngle = 270;
+  d->mStartAngle = 0;
   d->mMaxValue = 24;
 }
 
@@ -44,19 +51,31 @@ float DialWidget::maxValue() const { return d->mMaxValue; }
 
 float DialWidget::currentValue() const { return d->mProgressValue; }
 
-void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
+void DialWidget::reset() {
+  d->mAngle = 0;
+  d->mMaxAngle = 360;
+  d->mProgressValue = 0;
+  d->mStartAngle = 0;
+  d->mMaxValue = 24;
+  d->m_is_set = 0;
+  update();
+}
+
+void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent* event) {
   qDebug() << Q_FUNC_INFO << event->pos();
 }
 
-void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent* event) {
   d->mInitPos = mapToScene(event->pos());
   event->accept();
   QGraphicsItem::mousePressEvent(event);
+  d->m_is_set = 1;
 }
 
-void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
   event->accept();
   // QGraphicsItem::mouseReleaseEvent(event);
+  d->m_is_pressed = 0;
 }
 
 void DialWidget::PrivateDialWidget::calculateValue() {
@@ -90,112 +109,75 @@ QString DialWidget::PrivateDialWidget::convertAngleToTimeString(float angle) {
 
   float minutes = ((int)angle % (int)15) / 0.25;
 
-  return QString("%1:%2").arg(hours).arg(minutes); // time;
+  return QString("%1:%2").arg(hours).arg(minutes);  // time;
 }
 
-void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-  QPointF pos = mapToScene(event->pos());
+static double angle_to(QLineF line1, QLineF line2) {
+  // found on code-guru forum- thread 137249
+  // calculate the angle between the line from p1 to p2
+  // and the line from p3 to p4
+  //
+  // uses the theorem :
+  //
+  // given directional vectors v = ai + bj and w = ci + di
+  //
+  // then cos(angle) = (ac + bd) / ( |v| * |w| )
+  //
+  double a = (float)line1.p1().x() - line1.p2().x();
+  double b = (float)line1.p1().y() - line1.p2().y();
+  double c = (float)line2.p1().x() - line2.p2().x();
+  double d = (float)line2.p1().y() - line2.p2().y();
 
-  QLineF line(boundingRect().center(), event->pos());
+  double cos_angle, angle;
+  double mag_v1 = sqrt(a * a + b * b);
+  double mag_v2 = sqrt(c * c + d * d);
 
-  d->mAngle = line.angle(QLineF(0.0, 0.0, 1.0, 0.0));
+  cos_angle = (a * c + b * d) / (mag_v1 * mag_v2);
+  angle = acos(cos_angle);
+  angle = angle * 180.0 / PI;
 
-  if (line.dy() < 0) {
-    d->mAngle = d->mMaxAngle - d->mAngle;
+  return angle;
+}
+
+void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
+  d->mInitPos = event->pos();
+  QLineF line(boundingRect().center(), d->mInitPos);
+  QLineF base_line(boundingRect().width() / 2,
+                   0.0,
+                   boundingRect().center().x(),
+                   boundingRect().center().y());
+  d->mAngle = angle_to(line, base_line) - 180;
+  d->m_is_pressed = 1;
+  update();
+}
+
+void DialWidget::paint_view(QPainter* painter, const QRectF& rect) {
+  QRectF r(rect.x() + 16, rect.y() + 16, rect.width() - 32, rect.height() - 32);
+  double angle = d->mAngle;
+
+  if (d->mInitPos.x() < (boundingRect().width() / 2)) {
+    angle = 360 + d->mAngle;
   }
 
-  d->mInitPos = pos;
+  double angle_percent = (std::abs(angle) / d->mMaxAngle);
+  if (d->m_is_set)
+     d->mProgressValue = angle_percent * d->mMaxValue;
 
-  d->calculateValue();
+  StyleFeatures feature;
 
-  update();
+  feature.geometry = r;
+  feature.render_state = StyleFeatures::kRenderElement;
+  if (d->m_is_set)
+      feature.render_state = StyleFeatures::kRenderRaised;
+  if (d->m_is_pressed)
+      feature.render_state = StyleFeatures::kRenderPressed;
 
-  Q_EMIT value(d->mProgressValue);
-}
+  feature.attributes["angle"] = angle_percent;
+  feature.attributes["max_value"] = d->mMaxValue;
+  feature.text_data = QString("%1").arg(d->mProgressValue);
 
-void DialWidget::paint_view(QPainter *painter, const QRectF &rect) {
-  QPen pen;
-  pen.setColor(QColor("#F28585"));
-  pen.setWidth(4);
-  painter->setPen(pen);
-
-  painter->setRenderHint(QPainter::Antialiasing);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing);
-
-  QRectF handle(this->boundingRect().center().x() - 5,
-                this->boundingRect().center().y() - 5, 10, 10);
-  QRectF borderRect(boundingRect().x() + 24, boundingRect().y() + 24,
-                    boundingRect().width() - 48, boundingRect().height() - 48);
-
-  painter->save();
-  QPen pen_border;
-  pen_border.setColor(QColor(181, 181, 181));
-  pen_border.setWidth(4);
-  painter->setPen(pen_border);
-
-  painter->drawEllipse(borderRect);
-
-  painter->restore();
-
-  QPainterPath clockInisde;
-  clockInisde.addEllipse(QRectF(borderRect.x() + 2, borderRect.y() + 2,
-                                borderRect.width() - 4,
-                                borderRect.height() - 4));
-
-  // painter->fillPath(clockInisde, QColor("#F28585"));
-  painter->fillPath(clockInisde, QColor("#f0f0f0"));
-
-  QFont font = painter->font();
-  font.setBold(true);
-  font.setPixelSize(32);
-  painter->save();
-  painter->setFont(font);
-  // painter->drawText(borderRect, Qt::AlignCenter,
-  // d->convertAngleToTimeString(d->mAngle));
-  painter->restore();
-
-  painter->save();
-  QTransform xform;
-  QPointF transPos = this->boundingRect().center();
-  xform.translate(transPos.x(), transPos.y());
-  xform.rotate(d->mAngle);
-  xform.translate(-transPos.x(), -transPos.y());
-
-  painter->setTransform(xform);
-
-  QLineF line(handle.center(), QPointF(boundingRect().width() - 48,
-                                       (boundingRect().height() / 2) - 48));
-  //
-  QRectF ctrRect(line.x2(), line.y2(), 10, 10);
-  QRectF ctrFrameRect(line.x2(), line.y2(), 32, 32);
-  QPainterPath path;
-  path.addEllipse(ctrFrameRect);
-  painter->fillPath(path, QColor(Qt::white));
-  painter->fillPath(path, QColor(81, 81, 81));
-
-  QPen whitePen;
-  whitePen.setColor(Qt::white);
-  painter->setPen(whitePen);
-  painter->drawText(ctrFrameRect, Qt::AlignCenter,
-                    QString("%1").arg((int)d->mProgressValue));
-
-  painter->restore();
-
-  /*
-  painter->save();
-  QPen whitePen;
-  whitePen.setColor(Qt::white);
-  painter->setPen(whitePen);
-
-  QTransform yform;
-  transPos = this->boundingRect().center();
-  yform.translate(transPos.x(), transPos.y());
-  yform.rotate(d->mAngle + 10);
-  yform.translate(-transPos.x(), -transPos.y());
-  painter->setTransform(yform);
-  painter->drawText(ctrFrameRect, Qt::AlignCenter,
-  QString("%1").arg((int)d->mProgressValue));
-  painter->restore();
-  */
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("knob", feature, painter);
+  }
 }
 }

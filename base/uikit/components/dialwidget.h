@@ -15,10 +15,10 @@ public:
   virtual ~DialWidget();
 
   virtual void setMaxValue(float maxValue);
-
   virtual float maxValue() const;
 
   virtual float currentValue() const;
+  virtual void reset();
 
 Q_SIGNALS:
   void value(float value);

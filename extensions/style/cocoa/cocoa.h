@@ -46,6 +46,11 @@ public:
                          QPointF current_marker_location,
                          QPointF _transPos,
                          QPointF current_marker_location_for_min);
+  void draw_range_marker(QRectF rect, QTransform _xform_hour,
+                         QPainter *p, double mark_start,
+                         double mark_end, QPen current_dot_min_pen,
+                         QPointF current_marker_location, QPointF _transPos,
+                         QPointF current_marker_location_for_min);
 protected:
   QVariantMap attribute_map(const QString &type) const;
   virtual QVariantMap color_scheme_map() const;
@@ -57,8 +62,10 @@ private:
   void drawPushButton(const StyleFeatures &features, QPainter *painter);
   void drawWindowButton(const StyleFeatures &features, QPainter *painter);
   void drawFrame(const StyleFeatures &features, QPainter *painter);
-  void draw_clock_hands(QPainter *p, QRectF rect, int factor, float angle, QColor hand_color, int thikness);
+  void draw_clock_hands(QPainter *p, QRectF rect, int factor, float angle,
+                        QColor hand_color, int thikness);
   void drawClock(const StyleFeatures &features, QPainter *painter);
+  void draw_knob(const StyleFeatures &features, QPainter *painter);
   void drawPushButtonText(const StyleFeatures &features, const QString &text,
                           QPainter *painter);
   void drawLineEdit(const StyleFeatures &features, QPainter *painter);

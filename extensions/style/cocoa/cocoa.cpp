@@ -24,28 +24,29 @@
 
 #include <cmath>
 
-//for the clock
-int angle_between_hands(double h, double m)
-{
-    // validate the input
-    if (h <0 || m < 0 || h >12 || m > 60)
-        printf("Wrong input");
+// for the clock
+int angle_between_hands(double h, double m) {
+  // validate the input
+  if (h < 0 || m < 0 || h > 12 || m > 60)
+    printf("Wrong input");
 
-    if (h == 12) h = 0;
-    if (m == 60) m = 0;
+  if (h == 12)
+    h = 0;
+  if (m == 60)
+    m = 0;
 
-    // Calculate the angles moved by hour and minute hands
-    // with reference to 12:00
-    int hour_angle = 0.5 * (h*60 + m);
-    int minute_angle = 6*m;
+  // Calculate the angles moved by hour and minute hands
+  // with reference to 12:00
+  int hour_angle = 0.5 * (h * 60 + m);
+  int minute_angle = 6 * m;
 
-    // Find the difference between two angles
-    int angle = abs(hour_angle - minute_angle);
+  // Find the difference between two angles
+  int angle = abs(hour_angle - minute_angle);
 
-    // Return the smaller angle of two possible angles
-    angle = std::min(360 - angle, angle);
+  // Return the smaller angle of two possible angles
+  angle = std::min(360 - angle, angle);
 
-    return angle;
+  return angle;
 }
 
 class CocoaStyle::PrivateCocoa {
@@ -58,8 +59,7 @@ public:
   QVariantMap m_color_map;
 };
 
-void CocoaStyle::load_default_widget_style_properties()
-{
+void CocoaStyle::load_default_widget_style_properties() {
   d->m_type_map["button"] = 1;
   d->m_type_map["vertical_list_item"] = 2;
   d->m_type_map["window_button"] = 3;
@@ -115,7 +115,6 @@ void CocoaStyle::load_default_widget_style_properties()
   d->m_attribute_map["frame"] = _frame_attributes;
   d->m_attribute_map["widget"] = _widget_attributes;
   d->m_attribute_map["size"] = _size_attributes;
-
 }
 
 CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
@@ -152,39 +151,40 @@ QVariantMap CocoaStyle::attribute_map(const QString &type) const {
   return d->m_attribute_map[type].toMap();
 }
 
-QVariantMap CocoaStyle::color_scheme_map() const {
-  return d->m_color_map;
-}
+QVariantMap CocoaStyle::color_scheme_map() const { return d->m_color_map; }
 
 void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
                       QPainter *painter, const Widget *aWidget) {
   switch (d->m_type_map[type]) {
-    case 1:
-      drawPushButton(options, painter);
-      break;
-    case 2:
-      drawVListItem(options, painter);
-      break;
-    case 3:
-      drawWindowButton(options, painter);
-      break;
-    case 6:
-      drawLineEdit(options, painter);
-      break;
-    case 9:
-      drawLabel(options, painter, aWidget);
-      break;
-    case 10:
-      drawClock(options, painter);
-      break;
-    case 19:
-      drawProgressBar(options, painter);
-      break;
-    case 21:
-      drawFrame(options, painter);
-      break;
-    default:
-      qWarning() << Q_FUNC_INFO << "Unknown Element:" << type;
+  case 1:
+    drawPushButton(options, painter);
+    break;
+  case 2:
+    drawVListItem(options, painter);
+    break;
+  case 3:
+    drawWindowButton(options, painter);
+    break;
+  case 6:
+    drawLineEdit(options, painter);
+    break;
+  case 9:
+    drawLabel(options, painter, aWidget);
+    break;
+  case 10:
+    drawClock(options, painter);
+    break;
+  case 13:
+    draw_knob(options, painter);
+    break;
+  case 19:
+    drawProgressBar(options, painter);
+    break;
+  case 21:
+    drawFrame(options, painter);
+    break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Unknown Element:" << type;
   }
 }
 
@@ -201,23 +201,21 @@ void CocoaStyle::drawPushButton(const StyleFeatures &features,
   backgroundPath.addRoundedRect(rect, 0.0, 0.0);
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
-    painter->fillPath(backgroundPath, QColor(
-                        color("primary_background")));
-    QPen pen(QColor(color("primary_forground")),
-             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    painter->fillPath(backgroundPath, QColor(color("primary_background")));
+    QPen pen(QColor(color("primary_forground")), 1, Qt::SolidLine, Qt::RoundCap,
+             Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   } else if (features.render_state == StyleFeatures::kRenderRaised) {
-    painter->fillPath(backgroundPath, QColor(
-                        color("soft_background")));
-    QPen pen(QColor(color("soft_forground")),
-             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    painter->fillPath(backgroundPath, QColor(color("soft_background")));
+    QPen pen(QColor(color("soft_forground")), 1, Qt::SolidLine, Qt::RoundCap,
+             Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   } else {
     painter->fillPath(backgroundPath, QColor(color("base_background")));
-    QPen pen(QColor(color("base_forground")),
-             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    QPen pen(QColor(color("base_forground")), 1, Qt::SolidLine, Qt::RoundCap,
+             Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   }
@@ -238,17 +236,14 @@ void CocoaStyle::drawWindowButton(const StyleFeatures &features,
   background.addRoundedRect(rect, 4.0, 4.0);
 
   if (features.render_state == StyleFeatures::kRenderElement) {
-    painter->fillPath(background, QColor(
-                        color("accent_base_highlight")));
+    painter->fillPath(background, QColor(color("accent_base_highlight")));
   } else {
-    painter->fillPath(background, QColor(
-                        color("accent_base_highlight")));
+    painter->fillPath(background, QColor(color("accent_base_highlight")));
   }
 
   painter->save();
-  QPen white_pen(QColor(
-                   color("accent_primary_forground")),
-                 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  QPen white_pen(QColor(color("accent_primary_forground")), 2, Qt::SolidLine,
+                 Qt::RoundCap, Qt::RoundJoin);
   painter->setPen(white_pen);
   QRectF cross_rect(6.0, 6.0, rect.width() - 12, rect.height() - 12);
 
@@ -280,7 +275,8 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     QLinearGradient _seperator_line_grad(_window_title_rect.bottomLeft(),
                                          _window_title_rect.bottomRight());
     _seperator_line_grad.setColorAt(0.0, QColor(color("primary_background")));
-    _seperator_line_grad.setColorAt(0.5, QColor(color("accent_primary_forground")));
+    _seperator_line_grad.setColorAt(0.5,
+                                    QColor(color("accent_primary_forground")));
     _seperator_line_grad.setColorAt(1.0, QColor(color("primary_background")));
 
     QPen linePen = QPen(_seperator_line_grad, 1, Qt::SolidLine, Qt::RoundCap,
@@ -295,9 +291,8 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     QTextOption option;
     option.setAlignment(Qt::AlignCenter);
 
-    QPen _title_font_pen =
-        QPen(QColor(color("primary_forground")),
-             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    QPen _title_font_pen = QPen(QColor(color("primary_forground")), 1,
+                                Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(_title_font_pen);
 
     painter->drawText(_window_title_rect, features.text_data, option);
@@ -320,8 +315,8 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
 }
 
 void CocoaStyle::draw_clock_hands(QPainter *p, QRectF rect, int factor,
-                                   float angle, QColor hand_color,
-                                   int thikness) {
+                                  float angle, QColor hand_color,
+                                  int thikness) {
   p->save();
   float _adjustment = rect.width() / factor;
 
@@ -332,7 +327,7 @@ void CocoaStyle::draw_clock_hands(QPainter *p, QRectF rect, int factor,
   QTransform _xform_hour;
   QPointF _transPos = _clock_hour_rect.center();
   _xform_hour.translate(_transPos.x(), _transPos.y());
-  _xform_hour.rotate(angle);
+  _xform_hour.rotate(45 + angle);
   _xform_hour.translate(-_transPos.x(), -_transPos.y());
   p->setTransform(_xform_hour);
 
@@ -340,31 +335,21 @@ void CocoaStyle::draw_clock_hands(QPainter *p, QRectF rect, int factor,
                        Qt::RoundJoin);
   p->setPen(_clock_hour_pen);
 
-  // p->drawRect(_clock_hour_rect);
   p->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
   p->restore();
 }
 
-void CocoaStyle::draw_timer_marker(QRectF rect,
-                QTransform _xform_hour,
-                QPainter *p,
-                double mark_minutes,
-                double mark_hour,
-                QPen current_dot_min_pen,
-                QPointF current_marker_location,
-                QPointF _transPos,
-                QPointF current_marker_location_for_min)
-{
-  double hour_angle = (((60.0 * mark_hour) + mark_minutes) / 2);
-  double min_angle =  (6.0 * mark_minutes);
+void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
+                                   QPainter *p, double mark_start,
+                                   double mark_end, QPen current_dot_min_pen,
+                                   QPointF current_marker_location,
+                                   QPointF _transPos,
+                                   QPointF current_marker_location_for_min) {
+  double end_angle = (mark_end / 60) * 360;
+  double start_angle = (mark_start / 60) * 360;
 
   QPainterPath clock_path;
   clock_path.addEllipse(rect);
-
-  signed int multiply = 1;
-  if (std::abs(min_angle) > std::abs(hour_angle)) {
-      multiply = - multiply;
-    }
 
   p->save();
   p->setPen(current_dot_min_pen);
@@ -379,7 +364,52 @@ void CocoaStyle::draw_timer_marker(QRectF rect,
   p->setTransform(_xform_hour);
 
   QPen current_timer_pen(QColor(color("accent_soft_highlight")), 2,
-                             Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+                         Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  p->setPen(current_timer_pen);
+
+  QPainterPath timer_path;
+
+  timer_path.moveTo(rect.center());
+  timer_path.arcTo(rect, start_angle, -(end_angle));
+
+  p->setOpacity(0.3);
+  p->fillPath(timer_path, QColor(color("primary_background")));
+  p->restore();
+}
+
+void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
+                                   QPainter *p, double mark_minutes,
+                                   double mark_hour, QPen current_dot_min_pen,
+                                   QPointF current_marker_location,
+                                   QPointF _transPos,
+                                   QPointF current_marker_location_for_min) {
+  if (mark_hour > 12)
+      mark_hour = mark_hour - 12;
+  double hour_angle = (((60.0 * mark_hour) + mark_minutes) / 2);
+  double min_angle = (6.0 * mark_minutes);
+
+  QPainterPath clock_path;
+  clock_path.addEllipse(rect);
+
+  signed int multiply = 1;
+  if (std::abs(min_angle) > std::abs(hour_angle)) {
+    multiply = -multiply;
+  }
+
+  p->save();
+  p->setPen(current_dot_min_pen);
+
+  _xform_hour.reset();
+
+  _transPos = rect.center();
+  _xform_hour.translate(_transPos.x(), _transPos.y());
+  _xform_hour.rotate(-90);
+  _xform_hour.translate(-_transPos.x(), -_transPos.y());
+
+  p->setTransform(_xform_hour);
+
+  QPen current_timer_pen(QColor(color("accent_soft_highlight")), 2,
+                         Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   p->setPen(current_timer_pen);
 
   QPainterPath timer_path;
@@ -388,35 +418,27 @@ void CocoaStyle::draw_timer_marker(QRectF rect,
   timer_path.arcTo(rect, -hour_angle,
                    multiply * angle_between_hands(mark_hour, mark_minutes));
 
-  /*
-        timer_path.moveTo(current_marker_location);
-        timer_path.lineTo(rect.center());
-        timer_path.lineTo(current_marker_location_for_min);
-
-        p->fillPath(timer_path, QColor("#f0f0f0"));
-   */
-
   p->setOpacity(0.3);
   p->fillPath(timer_path, QColor(color("primary_background")));
   p->restore();
 }
 
-void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
-{
+void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
   /* please note that the clock is drawn with the inverted color scheme */
-
   QRectF rect = features.geometry;
   double second_value = features.attributes["seconds"].toDouble();
   double minutes_value = features.attributes["minutes"].toDouble();
   double hour_value = features.attributes["hour"].toDouble();
   double mark_hour = features.attributes["mark_hour"].toDouble();
   double mark_minutes = features.attributes["mark_minutes"].toDouble();
+  double mark_start = features.attributes["mark_start"].toDouble();
+  double mark_end = features.attributes["mark_end"].toDouble();
 
   p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
                     QPainter::HighQualityAntialiasing);
 
-  QPen _clock_frame_pen(QColor(color("primary_forground")),
-                        18, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  QPen _clock_frame_pen(QColor(color("primary_forground")), 18, Qt::SolidLine,
+                        Qt::RoundCap, Qt::RoundJoin);
   p->setPen(_clock_frame_pen);
 
   QPainterPath _clock_background;
@@ -425,112 +447,119 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
   p->fillPath(_clock_background, QColor(color("primary_forground")));
   p->drawEllipse(rect);
 
-  //draw second markers.
+  // draw second markers.
   for (int i = 0; i < 60; i++) {
-      double percent = (i / 60.0);
-      QPointF marker_location = _clock_background.pointAtPercent(percent);
+    double percent = (i / 60.0);
+    QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-      p->save();
+    p->save();
 
-      int thikness = 1;
-      QPen dot_frame_pen(QColor(color("primary_background")),
-                         thikness, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-      p->setPen(dot_frame_pen);
-      p->drawPoint(marker_location);
+    int thikness = 1;
+    QPen dot_frame_pen(QColor(color("primary_background")), thikness,
+                       Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    p->setPen(dot_frame_pen);
+    p->drawPoint(marker_location);
 
-      p->restore();
+    p->restore();
   }
 
-  //draw minute markers
+  // draw minute markers
   for (int i = 0; i < 360; i = i + 30) {
-      float percent = (i / 360.0);
-      QPointF marker_location = _clock_background.pointAtPercent(percent);
+    float percent = (i / 360.0);
+    QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-      p->save();
-      QPen dot_frame_pen(QColor(color("primary_background")),
-                         4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-      p->setPen(dot_frame_pen);
+    p->save();
+    QPen dot_frame_pen(QColor(color("primary_background")), 4, Qt::SolidLine,
+                       Qt::RoundCap, Qt::RoundJoin);
+    p->setPen(dot_frame_pen);
 
-      p->drawPoint(marker_location);
-      p->restore();
+    p->drawPoint(marker_location);
+    p->restore();
   }
 
-  //draw hour markers
+  // draw hour markers
   for (int i = 0; i < 360; i = i + 90) {
-      float percent = (i / 360.0);
-      QPointF marker_location = _clock_background.pointAtPercent(percent);
+    float percent = (i / 360.0);
+    QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-      p->save();
-      QPen dot_frame_pen(QColor(color("primary_background")),
-                         8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-      p->setPen(dot_frame_pen);
+    p->save();
+    QPen dot_frame_pen(QColor(color("primary_background")), 8, Qt::SolidLine,
+                       Qt::RoundCap, Qt::RoundJoin);
+    p->setPen(dot_frame_pen);
 
-      p->drawPoint(marker_location);
-      p->restore();
+    p->drawPoint(marker_location);
+    p->restore();
   }
 
-  //draw current hour
-  if (std::abs(mark_hour) > 0) {
-      double current_percent = (mark_hour) / 12.0;
+  // draw marker
+  double current_percent = (mark_hour) / 24.0;
 
-      p->save();
+  p->save();
 
-      QTransform _xform_hour;
-      QPointF _transPos = rect.center();
-      _xform_hour.translate(_transPos.x(), _transPos.y());
-      _xform_hour.rotate(-90);
-      _xform_hour.translate(-_transPos.x(), -_transPos.y());
-      p->setTransform(_xform_hour);
+  QTransform _xform_hour;
+  QPointF _transPos = rect.center();
+  _xform_hour.translate(_transPos.x(), _transPos.y());
+  _xform_hour.rotate(-90);
+  _xform_hour.translate(-_transPos.x(), -_transPos.y());
+  p->setTransform(_xform_hour);
 
-      QPointF current_marker_location =
-          _clock_background.pointAtPercent(current_percent);
+  QPointF current_marker_location =
+      _clock_background.pointAtPercent(current_percent);
 
-      QPen current_dot_frame_pen(QColor(color("accent_soft_highlight")), 16,
-                                 Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-      p->setPen(current_dot_frame_pen);
-                        p->setOpacity(0.9);
-      p->drawPoint(current_marker_location);
+  // draw timer marker.
+  double current_percent_min = (mark_minutes) / 60.0;
 
-      p->restore();
+  QPointF current_marker_location_for_min =
+      _clock_background.pointAtPercent(current_percent_min);
 
-      //draw current second
-      double current_percent_min = (mark_minutes) / 60.0;
+  QPen current_dot_min_pen(QColor(color("accent_soft_highlight")), 12,
+                           Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
-      p->save();
+  // experiment
+  draw_timer_marker(rect, _xform_hour, p, mark_minutes, mark_hour,
+                    current_dot_min_pen, current_marker_location, _transPos,
+                    current_marker_location_for_min);
+  p->restore();
 
-      _xform_hour.reset();
-      _transPos = rect.center();
-      _xform_hour.translate(_transPos.x(), _transPos.y());
-      _xform_hour.rotate(-90);
-      _xform_hour.translate(-_transPos.x(), -_transPos.y());
-      p->setTransform(_xform_hour);
+  if (std::abs(mark_start) >= 0) {
+    double current_percent = (mark_start) / 60.0;
+    QPointF current_marker_location =
+        _clock_background.pointAtPercent(current_percent);
 
-      QPointF current_marker_location_for_min =
-          _clock_background.pointAtPercent(current_percent_min);
+    // draw timer marker.
+    double current_percent_min = (mark_end) / 60.0;
 
-      QPen current_dot_min_pen(QColor(color("accent_soft_highlight")), 12,
-                               Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-      p->setPen(current_dot_min_pen);
-                        p->setOpacity(0.9);
-      p->drawPoint(current_marker_location_for_min);
+    p->save();
+    _xform_hour.reset();
+    _transPos = rect.center();
+    _xform_hour.translate(_transPos.x(), _transPos.y());
+    _xform_hour.rotate(-90);
+    _xform_hour.translate(-_transPos.x(), -_transPos.y());
+    p->setTransform(_xform_hour);
 
-      p->restore();
+    QPointF current_marker_location_for_min =
+        _clock_background.pointAtPercent(current_percent_min);
 
-      //experiment
-      draw_timer_marker(rect, _xform_hour, p, mark_minutes, mark_hour,
-                        current_dot_min_pen, current_marker_location, _transPos,
-                        current_marker_location_for_min);
-    }
+    QPen current_dot_min_pen(QColor(color("accent_soft_highlight")), 12,
+                             Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
+    // experiment
+    draw_range_marker(rect, _xform_hour, p, mark_start, mark_end,
+                      current_dot_min_pen, current_marker_location, _transPos,
+                      current_marker_location_for_min);
+    p->restore();
+  }
 
   /* Draw Hour Hand */
-  draw_clock_hands(p, rect, 3, 45.0 + hour_value,
-                   QColor(color("primary_background")), 6);
-  draw_clock_hands(p, rect, 4, 45.0 + minutes_value,
+  draw_clock_hands(p, rect, 3, hour_value, QColor(color("primary_background")),
+                   6);
+  draw_clock_hands(p, rect, 4, minutes_value,
                    QColor(color("primary_background")), 3);
 
-  QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16, 16);
-  QRectF _clock_wheel_inner_rect(rect.center().x() - 4,
-                                 rect.center().y() - 4, 8, 8);
+  QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16,
+                           16);
+  QRectF _clock_wheel_inner_rect(rect.center().x() - 4, rect.center().y() - 4,
+                                 8, 8);
 
   QPainterPath _clock_wheel_path;
   QPainterPath _clock_wheel_inner_path;
@@ -540,20 +569,120 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p)
 
   p->fillPath(_clock_wheel_path, QColor(color("primary_background")));
 
-  QPen wheel_border_pen(QColor(color("base_forground")),
-                         1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  QPen wheel_border_pen(QColor(color("base_forground")), 1, Qt::SolidLine,
+                        Qt::RoundCap, Qt::RoundJoin);
   p->save();
   p->setPen(wheel_border_pen);
   p->drawPath(_clock_wheel_path);
   p->restore();
 
-  p->fillPath(_clock_wheel_inner_path, QColor(color("accent_primary_highlight")));
+  p->fillPath(_clock_wheel_inner_path,
+              QColor(color("accent_primary_highlight")));
 
-  draw_clock_hands(p, rect, 5, 45.0 + second_value,
+  draw_clock_hands(p, rect, 5, second_value,
                    QColor(color("accent_primary_highlight")), 2);
+}
 
+void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *painter) {
+  painter->setRenderHint(QPainter::Antialiasing, true);
+  painter->setRenderHint(QPainter::TextAntialiasing, true);
+  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
- }
+  QRectF rect = features.geometry;
+  double angle_percent = features.attributes["angle"].toDouble();
+  double max_value = features.attributes["max_value"].toDouble();
+
+  QPen _clock_frame_pen(QColor(color("primary_forground")), 18, Qt::SolidLine,
+                        Qt::RoundCap, Qt::RoundJoin);
+  painter->setPen(_clock_frame_pen);
+
+  QPainterPath _clock_background;
+  _clock_background.addEllipse(rect);
+
+  painter->fillPath(_clock_background, QColor(color("primary_forground")));
+  painter->drawEllipse(rect);
+
+  // draw segement markers.
+  int thikness = 2;
+  QPen dot_frame_pen(QColor(color("primary_background")), thikness,
+                       Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+  for (int i = 0; i < max_value; i++) {
+    double percent = (i / max_value);
+    QPointF marker_location = _clock_background.pointAtPercent(percent);
+
+    painter->save();
+    painter->setPen(dot_frame_pen);
+    painter->drawPoint(marker_location);
+    painter->restore();
+  }
+
+  // main points.
+  thikness = 4;
+  for (int i = 0; i < max_value; i = i + (max_value / 4)) {
+    double percent = (i / max_value);
+    QPointF marker_location = _clock_background.pointAtPercent(percent);
+
+    painter->save();
+    dot_frame_pen.setWidth(thikness);
+    /*
+    QPen dot_frame_pen(QColor(color("primary_background")), thikness,
+                       Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
+    */
+    painter->setPen(dot_frame_pen);
+    painter->drawPoint(marker_location);
+    painter->restore();
+  }
+
+  QPointF transPos = rect.center();
+  QPainterPath border_path;
+  QRectF dial_handle = rect;
+  border_path.addEllipse(dial_handle);
+
+  QPen current_dot_min_pen(QColor(color("primary_background")),
+                           18 * scale_factor(), Qt::SolidLine, Qt::RoundCap,
+                           Qt::RoundJoin);
+  QPen current_dot_inner_pen(QColor(color("accent_primary_highlight")),
+                             14 * scale_factor(), Qt::SolidLine, Qt::RoundCap,
+                             Qt::RoundJoin);
+  QPen current_dot_inner_pressed_pen(QColor(color("accent_primary_background")),
+                                     14 * scale_factor(), Qt::SolidLine,
+                                     Qt::RoundCap, Qt::RoundJoin);
+  QPen current_dot_inner_transparent_pen(QColor(Qt::transparent),
+                                         14 * scale_factor(), Qt::SolidLine,
+                                         Qt::RoundCap, Qt::RoundJoin);
+
+  QPointF current_marker_location_for_min =
+      border_path.pointAtPercent(angle_percent);
+
+  painter->save();
+  painter->setRenderHint(QPainter::Antialiasing, true);
+  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+
+  QTransform xform;
+  xform.translate(transPos.x(), transPos.y());
+  xform.rotate(-90);
+  xform.translate(-transPos.x(), -transPos.y());
+
+  painter->setTransform(xform);
+  painter->save();
+
+  painter->setOpacity(0.5);
+  painter->setPen(current_dot_min_pen);
+  painter->drawPoint(current_marker_location_for_min);
+  if (features.render_state == StyleFeatures::kRenderRaised) {
+    painter->setPen(current_dot_inner_pen);
+    painter->drawPoint(current_marker_location_for_min);
+  }
+
+  if (features.render_state == StyleFeatures::kRenderPressed) {
+    painter->setPen(current_dot_inner_pressed_pen);
+    painter->drawPoint(current_marker_location_for_min);
+  }
+
+  painter->restore();
+  painter->restore();
+}
 
 void CocoaStyle::drawPushButtonText(const StyleFeatures &features,
                                     const QString &text, QPainter *painter) {
@@ -592,13 +721,11 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
 
   QPen pen;
   if (features.render_state == StyleFeatures::kRenderRaised) {
-    pen =
-        QPen(QColor(color("accent_base_forground")),
-             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    pen = QPen(QColor(color("accent_base_forground")), 1, Qt::SolidLine,
+               Qt::RoundCap, Qt::RoundJoin);
   } else {
-    pen =
-        QPen(QColor(color("accent_primary_forground")),
-             1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    pen = QPen(QColor(color("accent_primary_forground")), 1, Qt::SolidLine,
+               Qt::RoundCap, Qt::RoundJoin);
   }
   painter->setPen(pen);
   painter->drawPath(backgroundPath);
@@ -622,7 +749,7 @@ void CocoaStyle::drawLineEditText(const StyleFeatures &features,
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
   QFont font = QFont("", 18 * scale_factor());
-  //QFontMetrics fontMetrics(font);
+  // QFontMetrics fontMetrics(font);
   // int width = fontMetrics.width(text.left(features.cursorLocation));
   painter->setFont(font);
 
@@ -694,39 +821,35 @@ void CocoaStyle::drawProgressBar(const StyleFeatures &features,
   painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
   switch (features.render_state) {
-    case StyleFeatures::kRenderBackground: {
-      QRectF rect = features.geometry;
-      QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-      linearGrad.setColorAt(1, QColor(color("primary_background")));
-      linearGrad.setColorAt(0.5, QColor(color("primary_forground")));
-      linearGrad.setColorAt(0, QColor(color("primary_background")));
-      QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
-                         Qt::RoundJoin);
+  case StyleFeatures::kRenderBackground: {
+    QRectF rect = features.geometry;
+    QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
+    linearGrad.setColorAt(1, QColor(color("primary_background")));
+    linearGrad.setColorAt(0.5, QColor(color("primary_forground")));
+    linearGrad.setColorAt(0, QColor(color("primary_background")));
+    QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
+                       Qt::RoundJoin);
 
-      QPointF backgroundLineStart(rect.topLeft().x(),
-                                  rect.bottomLeft().y() / 2);
-      QPointF backgroundLineEnd(rect.topRight().x(),
-                                rect.bottomRight().y() / 2);
-      painter->setPen(backgroundPen);
-      painter->drawLine(backgroundLineStart, backgroundLineEnd);
-    } break;
-    case StyleFeatures::kRenderForground: {
-      QRectF rect = features.geometry;
-      QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-      linearGrad.setColorAt(1, QColor(color("accent_soft_highlight")));
-      linearGrad.setColorAt(0, QColor(color("accent_soft_forground")));
-      QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
-                         Qt::RoundJoin);
+    QPointF backgroundLineStart(rect.topLeft().x(), rect.bottomLeft().y() / 2);
+    QPointF backgroundLineEnd(rect.topRight().x(), rect.bottomRight().y() / 2);
+    painter->setPen(backgroundPen);
+    painter->drawLine(backgroundLineStart, backgroundLineEnd);
+  } break;
+  case StyleFeatures::kRenderForground: {
+    QRectF rect = features.geometry;
+    QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
+    linearGrad.setColorAt(1, QColor(color("accent_soft_highlight")));
+    linearGrad.setColorAt(0, QColor(color("accent_soft_forground")));
+    QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
+                       Qt::RoundJoin);
 
-      QPointF backgroundLineStart(rect.topLeft().x(),
-                                  rect.bottomLeft().y() / 2);
-      QPointF backgroundLineEnd(rect.topRight().x(),
-                                rect.bottomRight().y() / 2);
-      painter->setPen(backgroundPen);
-      painter->drawLine(backgroundLineStart, backgroundLineEnd);
-    } break;
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown progress bar state";
+    QPointF backgroundLineStart(rect.topLeft().x(), rect.bottomLeft().y() / 2);
+    QPointF backgroundLineEnd(rect.topRight().x(), rect.bottomRight().y() / 2);
+    painter->setPen(backgroundPen);
+    painter->drawLine(backgroundLineStart, backgroundLineEnd);
+  } break;
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown progress bar state";
   }
 
   painter->restore();
@@ -736,9 +859,8 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
                                QPainter *painter) {
   QRectF rect = features.geometry;
 
-  QPen backgroundPen(QColor(color("primary_forground")),
-                     1, Qt::SolidLine, Qt::RoundCap,
-                     Qt::RoundJoin);
+  QPen backgroundPen(QColor(color("primary_forground")), 1, Qt::SolidLine,
+                     Qt::RoundCap, Qt::RoundJoin);
 
   painter->save();
   if (features.render_state == StyleFeatures::kRenderElement) {
@@ -746,12 +868,10 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
     painter->fillRect(rect, QColor(color("primary_background")));
 
     QLinearGradient _seperator_line_grad(rect.bottomLeft(), rect.bottomRight());
-    _seperator_line_grad.setColorAt(0.0, QColor(
-                                      color("primary_background")));
+    _seperator_line_grad.setColorAt(0.0, QColor(color("primary_background")));
     _seperator_line_grad.setColorAt(0.5,
                                     QColor(color("accent_primary_forground")));
-    _seperator_line_grad.setColorAt(1.0,
-                                    QColor(color("primary_background")));
+    _seperator_line_grad.setColorAt(1.0, QColor(color("primary_background")));
 
     QPen linePen = QPen(_seperator_line_grad, 1, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin);
@@ -764,7 +884,8 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
 void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
                            QPainter *aPainterPtr, const Widget *aWidget) {
   aPainterPtr->save();
-  aPainterPtr->fillRect(aFeatures.geometry, QColor(color("primary_background")));
+  aPainterPtr->fillRect(aFeatures.geometry,
+                        QColor(color("primary_background")));
   aPainterPtr->drawText(aFeatures.geometry, aWidget->label(),
                         QTextOption(Qt::AlignHCenter | Qt::AlignLeft));
   aPainterPtr->restore();
