@@ -139,6 +139,7 @@ void Window::set_window_viewport(Space *a_space) {
 
 void Window::set_window_title(const QString &a_window_title) {
   m_priv_impl->m_window_title = a_window_title;
+  update();
 }
 
 QString Window::window_title() const { return m_priv_impl->m_window_title; }
