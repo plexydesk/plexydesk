@@ -14,12 +14,13 @@ public:
 
   virtual ~DialWidget();
 
-  virtual void setMaxValue(float maxValue);
-  virtual float maxValue() const;
+  virtual void set_maximum_dial_value(float maximum_dial_value);
+  virtual float maximum_dial_value() const;
 
-  virtual float currentValue() const;
+  virtual float current_dial_value() const;
   virtual void reset();
 
+  virtual void on_dialed(std::function<void (int)> a_callback);
 Q_SIGNALS:
   void value(float value);
 

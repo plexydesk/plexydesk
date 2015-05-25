@@ -271,9 +271,9 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
       (m_dial_widget_mintues_ptr->geometry().width() / 2) -
           (m_dial_widget_hours_ptr->geometry().height() / 2));
 
-  m_dial_widget_seconds_ptr->setMaxValue(60);
-  m_dial_widget_mintues_ptr->setMaxValue(60);
-  m_dial_widget_hours_ptr->setMaxValue(12);
+  m_dial_widget_seconds_ptr->set_maximum_dial_value(60);
+  m_dial_widget_mintues_ptr->set_maximum_dial_value(60);
+  m_dial_widget_hours_ptr->set_maximum_dial_value(12);
 
   m_clock_widget->hide();
   m_dial_widget_seconds_ptr->show();
@@ -297,6 +297,77 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
   m_clock_session_window->set_window_content(m_content_view);
 
   a_session->bind_to_window(m_clock_session_window);
+
+  // todo:
+  // Fix duplication.
+  m_dial_widget_seconds_ptr->on_dialed([=](int a_progress_value) {
+    QString seconds_string =
+        QString("%1").arg(m_dial_widget_seconds_ptr->current_dial_value());
+    QString minutes_string =
+        QString("%1").arg(m_dial_widget_mintues_ptr->current_dial_value());
+    QString hours_string =
+        QString("%1").arg(m_dial_widget_hours_ptr->current_dial_value());
+
+    if (m_dial_widget_seconds_ptr->current_dial_value() < 9)
+      seconds_string =
+          QString("0%1").arg(m_dial_widget_seconds_ptr->current_dial_value());
+    if (m_dial_widget_mintues_ptr->current_dial_value() < 9)
+      minutes_string =
+          QString("0%1").arg(m_dial_widget_mintues_ptr->current_dial_value());
+    if (m_dial_widget_hours_ptr->current_dial_value() < 9)
+      hours_string =
+          QString("0%1").arg(m_dial_widget_hours_ptr->current_dial_value());
+
+    m_clock_session_window->set_window_title(
+        QString("%1:%2:%3").arg(hours_string).arg(minutes_string).arg(
+            seconds_string));
+  });
+
+  m_dial_widget_mintues_ptr->on_dialed([=](int a_progress_value) {
+    QString seconds_string =
+        QString("%1").arg(m_dial_widget_seconds_ptr->current_dial_value());
+    QString minutes_string =
+        QString("%1").arg(m_dial_widget_mintues_ptr->current_dial_value());
+    QString hours_string =
+        QString("%1").arg(m_dial_widget_hours_ptr->current_dial_value());
+
+    if (m_dial_widget_seconds_ptr->current_dial_value() < 9)
+      seconds_string =
+          QString("0%1").arg(m_dial_widget_seconds_ptr->current_dial_value());
+    if (m_dial_widget_mintues_ptr->current_dial_value() < 9)
+      minutes_string =
+          QString("0%1").arg(m_dial_widget_mintues_ptr->current_dial_value());
+    if (m_dial_widget_hours_ptr->current_dial_value() < 9)
+      hours_string =
+          QString("0%1").arg(m_dial_widget_hours_ptr->current_dial_value());
+
+    m_clock_session_window->set_window_title(
+        QString("%1:%2:%3").arg(hours_string).arg(minutes_string).arg(
+            seconds_string));
+  });
+
+  m_dial_widget_hours_ptr->on_dialed([=](int a_progress_value) {
+    QString seconds_string =
+        QString("%1").arg(m_dial_widget_seconds_ptr->current_dial_value());
+    QString minutes_string =
+        QString("%1").arg(m_dial_widget_mintues_ptr->current_dial_value());
+    QString hours_string =
+        QString("%1").arg(m_dial_widget_hours_ptr->current_dial_value());
+
+    if (m_dial_widget_seconds_ptr->current_dial_value() < 9)
+      seconds_string =
+          QString("0%1").arg(m_dial_widget_seconds_ptr->current_dial_value());
+    if (m_dial_widget_mintues_ptr->current_dial_value() < 9)
+      minutes_string =
+          QString("0%1").arg(m_dial_widget_mintues_ptr->current_dial_value());
+    if (m_dial_widget_hours_ptr->current_dial_value() < 9)
+      hours_string =
+          QString("0%1").arg(m_dial_widget_hours_ptr->current_dial_value());
+
+    m_clock_session_window->set_window_title(
+        QString("%1:%2:%3").arg(hours_string).arg(minutes_string).arg(
+            seconds_string));
+  });
 
   m_clock_widget->on_timer_ended([=]() {
     int duration = m_clock_widget->duration();
@@ -349,9 +420,10 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
 
   m_toolbar->on_item_activated([=](const QString &a_action) {
     if (a_action == "Start") {
-      double duration = (m_dial_widget_hours_ptr->currentValue() * 60 * 60) +
-                        (m_dial_widget_mintues_ptr->currentValue() * 60) +
-                        m_dial_widget_seconds_ptr->currentValue();
+      double duration =
+          (m_dial_widget_hours_ptr->current_dial_value() * 60 * 60) +
+          (m_dial_widget_mintues_ptr->current_dial_value() * 60) +
+          m_dial_widget_seconds_ptr->current_dial_value();
 
       m_dial_widget_seconds_ptr->hide();
       m_clock_widget->add_range_marker(0.0, duration);
@@ -359,16 +431,17 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
       m_clock_widget->run_timer();
     } else if (a_action == "Stop") {
       m_dial_widget_seconds_ptr->reset();
-      m_dial_widget_seconds_ptr->setMaxValue(60);
+      m_dial_widget_seconds_ptr->set_maximum_dial_value(60);
       m_dial_widget_mintues_ptr->reset();
-      m_dial_widget_mintues_ptr->setMaxValue(60);
+      m_dial_widget_mintues_ptr->set_maximum_dial_value(60);
       m_dial_widget_hours_ptr->reset();
-      m_dial_widget_hours_ptr->setMaxValue(12);
+      m_dial_widget_hours_ptr->set_maximum_dial_value(12);
 
-      m_clock_widget->add_range_marker(0.0,
-                                       m_dial_widget_hours_ptr->currentValue());
+      m_clock_widget->add_range_marker(
+          0.0, m_dial_widget_hours_ptr->current_dial_value());
       m_clock_widget->hide();
       m_dial_widget_seconds_ptr->show();
+      m_clock_session_window->set_window_title("00:00:00");
     }
   });
 

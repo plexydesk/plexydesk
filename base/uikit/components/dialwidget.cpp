@@ -7,6 +7,8 @@
 #define PI 3.14159258
 
 namespace UIKit {
+typedef std::function<void(int)> on_dial_callback_func;
+
 class DialWidget::PrivateDialWidget {
  public:
   PrivateDialWidget() : m_is_set(0), m_is_pressed(0) {}
@@ -25,6 +27,8 @@ class DialWidget::PrivateDialWidget {
   int mProgressValue;
   bool m_is_set;
   bool m_is_pressed;
+
+  std::vector<on_dial_callback_func> m_on_dial_callback_list;
 };
 
 DialWidget::DialWidget(QGraphicsObject* parent)
@@ -45,11 +49,11 @@ DialWidget::DialWidget(QGraphicsObject* parent)
 
 DialWidget::~DialWidget() {}
 
-void DialWidget::setMaxValue(float maxValue) { d->mMaxValue = maxValue; }
+void DialWidget::set_maximum_dial_value(float maxValue) { d->mMaxValue = maxValue; }
 
-float DialWidget::maxValue() const { return d->mMaxValue; }
+float DialWidget::maximum_dial_value() const { return d->mMaxValue; }
 
-float DialWidget::currentValue() const { return d->mProgressValue; }
+float DialWidget::current_dial_value() const { return d->mProgressValue; }
 
 void DialWidget::reset() {
   d->mAngle = 0;
@@ -59,6 +63,10 @@ void DialWidget::reset() {
   d->mMaxValue = 24;
   d->m_is_set = 0;
   update();
+}
+
+void DialWidget::on_dialed(std::function<void (int)> a_callback) {
+    d->m_on_dial_callback_list.push_back(a_callback);
 }
 
 void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent* event) {
@@ -149,6 +157,14 @@ void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
   d->mAngle = angle_to(line, base_line) - 180;
   d->m_is_pressed = 1;
   update();
+
+  std::for_each(std::begin(d->m_on_dial_callback_list),
+                std::end(d->m_on_dial_callback_list),
+                [=](on_dial_callback_func a_func) {
+
+      if (a_func)
+          a_func(d->mProgressValue);
+  });
 }
 
 void DialWidget::paint_view(QPainter* painter, const QRectF& rect) {

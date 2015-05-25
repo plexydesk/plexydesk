@@ -138,7 +138,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mClockMinWidget->setPos(70, 70 + 48);
   d->mClockHourWidget->setPos(0.0, 48);
 
-  d->mClockMinWidget->setMaxValue(60);
+  d->mClockMinWidget->set_maximum_dial_value(60);
 
   d->mTimeLable = new UIKit::Label(this);
   d->mTimeLable->setMinimumSize(QSizeF(300.0, 50));
@@ -206,11 +206,11 @@ void CalendarWidget::clearTableValues() {
 QDate CalendarWidget::currentDate() const { return d->mCurrentDate; }
 
 uint CalendarWidget::currentMinute() const {
-  return d->mClockMinWidget->currentValue();
+  return d->mClockMinWidget->current_dial_value();
 }
 
 uint CalendarWidget::currentHour() const {
-  return d->mClockHourWidget->currentValue();
+  return d->mClockHourWidget->current_dial_value();
 }
 
 void CalendarWidget::setBackgroundImage(const QImage &img) {
