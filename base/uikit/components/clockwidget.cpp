@@ -40,114 +40,126 @@ bool double_equals(double a, double b, double epsilon = 0.001) {
       return std::abs(a - b) < epsilon;
 }
 
+class ClockWidget::PrivateClockWidget {
+  public:
+   PrivateClockWidget() : m_timezone (0){}
+   ~PrivateClockWidget() {}
+
+   void on_timout_slot_func();
+   void on_range_timout_slot_func();
+   void update();
+
+   double m_second_value;
+   double m_minutes_value;
+   double m_hour_value;
+
+   double m_mark_hour_value;
+   double m_mark_minutes_value;
+
+   double m_mark_start;
+   double m_mark_end;
+
+   QTimer *m_clock_timer;
+   QTimer *m_range_timer;
+   int m_range_timer_duration;
+
+   QByteArray m_timezone_id;
+   QTimeZone *m_timezone;
+};
+
 ClockWidget::ClockWidget(QGraphicsObject *parent)
-    : UIKit::Widget(parent), m_timezone(0) {
-  m_clock_timer = new QTimer(this);
-  m_range_timer = new QTimer(this);
+    : UIKit::Widget(parent), d(new PrivateClockWidget) {
+  d->m_clock_timer = new QTimer(this);
+  d->m_range_timer = new QTimer(this);
+  d->m_mark_hour_value = 0.0;
+  d->m_mark_minutes_value = 0.0;
+  d->m_mark_start = 0.1;
+  d->m_mark_end = 0.0;
+  d->m_range_timer_duration = 1000;
+  d->m_clock_timer->setTimerType(Qt::VeryCoarseTimer);
+  d->m_range_timer->setTimerType(Qt::VeryCoarseTimer);
 
-  m_mark_hour_value = 0.0;
-  m_mark_minutes_value = 0.0;
-  m_mark_start = 0.1;
-  m_mark_end = 0.0;
-  m_range_timer_duration = 1000;
-  m_clock_timer->setTimerType(Qt::VeryCoarseTimer);
-  m_range_timer->setTimerType(Qt::VeryCoarseTimer);
+  connect(d->m_clock_timer, &QTimer::timeout, [this]() {
+      d->on_timout_slot_func();
+      update();
+  });
 
-  connect(m_clock_timer, SIGNAL(timeout()), this, SLOT(on_timout_slot_func()));
-  connect(m_range_timer, SIGNAL(timeout()), this,
-          SLOT(on_range_timout_slot_func()));
+  connect(d->m_range_timer, &QTimer::timeout, [this]() {
+      d->on_range_timout_slot_func();
+      update();
+  });
 
-  m_clock_timer->start(1000);
-  m_range_timer->stop();
+  d->m_clock_timer->start(1000);
+  d->m_range_timer->stop();
+
   set_widget_flag(Widget::kRenderDropShadow, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
+
   set_widget_name("Clock");
-  on_timout_slot_func();
-}
-
-void ClockWidget::update_time(const QVariantMap &a_data) {
-  QDateTime _date_time = QDateTime::currentDateTime();
-
-  if (m_timezone)
-    _date_time = _date_time.toTimeZone(*m_timezone);
-
-  m_second_value = 6.0 * _date_time.time().second();
-  m_minutes_value = 6.0 * _date_time.time().minute();
-  m_hour_value =
-          (60 * _date_time.time().hour() + _date_time.time().minute()) / 2;
-
-  update();
 }
 
 void ClockWidget::set_timezone_id(const QByteArray &a_timezone_id) {
-  m_timezone_id = a_timezone_id;
+  d->m_timezone_id = a_timezone_id;
 
-  m_clock_timer->stop();
+  d->m_clock_timer->stop();
 
-  if (m_timezone) {
-    delete m_timezone;
+  if (d->m_timezone) {
+    delete d->m_timezone;
   }
 
-  m_timezone = new QTimeZone(a_timezone_id);
+  d->m_timezone = new QTimeZone(a_timezone_id);
 
-  m_clock_timer->start();
+  d->m_clock_timer->start();
 }
 
 void ClockWidget::add_marker(double a_hour, double a_min)
 {
-  m_mark_hour_value = a_hour;
-  m_mark_minutes_value = a_min;
+  d->m_mark_hour_value = a_hour;
+  d->m_mark_minutes_value = a_min;
   update();
 }
 
 void ClockWidget::add_range_marker(double a_start, double a_end) {
-    m_mark_start = a_start;
+    d->m_mark_start = a_start;
     int duration = a_end - a_start;
     int hours = duration / 3600;
     int min = (duration / 60) - (hours * 60);
     int sec = duration  - ((hours * 3600) + (min * 60));
-    m_mark_end = sec;
-    m_range_timer_duration = duration;
+    d->m_mark_end = sec;
+    d->m_range_timer_duration = duration;
 
     QDateTime current_date_time = QDateTime::currentDateTime();
 
-    if (m_timezone)
-    current_date_time = current_date_time.toTimeZone(*m_timezone);
+    if (d->m_timezone)
+    current_date_time = current_date_time.toTimeZone(*d->m_timezone);
 
     QTime current_time = current_date_time.time();
 
     current_time = current_time.addSecs(duration);
-    m_mark_minutes_value = current_time.minute();
-    m_mark_hour_value = current_time.hour();
-
-    qDebug() << Q_FUNC_INFO << m_range_timer_duration;
-    qDebug() << Q_FUNC_INFO << "Hour" << hours;
-    qDebug() << Q_FUNC_INFO << "Minute" << min;
-    qDebug() << Q_FUNC_INFO << "Seconds" << sec;
-    qDebug() << Q_FUNC_INFO << "Goes Of at Hour" << m_mark_hour_value;
-    qDebug() << Q_FUNC_INFO << "Goes Of at Min" << m_mark_minutes_value;
+    d->m_mark_minutes_value = current_time.minute();
+    d->m_mark_hour_value = current_time.hour();
 }
 
 void ClockWidget::run_timer(Direction a_direction) {
-    m_range_timer->start(1000);
+    d->m_range_timer->start(1000);
 }
 
 ClockWidget::~ClockWidget() {
-  if (m_clock_timer) {
-    m_clock_timer->stop();
-    delete m_clock_timer;
+  if (d->m_clock_timer) {
+    d->m_clock_timer->stop();
   }
 
-  if (m_timezone)
-    delete m_timezone;
+  if (d->m_timezone)
+    delete d->m_timezone;
+
+  delete d;
 }
 
-void ClockWidget::on_timout_slot_func() {
-  update_time(QVariantMap());
+void ClockWidget::PrivateClockWidget::on_timout_slot_func() {
   update();
 }
 
-void ClockWidget::on_range_timout_slot_func() {
+void ClockWidget::PrivateClockWidget::on_range_timout_slot_func() {
    m_range_timer_duration -= 1.0;
    int duration = m_range_timer_duration;
    int hours = duration / 3600;
@@ -157,8 +169,18 @@ void ClockWidget::on_range_timout_slot_func() {
 
    if (m_range_timer_duration <= 0)
        m_range_timer->stop();
+}
 
-   update();
+void ClockWidget::PrivateClockWidget::update() {
+  QDateTime _date_time = QDateTime::currentDateTime();
+
+  if (m_timezone)
+    _date_time = _date_time.toTimeZone(*m_timezone);
+
+  m_second_value = 6.0 * _date_time.time().second();
+  m_minutes_value = 6.0 * _date_time.time().minute();
+  m_hour_value =
+          (60 * _date_time.time().hour() + _date_time.time().minute()) / 2;
 }
 
 void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
@@ -166,20 +188,20 @@ void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
 
   StyleFeatures feature;
 
-  feature.text_data = QString("%1:%2:%3").arg(m_hour_value).
-      arg(m_minutes_value).arg(m_second_value);
+  feature.text_data = QString("%1:%2:%3").arg(d->m_hour_value).
+      arg(d->m_minutes_value).arg(d->m_second_value);
 
   feature.geometry = rect;
   feature.render_state = StyleFeatures::kRenderElement;
-  feature.attributes["hour"] = m_hour_value;
-  feature.attributes["minutes"] = m_minutes_value;
-  feature.attributes["seconds"] = m_second_value;
+  feature.attributes["hour"] = d->m_hour_value;
+  feature.attributes["minutes"] = d->m_minutes_value;
+  feature.attributes["seconds"] = d->m_second_value;
 
-  feature.attributes["mark_hour"] = m_mark_hour_value;
-  feature.attributes["mark_minutes"] = m_mark_minutes_value;
+  feature.attributes["mark_hour"] = d->m_mark_hour_value;
+  feature.attributes["mark_minutes"] = d->m_mark_minutes_value;
 
-  feature.attributes["mark_start"] = m_mark_start;
-  feature.attributes["mark_end"] = m_mark_end;
+  feature.attributes["mark_start"] = d->m_mark_start;
+  feature.attributes["mark_end"] = d->m_mark_end;
 
   if (UIKit::Theme::style()) {
     UIKit::Theme::style()->draw("clock", feature, p);

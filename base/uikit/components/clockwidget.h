@@ -29,7 +29,6 @@
 
 namespace UIKit {
 class ClockWidget : public Widget {
-  Q_OBJECT
 public:
   typedef enum {
        kRunForwards,
@@ -39,39 +38,17 @@ public:
   ClockWidget(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ClockWidget();
 
-  void update_time(const QVariantMap &a_data);
-
   void set_timezone_id(const QByteArray &a_timezone_id);
   QByteArray timezone_id() const;
 
   virtual void add_marker(double a_hour, double a_min);
   virtual void add_range_marker(double a_start, double a_end);
   virtual void run_timer(Direction a_direction = kRunForwards);
-
-public Q_SLOTS:
-  void on_timout_slot_func();
-  void on_range_timout_slot_func();
-
 protected:
   void paint_view(QPainter *painter, const QRectF &r);
-
 private:
-  double m_second_value;
-  double m_minutes_value;
-  double m_hour_value;
-
-  double m_mark_hour_value;
-  double m_mark_minutes_value;
-
-  double m_mark_start;
-  double m_mark_end;
-
-  QTimer *m_clock_timer;
-  QTimer *m_range_timer;
-  int m_range_timer_duration;
-
-  QByteArray m_timezone_id;
-  QTimeZone *m_timezone;
-};
+  class PrivateClockWidget;
+  PrivateClockWidget *const d;
+ };
 }
 #endif
