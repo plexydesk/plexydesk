@@ -253,20 +253,6 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
   m_content_view->setGeometry(QRectF(0, 0, window_width, window_width + 48));
   m_clock_widget->setGeometry(QRectF(0, 0, window_width, window_width));
 
-  /*
-  m_dial_widget_hours->setGeometry(QRectF(0, 0, window_width, window_width));
-  m_dial_widget_mintues->setGeometry(
-      QRectF(0, 0, window_width / 2, window_width / 2));
-  m_dial_widget_seconds->setGeometry(
-      QRectF(0, 0, window_width / 3, window_width / 3));
-
-  m_dial_widget_mintues->setPos(25, 25);
-
-  m_dial_widget_seconds->setPos(
-      2 * (window_width / 3) - (m_dial_widget_seconds->geometry().width() / 2),
-      2 *(window_width / 3) - (m_dial_widget_seconds->geometry().height() / 2));
-   */
-
   m_dial_widget_seconds_ptr->setGeometry(
       QRectF(0, 0, window_width, window_width));
   m_dial_widget_mintues_ptr->setGeometry(
@@ -274,7 +260,6 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
   m_dial_widget_hours_ptr->setGeometry(
       QRectF(0, 0, window_width - 150, window_width - 150));
 
-  // m_dial_widget_mintues->setPos(25, 25);
   m_dial_widget_mintues_ptr->setPos(
       (window_width / 2) - (m_dial_widget_mintues_ptr->geometry().width() / 2),
       (window_width / 2) -
@@ -319,7 +304,6 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
       double duration = (m_dial_widget_hours_ptr->currentValue() * 60 * 60)
               + (m_dial_widget_mintues_ptr->currentValue() * 60)
               + m_dial_widget_seconds_ptr->currentValue();
-      qDebug() << Q_FUNC_INFO << duration;
 
       m_dial_widget_seconds_ptr->hide();
       m_clock_widget->add_range_marker(0.0, duration);
@@ -338,34 +322,6 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
       m_clock_widget->hide();
       m_dial_widget_seconds_ptr->show();
     }
-    /*
-    if (a_action == "TimeZone") {
-      if (a_controller && a_controller->viewport()) {
-        UIKit::Space* viewport = a_controller->viewport();
-        UIKit::DesktopActivityPtr activity =
-            viewport->create_activity("timezone",
-                                      "TimeZone",
-                                      viewport->cursor_pos(),
-                                      QRectF(0, 0, 240, 320.0),
-                                      QVariantMap());
-
-        activity->on_action_completed([=](const QVariantMap& a_data) {
-          m_clock_widget->set_timezone_id(a_data["zone_id"].toByteArray());
-          m_timezone_label->set_label(a_data["zone_id"].toString());
-
-          std::string zone_id(a_data["zone_id"].toByteArray().data());
-
-          a_session->save_session_attribute(
-              a_controller->session_database_name("timer"),
-              "Timer",
-              "timer_id",
-              a_session->session_id_to_string(),
-              "zone_id",
-              zone_id);
-        });
-      }
-    }
-    */
   });
 
   if (a_controller && a_controller->viewport()) {

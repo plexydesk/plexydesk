@@ -624,11 +624,6 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *painter) {
 
     painter->save();
     dot_frame_pen.setWidth(thikness);
-    /*
-    QPen dot_frame_pen(QColor(color("primary_background")), thikness,
-                       Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-
-    */
     painter->setPen(dot_frame_pen);
     painter->drawPoint(marker_location);
     painter->restore();
