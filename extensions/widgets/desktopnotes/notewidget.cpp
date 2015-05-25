@@ -93,8 +93,9 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
 
   createToolBar();
 
-  connect(d->m_note_toolbar_widget, SIGNAL(action(QString)), this,
-          SLOT(onToolBarAction(QString)));
+  d->m_note_toolbar_widget->on_item_activated([this](const QString &a_action) {
+      onToolBarAction(a_action);
+  });
 
   d->m_image_attachment_view = new UIKit::ImageView(d->mSubLayoutBase);
   d->m_image_attachment_view->setMinimumSize(0, 0);
