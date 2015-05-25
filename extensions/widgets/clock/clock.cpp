@@ -290,7 +290,6 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
   m_toolbar->add_action("Pause", "actions/pd_pause", false);
   m_toolbar->add_action("Stop", "actions/pd_stop", false);
 
-  // m_toolbar->setGeometry(m_toolbar->frame_geometry());
   m_toolbar->setGeometry(QRectF(0, 0, window_width, 48));
   m_toolbar->show();
   m_toolbar->setPos(0, window_width);
@@ -299,11 +298,60 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
 
   a_session->bind_to_window(m_clock_session_window);
 
+  m_clock_widget->on_timer_ended([=]() {
+    int duration = m_clock_widget->duration();
+    int hours = duration / 3600;
+    int min = (duration / 60) - (hours * 60);
+    int sec = duration - ((hours * 3600) + (min * 60));
+
+    QString hour_string = QString("%1").arg(hours);
+    QString minutes_string = QString("%1").arg(min);
+    QString secondss_string = QString("%1").arg(sec);
+
+    if (hours < 10)
+      hour_string = QString("0%1").arg(hours);
+    if (min < 10)
+      minutes_string = QString("0%1").arg(min);
+    if (sec < 10)
+      secondss_string = QString("0%1").arg(sec);
+
+    m_clock_session_window->set_window_title(
+        QString("%1:%2:%3 Done!").arg(hour_string).arg(minutes_string).arg(
+            secondss_string));
+    m_timezone_label->set_label("Ended@" +
+                                m_clock_widget->completion_time_as_string());
+  });
+
+  m_clock_widget->on_timeout([=](const UIKit::ClockWidget *a_widget) {
+    if (!a_widget)
+      return;
+    int duration = a_widget->elapsed_time_in_seconds();
+    int hours = duration / 3600;
+    int min = (duration / 60) - (hours * 60);
+    int sec = duration - ((hours * 3600) + (min * 60));
+
+    QString hour_string = QString("%1").arg(hours);
+    QString minutes_string = QString("%1").arg(min);
+    QString secondss_string = QString("%1").arg(sec);
+
+    if (hours < 10)
+      hour_string = QString("0%1").arg(hours);
+    if (min < 10)
+      minutes_string = QString("0%1").arg(min);
+    if (sec < 10)
+      secondss_string = QString("0%1").arg(sec);
+
+    m_timezone_label->set_label("End@" + a_widget->completion_time_as_string());
+    m_clock_session_window->set_window_title(
+        QString("%1:%2:%3").arg(hour_string).arg(minutes_string).arg(
+            secondss_string));
+  });
+
   m_toolbar->on_item_activated([=](const QString &a_action) {
     if (a_action == "Start") {
-      double duration = (m_dial_widget_hours_ptr->currentValue() * 60 * 60)
-              + (m_dial_widget_mintues_ptr->currentValue() * 60)
-              + m_dial_widget_seconds_ptr->currentValue();
+      double duration = (m_dial_widget_hours_ptr->currentValue() * 60 * 60) +
+                        (m_dial_widget_mintues_ptr->currentValue() * 60) +
+                        m_dial_widget_seconds_ptr->currentValue();
 
       m_dial_widget_seconds_ptr->hide();
       m_clock_widget->add_range_marker(0.0, duration);

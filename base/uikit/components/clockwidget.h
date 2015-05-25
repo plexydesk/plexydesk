@@ -17,25 +17,25 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
 ***************************************************************************/
-
 #ifndef CLOCK_WIDGET_H
 #define CLOCK_WIDGET_H
 
+// Qtz
 #include <widget.h>
+#include <plexydesk_ui_exports.h>
 
-#include <QByteArray>
+// Qt
 #include <QTimeZone>
-#include <QTimer>
 
 namespace UIKit {
-class ClockWidget : public Widget {
+class DECL_UI_KIT_EXPORT ClockWidget : public Widget {
 public:
   typedef enum {
-       kRunForwards,
-       kRunBackwards
+    kRunForwards,
+    kRunBackwards
   } Direction;
 
-  ClockWidget(QGraphicsObject *a_parent_ptr = 0);
+  explicit ClockWidget(QGraphicsObject *a_parent_ptr = 0);
   virtual ~ClockWidget();
 
   void set_timezone_id(const QByteArray &a_timezone_id);
@@ -43,12 +43,22 @@ public:
 
   virtual void add_marker(double a_hour, double a_min);
   virtual void add_range_marker(double a_start, double a_end);
+
+  virtual int duration() const;
+  virtual int elapsed_time_in_seconds() const;
+  virtual QString completion_time_as_string() const;
+
   virtual void run_timer(Direction a_direction = kRunForwards);
+
+  virtual void on_timer_ended(std::function<void ()> a_callback);
+  virtual void on_timeout(std::function<void (const ClockWidget *)> a_callback);
+
 protected:
   void paint_view(QPainter *painter, const QRectF &r);
+
 private:
   class PrivateClockWidget;
   PrivateClockWidget *const d;
- };
+};
 }
 #endif
