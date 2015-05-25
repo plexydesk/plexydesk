@@ -25,6 +25,10 @@
 #include <plexyconfig.h>
 #include <toolbar.h>
 
+typedef std::function<void(const QString &)> on_title_callback_func;
+typedef std::function<void(const QString &, const QString &)>
+on_config_callback_func;
+
 class NoteWidget::PrivateNoteWidget {
 public:
   PrivateNoteWidget() {}
@@ -33,6 +37,7 @@ public:
   void initDataStore();
 
   QString getContentText(const QString &data) const;
+  void nofity_config_change(const QString &a_key, const QString &a_value);
 
   QString m_note_id;
 
@@ -52,13 +57,13 @@ public:
   QGraphicsLinearLayout *mSubLayout;
 
   QImage mBackgroundPixmap;
-  // datastore
-  QuetzalKit::DataStore *mDataStore;       // main data store.
-  QuetzalKit::SyncObject *mNoteListObject; // contains the list of Notes.
-  QuetzalKit::SyncObject *mCurrentNoteObject;
-  QuetzalKit::SyncObject *getNoteObject();
 
   UIKit::Space *m_viewport;
+  UIKit::SessionSync *m_note_session;
+
+  std::vector<on_title_callback_func> m_on_title_callback_func_list;
+  std::vector<on_config_callback_func> m_on_config_callback_func_list;
+  QVariantMap m_config_data;
 };
 
 void NoteWidget::createToolBar() {
@@ -66,18 +71,34 @@ void NoteWidget::createToolBar() {
   d->m_note_toolbar_widget->add_action("contact", "pd_add_contact_icon", false);
   d->m_note_toolbar_widget->add_action("list", "pd_list_icon", false);
   d->m_note_toolbar_widget->add_action("date", "pd_calendar_icon", false);
-  d->m_note_toolbar_widget->add_action("red", "pd_icon_red_color_action", false);
-  d->m_note_toolbar_widget->add_action("yellow", "pd_icon_yellow_color_action", false);
-  d->m_note_toolbar_widget->add_action("green", "pd_icon_green_color_action", false);
-  d->m_note_toolbar_widget->add_action("blue", "pd_icon_blue_color_action", false);
-  d->m_note_toolbar_widget->add_action("black", "pd_icon_black_color_action", false);
+  d->m_note_toolbar_widget->add_action("red", "pd_icon_red_color_action",
+                                       false);
+  d->m_note_toolbar_widget->add_action("yellow", "pd_icon_yellow_color_action",
+                                       false);
+  d->m_note_toolbar_widget->add_action("green", "pd_icon_green_color_action",
+                                       false);
+  d->m_note_toolbar_widget->add_action("blue", "pd_icon_blue_color_action",
+                                       false);
+  d->m_note_toolbar_widget->add_action("black", "pd_icon_black_color_action",
+                                       false);
   d->m_note_toolbar_widget->add_action("delete", "pd_trash_icon", false);
 }
 
 void NoteWidget::setViewport(UIKit::Space *space) { d->m_viewport = space; }
 
-NoteWidget::NoteWidget(QGraphicsObject *parent)
+void NoteWidget::on_text_data_changed(
+    std::function<void(const QString &)> a_callback) {
+  d->m_on_title_callback_func_list.push_back(a_callback);
+}
+
+void NoteWidget::on_note_config_changed(
+    std::function<void(const QString &, const QString &)> a_callback) {
+  d->m_on_config_callback_func_list.push_back(a_callback);
+}
+
+NoteWidget::NoteWidget(UIKit::SessionSync *a_session, QGraphicsObject *parent)
     : UIKit::Widget(parent), d(new PrivateNoteWidget) {
+  d->m_note_session = a_session;
   d->mLayoutBase = new QGraphicsWidget(this);
   d->mSubLayoutBase = new QGraphicsWidget(d->mLayoutBase);
 
@@ -94,7 +115,7 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
   createToolBar();
 
   d->m_note_toolbar_widget->on_item_activated([this](const QString &a_action) {
-      onToolBarAction(a_action);
+    onToolBarAction(a_action);
   });
 
   d->m_image_attachment_view = new UIKit::ImageView(d->mSubLayoutBase);
@@ -117,41 +138,24 @@ NoteWidget::NoteWidget(QGraphicsObject *parent)
   d->m_attachment_del_button->hide();
   d->m_attachment_del_button->set_background_color(Qt::white);
 
-  connect(d->m_text_editor_widget, SIGNAL(documentTitleAvailable(QString)), this,
-          SLOT(onDocuemntTitleAvailable(QString)));
-  connect(d->m_text_editor_widget, SIGNAL(textUpdated(QString)), this,
+  connect(d->m_text_editor_widget, SIGNAL(documentTitleAvailable(QString)),
+          this, SLOT(onDocuemntTitleAvailable(QString)));
+
+  connect(d->m_text_editor_widget, SIGNAL(text_updated(QString)), this,
           SLOT(onTextUpdated(QString)));
+
   connect(d->m_attachment_del_button, SIGNAL(clicked()), this,
           SLOT(deleteImageAttachment()));
 
   this->setAcceptDrops(true);
-  initDataStore();
 }
 
 NoteWidget::~NoteWidget() { delete d; }
 
 void NoteWidget::setTitle(const QString &name) {
   d->m_note_title = name;
+  d->nofity_config_change("title", name);
   update();
-
-  d->mCurrentNoteObject->setObjectAttribute("title", name);
-  d->mDataStore->updateNode(d->mCurrentNoteObject);
-
-  // requestNoteSideImageFromWebService(d->mNoteTitle);
-}
-
-void NoteWidget::initDataStore() {
-  d->mDataStore = new QuetzalKit::DataStore("desktopnotes", this);
-  QuetzalKit::DiskSyncEngine *engine =
-      new QuetzalKit::DiskSyncEngine(d->mDataStore);
-
-  d->mDataStore->setSyncEngine(engine);
-
-  d->mNoteListObject = d->mDataStore->begin("NoteList");
-  d->mCurrentNoteObject = d->mNoteListObject->createNewObject("Note");
-  d->mCurrentNoteObject->setObjectAttribute("title", "");
-
-  d->mDataStore->insert(d->mCurrentNoteObject);
 }
 
 void NoteWidget::setNoteWidgetContent(const QString &status) {
@@ -159,7 +163,20 @@ void NoteWidget::setNoteWidgetContent(const QString &status) {
   update();
 }
 
+void NoteWidget::set_editor_text(const QString &a_text) {
+  d->m_text_editor_widget->set_text(a_text);
+}
+
 void NoteWidget::setID(const QString &id) { d->m_note_id = id; }
+
+void NoteWidget::set_editor_color_scheme(const QString &a_fb_color,
+                                         const QString &a_bg_color) {
+  if (!d->m_text_editor_widget)
+    return;
+  d->m_text_editor_widget->style(QString("border: 0; background: %1; color: %2")
+                                     .arg(a_bg_color)
+                                     .arg(a_fb_color));
+}
 
 QString NoteWidget::title() const { return d->m_note_title; }
 
@@ -177,7 +194,8 @@ void NoteWidget::setPixmap(const QPixmap &pixmap) {
   if (d->m_image_attachment.isNull()) {
     d->m_text_editor_widget->setPos(d->m_text_editor_widget->pos().x(),
                          d->m_text_editor_widget->pos().y() + 300);
-    d->m_note_toolbar_widget->setPos(d->m_note_toolbar_widget->pos().x(), d->m_note_toolbar_widget->pos().y() + 300);
+    d->m_note_toolbar_widget->setPos(d->m_note_toolbar_widget->pos().x(),
+  d->m_note_toolbar_widget->pos().y() + 300);
     qDebug() << Q_FUNC_INFO << pixmap.isNull();
   }
   d->m_image_attachment = pixmap;
@@ -186,61 +204,22 @@ void NoteWidget::setPixmap(const QPixmap &pixmap) {
   */
 
   if (d->m_image_attachment_view) {
-      float image_width_ratio = 320.0 / pixmap.width();
+    float image_width_ratio = 320.0 / pixmap.width();
 
-      float image_height = pixmap.height() * image_width_ratio;
-      float image_width = pixmap.width() * image_width_ratio;
+    float image_height = pixmap.height() * image_width_ratio;
+    float image_width = pixmap.width() * image_width_ratio;
 
-      d->m_image_attachment_view->setMinimumSize(image_width, image_height);
-      d->m_image_attachment_view->set_pixmap(
-            pixmap.scaled(image_width, image_height));
+    d->m_image_attachment_view->setMinimumSize(image_width, image_height);
+    d->m_image_attachment_view->set_pixmap(
+        pixmap.scaled(image_width, image_height));
 
-      if (d->m_text_editor_widget) {
-          d->m_text_editor_widget->setMinimumWidth(image_width);
-      }
-      d->mSubLayout->invalidate();
-      d->mSubLayout->activate();
-      setGeometry(d->mSubLayout->geometry());
-
+    if (d->m_text_editor_widget) {
+      d->m_text_editor_widget->setMinimumWidth(image_width);
+    }
+    d->mSubLayout->invalidate();
+    d->mSubLayout->activate();
+    setGeometry(d->mSubLayout->geometry());
   }
-}
-
-void NoteWidget::saveNoteToStore() {
-  QuetzalKit::DataStore *store = new QuetzalKit::DataStore("deskopnotes", this);
-
-  QuetzalKit::DiskSyncEngine *diskEngine = new QuetzalKit::DiskSyncEngine(this);
-  store->setSyncEngine(diskEngine);
-
-  QuetzalKit::SyncObject *object = store->rootObject();
-
-  bool newObject = false;
-  if (object->name().isEmpty()) {
-    object->setName("notelist");
-    object->setKey(10);
-    newObject = true;
-    // object->setObjectAttribute("src", "http://www.google.com");
-  }
-
-  // child object
-  QuetzalKit::SyncObject noteObject;
-
-  noteObject.setName("note");
-  noteObject.setObjectAttribute("content", d->m_text_editor_widget->text());
-  // meta object
-
-  QuetzalKit::SyncObject metaData;
-
-  metaData.setName("metadata");
-  metaData.setKey(100);
-  metaData.setObjectAttribute("compression", "PNG");
-  metaData.setObjectAttribute("location", "Colomobo, Sri Lanka");
-
-  noteObject.addChildObject(&metaData);
-  if (!newObject) {
-    object->addChildObject(&noteObject);
-  }
-
-  store->addObject(object);
 }
 
 void NoteWidget::resize(const QSizeF &size) {
@@ -280,7 +259,8 @@ void NoteWidget::paint(QPainter *painter,
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
   painter->drawPixmap(
       QRectF(0, y(), option->exposedRect.width(), 300.0), d->m_image_attachment,
-      QRectF((d->m_image_attachment.width() - option->exposedRect.width()) / 2, 0.0,
+      QRectF((d->m_image_attachment.width() - option->exposedRect.width()) / 2,
+0.0,
              option->exposedRect.width(), 300));
   painter->restore();
 }
@@ -330,6 +310,7 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
 void NoteWidget::onClicked() { Q_EMIT clicked(this); }
 
 void NoteWidget::onTextUpdated(const QString &text) {
+  qDebug() << Q_FUNC_INFO << " -- " << text;
   QString save;
   if (d->m_note_title.isEmpty()) {
     save = text;
@@ -337,8 +318,12 @@ void NoteWidget::onTextUpdated(const QString &text) {
     save = d->getContentText(text);
   }
 
-  d->mCurrentNoteObject->setTextData(save);
-  d->mDataStore->updateNode(d->mCurrentNoteObject);
+  std::for_each(std::begin(d->m_on_title_callback_func_list),
+                std::end(d->m_on_title_callback_func_list),
+                [&](on_title_callback_func a_func) {
+    if (a_func)
+      a_func(save);
+  });
 }
 
 void NoteWidget::onDocuemntTitleAvailable(const QString &title) {
@@ -360,27 +345,31 @@ void NoteWidget::onToolBarAction(const QString &action) {
   } else if (action == tr("link")) {
     d->m_text_editor_widget->convert_to_link();
   } else if (action == tr("red")) {
-    d->m_text_editor_widget->style("border: 0; background: #D55521; color: #ffffff");
-    d->mCurrentNoteObject->setObjectAttribute("color", "#D55521");
-    d->mDataStore->updateNode(d->mCurrentNoteObject);
+    d->m_text_editor_widget->style(
+        "border: 0; background: #D55521; color: #ffffff");
+    d->nofity_config_change("background", "#D55521");
+    d->nofity_config_change("forground", "#ffffff");
   } else if (action == tr("yellow")) {
-    d->m_text_editor_widget->style("border: 0; background: #E6DA42; color: #000000");
-    d->mCurrentNoteObject->setObjectAttribute("color", "#E6DA42");
-    d->mDataStore->updateNode(d->mCurrentNoteObject);
+    d->m_text_editor_widget->style(
+        "border: 0; background: #E6DA42; color: #000000");
+    d->nofity_config_change("background", "#e6da42");
+    d->nofity_config_change("forground", "#000000");
   } else if (action == tr("green")) {
-    d->m_text_editor_widget->style("border: 0; background: #29CDA8; color: #ffffff");
-    d->mCurrentNoteObject->setObjectAttribute("color", "#29CDA8");
-    d->mDataStore->updateNode(d->mCurrentNoteObject);
+    d->m_text_editor_widget->style(
+        "border: 0; background: #29CDA8; color: #ffffff");
+    d->nofity_config_change("background", "#29cda8");
+    d->nofity_config_change("forground", "#ffffff");
   } else if (action == tr("blue")) {
-    d->m_text_editor_widget->style("border: 0; background: #0AACF0; color: #ffffff");
-    d->mCurrentNoteObject->setObjectAttribute("color", "#0AACF0");
-    d->mDataStore->updateNode(d->mCurrentNoteObject);
+    d->m_text_editor_widget->style(
+        "border: 0; background: #0AACF0; color: #ffffff");
+    d->nofity_config_change("background", "#0AACF0");
+    d->nofity_config_change("forground", "#ffffff");
   } else if (action == tr("black")) {
-    d->m_text_editor_widget->style("border: 0; background: #4A4A4A; color: #ffffff");
-    d->mCurrentNoteObject->setObjectAttribute("color", "#4A4A4A");
-    d->mDataStore->updateNode(d->mCurrentNoteObject);
+    d->m_text_editor_widget->style(
+        "border: 0; background: #4A4A4A; color: #ffffff");
+    d->nofity_config_change("background", "#4A4A4A");
+    d->nofity_config_change("forground", "#ffffff");
   } else if (action == tr("delete")) {
-    d->mDataStore->deleteObject(d->mCurrentNoteObject);
     this->hide();
   }
 }
@@ -396,8 +385,8 @@ void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   ;
 }
 
-void NoteWidget::onSizeServiceCompleteJson(
-    QuetzalSocialKit::WebService *service) {
+void
+NoteWidget::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -474,8 +463,9 @@ void NoteWidget::deleteImageAttachment() {
 
   if (d->m_image_attachment.isNull()) {
     d->m_text_editor_widget->setPos(d->m_text_editor_widget->pos().x(),
-                         d->m_text_editor_widget->pos().y() - 300);
-    d->m_note_toolbar_widget->setPos(d->m_note_toolbar_widget->pos().x(), d->m_note_toolbar_widget->pos().y() - 300);
+                                    d->m_text_editor_widget->pos().y() - 300);
+    d->m_note_toolbar_widget->setPos(d->m_note_toolbar_widget->pos().x(),
+                                     d->m_note_toolbar_widget->pos().y() - 300);
   }
 
   d->m_attachment_del_button->hide();
@@ -483,8 +473,8 @@ void NoteWidget::deleteImageAttachment() {
   update();
 }
 
-QString NoteWidget::PrivateNoteWidget::getContentText(const QString &data)
-    const {
+QString
+NoteWidget::PrivateNoteWidget::getContentText(const QString &data) const {
   QStringList dataList = data.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
 
   QString rv;
@@ -495,6 +485,13 @@ QString NoteWidget::PrivateNoteWidget::getContentText(const QString &data)
   return rv;
 }
 
-QuetzalKit::SyncObject *NoteWidget::PrivateNoteWidget::getNoteObject() {
-  return 0;
+void
+NoteWidget::PrivateNoteWidget::nofity_config_change(const QString &a_key,
+                                                    const QString &a_value) {
+  std::for_each(std::begin(m_on_config_callback_func_list),
+                std::end(m_on_config_callback_func_list),
+                [&](on_config_callback_func a_func) {
+    if (a_func)
+      a_func(a_key, a_value);
+  });
 }

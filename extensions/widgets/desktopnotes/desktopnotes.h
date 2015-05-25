@@ -53,8 +53,8 @@ Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:
-  void createNoteUI();
-  void createReminderUI();
+  void createNoteUI(UIKit::SessionSync *a_session);
+  void createReminderUI(UIKit::SessionSync *a_session);
 
   class PrivateDesktopNotes;
   PrivateDesktopNotes *const d;

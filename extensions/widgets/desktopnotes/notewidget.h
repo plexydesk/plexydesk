@@ -8,35 +8,40 @@
 #include <widget.h>
 #include <webservice.h>
 #include <desktopactivity.h>
+#include <session_sync.h>
 
 class NoteWidget : public UIKit::Widget {
   Q_OBJECT
 public:
-  explicit NoteWidget(QGraphicsObject *a_parent_ptr = 0);
-
+  explicit NoteWidget(UIKit::SessionSync *a_session,
+                      QGraphicsObject *a_parent_ptr = 0);
   virtual ~NoteWidget();
 
   void setTitle(const QString &title);
+  QString title() const;
 
   void setNoteWidgetContent(const QString &status);
 
+  void set_editor_text(const QString &a_text);
+
   void setID(const QString &id);
 
-  QString title() const;
+  void set_editor_color_scheme(const QString &a_fb_color,
+                               const QString &a_bg_color);
 
   QString id();
-
   QString noteContent() const;
 
   void setPixmap(const QPixmap &pixmap);
 
-  void saveNoteToStore();
-
   void resize(const QSizeF &size);
-
   void createToolBar();
 
   void setViewport(UIKit::Space *space);
+
+  void on_text_data_changed(std::function<void(const QString &)> a_callback);
+  void on_note_config_changed(
+      std::function<void(const QString &, const QString &)> a_callback);
 Q_SIGNALS:
   void clicked(NoteWidget *item);
 
@@ -69,7 +74,6 @@ private:
 
   void requestNoteSideImageFromWebService(const QString &key);
   void requestPhotoSizes(const QString &photoID);
-  void initDataStore();
 };
 
 #endif // M_NOTE_WIDGET_H

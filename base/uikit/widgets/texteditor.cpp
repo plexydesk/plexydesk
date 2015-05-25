@@ -178,6 +178,7 @@ void TextEditor::convert_to_link() {
 }
 
 void TextEditor::on_text_updated() {
+    qDebug() << Q_FUNC_INFO;
   QTextDocument *doc = d->mEditor->document();
   Q_EMIT text_updated(this->text());
 }

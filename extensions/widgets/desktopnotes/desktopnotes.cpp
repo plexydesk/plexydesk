@@ -22,6 +22,7 @@
 #include <view_controller.h>
 #include <widget.h>
 #include <QAction>
+#include <session_sync.h>
 
 #include "reminderwidget.h"
 #include "notewidget.h"
@@ -57,38 +58,71 @@ void DesktopNotesControllerImpl::init() {
 
 void DesktopNotesControllerImpl::session_data_available(
     const QuetzalKit::SyncObject &a_sesion_root) {
+  revoke_previous_session("Notes", [this](UIKit::ViewController *a_controller,
+                                          UIKit::SessionSync *a_session) {
+      createNoteUI(a_session);
+  });
 }
 
-void DesktopNotesControllerImpl::submit_session_data(
-    QuetzalKit::SyncObject *a_obj) {}
+void
+DesktopNotesControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj) {
+  write_session_data("Notes");
+}
 
 void DesktopNotesControllerImpl::set_view_rect(const QRectF &rect) {}
 
 UIKit::ActionList DesktopNotesControllerImpl::actions() const {
-  // return d->mNoteActions.keys();
   return d->m_supported_action_list;
 }
 
 void DesktopNotesControllerImpl::request_action(const QString &actionName,
                                                 const QVariantMap &args) {
+  QPointF window_location;
+
+  if (viewport()) {
+    window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+  }
+
+  QVariantMap session_args;
+
   switch (d->mNoteActions[actionName]) {
-    case 1:
-      createNoteUI();
-      break;
-    case 2:
-      break;
-    case 3:
-      createReminderUI();
-      break;
-    default:
-      qWarning() << Q_FUNC_INFO << "Unknown Action";
+  case 1:
+
+    session_args["x"] = window_location.x();
+    session_args["y"] = window_location.y();
+    session_args["notes_id"] = session_count();
+    session_args["database_name"] =
+        QString::fromStdString(session_database_name("Notes"));
+
+    start_session("Notes", session_args, false,
+                  [this](UIKit::ViewController *a_controller,
+                         UIKit::SessionSync *a_session) {
+      createNoteUI(a_session);
+    });
+    break;
+  case 2:
+    break;
+  case 3:
+    session_args["x"] = window_location.x();
+    session_args["y"] = window_location.y();
+    session_args["reminders_id"] = session_count();
+    session_args["database_name"] =
+        QString::fromStdString(session_database_name("reminders"));
+
+    start_session("Reminders", session_args, false,
+                  [this](UIKit::ViewController *a_controller,
+                         UIKit::SessionSync *a_session) {
+      createReminderUI(a_session);
+    });
+    break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Unknown Action";
   }
 }
 
 void DesktopNotesControllerImpl::handle_drop_event(UIKit::Widget *widget,
                                                    QDropEvent *event) {
-  const QString droppedFile =
-      event->mimeData()->urls().value(0).toLocalFile();
+  const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
 
   if (fileInfo.isFile()) {
@@ -106,10 +140,10 @@ QString DesktopNotesControllerImpl::icon() const {
 
 void DesktopNotesControllerImpl::onDataUpdated(const QVariantMap &data) {}
 
-void DesktopNotesControllerImpl::createNoteUI() {
+void DesktopNotesControllerImpl::createNoteUI(UIKit::SessionSync *a_session) {
   UIKit::Window *window = new UIKit::Window();
 
-  NoteWidget *note = new NoteWidget(window);
+  NoteWidget *note = new NoteWidget(a_session, window);
   note->resize(QSizeF(320, 240));
   note->set_controller(this);
   note->setViewport(viewport());
@@ -118,20 +152,57 @@ void DesktopNotesControllerImpl::createNoteUI() {
   window->set_window_title("Note");
   window->set_window_content(note);
 
-  insert(window);
+  a_session->bind_to_window(window);
+
+  if (a_session->session_keys().contains("text")) {
+      note->set_editor_text(a_session->session_data("text").toString());
+  }
+
+  if (a_session->session_keys().contains("background") &&
+          a_session->session_keys().contains("forground")) {
+      QString backgorund_color = a_session->session_data("background").toString();
+      QString forground_color = a_session->session_data("forground").toString();
+
+      note->set_editor_color_scheme(forground_color, backgorund_color);
+  }
+
+
+  note->on_text_data_changed([=](const QString &a_text) {
+      a_session->save_session_attribute(
+              session_database_name("notes"), "Notes", "notes_id",
+              a_session->session_id_to_string(), "text", a_text.toStdString());
+  });
+
 
   note->on_geometry_changed([=](const QRectF &a_geometry) {
-      if (window) {
-         window->resize(a_geometry.width(), a_geometry.height());
-      }
+    if (window) {
+      window->resize(a_geometry.width(), a_geometry.height());
+    }
+  });
+
+  note->on_note_config_changed(
+              [=](const QString &a_key, const QString &a_value) {
+       a_session->save_session_attribute(
+              session_database_name("notes"), "Notes", "notes_id",
+              a_session->session_id_to_string(), a_key.toStdString(),
+                   a_value.toStdString());
   });
 
   window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
   });
+
+  if (viewport()) {
+    insert(window);
+    QPointF window_location;
+    window_location.setX(a_session->session_data("x").toFloat());
+    window_location.setY(a_session->session_data("y").toFloat());
+    window->setPos(window_location);
+  }
 }
 
-void DesktopNotesControllerImpl::createReminderUI() {
+void
+DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
   UIKit::Window *window = new UIKit::Window();
 
   ReminderWidget *reminder = new ReminderWidget(window);
@@ -141,12 +212,14 @@ void DesktopNotesControllerImpl::createReminderUI() {
   window->set_window_title("Reminder");
   window->set_window_content(reminder);
 
+  a_session->bind_to_window(window);
+
   insert(window);
 
   reminder->on_geometry_changed([=](const QRectF &a_geometry) {
-      if (reminder && window) {
-         window->resize(a_geometry.width(), a_geometry.height());
-      }
+    if (reminder && window) {
+      window->resize(a_geometry.width(), a_geometry.height());
+    }
   });
   window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
