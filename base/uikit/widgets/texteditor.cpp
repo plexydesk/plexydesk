@@ -96,10 +96,6 @@ QSizeF TextEditor::sizeHint(Qt::SizeHint which,
 }
 
 void TextEditor::setGeometry(const QRectF &a_rect) {
-  qDebug() << Q_FUNC_INFO
-           << "=========================================" << a_rect
-           << "=========================================";
-
   d->mProxyWidget->setMinimumSize(a_rect.size());
   d->mProxyWidget->setMaximumSize(a_rect.size());
   d->mProxyWidget->resize(a_rect.size());
