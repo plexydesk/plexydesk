@@ -175,6 +175,8 @@ void TextEditor::convert_to_link() {
 
 void TextEditor::on_text_updated() {
   QTextDocument *doc = d->mEditor->document();
+
+  Q_EMIT text_updated(doc->toPlainText());
 }
 
 void TextEditor::on_block_count_changed(int a_count) {

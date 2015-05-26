@@ -310,7 +310,6 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
 void NoteWidget::onClicked() { Q_EMIT clicked(this); }
 
 void NoteWidget::onTextUpdated(const QString &text) {
-  qDebug() << Q_FUNC_INFO << " -- " << text;
   QString save;
   if (d->m_note_title.isEmpty()) {
     save = text;
@@ -382,7 +381,6 @@ void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   }
 
   service->deleteLater();
-  ;
 }
 
 void
