@@ -112,7 +112,7 @@ EventCallbackFunc;
 class Widget::PrivateAbstractDesktopWidget {
 public:
   PrivateAbstractDesktopWidget()
-      : m_widget_controller(0), m_callback_count(0), mWidgetID(0) {}
+      : m_widget_controller(0), mWidgetID(0) {}
   ~PrivateAbstractDesktopWidget() {}
 
   void _exec_func(Widget::InputEvent a_type, const Widget *a_widget_ptr);
@@ -126,15 +126,12 @@ public:
 
   ViewController *m_widget_controller;
 
-  QList<EventCallbackFunc> m_handler_list;
-  std::vector<std::function<void (const QRectF &)>> m_on_geometry_func_list;
-
-  int m_callback_count;
+  std::vector<std::function<void(const QRectF &)> > m_on_geometry_func_list;
+  std::vector<EventCallbackFunc> m_handler_list;
 };
 
 Widget::Widget(QGraphicsObject *parent)
-    : QGraphicsObject(parent),
-      QGraphicsLayoutItem(0),
+    : QGraphicsObject(parent), QGraphicsLayoutItem(0),
       d(new PrivateAbstractDesktopWidget) {
   d->m_widget_name = QLatin1String("Widget");
   d->m_current_layer_type = kRenderAtForgroundLevel;
@@ -164,12 +161,11 @@ void Widget::set_widget_flag(int a_flags, bool a_enable) {}
 
 void Widget::on_input_event(
     std::function<void(InputEvent, const Widget *)> a_callback) {
-  d->m_callback_count++;
-  d->m_handler_list.append(a_callback);
+  d->m_handler_list.push_back(a_callback);
 }
 
-void Widget::on_geometry_changed(
-    std::function<void (const QRectF &)> a_callback) {
+void
+Widget::on_geometry_changed(std::function<void(const QRectF &)> a_callback) {
   d->m_on_geometry_func_list.push_back(a_callback);
 }
 
@@ -230,19 +226,19 @@ QSizeF Widget::sizeHint(Qt::SizeHint a_which,
   // return geometry().size();
   QSizeF sh;
   switch (a_which) {
-    case Qt::MinimumSize:
-      sh = QSizeF(0, 0);
-      break;
-    case Qt::PreferredSize:
-      sh = QSizeF(50, 50); // rather arbitrary
-      break;
-    case Qt::MaximumSize:
-      sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-      break;
-    default:
-      qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
-               "value of 'which'");
-      break;
+  case Qt::MinimumSize:
+    sh = QSizeF(0, 0);
+    break;
+  case Qt::PreferredSize:
+    sh = QSizeF(50, 50); // rather arbitrary
+    break;
+  case Qt::MaximumSize:
+    sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    break;
+  default:
+    qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
+             "value of 'which'");
+    break;
   }
   return sh;
 }
@@ -303,23 +299,28 @@ void Widget::set_controller(ViewController *a_view_controller_ptr) {
 
 ViewController *Widget::controller() const { return d->m_widget_controller; }
 
-void Widget::PrivateAbstractDesktopWidget::_exec_func(
-    InputEvent a_type, const Widget *a_widget_ptr) {
-  foreach(EventCallbackFunc l_func, m_handler_list) {
-    if (l_func) {
-      l_func(a_type, a_widget_ptr);
-    }
-    }
+void
+Widget::PrivateAbstractDesktopWidget::_exec_func(InputEvent a_type,
+                                                 const Widget *a_widget_ptr) {
+  std::for_each(std::begin(m_handler_list), std::end(m_handler_list),
+                [&](EventCallbackFunc a_func) {
+    if (a_func)
+      a_func(a_type, a_widget_ptr);
+    else
+      qWarning() << Q_FUNC_INFO << "Fatal Error : Function out of scope";
+  });
 }
 
 void Widget::PrivateAbstractDesktopWidget::_inoke_geometry_func(
     const QRectF &a_rect) {
   std::for_each(std::begin(m_on_geometry_func_list),
                 std::end(m_on_geometry_func_list),
-                [&](std::function<void (const QRectF &)> a_func) {
-      if (a_func)
-        a_func(a_rect);
-    });
+                [&](std::function<void(const QRectF &)> a_func) {
+    if (a_func)
+      a_func(a_rect);
+    else
+      qDebug() << Q_FUNC_INFO << "INvalid function pointer";
+  });
 }
 
 } // namespace PlexyDesk
