@@ -199,10 +199,10 @@ Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
         UIKit::Space *viewport = a_controller->viewport();
 
         QPointF _activity_window_location = viewport->center(
-            QRectF(0, 0, 240, 320), QRectF(m_clock_session_window->x(),
-                                           m_clock_session_window->y(),
-                                           m_clock_session_window->geometry().width(),
-                                           m_clock_session_window->geometry().height()),
+            QRectF(0, 0, 240, 320),
+            QRectF(m_clock_session_window->x(), m_clock_session_window->y(),
+                   m_clock_session_window->geometry().width(),
+                   m_clock_session_window->geometry().height()),
             UIKit::Space::kCenterOnWindow);
         UIKit::DesktopActivityPtr activity = viewport->create_activity(
             "timezone", "TimeZone", _activity_window_location,
