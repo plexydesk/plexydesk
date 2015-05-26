@@ -152,7 +152,6 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->mOkBtn->setGeometry(QRectF(0, 0, 48, 48));
   d->mOkBtn->show();
   d->mOkBtn->setPos(600 - 52, 320);
-  d->mOkBtn->setZValue(1000);
 
   connect(d->mClockHourWidget, SIGNAL(value(float)), this,
           SLOT(onHourValueChanged(float)));

@@ -17,6 +17,10 @@
 #include "workspace.h"
 
 namespace UIKit {
+#define  kMaximumZOrder 10000
+#define  kMinimumZOrder 100
+#define  kMediumZOrder 5000
+
 typedef std::function<void(Space::ViewportNotificationType, const QVariant &,
                            const Space *)> NotifyFunc;
 class Space::PrivateSpace {
@@ -185,6 +189,7 @@ void Space::insert_window_to_view(Window *a_window) {
                         a_window->boundingRect().height() / 2);
 
   m_priv_impl->mMainScene->addItem(a_window);
+  a_window->setZValue(kMaximumZOrder);
   a_window->setPos(_widget_location);
 
         /*
@@ -202,6 +207,25 @@ void Space::insert_window_to_view(Window *a_window) {
   a_window->on_window_closed([this](Window *window) {
     qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
     remove_window_from_view(window);
+  });
+
+  a_window->on_window_focused([this](Window *a_window) {
+      if (!a_window)
+          return;
+    std::for_each(std::begin(m_priv_impl->mWindowList),
+                  std::end(m_priv_impl->mWindowList),
+                  [&](Window *a_win) {
+       if (!a_win && a_win->window_type() != Window::kApplicationWindow)
+           return;
+       if (a_win->zValue() == kMaximumZOrder) {
+           a_win->setZValue(kMaximumZOrder - 1);
+           return;
+       }
+
+       a_win->setZValue(kMediumZOrder);
+    });
+
+    a_window->setZValue(kMaximumZOrder);
   });
 }
 

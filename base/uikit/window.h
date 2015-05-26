@@ -41,6 +41,7 @@ public:
       std::function<void(const QPointF &pos)> a_handler);
   virtual void on_window_closed(std::function<void(Window *)> a_handler);
   virtual void on_window_discarded(std::function<void(Window *)> a_handler);
+  virtual void on_window_focused(std::function<void (Window *)> a_handler);
 
   virtual void show();
   virtual void hide();

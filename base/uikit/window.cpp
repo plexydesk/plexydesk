@@ -14,6 +14,7 @@
 #include <QGraphicsDropShadowEffect>
 
 namespace UIKit {
+typedef std::function<void(Window *)> WindowActionCallback;
 class Window::PrivateWindow {
 public:
   PrivateWindow() : m_window_content(0), mWindowBackgroundVisibility(true) {}
@@ -33,7 +34,8 @@ public:
   std::function<void(const QPointF &size)> m_window_move_callback;
 
   std::vector<std::function<void(const QPointF &size)>> m_window_move_cb_list;
-  std::vector<std::function<void(Window *)>> m_window_close_callback_list;
+  std::vector<WindowActionCallback> m_window_close_callback_list;
+  std::vector<WindowActionCallback> m_window_focus_callback_list;
 
   std::function<void(Window *)> m_window_discard_callback;
 };
@@ -175,7 +177,11 @@ void Window::on_window_closed(std::function<void(Window *)> a_handler) {
 }
 
 void Window::on_window_discarded(std::function<void(Window *)> a_handler) {
-  m_priv_impl->m_window_discard_callback = a_handler;
+    m_priv_impl->m_window_discard_callback = a_handler;
+}
+
+void Window::on_window_focused(std::function<void (Window *)> a_handler) {
+  m_priv_impl->m_window_focus_callback_list.push_back(a_handler);
 }
 
 void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
@@ -233,6 +239,15 @@ void Window::enable_window_background(bool a_visibility) {
 }
 
 void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+  //window focus notifycatoin.
+  if (m_priv_impl->m_window_type == kApplicationWindow) {
+  std::for_each(std::begin(m_priv_impl->m_window_focus_callback_list),
+                std::end(m_priv_impl->m_window_focus_callback_list),
+                [&](WindowActionCallback a_func) {
+      if (a_func)
+          a_func(this);
+  });
+  }
   QGraphicsObject::mousePressEvent(event);
 }
 
