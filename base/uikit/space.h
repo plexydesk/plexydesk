@@ -20,7 +20,8 @@ public:
     kCenterOnViewportLeft,
     kCenterOnViewportRight,
     kCenterOnViewportTop,
-    kCenterOnViewportBottom
+    kCenterOnViewportBottom,
+    kCenterOnWindow,
   } ViewportLocation;
 
   typedef enum {
@@ -70,6 +71,7 @@ public:
 
   virtual QPointF cursor_pos() const;
   virtual QPointF center(const QRectF &a_view_geometry,
+                         const QRectF a_window_geometry = QRectF(),
                          const ViewportLocation &a_location = kCenterOnViewport)
       const;
 

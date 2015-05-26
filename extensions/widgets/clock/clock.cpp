@@ -197,8 +197,15 @@ Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
     if (a_action == "TimeZone") {
       if (a_controller && a_controller->viewport()) {
         UIKit::Space *viewport = a_controller->viewport();
+
+        QPointF _activity_window_location = viewport->center(
+            QRectF(0, 0, 240, 320), QRectF(m_clock_session_window->x(),
+                                           m_clock_session_window->y(),
+                                           m_clock_session_window->geometry().width(),
+                                           m_clock_session_window->geometry().height()),
+            UIKit::Space::kCenterOnWindow);
         UIKit::DesktopActivityPtr activity = viewport->create_activity(
-            "timezone", "TimeZone", viewport->cursor_pos(),
+            "timezone", "TimeZone", _activity_window_location,
             QRectF(0, 0, 240, 320.0), QVariantMap());
 
         activity->on_action_completed([=](const QVariantMap &a_data) {

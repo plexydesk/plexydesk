@@ -17,9 +17,9 @@
 #include "workspace.h"
 
 namespace UIKit {
-#define  kMaximumZOrder 10000
-#define  kMinimumZOrder 100
-#define  kMediumZOrder 5000
+#define kMaximumZOrder 10000
+#define kMinimumZOrder 100
+#define kMediumZOrder 5000
 
 typedef std::function<void(Space::ViewportNotificationType, const QVariant &,
                            const Space *)> NotifyFunc;
@@ -94,9 +94,10 @@ void Space::add_controller(const QString &a_name) {
   }
 }
 
-UIKit::DesktopActivityPtr Space::create_activity(
-    const QString &a_activity, const QString &a_title, const QPointF &a_pos,
-    const QRectF &a_rect, const QVariantMap &a_data_map) {
+UIKit::DesktopActivityPtr
+Space::create_activity(const QString &a_activity, const QString &a_title,
+                       const QPointF &a_pos, const QRectF &a_rect,
+                       const QVariantMap &a_data_map) {
   UIKit::DesktopActivityPtr intent =
       UIKit::ExtensionManager::instance()->activity(a_activity);
 
@@ -112,6 +113,7 @@ UIKit::DesktopActivityPtr Space::create_activity(
   if (intent->window()) {
     intent->window()->set_window_title(a_title);
     intent->window()->set_window_viewport(this);
+    intent->window()->setPos(a_pos);
   }
 
   add_activity(intent);
@@ -132,15 +134,14 @@ void Space::update_session_value(const QString &a_controller_name,
     if (!a_found) {
       QuetzalKit::SyncObject obj;
       obj.setName("AppSession");
-      obj.setObjectAttribute("name",
-                             m_priv_impl->sessionNameForController(a_controller_name));
+      obj.setObjectAttribute(
+          "name", m_priv_impl->sessionNameForController(a_controller_name));
 
       sync->add_object(obj);
     }
 
     controller(a_controller_name)->submit_session_data(&a_object);
     a_object.sync();
-
   });
 
   sync->find("AppSession", "", "");
@@ -190,12 +191,8 @@ void Space::insert_window_to_view(Window *a_window) {
 
   m_priv_impl->mMainScene->addItem(a_window);
   a_window->setZValue(kMaximumZOrder);
-  a_window->setPos(_widget_location);
+  // a_window->setPos(_widget_location);
 
-        /*
-  connect(a_window, SIGNAL(closed(UIKit::Widget *)), this,
-          SLOT(remove_window_from_view(UIKit::Widget *)));
-        */
   a_window->show();
 
   if (a_window->controller()) {
@@ -210,19 +207,18 @@ void Space::insert_window_to_view(Window *a_window) {
   });
 
   a_window->on_window_focused([this](Window *a_window) {
-      if (!a_window)
-          return;
+    if (!a_window)
+      return;
     std::for_each(std::begin(m_priv_impl->mWindowList),
-                  std::end(m_priv_impl->mWindowList),
-                  [&](Window *a_win) {
-       if (!a_win && a_win->window_type() != Window::kApplicationWindow)
-           return;
-       if (a_win->zValue() == kMaximumZOrder) {
-           a_win->setZValue(kMaximumZOrder - 1);
-           return;
-       }
+                  std::end(m_priv_impl->mWindowList), [&](Window *a_win) {
+      if (!a_win && a_win->window_type() != Window::kApplicationWindow)
+        return;
+      if (a_win->zValue() == kMaximumZOrder) {
+        a_win->setZValue(kMaximumZOrder - 1);
+        return;
+      }
 
-       a_win->setZValue(kMediumZOrder);
+      a_win->setZValue(kMediumZOrder);
     });
 
     a_window->setZValue(kMaximumZOrder);
@@ -309,8 +305,8 @@ void Space::save_controller_to_session(const QString &a_controller_name) {
   delete sync;
 }
 
-void Space::revoke_controller_session_attributes(
-    const QString &a_controller_name) {
+void
+Space::revoke_controller_session_attributes(const QString &a_controller_name) {
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
       m_priv_impl->sessionNameForController(a_controller_name).toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
@@ -318,20 +314,19 @@ void Space::revoke_controller_session_attributes(
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
-                        const std::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
              << a_controller_name;
 
-    a_object.setObjectAttribute("name",
-                               m_priv_impl->sessionNameForController(
-                                 a_controller_name));
+    a_object.setObjectAttribute(
+        "name", m_priv_impl->sessionNameForController(a_controller_name));
     if (!a_found) {
-        a_object.setName("AppSession");
-        sync->add_object(a_object);
+      a_object.setName("AppSession");
+      sync->add_object(a_object);
     }
 
     if (controller(a_controller_name)) {
-        controller(a_controller_name)->session_data_available(a_object);
+      controller(a_controller_name)->session_data_available(a_object);
     }
   });
 
@@ -348,8 +343,8 @@ void Space::register_controller(const QString &a_controller_name) {
 void Space::PrivateSpace::createActionsFromController(const Space *space,
                                                       ViewControllerPtr ptr) {
   Q_FOREACH(const QAction * action, ptr->actions()) {
-    //qDebug() << action->text();
-    //qDebug() << action->icon();
+    // qDebug() << action->text();
+    // qDebug() << action->icon();
   }
 }
 
@@ -385,19 +380,18 @@ QString Space::PrivateSpace::sessionNameForSpace() {
   return QString("%1_Space_%2").arg(mName).arg(mID);
 }
 
-QString Space::PrivateSpace::sessionNameForController(
-    const QString &controllerName) {
+QString
+Space::PrivateSpace::sessionNameForController(const QString &controllerName) {
   return QString("%1_Controller_%2").arg(sessionNameForSpace()).arg(
       controllerName);
 }
 
 QString Space::session_name() const {
-    return m_priv_impl->sessionNameForSpace();
+  return m_priv_impl->sessionNameForSpace();
 }
 
-QString Space::session_name_for_controller(
-        const QString &a_controller_name) {
-    return m_priv_impl->sessionNameForController(a_controller_name);
+QString Space::session_name_for_controller(const QString &a_controller_name) {
+  return m_priv_impl->sessionNameForController(a_controller_name);
 }
 
 void Space::clear() {
@@ -454,34 +448,43 @@ QPointF Space::cursor_pos() const {
 }
 
 QPointF Space::center(const QRectF &a_view_geometry,
+                      const QRectF a_window_geometry,
                       const ViewportLocation &a_location) const {
   QPointF _rv;
   float _x_location;
   float _y_location;
 
   switch (a_location) {
-    case kCenterOnViewport:
-      _y_location = (geometry().height() / 2) - (a_view_geometry.height() / 2);
-      _x_location = (geometry().width() / 2) - (a_view_geometry.width() / 2);
-      break;
-    case kCenterOnViewportLeft:
-      _y_location = (geometry().height() / 2) - (a_view_geometry.height() / 2);
-      _x_location = (geometry().topLeft().x());
-      break;
-    case kCenterOnViewportRight:
-      _y_location = (geometry().height() / 2) - (a_view_geometry.height() / 2);
-      _x_location = (geometry().width() - (a_view_geometry.width()));
-      break;
-    case kCenterOnViewportTop:
-      _y_location = (0.0);
-      _x_location = ((geometry().width() / 2) - (a_view_geometry.width() / 2));
-      break;
-    case kCenterOnViewportBottom:
-      _y_location = (geometry().height() - (a_view_geometry.height()));
-      _x_location = ((geometry().width() / 2) - (a_view_geometry.width() / 2));
-      break;
-    default:
-      qWarning() << Q_FUNC_INFO << "Error : Unknown Viewprot Location Type:";
+  case kCenterOnViewport:
+    _y_location = (geometry().height() / 2) - (a_view_geometry.height() / 2);
+    _x_location = (geometry().width() / 2) - (a_view_geometry.width() / 2);
+    break;
+  case kCenterOnViewportLeft:
+    _y_location = (geometry().height() / 2) - (a_view_geometry.height() / 2);
+    _x_location = (geometry().topLeft().x());
+    break;
+  case kCenterOnViewportRight:
+    _y_location = (geometry().height() / 2) - (a_view_geometry.height() / 2);
+    _x_location = (geometry().width() - (a_view_geometry.width()));
+    break;
+  case kCenterOnViewportTop:
+    _y_location = (0.0);
+    _x_location = ((geometry().width() / 2) - (a_view_geometry.width() / 2));
+    break;
+  case kCenterOnViewportBottom:
+    _y_location = (geometry().height() - (a_view_geometry.height()));
+    _x_location = ((geometry().width() / 2) - (a_view_geometry.width() / 2));
+    break;
+  case kCenterOnWindow:
+    _y_location =
+        (a_window_geometry.height() / 2) - (a_view_geometry.height() / 2)
+            + a_window_geometry.y();
+    _x_location =
+        (a_window_geometry.width() / 2) - (a_view_geometry.width() / 2) +
+            a_window_geometry.x();
+    break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Error : Unknown Viewprot Location Type:";
   }
 
   _rv.setY(geometry().y() + _y_location);

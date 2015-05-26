@@ -180,6 +180,7 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
   }
 
   d->m_dock_window->setPos(viewport()->center(d->m_dock_window->geometry(),
+                                              QRectF(),
                                               Space::kCenterOnViewportLeft));
 
   d->m_preview_widget->set_view_geometry(
@@ -477,7 +478,7 @@ void DockControllerImpl::onNavigationPanelClicked(const QString &action) {
 
       QPointF _menu_pos =
           viewport()->center(d->m_action_activity->window()->boundingRect(),
-                             UIKit::Space::kCenterOnViewportLeft);
+                             QRectF(), UIKit::Space::kCenterOnViewportLeft);
       _menu_pos.setX(d->m_navigation_dock->frame_geometry().width() + 5);
 
       if (d->m_action_activity && d->m_action_activity->window()) {
@@ -549,7 +550,7 @@ void DockControllerImpl::updatePreview() {
 
     QPointF lMenuPos =
         viewport()->center(d->m_action_activity->window()->boundingRect(),
-                           UIKit::Space::kCenterOnViewportLeft);
+                           QRectF(), UIKit::Space::kCenterOnViewportLeft);
 
     lMenuPos.setX(d->m_navigation_dock->geometry().width() + 5.0);
     d->m_preview_window->setGeometry(
