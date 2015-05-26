@@ -2,7 +2,9 @@
 
 #include <QDebug>
 #include <themepackloader.h>
+
 #include <iostream>
+#include <cmath>
 
 #define PI 3.14159258
 
