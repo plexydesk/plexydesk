@@ -37,13 +37,8 @@ public:
   virtual int alignment();
   virtual void set_alignment(int a_alignment);
 
-Q_SIGNALS:
-  void contentBoundingRectChaned();
-
 protected:
-  virtual void paint(QPainter *a_painter_ptr,
-                     const QStyleOptionGraphicsItem *a_option_ptr,
-                     QWidget *a_widget_ptr = 0);
+    virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 
 private:
   class PrivateLabel;

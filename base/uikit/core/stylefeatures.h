@@ -22,6 +22,7 @@ public:
 
   QRectF geometry;
   QString text_data;
+  QTextOption text_options;
   QPixmap image_data;
   RenderState render_state;
 

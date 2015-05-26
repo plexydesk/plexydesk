@@ -6,6 +6,7 @@
 #include <QFont>
 #include <QDebug>
 #include <QTextOption>
+#include <themepackloader.h>
 
 namespace UIKit {
 
@@ -16,50 +17,37 @@ public:
 
   QSizeF pixelSizeOfText(const QString &txt);
 
-  QSizeF mSize;
-  QString mString;
-  QColor mBgColor, mFgColor;
-  uint mFontSize;
+  QSizeF m_label_size;
+  QString m_label_string;
+  uint m_font_size;
   Qt::Alignment m_alignment;
 };
 
 Label::Label(QGraphicsObject *parent) : Widget(parent), d(new PrivateLabel) {
-  d->mBgColor = Qt::transparent;
-  d->mFgColor = QColor(88, 88, 88);
-  d->mFontSize = 14;
+  d->m_font_size = 14;
   d->m_alignment = Qt::AlignCenter;
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
 
 Label::~Label() {
-  // qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
 void Label::set_label(const QString &a_txt) {
-  d->mString = a_txt;
+  d->m_label_string = a_txt;
   update();
-  Q_EMIT contentBoundingRectChaned();
 }
 
-QString Label::label() const { return d->mString; }
+QString Label::label() const { return d->m_label_string; }
 
 QRectF Label::boundingRect() const {
-  // QSizeF size = d->pixelSizeOfText(d->mString);
-
-  /*
-  if (d->mSize.width() <= 0) {
-    return contentBoundingRect();
-  }
-  */
-
-  return QRectF(0.0, 0.0, d->mSize.width(), d->mSize.height());
+  return QRectF(0.0, 0.0, d->m_label_size.width(), d->m_label_size.height());
 }
 
-void Label::set_size(const QSizeF &_asize) { d->mSize = _asize; }
+void Label::set_size(const QSizeF &_asize) { d->m_label_size = _asize; }
 
-void Label::set_font_size(uint pixelSize) { d->mFontSize = pixelSize; }
+void Label::set_font_size(uint pixelSize) { d->m_font_size = pixelSize; }
 
 QSizeF Label::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
   return boundingRect().size();
@@ -70,20 +58,17 @@ void Label::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
 QRectF Label::contents_bounding_rect() const {
   QFont font;
   font.setFamily(font.defaultFamily());
-  font.setPointSize(d->mFontSize);
+  font.setPixelSize(d->m_font_size);
   QFontMetrics metic(font);
-  QRectF rect = metic.boundingRect(d->mString);
+  QRectF rect = metic.boundingRect(d->m_label_string);
   rect.setX(0.0);
   rect.setY(0.0);
 
-  qDebug() << Q_FUNC_INFO << rect;
   return rect;
 }
 
 void Label::set_label_style(const QColor &a_backgroundColor,
                             const QColor &a_textColor) {
-  d->mBgColor = a_backgroundColor;
-  d->mFgColor = a_textColor;
   update();
 }
 
@@ -93,31 +78,20 @@ void Label::set_alignment(int a_alignment) {
   d->m_alignment = (Qt::Alignment)a_alignment;
 }
 
-void Label::paint(QPainter *a_painter_ptr,
-                  const QStyleOptionGraphicsItem *a_option_ptr,
-                  QWidget *a_widget_ptr) {
-  a_painter_ptr->save();
-  a_painter_ptr->setPen(d->mFgColor);
+void Label::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
+  StyleFeatures feature;
 
-  /*
-  QFontMetrics metrics(painter->font());
-  QString elidedText =
-    metrics.elidedText(d->mString, Qt::ElideMiddle, d->mSize.width());
+  feature.text_data = d->m_label_string;
+  feature.geometry = a_rect;
+  feature.render_state = StyleFeatures::kRenderElement;
+  QTextOption text_option;
+  text_option.setAlignment(d->m_alignment);
+  feature.text_options = text_option;
+  feature.attributes["font_size"] = d->m_font_size;
 
-  QPainterPath path;
-  painter->setRenderHints(QPainter::SmoothPixmapTransform |
-                          QPainter::Antialiasing |
-                          QPainter::HighQualityAntialiasing);
-  path.addRoundedRect(option->exposedRect, 6, 6);
-  QFont drawFont = painter->font();
-  drawFont.setPixelSize(d->mFontSize);
-  painter->setFont(drawFont);
-  painter->fillPath(path, d->mBgColor);
-  */
-  // painter->fillRect(option->exposedRect, QColor("#ffffff"));
-  a_painter_ptr->drawText(a_option_ptr->exposedRect, d->mString,
-                          QTextOption(d->m_alignment));
-  a_painter_ptr->restore();
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("label", feature, a_painter_ptr);
+  }
 }
 
 QSizeF Label::PrivateLabel::pixelSizeOfText(const QString &txt) {

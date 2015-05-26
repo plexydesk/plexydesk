@@ -384,7 +384,7 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
                                    QPointF _transPos,
                                    QPointF current_marker_location_for_min) {
   if (mark_hour > 12)
-      mark_hour = mark_hour - 12;
+    mark_hour = mark_hour - 12;
   double hour_angle = (((60.0 * mark_hour) + mark_minutes) / 2);
   double min_angle = (6.0 * mark_minutes);
 
@@ -605,7 +605,7 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *painter) {
   // draw segement markers.
   int thikness = 2;
   QPen dot_frame_pen(QColor(color("primary_background")), thikness,
-                       Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+                     Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   for (int i = 0; i < max_value; i++) {
     double percent = (i / max_value);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
@@ -879,9 +879,33 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
 void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
                            QPainter *aPainterPtr, const Widget *aWidget) {
   aPainterPtr->save();
+  aPainterPtr->setRenderHints(QPainter::Antialiasing |
+                                  QPainter::TextAntialiasing |
+                                  QPainter::HighQualityAntialiasing,
+                              true);
+
+  QPen linePen = QPen(QColor(color("primary_forground")), 1, Qt::SolidLine,
+                      Qt::RoundCap, Qt::RoundJoin);
+
+  QFont _font = aPainterPtr->font();
+  _font.setBold(true);
+  if (aFeatures.attributes.keys().contains("font_size"))
+    _font.setPixelSize(aFeatures.attributes["font_size"].toInt() *
+                       scale_factor());
+  else
+    _font.setPixelSize(14 * scale_factor());
+
+  aPainterPtr->setFont(_font);
+
+  QFontMetrics metrics(aPainterPtr->font());
+  QString text = metrics.elidedText(aFeatures.text_data, Qt::ElideRight,
+                                    aFeatures.geometry.width());
+
+  /*
   aPainterPtr->fillRect(aFeatures.geometry,
                         QColor(color("primary_background")));
-  aPainterPtr->drawText(aFeatures.geometry, aWidget->label(),
-                        QTextOption(Qt::AlignHCenter | Qt::AlignLeft));
+                        */
+  aPainterPtr->setPen(linePen);
+  aPainterPtr->drawText(aFeatures.geometry, text, aFeatures.text_options);
   aPainterPtr->restore();
 }
