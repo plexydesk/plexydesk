@@ -160,6 +160,13 @@ bool LineEdit::eventFilter(QObject *object, QEvent *a_event_ptr) {
 }
 
 void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr) {
+  bool shift_key_pressed = false;
+
+  if (a_event_ptr->key() == Qt::Key_Shift) {
+      Widget::keyPressEvent(a_event_ptr);
+      return;
+  }
+
   if (a_event_ptr->key() == Qt::Key_Backspace) {
     d->mText.remove(d->mKeyCursorLeftLoc - 1, 1);
     if (d->mKeyCursorLeftLoc != 0) {
@@ -195,6 +202,7 @@ void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr) {
     return;
   }
   d->mText.insert(d->mKeyCursorLeftLoc, a_event_ptr->text());
+
   d->mKeyCursorLeftLoc++;
 
   Q_EMIT text(d->mText);
