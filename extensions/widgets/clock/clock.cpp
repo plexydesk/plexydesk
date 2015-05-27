@@ -49,6 +49,7 @@ public:
   void _create_timer_ui(Clock *a_controller, UIKit::SessionSync *a_session);
 
   UIKit::ActionList m_supported_action_list;
+  void _create_countdown_ui(Clock *a_controller, UIKit::SessionSync *a_session);
 };
 
 Clock::Clock(QObject *parent)
@@ -77,6 +78,8 @@ void Clock::init() {
                                              "pd_clock_frame_icon.png");
   d->m_supported_action_list << createAction(3, tr("Alarm"),
                                              "pd_clock_frame_icon.png");
+  d->m_supported_action_list << createAction(3, tr("Count"),
+                                             "pd_clock_frame_icon.png");
 }
 
 void Clock::set_view_rect(const QRectF &rect) {}
@@ -92,11 +95,18 @@ Clock::session_data_available(const QuetzalKit::SyncObject &a_session_root) {
                                           UIKit::SessionSync *a_session) {
     d->_create_timer_ui((Clock *)a_controller, a_session);
   });
+
+  revoke_previous_session("Countdown",
+                          [this](UIKit::ViewController *a_controller,
+                                 UIKit::SessionSync *a_session) {
+    d->_create_countdown_ui((Clock *)a_controller, a_session);
+  });
 }
 
 void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj) {
   write_session_data("Clock");
   write_session_data("Timer");
+  write_session_data("Countdown");
 }
 
 bool Clock::remove_widget(UIKit::Widget *widget) {
@@ -150,11 +160,78 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
     });
     return;
   }
+
+  if (actionName == tr("Count")) {
+    QVariantMap session_args;
+
+    session_args["x"] = window_location.x();
+    session_args["y"] = window_location.y();
+    session_args["countdown_id"] = session_count();
+    session_args["database_name"] =
+        QString::fromStdString(session_database_name("countdown"));
+
+    start_session("Countdown", session_args, false,
+                  [this](UIKit::ViewController *a_controller,
+                         UIKit::SessionSync *a_session) {
+      d->_create_countdown_ui((Clock *)a_controller, a_session);
+    });
+    return;
+  }
 }
 
 QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
 
 void Clock::onDataUpdated(const QVariantMap &data) {}
+
+void
+Clock::PrivateClockController::_create_countdown_ui(Clock *a_controller,
+                                                UIKit::SessionSync *a_session) {
+  float window_width = 200;
+
+  UIKit::Window *m_clock_session_window = new UIKit::Window();
+  UIKit::Widget *m_content_view = new UIKit::Widget(m_clock_session_window);
+
+  UIKit::Label *m_countdown_widget =
+          new UIKit::Label(m_content_view);
+  UIKit::ToolBar *m_toolbar = new UIKit::ToolBar(m_content_view);
+  UIKit::Label *m_timezone_label = new UIKit::Label(m_toolbar);
+  m_timezone_label->set_size(QSizeF(window_width - 72, 32));
+
+  m_content_view->setGeometry(QRectF(0, 0, window_width, window_width));
+  m_countdown_widget->set_size(QSize(window_width, window_width - 100));
+  m_countdown_widget->set_label("+");
+  m_countdown_widget->set_font_size(30);
+  m_countdown_widget->show();
+  m_clock_session_window->set_window_title("Countdown");
+
+  // toolbar placement.
+  m_toolbar->set_icon_resolution("hdpi");
+  m_toolbar->set_icon_size(QSize(24, 24));
+
+  m_toolbar->add_action("Date", "actions/pd_location", false);
+  m_toolbar->insert_widget(m_timezone_label);
+
+  m_toolbar->setGeometry(m_toolbar->frame_geometry());
+  m_toolbar->show();
+  m_toolbar->setPos(0, window_width - 32);
+
+  m_clock_session_window->set_window_content(m_content_view);
+
+  a_session->bind_to_window(m_clock_session_window);
+
+  m_toolbar->on_item_activated([=](const QString &a_action) {
+      //todo : invoke calendar activity to get the date ?
+  });
+
+  if (a_controller && a_controller->viewport()) {
+    a_controller->insert(m_clock_session_window);
+    QPointF window_location;
+    window_location.setX(a_session->session_data("x").toFloat());
+    window_location.setY(a_session->session_data("y").toFloat());
+    m_clock_session_window->setPos(window_location);
+  }
+}
+
 
 void
 Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
