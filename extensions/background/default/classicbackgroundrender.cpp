@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QGraphicsDropShadowEffect>
 #include <themepackloader.h>
+#include <QPixmapCache>
 
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
                                                  QGraphicsObject *parent,
@@ -33,6 +34,9 @@ void ClassicBackgroundRender::setBackgroundImage(const QString &path) {
 void ClassicBackgroundRender::setBackgroundImage(const QImage &img) {
   mScalingMode = None;
   mBackgroundImage = img;
+  QSizeF size = mBackgroundImage.size();
+  setCacheMode(QGraphicsItem::ItemCoordinateCache, mBackgroundImage.size());
+  QPixmapCache::setCacheLimit((size.width() * size.height() * 32) / 8);
   update();
 }
 

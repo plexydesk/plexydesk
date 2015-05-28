@@ -112,13 +112,13 @@ void WorkSpace::set_accelerated_rendering(bool a_on) {
         QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
                   QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
     setCacheMode(QGraphicsView::CacheNone);
-    setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    setOptimizationFlag(QGraphicsView::DontClipPainter);
+    //setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    //setOptimizationFlag(QGraphicsView::DontClipPainter);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
     setupViewport(new QWidget);
     setCacheMode(QGraphicsView::CacheNone);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
   }
 }
 

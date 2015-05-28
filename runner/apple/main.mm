@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
 
 
     DesktopManager workspace;
+    workspace.set_accelerated_rendering(false);
     workspace.add_default_controller("classicbackdrop");
     workspace.add_default_controller("dockwidget");
     workspace.add_default_controller("plexyclock");
