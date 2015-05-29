@@ -24,7 +24,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QIcon>
-#include <QGLWidget>
+#include <QDesktopWidget>
 
 // plexydesk
 #include <plexy.h>
@@ -126,6 +126,74 @@ static CHAR *          //   return error message
 }
 #endif
 
+class Runtime {
+public:
+  Runtime() {
+    for (int i = 0; i < qApp->desktop()->screenCount(); i++) {
+      DesktopManager *workspace = new DesktopManager();
+      workspace->move_to_screen(i);
+      m_workspace_list.push_back(workspace);
+      workspace->add_default_controller("classicbackdrop");
+      workspace->add_default_controller("dockwidget");
+      workspace->add_default_controller("plexyclock");
+      workspace->add_default_controller("desktopnoteswidget");
+      workspace->add_default_controller("folderwidget");
+      workspace->add_default_controller("photoframe");
+
+      workspace->restore_session();
+
+      if (workspace->space_count() <= 0) {
+        workspace->add_default_space();
+      }
+
+#ifdef Q_OS_LINUX
+      QPlatformNativeInterface *native =
+          QGuiApplication::platformNativeInterface();
+
+      if (native) {
+        Display *display = static_cast<Display *>(
+            native->nativeResourceForWindow("display", NULL));
+
+        NETWinInfo info(display, workspace->winId(), RootWindow(display, 0),
+                        NET::WMDesktop);
+        info.setDesktop(NETWinInfo::OnAllDesktops);
+        info.setWindowType(NET::Desktop);
+      }
+#endif
+      workspace->show();
+
+#ifdef Q_OS_WIN
+      // HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
+      HWND hShellWnd = GetShellWindow();
+      HWND hDefView =
+          FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
+      HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
+
+      SetParent((HWND)workspace->winId(), folderView);
+// SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE
+// |
+// SWP_NOSIZE | SWP_NOACTIVATE);
+// SetWindowPos((HWND) workspace->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE |
+// SWP_NOSIZE | SWP_NOACTIVATE);
+// wpOrigEditProc = (WNDPROC) SetWindowLong((HWND) workspace->winId(),
+// GWL_WNDPROC, (LONG) EditSubclassProc);
+#endif
+    }
+  }
+
+  ~Runtime() {
+      std::for_each(std::begin(m_workspace_list), std::end(m_workspace_list),
+                    [&](DesktopManager *a_manager) {
+          delete a_manager;
+      });
+
+      m_workspace_list.clear();
+  }
+
+private:
+  std::vector<DesktopManager *> m_workspace_list;
+};
+
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
   UIKit::ExtensionManager *loader = 0;
@@ -145,48 +213,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
   QApplication::setQuitOnLastWindowClosed(true);
 #endif
 
-  DesktopManager workspace;
-  workspace.add_default_controller("classicbackdrop");
-  workspace.add_default_controller("dockwidget");
-  workspace.add_default_controller("plexyclock");
-  workspace.add_default_controller("desktopnoteswidget");
-  workspace.add_default_controller("folderwidget");
-  workspace.add_default_controller("photoframe");
+  Runtime runtime;
 
-  workspace.restore_session();
-
-  if (workspace.space_count() <= 0) {
-    workspace.add_default_space();
-  }
-
-#ifdef Q_OS_LINUX
-  QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
-
-  if (native) {
-    Display *display = static_cast<Display *>(
-        native->nativeResourceForWindow("display", NULL));
-
-    NETWinInfo info(display, workspace.winId(), RootWindow(display, 0),
-                    NET::WMDesktop);
-    info.setDesktop(NETWinInfo::OnAllDesktops);
-    info.setWindowType(NET::Desktop);
-  }
-#endif
-  workspace.show();
-
-#ifdef Q_OS_WIN
-  // HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
-  HWND hShellWnd = GetShellWindow();
-  HWND hDefView = FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
-  HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
-
-  SetParent((HWND)workspace.winId(), folderView);
-// SetWindowPos((HWND) workspace.winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE |
-// SWP_NOSIZE | SWP_NOACTIVATE);
-// SetWindowPos((HWND) workspace.winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE |
-// SWP_NOSIZE | SWP_NOACTIVATE);
-// wpOrigEditProc = (WNDPROC) SetWindowLong((HWND) workspace.winId(),
-// GWL_WNDPROC, (LONG) EditSubclassProc);
-#endif
   return app.exec();
 }
