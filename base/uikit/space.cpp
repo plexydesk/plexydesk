@@ -377,7 +377,9 @@ void Space::PrivateSpace::initSessionStorage(Space *space) {
 Space::PrivateSpace::~PrivateSpace() { mCurrentControllerMap.clear(); }
 
 QString Space::PrivateSpace::sessionNameForSpace() {
-  return QString("%1_Space_%2").arg(mName).arg(mID);
+  return QString("%1_%2_Space_%3").arg(
+    QString::fromStdString(mWorkSpace->workspace_instance_name())).
+      arg(mName).arg(mID);
 }
 
 QString

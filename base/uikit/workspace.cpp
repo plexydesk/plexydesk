@@ -27,22 +27,26 @@ public:
   float m_workspace_left_margine;
   QStringList m_default_controller_name_list;
   bool m_opengl_on;
+  int m_screen_id;
 };
 
-void WorkSpace::set_workspace_geometry() {
-  QRect _current_desktop_geometry = QApplication::desktop()->screenGeometry();
+void WorkSpace::set_workspace_geometry(int a_screen_id) {
+  QRect _current_desktop_geometry = QApplication::desktop()->screenGeometry(
+                                      a_screen_id);
 
 #ifdef Q_OS_LINUX
-  _current_desktop_geometry = QApplication::desktop()->availableGeometry();
+  _current_desktop_geometry = QApplication::desktop()->availableGeometry(
+                                a_screen_id);
 #endif
 
 #ifdef Q_OS_MAC
   _current_desktop_geometry.setY(
-      QApplication::desktop()->availableGeometry().topLeft().y());
+      QApplication::desktop()->availableGeometry(a_screen_id).topLeft().y());
 #endif
 
 #ifdef Q_OS_WIN
-  _current_desktop_geometry = QApplication::desktop()->availableGeometry();
+  _current_desktop_geometry = QApplication::desktop()->availableGeometry(
+                                a_screen_id);
 #endif
 
   setGeometry(_current_desktop_geometry);
@@ -53,12 +57,13 @@ WorkSpace::WorkSpace(QGraphicsScene *a_graphics_scene_ptr,
     : QGraphicsView(a_graphics_scene_ptr, a_parent_ptr),
       m_priv_impl(new PrivateWorkSpace) {
   m_priv_impl->m_opengl_on = false;
+  m_priv_impl->m_screen_id = -1;
   setAttribute(Qt::WA_AcceptTouchEvents);
   setAttribute(Qt::WA_TranslucentBackground);
 
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+  setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifndef Q_OS_WIN
   setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint |
@@ -74,11 +79,16 @@ WorkSpace::WorkSpace(QGraphicsScene *a_graphics_scene_ptr,
   m_priv_impl->m_current_activty_space_id = 0;
   m_priv_impl->m_workspace_left_margine = 0;
 
-  set_workspace_geometry();
+  set_workspace_geometry(m_priv_impl->m_screen_id);
   setAcceptDrops(true);
 }
 
 WorkSpace::~WorkSpace() { delete m_priv_impl; }
+
+void WorkSpace::move_to_screen(int a_screen_id) {
+  m_priv_impl->m_screen_id = a_screen_id;
+  set_workspace_geometry(a_screen_id);
+}
 
 void WorkSpace::add_default_controller(const QString &a_controller_name) {
   m_priv_impl->m_default_controller_name_list << a_controller_name;
@@ -359,8 +369,17 @@ void WorkSpace::update_space_geometry(Space *a_space_ptr,
   }
 }
 
+std::string WorkSpace::workspace_instance_name()
+{
+  std::string workspace_name =
+      "org.workspace.space_" + std::to_string(m_priv_impl->m_screen_id);
+
+  return workspace_name;
+}
+
 void WorkSpace::save_space_removal_session_data(const QString &a_space_name) {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
+  QuetzalKit::DataSync *sync =
+      new QuetzalKit::DataSync(workspace_instance_name());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
@@ -483,7 +502,8 @@ void WorkSpace::add_default_space() {
   this->expose_sub_region(_space_geometry);
   m_priv_impl->m_current_activty_space_id = _space->id();
 
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
+  QuetzalKit::DataSync *sync =
+      new QuetzalKit::DataSync(workspace_instance_name());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
@@ -499,7 +519,8 @@ void WorkSpace::add_default_space() {
 }
 
 void WorkSpace::restore_session() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Workspace");
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+                                 workspace_instance_name());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);

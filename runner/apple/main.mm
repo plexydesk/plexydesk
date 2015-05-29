@@ -20,8 +20,9 @@
 #include <config.h>
 
 #import <Cocoa/Cocoa.h>
-#include <QtGui/QtGui>
-#include <QtWidgets/QMacNativeWidget>
+
+//#include <QtGui>
+//#include <QMacNativeWidget>
 
 #include <QApplication>
 #include <QtCore>
@@ -36,20 +37,18 @@
 #include <objc/objc.h>
 #include <objc/message.h>
 
-
-bool OnDockMousePressCallback(id self,SEL _cmd,...)
+bool on_dock_clicked_func(id self,SEL _cmd,...)
 {
-    Q_UNUSED(self)
-    Q_UNUSED(_cmd)
+  Q_UNUSED(self)
+  Q_UNUSED(_cmd)
 
-    [[NSWorkspace sharedWorkspace] hideOtherApplications];
-    return YES;
+  [[NSWorkspace sharedWorkspace] hideOtherApplications];
+  return YES;
 }
 
-int main(int argc, char *argv[])
-{
-    QApplication qtApp(argc, argv);
-
+class Runtime {
+public:
+  Runtime() {
     id cls = objc_getClass("NSApplication");
     SEL sharedApplication = sel_registerName("sharedApplication");
     id appInst = objc_msgSend(cls,sharedApplication);
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
                     (id)delClass,
                     sel_registerName(
                         "applicationShouldHandleReopen:hasVisibleWindows:"),
-                    (IMP)OnDockMousePressCallback,"B@:");
+                    (IMP)on_dock_clicked_func,"B@:");
 
         if (!classMethodFunc) {
             NSLog(@"Failed to register with your mac");
@@ -90,38 +89,65 @@ int main(int argc, char *argv[])
                                              "/Contents/PlugIns/plexydesk/")));
     Q_UNUSED(loader);
 
+    int screen_count = [[NSScreen screens] count];
 
-    DesktopManager workspace;
-    workspace.set_accelerated_rendering(false);
-    workspace.add_default_controller("classicbackdrop");
-    workspace.add_default_controller("dockwidget");
-    workspace.add_default_controller("plexyclock");
-    workspace.add_default_controller("desktopnoteswidget");
-    workspace.add_default_controller("folderwidget");
-    workspace.add_default_controller("photoframe");
 
-    workspace.restore_session();
+    for(int i = 0; i < screen_count; i++) {
+      qDebug() << Q_FUNC_INFO << "Screen ID :" << i;
+      DesktopManager *workspace = new DesktopManager();
+      m_workspace_list.push_back(workspace);
 
-    if (workspace.space_count() <= 0) {
-        workspace.add_default_space();
+      workspace->set_accelerated_rendering(false);
+      workspace->move_to_screen(i);
+      workspace->add_default_controller("classicbackdrop");
+      workspace->add_default_controller("dockwidget");
+      workspace->add_default_controller("plexyclock");
+      workspace->add_default_controller("desktopnoteswidget");
+      workspace->add_default_controller("folderwidget");
+      workspace->add_default_controller("photoframe");
+
+      workspace->restore_session();
+
+      if (workspace->space_count() <= 0) {
+        workspace->add_default_space();
+      }
+
+      NSView *_desktopView = reinterpret_cast<NSView *>(workspace->winId());
+
+      [[_desktopView window]
+              setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+      [[_desktopView window] setHasShadow:NO];
+      [[_desktopView window] setOpaque:NO];
+      [[_desktopView window] setLevel:kCGDesktopIconWindowLevel + 1];
+      [[_desktopView window] makeKeyAndOrderFront:_desktopView];
+      [[_desktopView window] setBackgroundColor:[NSColor clearColor]];
+
+      workspace->show();
     }
+  }
 
-    NSView *_desktopView = reinterpret_cast<NSView *>(workspace.winId());
+  ~Runtime() {
+    std::for_each(std::begin(m_workspace_list), std::end(m_workspace_list),
+                  [&] (DesktopManager *a_manager) {
+                  QString::fromStdString(a_manager->workspace_instance_name());
+         delete a_manager;
+    });
 
-    [[_desktopView window]
-            setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-    [[_desktopView window] setHasShadow:NO];
-    [[_desktopView window] setOpaque:NO];
-    [[_desktopView window] setLevel:kCGDesktopIconWindowLevel + 1];
-    [[_desktopView window] makeKeyAndOrderFront:_desktopView];
-    [[_desktopView window] setBackgroundColor:[NSColor clearColor]];
+  }
 
-    workspace.show();
+private:
+    std::vector<DesktopManager*> m_workspace_list;
+};
 
-    qtApp.setStyleSheet(
-                QString("QScrollBar:vertical{ border: 2px solid grey;"
+int main(int argc, char *argv[])
+{
+  QApplication qtApp(argc, argv);
+
+  Runtime runtime;
+
+  qtApp.setStyleSheet(
+        QString("QScrollBar:vertical{ border: 2px solid grey;"
                         " background: #32CC99; height: 15px; margin: 0px 20px"
                         " 0 20px; }"));
-
-    return qtApp.exec();
+  return qtApp.exec();
 }

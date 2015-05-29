@@ -15,6 +15,8 @@ public:
   WorkSpace(QGraphicsScene *a_graphics_scene_ptr, QWidget *a_parent_ptr = 0);
   virtual ~WorkSpace();
 
+  virtual void move_to_screen(int a_screen_id);
+
   virtual void add_default_controller(const QString &a_controller_name);
 
   virtual Space *create_blank_space();
@@ -41,6 +43,7 @@ public:
   virtual void set_accelerated_rendering(bool a_on = true);
   virtual bool is_accelerated_rendering_on() const;
 
+  std::string workspace_instance_name();
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);
@@ -53,7 +56,7 @@ private:
   PrivateWorkSpace *const m_priv_impl;
 
   void update_space_geometry(Space *a_space_ptr, QRectF a_deleted_geometry);
-  void set_workspace_geometry();
+  void set_workspace_geometry(int a_screen_id);
 
   void save_space_removal_session_data(const QString &a_space_name);
 };
