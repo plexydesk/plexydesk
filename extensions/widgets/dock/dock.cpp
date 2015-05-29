@@ -186,7 +186,7 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
   d->m_preview_widget->set_view_geometry(
       QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
-  d->m_preview_window->setGeometry(QRectF(0.0, 0.0, 256, rect.height() - 24.0));
+  d->m_preview_window->setGeometry(QRectF(0.0, 0.0, 256, rect.height()));
 
   d->m_preview_window->setPos(
       rect.x() + d->m_navigation_dock->frame_geometry().width() + 5,
@@ -554,7 +554,7 @@ void DockControllerImpl::updatePreview() {
 
     lMenuPos.setX(d->m_navigation_dock->geometry().width() + 5.0);
     d->m_preview_window->setGeometry(
-        QRectF(lMenuPos.x(), lMenuPos.y(), lWidth, lHeight));
+        QRectF(lMenuPos.x(), lMenuPos.y(), lWidth, lHeight + 24));
   }
 }
 
