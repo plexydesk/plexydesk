@@ -16,6 +16,7 @@ public:
   typedef enum {
     NORMAL,
     FOCUSED,
+    SELECTED,
     HOVER
   } EditState;
 
@@ -31,16 +32,23 @@ public:
 
   EditState mState;
   StylePtr mStyle;
-  QString mText;
+  QString m_editor_text;
+
   int mLastKey;
-  int mKeyCursorLeftLoc;
+  int m_text_cursor;
+  int m_text_selection_cursor;
+  bool m_text_selection_mode;
+
   QList<std::function<void(const QString &)> > m_text_handler_list;
 };
 
 LineEdit::LineEdit(QGraphicsObject *parent)
     : Widget(parent), d(new PrivateLineEdit) {
   d->mState = PrivateLineEdit::NORMAL;
+  d->m_text_selection_mode = false;
   d->mStyle = Theme::style();
+  d->m_text_cursor = 0;
+  d->m_text_selection_cursor = 0;
 
   set_size(
       QSize(Theme::style()->attribute("widget", "line_edit_width").toInt(),
@@ -48,14 +56,13 @@ LineEdit::LineEdit(QGraphicsObject *parent)
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setAcceptHoverEvents(true);
-  d->mKeyCursorLeftLoc = 0;
 }
 
 LineEdit::~LineEdit() { delete d; }
 
-void LineEdit::set_text(const QString &a_txt) { d->mText = a_txt; }
+void LineEdit::set_text(const QString &a_txt) { d->m_editor_text = a_txt; }
 
-QString LineEdit::text() const { return d->mText; }
+QString LineEdit::text() const { return d->m_editor_text; }
 
 void LineEdit::style(StylePtr a_style) { d->mStyle = a_style; }
 
@@ -72,37 +79,81 @@ void LineEdit::on_insert(std::function<void(const QString &)> a_handler) {
   d->m_text_handler_list.append(a_handler);
 }
 
-void LineEdit::paint(QPainter *a_painter_ptr,
-                     const QStyleOptionGraphicsItem *a_option_ptr,
-                     QWidget * /*widget*/) {
-  switch (d->mState) {
-    case PrivateLineEdit::NORMAL:
-      d->paintNormalEdit(a_painter_ptr, a_option_ptr);
-      break;
-    case PrivateLineEdit::FOCUSED:
-      d->paintFocusedEdit(a_painter_ptr, a_option_ptr);
-      break;
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown State";
+QString LineEdit::current_text_selection() const {
+  QString rv;
+
+  if (!d->m_text_selection_mode)
+    return rv;
+
+  if (d->m_text_selection_cursor > d->m_text_cursor) {
+    int start = d->m_text_cursor;
+    int length = d->m_text_selection_cursor - d->m_text_cursor;
+    rv = d->m_editor_text.mid(start, length);
+  } else if (d->m_text_selection_cursor < d->m_text_cursor) {
+    int start = d->m_text_selection_cursor;
+    int length = d->m_text_cursor - d->m_text_selection_cursor;
+    rv = d->m_editor_text.mid(start, length);
   }
-  QFontMetrics m = a_painter_ptr->fontMetrics();
-  int _text_pixel_width = m.width(d->mText) + 1;
 
-  int _text_cursor_width = 10;
+  return rv;
+}
 
-  if (d->mText.count() == d->mKeyCursorLeftLoc) {
-    _text_cursor_width += _text_pixel_width;
+QRectF LineEdit::current_text_rect(QPainter *a_painter) const {
+  int text_cursor_x = 10;
+  int selection_cursor_x = 10;
+
+  QFontMetrics m = a_painter->fontMetrics();
+  int text_pixel_width = m.width(d->m_editor_text);
+
+  if (d->m_text_cursor == d->m_editor_text.count()) {
+    text_cursor_x += text_pixel_width;
   } else {
-    _text_cursor_width += m.width(d->mText.left(d->mKeyCursorLeftLoc));
+    text_cursor_x += m.width(d->m_editor_text.left(d->m_text_cursor));
   }
 
-  QPointF line1(_text_cursor_width, 10);
-  QPointF line2(_text_cursor_width, a_option_ptr->exposedRect.height() - 10);
+  if (d->m_text_selection_cursor == d->m_editor_text.count()) {
+    selection_cursor_x += text_pixel_width;
+  } else {
+    selection_cursor_x +=
+        m.width(d->m_editor_text.left(d->m_text_selection_cursor));
+  }
 
-  QPen pen =
-      QPen(QColor(98, 101, 108), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-  a_painter_ptr->setPen(pen);
-  a_painter_ptr->drawLine(line1, line2);
+  int diff = text_cursor_x - selection_cursor_x;
+
+  return QRectF(selection_cursor_x, 0, diff, geometry().height());
+}
+
+void LineEdit::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
+  StyleFeatures feature;
+  feature.geometry = a_rect;
+  feature.render_state = StyleFeatures::kRenderElement;
+  feature.text_data = d->m_editor_text;
+
+  feature.attributes["cursor_location"] = d->m_text_cursor;
+  feature.attributes["selection_cursor"] = d->m_text_selection_cursor;
+
+  switch (d->mState) {
+  case PrivateLineEdit::NORMAL:
+    feature.render_state = StyleFeatures::kRenderElement;
+    break;
+  case PrivateLineEdit::FOCUSED:
+    feature.render_state = StyleFeatures::kRenderRaised;
+    break;
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown State";
+  }
+
+  if (d->m_text_selection_mode) {
+    feature.render_state = StyleFeatures::kRenderPressed;
+  } else {
+    feature.render_state = StyleFeatures::kRenderRaised;
+  }
+
+  a_painter_ptr->save();
+  if (UIKit::Theme::style()) {
+    UIKit::Theme::style()->draw("line_edit", feature, a_painter_ptr);
+  }
+  a_painter_ptr->restore();
 }
 
 void LineEdit::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
@@ -160,39 +211,57 @@ bool LineEdit::eventFilter(QObject *object, QEvent *a_event_ptr) {
 }
 
 void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr) {
-  bool shift_key_pressed = false;
-
   if (a_event_ptr->key() == Qt::Key_Shift) {
-      Widget::keyPressEvent(a_event_ptr);
-      return;
+    Widget::keyPressEvent(a_event_ptr);
+    d->m_text_selection_mode = true;
+    d->m_text_selection_cursor = d->m_text_cursor;
+    return;
   }
 
   if (a_event_ptr->key() == Qt::Key_Backspace) {
-    d->mText.remove(d->mKeyCursorLeftLoc - 1, 1);
-    if (d->mKeyCursorLeftLoc != 0) {
-      d->mKeyCursorLeftLoc--;
+    d->m_editor_text.remove(d->m_text_cursor - 1, 1);
+    if (d->m_text_cursor != 0) {
+      d->m_text_cursor--;
     }
-    Q_EMIT text(d->mText);
+    Q_EMIT text(d->m_editor_text);
 
     foreach(std::function<void(const QString &)> _func,
             d->m_text_handler_list) {
       if (_func) {
-        _func(d->mText);
+        _func(d->m_editor_text);
       }
     }
 
     update();
     return;
   } else if (a_event_ptr->key() == Qt::Key_Left) {
-    if (d->mKeyCursorLeftLoc != 0) {
-      d->mKeyCursorLeftLoc--;
+    if (a_event_ptr->modifiers() == Qt::ShiftModifier) {
+      d->m_text_selection_mode = true;
+      if (d->m_text_selection_cursor > 0)
+        d->m_text_selection_cursor--;
+    } else {
+      d->m_text_selection_mode = false;
+
+      if (d->m_text_cursor > 0) {
+        d->m_text_cursor--;
+        d->m_text_selection_cursor = d->m_text_cursor;
+      }
     }
     update();
     return;
 
   } else if (a_event_ptr->key() == Qt::Key_Right) {
-    if (d->mKeyCursorLeftLoc < d->mText.count()) {
-      d->mKeyCursorLeftLoc++;
+    if (a_event_ptr->modifiers() == Qt::ShiftModifier) {
+      d->m_text_selection_mode = true;
+      if (d->m_text_selection_cursor < d->m_editor_text.count())
+        d->m_text_selection_cursor++;
+    } else {
+      d->m_text_selection_mode = false;
+
+      if (d->m_text_cursor < d->m_editor_text.count()) {
+        d->m_text_cursor++;
+        d->m_text_selection_cursor = d->m_text_cursor;
+      }
     }
     update();
     return;
@@ -201,15 +270,15 @@ void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr) {
     Q_EMIT submit();
     return;
   }
-  d->mText.insert(d->mKeyCursorLeftLoc, a_event_ptr->text());
+  d->m_editor_text.insert(d->m_text_cursor, a_event_ptr->text());
 
-  d->mKeyCursorLeftLoc++;
+  d->m_text_cursor++;
 
-  Q_EMIT text(d->mText);
+  Q_EMIT text(d->m_editor_text);
 
   foreach(std::function<void(const QString &)> _func, d->m_text_handler_list) {
     if (_func) {
-      _func(d->mText);
+      _func(d->m_editor_text);
     }
   }
   update();
@@ -220,7 +289,7 @@ void LineEdit::PrivateLineEdit::paintNormalEdit(
   StyleFeatures feature;
   feature.geometry = option->exposedRect;
   feature.render_state = StyleFeatures::kRenderElement;
-  feature.text_data = mText;
+  feature.text_data = m_editor_text;
 
   painter->save();
   if (UIKit::Theme::style()) {
@@ -233,8 +302,14 @@ void LineEdit::PrivateLineEdit::paintFocusedEdit(
     QPainter *painter, const QStyleOptionGraphicsItem *option) {
   StyleFeatures feature;
   feature.geometry = option->exposedRect;
-  feature.render_state = StyleFeatures::kRenderRaised;
-  feature.text_data = mText;
+
+  if (m_text_selection_mode) {
+    feature.render_state = StyleFeatures::kRenderPressed;
+  } else {
+    feature.render_state = StyleFeatures::kRenderRaised;
+  }
+
+  feature.text_data = m_editor_text;
 
   painter->save();
   if (UIKit::Theme::style()) {

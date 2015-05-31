@@ -700,9 +700,9 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
   QRectF rect = features.geometry.adjusted(1, 1, 0, 0);
 
   /* Painter settings */
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                              QPainter::HighQualityAntialiasing,
+                          true);
 
   QPainterPath backgroundPath;
   backgroundPath.addRoundedRect(rect, 6, 0);
@@ -713,6 +713,10 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
   linearGrad.setColorAt(1, QColor(255, 255, 255));
 
   painter->fillPath(backgroundPath, QColor(color("primary_background")));
+
+  QFont font = painter->font();
+  font.setPixelSize(18 * scale_factor());
+  painter->setFont(font);
 
   QPen pen;
   if (features.render_state == StyleFeatures::kRenderRaised) {
@@ -727,25 +731,73 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
 
   painter->save();
   pen.setColor(QColor(color("primary_forground")));
+
   painter->setPen(pen);
   painter->drawText(features.geometry.adjusted(10.0, 0.0, 0.0, 0.0),
                     Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
+  // cursor handling.
+  int cursor_pos = features.attributes["cursor_location"].toInt();
+  int selection_cursor = features.attributes["selection_cursor"].toInt();
+
+  QFontMetrics m = painter->fontMetrics();
+  int _text_pixel_width = m.width(features.text_data);
+
+  int _text_cursor_width_to_left = 10;
+  int _text_cursor_width_to_right = 10;
+
+  if (cursor_pos == features.text_data.count()) {
+    _text_cursor_width_to_left += _text_pixel_width;
+  } else {
+    _text_cursor_width_to_left += m.width(features.text_data.left(cursor_pos));
+  }
+
+  if (selection_cursor == features.text_data.count()) {
+    _text_cursor_width_to_right += _text_pixel_width;
+  } else {
+    _text_cursor_width_to_right +=
+        m.width(features.text_data.left(selection_cursor));
+  }
+
+  QPointF line1(_text_cursor_width_to_left, 5);
+  QPointF line2(_text_cursor_width_to_left, m.height());
+
+  QPen cursor_pen = QPen(QColor(color("primary_forground")), 1, Qt::SolidLine,
+                         Qt::RoundCap, Qt::RoundJoin);
+
+  painter->setPen(cursor_pen);
+  painter->drawLine(line1, line2);
+
+  if (features.render_state == StyleFeatures::kRenderPressed) {
+    /*
+     * if current text cursor is at x1 and selection cursor at x2
+     * distence between the cursors (x1 - x2)
+     * */
+    int diff = (_text_cursor_width_to_left - _text_cursor_width_to_right);
+
+    QRectF selection_rect =
+        QRectF(_text_cursor_width_to_right, 10, diff, m.height());
+
+    painter->save();
+    painter->setOpacity(0.3);
+    painter->fillRect(selection_rect,
+                      QColor(color("accent_primary_background")));
+    painter->restore();
+  }
   painter->restore();
 }
 
 void CocoaStyle::drawLineEditText(const StyleFeatures &features,
                                   const QString &text, QPainter *painter) {
   /* Painter settings */
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                              QPainter::HighQualityAntialiasing,
+                          true);
   QPen pen;
 
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
-  QFont font = QFont("", 18 * scale_factor());
-  // QFontMetrics fontMetrics(font);
-  // int width = fontMetrics.width(text.left(features.cursorLocation));
+  QFont font = painter->font();
+  font.setPixelSize(18 * scale_factor());
   painter->setFont(font);
 
   painter->setPen(pen);
