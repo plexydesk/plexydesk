@@ -775,7 +775,8 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
     int diff = (_text_cursor_width_to_left - _text_cursor_width_to_right);
 
     QRectF selection_rect =
-        QRectF(_text_cursor_width_to_right, 10, diff, m.height());
+        QRectF(_text_cursor_width_to_right, (rect.height() - m.height()) / 2, diff,
+               m.height());
 
     painter->save();
     painter->setOpacity(0.3);
