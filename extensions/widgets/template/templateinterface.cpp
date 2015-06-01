@@ -18,15 +18,12 @@
 *******************************************************************************/
 #include "template.h"
 #include "templateinterface.h"
-#include <desktopwidget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<PlexyDesk::ControllerInterface> TemplateInterface::controller() {
-  QSharedPointer<PlexyDesk::ControllerInterface> obj =
-      QSharedPointer<PlexyDesk::ControllerInterface>(
+QSharedPointer<UIKit::ViewController> TemplateInterface::controller() {
+  QSharedPointer<UIKit::ViewController> obj =
+      QSharedPointer<UIKit::ViewController>(
           new TemplateControllerImpl(this), &QObject::deleteLater);
 
   return obj;
 }
-
-// Q_EXPORT_PLUGIN2(templateengine, TemplateInterface)

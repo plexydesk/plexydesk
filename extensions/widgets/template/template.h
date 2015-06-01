@@ -21,31 +21,31 @@
 
 #include <QtCore>
 #include <plexy.h>
-#include <abstractplugininterface.h>
 #include <datasource.h>
-#include <controllerinterface.h>
-#include <abstractdesktopwidget.h>
+#include <view_controller.h>
 #include <QtNetwork>
 
-class TemplateControllerImpl : public PlexyDesk::ControllerInterface {
+class TemplateControllerImpl : public UIKit::ViewController {
   Q_OBJECT
 
 public:
   TemplateControllerImpl(QObject *object = 0);
   virtual ~TemplateControllerImpl();
 
-  PlexyDesk::AbstractDesktopWidget *defaultView();
+  void init();
 
-  void revokeSession(const QVariantMap &args);
+  void session_data_available(const QuetzalKit::SyncObject &a_session_root);
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj);
 
-  void setViewRect(const QRectF &rect);
+  void set_view_rect(const QRectF &rect);
 
-  bool deleteWidet(PlexyDesk::AbstractDesktopWidget *widget);
+  bool remove_widget(UIKit::Widget *widget);
 
-  QStringList actions() const;
+  UIKit::ActionList actions() const;
+  void request_action(const QString &actionName,
+                      const QVariantMap &args);
 
-  void requestAction(const QString &actionName, const QVariantMap &args);
-
+  QString icon() const;
 public
 Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);

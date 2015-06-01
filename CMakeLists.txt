@@ -294,6 +294,7 @@ ADD_SUBDIRECTORY(extensions/background/default)
 ADD_SUBDIRECTORY(extensions/data/flickrphotosearch)
 ADD_SUBDIRECTORY(extensions/data/httpserver)
 ADD_SUBDIRECTORY(extensions/widgets/desktopnotes)
+ADD_SUBDIRECTORY(extensions/widgets/template)
 
 ADD_SUBDIRECTORY(extensions/data/rest)
 ADD_SUBDIRECTORY(extensions/data/timer)

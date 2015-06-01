@@ -21,20 +21,20 @@
 
 #include <QtCore>
 #include <plexy.h>
-#include <controllerinterface.h>
+#include <view_controller.h>
 #include <controllerplugininterface.h>
 
 class TemplateInterface : public QObject,
-                          public PlexyDesk::ControllerPluginInterface {
+                          public UIKit::ControllerPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(PlexyDesk::ControllerPluginInterface)
-  Q_PLUGIN_METADATA(IID "org.qt-project.template")
+  Q_INTERFACES(UIKit::ControllerPluginInterface)
+  Q_PLUGIN_METADATA(IID "org.plexydesk.template")
 
 public:
   virtual ~TemplateInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<PlexyDesk::ControllerInterface> controller();
+  QSharedPointer<UIKit::ViewController> controller();
 };
 
 #endif
