@@ -235,7 +235,7 @@ void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr) {
     update();
     return;
   } else if (a_event_ptr->key() == Qt::Key_Left) {
-    if (a_event_ptr->modifiers() == Qt::ShiftModifier) {
+    if (a_event_ptr->modifiers() & Qt::ShiftModifier) {
       d->m_text_selection_mode = true;
       if (d->m_text_selection_cursor > 0)
         d->m_text_selection_cursor--;
@@ -251,7 +251,7 @@ void LineEdit::keyPressEvent(QKeyEvent *a_event_ptr) {
     return;
 
   } else if (a_event_ptr->key() == Qt::Key_Right) {
-    if (a_event_ptr->modifiers() == Qt::ShiftModifier) {
+    if (a_event_ptr->modifiers() & Qt::ShiftModifier) {
       d->m_text_selection_mode = true;
       if (d->m_text_selection_cursor < d->m_editor_text.count())
         d->m_text_selection_cursor++;
