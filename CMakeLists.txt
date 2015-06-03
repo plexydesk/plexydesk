@@ -58,8 +58,6 @@ FIND_PACKAGE(Qt5Svg REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
 FIND_PACKAGE(MITIE REQUIRED)
 
-
-
 #plugins
 if (APPLE)
     set (CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX "plexydesk.app/Contents/PlugIns/plexydesk/")
@@ -260,6 +258,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/runner
     ${CMAKE_SOURCE_DIR}/dist/windows
     ${CMAKE_BINARY_DIR}/dist/windows
+    ${CMAKE_SOURCE_DIR}/deps/mitie/mitielib/include
     ${QT_INCLUDE_DIR}
     )
 
