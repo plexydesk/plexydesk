@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<body>
+<sentence>
+  <text>whats the weather like in colombo ?</text>
+  <tag index="2" tokens="1">action</tag>
+  <tag index="6" tokens="1">location</tag>
+</sentence>
+<sentence>
+  <text>whats the weather like ?</text>
+  <tag index="2" tokens="1">action</tag>
+</sentence>
+<sentence>
+  <text>how is the weather today ?</text>
+  <tag index="3" tokens="1">action</tag>
+  <tag index="4" tokens="1">day</tag>
+</sentence>
+<sentence>
+  <text>how is the weather next sunday?</text>
+  <tag index="3" tokens="1">action</tag>
+  <tag index="5" tokens="1">day</tag>
+</sentence>
+<sentence>
+  <text>do I need an umbrella?</text>
+  <tag index="3" tokens="1">action</tag>
+</sentence>
+<sentence>
+  <text>is it sunny today</text>
+  <tag index="2" tokens="1">action</tag>
+  <tag index="3" tokens="1">day</tag>
+</sentence>
+<sentence>
+  <text>is it cloudy today</text>
+  <tag index="2" tokens="1">action</tag>
+  <tag index="3" tokens="1">day</tag>
+</sentence>
+</body>
