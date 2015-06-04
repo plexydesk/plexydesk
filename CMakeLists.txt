@@ -259,6 +259,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/dist/windows
     ${CMAKE_BINARY_DIR}/dist/windows
     ${CMAKE_SOURCE_DIR}/deps/mitie/mitielib/include
+    ${CMAKE_SOURCE_DIR}/deps/mitie/dlib/
     ${QT_INCLUDE_DIR}
     )
 
@@ -294,6 +295,9 @@ ADD_SUBDIRECTORY(extensions/data/flickrphotosearch)
 ADD_SUBDIRECTORY(extensions/data/httpserver)
 ADD_SUBDIRECTORY(extensions/widgets/desktopnotes)
 ADD_SUBDIRECTORY(extensions/widgets/template)
+ADD_SUBDIRECTORY(extensions/widgets/nlp)
+ADD_SUBDIRECTORY(extensions/widgets/nlp/tools/query_jeff)
+ADD_SUBDIRECTORY(extensions/widgets/nlp/tools/train_jeff)
 
 ADD_SUBDIRECTORY(extensions/data/rest)
 ADD_SUBDIRECTORY(extensions/data/timer)
