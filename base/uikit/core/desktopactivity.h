@@ -67,7 +67,7 @@ protected:
   virtual QRectF geometry() const;
   virtual void set_geometry(const QRectF &a_geometry);
   virtual void update_content_geometry(Widget *a_widget_ptr);
-  virtual void activate_response();
+  virtual void notify_done();
 Q_SIGNALS:
   void finished();
   void canceled();
