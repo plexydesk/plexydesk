@@ -154,7 +154,7 @@ void DesktopActivity::update_content_geometry(Widget *a_widget_ptr) {
   a_widget_ptr->setGeometry(geometry());
 }
 
-void DesktopActivity::activate_response() {
+void DesktopActivity::notify_done() {
   foreach(std::function<void(const QVariantMap & l_data)> l_func,
           d->m_action_completed_list) {
     if (l_func) {
