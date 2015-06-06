@@ -21,6 +21,7 @@ public:
   PrivateButton() {}
   ~PrivateButton() {}
 
+  QSizeF m_button_size;
   ButtonState mState;
   QString mLabel;
   QVariant mData;
@@ -31,7 +32,7 @@ Button::Button(QGraphicsObject *a_parent_ptr)
   d->mState = PrivateButton::NORMAL;
 
   if (Theme::style()) {
-    setSize(QSize(Theme::style()->attribute("button", "width").toFloat(),
+    set_size(QSize(Theme::style()->attribute("button", "width").toFloat(),
                   Theme::style()->attribute("button", "height").toFloat()));
   }
 
@@ -44,7 +45,10 @@ Button::Button(QGraphicsObject *a_parent_ptr)
 
 Button::~Button() { delete d; }
 
-void Button::setLabel(const QString &a_txt) { d->mLabel = a_txt; }
+void Button::setLabel(const QString &a_txt) {
+  d->mLabel = a_txt;
+  update();
+}
 
 void Button::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   d->mState = PrivateButton::PRESS;
@@ -86,12 +90,24 @@ void Button::paint_sunken_button(QPainter *painter, const QRectF &a_rect) {
 
 StylePtr Button::style() const { return UIKit::Theme::style(); }
 
-void Button::setSize(const QSize &size) {
-  setGeometry(QRectF(0, 0, size.width(), size.height()));
+void Button::set_size(const QSizeF &a_size) {
+  prepareGeometryChange();
+  d->m_button_size = a_size;
+  setMinimumSize(a_size);
+  update();
 }
 
 QSizeF Button::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
   return boundingRect().size();
+}
+
+QRectF Button::boundingRect() const {
+  return QRectF(0, 0, d->m_button_size.width(),
+                d->m_button_size.height());
+}
+
+void Button::setGeometry(const QRectF &a_rect) {
+  setPos(a_rect.topLeft());
 }
 
 void Button::set_action_data(const QVariant &a_data) { d->mData = a_data; }
