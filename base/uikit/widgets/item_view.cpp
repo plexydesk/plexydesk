@@ -41,7 +41,7 @@ ItemView::ItemView(QGraphicsObject *parent, ModelType a_model_type)
 
   if (d->m_model_view_type == kGridModel) {
     d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
-    d->m_grid_layout->setContentsMargins(16, 0, 0, 0);
+    d->m_grid_layout->setContentsMargins(4, 0, 0, 0);
   }
 
   d->m_viewport_geometry = QRectF();
@@ -82,9 +82,9 @@ void ItemView::insert_to_grid_view(Widget *a_widget_ptr) {
   }
 
   a_widget_ptr->set_widget_id(d->m_grid_layout->count());
-
   int l_item_per_row =
-      d->m_viewport_geometry.width() / a_widget_ptr->boundingRect().width();
+      (d->m_viewport_geometry.width() - 4)
+      / a_widget_ptr->boundingRect().width();
 
   d->m_grid_layout->addItem(a_widget_ptr,
                             d->m_grid_layout->count() / (l_item_per_row - 1),
@@ -144,7 +144,6 @@ void ItemView::insert(ModelViewItem *a_item_ptr) {
 
   a_item_ptr->set_index(d->m_model_item_list.count());
   d->m_model_item_list.append(a_item_ptr);
-
 }
 
 void ItemView::remove(ModelViewItem *a_item_ptr) {}
@@ -209,6 +208,8 @@ void ItemView::clear() {
 
 void ItemView::set_view_geometry(const QRectF &a_rect) {
   d->m_viewport_geometry = a_rect;
+  if (d->m_model_view_type == kGridModel)
+    d->m_grid_layout->setGeometry(a_rect);
 }
 
 QRectF ItemView::boundingRect() const { return d->m_viewport_geometry; }
