@@ -115,6 +115,7 @@ void CocoaStyle::load_default_widget_style_properties() {
   d->m_attribute_map["frame"] = _frame_attributes;
   d->m_attribute_map["widget"] = _widget_attributes;
   d->m_attribute_map["size"] = _size_attributes;
+  d->m_attribute_map["button"] = _button_attributes;
 }
 
 CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
@@ -202,7 +203,7 @@ void CocoaStyle::drawPushButton(const StyleFeatures &features,
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
     painter->fillPath(backgroundPath, QColor(color("primary_background")));
-    QPen pen(QColor(color("primary_forground")), 1, Qt::SolidLine, Qt::RoundCap,
+    QPen pen(QColor(color("accent_soft_highlight")), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
@@ -213,8 +214,10 @@ void CocoaStyle::drawPushButton(const StyleFeatures &features,
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   } else {
-    painter->fillPath(backgroundPath, QColor(color("base_background")));
-    QPen pen(QColor(color("base_forground")), 1, Qt::SolidLine, Qt::RoundCap,
+    painter->fillPath(backgroundPath,
+                      QColor(color("accent_primary_background")));
+    QPen pen(QColor(color("accent_primary_forground")), 1,
+             Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
@@ -958,6 +961,11 @@ void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
   aPainterPtr->fillRect(aFeatures.geometry,
                         QColor(color("primary_background")));
                         */
+  if (aFeatures.render_state == StyleFeatures::kRenderRaised) {
+      aPainterPtr->fillRect(aFeatures.geometry,
+                            QColor(color("base_forground")));
+  }
+
   aPainterPtr->setPen(linePen);
   aPainterPtr->drawText(aFeatures.geometry, text, aFeatures.text_options);
   aPainterPtr->restore();
