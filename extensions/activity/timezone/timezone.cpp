@@ -162,7 +162,7 @@ void TimeZoneActivity::loadTimeZones() {
             a_item->data("label").toString();
         m_priv_ptr->m_result_data["zone_id"] =
             a_item->data("zone_id").toByteArray();
-        activate_response();
+        notify_done();
       }
     });
 
