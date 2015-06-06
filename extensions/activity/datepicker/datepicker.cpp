@@ -23,6 +23,8 @@
 #include <tableview.h>
 #include <default_table_model.h>
 #include <themepackloader.h>
+#include <imagebutton.h>
+#include <button.h>
 
 #include "calendarwidget.h"
 #include "datecellfactory.h"
@@ -32,7 +34,11 @@ public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
 
-  UIKit::Window *mFrame;
+  UIKit::Window *m_activity_window;
+  UIKit::Widget *m_window_content;
+
+  UIKit::Button *m_done_button;
+
   DateCellFactory *mFactory;
   UIKit::TableView *mTable;
   QRectF mBoundingRect;
@@ -52,40 +58,60 @@ DatePickerActivity::~DatePickerActivity() { delete d; }
 void DatePickerActivity::create_window(const QRectF &window_geometry,
                                        const QString &window_title,
                                        const QPointF &window_pos) {
-  d->mFrame = new UIKit::Window();
-  d->mFrame->setGeometry(window_geometry);
-  d->mFrame->set_window_title(window_title);
-  set_geometry(window_geometry);
+  d->m_activity_window = new UIKit::Window();
+  d->m_activity_window->setGeometry(window_geometry);
+  d->m_activity_window->set_window_title(window_title);
 
-  d->mCalendarWidget = new CalendarWidget(d->mFrame);
+  d->m_window_content = new UIKit::Widget(d->m_activity_window);
+  d->m_window_content->setGeometry(window_geometry);
+
+  d->mCalendarWidget = new CalendarWidget(d->m_window_content);
   d->mCalendarWidget->setGeometry(window_geometry);
+  d->mCalendarWidget->setPos(0, 0);
 
-  d->mFrame->set_window_content(d->mCalendarWidget);
+  d->m_done_button = new UIKit::Button(d->m_window_content);
+  d->m_done_button->setLabel(tr("Done"));
+  d->m_done_button->show();
+
+  d->m_done_button->setPos(
+        d->mCalendarWidget->geometry().width() / 2
+        - (d->m_done_button->boundingRect().width() + 10) / 2,
+        310);
+
+  d->m_done_button->on_input_event([this](UIKit::Widget::InputEvent a_event,
+                            const UIKit::Widget *a_widget) {
+    if (a_event == UIKit::Widget::kMouseReleaseEvent) {
+        qDebug() << Q_FUNC_INFO << "Activity complete";
+        notify_done();
+        onCalendarReady();
+    }
+  });
+
+  d->m_activity_window->set_window_content(d->m_window_content);
+
+  QRectF view_geometry = window_geometry;
+  view_geometry.setHeight(window_geometry.height() + 64);
+
+  set_geometry(view_geometry);
+
   exec(window_pos);
 
-  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
+  d->m_activity_window->on_window_discarded([this](UIKit::Window *aWindow) {
     discard_activity();
   });
 }
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
-UIKit::Window *DatePickerActivity::window() const { return d->mFrame; }
+UIKit::Window *DatePickerActivity::window() const { return d->m_activity_window; }
 
 void DatePickerActivity::cleanup() {
-  if (d->mFrame) {
-    delete d->mFrame;
+  if (d->m_activity_window) {
+    delete d->m_activity_window;
   }
 
-  d->mFrame = 0;
+  d->m_activity_window = 0;
 }
-
-void DatePickerActivity::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discard_activity();
-}
-
-void DatePickerActivity::onHideAnimationFinished() { Q_EMIT finished(); }
 
 void DatePickerActivity::onImageReady(const QImage &img) {
   d->mCalendarWidget->setBackgroundImage(img);
@@ -94,14 +120,9 @@ void DatePickerActivity::onImageReady(const QImage &img) {
 void DatePickerActivity::onCalendarReady() {
   if (!d->mCalendarWidget) {
     d->m_result_data["date"] = QVariant(QDate::currentDate().toString());
-    d->m_result_data["hour"] = QVariant(0);
-    d->m_result_data["minute"] = QVariant(0);
   } else {
     d->m_result_data["date"] = QVariant(d->mCalendarWidget->currentDate());
-    d->m_result_data["hour"] = QVariant(d->mCalendarWidget->currentHour());
-    d->m_result_data["minute"] = QVariant(d->mCalendarWidget->currentMinute());
   }
 
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }

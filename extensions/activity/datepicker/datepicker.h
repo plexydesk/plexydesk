@@ -42,15 +42,8 @@ public:
 
   UIKit::Window *window() const;
   void cleanup();
-
-private
-Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
-
-  void onHideAnimationFinished();
-
+private:
   void onImageReady(const QImage &img);
-
   void onCalendarReady();
 
 private:
