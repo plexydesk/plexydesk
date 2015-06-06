@@ -33,6 +33,7 @@ public:
 
   virtual void set_label_style(const QColor &a_backgroundColor,
                                const QColor &a_textColor);
+  virtual void set_highlight(bool a_mode = false);
 
   virtual int alignment();
   virtual void set_alignment(int a_alignment);
