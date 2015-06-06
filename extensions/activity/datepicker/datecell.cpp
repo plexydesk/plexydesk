@@ -105,7 +105,7 @@ void DateCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   if (d->mHeaderMode) {
     // painter->fillRect(option->exposedRect, QColor("#0AACF0"));
     painter->fillRect(option->exposedRect, QColor(Qt::transparent));
-    pen.setColor(QColor("#FFFFFF"));
+    pen.setColor(QColor("#646464"));
     painter->setPen(pen);
     QFont font = painter->font();
     font.setBold(true);
@@ -116,7 +116,7 @@ void DateCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
   } else {
     if (!d->mIsSelected) {
       painter->fillRect(option->exposedRect, QColor(Qt::transparent));
-      pen.setColor(QColor("#FFFFFF"));
+      pen.setColor(QColor("#646464"));
       painter->setPen(pen);
       QFont font = painter->font();
       font.setBold(true);
@@ -126,7 +126,7 @@ void DateCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
       painter->drawText(option->exposedRect, Qt::AlignCenter, d->mLabel);
     } else {
       painter->fillRect(option->exposedRect, QColor(Qt::white));
-      pen.setColor(QColor("#F28585"));
+      pen.setColor(QColor("#323232"));
       painter->setPen(pen);
       QFont font = painter->font();
       font.setBold(true);
