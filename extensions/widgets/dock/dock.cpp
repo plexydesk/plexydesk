@@ -267,7 +267,7 @@ DesktopActivityPtr DockControllerImpl::createActivity(
 
   UIKit::DesktopActivityPtr _intent = viewport()->create_activity(
       activity, title, _activity_location,
-      QRectF(0, _activity_location.y(), 330, 320), dataItem);
+      QRectF(0, _activity_location.y(), 484, 320), dataItem);
   _intent->set_controller(UIKit::ViewControllerPtr(this));
   _intent->set_activity_attribute("data", QVariant(dataItem));
   _intent->set_activity_attribute("auto_scale", QVariant(1));
