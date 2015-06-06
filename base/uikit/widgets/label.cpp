@@ -21,11 +21,13 @@ public:
   QString m_label_string;
   uint m_font_size;
   Qt::Alignment m_alignment;
+  bool m_mode;
 };
 
 Label::Label(QGraphicsObject *parent) : Widget(parent), d(new PrivateLabel) {
   d->m_font_size = 14;
   d->m_alignment = Qt::AlignCenter;
+  d->m_mode = false;
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
@@ -72,6 +74,11 @@ void Label::set_label_style(const QColor &a_backgroundColor,
   update();
 }
 
+void Label::set_highlight(bool a_mode) {
+  d->m_mode = a_mode;
+  update();
+}
+
 int Label::alignment() { return d->m_alignment; }
 
 void Label::set_alignment(int a_alignment) {
@@ -83,7 +90,11 @@ void Label::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
 
   feature.text_data = d->m_label_string;
   feature.geometry = a_rect;
-  feature.render_state = StyleFeatures::kRenderElement;
+  if (!d->m_mode)
+    feature.render_state = StyleFeatures::kRenderElement;
+  else
+    feature.render_state = StyleFeatures::kRenderRaised;
+
   QTextOption text_option;
   text_option.setAlignment(d->m_alignment);
   feature.text_options = text_option;
