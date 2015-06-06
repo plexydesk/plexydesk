@@ -334,8 +334,14 @@ void NoteWidget::onToolBarAction(const QString &action) {
   if (action == tr("date")) {
 
     if (d->m_viewport) {
-      d->m_viewport->create_activity("datepickeractivity", "Date/Time",
-                                     QPointF(), QRectF(0, 0, 600, 440),
+      QPointF window_pos(mapToScene(QPointF()));
+
+      QRectF window_geometry (window_pos.x(), window_pos.y(), 300, 348);
+      d->m_viewport->create_activity("datepickeractivity", tr("Calendar"),
+                                     d->m_viewport->center(window_geometry,
+                                                           window_geometry,
+                                                 UIKit::Space::kCenterOnWindow),
+                                     window_geometry,
                                      QVariantMap());
     }
 
