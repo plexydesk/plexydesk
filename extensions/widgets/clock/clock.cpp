@@ -78,7 +78,7 @@ void Clock::init() {
                                              "pd_clock_frame_icon.png");
   d->m_supported_action_list << createAction(3, tr("Alarm"),
                                              "pd_clock_frame_icon.png");
-  d->m_supported_action_list << createAction(3, tr("Count"),
+  d->m_supported_action_list << createAction(3, tr("Countdown"),
                                              "pd_clock_frame_icon.png");
 }
 
@@ -161,7 +161,7 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
     return;
   }
 
-  if (actionName == tr("Count")) {
+  if (actionName == tr("Countdown")) {
     QVariantMap session_args;
 
     session_args["x"] = window_location.x();
