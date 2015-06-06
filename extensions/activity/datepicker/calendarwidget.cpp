@@ -7,6 +7,8 @@
 #include <tableview.h>
 #include <toolbar.h>
 #include <themepackloader.h>
+#include <item_view.h>
+#include <button.h>
 #include "datecell.h"
 #include "datecellfactory.h"
 #include <components/dialwidget.h>
@@ -16,48 +18,46 @@ public:
   PrivateCalendarWidget() {}
   ~PrivateCalendarWidget() {}
 
-  QGraphicsWidget *mBaseTooloBarWidget;
+  QGraphicsWidget *m_calendar_base_frame;
 
   UIKit::ToolBar *m_toolbar;
 
   UIKit::ImageButton *mNextBtn;
   UIKit::ImageButton *mPrevBtn;
-  UIKit::ImageButton *mOkBtn;
   UIKit::Label *mYearLable;
 
   UIKit::Widget *mFrame;
-  UIKit::TableView *mDayTable;
-  UIKit::TableView *mHeaderTable;
+  UIKit::ItemView *m_header_view;
+  UIKit::ItemView *m_cell_view;
+
   QImage mBackgroundImage;
   QDate mCurrentDate;
-
-  UIKit::DialWidget *mClockHourWidget;
-  UIKit::DialWidget *mClockMinWidget;
-  UIKit::Label *mTimeLable;
-
-  int mHour;
-  int mMin;
-
-  QString mHourLable;
-  QString mMinLable;
 };
+
+void CalendarWidget::add_weekday_header(int i)
+{
+  UIKit::Label *day_label = new UIKit::Label(d->m_header_view);
+  day_label->set_label(QDate::shortDayName(i));
+  day_label->set_size(QSizeF(32, 32));
+  day_label->setMinimumSize(QSizeF(32, 32));
+  UIKit::ModelViewItem *grid_item = new UIKit::ModelViewItem();
+  grid_item->set_view(day_label);
+
+  d->m_header_view->insert(grid_item);
+}
 
 CalendarWidget::CalendarWidget(QGraphicsObject *parent)
     : UIKit::Widget(parent), d(new PrivateCalendarWidget) {
+  d->m_calendar_base_frame = new QGraphicsWidget(this);
+  d->m_calendar_base_frame->setMinimumSize(QSizeF(300, 128));
+  d->m_calendar_base_frame->setGeometry(0.0, 0.0, 300.0, 128);
+  d->m_calendar_base_frame->setPos(0.0, 0.0);
 
+  d->m_toolbar = new UIKit::ToolBar(this);
+  d->m_toolbar->set_icon_resolution("hdpi");
+  d->m_toolbar->set_icon_size(QSize(24, 24));
 
-  d->mHour = 0;
-  d->mMin = 0;
-
-  d->mHourLable = "00";
-  d->mMinLable = "00";
-
-  d->mBaseTooloBarWidget = new QGraphicsWidget(this);
-  d->mBaseTooloBarWidget->setMinimumSize(QSizeF(300, 128));
-  d->mBaseTooloBarWidget->setGeometry(0.0, 0.0, 300.0, 128);
-  d->mBaseTooloBarWidget->setPos(300.0, 0.0);
-
-  d->mYearLable = new UIKit::Label(d->mBaseTooloBarWidget);
+  d->mYearLable = new UIKit::Label(d->m_toolbar);
   d->mYearLable->setMinimumSize(QSize(220, 24));
   d->mYearLable->set_size(QSize(220, 24));
 
@@ -69,14 +69,10 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
           .arg(QDate::longMonthName(QDate::currentDate().month()))
           .arg(QDate::currentDate().year()));
 
-  d->m_toolbar = new UIKit::ToolBar(d->mBaseTooloBarWidget);
-  d->m_toolbar->set_icon_resolution("mdpi");
-  d->m_toolbar->set_icon_size(QSize(24, 24));
-
-  d->m_toolbar->add_action("Previous", "pd_prev_icon_white", false);
+  d->m_toolbar->add_action("Previous", "actions/pd_previous", false);
   d->m_toolbar->insert_widget(d->mYearLable);
-  d->m_toolbar->add_action("Next", "pd_next_icon_white", false);
-  d->m_toolbar->setGeometry(QRectF(0, 0, 380, 48));
+  d->m_toolbar->add_action("Next", "actions/pd_next", false);
+  d->m_toolbar->setGeometry(QRectF(0, 0, 380, 24));
   d->m_toolbar->show();
 
   d->m_toolbar->on_item_activated([this](const QString &a_action) {
@@ -88,130 +84,95 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
         onPrevClicked();
   });
 
-  d->mFrame = new UIKit::Widget(this);
+  d->mFrame = new UIKit::Widget(d->m_calendar_base_frame);
   d->mFrame->setGeometry(QRectF(0, 0, 300, 480));
 
   d->mCurrentDate.setDate(QDate::currentDate().year(),
                           QDate::currentDate().month(), 1);
   /*header */
-  d->mHeaderTable = new UIKit::TableView(d->mFrame);
-  d->mHeaderTable->setGeometry(QRectF(0, 0, 300, 48));
-  d->mHeaderTable->setPos(0, 24);
-  DateCellFactory *headerList = new DateCellFactory(this);
-  headerList->setHeaderMode(true);
-  d->mHeaderTable->set_model(headerList);
+  d->m_header_view = new UIKit::ItemView(d->mFrame,
+                                         UIKit::ItemView::kGridModel);
+  d->m_header_view->setGeometry(QRectF(0, 0, 300, 48));
+  d->m_header_view->set_view_geometry(QRectF(0, 0, 300, 48));
+  d->m_header_view->setPos(0, d->m_toolbar->frame_geometry().height());
 
   // data
-  DateCellFactory *factory = new DateCellFactory(this);
+  d->m_cell_view =
+      new UIKit::ItemView(d->mFrame, UIKit::ItemView::kGridModel);
+  d->m_cell_view->set_view_geometry(QRectF(0, 0, 300 - 20, 480));
+  d->m_cell_view->setPos(0.0,
+                       d->m_toolbar->frame_geometry().height() +
+                       d->m_header_view->boundingRect().height());
 
-  d->mDayTable = new UIKit::TableView(d->mFrame);
-  d->mDayTable->setGeometry(QRectF(0, 0, 300, 480));
-  factory->setLabelVisibility(true);
-
-  d->mDayTable->set_model(factory);
-  d->mFrame->setPos(300.0, 48.0);
-  d->mDayTable->setPos(0.0, 48.0);
-
-  headerList->addDataItem(QDate::shortDayName(7), QPixmap(), true);
-
+  add_weekday_header(7);
   for (int i = 1; i <= 6; i++) {
-    headerList->addDataItem(QDate::shortDayName(i), QPixmap(), true);
+    add_weekday_header(i);
   }
 
-  // clearTableValues(factory);
   for (int i = 0; i < 43; i++) {
-    factory->addDataItem("", QPixmap(), true);
-  }
+      UIKit::Label *day_label = new UIKit::Label(d->m_cell_view);
+      //day_label->set_label(QString("%1").arg(i));
+      day_label->set_size(QSizeF(32, 32));
+      day_label->setMinimumSize(QSizeF(32, 32));
+      UIKit::ModelViewItem *grid_item = new UIKit::ModelViewItem();
+      grid_item->set_view(day_label);
+
+      d->m_cell_view->insert(grid_item);
+
+      day_label->on_input_event([=](UIKit::Widget::InputEvent a_event,
+                                const UIKit::Widget *a_widget) {
+        if (a_event == UIKit::Widget::kMouseReleaseEvent) {
+            if (day_label) {
+              clear_highlight();
+              day_label->set_highlight(1);
+            }
+        }
+      });
+   }
 
   this->changeDate(d->mCurrentDate);
-
-  d->mClockHourWidget = new UIKit::DialWidget(this);
-  d->mClockHourWidget->setGeometry(QRectF(0, 0, 300, 300));
-  d->mClockHourWidget->show();
-
-  d->mClockMinWidget = new UIKit::DialWidget(this);
-  d->mClockMinWidget->setGeometry(QRectF(0, 0, 150, 150));
-  d->mClockMinWidget->setPos(70, 70 + 48);
-  d->mClockHourWidget->setPos(0.0, 48);
-
-  d->mClockMinWidget->set_maximum_dial_value(60);
-
-  d->mTimeLable = new UIKit::Label(this);
-  d->mTimeLable->setMinimumSize(QSizeF(300.0, 50));
-  d->mTimeLable->set_size(QSizeF(290.0, 50));
-  d->mTimeLable->set_label_style(QColor("#f0f0f0"), QColor(81, 81, 81));
-  d->mTimeLable->set_label(QString(d->mHourLable + ":" + d->mMinLable));
-  d->mTimeLable->setPos(0.0, d->mClockHourWidget->boundingRect().height() + 32);
-  d->mTimeLable->set_font_size(32);
-
-  d->mOkBtn = new UIKit::ImageButton(this);
-  d->mOkBtn->set_pixmap(
-      UIKit::Theme::instance()->drawable("pd_arrow_icon.png", "mdpi"));
-  d->mOkBtn->set_size(QSize(48, 48));
-  d->mOkBtn->setMinimumSize(QSize(48, 48));
-  d->mOkBtn->setGeometry(QRectF(0, 0, 48, 48));
-  d->mOkBtn->show();
-  d->mOkBtn->setPos(600 - 52, 320);
-
-  connect(d->mClockHourWidget, SIGNAL(value(float)), this,
-          SLOT(onHourValueChanged(float)));
-  connect(d->mClockMinWidget, SIGNAL(value(float)), this,
-          SLOT(onMinValueChanged(float)));
-  connect(d->mOkBtn, SIGNAL(clicked()), this, SLOT(onOkButtonClicked()));
-
-  d->mOkBtn->on_input_event([this](UIKit::Widget::InputEvent a_event,
-                            const UIKit::Widget *a_widget) {
-    if (a_event == UIKit::Widget::kMouseReleaseEvent)
-      onOkButtonClicked();
-  });
-
-  for (int s = 0; s < 43; s++) {
-    DateCellFactory *_delegate =
-        dynamic_cast<DateCellFactory *>(d->mDayTable->model());
-
-    TableViewItem *com = _delegate->itemAt(s);
-
-    if (!com) {
-      continue;
-    }
-
-    connect(com, SIGNAL(clicked(TableViewItem *)), this, SLOT(onCellClicked()));
-  }
 }
 
 CalendarWidget::~CalendarWidget() { delete d; }
 
 void CalendarWidget::clearTableValues() {
   for (int i = 0; i < 43; i++) {
-    DateCellFactory *_delegate =
-        dynamic_cast<DateCellFactory *>(d->mDayTable->model());
-
-    TableViewItem *com = _delegate->itemAt(i);
+    UIKit::ModelViewItem *com = d->m_cell_view->at(i);
 
     if (!com) {
       continue;
     }
 
-    DateCell *cell = qobject_cast<DateCell *>(com);
+    UIKit::Label *cell = qobject_cast<UIKit::Label *>(com->view());
 
     if (!cell) {
       continue;
     }
 
-    qDebug() << Q_FUNC_INFO << "Blank Label;";
-    cell->setLabel("");
+    cell->set_label("");
   }
 }
 
+void CalendarWidget::clear_highlight() {
+  for (int i = 0; i < 43; i++) {
+    UIKit::ModelViewItem *com = d->m_cell_view->at(i);
+
+    if (!com) {
+      continue;
+    }
+
+    UIKit::Label *cell = qobject_cast<UIKit::Label *>(com->view());
+
+    if (!cell) {
+      continue;
+    }
+
+    cell->set_highlight(0);
+  }
+}
+
+
 QDate CalendarWidget::currentDate() const { return d->mCurrentDate; }
-
-uint CalendarWidget::currentMinute() const {
-  return d->mClockMinWidget->current_dial_value();
-}
-
-uint CalendarWidget::currentHour() const {
-  return d->mClockHourWidget->current_dial_value();
-}
 
 void CalendarWidget::setBackgroundImage(const QImage &img) {
   d->mBackgroundImage = img;
@@ -221,28 +182,24 @@ void CalendarWidget::setBackgroundImage(const QImage &img) {
 void CalendarWidget::changeDate(const QDate &date) {
   clearTableValues();
   for (int s = date.dayOfWeek(); s < 43; s++) {
-    DateCellFactory *_delegate =
-        qobject_cast<DateCellFactory *>(d->mDayTable->model());
-
-    TableViewItem *com = _delegate->itemAt(s);
+    UIKit::ModelViewItem *com = d->m_cell_view->at(s);
 
     if (!com) {
       continue;
     }
 
-    DateCell *cell = qobject_cast<DateCell *>(com);
+    UIKit::Label *cell = qobject_cast<UIKit::Label *>(com->view());
 
     if (!cell) {
       continue;
     }
 
-    int value = s - date.dayOfWeek() + 1;
+    int value = s - date.dayOfWeek()  + 1 ;
     if (value > date.daysInMonth()) {
       continue;
     }
 
-    qDebug() << Q_FUNC_INFO << "Value of date:;" << value;
-    cell->setLabel(QString("%1").arg(value));
+    cell->set_label(QString("%1").arg(value));
   }
 }
 
@@ -288,27 +245,9 @@ void CalendarWidget::onPrevClicked() {
 }
 
 void CalendarWidget::onHourValueChanged(float value) {
-  d->mHour = value;
-
-  if (value < 10) {
-    d->mHourLable = QString("0%1").arg(value);
-  } else {
-    d->mHourLable = QString("%1").arg(value);
-  }
-
-  d->mTimeLable->set_label(QString(d->mHourLable + ":" + d->mMinLable));
 }
 
 void CalendarWidget::onMinValueChanged(float value) {
-  d->mMin = value;
-
-  if (value < 10) {
-    d->mMinLable = QString("0%1").arg(value);
-  } else {
-    d->mMinLable = QString("%1").arg(value);
-  }
-
-  d->mTimeLable->set_label(QString(d->mHourLable + ":" + d->mMinLable));
 }
 
 void CalendarWidget::onCellClicked() {
@@ -324,7 +263,9 @@ void CalendarWidget::onCellClicked() {
   }
 }
 
-void CalendarWidget::onOkButtonClicked() { Q_EMIT done(); }
+void CalendarWidget::onOkButtonClicked() {
+
+}
 
 void CalendarWidget::paint_view(QPainter *painter, const QRectF &rect) {
   painter->save();
@@ -333,31 +274,9 @@ void CalendarWidget::paint_view(QPainter *painter, const QRectF &rect) {
   painter->setRenderHint(QPainter::HighQualityAntialiasing);
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-  // QRectF backgroundRect(300.0, d->mNextBtn->boundingRect().height(), 300.0,
-  // 440 - d->mNextBtn->boundingRect().height());
-
   if (!d->mBackgroundImage.isNull()) {
     painter->drawImage(rect, d->mBackgroundImage);
-
-  } else {
-    // painter->fillRect(rect, QColor("#79BCD3"));
-    // painter->fillRect(rect, QColor("#79BCD3"));
-    // painter->fillRect(rect, QColor("#F28585")) // pink;
-    // painter->fillRect(rect, QColor("#A6C024"));
-    // painter->fillRect(rect, QColor("#02C2B5"));// green
-    painter->fillRect(QRectF(0.0, 0.0, 300.0, rect.height()),
-                      QColor("#f0f0f0")); // green
   }
-
-  QRectF dateRect(300.0, 0.0, 300.0, rect.height());
-
-  painter->save();
-  painter->setOpacity(1.0);
-  painter->fillRect(dateRect, QColor(100, 100, 100));
-  painter->restore();
-
-  // painter->setOpacity(1.0);
-  // painter->fillRect(backgroundRect, QColor("#F28585"));
 
   painter->restore();
 }

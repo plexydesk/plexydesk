@@ -8,26 +8,15 @@ class CalendarWidget : public UIKit::Widget {
 
 public:
   CalendarWidget(QGraphicsObject *a_parent_ptr = 0);
-
   virtual ~CalendarWidget();
 
   void setBackgroundImage(const QImage &img);
 
   void changeDate(const QDate &date);
-
-  void clearTableValues();
-
   QDate currentDate() const;
 
-  uint currentMinute() const;
-
-  uint currentHour() const;
-
-Q_SIGNALS:
-  void done();
-
-private
-Q_SLOTS:
+  void add_weekday_header(int i);
+private Q_SLOTS:
   void onNextClicked();
   void onPrevClicked();
   void onHourValueChanged(float value);
@@ -37,7 +26,9 @@ Q_SLOTS:
 
 protected:
   virtual void paint_view(QPainter *painter, const QRectF &rect);
+  void clearTableValues();
 
+  void clear_highlight();
 private:
   class PrivateCalendarWidget;
   PrivateCalendarWidget *const d;

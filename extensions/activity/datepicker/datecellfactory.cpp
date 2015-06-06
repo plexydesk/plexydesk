@@ -90,7 +90,5 @@ void DateCellFactory::setHeaderMode(bool mode) { d->mHeaderMode = mode; }
 void DateCellFactory::setCellSize(const QSize &size) { d->mCellSize = size; }
 
 UIKit::TableViewItem *DateCellFactory::itemAt(int i) {
-  qDebug() << Q_FUNC_INFO << d->mListItems.count();
-
   return d->mListItems.at(i);
 }
