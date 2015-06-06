@@ -114,8 +114,6 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
         Action *l_action_item = new Action;
         d->m_action_list.append(l_action_item);
         l_action_item->onActionActivated([this](const Action *aAction) {
-          qDebug() << Q_FUNC_INFO
-                   << "Hello world : " << aAction->controller_name();
           d->m_activity_result.clear();
           d->m_activity_result["controller"] = aAction->controller_name();
           d->m_activity_result["action"] = aAction->label();
@@ -131,7 +129,6 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
               if (view)
                 delete view;
           }
-
         });
 
         grid_item->set_view(l_action_item->createActionItem(
@@ -139,6 +136,13 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
             _item["controller"].toString()));
 
         d->m_grid_view->insert(grid_item);
+        d->m_grid_view->updateGeometry();
+
+        QRectF _content_rect = d->m_grid_view->boundingRect();
+
+        set_geometry(_content_rect);
+
+        d->m_activity_window_ptr->setGeometry(_content_rect);
         }
     }
 
@@ -197,6 +201,9 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   m_label = aLabel;
   m_icon = aIcon;
 
+  QSizeF item_icon_size (96, 64);
+  QSizeF item_label_size(96, 32);
+
   Widget *l_rv = new Widget();
 
   UIKit::ImageView *l_image_view = new UIKit::ImageView(l_rv);
@@ -205,12 +212,12 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   l_action_label->set_widget_name(aLabel);
 
   QPixmap l_view_pixmap(UIKit::Theme::instance()->drawable(aIcon, "hdpi"));
-  l_image_view->setMinimumSize(l_view_pixmap.size());
-  l_image_view->set_size(l_view_pixmap.size());
   l_image_view->set_pixmap(l_view_pixmap);
+  l_image_view->setMinimumSize(item_icon_size);
+  l_image_view->set_size(item_icon_size);
 
-  l_action_label->set_size(QSizeF(l_image_view->boundingRect().width(), 32));
-  l_action_label->setPos(0, l_image_view->boundingRect().height());
+  l_action_label->set_size(item_label_size);
+  l_action_label->setPos(0, l_image_view->geometry().height());
 
   l_rv->setGeometry(l_image_view->geometry());
 
