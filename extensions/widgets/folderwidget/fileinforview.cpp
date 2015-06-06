@@ -82,13 +82,13 @@ FileInforView::FileInforView(QGraphicsObject *parent)
   /* Delete Button */
   d->mDeleteButton = new UIKit::Button(d->mLayoutBase);
   d->mDeleteButton->setLabel(tr("Trash"));
-  d->mDeleteButton->setSize(QSize(100, 25));
+  d->mDeleteButton->set_size(QSizeF(100, 25));
   d->mGridLayout->addItem(d->mDeleteButton, 0, 0);
 
   /* Rename Button */
   d->mRenameButton = new UIKit::Button(d->mLayoutBase);
   d->mRenameButton->setLabel(tr("Rename"));
-  d->mRenameButton->setSize(QSize(100, 25));
+  d->mRenameButton->set_size(QSizeF(100, 25));
   d->mGridLayout->addItem(d->mRenameButton, 0, 1);
 
   d->mLineEditProxy = new QGraphicsProxyWidget(d->mLayoutBase);
