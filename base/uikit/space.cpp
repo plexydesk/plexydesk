@@ -411,8 +411,8 @@ void Space::clear() {
     if (_widget) {
       if (m_priv_impl->mMainScene->items().contains(_widget)) {
         m_priv_impl->mMainScene->removeItem(_widget);
+        _widget->discard();
       }
-      _widget->discard();
       qDebug() << Q_FUNC_INFO << "Widget Deleted: OK";
     }
   }
