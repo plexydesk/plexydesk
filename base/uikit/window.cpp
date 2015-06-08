@@ -186,7 +186,11 @@ void Window::on_window_focused(std::function<void (Window *)> a_handler) {
 }
 
 void Window::raise() {
-  invoke_focus_handlers();
+    invoke_focus_handlers();
+}
+
+void Window::close() {
+   invoke_window_closed_action();
 }
 
 void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
@@ -224,7 +228,7 @@ void Window::discard() {
   if (m_priv_impl->m_window_discard_callback) {
     qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
     m_priv_impl->m_window_discard_callback(this);
-    }
+  }
 }
 
 void Window::resize(float a_width, float a_height) {
