@@ -9,10 +9,8 @@
 #include <themepackloader.h>
 #include <item_view.h>
 #include <button.h>
-#include "datecell.h"
-#include "datecellfactory.h"
-#include <components/dialwidget.h>
 
+namespace UIKit {
 class CalendarWidget::PrivateCalendarWidget {
 public:
   PrivateCalendarWidget() {}
@@ -22,16 +20,14 @@ public:
 
   UIKit::ToolBar *m_toolbar;
 
-  UIKit::ImageButton *mNextBtn;
-  UIKit::ImageButton *mPrevBtn;
+  UIKit::ImageButton *m_next_btn;
+  UIKit::ImageButton *m_previous_btn;
   UIKit::Label *mYearLable;
-
-  UIKit::Widget *mFrame;
+  UIKit::Widget *m_content_widget;
   UIKit::ItemView *m_header_view;
   UIKit::ItemView *m_cell_view;
 
-  QImage mBackgroundImage;
-  QDate mCurrentDate;
+  QDate m_current_date;
 };
 
 void CalendarWidget::add_weekday_header(int i)
@@ -78,19 +74,19 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   d->m_toolbar->on_item_activated([this](const QString &a_action) {
       qDebug() << Q_FUNC_INFO << a_action;
       if (a_action == "Next")
-        onNextClicked();
+        next();
 
       if (a_action == "Previous")
-        onPrevClicked();
+        previous();
   });
 
-  d->mFrame = new UIKit::Widget(d->m_calendar_base_frame);
-  d->mFrame->setGeometry(QRectF(0, 0, 300, 480));
+  d->m_content_widget = new UIKit::Widget(d->m_calendar_base_frame);
+  d->m_content_widget->setGeometry(QRectF(0, 0, 300, 480));
 
-  d->mCurrentDate.setDate(QDate::currentDate().year(),
+  d->m_current_date.setDate(QDate::currentDate().year(),
                           QDate::currentDate().month(), 1);
   /*header */
-  d->m_header_view = new UIKit::ItemView(d->mFrame,
+  d->m_header_view = new UIKit::ItemView(d->m_content_widget,
                                          UIKit::ItemView::kGridModel);
   d->m_header_view->setGeometry(QRectF(0, 0, 300, 48));
   d->m_header_view->set_view_geometry(QRectF(0, 0, 300, 48));
@@ -98,7 +94,7 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
 
   // data
   d->m_cell_view =
-      new UIKit::ItemView(d->mFrame, UIKit::ItemView::kGridModel);
+      new UIKit::ItemView(d->m_content_widget, UIKit::ItemView::kGridModel);
   d->m_cell_view->set_view_geometry(QRectF(0, 0, 300 - 20, 480));
   d->m_cell_view->setPos(0.0,
                        d->m_toolbar->frame_geometry().height() +
@@ -123,19 +119,19 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
                                 const UIKit::Widget *a_widget) {
         if (a_event == UIKit::Widget::kMouseReleaseEvent) {
             if (day_label) {
-              clear_highlight();
+              reset();
               day_label->set_highlight(1);
             }
         }
       });
    }
 
-  this->changeDate(d->mCurrentDate);
+  this->set_date(d->m_current_date);
 }
 
 CalendarWidget::~CalendarWidget() { delete d; }
 
-void CalendarWidget::clearTableValues() {
+void CalendarWidget::clear() {
   for (int i = 0; i < 43; i++) {
     UIKit::ModelViewItem *com = d->m_cell_view->at(i);
 
@@ -153,7 +149,7 @@ void CalendarWidget::clearTableValues() {
   }
 }
 
-void CalendarWidget::clear_highlight() {
+void CalendarWidget::reset() {
   for (int i = 0; i < 43; i++) {
     UIKit::ModelViewItem *com = d->m_cell_view->at(i);
 
@@ -172,15 +168,10 @@ void CalendarWidget::clear_highlight() {
 }
 
 
-QDate CalendarWidget::currentDate() const { return d->mCurrentDate; }
+QDate CalendarWidget::a_date() const { return d->m_current_date; }
 
-void CalendarWidget::setBackgroundImage(const QImage &img) {
-  d->mBackgroundImage = img;
-  update();
-}
-
-void CalendarWidget::changeDate(const QDate &date) {
-  clearTableValues();
+void CalendarWidget::set_date(const QDate &date) {
+  clear();
   for (int s = date.dayOfWeek(); s < 43; s++) {
     UIKit::ModelViewItem *com = d->m_cell_view->at(s);
 
@@ -203,10 +194,10 @@ void CalendarWidget::changeDate(const QDate &date) {
   }
 }
 
-void CalendarWidget::onNextClicked() {
-  int currentMonth = d->mCurrentDate.month();
-  int currentYear = d->mCurrentDate.year();
-  int currentDay = d->mCurrentDate.day();
+void CalendarWidget::next() {
+  int currentMonth = d->m_current_date.month();
+  int currentYear = d->m_current_date.year();
+  int currentDay = d->m_current_date.day();
 
   if ((currentMonth + 1) > 12) {
     currentMonth = 1;
@@ -215,19 +206,19 @@ void CalendarWidget::onNextClicked() {
     currentMonth += 1;
   }
 
-  d->mCurrentDate.setDate(currentYear, currentMonth, currentDay);
+  d->m_current_date.setDate(currentYear, currentMonth, currentDay);
   update();
 
   d->mYearLable->set_label(
-      QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
-          d->mCurrentDate.year()));
-  changeDate(d->mCurrentDate);
+      QString("%1 %2").arg(QDate::longMonthName(d->m_current_date.month())).arg(
+          d->m_current_date.year()));
+  set_date(d->m_current_date);
 }
 
-void CalendarWidget::onPrevClicked() {
-  int currentMonth = d->mCurrentDate.month();
-  int currentYear = d->mCurrentDate.year();
-  int currentDay = d->mCurrentDate.day();
+void CalendarWidget::previous() {
+  int currentMonth = d->m_current_date.month();
+  int currentYear = d->m_current_date.year();
+  int currentDay = d->m_current_date.day();
 
   if ((currentMonth - 1) < 1) {
     currentMonth = 12;
@@ -236,35 +227,12 @@ void CalendarWidget::onPrevClicked() {
     currentMonth -= 1;
   }
 
-  d->mCurrentDate.setDate(currentYear, currentMonth, currentDay);
+  d->m_current_date.setDate(currentYear, currentMonth, currentDay);
   update();
   d->mYearLable->set_label(
-      QString("%1 %2").arg(QDate::longMonthName(d->mCurrentDate.month())).arg(
-          d->mCurrentDate.year()));
-  changeDate(d->mCurrentDate);
-}
-
-void CalendarWidget::onHourValueChanged(float value) {
-}
-
-void CalendarWidget::onMinValueChanged(float value) {
-}
-
-void CalendarWidget::onCellClicked() {
-  if (sender()) {
-    DateCell *cell = qobject_cast<DateCell *>(sender());
-    if (cell) {
-      qDebug() << Q_FUNC_INFO << cell->label().toInt();
-      if (cell->label().toInt() > 0) {
-        d->mCurrentDate.setDate(d->mCurrentDate.year(), d->mCurrentDate.month(),
-                                cell->label().toInt());
-      }
-    }
-  }
-}
-
-void CalendarWidget::onOkButtonClicked() {
-
+      QString("%1 %2").arg(QDate::longMonthName(d->m_current_date.month())).arg(
+          d->m_current_date.year()));
+  set_date(d->m_current_date);
 }
 
 void CalendarWidget::paint_view(QPainter *painter, const QRectF &rect) {
@@ -274,9 +242,6 @@ void CalendarWidget::paint_view(QPainter *painter, const QRectF &rect) {
   painter->setRenderHint(QPainter::HighQualityAntialiasing);
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-  if (!d->mBackgroundImage.isNull()) {
-    painter->drawImage(rect, d->mBackgroundImage);
-  }
-
   painter->restore();
+}
 }
