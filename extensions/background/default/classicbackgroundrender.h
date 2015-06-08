@@ -45,8 +45,6 @@ protected:
   void paint_view(QPainter *painter, const QRectF &rect);
   void paintMinimizedView(QPainter *painter, const QRectF &rect);
   void drawBackroundFrame(QPainter *painter, const QRectF &rect);
-  void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
 private:
   QImage mBackgroundImage;
   QImage mBackgroundImageWidthScaled;
