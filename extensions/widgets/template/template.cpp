@@ -26,7 +26,6 @@ public:
 
 TemplateControllerImpl::TemplateControllerImpl(QObject *object)
     : UIKit::ViewController(object), d(new PrivateTemplate) {
-  startTimer(1000);
 }
 
 TemplateControllerImpl::~TemplateControllerImpl() { delete d; }
@@ -43,9 +42,9 @@ void TemplateControllerImpl::submit_session_data(
 
 }
 
-void TemplateControllerImpl::set_view_rect(const QRectF &rect) {}
+void TemplateControllerImpl::set_view_rect(const QRectF &a_rect) {}
 
-bool TemplateControllerImpl::remove_widget(UIKit::Widget *widget) {
+bool TemplateControllerImpl::remove_widget(UIKit::Widget *a_widget_ptr) {
   return false;
 }
 
@@ -53,11 +52,9 @@ UIKit::ActionList TemplateControllerImpl::actions() const {
   return UIKit::ActionList();
 }
 
-void TemplateControllerImpl::request_action(const QString &actionName,
-                                            const QVariantMap &args) {}
+void TemplateControllerImpl::request_action(const QString &a_name,
+                                            const QVariantMap &a_args) {}
 
 QString TemplateControllerImpl::icon() const {
   return QString();
 }
-
-void TemplateControllerImpl::onDataUpdated(const QVariantMap &data) {}
