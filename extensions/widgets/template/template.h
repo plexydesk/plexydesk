@@ -19,40 +19,28 @@
 #ifndef TEMPLATE_DATA_H
 #define TEMPLATE_DATA_H
 
-#include <QtCore>
-#include <plexy.h>
-#include <datasource.h>
 #include <view_controller.h>
-#include <QtNetwork>
 
 class TemplateControllerImpl : public UIKit::ViewController {
-  Q_OBJECT
-
 public:
-  TemplateControllerImpl(QObject *object = 0);
+  explicit TemplateControllerImpl(QObject *object = 0);
   virtual ~TemplateControllerImpl();
 
   void init();
 
   void session_data_available(const QuetzalKit::SyncObject &a_session_root);
-  virtual void submit_session_data(QuetzalKit::SyncObject *a_obj);
+  void submit_session_data(QuetzalKit::SyncObject *a_obj);
 
-  void set_view_rect(const QRectF &rect);
+  void set_view_rect(const QRectF &a_rect);
 
-  bool remove_widget(UIKit::Widget *widget);
+  bool remove_widget(UIKit::Widget *a_widget_ptr);
 
   UIKit::ActionList actions() const;
-  void request_action(const QString &actionName,
-                      const QVariantMap &args);
+  void request_action(const QString &a_name, const QVariantMap &a_args);
 
   QString icon() const;
-public
-Q_SLOTS:
-  void onDataUpdated(const QVariantMap &data);
-
 private:
   class PrivateTemplate;
   PrivateTemplate *const d;
 };
-
 #endif

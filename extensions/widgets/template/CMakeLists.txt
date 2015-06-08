@@ -39,16 +39,14 @@ TARGET_LINK_LIBRARIES(templatewidget
     ${libs}
     )
 
-QT5_USE_MODULES(templatewidget Widgets Xml OpenGL Core WebKitWidgets Svg Declarative)
+QT5_USE_MODULES(templatewidget Widgets Xml Core Svg Declarative)
 
 IF (NOT APPLE)
-INSTALL(TARGETS templatewidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
-INSTALL(FILES template.desktop DESTINATION share/plexy/ext/groups)
+    INSTALL(TARGETS templatewidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
+    INSTALL(FILES template.desktop DESTINATION share/plexy/ext/groups)
 ENDIF (NOT APPLE)
 
 IF (APPLE)
-   INSTALL(TARGETS templatewidget LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
-   INSTALL(FILES template.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
+   INSTALL(TARGETS templatewidget LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(FILES template.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR})
 ENDIF(APPLE)
-
-
