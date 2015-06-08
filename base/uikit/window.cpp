@@ -12,6 +12,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QGraphicsDropShadowEffect>
+#include <QGraphicsSceneMouseEvent>
 
 namespace UIKit {
 typedef std::function<void(Window *)> WindowActionCallback;
@@ -204,7 +205,6 @@ void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
 
 void Window::show() {
   setVisible(true);
-  //setFocus(Qt::MouseFocusReason);
 }
 
 void Window::hide() {
@@ -253,7 +253,8 @@ void Window::invoke_focus_handlers()
 }
 
 void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-  invoke_focus_handlers();
+  if (event->button() == Qt::LeftButton)
+      invoke_focus_handlers();
   QGraphicsObject::mousePressEvent(event);
 }
 
