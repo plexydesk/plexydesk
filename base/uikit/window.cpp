@@ -184,6 +184,10 @@ void Window::on_window_focused(std::function<void (Window *)> a_handler) {
   m_priv_impl->m_window_focus_callback_list.push_back(a_handler);
 }
 
+void Window::raise() {
+  invoke_focus_handlers();
+}
+
 void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
   if (!m_priv_impl->mWindowBackgroundVisibility) {
     return;
@@ -200,7 +204,7 @@ void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
 
 void Window::show() {
   setVisible(true);
-  setFocus(Qt::MouseFocusReason);
+  //setFocus(Qt::MouseFocusReason);
 }
 
 void Window::hide() {
@@ -238,16 +242,18 @@ void Window::enable_window_background(bool a_visibility) {
   m_priv_impl->mWindowBackgroundVisibility = a_visibility;
 }
 
-void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-  //window focus notifycatoin.
-  if (m_priv_impl->m_window_type == kApplicationWindow) {
+void Window::invoke_focus_handlers()
+{
   std::for_each(std::begin(m_priv_impl->m_window_focus_callback_list),
                 std::end(m_priv_impl->m_window_focus_callback_list),
                 [&](WindowActionCallback a_func) {
       if (a_func)
           a_func(this);
   });
-  }
+}
+
+void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+  invoke_focus_handlers();
   QGraphicsObject::mousePressEvent(event);
 }
 
