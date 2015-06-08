@@ -82,6 +82,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     components/clockwidget.cpp
     components/rangewidget.cpp
     components/model_view_item.cpp
+    components/calendarwidget.cpp
     )
 
 set(LIBRARY_SOURCE_FILES
@@ -125,6 +126,7 @@ set(LIBRARY_HEADER_FILES
     components/clockwidget.h
     components/rangewidget.h
     components/model_view_item.h
+    components/calendarwidget.h
     workspace.h
     session_sync.h
     space.h
