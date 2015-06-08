@@ -14,13 +14,13 @@ class Space;
 class DECL_UI_KIT_EXPORT Window : public Widget {
 public:
   typedef enum {
-    kFramelessWindow,
-    kPanelWindow,
-    kApplicationWindow,
-    kNotificationWindow,
-    kDialogWindow,
-    kMessageWindow,
-    kPopupWindow
+    kFramelessWindow = 1,
+    kPanelWindow = 2,
+    kApplicationWindow = 3,
+    kNotificationWindow = 4,
+    kDialogWindow = 5,
+    kMessageWindow = 6,
+    kPopupWindow = 7
   } WindowType;
 
   Window(QGraphicsObject *a_parent_ptr = 0);
@@ -43,6 +43,7 @@ public:
   virtual void on_window_discarded(std::function<void(Window *)> a_handler);
   virtual void on_window_focused(std::function<void (Window *)> a_handler);
 
+  virtual void raise();
   virtual void show();
   virtual void hide();
   virtual void discard();
@@ -56,6 +57,7 @@ protected:
 
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr);
 
+  void invoke_focus_handlers();
   void invoke_window_closed_action();
   void invoke_window_moved_action();
 private:

@@ -190,10 +190,8 @@ void Space::insert_window_to_view(Window *a_window) {
                         a_window->boundingRect().height() / 2);
 
   m_priv_impl->mMainScene->addItem(a_window);
-  a_window->setZValue(kMaximumZOrder);
-  // a_window->setPos(_widget_location);
-
-  a_window->show();
+  if (a_window->window_type() == Window::kApplicationWindow)
+    a_window->setZValue(kMaximumZOrder);
 
   if (a_window->controller()) {
     a_window->controller()->set_view_rect(m_priv_impl->mDesktopRect);
@@ -207,22 +205,38 @@ void Space::insert_window_to_view(Window *a_window) {
   });
 
   a_window->on_window_focused([this](Window *a_window) {
-    if (!a_window)
+    if (!a_window) {
       return;
+    }
+
     std::for_each(std::begin(m_priv_impl->mWindowList),
                   std::end(m_priv_impl->mWindowList), [&](Window *a_win) {
-      if (!a_win && a_win->window_type() != Window::kApplicationWindow)
-        return;
-      if (a_win->zValue() == kMaximumZOrder) {
-        a_win->setZValue(kMaximumZOrder - 1);
-        return;
+      if (a_win->window_type() == Window::kFramelessWindow) {
+        a_win->setZValue(kMinimumZOrder);
       }
 
-      a_win->setZValue(kMediumZOrder);
+      if (a_win->window_type() == Window::kPanelWindow) {
+        a_win->setZValue(kMaximumZOrder + 2);
+      }
+
+      if (a_win->window_type() == Window::kPopupWindow) {
+        a_win->setZValue(kMaximumZOrder + 1);
+        if (a_win != a_window)
+            a_win->hide();
+      }
+
+      if (a_win->window_type() == Window::kApplicationWindow) {
+       if (a_win->zValue() == kMaximumZOrder && a_win != a_window)
+          a_win->setZValue((kMaximumZOrder - 1));
+      }
     });
 
-    a_window->setZValue(kMaximumZOrder);
+    if (a_window->window_type() == Window::kApplicationWindow)
+       a_window->setZValue(kMaximumZOrder);
   });
+
+  a_window->raise();
+  a_window->show();
 }
 
 void Space::remove_window_from_view(Window *a_window) {
