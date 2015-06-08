@@ -6,6 +6,8 @@
 #include "view_controller.h"
 #include <space.h>
 
+#include <future>
+
 namespace UIKit {
 
 class DesktopActivity::PrivateDesktopActivity {
@@ -28,6 +30,7 @@ public:
   QList<std::function<void(const QVariantMap &a_result)> >
   m_action_completed_list;
   QList<std::function<void(const DesktopActivity *)> > m_discard_handler_list;
+  std::future<void> m_async_notification_result;
 };
 
 DesktopActivity::DesktopActivity(QGraphicsObject *parent)
@@ -93,6 +96,7 @@ void DesktopActivity::discard_activity() {
   }
 
   hide();
+
   if (window()) {
     cleanup();
   }
@@ -161,5 +165,10 @@ void DesktopActivity::notify_done() {
       l_func(result());
     }
   }
+
+  d->m_async_notification_result = std::async(std::launch::async, [this] () {
+     if (window())
+         window()->close();
+  });
 }
 }

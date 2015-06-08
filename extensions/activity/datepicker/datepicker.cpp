@@ -82,8 +82,8 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
                             const UIKit::Widget *a_widget) {
     if (a_event == UIKit::Widget::kMouseReleaseEvent) {
         qDebug() << Q_FUNC_INFO << "Activity complete";
-        notify_done();
         onCalendarReady();
+        notify_done();
     }
   });
 
@@ -103,7 +103,9 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
 
-UIKit::Window *DatePickerActivity::window() const { return d->m_activity_window; }
+UIKit::Window *DatePickerActivity::window() const {
+    return d->m_activity_window;
+}
 
 void DatePickerActivity::cleanup() {
   if (d->m_activity_window) {
@@ -123,6 +125,4 @@ void DatePickerActivity::onCalendarReady() {
   } else {
     d->m_result_data["date"] = QVariant(d->mCalendarWidget->currentDate());
   }
-
-  discard_activity();
 }

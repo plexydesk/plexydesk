@@ -44,6 +44,7 @@ public:
   virtual void on_window_focused(std::function<void (Window *)> a_handler);
 
   virtual void raise();
+  virtual void close();
   virtual void show();
   virtual void hide();
   virtual void discard();
