@@ -25,9 +25,7 @@
 #include <themepackloader.h>
 #include <imagebutton.h>
 #include <button.h>
-
-#include "calendarwidget.h"
-#include "datecellfactory.h"
+#include <calendarwidget.h>
 
 class DatePickerActivity::PrivateDatePicker {
 public:
