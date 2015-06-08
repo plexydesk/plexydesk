@@ -1,13 +1,11 @@
 SET (sourceFiles
     datepicker.cpp
     datepickerinterface.cpp
-    calendarwidget.cpp
     )
 
 SET(headerFiles
     datepicker.h
     datepickerinterface.h
-    calendarwidget.h
     )
 
 SET (QTMOC_SRCS
