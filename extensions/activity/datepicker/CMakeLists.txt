@@ -1,25 +1,18 @@
 SET (sourceFiles
     datepicker.cpp
     datepickerinterface.cpp
-    datecell.cpp
-    datecellfactory.cpp
     calendarwidget.cpp
     )
 
 SET(headerFiles
     datepicker.h
     datepickerinterface.h
-    datecell.h
-    datecellfactory.h
     calendarwidget.h
     )
 
 SET (QTMOC_SRCS
     datepicker.h
     datepickerinterface.h
-    datecell.h
-    datecellfactory.h
-    calendarwidget.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})

@@ -44,7 +44,7 @@ public:
   void cleanup();
 private:
   void onImageReady(const QImage &img);
-  void onCalendarReady();
+  void end_calendar();
 
 private:
   class PrivateDatePicker;

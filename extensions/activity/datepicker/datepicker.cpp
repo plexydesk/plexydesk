@@ -36,18 +36,10 @@ public:
 
   UIKit::Window *m_activity_window;
   UIKit::Widget *m_window_content;
-
   UIKit::Button *m_done_button;
-
-  DateCellFactory *mFactory;
-  UIKit::TableView *mTable;
-  QRectF mBoundingRect;
-  QString mSelection;
-  UIKit::Theme *mLoader;
+  UIKit::CalendarWidget *mCalendarWidget;
 
   QVariantMap m_result_data;
-
-  CalendarWidget *mCalendarWidget;
 };
 
 DatePickerActivity::DatePickerActivity(QGraphicsObject *object)
@@ -65,7 +57,7 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
   d->m_window_content = new UIKit::Widget(d->m_activity_window);
   d->m_window_content->setGeometry(window_geometry);
 
-  d->mCalendarWidget = new CalendarWidget(d->m_window_content);
+  d->mCalendarWidget = new UIKit::CalendarWidget(d->m_window_content);
   d->mCalendarWidget->setGeometry(window_geometry);
   d->mCalendarWidget->setPos(0, 0);
 
@@ -82,7 +74,7 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
                             const UIKit::Widget *a_widget) {
     if (a_event == UIKit::Widget::kMouseReleaseEvent) {
         qDebug() << Q_FUNC_INFO << "Activity complete";
-        onCalendarReady();
+        end_calendar();
         notify_done();
     }
   });
@@ -116,13 +108,12 @@ void DatePickerActivity::cleanup() {
 }
 
 void DatePickerActivity::onImageReady(const QImage &img) {
-  d->mCalendarWidget->setBackgroundImage(img);
 }
 
-void DatePickerActivity::onCalendarReady() {
+void DatePickerActivity::end_calendar() {
   if (!d->mCalendarWidget) {
     d->m_result_data["date"] = QVariant(QDate::currentDate().toString());
   } else {
-    d->m_result_data["date"] = QVariant(d->mCalendarWidget->currentDate());
+    d->m_result_data["date"] = QVariant(d->mCalendarWidget->a_date());
   }
 }
