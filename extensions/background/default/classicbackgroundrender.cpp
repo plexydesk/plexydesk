@@ -95,12 +95,6 @@ void ClassicBackgroundRender::setSeamLessMode(bool value) {
   update();
 }
 
-void ClassicBackgroundRender::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-  qDebug() << Q_FUNC_INFO << "Mouse presesed on the background";
-  setFocus(Qt::MouseFocusReason);
-  UIKit::Window::mousePressEvent(event);
-}
-
 void ClassicBackgroundRender::paint_view(QPainter *painter,
                                          const QRectF &rect /*rect*/) {
   if (mSeamLessMode) {
