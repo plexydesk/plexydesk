@@ -4,10 +4,10 @@
 #include <widget.h>
 
 namespace UIKit {
-class CalendarWidget : public UIKit::Widget {
+class CalendarView : public UIKit::Widget {
 public:
-  explicit CalendarWidget(QGraphicsObject *a_parent_ptr = 0);
-  virtual ~CalendarWidget();
+  explicit CalendarView(QGraphicsObject *a_parent_ptr = 0);
+  virtual ~CalendarView();
 
   virtual void set_date(const QDate &a_date);
   virtual QDate a_date() const;
