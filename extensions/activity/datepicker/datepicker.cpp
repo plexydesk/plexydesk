@@ -35,7 +35,7 @@ public:
   UIKit::Window *m_activity_window;
   UIKit::Widget *m_window_content;
   UIKit::Button *m_done_button;
-  UIKit::CalendarWidget *mCalendarWidget;
+  UIKit::CalendarView *mCalendarWidget;
 
   QVariantMap m_result_data;
 };
@@ -55,7 +55,7 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
   d->m_window_content = new UIKit::Widget(d->m_activity_window);
   d->m_window_content->setGeometry(window_geometry);
 
-  d->mCalendarWidget = new UIKit::CalendarWidget(d->m_window_content);
+  d->mCalendarWidget = new UIKit::CalendarView(d->m_window_content);
   d->mCalendarWidget->setGeometry(window_geometry);
   d->mCalendarWidget->setPos(0, 0);
 
