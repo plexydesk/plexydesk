@@ -46,14 +46,27 @@ DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
 DesktopNotesControllerImpl::~DesktopNotesControllerImpl() { delete d; }
 
 void DesktopNotesControllerImpl::init() {
-  // todo
   QAction *_add_note_action = new QAction(this);
   _add_note_action->setText(tr("Note"));
 
   _add_note_action->setProperty("id", QVariant(1));
   _add_note_action->setProperty("icon_name", "pd_add_note_frame_icon.png");
 
+   QAction *_add_task_action = new QAction(this);
+  _add_task_action->setText(tr("Task"));
+
+  _add_task_action->setProperty("id", QVariant(2));
+  _add_task_action->setProperty("icon_name", "pd_add_note_frame_icon.png");
+
+   QAction *_add_reminder_action = new QAction(this);
+  _add_reminder_action->setText(tr("Reminder"));
+
+  _add_reminder_action->setProperty("id", QVariant(2));
+  _add_reminder_action->setProperty("icon_name", "pd_add_note_frame_icon.png");
+
   d->m_supported_action_list << _add_note_action;
+  d->m_supported_action_list << _add_task_action;
+  d->m_supported_action_list << _add_reminder_action;
 }
 
 void DesktopNotesControllerImpl::session_data_available(
@@ -87,7 +100,6 @@ void DesktopNotesControllerImpl::request_action(const QString &actionName,
 
   switch (d->mNoteActions[actionName]) {
   case 1:
-
     session_args["x"] = window_location.x();
     session_args["y"] = window_location.y();
     session_args["notes_id"] = session_count();

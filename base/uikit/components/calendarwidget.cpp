@@ -11,7 +11,7 @@
 #include <button.h>
 
 namespace UIKit {
-class CalendarWidget::PrivateCalendarWidget {
+class CalendarView::PrivateCalendarWidget {
 public:
   PrivateCalendarWidget() {}
   ~PrivateCalendarWidget() {}
@@ -30,7 +30,7 @@ public:
   QDate m_current_date;
 };
 
-void CalendarWidget::add_weekday_header(int i)
+void CalendarView::add_weekday_header(int i)
 {
   UIKit::Label *day_label = new UIKit::Label(d->m_header_view);
   day_label->set_label(QDate::shortDayName(i));
@@ -42,7 +42,7 @@ void CalendarWidget::add_weekday_header(int i)
   d->m_header_view->insert(grid_item);
 }
 
-CalendarWidget::CalendarWidget(QGraphicsObject *parent)
+CalendarView::CalendarView(QGraphicsObject *parent)
     : UIKit::Widget(parent), d(new PrivateCalendarWidget) {
   d->m_calendar_base_frame = new QGraphicsWidget(this);
   d->m_calendar_base_frame->setMinimumSize(QSizeF(300, 128));
@@ -129,9 +129,9 @@ CalendarWidget::CalendarWidget(QGraphicsObject *parent)
   this->set_date(d->m_current_date);
 }
 
-CalendarWidget::~CalendarWidget() { delete d; }
+CalendarView::~CalendarView() { delete d; }
 
-void CalendarWidget::clear() {
+void CalendarView::clear() {
   for (int i = 0; i < 43; i++) {
     UIKit::ModelViewItem *com = d->m_cell_view->at(i);
 
@@ -149,7 +149,7 @@ void CalendarWidget::clear() {
   }
 }
 
-void CalendarWidget::reset() {
+void CalendarView::reset() {
   for (int i = 0; i < 43; i++) {
     UIKit::ModelViewItem *com = d->m_cell_view->at(i);
 
@@ -168,9 +168,9 @@ void CalendarWidget::reset() {
 }
 
 
-QDate CalendarWidget::a_date() const { return d->m_current_date; }
+QDate CalendarView::a_date() const { return d->m_current_date; }
 
-void CalendarWidget::set_date(const QDate &date) {
+void CalendarView::set_date(const QDate &date) {
   clear();
   for (int s = date.dayOfWeek(); s < 43; s++) {
     UIKit::ModelViewItem *com = d->m_cell_view->at(s);
@@ -194,7 +194,7 @@ void CalendarWidget::set_date(const QDate &date) {
   }
 }
 
-void CalendarWidget::next() {
+void CalendarView::next() {
   int currentMonth = d->m_current_date.month();
   int currentYear = d->m_current_date.year();
   int currentDay = d->m_current_date.day();
@@ -215,7 +215,7 @@ void CalendarWidget::next() {
   set_date(d->m_current_date);
 }
 
-void CalendarWidget::previous() {
+void CalendarView::previous() {
   int currentMonth = d->m_current_date.month();
   int currentYear = d->m_current_date.year();
   int currentDay = d->m_current_date.day();
@@ -235,7 +235,7 @@ void CalendarWidget::previous() {
   set_date(d->m_current_date);
 }
 
-void CalendarWidget::paint_view(QPainter *painter, const QRectF &rect) {
+void CalendarView::paint_view(QPainter *painter, const QRectF &rect) {
   painter->save();
 
   painter->setRenderHint(QPainter::Antialiasing);
