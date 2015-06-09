@@ -25,6 +25,7 @@
 #include <session_sync.h>
 #include <imagebutton.h>
 #include <themepackloader.h>
+#include <window.h>
 
 class DateControllerImpl::PrivateDate {
 public:
@@ -117,21 +118,33 @@ void DateControllerImpl::create_calendar_ui(UIKit::SessionSync *a_session) {
   toolbar->set_icon_resolution("hdpi");
   toolbar->set_icon_size(QSize(24, 24));
   toolbar->setMinimumSize(320, 48);
-  toolbar->add_action("ZoomIn", "actions/pd_zoom_in", false);
-  toolbar->add_action("ZoomOut", "actions/pd_zoom_out", false);
-  toolbar->add_action("List", "actions/pd_view_list", false);
   toolbar->setGeometry(QRectF(0, 0, 320, 48));
 
   UIKit::ItemView *todo_list = new UIKit::ItemView(content_frame);
   todo_list->setGeometry(QRectF(0, 0, 320, 48 * 3));
   todo_list->set_view_geometry(QRectF(0, 0, 320, 48 * 3));
 
+  UIKit::Label *today_label = new UIKit::Label(content_frame);
+  today_label->setGeometry(QRectF(0, 0, 240, 240));
+  today_label->set_size(QSizeF(240, 240));
+  today_label->set_font_size(128);
+  today_label->set_label(QString("%1").arg(QDate::currentDate().day()));
+
+  today_label->setPos(0, 0);
   calendar->setPos(15, 0);
   todo_list->setPos(0, calendar->geometry().height());
-  toolbar->setPos(0, calendar->geometry().height()
-                  + 48 * 3);
+  toolbar->setPos(0,
+                  today_label->boundingRect().height());
 
   window->set_window_content(content_frame);
+
+  //only show the label;
+  calendar->hide();
+  todo_list->hide();
+
+  window->resize(240, 240 + toolbar->boundingRect().height());
+  window->set_window_title(QDate::longDayName(
+                               QDate::currentDate().dayOfWeek()));
 
   a_session->bind_to_window(window);
 
@@ -141,6 +154,49 @@ void DateControllerImpl::create_calendar_ui(UIKit::SessionSync *a_session) {
       if (!item)
           return;
   });
+
+  toolbar->on_item_activated([=](const QString &a_action) {
+      qDebug() << Q_FUNC_INFO << "Toolbar Action : " << a_action;
+      if (a_action == "ZoomIn") {
+          today_label->hide();
+          calendar->show();
+          todo_list->hide();
+          window->resize(320, calendar->boundingRect().height()
+                         + toolbar->frame_geometry().height());
+
+          toolbar->setPos(0, calendar->boundingRect().height());
+          return;
+      }
+
+      if (a_action == "ZoomOut") {
+          calendar->hide();
+          today_label->show();
+          todo_list->hide();
+
+          window->resize(240, today_label->boundingRect().height()
+                         + toolbar->boundingRect().height());
+
+          toolbar->setPos(0, today_label->boundingRect().height());
+          return;
+      }
+
+      if (a_action == "List") {
+          todo_list->show();
+          today_label->hide();
+          calendar->show();
+          window->resize(320, calendar->boundingRect().height()
+                         + todo_list->boundingRect().height()
+                         + toolbar->boundingRect().height());
+          toolbar->setPos(0, calendar->boundingRect().height()
+                          + todo_list->boundingRect().height());
+      }
+
+  });
+
+  toolbar->add_action("ZoomIn", "actions/pd_zoom_in", false);
+  toolbar->add_action("ZoomOut", "actions/pd_zoom_out", false);
+  toolbar->add_action("List", "actions/pd_view_list", false);
+
 
   for (int i = 0 ; i < 10; i++) {
       UIKit::ModelViewItem *item = new UIKit::ModelViewItem();
