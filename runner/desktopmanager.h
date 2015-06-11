@@ -20,7 +20,6 @@
 #ifndef DESKTOPMANAGER_H
 #define DESKTOPMANAGER_H
 
-#include <QObject>
 #include <plexy.h>
 #include <workspace.h>
 #include <view_controller.h>
@@ -28,7 +27,6 @@
 using namespace UIKit;
 
 class DesktopManager : public UIKit::WorkSpace {
-  Q_OBJECT
 public:
   explicit DesktopManager(QWidget *a_parent_ptr = 0);
   virtual ~DesktopManager();
