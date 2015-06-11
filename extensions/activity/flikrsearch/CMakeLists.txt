@@ -46,7 +46,7 @@ TARGET_LINK_LIBRARIES(flikrsearchactivity
     ${libs}
     )
 
-QT5_USE_MODULES(flikrsearchactivity Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(flikrsearchactivity Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
 INSTALL(TARGETS flikrsearchactivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

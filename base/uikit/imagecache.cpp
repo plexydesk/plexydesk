@@ -18,12 +18,12 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include <QtSvg/QSvgRenderer>
-#include <QtCore/QtDebug>
-#include <QtCore/QObject>
-#include <QtCore/QDir>
+#include "imagecache.h"
 
-#include <imagecache.h>
+#include <QDebug>
+#include <QObject>
+#include <QDir>
+#include <QPixmap>
 
 namespace UIKit {
 
@@ -32,8 +32,6 @@ public:
   Private() {}
   ~Private() {}
   QHash<QString, QString> fileHash;
-  QSvgRenderer render;
-
   QList<std::function<void()> > m_load_handler;
 };
 
@@ -97,6 +95,7 @@ bool ImageCache::is_cached(QString &a_filename) const {
   return true;
 }
 
+/*
 bool ImageCache::render_svg(QPainter *a_painter_ptr, QRectF a_rect,
                             const QString &a_str, const QString &a_elementId) {
   QString svgFile = d->fileHash[a_str];
@@ -110,4 +109,5 @@ bool ImageCache::render_svg(QPainter *a_painter_ptr, QRectF a_rect,
 
   return false;
 }
+*/
 } // namespace

@@ -83,6 +83,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     components/rangewidget.cpp
     components/model_view_item.cpp
     components/calendarwidget.cpp
+    viewbuilder.cpp
     )
 
 set(LIBRARY_SOURCE_FILES
@@ -129,6 +130,7 @@ set(LIBRARY_HEADER_FILES
     components/rangewidget.h
     components/model_view_item.h
     components/calendarwidget.h
+    viewbuilder.h
     workspace.h
     session_sync.h
     space.h
@@ -198,7 +200,7 @@ qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Widgets
     OpenGL
     Core
     WebKitWidgets
-    Svg)
+    )
 
 if(UNIX AND NOT APPLE)
     set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SOVERSION "1.0.0")

@@ -45,7 +45,7 @@ TARGET_LINK_LIBRARIES(icongrid
     ${libs}
     )
 
-QT5_USE_MODULES(icongrid Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(icongrid Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
 INSTALL(TARGETS icongrid DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
