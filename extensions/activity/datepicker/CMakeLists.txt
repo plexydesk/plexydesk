@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(datepickeractivity
     ${libs}
     )
 
-QT5_USE_MODULES(datepickeractivity Widgets Xml OpenGL Core WebKitWidgets )
+QT5_USE_MODULES(datepickeractivity Widgets Xml OpenGL Core  )
 
 IF (NOT APPLE)
 INSTALL(TARGETS datepickeractivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

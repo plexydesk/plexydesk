@@ -29,7 +29,7 @@ SET(CONFIG_FILE folderwidget.desktop)
 
 ADD_LIBRARY(folderwidget SHARED ${sourceFiles})
 
-QT5_USE_MODULES(folderwidget Widgets Xml OpenGL Core WebKitWidgets )
+QT5_USE_MODULES(folderwidget Widgets Xml OpenGL Core  )
 
 TARGET_LINK_LIBRARIES(folderwidget
     ${PLEXY_UI_CORE_LIBRARY}
