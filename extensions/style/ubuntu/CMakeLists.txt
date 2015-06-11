@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(ubuntustyle
     ${libs}
     )
 
-QT5_USE_MODULES(ubuntustyle Widgets Xml OpenGL Core WebKitWidgets )
+QT5_USE_MODULES(ubuntustyle Widgets Xml OpenGL Core  )
 
 IF (NOT APPLE)
 INSTALL(TARGETS ubuntustyle DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

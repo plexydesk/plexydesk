@@ -13,10 +13,8 @@ if(NOT CMAKE_INSTALL_LIBDIR)
 endif(NOT CMAKE_INSTALL_LIBDIR)
 
 if(NOT QNX)
-    set(LIBRARY_PLATFORM_HEADERS
-        widgets/webkitwebview.h)
-    set(LIBRARY_PLATFORM_SOURCE_CXX_FILES
-        widgets/webkitwebview.cpp)
+    set(LIBRARY_PLATFORM_HEADERS)
+    set(LIBRARY_PLATFORM_SOURCE_CXX_FILES)
 endif (NOT QNX)
 
 #todo: check on mac and remove it.
@@ -199,7 +197,7 @@ qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Widgets
     Xml
     OpenGL
     Core
-    WebKitWidgets
+    
     )
 
 if(UNIX AND NOT APPLE)

@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(googleplacesengineengine
     ${libs}
     )
 
-QT5_USE_MODULES(googleplacesengineengine Widgets Xml OpenGL Core WebKitWidgets )
+QT5_USE_MODULES(googleplacesengineengine Widgets Xml OpenGL Core  )
 
 IF (NOT APPLE)
 INSTALL(TARGETS googleplacesengineengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
