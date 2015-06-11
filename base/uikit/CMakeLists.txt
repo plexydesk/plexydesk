@@ -87,6 +87,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
 
 set(LIBRARY_SOURCE_FILES
     netwm.cpp
+    viewbuilder.cpp
     themepackloader.cpp
     imagecache.cpp
     plexyconfig.cpp
@@ -98,6 +99,7 @@ set(LIBRARY_SOURCE_FILES
     ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
 
 set(LIBRARY_HEADER_FILES
+    viewbuilder.h
     workspace.h
     netwm.h
     netwm_def.h
