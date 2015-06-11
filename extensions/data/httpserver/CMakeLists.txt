@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(httpserverengine
     ${libs}
     )
 
-QT5_USE_MODULES(httpserverengine Widgets Xml OpenGL Core WebKitWidgets )
+QT5_USE_MODULES(httpserverengine Widgets Xml OpenGL Core  )
 
 IF (NOT APPLE)
 INSTALL(TARGETS httpserverengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

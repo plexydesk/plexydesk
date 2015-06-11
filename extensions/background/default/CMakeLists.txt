@@ -25,7 +25,7 @@ SET(sourceFiles
 
 ADD_LIBRARY(classicbackdrop SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-QT5_USE_MODULES(classicbackdrop Widgets Xml OpenGL Core WebKitWidgets)
+QT5_USE_MODULES(classicbackdrop Widgets Xml OpenGL Core )
 
 IF(MINGW)
     SET_TARGET_PROPERTIES(classicbackdrop PROPERTIES

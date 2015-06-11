@@ -40,7 +40,7 @@ TARGET_LINK_LIBRARIES(flickrphotosearchengine
     ${libs}
     )
 
-QT5_USE_MODULES(flickrphotosearchengine Widgets Xml OpenGL Core WebKitWidgets )
+QT5_USE_MODULES(flickrphotosearchengine Widgets Xml OpenGL Core  )
 
 IF (NOT APPLE)
 INSTALL(TARGETS flickrphotosearchengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
