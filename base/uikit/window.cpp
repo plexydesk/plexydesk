@@ -207,22 +207,9 @@ void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
   }
 }
 
-void Window::show() {
-  setVisible(true);
-}
+void Window::show() { setVisible(true);}
 
-void Window::hide() {
-  // Qt 5.4 -> QTimer::singleShot(250, []() { windowHide(); } );
-  QTimer *lTimer = new QTimer(this);
-  lTimer->setSingleShot(true);
-
-  connect(lTimer, &QTimer::timeout, [=]() {
-    setVisible(false);
-    delete lTimer;
-  });
-
-  lTimer->start(250);
-}
+void Window::hide() { setVisible(false);}
 
 void Window::discard() {
   if (m_priv_impl->m_window_discard_callback) {
