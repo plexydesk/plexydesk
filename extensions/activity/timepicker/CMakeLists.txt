@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(timepickeractivity
     ${libs}
     )
 
-QT5_USE_MODULES(timepickeractivity Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(timepickeractivity Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
 INSTALL(TARGETS timepickeractivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -42,7 +42,7 @@ TARGET_LINK_LIBRARIES(dockwidget
     ${libs}
     )
 
-QT5_USE_MODULES(dockwidget Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(dockwidget Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
 INSTALL(TARGETS dockwidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

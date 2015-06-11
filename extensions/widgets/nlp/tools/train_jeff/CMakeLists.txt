@@ -5,7 +5,9 @@ set(source
 
 PROJECT(${project_name})
 
-include (${CMAKE_SOURCE_DIR}/deps/mitie/mitielib/cmake)
+INCLUDE (${CMAKE_SOURCE_DIR}/deps/mitie/mitielib/cmake)
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/deps/tinyxml2)
 
 ADD_EXECUTABLE(${project_name} ${source})
 TARGET_LINK_LIBRARIES(${project_name} mitie tinyxml2)

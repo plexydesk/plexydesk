@@ -1,7 +1,7 @@
 #include <mitie/ner_trainer.h>
 #include <iostream>
 
-#include "tinyxml2.h"
+#include <tinyxml2.h>
 
 using namespace dlib;
 using namespace std;

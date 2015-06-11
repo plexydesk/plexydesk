@@ -36,7 +36,7 @@ TARGET_LINK_LIBRARIES(facebookengine
     ${libs}
     )
 
-QT5_USE_MODULES(facebookengine Widgets Xml OpenGL Core WebKitWidgets Svg Declarative)
+QT5_USE_MODULES(facebookengine Widgets Xml OpenGL Core WebKitWidgets  Declarative)
 
 IF(NOT APPLE)
 INSTALL(TARGETS facebookengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(takenoteactivity
     ${libs}
     )
 
-QT5_USE_MODULES(takenoteactivity Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(takenoteactivity Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
 INSTALL(TARGETS takenoteactivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

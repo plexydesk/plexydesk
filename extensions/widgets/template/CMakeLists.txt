@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(templatewidget
     ${libs}
     )
 
-QT5_USE_MODULES(templatewidget Widgets Xml Core Svg Declarative)
+QT5_USE_MODULES(templatewidget Widgets Xml Core  Declarative)
 
 IF (NOT APPLE)
     INSTALL(TARGETS templatewidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

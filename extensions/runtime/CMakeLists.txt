@@ -28,7 +28,7 @@ SET(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ########### prepare files ###############
 ADD_EXECUTABLE(extloader_runtime ${WIN_APPLICATION} ${sourceFiles})
 SET_PROPERTY(TARGET extloader_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
-QT5_USE_MODULES(extloader_runtime Widgets Xml OpenGL Core WebKitWidgets Svg Qml)
+QT5_USE_MODULES(extloader_runtime Widgets Xml OpenGL Core WebKitWidgets  Qml)
 
 IF(MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(extloader_runtime)

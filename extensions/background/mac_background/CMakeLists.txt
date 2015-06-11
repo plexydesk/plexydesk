@@ -36,7 +36,7 @@ ENDIF(MINGW)
 TARGET_LINK_LIBRARIES(mac_background
     ${PLEXY_UI_CORE_LIBRARY}
     )
-QT5_USE_MODULES(mac_background Widgets Xml OpenGL Core WebKitWidgets Svg Declarative)
+QT5_USE_MODULES(mac_background Widgets Xml OpenGL Core WebKitWidgets  Declarative)
 
 IF (APPLE)
    INSTALL(TARGETS mac_background LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)

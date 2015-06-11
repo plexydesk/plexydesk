@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(inputdialogactivityactivity
     ${libs}
     )
 
-QT5_USE_MODULES(inputdialogactivityactivity Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(inputdialogactivityactivity Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
 INSTALL(TARGETS inputdialogactivityactivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

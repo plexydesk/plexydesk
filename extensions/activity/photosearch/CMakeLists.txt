@@ -46,7 +46,7 @@ TARGET_LINK_LIBRARIES(photosearchactivity
     ${libs}
     )
 
-QT5_USE_MODULES(photosearchactivity Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(photosearchactivity Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
     INSTALL(TARGETS photosearchactivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
