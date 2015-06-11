@@ -40,7 +40,7 @@ TARGET_LINK_LIBRARIES(fbpostdialogactivity
     ${libs}
     )
 
-QT5_USE_MODULES(fbpostdialogactivity Widgets Xml OpenGL Core WebKitWidgets Svg)
+QT5_USE_MODULES(fbpostdialogactivity Widgets Xml OpenGL Core WebKitWidgets )
 
 IF (NOT APPLE)
 INSTALL(TARGETS fbpostdialogactivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -23,13 +23,9 @@
 
 #include <plexy.h>
 #include <plexyconfig.h>
+#include <plexydesk_ui_exports.h>
 
 #include <functional>
-
-#include <QObject>
-#include <QPainter>
-
-#include <plexydesk_ui_exports.h>
 
 namespace UIKit {
 class DECL_UI_KIT_EXPORT ImageCache : public QObject {
@@ -52,8 +48,10 @@ public:
 protected:
   void load(const QString &ta_themename);
   void clear();
+  /*
   bool render_svg(QPainter *a_painter_ptr, QRectF a_rect, const QString &a_str,
                   const QString &a_elementId);
+  */
 Q_SIGNALS:
   void ready();
 

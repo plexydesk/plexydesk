@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(templateengine
 	${libs}
 	)
 
-QT5_USE_MODULES(templateengine Widgets Xml OpenGL Core WebKitWidgets Svg Declarative)
+QT5_USE_MODULES(templateengine Widgets Xml OpenGL Core WebKitWidgets  Declarative)
 
 IF (NOT APPLE)
 	INSTALL(TARGETS templateengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(nlpwidget
     ${libs}
     )
 
-QT5_USE_MODULES(nlpwidget Widgets Xml OpenGL Core WebKitWidgets Svg Declarative)
+QT5_USE_MODULES(nlpwidget Widgets Xml OpenGL Core WebKitWidgets  Declarative)
 
 IF (NOT APPLE)
 INSTALL(TARGETS nlpwidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
