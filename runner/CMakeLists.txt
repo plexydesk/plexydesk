@@ -33,13 +33,9 @@ SET(sourceFiles
 
 SET(mainFiles main.cpp)
 
-SET(headerFiles desktopmanager.h
-	${extra_headers}
-	)
+SET(headerFiles desktopmanager.h ${extra_headers})
 
-SET(QTMOC_SRCS desktopmanager.h
-	${extra_headers}
-	)
+SET(QTMOC_SRCS ${extra_headers})
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
