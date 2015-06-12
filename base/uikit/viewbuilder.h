@@ -1,10 +1,11 @@
 #ifndef VIEWBUILDER_H
 #define VIEWBUILDER_H
 
-#include <widget.h>
-#include <window.h>
+#include <iostream>
 
 namespace UIKit {
+class Widget;
+class Window;
 class Label;
 class Button;
 class ImageButton;

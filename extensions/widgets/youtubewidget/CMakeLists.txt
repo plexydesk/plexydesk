@@ -42,7 +42,7 @@ TARGET_LINK_LIBRARIES(plexyyoutube
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
-QT5_USE_MODULES(plexyyoutube Widgets Xml OpenGL Core   Declarative)
+QT5_USE_MODULES(plexyyoutube Widgets Xml OpenGL Core   )
 
 INSTALL(TARGETS plexyyoutube DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES youtube.desktop DESTINATION share/plexy/ext/groups)

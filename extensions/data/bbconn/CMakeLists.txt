@@ -58,7 +58,7 @@ TARGET_LINK_LIBRARIES(bbconnengine
     ${libs}
     )
 
-QT5_USE_MODULES(bbconnengine Widgets Xml OpenGL Core   Declarative)
+QT5_USE_MODULES(bbconnengine Widgets Xml OpenGL Core   )
 
 IF (NOT APPLE)
 INSTALL(TARGETS bbconnengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

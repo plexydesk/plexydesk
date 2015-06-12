@@ -64,7 +64,7 @@ TARGET_LINK_LIBRARIES(idletimeengineengine
     ${MAC_LIBS}
     )
 
-QT5_USE_MODULES(idletimeengineengine Widgets Xml OpenGL Core   Declarative)
+QT5_USE_MODULES(idletimeengineengine Widgets Xml OpenGL Core   )
 
 IF (NOT APPLE)
 INSTALL(TARGETS idletimeengineengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

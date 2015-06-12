@@ -40,7 +40,7 @@ TARGET_LINK_LIBRARIES(openweathermapsengine
     ${libs}
     )
 
-QT5_USE_MODULES(openweathermapsengine Widgets Xml OpenGL Core   Declarative)
+QT5_USE_MODULES(openweathermapsengine Widgets Xml OpenGL Core   )
 
 IF (NOT APPLE)
 INSTALL(TARGETS openweathermapsengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -6,9 +6,6 @@
 #include <QDomNodeList>
 #include <QFile>
 #include <QUrlQuery>
-#include <QXmlQuery>
-#include <QXmlResultItems>
-#include <QXmlSerializer>
 #include <QBuffer>
 #include <QIODevice>
 #include <QJsonDocument>

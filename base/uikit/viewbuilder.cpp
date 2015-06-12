@@ -1,12 +1,14 @@
 #include "viewbuilder.h"
 #include <algorithm>
 
+#include <widget.h>
+
 namespace UIKit {
 
 class Column {};
 class Row {};
 
-typedef std::pair<int, int> GridPos;
+//typedef std::pair<int, int> GridPos;
 
 class ViewBuilder::PrivateViewBuilder {
 public:
@@ -29,7 +31,7 @@ public:
   std::map<int, int> m_column_data;
   std::map<int, int> m_row_data;
 
-  std::map<GridPos, int> m_grid_data;
+  //std::map<GridPos, int> m_grid_data;
 };
 
 ViewBuilder::ViewBuilder(Widget *a_window)
@@ -47,7 +49,7 @@ void ViewBuilder::add_sub_column(int a_column_index, int a_row_index,
   if ((a_row_index > d->m_row_count) || a_row_index < 0)
       return;
 
-  GridPos key_index = std::make_pair(a_column_index, a_row_index);
+  //GridPos key_index = std::make_pair(a_column_index, a_row_index);
 }
 
 void ViewBuilder::add_row(int a_row_count) {}
