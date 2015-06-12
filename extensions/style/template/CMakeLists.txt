@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(templatestyle
     ${libs}
     )
 
-QT5_USE_MODULES(templatestyle Widgets Xml OpenGL Core   Declarative)
+QT5_USE_MODULES(templatestyle Widgets Xml OpenGL Core   )
 
 IF (NOT APPLE)
 INSTALL(TARGETS templatestyle DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -38,7 +38,7 @@ TARGET_LINK_LIBRARIES(datewidget
     ${libs}
     )
 
-QT5_USE_MODULES(datewidget Widgets Xml Core  Declarative)
+QT5_USE_MODULES(datewidget Widgets Xml Core)
 
 IF (NOT APPLE)
     INSTALL(TARGETS datewidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -190,7 +190,7 @@ void ExtensionManager::load(const QString &a_interface,
 
     if (plugin) {
       DataPluginInterface *Iface = 0;
-      Iface = qobject_cast<DataPluginInterface *>(plugin);
+      Iface = dynamic_cast<DataPluginInterface *>(plugin);
       d->m_engine_plugins[a_plugin_name] = Iface;
     } else {
       qWarning() << Q_FUNC_INFO << ":" << a_interface << ":"

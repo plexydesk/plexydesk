@@ -21,11 +21,12 @@
 #include <asyncimagecreator.h>
 #include <config.h>
 
-#include <QtCore/QStringList>
-#include <QtCore/QDir>
-#include <QtCore/QDebug>
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomNamedNodeMap>
+#include <QStringList>
+#include <QString>
+#include <QDir>
+#include <QDebug>
+#include <QDomDocument>
+#include <QDomNamedNodeMap>
 #include <extensionmanager.h>
 #include <plexyconfig.h>
 

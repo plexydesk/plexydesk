@@ -128,9 +128,10 @@ static CHAR *          //   return error message
 
 class Runtime {
 public:
-  Runtime() {
+  Runtime(const char *a_platform_name = 0) {
     for (int i = 0; i < qApp->desktop()->screenCount(); i++) {
       DesktopManager *workspace = new DesktopManager();
+
       workspace->move_to_screen(i);
       m_workspace_list.push_back(workspace);
       workspace->add_default_controller("classicbackdrop");
@@ -151,14 +152,16 @@ public:
       QPlatformNativeInterface *native =
           QGuiApplication::platformNativeInterface();
 
-      if (native) {
+      if (native && a_platform_name && (strcmp(a_platform_name, "xcb") == 0)) {
         Display *display = static_cast<Display *>(
             native->nativeResourceForWindow("display", NULL));
-
-        NETWinInfo info(display, workspace->winId(), RootWindow(display, 0),
-                        NET::WMDesktop);
-        info.setDesktop(NETWinInfo::OnAllDesktops);
-        info.setWindowType(NET::Desktop);
+        if (display) {
+          NETWinInfo info(display, workspace->winId(), RootWindow(display, 0),
+                          NET::WMDesktop);
+          info.setDesktop(NETWinInfo::OnAllDesktops);
+          info.setWindowType(NET::Desktop);
+        } 
+        // handle wayland
       }
 #endif
       workspace->show();
@@ -183,12 +186,10 @@ public:
   }
 
   ~Runtime() {
-      std::for_each(std::begin(m_workspace_list), std::end(m_workspace_list),
-                    [&](DesktopManager *a_manager) {
-          delete a_manager;
-      });
+    std::for_each(std::begin(m_workspace_list), std::end(m_workspace_list),
+                  [&](DesktopManager *a_manager) { delete a_manager; });
 
-      m_workspace_list.clear();
+    m_workspace_list.clear();
   }
 
 private:
@@ -196,6 +197,24 @@ private:
 };
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
+  char *runtime_platform_name = 0;
+#ifdef Q_OS_LINUX
+  for (int i = 0; i < argc; i++) {
+    if ((strcmp(argv[i], "-platform") != 0) ||
+        (argc < (i + 1) && strlen(argv[i + 1]) <= 0) || (argv[i + 1][0] == '-'))
+      continue;
+
+    runtime_platform_name = argv[i + 1];
+  }
+
+  if (!runtime_platform_name) {
+    const char *null_platform = "xcb";
+    runtime_platform_name = (char *)malloc(sizeof(null_platform));
+    strncpy(runtime_platform_name, null_platform, sizeof(null_platform));
+  }
+  printf("Detected Platform %s\n", runtime_platform_name);
+#endif
+
   QApplication app(argc, argv);
   UIKit::ExtensionManager *loader = 0;
 
@@ -214,7 +233,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
   QApplication::setQuitOnLastWindowClosed(true);
 #endif
 
-  Runtime runtime;
+  Runtime runtime(runtime_platform_name);
 
   return app.exec();
 }

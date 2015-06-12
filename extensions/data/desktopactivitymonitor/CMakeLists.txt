@@ -68,7 +68,7 @@ TARGET_LINK_LIBRARIES(desktopactivitymonitorengine
     ${libs}
     )
 
-QT5_USE_MODULES(desktopactivitymonitorengine Widgets Xml OpenGL Core   Declarative)
+QT5_USE_MODULES(desktopactivitymonitorengine Widgets Xml OpenGL Core   )
 
 IF (NOT APPLE)
 INSTALL(TARGETS desktopactivitymonitorengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
