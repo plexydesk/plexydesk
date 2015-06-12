@@ -17,14 +17,12 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QtDebug>
-#include <QtCore/QCryptographicHash>
-#include <QtCore/QDir>
-#include <QtWidgets/QStyleOptionGraphicsItem>
-#include <QtWidgets/QGraphicsObject>
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QCryptographicHash>
+#include <QDir>
+#include <QStyleOptionGraphicsItem>
+#include <QGraphicsObject>
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 #include <QPaintEvent>
 #include <QPainter>
 

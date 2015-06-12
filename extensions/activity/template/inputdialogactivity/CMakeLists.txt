@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(inputdialogactivityengine
     ${libs}
     )
 
-QT5_USE_MODULES(inputdialogactivityengine Widgets Xml OpenGL Core   Declarative)
+QT5_USE_MODULES(inputdialogactivityengine Widgets Xml OpenGL Core   )
 
 IF (NOT APPLE)
 INSTALL(TARGETS inputdialogactivityengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -2,10 +2,10 @@
 #define STYLE_FEATURES_H
 
 #include <QObject>
-#include <QRectF>
 #include <QPainter>
-#include <QVariantMap>
+#include <QVariant>
 #include <plexydesk_ui_exports.h>
+#include <QtCore>
 
 namespace UIKit {
 
