@@ -12,8 +12,7 @@
 namespace UIKit {
 class WorkSpace;
 
-class DECL_UI_KIT_EXPORT Space : public QObject {
-  Q_OBJECT
+class DECL_UI_KIT_EXPORT Space {
 public:
   typedef enum {
     kCenterOnViewport,
@@ -33,7 +32,7 @@ public:
     kObjectDroppedNotification
   } ViewportNotificationType;
 
-  explicit Space(QObject *a_parent = 0);
+  explicit Space();
   virtual ~Space();
 
   virtual void add_controller(const QString &a_name);

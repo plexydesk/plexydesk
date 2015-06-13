@@ -109,7 +109,7 @@ void PhotoFrameController::handle_drop_event(UIKit::Widget *widget,
       }
 
       if (viewport()) {
-        UIKit::Space *view = qobject_cast<UIKit::Space *>(viewport());
+        UIKit::Space *view = viewport();
         if (view) {
           view->update_session_value(controller_name(), "photos",
                                      m_current_url_list.join(","));
