@@ -133,10 +133,6 @@ void InputDialogActivityData::create_window(const QRectF &window_geometry,
 
   this->exec();
   show_activity();
-
-  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 QString InputDialogActivityData::error_message() const { return QString(); }
@@ -162,29 +158,16 @@ void InputDialogActivityData::cleanup() {
 }
 
 void InputDialogActivityData::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   discard_activity();
 }
 
-void InputDialogActivityData::onMotionAnimFinished() { Q_EMIT finished(); }
+void InputDialogActivityData::onMotionAnimFinished() {}
 
 void InputDialogActivityData::onOkButtonPressed() {
-  connect(this, SIGNAL(discarded()), this, SLOT(onMotionAnimFinished()));
   d->mCurrentText = d->mEditor->text();
-  Q_EMIT finished();
   discard_activity();
 }
 
 void InputDialogActivityData::paint(QPainter *painter,
                                     const QStyleOptionGraphicsItem *option,
-                                    QWidget *widget) {
-  /*
-  if (d->mStyle) {
-      UI::StyleFeatures feature;
-      feature.exposeRect = option->exposedRect;
-      feature.state = UI::StyleFeatures::SF_FrontView;
-      d->mStyle->paintControlElement(UI::Style::CE_Frame, feature,
-  painter);
-  }
-  */
-}
+                                    QWidget *widget) {}

@@ -85,10 +85,6 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
   set_geometry(view_geometry);
 
   exec(window_pos);
-
-  d->m_activity_window->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
