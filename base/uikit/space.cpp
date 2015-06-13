@@ -150,12 +150,17 @@ void Space::update_session_value(const QString &a_controller_name,
 }
 
 void Space::add_activity(UIKit::DesktopActivityPtr a_activity_ptr) {
-  if (!a_activity_ptr) {
+  if (!a_activity_ptr || !a_activity_ptr->window()) {
     return;
   }
 
-  connect(a_activity_ptr.data(), SIGNAL(finished()), this,
-          SLOT(on_activity_finished()));
+  a_activity_ptr->on_discarded([&](const DesktopActivity *a_activity) {
+    on_activity_finished(a_activity);
+  });
+
+  a_activity_ptr->window()->on_window_discarded([=](Window *a_window) {
+    a_activity_ptr->discard_activity();
+  });
 
   if (a_activity_ptr->window() && m_priv_impl->mMainScene) {
     if (m_priv_impl->mActivityList.contains(a_activity_ptr)) {
@@ -222,17 +227,17 @@ void Space::insert_window_to_view(Window *a_window) {
       if (a_win->window_type() == Window::kPopupWindow) {
         a_win->setZValue(kMaximumZOrder + 1);
         if (a_win != a_window)
-            a_win->hide();
+          a_win->hide();
       }
 
       if (a_win->window_type() == Window::kApplicationWindow) {
-       if (a_win->zValue() == kMaximumZOrder && a_win != a_window)
+        if (a_win->zValue() == kMaximumZOrder && a_win != a_window)
           a_win->setZValue((kMaximumZOrder - 1));
       }
     });
 
     if (a_window->window_type() == Window::kApplicationWindow)
-       a_window->setZValue(kMaximumZOrder);
+      a_window->setZValue(kMaximumZOrder);
   });
 
   a_window->raise();
@@ -269,20 +274,12 @@ void Space::on_viewport_event_notify(
   m_priv_impl->m_notify_chain.append(a_notify_handler);
 }
 
-void Space::on_activity_finished() {
-  qDebug() << Q_FUNC_INFO;
-  DesktopActivity *activity = qobject_cast<DesktopActivity *>(sender());
-
-  if (activity) {
-
-    if (activity->controller()) {
-      activity->controller()->request_action(
-          activity->result()["action"].toString(), activity->result());
-    }
-
+void Space::on_activity_finished(const DesktopActivity *a_activity) {
+  if (a_activity) {
     int i = 0;
     foreach(DesktopActivityPtr _activity, m_priv_impl->mActivityList) {
-      if (_activity.data() == activity) {
+      // todo : enable runtime identification of activities.
+      if (_activity.data() == a_activity) {
         _activity.clear();
         qDebug() << Q_FUNC_INFO
                  << "Before :" << m_priv_impl->mActivityList.count();
@@ -391,9 +388,10 @@ void Space::PrivateSpace::initSessionStorage(Space *space) {
 Space::PrivateSpace::~PrivateSpace() { mCurrentControllerMap.clear(); }
 
 QString Space::PrivateSpace::sessionNameForSpace() {
-  return QString("%1_%2_Space_%3").arg(
-    QString::fromStdString(mWorkSpace->workspace_instance_name())).
-      arg(mName).arg(mID);
+  return QString("%1_%2_Space_%3")
+      .arg(QString::fromStdString(mWorkSpace->workspace_instance_name()))
+      .arg(mName)
+      .arg(mID);
 }
 
 QString
@@ -492,12 +490,10 @@ QPointF Space::center(const QRectF &a_view_geometry,
     _x_location = ((geometry().width() / 2) - (a_view_geometry.width() / 2));
     break;
   case kCenterOnWindow:
-    _y_location =
-        (a_window_geometry.height() / 2) - (a_view_geometry.height() / 2)
-            + a_window_geometry.y();
-    _x_location =
-        (a_window_geometry.width() / 2) - (a_view_geometry.width() / 2) +
-            a_window_geometry.x();
+    _y_location = (a_window_geometry.height() / 2) -
+                  (a_view_geometry.height() / 2) + a_window_geometry.y();
+    _x_location = (a_window_geometry.width() / 2) -
+                  (a_view_geometry.width() / 2) + a_window_geometry.x();
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Error : Unknown Viewprot Location Type:";

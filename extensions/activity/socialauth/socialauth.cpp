@@ -52,10 +52,6 @@ void SocialAuthActivity::create_window(const QRectF &window_geometry,
   exec();
 
   show_activity();
-
-  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }

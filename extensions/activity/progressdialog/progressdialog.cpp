@@ -83,10 +83,6 @@ void ProgressDialogActivity::create_window(const QRectF &window_geometry,
   exec(window_pos);
 
   show_activity();
-
-  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 QVariantMap ProgressDialogActivity::result() const { return QVariantMap(); }
@@ -122,11 +118,9 @@ void ProgressDialogActivity::cleanup() {
 }
 
 void ProgressDialogActivity::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }
 
 void ProgressDialogActivity::onHideAnimationFinished() {
   d->m_task_completed = 1;
-  Q_EMIT finished();
 }

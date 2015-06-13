@@ -159,12 +159,6 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
   });
 
   d->m_activity_window_ptr->set_window_content(d->m_grid_view);
-  d->m_activity_window_ptr->on_window_discarded([this](UIKit::Window *aWindow) {
-    if (d->m_grid_view)
-      d->m_grid_view->clear();
-
-    discard_activity();
-  });
 
   exec(window_pos);
 }
@@ -188,11 +182,10 @@ void IconGridActivity::cleanup() {
 }
 
 void IconGridActivity::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onDiscard()));
   discard_activity();
 }
 
-void IconGridActivity::onDiscard() { Q_EMIT finished(); }
+void IconGridActivity::onDiscard() {}
 
 /// action class impl
 Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,

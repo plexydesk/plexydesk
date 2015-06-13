@@ -38,19 +38,12 @@ void SpacePreviewActivity::create_window(const QRectF &window_geometry,
                                          const QString &window_title,
                                          const QPointF &window_pos) {
   d->m_main_window = new UIKit::Window();
-
-  d->m_main_window->set_widget_flag(UIKit::Widget::kRenderBackground);
-  d->m_main_window->set_widget_flag(UIKit::Widget::kConvertToWindowType);
-  d->m_main_window->set_widget_flag(UIKit::Widget::kRenderDropShadow);
+  d->m_main_window->set_window_type(UIKit::Window::kPopupWindow);
 
   set_geometry(window_geometry);
   update_content_geometry(d->m_main_window);
 
   exec(window_pos);
-
-  d->m_main_window->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
@@ -67,10 +60,3 @@ void SpacePreviewActivity::cleanup() {
 
   d->m_main_window = 0;
 }
-
-void SpacePreviewActivity::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
-  discard_activity();
-}
-
-void SpacePreviewActivity::onHideAnimationFinished() { Q_EMIT finished(); }

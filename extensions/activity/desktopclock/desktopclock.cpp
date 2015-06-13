@@ -127,10 +127,6 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   exec(window_pos);
   connect(d->m_tool_bar, SIGNAL(action(QString)), this,
           SLOT(onToolBarAction(QString)));
-
-  d->mMainWindow->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 void DesktopClockActivity::PrivateDesktopClock::add_time_zone(

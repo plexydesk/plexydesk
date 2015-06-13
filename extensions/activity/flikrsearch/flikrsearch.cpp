@@ -153,9 +153,6 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
   exec(window_pos);
 
   d->m_image_cell_model->setSearchQuery("nature");
-
-  d->m_view_delegate_window->on_window_discarded([this](
-      UIKit::Window *aWindow) { discard_activity(); });
 }
 
 QVariantMap FlickrSearchActivity::result() const {
@@ -176,7 +173,6 @@ void FlickrSearchActivity::cleanup() {
 }
 
 void FlickrSearchActivity::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }
 
