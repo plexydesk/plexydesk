@@ -40,21 +40,16 @@ public:
 };
 
 Config *Config::config = 0;
-QNetworkAccessManager *Config::m_networkaccessmanager = 0;
 
 Config *Config::instance() {
   if (config == 0) {
     config =
-        new Config(QLatin1String("plexydesk"), QLatin1String("plexydesktop"));
+        new Config();
     return config;
   } else {
     return config;
   }
 }
-
-Config::Config(const QString &a_organization, const QString &a_application,
-               QObject *parent)
-    : QObject(parent), d(new Private) {}
 
 Config::~Config() { delete d; }
 
@@ -96,13 +91,6 @@ QString Config::cache_dir(const QString &a_folder) {
   return rv;
 }
 
-QNetworkAccessManager *Config::network_access_manager() {
-  if (m_networkaccessmanager == 0) {
-    m_networkaccessmanager = new QNetworkAccessManager(instance());
-    // networkaccessmanager->setCookieJar(getCookieJar());
-    return m_networkaccessmanager;
-  } else {
-    return m_networkaccessmanager;
-  }
+Config::Config() : d(new Private){
 }
 }

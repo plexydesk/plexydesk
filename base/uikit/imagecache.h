@@ -21,6 +21,7 @@
 #ifndef IMAGE_CACHE_H
 #define IMAGE_CACHE_H
 
+#include <QObject>
 #include <plexy.h>
 #include <plexyconfig.h>
 #include <plexydesk_ui_exports.h>
