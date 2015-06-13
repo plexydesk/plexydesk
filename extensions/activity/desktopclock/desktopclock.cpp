@@ -182,7 +182,7 @@ void DesktopClockActivity::onToolBarAction(const QString &str) {
     qDebug() << Q_FUNC_INFO << "Create timezone activity";
 
     if (viewport()) {
-      UIKit::Space *_space = qobject_cast<UIKit::Space *>(viewport());
+      UIKit::Space *_space = viewport();
       if (_space) {
         UIKit::DesktopActivityPtr _timezone = viewport()->create_activity(
             "timezone", tr("TimeZone"), _space->cursor_pos(),

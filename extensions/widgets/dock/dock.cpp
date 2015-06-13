@@ -127,7 +127,7 @@ void DockControllerImpl::init() {
     return;
   }
 
-  UIKit::Space *_space = qobject_cast<UIKit::Space *>(viewport());
+  UIKit::Space *_space = viewport();
   if (_space) {
     d->m_action_activity =
         createActivity("", "icongrid", "", QPoint(), QVariantMap());
@@ -446,7 +446,7 @@ void DockControllerImpl::removeSpace() {
     UIKit::WorkSpace *_workspace =
         qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
     if (_workspace) {
-      _workspace->remove(qobject_cast<UIKit::Space *>(viewport()));
+      _workspace->remove(viewport());
     }
   }
 }

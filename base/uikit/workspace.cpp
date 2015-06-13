@@ -247,7 +247,7 @@ void WorkSpace::revoke_space(const QString &a_name, int a_id) {
 }
 
 Space *WorkSpace::create_blank_space() {
-  Space *_space = new Space(this);
+  Space *_space = new Space();
 
   _space->set_workspace(this);
   _space->set_qt_graphics_scene(scene());

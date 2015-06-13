@@ -51,8 +51,8 @@ public:
   QList<NotifyFunc> m_notify_chain;
 };
 
-Space::Space(QObject *a_parent)
-    : QObject(a_parent), m_priv_impl(new PrivateSpace) {
+Space::Space()
+    : m_priv_impl(new PrivateSpace) {
   m_priv_impl->mWorkSpace = 0;
   m_priv_impl->mMainScene = 0;
 }
