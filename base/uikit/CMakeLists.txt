@@ -4,7 +4,7 @@
 cmake_policy(SET CMP0043 NEW)
 
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
+#set(CMAKE_AUTOUIC ON) // currently we are not using any .ui files
 
 include (GenerateExportHeader)
 
