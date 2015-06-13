@@ -45,11 +45,6 @@ public:
   UIKit::Window *window() const;
   void cleanup();
 
-private
-Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
-  void onHideAnimationFinished();
-
 private:
   class PrivateSpacePreview;
   PrivateSpacePreview *const d;

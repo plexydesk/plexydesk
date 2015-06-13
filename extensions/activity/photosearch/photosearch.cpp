@@ -83,10 +83,6 @@ void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
   QTimer::singleShot(500, this, SLOT(locateLocalFiles()));
 
   exec(window_pos);
-
-  d->mWindowFrame->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 QRectF PhotoSearchActivity::geometry() const { return d->mGeometry; }

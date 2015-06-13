@@ -102,13 +102,12 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
     m_priv_ptr->m_timezone_browser_ptr->set_filter(a_txt);
   });
 
-  m_priv_ptr->m_window_ptr->on_window_discarded([this](UIKit::Window *aWindow) {
+  m_priv_ptr->m_window_ptr->on_window_closed([this](UIKit::Window *aWindow) {
     if (m_priv_ptr->m_timezone_browser_ptr) {
         m_priv_ptr->m_timezone_browser_ptr->clear();
         delete m_priv_ptr->m_timezone_browser_ptr;
         m_priv_ptr->m_timezone_browser_ptr = 0;
     }
-    discard_activity();
   });
 
   m_priv_ptr->m_timezone_browser_ptr->on_item_removed(

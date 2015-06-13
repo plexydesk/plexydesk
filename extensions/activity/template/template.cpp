@@ -47,10 +47,6 @@ void TemplateActivity::create_window(const QRectF &window_geometry,
   update_content_geometry(d->m_main_window);
 
   exec(window_pos);
-
-  d->m_main_window->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
 }
 
 QVariantMap TemplateActivity::result() const { return QVariantMap(); }
@@ -68,8 +64,7 @@ void TemplateActivity::cleanup() {
 }
 
 void TemplateActivity::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }
 
-void TemplateActivity::onHideAnimationFinished() { Q_EMIT finished(); }
+void TemplateActivity::onHideAnimationFinished() {}

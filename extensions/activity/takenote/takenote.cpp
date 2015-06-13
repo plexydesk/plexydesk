@@ -97,10 +97,6 @@ void TakeNoteActivity::create_window(const QRectF &window_geometry,
     exec(QCursor::pos());
   }
 
-  d->mFrame->on_window_discarded([this](UIKit::Window *aWindow) {
-    discard_activity();
-  });
-
   // todo: invoke UI
   d->mAddNoteBtn->set_lable(QLatin1String("Note"));
   d->mAddReminderBtn->set_lable(QLatin1String("Reminder"));
@@ -131,17 +127,16 @@ void TakeNoteActivity::cleanup() {
 }
 
 void TakeNoteActivity::onWidgetClosed(UIKit::Widget *widget) {
-  connect(this, SIGNAL(discarded()), this, SLOT(onHideAnimationFinished()));
   discard_activity();
 }
 
-void TakeNoteActivity::onHideAnimationFinished() { Q_EMIT finished(); }
+void TakeNoteActivity::onHideAnimationFinished() {}
 
 void TakeNoteActivity::onClicked() {
   UIKit::ImageButton *button = qobject_cast<UIKit::ImageButton *>(sender());
 
   if (button) {
     d->mSelection = button->label();
-    Q_EMIT finished();
+    notify_done();
   }
 }

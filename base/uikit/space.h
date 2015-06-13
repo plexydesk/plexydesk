@@ -70,10 +70,10 @@ public:
                                             const QVariantMap &a_data_map);
 
   virtual QPointF cursor_pos() const;
-  virtual QPointF center(const QRectF &a_view_geometry,
-                         const QRectF a_window_geometry = QRectF(),
-                         const ViewportLocation &a_location = kCenterOnViewport)
-      const;
+  virtual QPointF
+  center(const QRectF &a_view_geometry,
+         const QRectF a_window_geometry = QRectF(),
+         const ViewportLocation &a_location = kCenterOnViewport) const;
 
   virtual void drop_event_handler(QDropEvent *event, const QPointF &event_pos);
 
@@ -85,9 +85,8 @@ public:
                          const Space *)> a_notify_handler);
   void save_controller_to_session(const QString &a_controller_name);
   void revoke_controller_session_attributes(const QString &a_controller_name);
-public
-Q_SLOTS:
-  virtual void on_activity_finished();
+
+  virtual void on_activity_finished(const DesktopActivity *a_activity);
 
 protected:
   virtual void clear();
