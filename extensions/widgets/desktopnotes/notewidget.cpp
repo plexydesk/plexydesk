@@ -144,9 +144,6 @@ NoteWidget::NoteWidget(UIKit::SessionSync *a_session, QGraphicsObject *parent)
   connect(d->m_text_editor_widget, SIGNAL(text_updated(QString)), this,
           SLOT(onTextUpdated(QString)));
 
-  connect(d->m_attachment_del_button, SIGNAL(clicked()), this,
-          SLOT(deleteImageAttachment()));
-
   this->setAcceptDrops(true);
 }
 

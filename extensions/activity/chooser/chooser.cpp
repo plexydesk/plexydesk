@@ -62,7 +62,6 @@ public:
   ~PrivateIconGrid() { qDeleteAll(m_action_list); }
 
   UIKit::Window *m_activity_window_ptr;
-  UIKit::TableView *mTable;
   UIKit::ItemView *m_grid_view;
 
   QString mSelection;
