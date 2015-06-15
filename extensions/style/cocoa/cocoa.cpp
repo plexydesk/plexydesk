@@ -203,8 +203,8 @@ void CocoaStyle::drawPushButton(const StyleFeatures &features,
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
     painter->fillPath(backgroundPath, QColor(color("primary_background")));
-    QPen pen(QColor(color("accent_soft_highlight")), 1, Qt::SolidLine, Qt::RoundCap,
-             Qt::RoundJoin);
+    QPen pen(QColor(color("accent_soft_highlight")), 1, Qt::SolidLine,
+             Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   } else if (features.render_state == StyleFeatures::kRenderRaised) {
@@ -216,9 +216,8 @@ void CocoaStyle::drawPushButton(const StyleFeatures &features,
   } else {
     painter->fillPath(backgroundPath,
                       QColor(color("accent_primary_background")));
-    QPen pen(QColor(color("accent_primary_forground")), 1,
-             Qt::SolidLine, Qt::RoundCap,
-             Qt::RoundJoin);
+    QPen pen(QColor(color("accent_primary_forground")), 1, Qt::SolidLine,
+             Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
     painter->drawPath(backgroundPath);
   }
@@ -259,13 +258,23 @@ void CocoaStyle::drawWindowButton(const StyleFeatures &features,
 }
 
 void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
-  QRectF rect = features.geometry;
+  QRectF rect = features.geometry.adjusted(4, 4, -4, -4);
 
   painter->save();
   painter->setRenderHint(QPainter::Antialiasing, true);
   painter->setRenderHint(QPainter::TextAntialiasing, true);
   painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
+  /* draw shadow */
+  QPainterPath drop_shadow;
+  drop_shadow.addRoundRect(features.geometry, 4.0, 4.0);
+
+  painter->save();
+  painter->setOpacity(0.3);
+  painter->fillPath(drop_shadow, QColor(color("base_forground")));
+  painter->restore();
+
+  /* draw the adjusted window frame */
   QPainterPath backgroundPath;
   backgroundPath.addRoundedRect(rect, 4.0, 4.0);
 
@@ -273,7 +282,7 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
 
   // draw seperator
   if (!features.text_data.isNull() || !features.text_data.isEmpty()) {
-    QRectF _window_title_rect(0.0, 0.0, features.geometry.width(), 54.0);
+    QRectF _window_title_rect(4, 4, rect.width(), 54.0);
 
     QLinearGradient _seperator_line_grad(_window_title_rect.bottomLeft(),
                                          _window_title_rect.bottomRight());
@@ -306,13 +315,7 @@ void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
     painter->setPen(linePen);
     painter->drawLine(_window_title_rect.bottomLeft(),
                       _window_title_rect.bottomRight());
-    /*
-    painter->fillRect(_window_title_rect,
-                      QColor(color("accent_primary_background")));
-                      */
     painter->restore();
-  } else {
-    // painter->fillRect(QRectF(0.0, 0.0, rect.width(), 10), QColor("#F0F0F0"));
   }
   painter->restore();
 }
@@ -778,8 +781,8 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
     int diff = (_text_cursor_width_to_left - _text_cursor_width_to_right);
 
     QRectF selection_rect =
-        QRectF(_text_cursor_width_to_right, (rect.height() - m.height()) / 2, diff,
-               m.height());
+        QRectF(_text_cursor_width_to_right, (rect.height() - m.height()) / 2,
+               diff, m.height());
 
     painter->save();
     painter->setOpacity(0.3);
@@ -962,8 +965,7 @@ void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
                         QColor(color("primary_background")));
                         */
   if (aFeatures.render_state == StyleFeatures::kRenderRaised) {
-      aPainterPtr->fillRect(aFeatures.geometry,
-                            QColor(color("base_forground")));
+    aPainterPtr->fillRect(aFeatures.geometry, QColor(color("base_forground")));
   }
 
   aPainterPtr->setPen(linePen);
