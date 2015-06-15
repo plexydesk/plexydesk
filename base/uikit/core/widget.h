@@ -94,7 +94,6 @@ public:
 
 Q_SIGNALS:
   void clicked();
-  void focusLost();
 
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
