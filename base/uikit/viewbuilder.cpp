@@ -4,6 +4,7 @@
 
 #include <button.h>
 #include <label.h>
+#include <texteditor.h>
 #include <widget.h>
 
 namespace UIKit {
@@ -42,7 +43,9 @@ public:
   HeightValue get_value_type(const std::string &a_value) const;
   float get_percentage(const std::string &a_value) const;
 
-  Widget *add_new_label_at(int a_col, int a_row, const ViewProperties &a_props);
+  Widget *add_new_label_at(int a_row, int a_col, const ViewProperties &a_props);
+  Widget *add_new_text_edit_at(int a_row, int a_col,
+                               const ViewProperties &a_props);
 
   void layout();
 
@@ -101,8 +104,8 @@ void ViewBuilder::PrivateViewBuilder::layout() {
         continue;
 
       Widget *widget = m_widget_grid[pos];
-      widget->setGeometry(QRectF(0, 0,calculate_cell_width(row, i),
-                           calculate_cell_height(row, i)));
+      widget->setGeometry(QRectF(0, 0, calculate_cell_width(row, i),
+                                 calculate_cell_height(row, i)));
       widget->setPos(get_x(row, i), get_y(row, 0));
     }
   }
@@ -183,7 +186,11 @@ Widget *ViewBuilder::add_widget(int a_row, int a_column,
     rv = add_new_button_at(a_row, a_column, a_properties);
     break;
   case kLabel:
-      rv = d->add_new_label_at(a_row, a_column, a_properties);
+    rv = d->add_new_label_at(a_row, a_column, a_properties);
+    break;
+  case kTextEdit:
+    rv = d->add_new_text_edit_at(a_row, a_column, a_properties);
+    break;
   default:
     rv = 0;
   }
@@ -269,8 +276,7 @@ float ViewBuilder::PrivateViewBuilder::get_y(int a_row, int a_column) {
 
   for (int i = 0; i < a_row; i++) {
     float _height = calculate_cell_height(i, 0);
-    qDebug() << Q_FUNC_INFO << " Row -> " << i
-               << _height;
+    qDebug() << Q_FUNC_INFO << " Row -> " << i << _height;
     cell_height += _height;
   }
 
@@ -304,26 +310,39 @@ float ViewBuilder::PrivateViewBuilder::get_percentage(
 
 Widget *ViewBuilder::PrivateViewBuilder::add_new_label_at(
     int a_row, int a_col, const ViewProperties &a_props) {
-  Label *btn = new Label(m_content_frame);
+  Label *label = new Label(m_content_frame);
   GridPos pos(a_row, a_col);
 
-  m_widget_grid[pos] = btn;
+  m_widget_grid[pos] = label;
 
-  float height = calculate_cell_height(a_row, a_col);
-  float width = calculate_cell_width(a_row, a_col);
-
-
-  qDebug() << Q_FUNC_INFO << "height = " << height
-           << "width " << width
-           << "At :" << a_row << " | " <<  a_col;
-
-  btn->set_label(QString::fromStdString(a_props.at("label")));
-  btn->set_size(QSizeF(calculate_cell_width(a_row, a_col),
+  label->set_label(QString::fromStdString(a_props.at("label")));
+  label->set_size(QSizeF(calculate_cell_width(a_row, a_col),
                        calculate_cell_height(a_row, a_col)));
-  btn->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  label->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                           calculate_cell_height(a_row, a_col)));
   layout();
 
-  return btn;
+  return label;
+}
+
+Widget *ViewBuilder::PrivateViewBuilder::add_new_text_edit_at(
+    int a_row, int a_col, const ViewProperties &a_props) {
+  TextEditor *editor = new TextEditor(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = editor;
+
+  QString text;
+
+  if (a_props.find("text") != a_props.end()) {
+      text = QString::fromStdString(a_props.at("text"));
+  }
+
+  editor->set_text(text);
+  editor->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                          calculate_cell_height(a_row, a_col)));
+  layout();
+
+  return editor;
 }
 }
