@@ -55,7 +55,13 @@ QSizeF Label::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
   return boundingRect().size();
 }
 
-void Label::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
+void Label::setGeometry(const QRectF &a_rect) {
+    prepareGeometryChange();
+    setPos(a_rect.topLeft());
+    d->m_label_size = a_rect.size();
+
+    update();
+}
 
 QRectF Label::contents_bounding_rect() const {
   QFont font;
