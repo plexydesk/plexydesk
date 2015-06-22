@@ -56,10 +56,12 @@ public:
     kKeyPressEvent = 1ul << 4
   } InputEvent;
 
-  enum RenderLevel {
+  typedef enum {
     kRenderAtBackgroundLevel,
     kRenderAtForgroundLevel
-  };
+  } RenderLevel;
+
+  typedef std::function<void(InputEvent, const Widget *)> InputCallback;
 
   Widget(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Widget();
@@ -86,8 +88,8 @@ public:
   virtual void on_input_event(std::function<
       void(InputEvent a_type, const Widget *a_widget_ptr)> a_callback);
 
-  virtual void on_geometry_changed(std::function<void (const QRectF &)>
-                                   a_callback);
+  virtual void
+  on_geometry_changed(std::function<void(const QRectF &)> a_callback);
 
   virtual void set_style_attribute(const QString &a_key, QVariant a_data);
   virtual QVariant style_attribute(const QString &a_key);
