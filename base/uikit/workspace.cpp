@@ -157,7 +157,10 @@ void WorkSpace::auto_switch() {
 }
 
 void WorkSpace::expose_sub_region(const QRectF &a_region) {
+
+  /*
   QScroller::grabGesture(this, QScroller::TouchGesture);
+
   if (QScroller::hasScroller(this)) {
     QScroller *_active_scroller = QScroller::scroller(this);
     if (_active_scroller) {
@@ -168,6 +171,13 @@ void WorkSpace::expose_sub_region(const QRectF &a_region) {
   }
 
   QScroller::ungrabGesture(this);
+  */
+  QGraphicsScene *current_scene = scene();
+
+  if (!current_scene)
+      return;
+
+  ensureVisible(a_region);
 }
 
 void WorkSpace::paintEvent(QPaintEvent *event) {
