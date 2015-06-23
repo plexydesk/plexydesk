@@ -1,8 +1,6 @@
 #include <QApplication>
 #include <QDebug>
 
-#include "datasyncruntime.h"
-
 #include <syncobject.h>
 #include <disksyncengine.h>
 #include <datasync.h>
