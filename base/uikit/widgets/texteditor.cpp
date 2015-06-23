@@ -37,8 +37,7 @@ TextEditor::TextEditor(QGraphicsObject *parent)
   d->mEditor->setReadOnly(false);
   d->mEditor->setAcceptRichText(true);
   d->mEditor->setAutoFormatting(QTextEdit::AutoAll);
-  d->mEditor->setStyleSheet("background-color:qlineargradient(x1: 0, y1: 0, "
-                            "x2: 0, y2: 1, stop: 1 #ffffff, stop: 0 #E5EAEE); "
+  d->mEditor->setStyleSheet("background-color: #ffffff;"
                             "border : 0");
   d->mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   d->mEditor->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
