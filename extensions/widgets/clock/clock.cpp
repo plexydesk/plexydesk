@@ -32,6 +32,7 @@
 #include <space.h>
 
 // datakit
+#include <window.h>
 #include <clockwidget.h>
 #include <datasync.h>
 #include <disksyncengine.h>
@@ -219,6 +220,14 @@ Clock::PrivateClockController::_create_countdown_ui(Clock *a_controller,
 
   a_session->bind_to_window(m_clock_session_window);
 
+  m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
+      a_session->unbind_window(aWindow);
+  });
+
+  m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {
+    delete aWindow;
+  });
+
   m_toolbar->on_item_activated([=](const QString &a_action) {
       //todo : invoke calendar activity to get the date ?
   });
@@ -239,6 +248,7 @@ Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
   float window_width = 248;
 
   UIKit::Window *m_clock_session_window = new UIKit::Window();
+
   UIKit::Widget *m_content_view = new UIKit::Widget(m_clock_session_window);
   UIKit::ClockWidget *m_clock_widget = new UIKit::ClockWidget(m_content_view);
   UIKit::ToolBar *m_toolbar = new UIKit::ToolBar(m_content_view);
@@ -254,6 +264,14 @@ Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
   m_content_view->setGeometry(QRectF(0, 0, window_width, window_width + 48));
   m_clock_widget->setGeometry(QRectF(0, 0, window_width, window_width));
   m_clock_session_window->set_window_title("Clock");
+
+  m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
+      a_session->unbind_window(aWindow);
+  });
+
+  m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {
+    delete aWindow;
+  });
 
   // toolbar placement.
   m_toolbar->set_icon_resolution("hdpi");
@@ -381,6 +399,14 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
   m_clock_session_window->set_window_content(m_content_view);
 
   a_session->bind_to_window(m_clock_session_window);
+
+  m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
+      a_session->unbind_window(aWindow);
+  });
+
+  m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {
+    delete aWindow;
+  });
 
   // todo:
   // Fix duplication.
