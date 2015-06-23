@@ -26,7 +26,7 @@
 
 namespace UIKit {
 class SessionSync::PrivSessionSync {
- public:
+public:
   PrivSessionSync() : m_purged(0) {}
   ~PrivSessionSync() {}
 
@@ -40,8 +40,8 @@ class SessionSync::PrivSessionSync {
   std::function<void()> m_on_session_end_func;
 };
 
-SessionSync::SessionSync(const std::string& a_session_name,
-                         const QVariantMap& a_data)
+SessionSync::SessionSync(const std::string &a_session_name,
+                         const QVariantMap &a_data)
     : d(new PrivSessionSync) {
 
   d->m_session_id = -1;
@@ -54,12 +54,12 @@ void SessionSync::session_init() {
     d->m_on_session_init_func();
 }
 
-void SessionSync::set_session_data(const QString& a_key,
-                                   const QVariant& a_data) {
+void SessionSync::set_session_data(const QString &a_key,
+                                   const QVariant &a_data) {
   d->m_session_data[a_key] = a_data;
 }
 
-QVariant SessionSync::session_data(const QString& a_key) const {
+QVariant SessionSync::session_data(const QString &a_key) const {
   if (!d->m_session_data.contains(a_key)) {
     return QVariant("");
   }
@@ -89,97 +89,91 @@ void SessionSync::update_session() {
 
 std::string SessionSync::session_group_key() const {
   std::string key_name = d->m_session_group_name;
-  std::transform(key_name.begin(),
-                 key_name.end(),
-                 key_name.begin(),
-                 ::tolower);
+  std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
   return key_name + "_id";
 }
 
-void SessionSync::bind_to_window(UIKit::Window* a_window) {
+void SessionSync::bind_to_window(UIKit::Window *a_window) {
   if (!a_window)
     return;
 
-  a_window->on_window_closed([this](const UIKit::Window* a_window) {
-    std::string db_name (session_data("database_name").toByteArray().data());
-
-    purge();
-
-    if (db_name.empty()) {
-      qWarning() << Q_FUNC_INFO << "Null session database name";
-      return;
-    }
-
-    delete_session_data(db_name,
-                        d->m_session_group_name,
-                        session_group_key(),
-                        session_id_to_string());
+  /*
+  a_window->on_window_closed([this](const UIKit::Window *a_window) {
+      unbind_window(a_window);
   });
+  */
 
-  a_window->on_window_moved([this](const QPointF& a_pos) {
-    std::string db_name (session_data("database_name").toByteArray().data());
+  a_window->on_window_moved([this](const QPointF &a_pos) {
+    std::string db_name(session_data("database_name").toByteArray().data());
 
     if (db_name.empty()) {
       qWarning() << Q_FUNC_INFO << "Null session database name";
       return;
     }
 
-    save_session_attribute(db_name,
-                           d->m_session_group_name,
-                           session_group_key(),
-                           session_id_to_string(),
-                           "x",
+    save_session_attribute(db_name, d->m_session_group_name,
+                           session_group_key(), session_id_to_string(), "x",
                            std::to_string(a_pos.x()));
 
-    save_session_attribute(db_name,
-                           d->m_session_group_name,
-                           session_group_key(),
-                           session_id_to_string(),
-                           "y",
+    save_session_attribute(db_name, d->m_session_group_name,
+                           session_group_key(), session_id_to_string(), "y",
                            std::to_string(a_pos.y()));
   });
 }
 
-void SessionSync::delete_session_data(const std::string& a_session_name,
-                                      const std::string& a_object_name,
-                                      const std::string& a_object_key,
-                                      const std::string& a_object_value) {
-  QuetzalKit::DataSync* sync =
-      new QuetzalKit::DataSync(a_session_name);
+void SessionSync::unbind_window(const Window *a_windows) {
+  std::string db_name(session_data("database_name").toByteArray().data());
 
-  QuetzalKit::DiskSyncEngine* engine = new QuetzalKit::DiskSyncEngine();
+  purge();
+
+  if (db_name.empty()) {
+    qWarning() << Q_FUNC_INFO << "Null session database name";
+    return;
+  }
+
+  delete_session_data(db_name, d->m_session_group_name, session_group_key(),
+                      session_id_to_string());
+}
+
+void SessionSync::delete_session_data(const std::string &a_session_name,
+                                      const std::string &a_object_name,
+                                      const std::string &a_object_key,
+                                      const std::string &a_object_value) {
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(a_session_name);
+
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->remove_object(a_object_name,
-                      a_object_key,
-                      a_object_value);
+  sync->remove_object(a_object_name, a_object_key, a_object_value);
+  qDebug() << Q_FUNC_INFO << "Removed Object";
   delete sync;
 }
 
-void SessionSync::save_session_attribute(const std::string& a_session_name,
-                                         const std::string& a_object_name,
-                                         const std::string& a_object_key,
-                                         const std::string& a_object_value,
-                                         const std::string& a_key,
-                                         const std::string& a_value) {
-  QuetzalKit::DataSync* sync = new QuetzalKit::DataSync(a_session_name);
-  QuetzalKit::DiskSyncEngine* engine = new QuetzalKit::DiskSyncEngine();
+void SessionSync::save_session_attribute(const std::string &a_session_name,
+                                         const std::string &a_object_name,
+                                         const std::string &a_object_key,
+                                         const std::string &a_object_value,
+                                         const std::string &a_key,
+                                         const std::string &a_value) {
+  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(a_session_name);
+  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](QuetzalKit::SyncObject& a_object,
-                            const std::string& a_app_name,
-                            bool a_found) {
+  sync->on_object_found([=](QuetzalKit::SyncObject &a_object,
+                            const std::string &a_app_name, bool a_found) {
     if (a_found) {
       a_object.setObjectAttribute(QString::fromStdString(a_key),
                                   QString::fromStdString(a_value));
       sync->save_object(a_object);
+      const QVariant value(a_value.c_str());
+      set_session_data(QString::fromStdString(a_key), value);
+
     } else {
       qWarning() << Q_FUNC_INFO << "Object Not Found"
-                    << "Key :" << QString::fromStdString(a_object_key)
-                    <<" Value :" << QString::fromStdString(a_object_value)
-                    <<" In Session :" << QString::fromStdString(a_session_name)
-                    <<" Of Object :" << QString::fromStdString(a_object_name)
-                    ;
+                 << "Key :" << QString::fromStdString(a_object_key)
+                 << " Value :" << QString::fromStdString(a_object_value)
+                 << " In Session :" << QString::fromStdString(a_session_name)
+                 << " Of Object :" << QString::fromStdString(a_object_name);
     }
   });
 
