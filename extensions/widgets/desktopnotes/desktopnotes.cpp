@@ -25,6 +25,8 @@
 #include <session_sync.h>
 
 #include <button.h>
+#include <imagebutton.h>
+#include <texteditor.h>
 #include <viewbuilder.h>
 
 #include "reminderwidget.h"
@@ -78,11 +80,17 @@ void DesktopNotesControllerImpl::session_data_available(
                                           UIKit::SessionSync *a_session) {
     createNoteUI(a_session);
   });
+
+  revoke_previous_session(
+      "Reminders",
+      [this](UIKit::ViewController *a_controller,
+             UIKit::SessionSync *a_session) { createReminderUI(a_session); });
 }
 
 void
 DesktopNotesControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj) {
   write_session_data("Notes");
+  write_session_data("Reminders");
 }
 
 void DesktopNotesControllerImpl::set_view_rect(const QRectF &rect) {}
@@ -218,45 +226,174 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
 
   UIKit::ViewBuilder *view = new UIKit::ViewBuilder(window);
   view->set_margine(10, 10, 10, 10);
-  view->set_geometry(0, 0, 200, 200);
+  view->set_geometry(0, 0, 320, 200);
 
-  view->add_rows(3);
-  //view->split_row(2, 2);
+  view->add_rows(2);
+  view->split_row(1, 4);
 
-  view->set_row_height(0, "auto");
-  view->set_row_height(1, "80%");
-  view->set_row_height(2, "auto");
+  view->set_row_height(0, "85%");
+  view->set_row_height(1, "15%");
+  // view->set_row_height(2, "15%");
 
   UIKit::ViewProperties top_label_prop;
-  top_label_prop["label"] = "What should I remind you about ?";
+  top_label_prop["label"] = "reminder";
 
   UIKit::ViewProperties text_editor_prop;
-  top_label_prop["text"] = "";
+  text_editor_prop["text"] = "";
+
+  if (a_session->session_keys().contains("text")) {
+    text_editor_prop["text"] =
+        std::string(a_session->session_data("text").toByteArray());
+  }
 
   UIKit::ViewProperties accept_button_prop;
-  accept_button_prop["label"] = "+ Add";
 
-  view->add_widget(0, 0, "label", top_label_prop);
-  view->add_widget(1, 0, "text_edit", text_editor_prop);
-  view->add_widget(2, 1, "button", accept_button_prop);
+  // view->add_widget(0, 0, "label", top_label_prop);
+  view->add_widget(0, 0, "text_edit", text_editor_prop);
+
+  accept_button_prop["label"] = "Date";
+  accept_button_prop["icon"] = "actions/pd_notification.png";
+  view->add_widget(1, 0, "image_button", accept_button_prop);
+
+  if (a_session->session_keys().contains("state") &&
+      (a_session->session_data("state").toString() == "done")) {
+    accept_button_prop["label"] = "Resume";
+    accept_button_prop["icon"] = "actions/pd_resume.png";
+
+    UIKit::TextEditor *editor =
+        dynamic_cast<UIKit::TextEditor *>(view->at(0, 0));
+    if (editor) {
+      editor->style("border: 0; background: #29CDA8; color: #ffffff");
+    }
+  } else {
+    accept_button_prop["label"] = "Done";
+    accept_button_prop["icon"] = "actions/pd_done.png";
+  }
+
+  view->add_widget(1, 1, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "save";
+  accept_button_prop["icon"] = "actions/pd_save.png";
+  view->add_widget(1, 2, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "delete";
+  accept_button_prop["icon"] = "actions/pd_delete.png";
+  view->add_widget(1, 3, "image_button", accept_button_prop);
 
   window->set_window_content(view->ui());
   window->set_window_title("Reminder");
- // window->setGeometry(QRectF(0, 0, 320, 320));
 
+  a_session->bind_to_window(window);
   insert(window);
 
-  UIKit::Button *ok_btn = dynamic_cast<UIKit::Button *>(view->at(0, 0));
+  UIKit::ImageButton *delete_btn =
+      dynamic_cast<UIKit::ImageButton *>(view->at(1, 3));
 
-  if (ok_btn) {
-    UIKit::Widget::InputCallback func = [](UIKit::Widget::InputEvent,
-                                           const UIKit::Widget *a_widget) {
+  if (delete_btn) {
+    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
+                                            const UIKit::Widget *a_widget) {
+      if (a_event == UIKit::Widget::kMouseReleaseEvent) {
+        a_session->unbind_window(window);
+        window->close();
+      }
     };
 
-    ok_btn->on_input_event(func);
+    delete_btn->on_input_event(func);
+  }
+
+  UIKit::ImageButton *save_btn =
+      dynamic_cast<UIKit::ImageButton *>(view->at(1, 2));
+
+  if (save_btn) {
+    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
+                                            const UIKit::Widget *a_widget) {
+      if (a_event == UIKit::Widget::kMouseReleaseEvent) {
+        UIKit::TextEditor *editor =
+            dynamic_cast<UIKit::TextEditor *>(view->at(0, 0));
+        if (editor) {
+          a_session->save_session_attribute(
+              session_database_name("reminders"), "Reminders", "reminders_id",
+              a_session->session_id_to_string(), "text",
+              editor->text().toStdString());
+          qDebug() << Q_FUNC_INFO << "Save Reminder :" << editor->text();
+        }
+      }
+    };
+
+    save_btn->on_input_event(func);
+  }
+
+  UIKit::ImageButton *done_btn =
+      dynamic_cast<UIKit::ImageButton *>(view->at(1, 1));
+
+  if (done_btn) {
+    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
+                                            const UIKit::Widget *a_widget) {
+      if (a_event == UIKit::Widget::kMouseReleaseEvent) {
+        UIKit::TextEditor *editor =
+            dynamic_cast<UIKit::TextEditor *>(view->at(0, 0));
+        bool is_complete = 0;
+
+        if (a_session->session_keys().contains("state")) {
+            qDebug() << Q_FUNC_INFO << "Current state : "
+                     << a_session->session_data("state").toString();
+        }
+
+        if (a_session->session_keys().contains("state") &&
+            (a_session->session_data("state").toString() == "done")) {
+          is_complete = 1;
+        }
+
+        if (editor) {
+          if (is_complete)
+            editor->style("border: 0; background: #ffffff; color: #000000");
+          else
+            editor->style("border: 0; background: #29CDA8; color: #ffffff");
+        }
+
+        UIKit::ViewProperties update_prop;
+        if (is_complete) {
+          update_prop["label"] = "Done";
+          update_prop["icon"] = "actions/pd_done.png";
+        } else {
+          update_prop["label"] = "Resume";
+          update_prop["icon"] = "actions/pd_resume.png";
+        }
+
+        view->update_property(1, 1, update_prop);
+
+        a_session->save_session_attribute(
+            session_database_name("reminders"), "Reminders", "reminders_id",
+            a_session->session_id_to_string(), "state",
+            (is_complete == 1) ? "wip" : "done");
+      }
+    };
+
+    done_btn->on_input_event(func);
+  }
+
+  UIKit::ImageButton *set_btn =
+      dynamic_cast<UIKit::ImageButton *>(view->at(1, 0));
+
+  if (set_btn) {
+    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
+                                            const UIKit::Widget *a_widget) {
+      if (a_event == UIKit::Widget::kMouseReleaseEvent) {
+        // todo : invoke the calendar.
+      }
+    };
+
+    set_btn->on_input_event(func);
   }
 
   window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
   });
+
+  if (viewport()) {
+    QPointF window_location;
+    window_location.setX(a_session->session_data("x").toFloat());
+    window_location.setY(a_session->session_data("y").toFloat());
+    window->setPos(window_location);
+  }
 }
