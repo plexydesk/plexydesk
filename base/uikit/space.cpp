@@ -4,7 +4,6 @@
 #include <QDebug>
 #include <QDropEvent>
 #include <QGraphicsItem>
-#include <datastore.h>
 #include <disksyncengine.h>
 #include <extensionmanager.h>
 #include <syncobject.h>

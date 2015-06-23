@@ -29,7 +29,6 @@
 #include <texteditor.h>
 #include <viewbuilder.h>
 
-#include "reminderwidget.h"
 #include "notewidget.h"
 
 class DesktopNotesControllerImpl::PrivateDesktopNotes {

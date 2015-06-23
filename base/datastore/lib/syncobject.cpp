@@ -32,7 +32,6 @@ public:
   QString mTextData;
   uint mKey;
 
-  DataStore *mDataStore;
   DataSync *m_sync_store;
 };
 
@@ -54,7 +53,6 @@ SyncObject::SyncObject(QObject *parent)
   d->mKey = -1;
   d->mCount = -1;
   d->mParent = 0;
-  d->mDataStore = 0;
 }
 
 SyncObject::~SyncObject() {
@@ -106,10 +104,6 @@ void SyncObject::attachTextNode(const QString &data) {
           QDomText textNode = node.toText();
           textNode.setNodeValue(data);
 
-          if (d->mDataStore) {
-            d->mDataStore->updateNode(this);
-          }
-
           return;
         }
       }
@@ -121,12 +115,6 @@ void SyncObject::attachTextNode(const QString &data) {
     d->mNode.appendChild(textNode);
   } else {
     qFatal("Failed to convert the node to an element");
-  }
-
-  Q_EMIT updated();
-
-  if (d->mDataStore) {
-    d->mDataStore->updateNode(this);
   }
 
   updateTimeStamp();
@@ -155,10 +143,6 @@ SyncObject *SyncObject::clone(SyncObject *object) {
 
   return rv;
 }
-
-void SyncObject::setDataStore(DataStore *store) { d->mDataStore = store; }
-
-DataStore *SyncObject::store() { return d->mDataStore; }
 
 void SyncObject::set_data_sync(DataSync *a_sync) {
   if (d->m_sync_store)
@@ -218,7 +202,6 @@ SyncObject *SyncObject::createNewObject(const QString &name) {
   rv->setParentObject(this);
   d->mChildMap[d->mCount] = rv;
 
-  rv->setDataStore(d->mDataStore);
   return rv;
 }
 
