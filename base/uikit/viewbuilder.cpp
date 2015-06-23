@@ -1,8 +1,10 @@
+#include "themepackloader.h"
 #include "viewbuilder.h"
 #include <algorithm>
 #include <iostream>
 
 #include <button.h>
+#include <imagebutton.h>
 #include <label.h>
 #include <texteditor.h>
 #include <widget.h>
@@ -23,7 +25,6 @@ class ViewBuilder::PrivateViewBuilder {
 public:
   PrivateViewBuilder(Widget *a_window) : m_row_count(1), m_column_count(1) {
     m_content_frame = new Widget(a_window);
-    m_content_frame->setGeometry(QRectF(0, 0, 200, 200));
     build_ui_map();
   }
 
@@ -44,6 +45,11 @@ public:
   float get_percentage(const std::string &a_value) const;
 
   Widget *add_new_label_at(int a_row, int a_col, const ViewProperties &a_props);
+  Widget *add_new_image_button_at(int a_row, int a_col,
+                                  const ViewProperties &a_props);
+  void update_image_button_properties(int a_row, int a_col,
+                                      const ViewProperties &a_props);
+
   Widget *add_new_text_edit_at(int a_row, int a_col,
                                const ViewProperties &a_props);
 
@@ -58,6 +64,7 @@ public:
   std::map<int, std::string> m_row_height_data;
 
   std::map<GridPos, Widget *> m_widget_grid;
+  std::map<GridPos, int> m_ui_type_dict;
   std::map<std::string, int> m_ui_dict;
 
   UIKit::Widget *m_content_frame;
@@ -77,6 +84,7 @@ ViewBuilder::~ViewBuilder() { delete d; }
 void ViewBuilder::set_geometry(float a_x, float a_y, float a_width,
                                float a_height) {
   d->m_grid_geometry = QRectF(a_x, a_y, a_width, a_height);
+  d->m_content_frame->setGeometry(d->m_grid_geometry);
   set_margine(d->m_left_margine, d->m_right_margine, d->m_top_margine,
               d->m_bottom_margine);
 }
@@ -91,6 +99,7 @@ void ViewBuilder::set_margine(float a_left, float a_right, float a_top,
   d->m_grid_geometry.setWidth(d->m_grid_geometry.width() - (a_left + a_right));
   d->m_grid_geometry.setHeight(d->m_grid_geometry.height() -
                                (a_top + a_bottom));
+
   d->m_content_frame->setPos(a_left, a_top);
 }
 
@@ -145,6 +154,7 @@ Widget *ViewBuilder::add_new_widget_at(int a_col, int a_row,
   Widget *widget = new Widget(d->m_content_frame);
   GridPos pos(a_col, a_row);
   d->m_widget_grid[pos] = widget;
+  d->m_ui_type_dict[pos] = kWidget;
 
   return widget;
 }
@@ -155,6 +165,7 @@ Widget *ViewBuilder::add_new_button_at(int a_row, int a_col,
   GridPos pos(a_row, a_col);
 
   d->m_widget_grid[pos] = btn;
+  d->m_ui_type_dict[pos] = kButton;
 
   // set view properties.
   btn->setLabel(QString::fromStdString(a_props.at("label")));
@@ -191,11 +202,33 @@ Widget *ViewBuilder::add_widget(int a_row, int a_column,
   case kTextEdit:
     rv = d->add_new_text_edit_at(a_row, a_column, a_properties);
     break;
+  case kImageButton:
+    rv = d->add_new_image_button_at(a_row, a_column, a_properties);
+    break;
   default:
     rv = 0;
   }
 
   return rv;
+}
+
+void ViewBuilder::update_property(int a_row, int a_column,
+                                  const ViewProperties &a_properties) {
+  qDebug() << Q_FUNC_INFO;
+  GridPos pos = std::make_pair(a_row, a_column);
+
+  if (d->m_ui_type_dict.find(pos) == d->m_ui_type_dict.end()) {
+    qWarning() << Q_FUNC_INFO << "Error: No widget at index : ";
+    return;
+  }
+
+  switch (d->m_ui_type_dict[pos]) {
+  case kImageButton:
+    d->update_image_button_properties(a_row, a_column, a_properties);
+    break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Unknown Widget type";
+  }
 }
 
 void ViewBuilder::PrivateViewBuilder::build_ui_map() {
@@ -314,15 +347,83 @@ Widget *ViewBuilder::PrivateViewBuilder::add_new_label_at(
   GridPos pos(a_row, a_col);
 
   m_widget_grid[pos] = label;
+  m_ui_type_dict[pos] = kLabel;
 
   label->set_label(QString::fromStdString(a_props.at("label")));
   label->set_size(QSizeF(calculate_cell_width(a_row, a_col),
-                       calculate_cell_height(a_row, a_col)));
+                         calculate_cell_height(a_row, a_col)));
   label->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                          calculate_cell_height(a_row, a_col)));
+                            calculate_cell_height(a_row, a_col)));
   layout();
 
   return label;
+}
+
+Widget *ViewBuilder::PrivateViewBuilder::add_new_image_button_at(
+    int a_row, int a_col, const ViewProperties &a_props) {
+  ImageButton *image_button = new ImageButton(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = image_button;
+  m_ui_type_dict[pos] = kImageButton;
+
+  QString text;
+  QString icon;
+
+  if (a_props.find("label") != a_props.end()) {
+    text = QString::fromStdString(a_props.at("label"));
+  }
+
+  if (a_props.find("icon") != a_props.end()) {
+    icon = QString::fromStdString(a_props.at("icon"));
+  }
+
+  image_button->set_lable(text);
+  QPixmap pixmap = Theme::instance()->drawable(icon, "hdpi");
+  image_button->set_pixmap(pixmap);
+
+  image_button->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                                   calculate_cell_height(a_row, a_col)));
+  image_button->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
+                                     calculate_cell_height(a_row, a_col)));
+  layout();
+
+  return image_button;
+}
+
+void ViewBuilder::PrivateViewBuilder::update_image_button_properties(
+    int a_row, int a_col, const ViewProperties &a_props) {
+  Widget *widget = m_widget_grid[std::make_pair(a_row, a_col)];
+
+  if (!widget) {
+    qWarning() << Q_FUNC_INFO << "Invalid Widget at : ";
+    return;
+  }
+
+  ImageButton *image_button = dynamic_cast<ImageButton *>(widget);
+
+  if (!image_button) {
+    qWarning() << Q_FUNC_INFO << "Invalid Widget Casting : ";
+    return;
+  }
+
+  QString text;
+  QString icon;
+
+  if (a_props.find("label") != a_props.end()) {
+    text = QString::fromStdString(a_props.at("label"));
+  }
+
+  if (a_props.find("icon") != a_props.end()) {
+    icon = QString::fromStdString(a_props.at("icon"));
+  }
+
+  QPixmap pixmap = Theme::instance()->drawable(icon, "hdpi");
+
+  image_button->set_lable(text);
+  image_button->set_pixmap(pixmap);
+
+  qDebug() << Q_FUNC_INFO << "Property Updated";
 }
 
 Widget *ViewBuilder::PrivateViewBuilder::add_new_text_edit_at(
@@ -331,16 +432,17 @@ Widget *ViewBuilder::PrivateViewBuilder::add_new_text_edit_at(
   GridPos pos(a_row, a_col);
 
   m_widget_grid[pos] = editor;
+  m_ui_type_dict[pos] = kTextEdit;
 
   QString text;
 
   if (a_props.find("text") != a_props.end()) {
-      text = QString::fromStdString(a_props.at("text"));
+    text = QString::fromStdString(a_props.at("text"));
   }
 
   editor->set_text(text);
   editor->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                          calculate_cell_height(a_row, a_col)));
+                             calculate_cell_height(a_row, a_col)));
   layout();
 
   return editor;
