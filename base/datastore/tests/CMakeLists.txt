@@ -2,7 +2,6 @@ set(CMAKE_AUTOMOC ON)
 ########### Source files ###############
 SET(sourceFiles
     main.cpp
-    datasyncruntime.cpp
     )
 
 IF(WIN32)

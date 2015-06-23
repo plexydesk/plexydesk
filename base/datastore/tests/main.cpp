@@ -3,7 +3,6 @@
 
 #include "datasyncruntime.h"
 
-#include <datastore.h>
 #include <syncobject.h>
 #include <disksyncengine.h>
 #include <datasync.h>
