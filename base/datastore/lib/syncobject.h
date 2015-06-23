@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QDomNode>
-#include <datastore.h>
 #include <QuetzalDataKit_export.h>
 
 namespace QuetzalKit {
@@ -92,9 +91,6 @@ public:
   QString textData() const;
 
   SyncObject *clone(SyncObject *object);
-
-  void setDataStore(DataStore *store);
-  DataStore *store();
 
   void set_data_sync(DataSync *a_sync);
   virtual void sync();

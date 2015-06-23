@@ -15,7 +15,6 @@
 #include <label.h>
 #include <themepackloader.h>
 #include <webservice.h>
-#include <datastore.h>
 #include <memorysyncengine.h>
 #include <disksyncengine.h>
 #include <syncobject.h>

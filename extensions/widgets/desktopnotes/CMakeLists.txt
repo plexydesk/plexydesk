@@ -2,21 +2,18 @@ SET (sourceFiles
     desktopnotes.cpp
     desktopnotesinterface.cpp
     notewidget.cpp
-    reminderwidget.cpp
     )
 
 SET(headerFiles
     desktopnotes.h
     desktopnotesinterface.h
     notewidget.h
-    reminderwidget.h
     )
 
 SET (QTMOC_SRCS
     desktopnotes.h
     desktopnotesinterface.h
     notewidget.h
-    reminderwidget.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})

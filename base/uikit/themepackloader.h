@@ -9,8 +9,6 @@
 #include <widget.h>
 #include <style.h>
 
-#include <datastore.h>
-
 #include <webservice.h>
 
 namespace UIKit {
