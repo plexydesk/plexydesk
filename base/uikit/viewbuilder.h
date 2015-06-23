@@ -58,6 +58,8 @@ public:
   virtual Widget *add_widget(int a_row, int a_column,
                              const std::string &a_widget,
                              const ViewProperties &a_properties);
+  virtual void update_property(int a_row, int a_column,
+                               const ViewProperties &a_properties);
 
 protected:
   Widget *add_new_widget_at(int a_col, int a_row,
