@@ -49,6 +49,7 @@ public:
   virtual void update_session();
 
   virtual void bind_to_window(UIKit::Window *a_window);
+  virtual void unbind_window(const Window *a_window);
 
   virtual void delete_session_data(const std::string &a_session_name,
                                    const std::string &a_object_name,
