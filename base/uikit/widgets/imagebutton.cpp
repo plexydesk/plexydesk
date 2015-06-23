@@ -52,10 +52,13 @@ QSizeF ImageButton::sizeHint(Qt::SizeHint which,
 
 void ImageButton::set_pixmap(const QPixmap &a_pixmap) {
   d->mPixmap = a_pixmap;
-  // QGraphicsItem::setTransformOriginPoint(boundingRect().center());
+  update();
 }
 
-void ImageButton::set_lable(const QString &a_text) { d->mLabel = a_text; }
+void ImageButton::set_lable(const QString &a_text) {
+    d->mLabel = a_text;
+    update();
+}
 
 QString ImageButton::label() const { return d->mLabel; }
 
@@ -93,8 +96,21 @@ void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   QPainterPath bgPath;
 
   bgPath.addEllipse(a_rect);
+
   a_painter_ptr->fillPath(bgPath, d->mBgColor);
-  a_painter_ptr->drawPixmap(a_rect.toRect(), d->mPixmap);
+
+  QRect icon_rect = a_rect.toRect();
+  icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
+  icon_rect.setWidth(icon_rect.height());
+
+  QRect text_rect = a_rect.toRect();
+  text_rect.setX(icon_rect.width() + 5);
+
+  //a_painter_ptr->drawRect(icon_rect);
+  //a_painter_ptr->drawRect(text_rect);
+  a_painter_ptr->drawPixmap(icon_rect, d->mPixmap);
+  a_painter_ptr->drawText(text_rect, d->mLabel,
+                          Qt::AlignLeft | Qt::AlignVCenter);
   a_painter_ptr->restore();
 }
 }
