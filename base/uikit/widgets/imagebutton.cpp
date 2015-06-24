@@ -13,14 +13,20 @@ namespace UIKit {
 
 class ImageButton::PrivateImageButton {
 public:
-  PrivateImageButton() {
-  }
-  ~PrivateImageButton() {
-  }
+  typedef enum {
+    _kNormal,
+    _kPressed,
+    _kHover
+  } ButtonState;
 
-  QPixmap mPixmap;
-  QString mLabel;
+  PrivateImageButton() : m_state(_kNormal) {}
+  ~PrivateImageButton() {}
+
+  QPixmap m_button_icon;
+  QString m_button_text;
   QColor mBgColor;
+
+  ButtonState m_state;
 };
 
 void ImageButton::set_background_color(const QColor &a_color) {
@@ -51,66 +57,70 @@ QSizeF ImageButton::sizeHint(Qt::SizeHint which,
 }
 
 void ImageButton::set_pixmap(const QPixmap &a_pixmap) {
-  d->mPixmap = a_pixmap;
+  d->m_button_icon = a_pixmap;
   update();
 }
 
 void ImageButton::set_lable(const QString &a_text) {
-    d->mLabel = a_text;
-    update();
+  d->m_button_text = a_text;
+  update();
 }
 
-QString ImageButton::label() const { return d->mLabel; }
+QString ImageButton::label() const { return d->m_button_text; }
 
 void ImageButton::onZoomDone() {}
 
 void ImageButton::onZoomOutDone() {}
 
 void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
+  d->m_state = PrivateImageButton::_kNormal;
+  update();
   Widget::mouseReleaseEvent(a_event_ptr);
 }
 
 void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   Q_EMIT selected(true);
+  d->m_state = PrivateImageButton::_kPressed;
+  update();
   Widget::mousePressEvent(a_event_ptr);
 }
 
 void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
   a_event_ptr->accept();
+  d->m_state = PrivateImageButton::_kHover;
+  update();
   Widget::hoverEnterEvent(a_event_ptr);
 }
 
 void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
   a_event_ptr->accept();
-  Q_EMIT selected(false);
+  d->m_state = PrivateImageButton::_kNormal;
+  update();
   Widget::hoverLeaveEvent(a_event_ptr);
 }
 
 void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
-  a_painter_ptr->save();
+  StyleFeatures feature;
 
-  a_painter_ptr->setRenderHints(QPainter::SmoothPixmapTransform |
-                                QPainter::Antialiasing |
-                                QPainter::HighQualityAntialiasing);
+  feature.text_data = d->m_button_text;
+  feature.image_data = d->m_button_icon;
+  feature.geometry = a_rect;
+  feature.render_state = StyleFeatures::kRenderElement;
 
-  QPainterPath bgPath;
+  switch (d->m_state) {
+  case PrivateImageButton::_kNormal:
+    feature.render_state = StyleFeatures::kRenderElement;
+    break;
+  case PrivateImageButton::_kPressed:
+    feature.render_state = StyleFeatures::kRenderPressed;
+    break;
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown Button State";
+  }
 
-  bgPath.addEllipse(a_rect);
-
-  a_painter_ptr->fillPath(bgPath, d->mBgColor);
-
-  QRect icon_rect = a_rect.toRect();
-  icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
-  icon_rect.setWidth(icon_rect.height());
-
-  QRect text_rect = a_rect.toRect();
-  text_rect.setX(icon_rect.width() + 5);
-
-  //a_painter_ptr->drawRect(icon_rect);
-  //a_painter_ptr->drawRect(text_rect);
-  a_painter_ptr->drawPixmap(icon_rect, d->mPixmap);
-  a_painter_ptr->drawText(text_rect, d->mLabel,
-                          Qt::AlignLeft | Qt::AlignVCenter);
-  a_painter_ptr->restore();
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("image_button", feature,
+                                          a_painter_ptr);
+  }
 }
 }

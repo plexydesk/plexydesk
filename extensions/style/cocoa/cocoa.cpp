@@ -83,14 +83,13 @@ void CocoaStyle::load_default_widget_style_properties() {
   d->m_type_map["window_frame"] = 21;
   d->m_type_map["window_title"] = 22;
   d->m_type_map["window_resize_handle"] = 23;
+  d->m_type_map["image_button"] = 23;
 
   // style attributes. this could be read from a xml file or a stylesheet.
   QVariantMap _frame_attributes;
   QVariantMap _widget_attributes;
   QVariantMap _size_attributes;
   QVariantMap _button_attributes;
-  QVariantMap _vlist_item_attributes;
-  QVariantMap lLabelAttributesMap;
 
   _frame_attributes["window_title_height"] = 64.0;
   _frame_attributes["window_minimized_height"] = 128.0;
@@ -123,7 +122,7 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
 
   d->m_color_map["primary_forground"] = "#646464";
   d->m_color_map["primary_background"] = "#ffffff";
-  d->m_color_map["primary_highlight"] = "#646464";
+  d->m_color_map["primary_highlight"] = "#f0f0f0";
 
   d->m_color_map["base_forground"] = "#E6E6E6";
   d->m_color_map["base_background"] = "#ffffff";
@@ -183,6 +182,9 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
     break;
   case 21:
     drawFrame(options, painter);
+    break;
+  case 23:
+    draw_image_button(options, painter);
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Unknown Element:" << type;
@@ -933,6 +935,43 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
     painter->drawLine(rect.bottomLeft(), rect.bottomRight());
   }
   painter->restore();
+}
+
+void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
+                                   QPainter *a_ctx) {
+
+  a_ctx->save();
+  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform |
+                                QPainter::Antialiasing |
+                                QPainter::HighQualityAntialiasing);
+  QPainterPath background_path;
+  QRectF a_rect = a_features.geometry;
+
+  background_path.addRoundRect(a_rect, 6, 6);
+
+  switch (a_features.render_state) {
+   case StyleFeatures::kRenderElement:
+    a_ctx->fillPath(background_path, QColor(color("primary_background")));
+    break;
+  case StyleFeatures::kRenderPressed:
+    a_ctx->fillPath(background_path, QColor(color("accent_base_forground")));
+    break;
+  case StyleFeatures::kRenderRaised:
+    a_ctx->fillPath(background_path, QColor(color("primary_highlight")));
+    break;
+  }
+
+  QRect icon_rect = a_rect.toRect();
+  icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
+  icon_rect.setWidth(icon_rect.height());
+
+  QRect text_rect = a_rect.toRect();
+  text_rect.setX(icon_rect.width() + 5);
+
+  a_ctx->drawPixmap(icon_rect, a_features.image_data);
+  a_ctx->drawText(text_rect, a_features.text_data,
+                          Qt::AlignLeft | Qt::AlignVCenter);
+  a_ctx->restore();
 }
 
 void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
