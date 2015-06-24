@@ -60,7 +60,7 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
   d->mCalendarWidget->setPos(0, 0);
 
   d->m_done_button = new UIKit::Button(d->m_window_content);
-  d->m_done_button->setLabel(tr("Done"));
+  d->m_done_button->set_label(tr("Done"));
   d->m_done_button->show();
 
   d->m_done_button->setPos(

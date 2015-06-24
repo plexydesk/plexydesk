@@ -45,7 +45,7 @@ Button::Button(QGraphicsObject *a_parent_ptr)
 
 Button::~Button() { delete d; }
 
-void Button::setLabel(const QString &a_txt) {
+void Button::set_label(const QString &a_txt) {
   d->mLabel = a_txt;
   update();
 }

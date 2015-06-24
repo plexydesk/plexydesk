@@ -116,8 +116,8 @@ void InputDialogActivityData::create_window(const QRectF &window_geometry,
   d->mHLayout = new QGraphicsLinearLayout(d->mHLayoutBase);
   d->mHLayout->setOrientation(Qt::Horizontal);
 
-  d->mOkButton->setLabel(tr("Post"));
-  d->mCancelButton->setLabel(tr("Cancel"));
+  d->mOkButton->set_label(tr("Post"));
+  d->mCancelButton->set_label(tr("Cancel"));
 
   d->mHLayout->setContentsMargins(25.0, 0.0, 25.0, 25.0);
   d->mVLayout->setContentsMargins(10.0, 10.0, 10.0, 10.0);
