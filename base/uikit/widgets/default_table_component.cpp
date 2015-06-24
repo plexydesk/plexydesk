@@ -130,7 +130,7 @@ void DefaultTableComponent::clear_selection() {
 }
 
 void DefaultTableComponent::set_label(const QString &a_txt) {
-  m_priv_ptr->m_option_button->setLabel("+");
+  m_priv_ptr->m_option_button->set_label("+");
   m_priv_ptr->m_current_label_str = a_txt;
   m_priv_ptr->m_label_widget->set_label(a_txt);
   update();

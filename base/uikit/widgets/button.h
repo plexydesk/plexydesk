@@ -19,7 +19,7 @@ public:
   explicit Button(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Button();
 
-  virtual void setLabel(const QString &a_txt);
+  virtual void set_label(const QString &a_txt);
   virtual QString label() const;
 
   virtual void setIcon(const QImage &a_img);
