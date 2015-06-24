@@ -33,7 +33,7 @@
 #include <progressbar.h>
 #include <toolbar.h>
 
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 class FlickrSearchActivity::PrivateFlikrSearch {
 public:

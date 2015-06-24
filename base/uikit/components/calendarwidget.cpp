@@ -6,7 +6,7 @@
 #include <label.h>
 #include <tableview.h>
 #include <toolbar.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <item_view.h>
 #include <button.h>
 

@@ -1,4 +1,4 @@
-#include "themepackloader.h"
+#include "resource_manager.h"
 #include "viewbuilder.h"
 #include <algorithm>
 #include <iostream>
@@ -379,7 +379,7 @@ Widget *ViewBuilder::PrivateViewBuilder::add_new_image_button_at(
   }
 
   image_button->set_lable(text);
-  QPixmap pixmap = Theme::instance()->drawable(icon, "hdpi");
+  QPixmap pixmap = ResourceManager::instance()->drawable(icon, "hdpi");
   image_button->set_pixmap(pixmap);
 
   image_button->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
@@ -418,7 +418,7 @@ void ViewBuilder::PrivateViewBuilder::update_image_button_properties(
     icon = QString::fromStdString(a_props.at("icon"));
   }
 
-  QPixmap pixmap = Theme::instance()->drawable(icon, "hdpi");
+  QPixmap pixmap = ResourceManager::instance()->drawable(icon, "hdpi");
 
   image_button->set_lable(text);
   image_button->set_pixmap(pixmap);

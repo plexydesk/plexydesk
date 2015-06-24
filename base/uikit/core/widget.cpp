@@ -26,7 +26,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 
-#include "themepackloader.h"
+#include "resource_manager.h"
 #include <view_controller.h>
 #include "widget.h"
 
@@ -185,7 +185,7 @@ void Widget::set_widget_id(unsigned int a_id) { d->mWidgetID = a_id; }
 
 unsigned Widget::widget_id() const { return d->mWidgetID; }
 
-StylePtr Widget::style() const { return Theme::style(); }
+StylePtr Widget::style() const { return ResourceManager::style(); }
 
 Widget::RenderLevel Widget::layer_type() const {
   return d->m_current_layer_type;

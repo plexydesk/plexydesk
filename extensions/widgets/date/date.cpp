@@ -24,7 +24,7 @@
 #include <plexyconfig.h>
 #include <session_sync.h>
 #include <imagebutton.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <window.h>
 
 class DateControllerImpl::PrivateDate {
@@ -213,7 +213,7 @@ void DateControllerImpl::create_calendar_ui(UIKit::SessionSync *a_session) {
 
       UIKit::ImageButton *todo_icon = new UIKit::ImageButton(item_view);
       todo_icon->set_pixmap(
-                  UIKit::Theme::instance()->drawable("pd_reminder_icon.png",
+                  UIKit::ResourceManager::instance()->drawable("pd_reminder_icon.png",
                                                      "hdpi"));
       todo_icon->set_size(QSize(24, 24));
       todo_icon->setMinimumSize(QSizeF(24, 24));
