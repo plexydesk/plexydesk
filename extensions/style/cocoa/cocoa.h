@@ -76,6 +76,7 @@ private:
   void drawSeperatorLine(const StyleFeatures &features, QPainter *painter);
   void drawProgressBar(const StyleFeatures &features, QPainter *painter);
   void drawVListItem(const StyleFeatures &features, QPainter *painter);
+  void draw_image_button(const StyleFeatures &features, QPainter *a_ctx);
 
   void drawLabel(const StyleFeatures &aFeatures, QPainter *aPainterPtr,
                  const UIKit::Widget *aWidget);
