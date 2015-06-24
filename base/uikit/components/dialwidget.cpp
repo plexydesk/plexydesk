@@ -1,7 +1,7 @@
 #include "dialwidget.h"
 
 #include <QDebug>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 #include <iostream>
 #include <cmath>
@@ -194,8 +194,8 @@ void DialWidget::paint_view(QPainter* painter, const QRectF& rect) {
   feature.attributes["max_value"] = d->mMaxValue;
   feature.text_data = QString("%1").arg(d->mProgressValue);
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("knob", feature, painter);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("knob", feature, painter);
   }
 }
 }

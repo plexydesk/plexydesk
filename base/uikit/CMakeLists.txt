@@ -87,7 +87,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
 set(LIBRARY_SOURCE_FILES
     netwm.cpp
     viewbuilder.cpp
-    themepackloader.cpp
+		resource_manager.cpp
     plexyconfig.cpp
     window.cpp
     workspace.cpp
@@ -102,7 +102,7 @@ set(LIBRARY_HEADER_FILES
     netwm.h
     netwm_def.h
     netwm_p.h
-    themepackloader.h
+    resource_manager.h
     window.h
     plexyconfig.h
     widgets/button.h

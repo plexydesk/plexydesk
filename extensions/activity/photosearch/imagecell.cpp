@@ -10,7 +10,7 @@
 #include <button.h>
 #include <imageview.h>
 #include <label.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 class ImageCell::PrivateImageCell {
 

@@ -7,7 +7,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 #include <style.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 
@@ -46,13 +46,13 @@ LineEdit::LineEdit(QGraphicsObject *parent)
     : Widget(parent), d(new PrivateLineEdit) {
   d->mState = PrivateLineEdit::NORMAL;
   d->m_text_selection_mode = false;
-  d->mStyle = Theme::style();
+  d->mStyle = ResourceManager::style();
   d->m_text_cursor = 0;
   d->m_text_selection_cursor = 0;
 
   set_size(
-      QSize(Theme::style()->attribute("widget", "line_edit_width").toInt(),
-            Theme::style()->attribute("widget", "line_edit_height").toInt()));
+      QSize(ResourceManager::style()->attribute("widget", "line_edit_width").toInt(),
+            ResourceManager::style()->attribute("widget", "line_edit_height").toInt()));
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setAcceptHoverEvents(true);
@@ -150,8 +150,8 @@ void LineEdit::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   }
 
   a_painter_ptr->save();
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("line_edit", feature, a_painter_ptr);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("line_edit", feature, a_painter_ptr);
   }
   a_painter_ptr->restore();
 }
@@ -292,8 +292,8 @@ void LineEdit::PrivateLineEdit::paintNormalEdit(
   feature.text_data = m_editor_text;
 
   painter->save();
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("line_edit", feature, painter);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("line_edit", feature, painter);
   }
   painter->restore();
 }
@@ -312,8 +312,8 @@ void LineEdit::PrivateLineEdit::paintFocusedEdit(
   feature.text_data = m_editor_text;
 
   painter->save();
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("line_edit", feature, painter);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("line_edit", feature, painter);
   }
   painter->restore();
 }

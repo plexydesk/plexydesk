@@ -25,7 +25,7 @@
 #include <tableview.h>
 #include <widget.h>
 #include <imageview.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <item_view.h>
 #include <label.h>
 #include "chooseritem.h"
@@ -203,7 +203,7 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   l_action_label->set_label(aLabel);
   l_action_label->set_widget_name(aLabel);
 
-  QPixmap l_view_pixmap(UIKit::Theme::instance()->drawable(aIcon, "hdpi"));
+  QPixmap l_view_pixmap(UIKit::ResourceManager::instance()->drawable(aIcon, "hdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size);

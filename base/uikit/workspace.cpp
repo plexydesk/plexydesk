@@ -1,4 +1,4 @@
-#include "themepackloader.h"
+#include "resource_manager.h"
 #include "workspace.h"
 
 #include <QApplication>

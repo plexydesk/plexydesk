@@ -9,7 +9,7 @@
 #include <button.h>
 #include <label.h>
 #include <imageview.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 class DefaultTableComponent::PrivateTableComponent {
 
@@ -54,7 +54,7 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
   m_priv_ptr->m_image_view_widget =
       new UIKit::ImageView(m_priv_ptr->m_layout_base);
   m_priv_ptr->m_image_view_widget->set_pixmap(
-      UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+      UIKit::ResourceManager::instance()->drawable("setup-wizard.png", "hdpi"));
 
   m_priv_ptr->m_label_widget = new UIKit::Label(m_priv_ptr->m_layout_base);
 
@@ -179,8 +179,8 @@ void DefaultTableComponent::paint(QPainter *painter,
     painter->setRenderHint(QPainter::TextAntialiasing, true);
     painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
-    if (UIKit::Theme::style()) {
-      UIKit::Theme::style()->draw("vertical_list_item", features, painter);
+    if (UIKit::ResourceManager::style()) {
+      UIKit::ResourceManager::style()->draw("vertical_list_item", features, painter);
     }
 
     /*

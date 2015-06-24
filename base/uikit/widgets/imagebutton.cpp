@@ -5,7 +5,7 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QPropertyAnimation>
 #include <QAbstractAnimation>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 #include <QDebug>
 
@@ -28,7 +28,7 @@ void ImageButton::set_background_color(const QColor &a_color) {
   update();
 }
 
-StylePtr ImageButton::style() const { return Theme::style(); }
+StylePtr ImageButton::style() const { return ResourceManager::style(); }
 
 ImageButton::ImageButton(QGraphicsObject *a_parent_ptr)
     : Widget(a_parent_ptr), d(new PrivateImageButton) {

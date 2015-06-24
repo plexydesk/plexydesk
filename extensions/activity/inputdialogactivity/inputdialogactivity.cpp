@@ -32,7 +32,7 @@
 
 #include <view_controller.h>
 #include <style.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <button.h>
 #include <texteditor.h>
 

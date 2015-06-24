@@ -1,7 +1,7 @@
 #include "chooseractiondelegate.h"
 
 #include "chooseritem.h"
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <QHash>
 
 class ChooserActionDelegate::PrivateChooserActionDelegate {

@@ -23,7 +23,7 @@
 
 #include <view_controller.h>
 
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include "photowidget.h"
 
 class PhotoFrameController : public UIKit::ViewController {

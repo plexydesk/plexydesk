@@ -5,7 +5,7 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 class ImageView::PrivateImageView {
@@ -36,7 +36,7 @@ void ImageView::set_size(const QSizeF &size) {
 
 void ImageView::set_pixmap(const QPixmap &a_pixmap) { d->mPixmap = a_pixmap; }
 
-StylePtr ImageView::style() const { return Theme::style(); }
+StylePtr ImageView::style() const { return ResourceManager::style(); }
 
 void ImageView::mouseMoveEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   Q_EMIT mouseOver();

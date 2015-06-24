@@ -1,4 +1,4 @@
-#include "themepackloader.h"
+#include "resource_manager.h"
 #include "window.h"
 
 #include <QRectF>
@@ -107,8 +107,8 @@ void Window::set_window_content(Widget *a_widget_ptr) {
 
   float sWindowTitleHeight = 0;
 
-  if (UIKit::Theme::style()) {
-    sWindowTitleHeight = UIKit::Theme::style()
+  if (UIKit::ResourceManager::style()) {
+    sWindowTitleHeight = UIKit::ResourceManager::style()
                              ->attribute("frame", "window_title_height")
                              .toFloat();
   }

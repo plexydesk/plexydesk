@@ -30,13 +30,15 @@
 #include <extensionmanager.h>
 #include <plexyconfig.h>
 
-#include "themepackloader.h"
+#include <webservice.h>
+
+#include "resource_manager.h"
 
 namespace UIKit {
 
-Theme *Theme::s_theme_instance = 0;
+ResourceManager *ResourceManager::s_theme_instance = 0;
 
-class Theme::ThemepackLoaderPrivate {
+class ResourceManager::ThemepackLoaderPrivate {
 public:
   ThemepackLoaderPrivate() {}
   ~ThemepackLoaderPrivate() {
@@ -63,8 +65,8 @@ public:
   StylePtr mStyle;
 };
 
-Theme::Theme(const QString &a_theme_name, QObject *parent)
-    : QObject(parent), d(new ThemepackLoaderPrivate) {
+ResourceManager::ResourceManager(const QString &a_theme_name)
+    : d(new ThemepackLoaderPrivate) {
   d->mThemePackPath = QDir::toNativeSeparators(
       QString("%1/%2").arg(UIKit::Config::instance()->prefix()).arg(
           "/share/plexy/themepack"));
@@ -87,7 +89,7 @@ Theme::Theme(const QString &a_theme_name, QObject *parent)
   d->mStyle = UIKit::ExtensionManager::instance()->style("cocoastyle");
 }
 
-Theme::~Theme() {
+ResourceManager::~ResourceManager() {
 
   /*
   if (staticLoader) {
@@ -99,29 +101,29 @@ Theme::~Theme() {
   delete d;
 }
 
-StylePtr Theme::default_desktop_style() { return d->mStyle; }
+StylePtr ResourceManager::default_desktop_style() { return d->mStyle; }
 
-StylePtr Theme::style() { return instance()->default_desktop_style(); }
+StylePtr ResourceManager::style() { return instance()->default_desktop_style(); }
 
-Theme *Theme::instance() {
+ResourceManager *ResourceManager::instance() {
   if (!s_theme_instance) {
-    s_theme_instance = new Theme("default", 0);
+    s_theme_instance = new ResourceManager("default");
     return s_theme_instance;
   } else {
     return s_theme_instance;
   }
 }
 
-QPixmap Theme::icon(const QString &a_name, const QString &a_resolution) {
+QPixmap ResourceManager::icon(const QString &a_name, const QString &a_resolution) {
   return instance()->drawable(a_name, a_resolution);
 }
 
-QPixmap Theme::drawable(const QString &a_fileName, const QString &a_resoution) {
+QPixmap ResourceManager::drawable(const QString &a_fileName, const QString &a_dpi) {
   QPixmap rv;
 
   QString iconThemePath =
       QDir::toNativeSeparators(d->mThemePackPath + "/" + d->mThemeName +
-                               "/resources/" + a_resoution + "/" + a_fileName);
+                               "/resources/" + a_dpi + "/" + a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
 
@@ -140,6 +142,6 @@ QPixmap Theme::drawable(const QString &a_fileName, const QString &a_resoution) {
   return rv;
 }
 
-void Theme::set_theme_name(const QString &a_name) { Q_UNUSED(a_name); }
+void ResourceManager::set_theme_name(const QString &a_name) { Q_UNUSED(a_name); }
 
 } // namespace plexydesk

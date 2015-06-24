@@ -6,7 +6,7 @@
 #include <QStyleOptionGraphicsItem>
 
 #include <extensionmanager.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 
@@ -31,9 +31,9 @@ Button::Button(QGraphicsObject *a_parent_ptr)
     : Widget(a_parent_ptr), d(new PrivateButton) {
   d->mState = PrivateButton::NORMAL;
 
-  if (Theme::style()) {
-    set_size(QSize(Theme::style()->attribute("button", "width").toFloat(),
-                  Theme::style()->attribute("button", "height").toFloat()));
+  if (ResourceManager::style()) {
+    set_size(QSize(ResourceManager::style()->attribute("button", "width").toFloat(),
+                  ResourceManager::style()->attribute("button", "height").toFloat()));
   }
 
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -71,8 +71,8 @@ void Button::paint_normal_button(QPainter *a_painter_ptr,
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("button", feature, a_painter_ptr);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("button", feature, a_painter_ptr);
   }
 }
 
@@ -83,12 +83,12 @@ void Button::paint_sunken_button(QPainter *painter, const QRectF &a_rect) {
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderPressed;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("button", feature, painter);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("button", feature, painter);
   }
 }
 
-StylePtr Button::style() const { return UIKit::Theme::style(); }
+StylePtr Button::style() const { return UIKit::ResourceManager::style(); }
 
 void Button::set_size(const QSizeF &a_size) {
   prepareGeometryChange();

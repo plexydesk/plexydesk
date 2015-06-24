@@ -1,6 +1,6 @@
 #include "imagecelladaptor.h"
 #include "imagecell.h"
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <QHash>
 
 #include <webservice.h>

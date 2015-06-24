@@ -22,7 +22,7 @@
 #include <plexy.h>
 
 #include <view_controller.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include "iconwidgetview.h"
 
 class QLineEdit;
