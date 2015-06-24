@@ -81,13 +81,13 @@ FileInforView::FileInforView(QGraphicsObject *parent)
 
   /* Delete Button */
   d->mDeleteButton = new UIKit::Button(d->mLayoutBase);
-  d->mDeleteButton->setLabel(tr("Trash"));
+  d->mDeleteButton->set_label(tr("Trash"));
   d->mDeleteButton->set_size(QSizeF(100, 25));
   d->mGridLayout->addItem(d->mDeleteButton, 0, 0);
 
   /* Rename Button */
   d->mRenameButton = new UIKit::Button(d->mLayoutBase);
-  d->mRenameButton->setLabel(tr("Rename"));
+  d->mRenameButton->set_label(tr("Rename"));
   d->mRenameButton->set_size(QSizeF(100, 25));
   d->mGridLayout->addItem(d->mRenameButton, 0, 1);
 
@@ -131,7 +131,7 @@ void FileInforView::setSliderPos(const QPointF &start, const QPointF &end) {
 
 void FileInforView::onClicked() {
   if (d->mLineEditProxy->isVisible()) {
-    d->mRenameButton->setLabel(tr("Rename"));
+    d->mRenameButton->set_label(tr("Rename"));
     d->mLineEditProxy->hide();
 
     QString fileName = QDir::fromNativeSeparators(d->mFileInfo.filePath());
@@ -142,7 +142,7 @@ void FileInforView::onClicked() {
       qWarning() << "File Rename Failed : " << newFileName;
     }
   } else {
-    d->mRenameButton->setLabel(tr("Done"));
+    d->mRenameButton->set_label(tr("Done"));
     d->mLineEdit->setText(d->mFileInfo.fileName());
     d->mLineEditProxy->show();
   }

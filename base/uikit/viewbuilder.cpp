@@ -168,7 +168,7 @@ Widget *ViewBuilder::add_new_button_at(int a_row, int a_col,
   d->m_ui_type_dict[pos] = kButton;
 
   // set view properties.
-  btn->setLabel(QString::fromStdString(a_props.at("label")));
+  btn->set_label(QString::fromStdString(a_props.at("label")));
   btn->set_size(QSizeF(d->calculate_cell_width(a_row, a_col),
                        d->calculate_cell_height(a_row, a_col)));
 
