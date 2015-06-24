@@ -22,7 +22,7 @@
 #include <QTimer>
 #include <view_controller.h>
 #include <QGraphicsLinearLayout>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <QGraphicsWidget>
 
 class TakeNoteActivity::PrivateTakeNote {
@@ -75,15 +75,15 @@ void TakeNoteActivity::create_window(const QRectF &window_geometry,
   d->mLayoutBase->moveBy(0.0, 64.0);
 
   d->mAddNoteBtn = new UIKit::ImageButton(d->mLayoutBase);
-  d->mAddNoteBtn->set_pixmap(UIKit::Theme::instance()->drawable(
+  d->mAddNoteBtn->set_pixmap(UIKit::ResourceManager::instance()->drawable(
       "pd_note_add_button_green.png", "hdpi"));
 
   d->mAddTaskBtn = new UIKit::ImageButton(d->mLayoutBase);
-  d->mAddTaskBtn->set_pixmap(UIKit::Theme::instance()->drawable(
+  d->mAddTaskBtn->set_pixmap(UIKit::ResourceManager::instance()->drawable(
       "pd_note_add_button_blue.png", "hdpi"));
 
   d->mAddReminderBtn = new UIKit::ImageButton(d->mLayoutBase);
-  d->mAddReminderBtn->set_pixmap(UIKit::Theme::instance()->drawable(
+  d->mAddReminderBtn->set_pixmap(UIKit::ResourceManager::instance()->drawable(
       "pd_note_add_button_orange.png", "hdpi"));
 
   d->mLayout->addItem(d->mAddNoteBtn);

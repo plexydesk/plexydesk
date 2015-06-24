@@ -13,7 +13,7 @@
 #include <imageview.h>
 #include <texteditor.h>
 #include <label.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <webservice.h>
 #include <memorysyncengine.h>
 #include <disksyncengine.h>
@@ -132,7 +132,7 @@ NoteWidget::NoteWidget(UIKit::SessionSync *a_session, QGraphicsObject *parent)
 
   d->m_attachment_del_button = new UIKit::ImageButton(this);
   d->m_attachment_del_button->set_pixmap(
-      UIKit::Theme::instance()->drawable("pd_trash_icon.png", "mdpi"));
+      UIKit::ResourceManager::instance()->drawable("pd_trash_icon.png", "mdpi"));
   d->m_attachment_del_button->set_size(QSize(16, 16));
   d->m_attachment_del_button->hide();
   d->m_attachment_del_button->set_background_color(Qt::white);

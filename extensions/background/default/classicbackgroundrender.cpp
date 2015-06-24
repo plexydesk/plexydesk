@@ -3,7 +3,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QGraphicsDropShadowEffect>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <QPixmapCache>
 
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
@@ -69,7 +69,7 @@ void ClassicBackgroundRender::setBackgroundMode(
 }
 
 StylePtr ClassicBackgroundRender::style() const {
-  return UIKit::Theme::style();
+  return UIKit::ResourceManager::style();
 }
 
 void ClassicBackgroundRender::drawBackroundFrame(QPainter *painter,

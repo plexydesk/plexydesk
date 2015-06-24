@@ -13,7 +13,7 @@
 #include <QApplication>
 
 #include <widget.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 
@@ -33,7 +33,7 @@ TextEditor::TextEditor(QGraphicsObject *parent)
     : UIKit::Widget(parent), d(new PrivateTextEditor) {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);
-  d->mEditor->setFontPointSize(16 * Theme::style()->scale_factor());
+  d->mEditor->setFontPointSize(16 * ResourceManager::style()->scale_factor());
   d->mEditor->setReadOnly(false);
   d->mEditor->setAcceptRichText(true);
   d->mEditor->setAutoFormatting(QTextEdit::AutoAll);

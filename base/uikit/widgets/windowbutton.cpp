@@ -19,7 +19,7 @@
 
 #include "windowbutton.h"
 #include "style.h"
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <extensionmanager.h>
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
@@ -47,14 +47,14 @@ void WindowButton::set_button_type(WindowButton::WindowButtonType a_type) {
 }
 
 QRectF WindowButton::boundingRect() const {
-  if (!Theme::style()) {
+  if (!ResourceManager::style()) {
     return QRectF();
   }
 
   return QRectF(
       0.0, 0.0,
-      Theme::style()->attribute("frame", "window_close_button_width").toFloat(),
-      Theme::style()
+      ResourceManager::style()->attribute("frame", "window_close_button_width").toFloat(),
+      ResourceManager::style()
           ->attribute("frame", "window_close_button_height")
           .toFloat());
 }
@@ -65,8 +65,8 @@ void WindowButton::paint_normal_button(QPainter *a_painter_ptr,
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("window_button", feature, a_painter_ptr);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("window_button", feature, a_painter_ptr);
   }
 }
 
@@ -76,8 +76,8 @@ void WindowButton::paint_sunken_button(QPainter *a_painter_ptr,
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderRaised;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("window_button", feature, a_painter_ptr);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("window_button", feature, a_painter_ptr);
   }
 }
 }

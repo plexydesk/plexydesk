@@ -26,7 +26,7 @@
 #include <QGraphicsSceneWheelEvent>
 #include <QGraphicsScene>
 #include <QDebug>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 
@@ -179,7 +179,7 @@ TableViewItem *TableView::itemAt(uint i) {
   return d->m_current_table_view_item_list.at(i);
 }
 
-StylePtr TableView::style() const { return Theme::style(); }
+StylePtr TableView::style() const { return ResourceManager::style(); }
 
 uint TableView::count() const {
   if (!d->m_table_delegate_ptr) {

@@ -1,6 +1,6 @@
 #include "default_table_model.h"
 #include "default_table_component.h"
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <QHash>
 
 class DefaultTableModel::PrivateTableDelegate {

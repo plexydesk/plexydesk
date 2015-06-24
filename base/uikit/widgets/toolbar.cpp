@@ -1,7 +1,7 @@
 #include "toolbar.h"
 
 #include <imagebutton.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <QDesktopWidget>
 #include <QGraphicsWidget>
 #include <tableview.h>
@@ -55,7 +55,7 @@ void ToolBar::add_action(const QString &a_lable, const QString &a_icon,
   }
 
   button->set_lable(a_lable);
-  button->set_pixmap(UIKit::Theme::instance()->drawable(a_icon + ".png",
+  button->set_pixmap(UIKit::ResourceManager::instance()->drawable(a_icon + ".png",
                                                         d->m_icon_resolution));
   button->setGeometry(QRectF(QPointF(), d->m_icon_size));
   button->setMinimumSize(d->m_icon_size);
@@ -96,10 +96,10 @@ void ToolBar::set_icon_resolution(const QString &a_res) {
 }
 
 void ToolBar::set_icon_size(const QSize &a_size) {
-  d->m_icon_size = a_size * Theme::style()->scale_factor();
+  d->m_icon_size = a_size * ResourceManager::style()->scale_factor();
 }
 
-StylePtr ToolBar::style() const { return Theme::style(); }
+StylePtr ToolBar::style() const { return ResourceManager::style(); }
 
 /*
 void ToolBar::setGeometry(const QRectF &rect)

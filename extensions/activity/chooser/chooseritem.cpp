@@ -11,7 +11,7 @@
 #include <button.h>
 #include <imageview.h>
 #include <label.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 class GridIcon::PrivateChooserItem {
 
@@ -49,7 +49,7 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
 
   d->mImageView = new UIKit::ImageView(d->mLayoutBase);
   d->mImageView->set_pixmap(
-      UIKit::Theme::instance()->drawable("setup-wizard.png", "hdpi"));
+      UIKit::ResourceManager::instance()->drawable("setup-wizard.png", "hdpi"));
   d->mLabelView = new UIKit::Label(d->mLayoutBase);
   connect(d->mImageView, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->mLabelView, SIGNAL(clicked()), this, SLOT(onClicked()));

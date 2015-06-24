@@ -6,7 +6,7 @@
 #include <QFont>
 #include <QDebug>
 #include <QTextOption>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 
@@ -106,8 +106,8 @@ void Label::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   feature.text_options = text_option;
   feature.attributes["font_size"] = d->m_font_size;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("label", feature, a_painter_ptr);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("label", feature, a_painter_ptr);
   }
 }
 

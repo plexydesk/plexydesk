@@ -31,7 +31,7 @@
 
 #include <plexy.h>
 #include <plexyconfig.h>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 #include <math.h>
 #include <cmath>
@@ -255,8 +255,8 @@ void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   feature.attributes["mark_end"] = d->m_mark_end;
   feature.text_data = d->m_completion_time_label;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("clock", feature, p);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("clock", feature, p);
   }
 }
 }

@@ -23,7 +23,7 @@
 
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
-#include <themepackloader.h>
+#include <resource_manager.h>
 #include <label.h>
 #include <tableview.h>
 #include <space.h>

@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QTextOption>
 #include <QVariantAnimation>
-#include <themepackloader.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 
@@ -38,8 +38,8 @@ ProgressBar::ProgressBar(QGraphicsObject *parent)
   d->mProgressAnimation->setEndValue(d->mMaxValue);
 
   set_size(
-      QSize(Theme::style()->attribute("widget", "line_edit_width").toInt(),
-            Theme::style()->attribute("widget", "line_edit_height").toInt()));
+      QSize(ResourceManager::style()->attribute("widget", "line_edit_width").toInt(),
+            ResourceManager::style()->attribute("widget", "line_edit_height").toInt()));
 
   connect(d->mProgressAnimation, SIGNAL(valueChanged(QVariant)), this,
           SLOT(valueChanged(QVariant)));
@@ -126,8 +126,8 @@ void ProgressBar::paint(QPainter *a_painter_ptr,
   features.render_state = StyleFeatures::kRenderBackground;
   features.geometry = a_option_ptr->exposedRect;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("linear_progress_bar", features, a_painter_ptr);
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("linear_progress_bar", features, a_painter_ptr);
   }
 
   float percentage = (d->mValue / d->mMaxValue) * 100;
@@ -139,8 +139,8 @@ void ProgressBar::paint(QPainter *a_painter_ptr,
 
   progressFeatures.render_state = StyleFeatures::kRenderForground;
 
-  if (UIKit::Theme::style()) {
-    UIKit::Theme::style()->draw("linear_progress_bar", progressFeatures,
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("linear_progress_bar", progressFeatures,
                                 a_painter_ptr);
   }
 
