@@ -21,7 +21,6 @@
 #define PLEXY_CONIFG_LINUX_QT_H
 
 #include <plexy.h>
-#include <imagecache.h>
 #include <QString>
 
 #include <plexydesk_ui_exports.h>
