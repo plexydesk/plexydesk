@@ -48,6 +48,7 @@ protected:
                                    const QRectF &a_rect);
   virtual void paint_sunken_button(QPainter *a_painter_ptr,
                                    const QRectF &a_rect);
+  virtual void paint_hover_button(QPainter *a_painter, const QRectF &a_rect);
 
 private:
   class PrivateWindowButton;
