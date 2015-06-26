@@ -63,6 +63,22 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   Widget::mouseReleaseEvent(a_event_ptr);
 }
 
+void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr)
+{
+  d->mState = PrivateButton::HOVER;
+  update();
+
+  Widget::hoverEnterEvent(a_event_ptr);
+}
+
+void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr)
+{
+  d->mState = PrivateButton::NORMAL;
+  update();
+
+  Widget::hoverLeaveEvent(a_event_ptr);
+}
+
 void Button::paint_normal_button(QPainter *a_painter_ptr,
                                  const QRectF &a_rect) {
   StyleFeatures feature;
@@ -85,6 +101,19 @@ void Button::paint_sunken_button(QPainter *painter, const QRectF &a_rect) {
 
   if (UIKit::ResourceManager::style()) {
     UIKit::ResourceManager::style()->draw("button", feature, painter);
+  }
+}
+
+void Button::paint_hover_button(QPainter *a_painter, const QRectF &a_rect)
+{
+  StyleFeatures feature;
+
+  feature.text_data = d->mLabel;
+  feature.geometry = a_rect;
+  feature.render_state = StyleFeatures::kRenderRaised;
+
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("button", feature, a_painter);
   }
 }
 
@@ -124,6 +153,8 @@ void Button::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
     case PrivateButton::PRESS:
       paint_sunken_button(a_painter_ptr, a_rect);
       break;
+  case PrivateButton::HOVER:
+      paint_hover_button(a_painter_ptr, a_rect);
     default:
       qDebug() << Q_FUNC_INFO << "Unknown Button State";
   }
