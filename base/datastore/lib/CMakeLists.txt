@@ -61,6 +61,7 @@ SET(sourceFiles
     syncengineinterface.cpp
     memorysyncengine.cpp
     disksyncengine.cpp
+    px_bench_impl.cpp
    )
 
 SET(headerFiles
@@ -69,6 +70,7 @@ SET(headerFiles
     memorysyncengine.h
     syncengineinterface.h
     disksyncengine.h
+    px_bench.h
    )
 
 IF (APPLE)
