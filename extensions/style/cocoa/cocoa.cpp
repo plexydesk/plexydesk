@@ -23,6 +23,7 @@
 #include <stylefeatures.h>
 
 #include <cmath>
+#include <resource_manager.h>
 
 // for the clock
 int angle_between_hands(double h, double m) {
@@ -53,6 +54,12 @@ class CocoaStyle::PrivateCocoa {
 public:
   PrivateCocoa() {}
   ~PrivateCocoa() {}
+
+  QColor color(ResourceManager::ColorName a_name);
+  void set_pen_color(QPainter *painter, ResourceManager::ColorName a_name,
+                     int a_thikness = 0);
+  void set_default_font_size(QPainter *painter, int a_size = 11,
+                             bool a_highlight = false);
 
   QHash<QString, int> m_type_map;
   QVariantMap m_attribute_map;
@@ -157,31 +164,31 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
                       QPainter *painter, const Widget *aWidget) {
   switch (d->m_type_map[type]) {
   case 1:
-    drawPushButton(options, painter);
+    draw_push_button(options, painter);
     break;
   case 2:
     drawVListItem(options, painter);
     break;
   case 3:
-    drawWindowButton(options, painter);
+    draw_window_button(options, painter);
     break;
   case 6:
-    drawLineEdit(options, painter);
+    draw_line_edit(options, painter);
     break;
   case 9:
-    drawLabel(options, painter, aWidget);
+    draw_label(options, painter);
     break;
   case 10:
-    drawClock(options, painter);
+    draw_clock_surface(options, painter);
     break;
   case 13:
     draw_knob(options, painter);
     break;
   case 19:
-    drawProgressBar(options, painter);
+    draw_progress_bar(options, painter);
     break;
   case 21:
-    drawFrame(options, painter);
+    draw_window_frame(options, painter);
     break;
   case 23:
     draw_image_button(options, painter);
@@ -191,141 +198,158 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
   }
 }
 
-void CocoaStyle::drawPushButton(const StyleFeatures &features,
-                                QPainter *painter) {
+void CocoaStyle::PrivateCocoa::set_pen_color(QPainter *painter,
+                                             ResourceManager::ColorName a_name,
+                                             int a_thikness) {
+  painter->setPen(QPen(color(a_name), a_thikness, Qt::SolidLine, Qt::RoundCap,
+                       Qt::RoundJoin));
+}
+
+void CocoaStyle::set_default_painter_hints(QPainter *painter) {
+  painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                              QPainter::SmoothPixmapTransform |
+                              QPainter::NonCosmeticDefaultPen,
+                          true);
+}
+
+void CocoaStyle::draw_push_button(const StyleFeatures &features,
+                                  QPainter *painter) {
   QRectF rect = features.geometry;
 
   /* Painter settings */
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  painter->save();
+  set_default_painter_hints(painter);
 
-  QPainterPath backgroundPath;
-  backgroundPath.addRoundedRect(rect, 0.0, 0.0);
+  QPainterPath button_background_path;
+  button_background_path.addRoundedRect(rect, 4.0, 4.0);
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
-    painter->fillPath(backgroundPath, QColor(color("primary_background")));
-    QPen pen(QColor(color("accent_soft_highlight")), 1, Qt::SolidLine,
-             Qt::RoundCap, Qt::RoundJoin);
-    painter->setPen(pen);
-    painter->drawPath(backgroundPath);
+    painter->fillPath(button_background_path,
+                      d->color(ResourceManager::kPrimaryColor));
+    d->set_pen_color(painter, ResourceManager::kSecondryTextColor);
+    d->set_default_font_size(painter);
+    painter->drawPath(button_background_path);
   } else if (features.render_state == StyleFeatures::kRenderRaised) {
-    painter->fillPath(backgroundPath, QColor(color("soft_background")));
-    QPen pen(QColor(color("soft_forground")), 1, Qt::SolidLine, Qt::RoundCap,
-             Qt::RoundJoin);
-    painter->setPen(pen);
-    painter->drawPath(backgroundPath);
+    painter->fillPath(button_background_path,
+                      d->color(ResourceManager::kDarkPrimaryColor));
+    d->set_pen_color(painter, ResourceManager::kSecondryTextColor);
+    d->set_default_font_size(painter, 11, true);
+    painter->drawPath(button_background_path);
   } else {
-    painter->fillPath(backgroundPath,
-                      QColor(color("accent_primary_background")));
-    QPen pen(QColor(color("accent_primary_forground")), 1, Qt::SolidLine,
-             Qt::RoundCap, Qt::RoundJoin);
-    painter->setPen(pen);
-    painter->drawPath(backgroundPath);
+    painter->fillPath(button_background_path,
+                      d->color(ResourceManager::kDarkPrimaryColor));
+    d->set_pen_color(painter, ResourceManager::kSecondryTextColor);
+    d->set_default_font_size(painter);
+    painter->drawPath(button_background_path);
   }
 
   painter->drawText(features.geometry, Qt::AlignCenter, features.text_data);
+  painter->restore();
 }
 
-void CocoaStyle::drawWindowButton(const StyleFeatures &features,
-                                  QPainter *painter) {
+void CocoaStyle::draw_window_button(const StyleFeatures &features,
+                                    QPainter *painter) {
   QRectF rect = features.geometry.adjusted(0, 0, 0, 0);
 
   painter->save();
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::Antialiasing);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing);
+  set_default_painter_hints(painter);
 
   QPainterPath background;
   background.addRoundedRect(rect, 4.0, 4.0);
 
   if (features.render_state == StyleFeatures::kRenderElement) {
-    painter->fillPath(background, QColor(color("accent_base_highlight")));
+    painter->fillPath(background, d->color(ResourceManager::kAccentColor));
   } else {
-    painter->fillPath(background, QColor(color("accent_base_highlight")));
+    painter->fillPath(background, d->color(ResourceManager::kAccentColor));
   }
 
   painter->save();
-  QPen white_pen(QColor(color("accent_primary_forground")), 2, Qt::SolidLine,
-                 Qt::RoundCap, Qt::RoundJoin);
-  painter->setPen(white_pen);
+
+  d->set_pen_color(painter, ResourceManager::kSecondryTextColor, 2);
   QRectF cross_rect(6.0, 6.0, rect.width() - 12, rect.height() - 12);
 
-  // painter->drawRect(cross_rect);
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
   painter->drawLine(cross_rect.topRight(), cross_rect.bottomLeft());
 
   painter->restore();
+
   painter->restore();
 }
 
-void CocoaStyle::drawFrame(const StyleFeatures &features, QPainter *painter) {
+void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
+                                                     int a_size,
+                                                     bool a_highlight) {
+  QFont _font = painter->font();
+  _font.setBold(a_highlight);
+  _font.setPixelSize(a_size * scale_factor());
+  painter->setFont(_font);
+}
+
+void CocoaStyle::draw_window_frame(const StyleFeatures &features,
+                                   QPainter *a_ctx) {
   QRectF rect = features.geometry.adjusted(4, 4, -4, -4);
 
-  painter->save();
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  a_ctx->save();
+  set_default_painter_hints(a_ctx);
 
   /* draw shadow */
   QPainterPath drop_shadow;
   drop_shadow.addRoundRect(features.geometry, 4.0, 4.0);
 
-  painter->save();
-  painter->setOpacity(0.3);
-  painter->fillPath(drop_shadow, QColor(color("base_forground")));
-  painter->restore();
+  /* draw a border around the window */
+  // todo : do this only when drop shadows are disabled
+  a_ctx->save();
+  a_ctx->setOpacity(0.3);
+  a_ctx->fillPath(drop_shadow, d->color(ResourceManager::kTextColor));
+  a_ctx->restore();
 
   /* draw the adjusted window frame */
-  QPainterPath backgroundPath;
-  backgroundPath.addRoundedRect(rect, 4.0, 4.0);
+  QPainterPath window_background_path;
+  window_background_path.addRoundedRect(rect, 4.0, 4.0);
+  a_ctx->fillPath(window_background_path,
+                  d->color(ResourceManager::kLightPrimaryColor));
 
-  painter->fillPath(backgroundPath, QColor(color("base_background")));
-
-  // draw seperator
+  /* draw seperator */
   if (!features.text_data.isNull() || !features.text_data.isEmpty()) {
-    QRectF _window_title_rect(4, 4, rect.width(), 54.0);
+    QRectF window_title_rect(8, 4, rect.width() - 8, 54.0);
 
-    QLinearGradient _seperator_line_grad(_window_title_rect.bottomLeft(),
-                                         _window_title_rect.bottomRight());
-    _seperator_line_grad.setColorAt(0.0, QColor(color("primary_background")));
-    _seperator_line_grad.setColorAt(0.5,
-                                    QColor(color("accent_primary_forground")));
-    _seperator_line_grad.setColorAt(1.0, QColor(color("primary_background")));
-
-    QPen linePen = QPen(_seperator_line_grad, 1, Qt::SolidLine, Qt::RoundCap,
-                        Qt::RoundJoin);
+    QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
+                                        window_title_rect.bottomRight());
+    seperator_line_grad.setColorAt(
+        0.0, d->color(ResourceManager::kLightPrimaryColor));
+    seperator_line_grad.setColorAt(0.5,
+                                   d->color(ResourceManager::kDividerColor));
+    seperator_line_grad.setColorAt(
+        1.0, d->color(ResourceManager::kLightPrimaryColor));
 
     // draw frame text;
-    painter->save();
-    QFont _font = painter->font();
-    _font.setBold(true);
-    _font.setPointSize(18 * scale_factor());
-    painter->setFont(_font);
-    QTextOption option;
-    option.setAlignment(Qt::AlignCenter);
+    a_ctx->save();
 
-    QPen _title_font_pen = QPen(QColor(color("primary_forground")), 1,
-                                Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    painter->setPen(_title_font_pen);
+    d->set_default_font_size(a_ctx, 18, true);
+    d->set_pen_color(a_ctx, ResourceManager::kTextColor);
+    a_ctx->drawText(window_title_rect, features.text_data,
+                    QTextOption(Qt::AlignCenter));
 
-    painter->drawText(_window_title_rect, features.text_data, option);
+    a_ctx->restore();
 
-    painter->restore();
+    a_ctx->save();
 
-    painter->save();
-    painter->setPen(linePen);
-    painter->drawLine(_window_title_rect.bottomLeft(),
-                      _window_title_rect.bottomRight());
-    painter->restore();
+    QPen linePen = QPen(seperator_line_grad, 1, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin);
+    a_ctx->setPen(linePen);
+    a_ctx->drawLine(window_title_rect.bottomLeft(),
+                    window_title_rect.bottomRight());
+    a_ctx->restore();
   }
-  painter->restore();
+
+  a_ctx->restore();
 }
 
-void CocoaStyle::draw_clock_hands(QPainter *p, QRectF rect, int factor,
-                                  float angle, QColor hand_color,
-                                  int thikness) {
-  p->save();
+void CocoaStyle::draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor,
+                                  float angle,
+                                  ResourceManager::ColorName a_clock_hand_color,
+                                  int a_thikness) {
+  a_ctx->save();
   float _adjustment = rect.width() / factor;
 
   QRectF _clock_hour_rect(rect.x() + _adjustment, rect.y() + _adjustment,
@@ -337,19 +361,16 @@ void CocoaStyle::draw_clock_hands(QPainter *p, QRectF rect, int factor,
   _xform_hour.translate(_transPos.x(), _transPos.y());
   _xform_hour.rotate(45 + angle);
   _xform_hour.translate(-_transPos.x(), -_transPos.y());
-  p->setTransform(_xform_hour);
+  a_ctx->setTransform(_xform_hour);
 
-  QPen _clock_hour_pen(hand_color, thikness, Qt::SolidLine, Qt::RoundCap,
-                       Qt::RoundJoin);
-  p->setPen(_clock_hour_pen);
-
-  p->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
-  p->restore();
+  d->set_pen_color(a_ctx, a_clock_hand_color, a_thikness);
+  a_ctx->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
+  a_ctx->restore();
 }
 
 void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
-                                   QPainter *p, double mark_start,
-                                   double mark_end, QPen current_dot_min_pen,
+                                   QPainter *a_ctx, double mark_start,
+                                   double mark_end,
                                    QPointF current_marker_location,
                                    QPointF _transPos,
                                    QPointF current_marker_location_for_min) {
@@ -359,8 +380,7 @@ void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
   QPainterPath clock_path;
   clock_path.addEllipse(rect);
 
-  p->save();
-  p->setPen(current_dot_min_pen);
+  a_ctx->save();
 
   _xform_hour.reset();
 
@@ -369,25 +389,21 @@ void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
   _xform_hour.rotate(-90);
   _xform_hour.translate(-_transPos.x(), -_transPos.y());
 
-  p->setTransform(_xform_hour);
-
-  QPen current_timer_pen(QColor(color("accent_soft_highlight")), 2,
-                         Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-  p->setPen(current_timer_pen);
+  a_ctx->setTransform(_xform_hour);
 
   QPainterPath timer_path;
 
   timer_path.moveTo(rect.center());
   timer_path.arcTo(rect, start_angle, -(end_angle));
 
-  p->setOpacity(0.3);
-  p->fillPath(timer_path, QColor(color("primary_background")));
-  p->restore();
+  a_ctx->setOpacity(0.5);
+  a_ctx->fillPath(timer_path, d->color(ResourceManager::kPrimaryColor));
+  a_ctx->restore();
 }
 
 void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
-                                   QPainter *p, double mark_minutes,
-                                   double mark_hour, QPen current_dot_min_pen,
+                                   QPainter *a_ctx, double mark_minutes,
+                                   double mark_hour,
                                    QPointF current_marker_location,
                                    QPointF _transPos,
                                    QPointF current_marker_location_for_min) {
@@ -404,9 +420,7 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
     multiply = -multiply;
   }
 
-  p->save();
-  p->setPen(current_dot_min_pen);
-
+  a_ctx->save();
   _xform_hour.reset();
 
   _transPos = rect.center();
@@ -414,11 +428,7 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
   _xform_hour.rotate(-90);
   _xform_hour.translate(-_transPos.x(), -_transPos.y());
 
-  p->setTransform(_xform_hour);
-
-  QPen current_timer_pen(QColor(color("accent_soft_highlight")), 2,
-                         Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-  p->setPen(current_timer_pen);
+  a_ctx->setTransform(_xform_hour);
 
   QPainterPath timer_path;
 
@@ -426,12 +436,13 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
   timer_path.arcTo(rect, -hour_angle,
                    multiply * angle_between_hands(mark_hour, mark_minutes));
 
-  p->setOpacity(0.3);
-  p->fillPath(timer_path, QColor(color("primary_background")));
-  p->restore();
+  a_ctx->setOpacity(0.3);
+  a_ctx->fillPath(timer_path, d->color(ResourceManager::kLightPrimaryColor));
+  a_ctx->restore();
 }
 
-void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
+void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
+                                    QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
   QRectF rect = features.geometry;
   double second_value = features.attributes["seconds"].toDouble();
@@ -442,33 +453,25 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
   double mark_start = features.attributes["mark_start"].toDouble();
   double mark_end = features.attributes["mark_end"].toDouble();
 
-  p->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
-                    QPainter::HighQualityAntialiasing);
+  set_default_painter_hints(a_ctx);
 
-  QPen _clock_frame_pen(QColor(color("primary_forground")), 18, Qt::SolidLine,
-                        Qt::RoundCap, Qt::RoundJoin);
-  p->setPen(_clock_frame_pen);
+  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 10);
 
   QPainterPath _clock_background;
   _clock_background.addEllipse(rect);
 
-  p->fillPath(_clock_background, QColor(color("primary_forground")));
-  p->drawEllipse(rect);
+  a_ctx->fillPath(_clock_background, d->color(ResourceManager::kTextColor));
+  a_ctx->drawEllipse(rect);
 
   // draw second markers.
   for (int i = 0; i < 60; i++) {
     double percent = (i / 60.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    p->save();
-
-    int thikness = 1;
-    QPen dot_frame_pen(QColor(color("primary_background")), thikness,
-                       Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    p->setPen(dot_frame_pen);
-    p->drawPoint(marker_location);
-
-    p->restore();
+    a_ctx->save();
+    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
+    a_ctx->drawPoint(marker_location);
+    a_ctx->restore();
   }
 
   // draw minute markers
@@ -476,13 +479,10 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    p->save();
-    QPen dot_frame_pen(QColor(color("primary_background")), 4, Qt::SolidLine,
-                       Qt::RoundCap, Qt::RoundJoin);
-    p->setPen(dot_frame_pen);
-
-    p->drawPoint(marker_location);
-    p->restore();
+    a_ctx->save();
+    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 4);
+    a_ctx->drawPoint(marker_location);
+    a_ctx->restore();
   }
 
   // draw hour markers
@@ -490,26 +490,23 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    p->save();
-    QPen dot_frame_pen(QColor(color("primary_background")), 8, Qt::SolidLine,
-                       Qt::RoundCap, Qt::RoundJoin);
-    p->setPen(dot_frame_pen);
-
-    p->drawPoint(marker_location);
-    p->restore();
+    a_ctx->save();
+    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 8);
+    a_ctx->drawPoint(marker_location);
+    a_ctx->restore();
   }
 
   // draw marker
   double current_percent = (mark_hour) / 24.0;
 
-  p->save();
+  a_ctx->save();
 
   QTransform _xform_hour;
   QPointF _transPos = rect.center();
   _xform_hour.translate(_transPos.x(), _transPos.y());
   _xform_hour.rotate(-90);
   _xform_hour.translate(-_transPos.x(), -_transPos.y());
-  p->setTransform(_xform_hour);
+  a_ctx->setTransform(_xform_hour);
 
   QPointF current_marker_location =
       _clock_background.pointAtPercent(current_percent);
@@ -520,14 +517,11 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
   QPointF current_marker_location_for_min =
       _clock_background.pointAtPercent(current_percent_min);
 
-  QPen current_dot_min_pen(QColor(color("accent_soft_highlight")), 12,
-                           Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-
   // experiment
-  draw_timer_marker(rect, _xform_hour, p, mark_minutes, mark_hour,
-                    current_dot_min_pen, current_marker_location, _transPos,
+  draw_timer_marker(rect, _xform_hour, a_ctx, mark_minutes, mark_hour,
+                    current_marker_location, _transPos,
                     current_marker_location_for_min);
-  p->restore();
+  a_ctx->restore();
 
   if (std::abs(mark_start) >= 0) {
     double current_percent = (mark_start) / 60.0;
@@ -537,32 +531,29 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
     // draw timer marker.
     double current_percent_min = (mark_end) / 60.0;
 
-    p->save();
+    a_ctx->save();
     _xform_hour.reset();
     _transPos = rect.center();
     _xform_hour.translate(_transPos.x(), _transPos.y());
     _xform_hour.rotate(-90);
     _xform_hour.translate(-_transPos.x(), -_transPos.y());
-    p->setTransform(_xform_hour);
+    a_ctx->setTransform(_xform_hour);
 
     QPointF current_marker_location_for_min =
         _clock_background.pointAtPercent(current_percent_min);
 
-    QPen current_dot_min_pen(QColor(color("accent_soft_highlight")), 12,
-                             Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-
     // experiment
-    draw_range_marker(rect, _xform_hour, p, mark_start, mark_end,
-                      current_dot_min_pen, current_marker_location, _transPos,
+    draw_range_marker(rect, _xform_hour, a_ctx, mark_start, mark_end,
+                      current_marker_location, _transPos,
                       current_marker_location_for_min);
-    p->restore();
+    a_ctx->restore();
   }
 
   /* Draw Hour Hand */
-  draw_clock_hands(p, rect, 3, hour_value, QColor(color("primary_background")),
-                   6);
-  draw_clock_hands(p, rect, 4, minutes_value,
-                   QColor(color("primary_background")), 3);
+  draw_clock_hands(a_ctx, rect, 3, hour_value,
+                   ResourceManager::kSecondryTextColor, 6);
+  draw_clock_hands(a_ctx, rect, 4, minutes_value,
+                   ResourceManager::kSecondryTextColor, 3);
 
   QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16,
                            16);
@@ -575,66 +566,55 @@ void CocoaStyle::drawClock(const StyleFeatures &features, QPainter *p) {
   _clock_wheel_path.addEllipse(_clock_wheel_rect);
   _clock_wheel_inner_path.addEllipse(_clock_wheel_inner_rect);
 
-  p->fillPath(_clock_wheel_path, QColor(color("primary_background")));
+  a_ctx->fillPath(_clock_wheel_path,
+                  d->color(ResourceManager::kLightPrimaryColor));
 
-  QPen wheel_border_pen(QColor(color("base_forground")), 1, Qt::SolidLine,
-                        Qt::RoundCap, Qt::RoundJoin);
-  p->save();
-  p->setPen(wheel_border_pen);
-  p->drawPath(_clock_wheel_path);
-  p->restore();
+  /* second hand */
+  d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
+  a_ctx->drawPath(_clock_wheel_path);
+  a_ctx->fillPath(_clock_wheel_inner_path,
+                  d->color(ResourceManager::kAccentColor));
 
-  p->fillPath(_clock_wheel_inner_path,
-              QColor(color("accent_primary_highlight")));
-
-  draw_clock_hands(p, rect, 5, second_value,
-                   QColor(color("accent_primary_highlight")), 2);
+  draw_clock_hands(a_ctx, rect, 5, second_value, ResourceManager::kAccentColor,
+                   2);
 }
 
-void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *painter) {
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
+  a_ctx->setRenderHint(QPainter::Antialiasing, true);
+  a_ctx->setRenderHint(QPainter::TextAntialiasing, true);
+  a_ctx->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
   QRectF rect = features.geometry;
   double angle_percent = features.attributes["angle"].toDouble();
   double max_value = features.attributes["max_value"].toDouble();
 
-  QPen _clock_frame_pen(QColor(color("primary_forground")), 18, Qt::SolidLine,
-                        Qt::RoundCap, Qt::RoundJoin);
-  painter->setPen(_clock_frame_pen);
-
+  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 18);
   QPainterPath _clock_background;
-  _clock_background.addEllipse(rect);
 
-  painter->fillPath(_clock_background, QColor(color("primary_forground")));
-  painter->drawEllipse(rect);
+  _clock_background.addEllipse(rect);
+  a_ctx->fillPath(_clock_background, d->color(ResourceManager::kTextColor));
+  a_ctx->drawEllipse(rect);
 
   // draw segement markers.
-  int thikness = 2;
-  QPen dot_frame_pen(QColor(color("primary_background")), thikness,
-                     Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
   for (int i = 0; i < max_value; i++) {
     double percent = (i / max_value);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    painter->save();
-    painter->setPen(dot_frame_pen);
-    painter->drawPoint(marker_location);
-    painter->restore();
+    a_ctx->save();
+    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 2);
+    a_ctx->drawPoint(marker_location);
+    a_ctx->restore();
   }
 
   // main points.
-  thikness = 4;
   for (int i = 0; i < max_value; i = i + (max_value / 4)) {
     double percent = (i / max_value);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    painter->save();
-    dot_frame_pen.setWidth(thikness);
-    painter->setPen(dot_frame_pen);
-    painter->drawPoint(marker_location);
-    painter->restore();
+    a_ctx->save();
+    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 4);
+    a_ctx->drawPoint(marker_location);
+    a_ctx->restore();
   }
 
   QPointF transPos = rect.center();
@@ -642,106 +622,69 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *painter) {
   QRectF dial_handle = rect;
   border_path.addEllipse(dial_handle);
 
-  QPen current_dot_min_pen(QColor(color("primary_background")),
-                           18 * scale_factor(), Qt::SolidLine, Qt::RoundCap,
-                           Qt::RoundJoin);
-  QPen current_dot_inner_pen(QColor(color("accent_primary_highlight")),
-                             14 * scale_factor(), Qt::SolidLine, Qt::RoundCap,
-                             Qt::RoundJoin);
-  QPen current_dot_inner_pressed_pen(QColor(color("accent_primary_background")),
-                                     14 * scale_factor(), Qt::SolidLine,
-                                     Qt::RoundCap, Qt::RoundJoin);
-  QPen current_dot_inner_transparent_pen(QColor(Qt::transparent),
-                                         14 * scale_factor(), Qt::SolidLine,
-                                         Qt::RoundCap, Qt::RoundJoin);
-
   QPointF current_marker_location_for_min =
       border_path.pointAtPercent(angle_percent);
 
-  painter->save();
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  /* draw the dial */
+  a_ctx->save();
+  set_default_painter_hints(a_ctx);
 
   QTransform xform;
   xform.translate(transPos.x(), transPos.y());
   xform.rotate(-90);
   xform.translate(-transPos.x(), -transPos.y());
 
-  painter->setTransform(xform);
-  painter->save();
+  a_ctx->setTransform(xform);
 
-  painter->setOpacity(0.5);
-  painter->setPen(current_dot_min_pen);
-  painter->drawPoint(current_marker_location_for_min);
+  a_ctx->save();
+
+  a_ctx->setOpacity(0.5);
+  d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 18);
+  a_ctx->drawPoint(current_marker_location_for_min);
+
   if (features.render_state == StyleFeatures::kRenderRaised) {
-    painter->setPen(current_dot_inner_pen);
-    painter->drawPoint(current_marker_location_for_min);
+    d->set_pen_color(a_ctx, ResourceManager::kAccentColor, 14);
+    a_ctx->drawPoint(current_marker_location_for_min);
   }
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
-    painter->setPen(current_dot_inner_pressed_pen);
-    painter->drawPoint(current_marker_location_for_min);
+    d->set_pen_color(a_ctx, ResourceManager::kPrimaryColor, 14);
+    a_ctx->drawPoint(current_marker_location_for_min);
   }
 
-  painter->restore();
-  painter->restore();
+  a_ctx->restore();
+
+  a_ctx->restore();
 }
 
-void CocoaStyle::drawPushButtonText(const StyleFeatures &features,
-                                    const QString &text, QPainter *painter) {
-  /* Painter settings */
-  QPen pen;
+void CocoaStyle::draw_line_edit(const StyleFeatures &features,
+                                QPainter *painter) {
 
-  pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
-             Qt::RoundJoin);
-  painter->save();
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
-  painter->setPen(pen);
-  painter->drawText(features.geometry, Qt::AlignCenter, text);
-  painter->restore();
-}
+  QRectF rect = features.geometry.adjusted(4, 4, 0, 0);
 
-void CocoaStyle::drawLineEdit(const StyleFeatures &features,
-                              QPainter *painter) {
-  QRectF rect = features.geometry.adjusted(1, 1, 0, 0);
+  set_default_painter_hints(painter);
 
-  /* Painter settings */
-  painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                              QPainter::HighQualityAntialiasing,
-                          true);
+  QPainterPath background_path;
+  background_path.addRoundedRect(rect, 0, 0);
 
-  QPainterPath backgroundPath;
-  backgroundPath.addRoundedRect(rect, 6, 0);
+  painter->fillPath(background_path,
+                    d->color(ResourceManager::kLightPrimaryColor));
 
-  QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, rect.height()));
+  d->set_default_font_size(painter, 11);
 
-  linearGrad.setColorAt(0, QColor(189, 191, 196));
-  linearGrad.setColorAt(1, QColor(255, 255, 255));
-
-  painter->fillPath(backgroundPath, QColor(color("primary_background")));
-
-  QFont font = painter->font();
-  font.setPixelSize(18 * scale_factor());
-  painter->setFont(font);
-
-  QPen pen;
   if (features.render_state == StyleFeatures::kRenderRaised) {
-    pen = QPen(QColor(color("accent_base_forground")), 1, Qt::SolidLine,
-               Qt::RoundCap, Qt::RoundJoin);
+    d->set_pen_color(painter, ResourceManager::kDividerColor);
   } else {
-    pen = QPen(QColor(color("accent_primary_forground")), 1, Qt::SolidLine,
-               Qt::RoundCap, Qt::RoundJoin);
+    d->set_pen_color(painter, ResourceManager::kPrimaryColor);
   }
-  painter->setPen(pen);
-  painter->drawPath(backgroundPath);
+  painter->setOpacity(0.8);
+  painter->drawPath(background_path);
+  painter->setOpacity(1.0);
 
   painter->save();
-  pen.setColor(QColor(color("primary_forground")));
 
-  painter->setPen(pen);
-  painter->drawText(features.geometry.adjusted(10.0, 0.0, 0.0, 0.0),
+  d->set_pen_color(painter, ResourceManager::kTextColor);
+  painter->drawText(features.geometry.adjusted(10.0, 4.0, 0.0, 0.0),
                     Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
   // cursor handling.
   int cursor_pos = features.attributes["cursor_location"].toInt();
@@ -766,13 +709,10 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
         m.width(features.text_data.left(selection_cursor));
   }
 
-  QPointF line1(_text_cursor_width_to_left, 5);
-  QPointF line2(_text_cursor_width_to_left, m.height());
+  QPointF line1(_text_cursor_width_to_left, 10);
+  QPointF line2(_text_cursor_width_to_left, m.height() + 4);
 
-  QPen cursor_pen = QPen(QColor(color("primary_forground")), 1, Qt::SolidLine,
-                         Qt::RoundCap, Qt::RoundJoin);
-
-  painter->setPen(cursor_pen);
+  d->set_pen_color(painter, ResourceManager::kPrimaryColor, 2);
   painter->drawLine(line1, line2);
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
@@ -788,131 +728,112 @@ void CocoaStyle::drawLineEdit(const StyleFeatures &features,
 
     painter->save();
     painter->setOpacity(0.3);
-    painter->fillRect(selection_rect,
-                      QColor(color("accent_primary_background")));
+    painter->fillRect(selection_rect, d->color(ResourceManager::kAccentColor));
+
     painter->restore();
   }
   painter->restore();
 }
 
-void CocoaStyle::drawLineEditText(const StyleFeatures &features,
-                                  const QString &text, QPainter *painter) {
+void CocoaStyle::draw_text_editor(const StyleFeatures &features,
+                                  const QString &text, QPainter *a_ctx) {
   /* Painter settings */
-  painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                              QPainter::HighQualityAntialiasing,
-                          true);
+  a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                            QPainter::HighQualityAntialiasing,
+                        true);
   QPen pen;
 
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
-  QFont font = painter->font();
+  QFont font = a_ctx->font();
   font.setPixelSize(18 * scale_factor());
-  painter->setFont(font);
+  a_ctx->setFont(font);
 
-  painter->setPen(pen);
-  painter->drawText(features.geometry.adjusted(11.0, 1.0, 1.0, 1.0),
-                    Qt::AlignLeft | Qt::AlignVCenter, text);
+  a_ctx->setPen(pen);
+  a_ctx->drawText(features.geometry.adjusted(11.0, 1.0, 1.0, 1.0),
+                  Qt::AlignLeft | Qt::AlignVCenter, text);
 
   pen = QPen(QColor(0, 0, 0), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-  painter->setPen(pen);
-  painter->drawText(features.geometry.adjusted(10.0, 0.0, 0.0, 0.0),
-                    Qt::AlignLeft | Qt::AlignVCenter, text);
+  a_ctx->setPen(pen);
+  a_ctx->drawText(features.geometry.adjusted(10.0, 0.0, 0.0, 0.0),
+                  Qt::AlignLeft | Qt::AlignVCenter, text);
 
   pen =
       QPen(QColor(98, 101, 108), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-  painter->setPen(pen);
-  // painter->drawLine(QPoint(width + 11, 4), QPoint(width +
-  // 11,features.geometry.height() - 4));
-}
-
-void CocoaStyle::drawLabelEditText(const StyleFeatures &features,
-                                   const QString &text, QPainter *painter) {
-  /*
-  QPen pen;
-
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
-
-  painter->setFont(features.font);
-
-  pen = QPen(QColor (88, 88, 88), 1, Qt::SolidLine, Qt::RoundCap,
-  Qt::RoundJoin);
-  painter->setPen(pen);
-  painter->drawText(features.geometry.adjusted(1, 1, 1, 1), features.fontFlags,
-  text);
-
-  painter->setOpacity(0.8);
-
-  pen = QPen(features.fontColor, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-  painter->setPen(pen);
-  painter->drawText(features.geometry, features.fontFlags, text);
-  */
+  a_ctx->setPen(pen);
 }
 
 void CocoaStyle::drawSeperatorLine(const StyleFeatures &features,
-                                   QPainter *painter) {
-  painter->save();
+                                   QPainter *a_ctx) {
+  a_ctx->save();
   QPen pen = QPen(QColor(217, 217, 217), 1, Qt::SolidLine, Qt::RoundCap,
                   Qt::RoundJoin);
-  painter->setPen(pen);
-  painter->drawLine(
+  a_ctx->setPen(pen);
+  a_ctx->drawLine(
       QPoint(features.geometry.x(), features.geometry.y()),
       QPoint(features.geometry.width(), features.geometry.height()));
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
              Qt::RoundJoin);
-  painter->setPen(pen);
-  painter->drawLine(
+  a_ctx->setPen(pen);
+  a_ctx->drawLine(
       QPoint(features.geometry.x() + 1, features.geometry.y() + 1),
       QPoint(features.geometry.width() + 1, features.geometry.height() + 1));
-  painter->restore();
+  a_ctx->restore();
 }
 
-void CocoaStyle::drawProgressBar(const StyleFeatures &features,
-                                 QPainter *painter) {
-  painter->save();
+void CocoaStyle::draw_progress_bar(const StyleFeatures &features,
+                                   QPainter *a_ctx) {
+  a_ctx->save();
 
-  painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setRenderHint(QPainter::TextAntialiasing, true);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  set_default_painter_hints(a_ctx);
 
   switch (features.render_state) {
   case StyleFeatures::kRenderBackground: {
     QRectF rect = features.geometry;
-    QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-    linearGrad.setColorAt(1, QColor(color("primary_background")));
-    linearGrad.setColorAt(0.5, QColor(color("primary_forground")));
-    linearGrad.setColorAt(0, QColor(color("primary_background")));
-    QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
-                       Qt::RoundJoin);
+    QLinearGradient background_grad(QPointF(0, 0), QPointF(0.0, 20));
 
-    QPointF backgroundLineStart(rect.topLeft().x(), rect.bottomLeft().y() / 2);
-    QPointF backgroundLineEnd(rect.topRight().x(), rect.bottomRight().y() / 2);
-    painter->setPen(backgroundPen);
-    painter->drawLine(backgroundLineStart, backgroundLineEnd);
+    background_grad.setColorAt(1,
+                               d->color(ResourceManager::kLightPrimaryColor));
+    background_grad.setColorAt(0.5, d->color(ResourceManager::kTextBackground));
+    background_grad.setColorAt(0,
+                               d->color(ResourceManager::kLightPrimaryColor));
+
+    a_ctx->setPen(
+        QPen(background_grad, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+
+    QPointF background_line_begin(rect.topLeft().x(),
+                                  rect.bottomLeft().y() / 2);
+    QPointF background_line_end(rect.topRight().x(),
+                                rect.bottomRight().y() / 2);
+
+    a_ctx->drawLine(background_line_begin, background_line_end);
   } break;
   case StyleFeatures::kRenderForground: {
     QRectF rect = features.geometry;
-    QLinearGradient linearGrad(QPointF(0, 0), QPointF(0.0, 20));
-    linearGrad.setColorAt(1, QColor(color("accent_soft_highlight")));
-    linearGrad.setColorAt(0, QColor(color("accent_soft_forground")));
-    QPen backgroundPen(linearGrad, 4, Qt::SolidLine, Qt::RoundCap,
-                       Qt::RoundJoin);
+    QLinearGradient progress_bar_grad(QPointF(0, 0), QPointF(0.0, 20));
+    progress_bar_grad.setColorAt(1, d->color(ResourceManager::kAccentColor));
+    progress_bar_grad.setColorAt(0, d->color(ResourceManager::kAccentColor));
+    a_ctx->setPen(
+        QPen(progress_bar_grad, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
-    QPointF backgroundLineStart(rect.topLeft().x(), rect.bottomLeft().y() / 2);
-    QPointF backgroundLineEnd(rect.topRight().x(), rect.bottomRight().y() / 2);
-    painter->setPen(backgroundPen);
-    painter->drawLine(backgroundLineStart, backgroundLineEnd);
+    QPointF progress_bar_line_start(rect.topLeft().x(),
+                                    rect.bottomLeft().y() / 2);
+    QPointF progress_bar_line_end(rect.topRight().x(),
+                                  rect.bottomRight().y() / 2);
+    a_ctx->drawLine(progress_bar_line_start, progress_bar_line_end);
   } break;
   default:
     qDebug() << Q_FUNC_INFO << "Unknown progress bar state";
   }
 
-  painter->restore();
+  a_ctx->restore();
 }
 
 void CocoaStyle::drawVListItem(const StyleFeatures &features,
                                QPainter *painter) {
+  qWarning() << Q_FUNC_INFO << "This method is depricated and non-functional";
+  // todo : Remove this method.
+  /*
   QRectF rect = features.geometry;
 
   QPen backgroundPen(QColor(color("primary_forground")), 1, Qt::SolidLine,
@@ -935,30 +856,34 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
     painter->drawLine(rect.bottomLeft(), rect.bottomRight());
   }
   painter->restore();
+  */
 }
 
 void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
                                    QPainter *a_ctx) {
-
   a_ctx->save();
-  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform |
-                                QPainter::Antialiasing |
-                                QPainter::HighQualityAntialiasing);
+
+  set_default_painter_hints(a_ctx);
+
   QPainterPath background_path;
   QRectF a_rect = a_features.geometry;
 
   background_path.addRoundRect(a_rect, 6, 6);
 
   switch (a_features.render_state) {
-   case StyleFeatures::kRenderElement:
-    a_ctx->fillPath(background_path, QColor(color("primary_background")));
+  case StyleFeatures::kRenderElement:
+    a_ctx->fillPath(background_path,
+                    d->color(ResourceManager::kLightPrimaryColor));
     break;
   case StyleFeatures::kRenderPressed:
-    a_ctx->fillPath(background_path, QColor(color("accent_base_forground")));
+    a_ctx->fillPath(background_path, d->color(ResourceManager::kPrimaryColor));
     break;
   case StyleFeatures::kRenderRaised:
-    a_ctx->fillPath(background_path, QColor(color("primary_highlight")));
+    a_ctx->fillPath(background_path,
+                    d->color(ResourceManager::kLightPrimaryColor));
     break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Unknown State";
   }
 
   QRect icon_rect = a_rect.toRect();
@@ -969,23 +894,19 @@ void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
   text_rect.setX(icon_rect.width() + 5);
 
   a_ctx->drawPixmap(icon_rect, a_features.image_data);
+  d->set_default_font_size(a_ctx, 11);
   a_ctx->drawText(text_rect, a_features.text_data,
-                          Qt::AlignLeft | Qt::AlignVCenter);
+                  Qt::AlignLeft | Qt::AlignVCenter);
   a_ctx->restore();
 }
 
-void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
-                           QPainter *aPainterPtr, const Widget *aWidget) {
-  aPainterPtr->save();
-  aPainterPtr->setRenderHints(QPainter::Antialiasing |
-                                  QPainter::TextAntialiasing |
-                                  QPainter::HighQualityAntialiasing,
-                              true);
+void CocoaStyle::draw_label(const StyleFeatures &aFeatures, QPainter *a_ctx) {
+  a_ctx->save();
 
-  QPen linePen = QPen(QColor(color("primary_forground")), 1, Qt::SolidLine,
-                      Qt::RoundCap, Qt::RoundJoin);
+  set_default_painter_hints(a_ctx);
 
-  QFont _font = aPainterPtr->font();
+  /* spacial case so doing it manually */
+  QFont _font = a_ctx->font();
   _font.setBold(true);
   if (aFeatures.attributes.keys().contains("font_size"))
     _font.setPixelSize(aFeatures.attributes["font_size"].toInt() *
@@ -993,21 +914,23 @@ void CocoaStyle::drawLabel(const StyleFeatures &aFeatures,
   else
     _font.setPixelSize(14 * scale_factor());
 
-  aPainterPtr->setFont(_font);
+  a_ctx->setFont(_font);
 
-  QFontMetrics metrics(aPainterPtr->font());
+  QFontMetrics metrics(a_ctx->font());
   QString text = metrics.elidedText(aFeatures.text_data, Qt::ElideRight,
                                     aFeatures.geometry.width());
 
-  /*
-  aPainterPtr->fillRect(aFeatures.geometry,
-                        QColor(color("primary_background")));
-                        */
   if (aFeatures.render_state == StyleFeatures::kRenderRaised) {
-    aPainterPtr->fillRect(aFeatures.geometry, QColor(color("base_forground")));
+    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
+    a_ctx->fillRect(aFeatures.geometry, d->color(ResourceManager::kAccentColor));
+  } else {
+      d->set_pen_color(a_ctx, ResourceManager::kTextColor);
   }
 
-  aPainterPtr->setPen(linePen);
-  aPainterPtr->drawText(aFeatures.geometry, text, aFeatures.text_options);
-  aPainterPtr->restore();
+  a_ctx->drawText(aFeatures.geometry, text, aFeatures.text_options);
+  a_ctx->restore();
+}
+
+QColor CocoaStyle::PrivateCocoa::color(ResourceManager::ColorName a_name) {
+  return ResourceManager::color(a_name);
 }

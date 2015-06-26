@@ -25,6 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 #include <style.h>
+#include <resource_manager.h>
 
 using namespace UIKit;
 
@@ -34,52 +35,44 @@ public:
 
   virtual ~CocoaStyle();
 
-
   virtual void draw(const QString &type, const StyleFeatures &options,
                     QPainter *painter, const UIKit::Widget *aWidget = 0);
   void load_default_widget_style_properties();
 
   void draw_timer_marker(QRectF rect, QTransform _xform_hour, QPainter *p,
-                         double mark_minutes,
-                         double mark_hour,
-                         QPen current_dot_min_pen,
-                         QPointF current_marker_location,
-                         QPointF _transPos,
-                         QPointF current_marker_location_for_min);
-  void draw_range_marker(QRectF rect, QTransform _xform_hour,
-                         QPainter *p, double mark_start,
-                         double mark_end, QPen current_dot_min_pen,
+                         double mark_minutes, double mark_hour,
                          QPointF current_marker_location, QPointF _transPos,
                          QPointF current_marker_location_for_min);
+  void draw_range_marker(QRectF rect, QTransform _xform_hour, QPainter *p,
+                         double mark_start, double mark_end,
+                         QPointF current_marker_location, QPointF _transPos,
+                         QPointF current_marker_location_for_min);
+  void set_default_painter_hints(QPainter *painter);
+
 protected:
   QVariantMap attribute_map(const QString &type) const;
   virtual QVariantMap color_scheme_map() const;
 
-
 private:
   class PrivateCocoa;
   PrivateCocoa *const d;
-  void drawPushButton(const StyleFeatures &features, QPainter *painter);
-  void drawWindowButton(const StyleFeatures &features, QPainter *painter);
-  void drawFrame(const StyleFeatures &features, QPainter *painter);
-  void draw_clock_hands(QPainter *p, QRectF rect, int factor, float angle,
-                        QColor hand_color, int thikness);
-  void drawClock(const StyleFeatures &features, QPainter *painter);
-  void draw_knob(const StyleFeatures &features, QPainter *painter);
-  void drawPushButtonText(const StyleFeatures &features, const QString &text,
-                          QPainter *painter);
-  void drawLineEdit(const StyleFeatures &features, QPainter *painter);
-  void drawLineEditText(const StyleFeatures &features, const QString &text,
-                        QPainter *painter);
-  void drawLabelEditText(const StyleFeatures &features, const QString &text,
-                         QPainter *painter);
-  void drawSeperatorLine(const StyleFeatures &features, QPainter *painter);
-  void drawProgressBar(const StyleFeatures &features, QPainter *painter);
+  void draw_push_button(const StyleFeatures &features, QPainter *painter);
+  void draw_window_button(const StyleFeatures &features, QPainter *painter);
+  void draw_window_frame(const StyleFeatures &features, QPainter *a_ctx);
+  void draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor, float angle,
+                        UIKit::ResourceManager::ColorName a_clock_hand_color,
+                        int a_thikness);
+  void draw_clock_surface(const StyleFeatures &features, QPainter *painter);
+  void draw_knob(const StyleFeatures &features, QPainter *a_ctx);
+  void draw_line_edit(const StyleFeatures &features, QPainter *painter);
+  void draw_text_editor(const StyleFeatures &features, const QString &text,
+                        QPainter *a_ctx);
+  void drawSeperatorLine(const StyleFeatures &features, QPainter *a_ctx);
+  void draw_progress_bar(const StyleFeatures &features, QPainter *a_ctx);
   void drawVListItem(const StyleFeatures &features, QPainter *painter);
   void draw_image_button(const StyleFeatures &features, QPainter *a_ctx);
 
-  void drawLabel(const StyleFeatures &aFeatures, QPainter *aPainterPtr,
-                 const UIKit::Widget *aWidget);
+  void draw_label(const StyleFeatures &a_features, QPainter *a_ctx);
 };
 
 #endif
