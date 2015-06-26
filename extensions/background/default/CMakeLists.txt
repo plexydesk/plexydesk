@@ -1,10 +1,12 @@
 SET(sourceFiles
+    desktopwindow.cpp
     background_controller.cpp
     classicinterface.cpp
     classicbackgroundrender.cpp
     )
 
 SET(headerFiles
+    desktopwindow.h
     background_controller.h
     classicinterface.h
     classicbackgroundrender.h

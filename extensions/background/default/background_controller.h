@@ -30,10 +30,8 @@
 
 class BackgroundController : public UIKit::ViewController {
   Q_OBJECT
-
 public:
   BackgroundController(QObject *object = 0);
-
   virtual ~BackgroundController();
 
   void init();
@@ -42,35 +40,22 @@ public:
   void submit_session_data(QuetzalKit::SyncObject *a_object);
 
   UIKit::ActionList actions() const;
-
   void request_action(const QString &actionName, const QVariantMap &data);
-
-  void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
 
   void set_view_rect(const QRectF &rect);
 
   QString icon() const;
-
   QString label() const;
-
-  void configure(const QPointF &pos);
 
   void prepare_removal();
 
-  void createSeamlessDesktop();
-private
-Q_SLOTS:
+private Q_SLOTS:
   void onImageReady();
-
   void onImageSaveReady();
 
-  void onModeActivityFinished();
-
-  void onWallpaperActivityFinished();
-
-  void onSearchFinished();
-
-  void onConfigureDone();
+protected:
+  void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
+  void createSeamlessDesktop();
 
 private:
   void downloadRemoteFile(QUrl fileUrl);
@@ -105,7 +90,7 @@ private:
 
   const QRectF mBackgroundRect;
   class PrivateBackgroundController;
-  PrivateBackgroundController *const d;
+  PrivateBackgroundController *const p_ctr;
 };
 
 #endif // PLEXY_BACKGROUND_CONTROLLER_H
