@@ -33,18 +33,13 @@
 #include <QDir>
 #include <QMimeData>
 #include <QPixmap>
+#include <QAction>
 #include <QPainter>
+
 #include <space.h>
 #include <workspace.h>
-#include <QAction>
 
-// widondows
-#ifdef Q_OS_WIN
-#include <Windows.h>
-#include <tchar.h>
-#endif
-// self
-#include "classicbackgroundrender.h"
+#include "desktopwindow.h"
 
 class BackgroundController::PrivateBackgroundController {
 public:
@@ -52,52 +47,50 @@ public:
 
   ~PrivateBackgroundController() {}
 
-  QAction *createAction(BackgroundController *controller, const QString &name,
+  QAction *add_action(BackgroundController *controller, const QString &name,
                         const QString &icon, int id);
   void save_session(const QString &a_key, const QString &a_value);
 
   void updateProgress(float progress);
 
-  QString mCurrentMode;
-
-  UIKit::ActionList mActionList;
-  ClassicBackgroundRender *m_background_render_item;
+  UIKit::ActionList m_supported_actions;
   QVariantMap m_session_data;
+
+  DesktopWindow *m_background_window;
 };
 
 BackgroundController::BackgroundController(QObject *object)
-    : UIKit::ViewController(object), d(new PrivateBackgroundController) {
-  d->m_background_render_item = 0;
-}
+    : UIKit::ViewController(object), p_ctr(new PrivateBackgroundController) {}
 
 BackgroundController::~BackgroundController() {
   qDebug() << Q_FUNC_INFO;
-  delete d;
+  delete p_ctr;
 }
 
 void BackgroundController::init() {
-  QString wallpaperPath = QDir::toNativeSeparators(
+  //todo : port toNativeSeperator to our datakit
+  QString default_wallpaper_file = QDir::toNativeSeparators(
       UIKit::Config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
-  d->m_background_render_item = new ClassicBackgroundRender(
-      QRectF(0.0, 0.0, 0.0, 0.0), 0, QImage(wallpaperPath));
-  d->m_background_render_item->set_controller(this);
-  d->m_background_render_item->set_widget_name("classic Backdrop");
-  /*
-  d->m_background_render_item->setLayerType(
-      UI::UIWidget::kRenderAtBackgroundLevel);
-  */
+  p_ctr->m_background_window = new DesktopWindow();
 
-  d->createAction(this, tr("Desktop"), "pd_background_frame_icon.png", 1);
-  d->createAction(this, tr("Search"), "pd_search_frame_icon.png", 2);
-  d->createAction(this, tr("Adjust"), "pd_adjust_frame_icon.png", 3);
-  d->createAction(this, tr("Seamless"), "pd_eye_frame_icon.png", 4);
+  p_ctr->m_background_window->on_window_discarded([this](
+      UIKit::Window *a_window) {
+    if (p_ctr->m_background_window)
+      delete p_ctr->m_background_window;
+  });
 
-  insert(d->m_background_render_item);
+  p_ctr->add_action(this, tr("Desktop"), "pd_background_frame_icon.png", 1);
+  p_ctr->add_action(this, tr("Search"), "pd_search_frame_icon.png", 2);
+  p_ctr->add_action(this, tr("Adjust"), "pd_adjust_frame_icon.png", 3);
+  p_ctr->add_action(this, tr("Seamless"), "pd_eye_frame_icon.png", 4);
+
+  insert(p_ctr->m_background_window);
 }
 
 void BackgroundController::revoke_session(const QVariantMap &args) {
+  /*
   QUrl backgroundUrl = args["background"].toString();
   QString mode = args["mode"].toString();
 
@@ -115,42 +108,47 @@ void BackgroundController::revoke_session(const QVariantMap &args) {
   } else {
     downloadRemoteFile(backgroundUrl);
   }
+  */
 }
 
 void BackgroundController::session_data_available(
     const QuetzalKit::SyncObject &a_session_root) {
-  QUrl background_url = a_session_root.attributeValue("background").toString();
-  QString mode = a_session_root.attributeValue("mode").toString();
+  /*
+QUrl background_url = a_session_root.attributeValue("background").toString();
+QString mode = a_session_root.attributeValue("mode").toString();
 
-  if (background_url.isEmpty()) {
-    return;
-  }
-
-  d->mCurrentMode = mode;
-
-  qDebug() << Q_FUNC_INFO << background_url.isLocalFile();
-
-  if (background_url.isLocalFile()) {
-    d->m_background_render_item->setBackgroundImage(background_url);
-  } else {
-    downloadRemoteFile(background_url);
-  }
+if (background_url.isEmpty()) {
+return;
 }
 
-void BackgroundController::submit_session_data(
-    QuetzalKit::SyncObject *a_object) {
-  foreach(const QString & key, d->m_session_data.keys()) {
-    a_object->setObjectAttribute(key, d->m_session_data[key]);
-    qDebug() << Q_FUNC_INFO << key << " : " << d->m_session_data[key];
-  }
+d->mCurrentMode = mode;
 
-  a_object->sync();
+qDebug() << Q_FUNC_INFO << background_url.isLocalFile();
 
-  qDebug() << Q_FUNC_INFO << "Updating session Value End ->";
+if (background_url.isLocalFile()) {
+d->m_background_render_item->setBackgroundImage(background_url);
+} else {
+downloadRemoteFile(background_url);
+}
+    */
+}
+
+void
+BackgroundController::submit_session_data(QuetzalKit::SyncObject *a_object) {
+  /*
+foreach(const QString & key, d->m_session_data.keys()) {
+  a_object->setObjectAttribute(key, d->m_session_data[key]);
+  qDebug() << Q_FUNC_INFO << key << " : " << d->m_session_data[key];
+}
+
+a_object->sync();
+
+qDebug() << Q_FUNC_INFO << "Updating session Value End ->";
+*/
 }
 
 UIKit::ActionList BackgroundController::actions() const {
-  return d->mActionList;
+  return p_ctr->m_supported_actions;
 }
 
 void BackgroundController::createSeamlessDesktop() {
@@ -183,10 +181,10 @@ void BackgroundController::createSeamlessDesktop() {
           }
       }
 
-  */
   if (d->m_background_render_item)
     d->m_background_render_item->setSeamLessMode(
         !(d->m_background_render_item->isSeamlessModeSet()));
+  */
 }
 
 void BackgroundController::request_action(const QString &actionName,
@@ -235,11 +233,13 @@ void BackgroundController::createModeChooser() {
   createModeActivity("icongrid", "Desktop Mode", data);
 }
 
-void BackgroundController::setScaleMode(
-    ClassicBackgroundRender::ScalingMode mode) {
-  if (d->m_background_render_item) {
-    d->m_background_render_item->setBackgroundMode(mode);
-  }
+void
+BackgroundController::setScaleMode(ClassicBackgroundRender::ScalingMode mode) {
+  /*
+if (d->m_background_render_item) {
+  d->m_background_render_item->setBackgroundMode(mode);
+}
+*/
 }
 
 void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
@@ -271,9 +271,11 @@ void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
     QFileInfo info(droppedFile);
 
     if (!info.isDir()) {
-      if (d->m_background_render_item) {
-        d->m_background_render_item->setBackgroundImage(droppedFile);
-      }
+      /*
+    if (d->m_background_render_item) {
+      d->m_background_render_item->setBackgroundImage(droppedFile);
+    }
+    */
 
       createModeChooser();
       saveSession("background", fileUrl.toString());
@@ -282,11 +284,8 @@ void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
 }
 
 void BackgroundController::set_view_rect(const QRectF &rect) {
-  if (d->m_background_render_item) {
-    d->m_background_render_item->setBackgroundGeometry(rect);
-    // d->m_background_render_item->setGeometry(rect);
-    // d->m_background_render_item->setPos(0.0, 0.0);
-  }
+  if (p_ctr->m_background_window)
+    p_ctr->m_background_window->resize(rect.width(), rect.height());
 }
 
 void BackgroundController::saveImageLocally(const QByteArray &data,
@@ -331,38 +330,40 @@ void BackgroundController::onImageReady() {
 }
 
 void BackgroundController::onImageSaveReady() {
-  QuetzalSocialKit::AsyncImageCreator *c =
-      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+  /*
+QuetzalSocialKit::AsyncImageCreator *c =
+    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
-  if (c) {
-    if (c->image().isNull()) {
-      c->quit();
-      c->deleteLater();
-      return;
-    }
-
-    if (d->m_background_render_item) {
-      d->m_background_render_item->setBackgroundImage(c->image());
-    }
-
-    if (viewport()) {
-      if (!c->offline()) {
-        saveSession("background", c->metaData()["url"].toString());
-      } else {
-        saveSession("background",
-                    QDir::toNativeSeparators("file:///" + c->imagePath()));
-      }
-    }
-
-    if (d->mCurrentMode.isEmpty() || d->mCurrentMode.isNull()) {
-      createModeChooser();
-    } else {
-      setScaleMode(d->mCurrentMode);
-    }
-
+if (c) {
+  if (c->image().isNull()) {
     c->quit();
     c->deleteLater();
+    return;
   }
+
+  if (d->m_background_render_item) {
+    d->m_background_render_item->setBackgroundImage(c->image());
+  }
+
+  if (viewport()) {
+    if (!c->offline()) {
+      saveSession("background", c->metaData()["url"].toString());
+    } else {
+      saveSession("background",
+                  QDir::toNativeSeparators("file:///" + c->imagePath()));
+    }
+  }
+
+  if (d->mCurrentMode.isEmpty() || d->mCurrentMode.isNull()) {
+    createModeChooser();
+  } else {
+    setScaleMode(d->mCurrentMode);
+  }
+
+  c->quit();
+  c->deleteLater();
+}
+*/
 }
 
 void BackgroundController::setScaleMode(const QString &action) {
@@ -389,97 +390,7 @@ QString BackgroundController::icon() const {
 
 QString BackgroundController::label() const { return QString(tr("Desktop")); }
 
-void BackgroundController::configure(const QPointF &pos) {
-  QPointF localPos;
-  QPointF _activity_pos;
-
-  localPos.setX(pos.x());
-  localPos.setY(pos.y());
-
-  _activity_pos.setX(d->m_background_render_item->mapFromScene(localPos).x());
-  _activity_pos.setY(d->m_background_render_item->mapFromScene(localPos).y());
-
-  QVariantMap data;
-
-  data["Wallpaper"] = "pd_photo_icon.png";
-  data["Search"] = "pd_settings_icon.png";
-  data["Adjust"] = "pd_quit_icon.png";
-  data["Seamless"] = "pd_desktop_icon.png";
-
-  viewport()->create_activity("icongrind", "Desktop", _activity_pos,
-                              QRectF(0, 0, 330, 192), data);
-}
-
 void BackgroundController::prepare_removal() {}
-
-// remove
-void BackgroundController::onModeActivityFinished() {
-  if (sender()) {
-    UIKit::DesktopActivity *activity =
-        qobject_cast<UIKit::DesktopActivity *>(sender());
-
-    if (activity) {
-      QVariantMap resultData = activity->result();
-      QString action = resultData["action"].toString();
-
-      setScaleMode(action);
-      saveSession("mode", resultData["action"]);
-    }
-  }
-}
-
-// remove
-void BackgroundController::onWallpaperActivityFinished() {
-  if (sender()) {
-    UIKit::DesktopActivity *activity =
-        qobject_cast<UIKit::DesktopActivity *>(sender());
-
-    if (activity) {
-      QVariantMap resultData = activity->result();
-
-      revoke_session(resultData);
-      saveSession("background", QVariant(resultData["background"].toString()));
-    }
-  }
-}
-
-void BackgroundController::onSearchFinished() {
-  if (sender()) {
-    UIKit::DesktopActivity *activity =
-        qobject_cast<UIKit::DesktopActivity *>(sender());
-
-    if (activity) {
-      QVariantMap resultData = activity->result();
-      qDebug() << Q_FUNC_INFO << resultData;
-      revoke_session(resultData);
-    }
-  }
-}
-
-void BackgroundController::onConfigureDone() {
-  if (sender()) {
-    UIKit::DesktopActivity *activity =
-        qobject_cast<UIKit::DesktopActivity *>(sender());
-
-    if (activity) {
-      QVariantMap result = activity->result();
-
-      if (result["action"] == "Search") {
-        createSearchActivity("flikrsearchactivity", tr("Online Search"),
-                             QVariantMap());
-      } else if (result["action"] == "Wallpaper") {
-        createWallpaperActivity("photosearchactivity", tr("Wallpapers"),
-                                QVariantMap());
-      } else if (result["action"] == "Adjust") {
-        createModeChooser();
-      } else if (result["action"] == "Seamless") {
-        if (d->m_background_render_item)
-          d->m_background_render_item->setSeamLessMode(
-              !(d->m_background_render_item->isSeamlessModeSet()));
-      }
-    }
-  }
-}
 
 void BackgroundController::createModeActivity(const QString &activity,
                                               const QString &title,
@@ -528,21 +439,19 @@ void BackgroundController::createSearchActivity(const QString &activity,
 
 void BackgroundController::saveSession(const QString &key,
                                        const QVariant &value) {
-  d->m_session_data[key] = value;
+  p_ctr->m_session_data[key] = value;
 
   if (!viewport())
     return;
 
   viewport()->update_session_value(controller_name(), key, value.toString());
-
-  qDebug() << Q_FUNC_INFO << "Updating session Value Start ->";
 }
 
 QVariant BackgroundController::sessionValue(const QString &key) {
   return QVariant();
 }
 
-QAction *BackgroundController::PrivateBackgroundController::createAction(
+QAction *BackgroundController::PrivateBackgroundController::add_action(
     BackgroundController *controller, const QString &name, const QString &icon,
     int id) {
   QAction *action = new QAction(controller);
@@ -550,7 +459,7 @@ QAction *BackgroundController::PrivateBackgroundController::createAction(
   action->setProperty("id", QVariant(id));
   action->setProperty("icon_name", icon);
 
-  mActionList << action;
+  m_supported_actions << action;
 
   return action;
 }

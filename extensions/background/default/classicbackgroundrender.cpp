@@ -6,12 +6,15 @@
 #include <resource_manager.h>
 #include <QPixmapCache>
 
+#include <px_bench.h>
+
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
                                                  QGraphicsObject *parent,
                                                  const QImage &background_image)
     : UIKit::Window(parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
+
   mBackgroundImage = background_image;
   mScalingMode = None;
   mSeamLessMode = false;
@@ -97,6 +100,9 @@ void ClassicBackgroundRender::setSeamLessMode(bool value) {
 
 void ClassicBackgroundRender::paint_view(QPainter *painter,
                                          const QRectF &rect /*rect*/) {
+  PxBenchData data;
+  px_bench_run(&data);
+
   if (mSeamLessMode) {
     painter->save();
     painter->setRenderHints(QPainter::SmoothPixmapTransform |
@@ -109,10 +115,7 @@ void ClassicBackgroundRender::paint_view(QPainter *painter,
     return;
   }
 
-  painter->save();
-  painter->setRenderHint(QPainter::SmoothPixmapTransform);
-  painter->setRenderHint(QPainter::Antialiasing);
-
+  qDebug() << Q_FUNC_INFO << "Image Size ->" << mBackgroundImage.size();
   switch (mScalingMode) {
     case None: {
       painter->drawImage(rect, mBackgroundImage);
@@ -143,5 +146,7 @@ void ClassicBackgroundRender::paint_view(QPainter *painter,
     default:
       break;
   }
-  painter->restore();
+
+  px_bench_stop(&data);
+  px_bench_print(&data, Q_FUNC_INFO);
 }

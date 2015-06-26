@@ -1,10 +1,24 @@
 #ifndef DESKTOPWINDOW_H
 #define DESKTOPWINDOW_H
 
-class DesktopWindow : public UIKit::Window
-{
+#include <window.h>
+
+class QPainter;
+
+class DesktopWindow : public UIKit::Window {
 public:
-    DesktopWindow();
+  DesktopWindow();
+  virtual ~DesktopWindow();
+
+  void set_background(const std::string &a_image_name);
+
+  void reset_window_background();
+protected:
+  void paint_view(QPainter *a_ctx, const QRectF &a_rect);
+
+private:
+  class PrivateDesktopWindow;
+  PrivateDesktopWindow *p_window;
 };
 
 #endif // DESKTOPWINDOW_H
