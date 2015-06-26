@@ -80,4 +80,15 @@ void WindowButton::paint_sunken_button(QPainter *a_painter_ptr,
     UIKit::ResourceManager::style()->draw("window_button", feature, a_painter_ptr);
   }
 }
+
+void WindowButton::paint_hover_button(QPainter *a_painter, const QRectF &a_rect)
+{
+  StyleFeatures feature;
+  feature.geometry = a_rect;
+  feature.render_state = StyleFeatures::kRenderRaised;
+
+  if (UIKit::ResourceManager::style()) {
+    UIKit::ResourceManager::style()->draw("window_button", feature, a_painter);
+  }
+}
 }
