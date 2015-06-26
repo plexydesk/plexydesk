@@ -39,11 +39,14 @@ public:
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
+  virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr);
+  virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr);
 
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
   virtual void paint_normal_button(QPainter *a_painter_ptr,
                                    const QRectF &a_rect);
   virtual void paint_sunken_button(QPainter *a_painter, const QRectF &a_rect);
+  virtual void paint_hover_button(QPainter *a_painter, const QRectF &a_rect);
 
 private:
   class PrivateButton;
