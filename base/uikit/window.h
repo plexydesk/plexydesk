@@ -23,6 +23,8 @@ public:
     kPopupWindow = 7
   } WindowType;
 
+  typedef std::function<void (Window *, int, int)> ResizeCallback;
+
   Window(QGraphicsObject *a_parent_ptr = 0);
   virtual ~Window();
 
@@ -35,8 +37,7 @@ public:
   virtual WindowType window_type();
   virtual void set_window_type(WindowType a_window_type);
 
-  virtual void on_window_resized(
-      std::function<void(const QSizeF &size)> a_handler);
+  virtual void on_window_resized(ResizeCallback a_handler);
   virtual void on_window_moved(
       std::function<void(const QPointF &pos)> a_handler);
   virtual void on_window_closed(std::function<void(Window *)> a_handler);
@@ -63,7 +64,7 @@ protected:
   void invoke_window_moved_action();
 private:
   class PrivateWindow;
-  PrivateWindow *const m_priv_impl;
+  PrivateWindow *const p_window;
 };
 }
 #endif // WINDOW_H
