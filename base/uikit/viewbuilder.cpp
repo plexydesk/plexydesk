@@ -127,7 +127,7 @@ void ViewBuilder::split_column(int a_column_index, int a_count) {}
 void ViewBuilder::add_rows(int a_row_count) {
   d->m_row_count = a_row_count;
   for (int i = 0; i < a_row_count; i++) {
-    if (!d->m_row_data[i] > 1)
+    if (!(d->m_row_data[i] > 1))
       continue;
     split_row(i, 1);
   }

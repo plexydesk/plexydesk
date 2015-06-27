@@ -63,6 +63,9 @@ private:
                         UIKit::ResourceManager::ColorName a_clock_hand_color,
                         int a_thikness);
   void draw_clock_surface(const StyleFeatures &features, QPainter *painter);
+  void draw_clock_surface_to_buffer(const StyleFeatures &features,
+                                    QPainter *a_ctx);
+
   void draw_knob(const StyleFeatures &features, QPainter *a_ctx);
   void draw_line_edit(const StyleFeatures &features, QPainter *painter);
   void draw_text_editor(const StyleFeatures &features, const QString &text,

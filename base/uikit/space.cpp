@@ -292,6 +292,14 @@ void Space::on_activity_finished(const DesktopActivity *a_activity) {
   }
 }
 
+void Space::draw() {
+     std::for_each(std::begin(m_priv_impl->mWindowList),
+                  std::end(m_priv_impl->mWindowList), [&](Window *a_win) {
+        if (a_win)
+            a_win->draw();
+     });
+}
+
 void Space::save_controller_to_session(const QString &a_controller_name) {
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
       m_priv_impl->sessionNameForSpace().toStdString());

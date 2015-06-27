@@ -25,6 +25,8 @@
 #include <cmath>
 #include <resource_manager.h>
 
+#include <px_bench.h>
+
 // for the clock
 int angle_between_hands(double h, double m) {
   // validate the input
@@ -126,30 +128,6 @@ void CocoaStyle::load_default_widget_style_properties() {
 
 CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
   load_default_widget_style_properties();
-
-  d->m_color_map["primary_forground"] = "#646464";
-  d->m_color_map["primary_background"] = "#ffffff";
-  d->m_color_map["primary_highlight"] = "#f0f0f0";
-
-  d->m_color_map["base_forground"] = "#E6E6E6";
-  d->m_color_map["base_background"] = "#ffffff";
-  d->m_color_map["base_highlight"] = "#111111";
-
-  d->m_color_map["soft_forground"] = "#191919";
-  d->m_color_map["soft_background"] = "#ffffff";
-  d->m_color_map["soft_highlight"] = "#111111";
-
-  d->m_color_map["accent_primary_forground"] = "#F0F0F0";
-  d->m_color_map["accent_primary_background"] = "#0092CC";
-  d->m_color_map["accent_primary_highlight"] = "#FF3333";
-
-  d->m_color_map["accent_base_forground"] = "#E6E6E6";
-  d->m_color_map["accent_base_background"] = "#087099";
-  d->m_color_map["accent_base_highlight"] = "#CC3333";
-
-  d->m_color_map["accent_soft_forground"] = "#779933";
-  d->m_color_map["accent_soft_background"] = "#5C7829";
-  d->m_color_map["accent_soft_highlight"] = "#B7B327";
 }
 
 CocoaStyle::~CocoaStyle() { delete d; }
@@ -179,7 +157,8 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
     draw_label(options, painter);
     break;
   case 10:
-    draw_clock_surface(options, painter);
+    // draw_clock_surface(options, painter);
+    draw_clock_surface_to_buffer(options, painter);
     break;
   case 13:
     draw_knob(options, painter);
@@ -349,7 +328,6 @@ void CocoaStyle::draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor,
                                   float angle,
                                   ResourceManager::ColorName a_clock_hand_color,
                                   int a_thikness) {
-  a_ctx->save();
   float _adjustment = rect.width() / factor;
 
   QRectF _clock_hour_rect(rect.x() + _adjustment, rect.y() + _adjustment,
@@ -365,7 +343,6 @@ void CocoaStyle::draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor,
 
   d->set_pen_color(a_ctx, a_clock_hand_color, a_thikness);
   a_ctx->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
-  a_ctx->restore();
 }
 
 void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
@@ -379,8 +356,6 @@ void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
 
   QPainterPath clock_path;
   clock_path.addEllipse(rect);
-
-  a_ctx->save();
 
   _xform_hour.reset();
 
@@ -398,7 +373,7 @@ void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
 
   a_ctx->setOpacity(0.5);
   a_ctx->fillPath(timer_path, d->color(ResourceManager::kPrimaryColor));
-  a_ctx->restore();
+  a_ctx->setOpacity(1.0);
 }
 
 void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
@@ -420,7 +395,6 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
     multiply = -multiply;
   }
 
-  a_ctx->save();
   _xform_hour.reset();
 
   _transPos = rect.center();
@@ -438,13 +412,16 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
 
   a_ctx->setOpacity(0.3);
   a_ctx->fillPath(timer_path, d->color(ResourceManager::kLightPrimaryColor));
-  a_ctx->restore();
+  a_ctx->setOpacity(1.0);
 }
 
 void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
                                     QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
-  QRectF rect = features.geometry;
+  PxBenchData data;
+  px_bench_run(&data);
+
+  QRectF rect = features.geometry.adjusted(16, 16, -32, -32);
   double second_value = features.attributes["seconds"].toDouble();
   double minutes_value = features.attributes["minutes"].toDouble();
   double hour_value = features.attributes["hour"].toDouble();
@@ -468,10 +445,8 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     double percent = (i / 60.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    a_ctx->save();
     d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
     a_ctx->drawPoint(marker_location);
-    a_ctx->restore();
   }
 
   // draw minute markers
@@ -479,10 +454,8 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    a_ctx->save();
     d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 4);
     a_ctx->drawPoint(marker_location);
-    a_ctx->restore();
   }
 
   // draw hour markers
@@ -490,16 +463,12 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    a_ctx->save();
     d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 8);
     a_ctx->drawPoint(marker_location);
-    a_ctx->restore();
   }
 
   // draw marker
   double current_percent = (mark_hour) / 24.0;
-
-  a_ctx->save();
 
   QTransform _xform_hour;
   QPointF _transPos = rect.center();
@@ -521,7 +490,6 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
   draw_timer_marker(rect, _xform_hour, a_ctx, mark_minutes, mark_hour,
                     current_marker_location, _transPos,
                     current_marker_location_for_min);
-  a_ctx->restore();
 
   if (std::abs(mark_start) >= 0) {
     double current_percent = (mark_start) / 60.0;
@@ -531,7 +499,6 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     // draw timer marker.
     double current_percent_min = (mark_end) / 60.0;
 
-    a_ctx->save();
     _xform_hour.reset();
     _transPos = rect.center();
     _xform_hour.translate(_transPos.x(), _transPos.y());
@@ -546,7 +513,6 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     draw_range_marker(rect, _xform_hour, a_ctx, mark_start, mark_end,
                       current_marker_location, _transPos,
                       current_marker_location_for_min);
-    a_ctx->restore();
   }
 
   /* Draw Hour Hand */
@@ -577,6 +543,35 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
 
   draw_clock_hands(a_ctx, rect, 5, second_value, ResourceManager::kAccentColor,
                    2);
+  px_bench_stop(&data);
+}
+
+void CocoaStyle::draw_clock_surface_to_buffer(const StyleFeatures &features,
+                                              QPainter *a_ctx) {
+  PxBenchData data;
+  px_bench_run(&data);
+
+  QRectF src_rect = features.geometry;
+  int width = src_rect.width();
+  int height = src_rect.height();
+
+  QRectF target_rect =
+      QRectF((src_rect.x() / 2), (src_rect.y() / 2), width, height);
+
+  unsigned char *imgbuf = (unsigned char *)malloc(width * height * 4);
+  memset(imgbuf, 0, 4 * width * height);
+
+  QImage surface(imgbuf, width, height, QImage::Format_ARGB32_Premultiplied);
+
+  QPainter proxy;
+  proxy.begin(&surface);
+  draw_clock_surface(features, &proxy);
+  proxy.end();
+
+  a_ctx->drawImage(src_rect, surface, target_rect);
+
+  free(imgbuf);
+  px_bench_stop(&data);
 }
 
 void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
@@ -922,9 +917,10 @@ void CocoaStyle::draw_label(const StyleFeatures &aFeatures, QPainter *a_ctx) {
 
   if (aFeatures.render_state == StyleFeatures::kRenderRaised) {
     d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
-    a_ctx->fillRect(aFeatures.geometry, d->color(ResourceManager::kAccentColor));
+    a_ctx->fillRect(aFeatures.geometry,
+                    d->color(ResourceManager::kAccentColor));
   } else {
-      d->set_pen_color(a_ctx, ResourceManager::kTextColor);
+    d->set_pen_color(a_ctx, ResourceManager::kTextColor);
   }
 
   a_ctx->drawText(aFeatures.geometry, text, aFeatures.text_options);
