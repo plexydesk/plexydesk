@@ -66,6 +66,7 @@ endif()
 set(QT_REQUIRED_VERSION 5.2.0)
 find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED Gui Core Xml Widgets Network)
 
+
 IF(UNIX AND NOT APPLE)
     FIND_PACKAGE(Qt5X11Extras)
 ENDIF(UNIX AND NOT APPLE)

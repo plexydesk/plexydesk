@@ -94,6 +94,10 @@ public:
   virtual void set_style_attribute(const QString &a_key, QVariant a_data);
   virtual QVariant style_attribute(const QString &a_key);
 
+  //experimental.
+  virtual void draw();
+  virtual void render(unsigned char ** a_ctx);
+
 Q_SIGNALS:
   void clicked();
 
@@ -115,8 +119,8 @@ protected:
   virtual void set_child_widet_visibility(bool a_visibility);
 
 private:
-  class PrivateAbstractDesktopWidget;
-  PrivateAbstractDesktopWidget *const d;
+  class PrivateWidget;
+  PrivateWidget *const p_widget;
 };
 } //
 
