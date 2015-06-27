@@ -87,6 +87,8 @@ public:
 
   virtual void on_activity_finished(const DesktopActivity *a_activity);
 
+  //experimental:
+  virtual void draw();
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);

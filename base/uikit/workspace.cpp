@@ -1,3 +1,4 @@
+#include <config.h>
 #include "resource_manager.h"
 #include "workspace.h"
 
@@ -193,7 +194,14 @@ void WorkSpace::paintEvent(QPaintEvent *event) {
     p.restore();
     p.end();
   }
-  QGraphicsView::paintEvent(event);
+
+#ifdef QT
+  //QGraphicsView::paintEvent(event);
+#else
+  //current_active_space()->draw();
+#endif
+
+  current_active_space()->draw();
 }
 
 void WorkSpace::dragEnterEvent(QDragEnterEvent *a_event_ptr) {
