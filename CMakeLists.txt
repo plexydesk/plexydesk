@@ -314,7 +314,7 @@ ADD_SUBDIRECTORY(extensions/activity/socialauth)
 ADD_SUBDIRECTORY(extensions/activity/takenote)
 ADD_SUBDIRECTORY(extensions/activity/datepicker)
 ADD_SUBDIRECTORY(extensions/activity/timepicker)
-ADD_SUBDIRECTORY(extensions/activity/desktopclock)
+#ADD_SUBDIRECTORY(extensions/activity/desktopclock)
 ADD_SUBDIRECTORY(extensions/activity/timezone)
 ADD_SUBDIRECTORY(extensions/activity/spacepreview)
 
