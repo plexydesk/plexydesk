@@ -65,13 +65,10 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/label.cpp
     widgets/progressbar.cpp
     widgets/imagebutton.cpp
-    widgets/default_table_model.cpp
-    widgets/default_table_component.cpp
     widgets/button.cpp
     widgets/lineedit.cpp
     widgets/texteditor.cpp
     widgets/windowbutton.cpp
-    widgets/tableview.cpp
     widgets/tableviewcellinterface.cpp
     widgets/abstractcellcomponent.cpp
     widgets/toolbar.cpp
@@ -109,14 +106,11 @@ set(LIBRARY_HEADER_FILES
     widgets/lineedit.h
     widgets/texteditor.h
     widgets/windowbutton.h
-    widgets/tableview.h
     widgets/scrollwidget.h
     widgets/imageview.h
     widgets/label.h
     widgets/progressbar.h
     widgets/imagebutton.h
-    widgets/default_table_model.h
-    widgets/default_table_component.h
     widgets/tableviewcellinterface.h
     widgets/abstractcellcomponent.h
     widgets/toolbar.h
