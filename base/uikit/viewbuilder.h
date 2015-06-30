@@ -33,7 +33,9 @@ class ViewBuilder {
     kProgressBar,
     kDial,
     kDivider,
-    kModelView
+    kModelView,
+    kCalendar,
+    kClock,
   } ViewIdentifier;
 
 public:
@@ -48,7 +50,7 @@ public:
   virtual void add_column(int a_count);
   virtual void split_column(int a_column_index, int a_count);
 
-  virtual void add_rows(int a_count);
+  virtual void set_row_count(int a_count);
   virtual void split_row(int a_index, int a_count);
   virtual void set_row_height(int a_row, const std::string &a_height);
 
