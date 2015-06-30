@@ -30,87 +30,17 @@
 #include <view_controller.h>
 #include "widget.h"
 
-/**
- * \class UI::AbstractDesktopWidget
- *
- * \ingroup PlexyDesk
- *
- * \brief Base class for Visual Desktop Extensions
- * UI::AbstractDesktopWidget defines all the common features of a visual
- *desktop extension.
- * When writing visual extensions, the user must inherit from this class. So
- *that it behaves the
- * same way.
- */
-
-/**
- * \fn UI::AbstractDesktopWidget::boundingRect()
- * \breif Returns the Bounding rectangle of the Widget Content
- *
- * \paragraph This method returns the bounding Rectangle of the Widget Contents
- * it returns the user specificed content rectangle
- *(UI::AbstractDesktopWidget::setContentRect())
- * And does not automatically calculate or adjust with the content changes, The
- *size of the content must be
- * manually set if the content changes and this widget needs to adjust to that
- *size.
- *
- * @returns The bounding Rectangle for this widget
- * \sa UI::AbstractDesktopWidget::setContentRect()
- * \sa UI::AbstractDesktopWidget::setDockRect()
- */
-
-/**
-* \fn UI::AbstractDesktopWidget::setContentRect()
-*\brief Set the content Rectangle of the Widget
-*
-* \paragraph Sets the content rectangle of the widget
-* in situations where the widget can't
-* find out by it self. For instance widets which changes
-* it's content during runtime or chiild QML widgets.
-* Use it only if you are changing the widget size.
-*
-* \param  rect The Content bounding box area
-*/
-
-/**
-* \fn UI::AbstractDesktopWidget::setRect()
-*\brief Set the bounding Rectangle of the Widget
-*
-* \paragraph Sets the bounding rectangle of the widget
-* in situations where the widget rectangle property needs
-* to be set.
-*
-* \param  rect The Content bounding box area
-*/
-
-/**
-  *\fn UI::AbstractDesktopWidget::setChildWidetVisibility()
-  *
-  * \brief Hides the child items of this widget
-  *
-  * \param show Decides the visibility of the child widgets, set true to show
-  *the child elements
-  * false to hide them.
-  *
-  */
-
-/** UI::AbstractDesktopWidget::setLabel
-  * \fn
-  * \brief Sets a label for the widget
-  * \param name Name of the icon
-  *
-  * Label to display when the widget is in dock mode
-  */
-
 namespace UIKit {
 typedef std::function<void(Widget::InputEvent, const Widget *)>
-    EventCallbackFunc;
+EventCallbackFunc;
 
 class Widget::PrivateWidget {
 public:
-  PrivateWidget() : m_widget_controller(0), m_identifier(0), m_surface(0) {}
-  ~PrivateWidget() {}
+  PrivateWidget() : m_surface(0), m_widget_controller(0), m_identifier(0) {}
+  ~PrivateWidget() {
+    if (m_surface)
+      free(m_surface);
+  }
 
   void _exec_func(Widget::InputEvent a_type, const Widget *a_widget_ptr);
   void _inoke_geometry_func(const QRectF &a_rect);
@@ -123,13 +53,16 @@ public:
 
   ViewController *m_widget_controller;
 
-  std::vector<std::function<void(const QRectF &)>> m_on_geometry_func_list;
+  std::vector<std::function<void(const QRectF &)> > m_on_geometry_func_list;
   std::vector<EventCallbackFunc> m_handler_list;
+  std::vector<UpdateCallback> m_update_monitor_list;
+
+  WidgetList m_child_list;
 
   unsigned char *m_surface;
 };
 
-Widget::Widget(QGraphicsObject *parent)
+Widget::Widget(Widget *parent)
     : QGraphicsObject(parent), QGraphicsLayoutItem(0),
       p_widget(new PrivateWidget) {
   p_widget->m_name = QLatin1String("Widget");
@@ -183,10 +116,44 @@ void Widget::draw() {
   render(&p_widget->m_surface);
 }
 
-void Widget::render(unsigned char **a_ctx) {}
+void Widget::render(unsigned char **a_ctx) {
+  qDebug() << Q_FUNC_INFO << "Rendering start";
+
+  if (!(*a_ctx))
+    return;
+
+  QImage paint_device(*a_ctx, geometry().width(), geometry().height(),
+                      QImage::Format_ARGB32_Premultiplied);
+  QPainter painter;
+  painter.begin(&paint_device);
+  painter.fillRect(geometry(), Qt::transparent);
+  paint_view(&painter, geometry());
+  painter.end();
+  qDebug() << Q_FUNC_INFO << "End";
+}
+
+GraphicsSurface *Widget::surface() { return &p_widget->m_surface; }
+
+void Widget::request_update() {
+   std::for_each(std::begin(p_widget->m_update_monitor_list),
+                 std::end(p_widget->m_update_monitor_list),
+                 [this](UpdateCallback a_func) {
+     if (a_func)
+         a_func(this);
+   });
+}
+
+void Widget::on_update(UpdateCallback a_callback) {
+    p_widget->m_update_monitor_list.push_back(a_callback);
+}
+
+WidgetList Widget::children() {
+    return p_widget->m_child_list;
+}
 
 void Widget::set_widget_name(const QString &a_name) {
   p_widget->m_name = a_name;
+  request_update();
 }
 
 QString Widget::label() const { return p_widget->m_name; }
@@ -201,8 +168,9 @@ Widget::RenderLevel Widget::layer_type() const {
   return p_widget->m_current_layer_type;
 }
 
-void Widget::set_layer_type(RenderLevel a_level) const {
+void Widget::set_layer_type(RenderLevel a_level) {
   p_widget->m_current_layer_type = a_level;
+  request_update();
 }
 
 void Widget::paint(QPainter *a_painter_ptr,
@@ -221,8 +189,15 @@ void Widget::paint(QPainter *a_painter_ptr,
 
 void Widget::setGeometry(const QRectF &a_rect) {
 
-  memset(p_widget->m_surface, 0, 4 * a_rect->width() * d_rect->height());
-  p_widget->m_surface = (unsigned char *)malloc(width * height * 4);
+  if (!p_widget->m_surface) {
+    p_widget->m_surface =
+        (unsigned char *)malloc(4 * a_rect.width() * a_rect.height());
+    memset(p_widget->m_surface, 0, 4 * a_rect.width() * a_rect.height());
+  } else {
+    p_widget->m_surface = (unsigned char *)realloc(
+        p_widget->m_surface, 4 * a_rect.width() * a_rect.height());
+    memset(p_widget->m_surface, 0, 4 * a_rect.width() * a_rect.height());
+  }
 
   // d->m_content_geometry = rect;
   prepareGeometryChange();
@@ -230,6 +205,8 @@ void Widget::setGeometry(const QRectF &a_rect) {
   setPos(a_rect.topLeft());
 
   p_widget->_inoke_geometry_func(a_rect);
+
+  request_update();
 }
 
 QSizeF Widget::sizeHint(Qt::SizeHint a_which,
@@ -258,10 +235,10 @@ QSizeF Widget::sizeHint(Qt::SizeHint a_which,
 void Widget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   /*
   StyleFeatures feature;
-  feature.geometry = rect;
+  feature.geometry = a_rect;
 
   if (style()) {
-  style()->draw("window_frame", feature, painter);
+    ResourceManager::style()->draw("window_frame", feature, a_painter_ptr);
   }
   */
 }
@@ -300,7 +277,7 @@ float Widget::scale_factor_for_height() const {
 }
 
 void Widget::set_child_widet_visibility(bool a_visibility) {
-  Q_FOREACH (QGraphicsItem *item, this->childItems()) {
+  Q_FOREACH(QGraphicsItem * item, this->childItems()) {
     (a_visibility) ? item->show() : item->hide();
   }
 }

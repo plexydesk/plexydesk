@@ -9,7 +9,7 @@
 #include <px_bench.h>
 
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
-                                                 QGraphicsObject *parent,
+                                                 Widget *parent,
                                                  const QImage &background_image)
     : UIKit::Window(parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);

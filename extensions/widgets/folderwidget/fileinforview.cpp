@@ -48,7 +48,7 @@ public:
   QGraphicsGridLayout *mGridLayout;
 
   // action buttons.
-  QGraphicsWidget *mLayoutBase;
+  UIKit::Widget *mLayoutBase;
   UIKit::Button *mDeleteButton;
   UIKit::Button *mRenameButton;
   UIKit::WindowButton *mWindowButton;
@@ -58,7 +58,7 @@ public:
   UIKit::Style *mStyle;
 };
 
-FileInforView::FileInforView(QGraphicsObject *parent)
+FileInforView::FileInforView(Widget *parent)
     : UIKit::Widget(parent), d(new PrivateFileInforView) {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
@@ -68,7 +68,7 @@ FileInforView::FileInforView(QGraphicsObject *parent)
   d->mSlideAnimation->setEndValue(QPointF(0.0, 0.0));
   d->mSlideAnimation->setEasingCurve(QEasingCurve::InCirc);
 
-  d->mLayoutBase = new QGraphicsWidget(this);
+  d->mLayoutBase = new UIKit::Widget(this);
   d->mGridLayout = new QGraphicsGridLayout(d->mLayoutBase);
 
   /* Window button */
@@ -97,7 +97,7 @@ FileInforView::FileInforView(QGraphicsObject *parent)
   d->mGridLayout->addItem(d->mLineEditProxy, 0, 2);
   d->mLineEditProxy->hide();
 
-  d->mLayoutBase->setLayout(d->mGridLayout);
+  //d->mLayoutBase->setLayout(d->mGridLayout);
   d->mLayoutBase->setPos(136.0, 0.0);
   d->mGridLayout->invalidate();
 

@@ -41,7 +41,6 @@ void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
     if (current_active_space()) {
       ViewControllerPtr dock_controller =
           current_active_space()->controller("dockwidget");
-
       if (dock_controller) {
         QVariantMap menu_argument;
         menu_argument["menu_pos"] = mapToScene(event->pos());

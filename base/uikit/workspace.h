@@ -44,6 +44,7 @@ public:
   virtual bool is_accelerated_rendering_on() const;
 
   std::string workspace_instance_name();
+
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);

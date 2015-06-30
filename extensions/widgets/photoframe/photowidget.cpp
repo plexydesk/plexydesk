@@ -7,7 +7,7 @@ public:
   QString m_photo_url;
 };
 
-PhotoWidget::PhotoWidget(QGraphicsObject *parent)
+PhotoWidget::PhotoWidget(Widget *parent)
     : UIKit::Widget(parent), d(new PrivatePhotoFrame) {
   set_widget_flag(UIKit::Widget::kRenderDropShadow, true);
   mValid = 0;

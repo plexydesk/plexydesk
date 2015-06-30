@@ -36,7 +36,7 @@ void ImageButton::set_background_color(const QColor &a_color) {
 
 StylePtr ImageButton::style() const { return ResourceManager::style(); }
 
-ImageButton::ImageButton(QGraphicsObject *a_parent_ptr)
+ImageButton::ImageButton(Widget *a_parent_ptr)
     : Widget(a_parent_ptr), d(new PrivateImageButton) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);

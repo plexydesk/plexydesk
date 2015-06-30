@@ -80,8 +80,6 @@ Q_SLOTS:
 
   void onAddSpaceButtonClicked();
 
-  void onPreviewItemClicked(TableViewItem *item);
-
 protected:
   void updatePreview();
 

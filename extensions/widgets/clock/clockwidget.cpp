@@ -32,7 +32,7 @@
 #include <QDir>
 #include <plexyconfig.h>
 
-ClockWidget::ClockWidget(QGraphicsObject *parent) : UIKit::Widget(parent) {
+ClockWidget::ClockWidget(Widget *parent) : UIKit::Widget(parent) {
   set_widget_name("Clock");
 }
 

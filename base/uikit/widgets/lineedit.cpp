@@ -42,7 +42,7 @@ public:
   QList<std::function<void(const QString &)> > m_text_handler_list;
 };
 
-LineEdit::LineEdit(QGraphicsObject *parent)
+LineEdit::LineEdit(Widget *parent)
     : Widget(parent), d(new PrivateLineEdit) {
   d->mState = PrivateLineEdit::NORMAL;
   d->m_text_selection_mode = false;

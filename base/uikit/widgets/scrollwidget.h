@@ -31,7 +31,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT ScrollWidget : public Widget {
   Q_OBJECT
 public:
-  ScrollWidget(const QRectF &a_rect, QGraphicsObject *a_parent_ptr = 0);
+  ScrollWidget(const QRectF &a_rect, Widget *a_parent_ptr = 0);
   virtual ~ScrollWidget();
 
   void set_viewport(QGraphicsObject *a_widget_ptr);

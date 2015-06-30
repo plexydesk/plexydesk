@@ -36,7 +36,7 @@ public:
     MINIMIZE
   } WindowButtonType;
 
-  explicit WindowButton(QGraphicsObject *a_parent_ptr = 0);
+  explicit WindowButton(Widget *a_parent_ptr = 0);
   ~WindowButton();
 
   void set_button_type(WindowButtonType a_type);

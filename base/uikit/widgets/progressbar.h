@@ -10,7 +10,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT ProgressBar : public Widget {
   Q_OBJECT
 public:
-  explicit ProgressBar(QGraphicsObject *a_parent_ptr = 0);
+  explicit ProgressBar(Widget *a_parent_ptr = 0);
   virtual ~ProgressBar();
 
   virtual void set_label(const QString &a_txt);

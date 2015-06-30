@@ -48,7 +48,7 @@ public:
   ~PrivateBackgroundController() {}
 
   QAction *add_action(BackgroundController *controller, const QString &name,
-                        const QString &icon, int id);
+                      const QString &icon, int id);
   void save_session(const QString &a_key, const QString &a_value);
 
   void updateProgress(float progress);
@@ -68,12 +68,13 @@ BackgroundController::~BackgroundController() {
 }
 
 void BackgroundController::init() {
-  //todo : port toNativeSeperator to our datakit
+  // todo : port toNativeSeperator to our datakit
   QString default_wallpaper_file = QDir::toNativeSeparators(
       UIKit::Config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
   p_ctr->m_background_window = new DesktopWindow();
+  p_ctr->m_background_window->set_background(default_wallpaper_file);
 
   p_ctr->m_background_window->on_window_discarded([this](
       UIKit::Window *a_window) {
@@ -284,8 +285,11 @@ void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
 }
 
 void BackgroundController::set_view_rect(const QRectF &rect) {
-  if (p_ctr->m_background_window)
+  if (p_ctr->m_background_window) {
     p_ctr->m_background_window->resize(rect.width(), rect.height());
+    p_ctr->m_background_window->setPos(rect.x(), rect.y());
+  }
+
 }
 
 void BackgroundController::saveImageLocally(const QByteArray &data,

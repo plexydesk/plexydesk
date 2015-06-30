@@ -24,10 +24,11 @@
 #include <QAction>
 #include <session_sync.h>
 
+#include <viewbuilder.h>
+
 #include <button.h>
 #include <imagebutton.h>
 #include <texteditor.h>
-#include <viewbuilder.h>
 
 #include "notewidget.h"
 
@@ -162,9 +163,9 @@ void DesktopNotesControllerImpl::onDataUpdated(const QVariantMap &data) {}
 
 void DesktopNotesControllerImpl::createNoteUI(UIKit::SessionSync *a_session) {
   UIKit::Window *window = new UIKit::Window();
+  window->setGeometry(QRectF(0, 0, 320, 240));
 
   NoteWidget *note = new NoteWidget(a_session, window);
-  note->resize(QSizeF(320, 240));
   note->set_controller(this);
   note->setViewport(viewport());
 
@@ -227,12 +228,12 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
   view->set_margine(10, 10, 10, 10);
   view->set_geometry(0, 0, 320, 200);
 
-  view->add_rows(2);
+  view->set_row_count(2);
+  view->split_row(0, 1);
   view->split_row(1, 4);
 
   view->set_row_height(0, "85%");
   view->set_row_height(1, "15%");
-  // view->set_row_height(2, "15%");
 
   UIKit::ViewProperties top_label_prop;
   top_label_prop["label"] = "reminder";
@@ -247,7 +248,6 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
 
   UIKit::ViewProperties accept_button_prop;
 
-  // view->add_widget(0, 0, "label", top_label_prop);
   view->add_widget(0, 0, "text_edit", text_editor_prop);
 
   accept_button_prop["label"] = "Date";

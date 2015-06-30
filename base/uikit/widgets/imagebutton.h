@@ -11,7 +11,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT ImageButton : public Widget {
   Q_OBJECT
 public:
-  explicit ImageButton(QGraphicsObject *a_parent_ptr = 0);
+  explicit ImageButton(Widget *a_parent_ptr = 0);
   virtual ~ImageButton();
 
   virtual void set_size(const QSize &a_size);

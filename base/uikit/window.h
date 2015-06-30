@@ -25,7 +25,7 @@ public:
 
   typedef std::function<void (Window *, int, int)> ResizeCallback;
 
-  Window(QGraphicsObject *a_parent_ptr = 0);
+  Window(Widget *a_parent_ptr = 0);
   virtual ~Window();
 
   virtual void set_window_content(Widget *a_widget_ptr);

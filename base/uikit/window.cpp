@@ -63,7 +63,7 @@ void Window::invoke_window_moved_action()
   });
 }
 
-Window::Window(QGraphicsObject *parent)
+Window::Window(Widget *parent)
     : Widget(parent), p_window(new PrivateWindow) {
   set_widget_flag(Widget::kRenderBackground, true);
   setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -82,6 +82,7 @@ Window::Window(QGraphicsObject *parent)
     if (aEvent == Widget::kFocusOutEvent &&
         p_window->m_window_type == kPopupWindow) {
       hide();
+      request_update();
     }
   });
 
@@ -125,7 +126,10 @@ void Window::set_window_content(Widget *a_widget_ptr) {
     setGeometry(content_geometry);
   } else {
     p_window->m_window_close_button->hide();
-    setGeometry(p_window->m_window_content->boundingRect());
+    setGeometry(p_window->m_window_content->geometry());
+    p_window->m_window_content->setPos(0, 0);
+    setFlag(QGraphicsItem::ItemIsMovable, false);
+    setFlag(QGraphicsItem::ItemIsFocusable, true);
   }
 
   if (p_window->m_window_type != kFramelessWindow) {
@@ -142,6 +146,8 @@ void Window::set_window_content(Widget *a_widget_ptr) {
     setFlag(QGraphicsItem::ItemIsFocusable, true);
     enable_window_background(false);
   }
+
+  request_update();
 }
 
 void Window::set_window_viewport(Space *a_space) {
@@ -151,6 +157,7 @@ void Window::set_window_viewport(Space *a_space) {
 void Window::set_window_title(const QString &a_window_title) {
   p_window->m_window_title = a_window_title;
   update();
+  request_update();
 }
 
 QString Window::window_title() const { return p_window->m_window_title; }
@@ -217,14 +224,21 @@ void Window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
   feature.geometry = a_rect_ptr;
   feature.text_data = p_window->m_window_title;
 
+  qDebug() << Q_FUNC_INFO << a_rect_ptr;
   if (style()) {
     style()->draw("window_frame", feature, a_painter_ptr);
   }
 }
 
-void Window::show() { setVisible(true);}
+void Window::show() {
+    setVisible(true);
+    request_update();
+}
 
-void Window::hide() { setVisible(false);}
+void Window::hide() {
+    setVisible(false);
+    request_update();
+}
 
 void Window::discard() {
   if (p_window->m_window_discard_callback) {
@@ -251,6 +265,7 @@ void Window::resize(float a_width, float a_height) {
   });
 
   update();
+  request_update();
 }
 
 void Window::enable_window_background(bool a_visibility) {
@@ -271,10 +286,12 @@ void Window::mousePressEvent(QGraphicsSceneMouseEvent *event) {
   if (event->button() == Qt::LeftButton)
       invoke_focus_handlers();
   QGraphicsObject::mousePressEvent(event);
+  request_update();
 }
 
 void Window::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   invoke_window_moved_action();
   QGraphicsObject::mouseReleaseEvent(a_event_ptr);
+  request_update();
 }
 }

@@ -42,7 +42,7 @@ public:
   UIKit::Window *mMainWindow;
   UIKit::Widget *mWindowContentWidget;
 
-  QGraphicsWidget *mLayoutWidget;
+  UIKit::Widget *mLayoutWidget;
   QGraphicsLinearLayout *m_main_layout;
 
   UIKit::ToolBar *m_tool_bar;
@@ -79,7 +79,7 @@ void DesktopClockActivity::create_window(const QRectF &window_geometry,
   d->mWindowContentWidget = new UIKit::Widget(d->mMainWindow);
   d->mWindowContentWidget->setGeometry(window_geometry);
 
-  d->mLayoutWidget = new QGraphicsWidget(d->mWindowContentWidget);
+  d->mLayoutWidget = new UIKit::Widget(d->mWindowContentWidget);
   d->m_main_layout = new QGraphicsLinearLayout(d->mLayoutWidget);
 
   d->mLayoutWidget->setGeometry(window_geometry);
