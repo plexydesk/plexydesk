@@ -89,13 +89,14 @@ public:
 
   //experimental:
   virtual void draw();
+  virtual GraphicsSurface *surface();
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
 
 private:
   class PrivateSpace;
-  PrivateSpace *const m_priv_impl;
+  PrivateSpace *const p_space;
 };
 }
 #endif // SPACE_H
