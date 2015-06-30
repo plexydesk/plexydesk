@@ -14,7 +14,7 @@ class NoteWidget : public UIKit::Widget {
   Q_OBJECT
 public:
   explicit NoteWidget(UIKit::SessionSync *a_session,
-                      QGraphicsObject *a_parent_ptr = 0);
+                      UIKit::Widget *a_parent_ptr = 0);
   virtual ~NoteWidget();
 
   void setTitle(const QString &title);

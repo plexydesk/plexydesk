@@ -27,7 +27,7 @@ public:
   QVariant mData;
 };
 
-Button::Button(QGraphicsObject *a_parent_ptr)
+Button::Button(Widget *a_parent_ptr)
     : Widget(a_parent_ptr), d(new PrivateButton) {
   d->mState = PrivateButton::NORMAL;
 

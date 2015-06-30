@@ -48,8 +48,8 @@ public:
   UIKit::Button *mOkButton;
   UIKit::Button *mCancelButton;
 
-  QGraphicsWidget *mLayoutBase;
-  QGraphicsWidget *mHLayoutBase;
+  UIKit::Widget *mLayoutBase;
+  UIKit::Widget *mHLayoutBase;
 
   QGraphicsLinearLayout *mVLayout;
   QGraphicsLinearLayout *mHLayout;
@@ -93,7 +93,7 @@ void InputDialogActivityData::create_window(const QRectF &window_geometry,
   d->mBackgroundEffect->setBlurRadius(0.0);
   d->mBackgroundEffect->setEnabled(true);
 
-  d->mLayoutBase = new QGraphicsWidget(d->mFrame);
+  d->mLayoutBase = new UIKit::Widget(d->mFrame);
   d->mLayoutBase->setPos(0.0, 72.0);
   d->mVLayout = new QGraphicsLinearLayout(d->mLayoutBase);
   d->mVLayout->setOrientation(Qt::Vertical);
@@ -102,7 +102,7 @@ void InputDialogActivityData::create_window(const QRectF &window_geometry,
   d->mVLayout->setGeometry(_layoutRect);
   d->mVLayout->setMaximumHeight(_layoutRect.height());
 
-  d->mHLayoutBase = new QGraphicsWidget(d->mLayoutBase);
+  d->mHLayoutBase = new UIKit::Widget(d->mLayoutBase);
 
   d->mOkButton = new UIKit::Button(d->mHLayoutBase);
   d->mCancelButton = new UIKit::Button(d->mHLayoutBase);

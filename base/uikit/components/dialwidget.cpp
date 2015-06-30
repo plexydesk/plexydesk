@@ -33,7 +33,7 @@ class DialWidget::PrivateDialWidget {
   std::vector<on_dial_callback_func> m_on_dial_callback_list;
 };
 
-DialWidget::DialWidget(QGraphicsObject* parent)
+DialWidget::DialWidget(Widget* parent)
     : UIKit::Widget(parent), d(new PrivateDialWidget) {
   set_widget_flag(UIKit::Widget::kRenderBackground, false);
   set_widget_flag(UIKit::Widget::kConvertToWindowType, false);

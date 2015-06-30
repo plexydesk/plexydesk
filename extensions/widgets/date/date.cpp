@@ -26,6 +26,7 @@
 #include <imagebutton.h>
 #include <resource_manager.h>
 #include <window.h>
+#include <viewbuilder.h>
 
 class DateControllerImpl::PrivateDate {
 public:
@@ -36,8 +37,7 @@ public:
 };
 
 DateControllerImpl::DateControllerImpl(QObject *object)
-    : UIKit::ViewController(object), d(new PrivateDate) {
-}
+    : UIKit::ViewController(object), d(new PrivateDate) {}
 
 DateControllerImpl::~DateControllerImpl() { delete d; }
 
@@ -53,14 +53,14 @@ void DateControllerImpl::init() {
 
 void DateControllerImpl::session_data_available(
     const QuetzalKit::SyncObject &a_session_root) {
-  revoke_previous_session("Calendar", [this](UIKit::ViewController *a_controller,
-                                          UIKit::SessionSync *a_session) {
-      create_calendar_ui(a_session);
+  revoke_previous_session("Calendar",
+                          [this](UIKit::ViewController *a_controller,
+                                 UIKit::SessionSync *a_session) {
+    create_ui_calendar_ui(a_session);
   });
 }
 
-void DateControllerImpl::submit_session_data(
-    QuetzalKit::SyncObject *a_obj) {
+void DateControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj) {
   write_session_data("Calendar");
 }
 
@@ -75,16 +75,16 @@ UIKit::ActionList DateControllerImpl::actions() const {
 }
 
 void DateControllerImpl::request_action(const QString &a_name,
-                                            const QVariantMap &a_args) {
- QPointF window_location;
+                                        const QVariantMap &a_args) {
+  QPointF window_location;
 
- if (viewport()) {
-   window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
- }
+  if (viewport()) {
+    window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+  }
 
- QVariantMap session_args;
+  QVariantMap session_args;
 
- if (a_name == tr("Calendar")) {
+  if (a_name == tr("Calendar")) {
     session_args["x"] = window_location.x();
     session_args["y"] = window_location.y();
     session_args["calendar_id"] = session_count();
@@ -94,13 +94,65 @@ void DateControllerImpl::request_action(const QString &a_name,
     start_session("Calendar", session_args, false,
                   [this](UIKit::ViewController *a_controller,
                          UIKit::SessionSync *a_session) {
-        create_calendar_ui(a_session);
+      create_ui_calendar_ui(a_session);
     });
- }
+  }
 }
 
-QString DateControllerImpl::icon() const {
-    return QString();
+QString DateControllerImpl::icon() const { return QString(); }
+
+void DateControllerImpl::add_action_button(UIKit::ViewBuilder *ui,
+                                           int a_row,
+                                           int a_col,
+                                           const std::string &a_label,
+                                           const std::string &a_icon)
+{
+    UIKit::ViewProperties ui_data;
+    ui_data["label"] = a_label;
+    ui_data["icon"] = "actions/" + a_icon + ".png";
+    ui->add_widget(a_row, a_col, "image_button", ui_data);
+}
+
+void DateControllerImpl::create_ui_calendar_ui(UIKit::SessionSync *a_session) {
+
+  UIKit::Window *window = new UIKit::Window();
+
+  UIKit::ViewBuilder *ui = new UIKit::ViewBuilder(window);
+
+  ui->set_margine(10, 10, 10, 10);
+  ui->set_geometry(0, 0, 360, 480);
+
+  ui->set_row_count(2);
+  ui->split_row(0, 1);
+  ui->split_row(1, 3);
+
+  ui->set_row_height(0, "95%");
+  ui->set_row_height(1, "5%");
+
+  UIKit::ViewProperties ui_data;
+  ui_data["text"] + "";
+
+  ui->add_widget(0, 0, "calendar", ui_data);
+
+  add_action_button(ui, 1, 0, "Zoom In", "pd_zoom_in");
+  add_action_button(ui, 1, 1, "Zoom Out", "pd_zoom_out");
+  add_action_button(ui, 1, 2, "Tasks", "pd_view_list");
+
+
+  window->set_window_content(ui->ui());
+
+  a_session->bind_to_window(window);
+  window->on_window_discarded([this](UIKit::Window *aWindow) {
+    delete aWindow;
+  });
+
+  if (viewport()) {
+    insert(window);
+    QPointF window_location;
+    window_location.setX(a_session->session_data("x").toFloat());
+    window_location.setY(a_session->session_data("y").toFloat());
+    window->setPos(window_location);
+  }
 }
 
 void DateControllerImpl::create_calendar_ui(UIKit::SessionSync *a_session) {
@@ -133,103 +185,98 @@ void DateControllerImpl::create_calendar_ui(UIKit::SessionSync *a_session) {
   today_label->setPos(0, 0);
   calendar->setPos(15, 0);
   todo_list->setPos(0, calendar->geometry().height());
-  toolbar->setPos(0,
-                  today_label->boundingRect().height());
+  toolbar->setPos(0, today_label->boundingRect().height());
 
   window->set_window_content(content_frame);
 
-  //only show the label;
+  // only show the label;
   calendar->hide();
   todo_list->hide();
 
   window->resize(240, 240 + toolbar->boundingRect().height());
-  window->set_window_title(QDate::longDayName(
-                               QDate::currentDate().dayOfWeek()));
+  window->set_window_title(
+      QDate::longDayName(QDate::currentDate().dayOfWeek()));
 
   a_session->bind_to_window(window);
 
   todo_list->on_activated([&](int a_index) {
-      UIKit::ModelViewItem *item = todo_list->at(a_index);
+    UIKit::ModelViewItem *item = todo_list->at(a_index);
 
-      if (!item)
-          return;
+    if (!item)
+      return;
   });
 
   toolbar->on_item_activated([=](const QString &a_action) {
-      qDebug() << Q_FUNC_INFO << "Toolbar Action : " << a_action;
-      if (a_action == "ZoomIn") {
-          today_label->hide();
-          calendar->show();
-          todo_list->hide();
-          window->resize(320, calendar->boundingRect().height()
-                         + toolbar->frame_geometry().height());
+    qDebug() << Q_FUNC_INFO << "Toolbar Action : " << a_action;
+    if (a_action == "ZoomIn") {
+      today_label->hide();
+      calendar->show();
+      todo_list->hide();
+      window->resize(320, calendar->boundingRect().height() +
+                              toolbar->frame_geometry().height());
 
-          toolbar->setPos(0, calendar->boundingRect().height());
-          return;
-      }
+      toolbar->setPos(0, calendar->boundingRect().height());
+      return;
+    }
 
-      if (a_action == "ZoomOut") {
-          calendar->hide();
-          today_label->show();
-          todo_list->hide();
+    if (a_action == "ZoomOut") {
+      calendar->hide();
+      today_label->show();
+      todo_list->hide();
 
-          window->resize(240, today_label->boundingRect().height()
-                         + toolbar->boundingRect().height());
+      window->resize(240, today_label->boundingRect().height() +
+                              toolbar->boundingRect().height());
 
-          toolbar->setPos(0, today_label->boundingRect().height());
-          return;
-      }
+      toolbar->setPos(0, today_label->boundingRect().height());
+      return;
+    }
 
-      if (a_action == "List") {
-          todo_list->show();
-          today_label->hide();
-          calendar->show();
-          window->resize(320, calendar->boundingRect().height()
-                         + todo_list->boundingRect().height()
-                         + toolbar->boundingRect().height());
-          toolbar->setPos(0, calendar->boundingRect().height()
-                          + todo_list->boundingRect().height());
-      }
-
+    if (a_action == "List") {
+      todo_list->show();
+      today_label->hide();
+      calendar->show();
+      window->resize(320, calendar->boundingRect().height() +
+                              todo_list->boundingRect().height() +
+                              toolbar->boundingRect().height());
+      toolbar->setPos(0, calendar->boundingRect().height() +
+                             todo_list->boundingRect().height());
+    }
   });
 
   toolbar->add_action("ZoomIn", "actions/pd_zoom_in", false);
   toolbar->add_action("ZoomOut", "actions/pd_zoom_out", false);
   toolbar->add_action("List", "actions/pd_view_list", false);
 
+  for (int i = 0; i < 10; i++) {
+    UIKit::ModelViewItem *item = new UIKit::ModelViewItem();
+    UIKit::Widget *item_view = new UIKit::Widget(todo_list);
+    item_view->setGeometry(QRectF(0, 0, 320, 48));
+    item_view->setMinimumSize(QSizeF(320, 48));
 
-  for (int i = 0 ; i < 10; i++) {
-      UIKit::ModelViewItem *item = new UIKit::ModelViewItem();
-      UIKit::Widget *item_view = new UIKit::Widget(todo_list);
-      item_view->setGeometry(QRectF(0, 0, 320, 48));
-      item_view->setMinimumSize(QSizeF(320, 48));
+    UIKit::Label *todo_label = new UIKit::Label(item_view);
+    todo_label->set_size(QSizeF(320 - 48, 48));
+    todo_label->setMinimumSize(320 - 48, 48);
+    todo_label->set_label(QString(" Task Number :# %1").arg(i));
+    todo_label->set_alignment(Qt::AlignLeft);
 
+    UIKit::ImageButton *todo_icon = new UIKit::ImageButton(item_view);
+    todo_icon->set_pixmap(UIKit::ResourceManager::instance()->drawable(
+        "pd_reminder_icon.png", "hdpi"));
+    todo_icon->set_size(QSize(24, 24));
+    todo_icon->setMinimumSize(QSizeF(24, 24));
+    todo_icon->setGeometry(QRectF(0, 0, 24, 24));
 
-      UIKit::Label *todo_label = new UIKit::Label(item_view);
-      todo_label->set_size(QSizeF(320 - 48, 48));
-      todo_label->setMinimumSize(320 - 48, 48);
-      todo_label->set_label(QString(" Task Number :# %1").arg(i));
-      todo_label->set_alignment(Qt::AlignLeft);
+    item_view->show();
+    todo_icon->setPos(10, 0);
+    todo_label->setPos(48, 0);
 
-      UIKit::ImageButton *todo_icon = new UIKit::ImageButton(item_view);
-      todo_icon->set_pixmap(
-                  UIKit::ResourceManager::instance()->drawable("pd_reminder_icon.png",
-                                                     "hdpi"));
-      todo_icon->set_size(QSize(24, 24));
-      todo_icon->setMinimumSize(QSizeF(24, 24));
-      todo_icon->setGeometry(QRectF(0, 0, 24, 24));
+    item->set_view(item_view);
 
-      item_view->show();
-      todo_icon->setPos(10, 0);
-      todo_label->setPos(48, 0);
-
-      item->set_view(item_view);
-
-      todo_list->insert(item);
+    todo_list->insert(item);
   }
 
   if (a_session->session_keys().contains("todo")) {
-     // note->set_editor_text(a_session->session_data("text").toString());
+    //note->set_editor_text(a_session->session_data("text").toString());
   }
 
   /*

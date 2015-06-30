@@ -11,7 +11,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT ImageView : public Widget {
   Q_OBJECT
 public:
-  explicit ImageView(QGraphicsObject *a_parent_ptr = 0);
+  explicit ImageView(Widget *a_parent_ptr = 0);
   virtual ~ImageView();
 
   virtual void set_size(const QSizeF &a_size);

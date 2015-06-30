@@ -16,7 +16,7 @@ class DECL_UI_KIT_EXPORT Label : public Widget {
   Q_INTERFACES(QGraphicsLayoutItem)
 
 public:
-  explicit Label(QGraphicsObject *a_parent_ptr = 0);
+  explicit Label(Widget *a_parent_ptr = 0);
 
   virtual ~Label();
 

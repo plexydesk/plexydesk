@@ -6,11 +6,13 @@
 namespace UIKit {
 class CalendarView : public UIKit::Widget {
 public:
-  explicit CalendarView(QGraphicsObject *a_parent_ptr = 0);
+  explicit CalendarView(Widget *a_parent_ptr = 0);
   virtual ~CalendarView();
 
   virtual void set_date(const QDate &a_date);
   virtual QDate a_date() const;
+
+  virtual QRectF geometry() const;
 
   virtual void next();
   virtual void previous();

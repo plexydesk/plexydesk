@@ -16,7 +16,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT Button : public Widget {
   Q_OBJECT
 public:
-  explicit Button(QGraphicsObject *a_parent_ptr = 0);
+  explicit Button(Widget *a_parent_ptr = 0);
   virtual ~Button();
 
   virtual void set_label(const QString &a_txt);

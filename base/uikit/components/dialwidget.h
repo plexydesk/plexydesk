@@ -10,7 +10,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT DialWidget : public UIKit::Widget {
   Q_OBJECT
 public:
-  DialWidget(QGraphicsObject *a_parent_ptr = 0);
+  DialWidget(Widget *a_parent_ptr = 0);
 
   virtual ~DialWidget();
 

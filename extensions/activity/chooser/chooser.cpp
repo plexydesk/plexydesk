@@ -68,7 +68,6 @@ public:
 
   QVariantMap m_activity_result;
 
-  ChooserActionDelegate *m_action_delegate;
   bool m_auto_scale_frame;
 
   QMap<int, QVariant> m_action_map;

@@ -29,7 +29,7 @@ public:
   qreal mTextScaleFactor;
 };
 
-TextEditor::TextEditor(QGraphicsObject *parent)
+TextEditor::TextEditor(Widget *parent)
     : UIKit::Widget(parent), d(new PrivateTextEditor) {
   d->mProxyWidget = new QGraphicsProxyWidget(this);
   d->mEditor = new QTextBrowser(0);

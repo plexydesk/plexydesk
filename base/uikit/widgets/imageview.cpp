@@ -18,7 +18,7 @@ public:
   QPixmap mPixmap;
 };
 
-ImageView::ImageView(QGraphicsObject *parent)
+ImageView::ImageView(Widget *parent)
     : Widget(parent), d(new PrivateImageView) {
   setFlag(QGraphicsItem::ItemIsMovable, true);
 }

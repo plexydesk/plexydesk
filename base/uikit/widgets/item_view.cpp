@@ -28,7 +28,7 @@ public:
   std::function<void (ModelViewItem *)> m_item_remove_handler;
 };
 
-ItemView::ItemView(QGraphicsObject *parent, ModelType a_model_type)
+ItemView::ItemView(Widget *parent, ModelType a_model_type)
     : Widget(parent), d(new PrivateModelView) {
   d->m_model_view_type = a_model_type;
   d->m_scroll_frame = new QGraphicsWidget(this);

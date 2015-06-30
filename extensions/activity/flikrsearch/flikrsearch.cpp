@@ -43,7 +43,7 @@ public:
     // if (m_view_delegate_window)
   }
 
-  QGraphicsWidget *m_main_frame_widget;
+  UIKit::Widget *m_main_frame_widget;
   UIKit::Widget *mWindowContentWidget;
   QGraphicsLinearLayout *m_verticle_layout;
 
@@ -83,7 +83,7 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->m_view_delegate_window->setGeometry(aWindowGeometry);
 
   d->mWindowContentWidget = new UIKit::Widget();
-  d->m_main_frame_widget = new QGraphicsWidget(d->mWindowContentWidget);
+  d->m_main_frame_widget = new UIKit::Widget(d->mWindowContentWidget);
 
   d->m_main_frame_widget->setGeometry(aWindowGeometry);
   d->mWindowContentWidget->setGeometry(aWindowGeometry);

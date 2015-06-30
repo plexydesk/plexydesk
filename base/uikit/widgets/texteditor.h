@@ -10,7 +10,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT TextEditor : public Widget {
   Q_OBJECT
 public:
-  TextEditor(QGraphicsObject *a_parent_ptr = 0);
+  TextEditor(Widget *a_parent_ptr = 0);
   virtual ~TextEditor();
 
   virtual void set_text(const QString &a_text);

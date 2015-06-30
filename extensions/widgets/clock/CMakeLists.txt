@@ -4,13 +4,11 @@ ADD_SUBDIRECTORY(clock)
 
 SET(clocksourceFiles
     clock.cpp
-    clockwidget.cpp
     clockinterface.cpp
     )
 
 SET(headerFiles
     clock.h
-    clockwidget.h
     clockinterface.h
     )
 

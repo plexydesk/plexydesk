@@ -18,7 +18,7 @@ public:
     kTableModel
   } ModelType;
 
-  ItemView(QGraphicsObject *a_parent_ptr = 0,
+  ItemView(Widget *a_parent_ptr = 0,
            ModelType a_model_type = kListModel);
   virtual ~ItemView();
 

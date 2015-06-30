@@ -1,22 +1,16 @@
 SET (sourceFiles
     chooser.cpp
     chooserinterface.cpp
-    chooseractiondelegate.cpp
-    chooseritem.cpp
     )
 
 SET(headerFiles
     chooser.h
     chooserinterface.h
-    chooseractiondelegate.h
-    chooseritem.h
     )
 
 SET (QTMOC_SRCS
     chooser.h
     chooserinterface.h
-    chooseractiondelegate.h
-    chooseritem.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})

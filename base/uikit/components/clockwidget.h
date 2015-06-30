@@ -35,7 +35,7 @@ public:
     kRunBackwards
   } Direction;
 
-  explicit ClockWidget(QGraphicsObject *a_parent_ptr = 0);
+  explicit ClockWidget(Widget *a_parent_ptr = 0);
   virtual ~ClockWidget();
 
   void set_timezone_id(const QByteArray &a_timezone_id);

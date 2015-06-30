@@ -32,7 +32,7 @@ public:
   ~PrivateTakeNote() {}
 
   UIKit::Window *mFrame;
-  QGraphicsWidget *mLayoutBase;
+  UIKit::Widget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
   UIKit::ImageButton *mAddNoteBtn;
@@ -67,7 +67,7 @@ void TakeNoteActivity::create_window(const QRectF &window_geometry,
   d->mFrame->set_widget_flag(UIKit::Widget::kConvertToWindowType);
   d->mFrame->set_widget_flag(UIKit::Widget::kRenderDropShadow);
 
-  d->mLayoutBase = new QGraphicsWidget(0);
+  d->mLayoutBase = new UIKit::Widget(0);
   d->mLayoutBase->setParentItem(d->mFrame);
 
   d->mLayout = new QGraphicsLinearLayout(d->mLayoutBase);

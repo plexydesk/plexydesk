@@ -11,7 +11,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT RangeWidget : public UIKit::Widget {
   Q_OBJECT
 public:
-  RangeWidget(QGraphicsObject *a_parent_ptr = 0);
+  RangeWidget(Widget *a_parent_ptr = 0);
 
   virtual ~RangeWidget();
 

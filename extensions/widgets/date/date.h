@@ -20,6 +20,7 @@
 #define DATE_DATA_H
 
 #include <view_controller.h>
+#include <viewbuilder.h>
 
 class DateControllerImpl : public UIKit::ViewController {
 public:
@@ -39,6 +40,8 @@ public:
   void request_action(const QString &a_name, const QVariantMap &a_args);
 
   QString icon() const;
+  void create_ui_calendar_ui(UIKit::SessionSync *a_session);
+  void add_action_button(UIKit::ViewBuilder *ui, int a_row, int a_col, const std::string &a_label, const std::string &a_icon);
 private:
   void create_calendar_ui(UIKit::SessionSync *a_session);
 
