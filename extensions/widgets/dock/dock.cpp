@@ -36,6 +36,7 @@
 #include <plexyconfig.h>
 #include <extensionmanager.h>
 #include <imageview.h>
+#include <viewbuilder.h>
 
 using namespace UIKit;
 
@@ -48,7 +49,6 @@ public:
   Window *m_dock_window;
   Window *m_preview_window;
 
-  UIKit::ToolBar *m_navigation_dock;
   UIKit::ItemView *m_preview_widget;
 
   QMap<QString, int> m_actions_map;
@@ -69,31 +69,13 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   d->m_actions_map["ShowMenu"] = 5;
 
   d->m_main_panel_is_hidden = true;
-  // navigation
-  d->m_navigation_dock = new UIKit::ToolBar();
-  d->m_navigation_dock->set_controller(this);
-  d->m_navigation_dock->set_orientation(Qt::Vertical);
-  d->m_navigation_dock->set_icon_resolution("hdpi");
-  d->m_navigation_dock->set_icon_size(QSize(48, 48));
 
-  d->m_navigation_dock->add_action(tr("Up"), "actions/pd_to_top", false);
-  d->m_navigation_dock->add_action(tr("Expose"), "actions/pd_view_grid", false);
-  d->m_navigation_dock->add_action(tr("Add"), "actions/pd_add", false);
-  d->m_navigation_dock->add_action(tr("Menu"), "actions/pd_overflow_tab", false);
-  d->m_navigation_dock->add_action(tr("Seamless"), "actions/pd_browser", false);
-  d->m_navigation_dock->add_action(tr("Close"), "actions/pd_delete", false);
-  d->m_navigation_dock->add_action(tr("Down"), "actions/pd_to_bottom", false);
-
-  d->m_navigation_dock->setGeometry(d->m_navigation_dock->frame_geometry());
-  d->m_navigation_dock->on_item_activated([this](const QString &a_action) {
-      onNavigationPanelClicked(a_action);
-  });
   // menu
   d->m_preview_widget = new UIKit::ItemView();
   d->m_preview_widget->on_item_removed([this](UIKit::ModelViewItem *a_item) {
-      if (a_item) {
-          delete a_item;
-        }
+    if (a_item) {
+      delete a_item;
+    }
   });
   d->m_preview_widget->on_activated([this](int index) {
     if (this->viewport() && this->viewport()->workspace()) {
@@ -153,20 +135,82 @@ void DockControllerImpl::init() {
   });
 
   d->m_dock_window = new UIKit::Window();
+  d->m_dock_window->set_window_type(Window::kPanelWindow);
+
   d->m_preview_window = new UIKit::Window();
 
-  d->m_dock_window->set_window_type(Window::kPanelWindow);
   d->m_preview_window->set_window_type(Window::kPopupWindow);
   d->m_preview_window->enable_window_background(false);
 
-  d->m_dock_window->set_window_content(d->m_navigation_dock);
+  // navigation
+  UIKit::ViewBuilder *build = new UIKit::ViewBuilder(d->m_dock_window);
+  build->set_margine(6, 10, 10, 10);
+  build->set_geometry(0, 0, 48 + 10, 48 * 7);
+  build->set_row_count(7);
+
+  std::string default_height = std::to_string((48.0 / (48.0 * 7)) * 100) + "%";
+
+  for (int i = 0; i < 7; i++) {
+    build->split_row(i, 1);
+    build->set_row_height(i, default_height);
+  }
+
+  UIKit::ViewProperties accept_button_prop;
+
+  accept_button_prop["label"] = "Up";
+  accept_button_prop["icon"] = "actions/pd_to_top.png";
+  build->add_widget(0, 0, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "Expose";
+  accept_button_prop["icon"] = "actions/pd_view_grid.png";
+  build->add_widget(1, 0, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "Add";
+  accept_button_prop["icon"] = "actions/pd_add.png";
+  build->add_widget(2, 0, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "Menu";
+  accept_button_prop["icon"] = "actions/pd_overflow_tab.png";
+  build->add_widget(3, 0, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "Desktop";
+  accept_button_prop["icon"] = "actions/pd_browser.png";
+  build->add_widget(4, 0, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "Close";
+  accept_button_prop["icon"] = "actions/pd_delete.png";
+  build->add_widget(5, 0, "image_button", accept_button_prop);
+
+  accept_button_prop["label"] = "Dow";
+  accept_button_prop["icon"] = "actions/pd_to_bottom.png";
+  build->add_widget(6, 0, "image_button", accept_button_prop);
+
+  // connect to notifications.
+  for (int i = 0; i < 7; i++) {
+    UIKit::ImageButton *btn =
+        dynamic_cast<UIKit::ImageButton *>(build->at(i, 0));
+
+    if (!btn)
+      continue;
+
+    UIKit::Widget::InputCallback callback = [=](
+        UIKit::Widget::InputEvent a_event, const UIKit::Widget *a_widget) {
+      if (a_event == UIKit::Widget::kMouseReleaseEvent) {
+        onNavigationPanelClicked(btn->label());
+      }
+    };
+
+    btn->on_input_event(callback);
+  }
+
+  //base->setGeometry(build->ui()->geometry());
+  d->m_dock_window->set_window_content(build->ui());
   d->m_preview_window->set_window_content(d->m_preview_widget);
 
   insert(d->m_dock_window);
   insert(d->m_preview_window);
 
   d->m_preview_window->hide();
-  d->m_navigation_dock->show();
 }
 
 void DockControllerImpl::session_data_available(
@@ -179,9 +223,8 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
     return;
   }
 
-  d->m_dock_window->setPos(viewport()->center(d->m_dock_window->geometry(),
-                                              QRectF(),
-                                              Space::kCenterOnViewportLeft));
+  d->m_dock_window->setPos(viewport()->center(
+      d->m_dock_window->geometry(), QRectF(), Space::kCenterOnViewportLeft));
 
   d->m_preview_widget->set_view_geometry(
       QRectF(0.0, 0.0, 256, rect.height() - 24.0));
@@ -189,7 +232,7 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
   d->m_preview_window->setGeometry(QRectF(0.0, 0.0, 256, rect.height()));
 
   d->m_preview_window->setPos(
-      rect.x() + d->m_navigation_dock->frame_geometry().width() + 5,
+      rect.x() + d->m_dock_window->geometry().width() + 5,
       rect.y() + 24.0);
 
   d->m_preview_window->hide();
@@ -214,10 +257,10 @@ void DockControllerImpl::request_action(const QString &actionName,
 
     return;
   } else if (actionName.toLower() == "show-dock") {
-    d->m_navigation_dock->show();
+    d->m_dock_window->show();
     return;
   } else if (actionName.toLower() == "hide-dock") {
-    d->m_navigation_dock->hide();
+    d->m_dock_window->hide();
     return;
   } else if (actionName.toLower() == "show-expose") {
     if (d->m_preview_window->isVisible()) {
@@ -453,42 +496,42 @@ void DockControllerImpl::removeSpace() {
 
 void DockControllerImpl::onNavigationPanelClicked(const QString &action) {
   if (action == tr("Close")) {
-      removeSpace();
-      return;
-    } else if (action == tr("Up")) {
-      this->previousSpace();
-    } else if (action == tr("Down")) {
-      this->nextSpace();
-    } else if (action == tr("Seamless")) {
-      this->toggleSeamless();
-    } else if (action == tr("Expose")) {
-      if (d->m_preview_window->isVisible()) {
-          d->m_preview_window->hide();
-          if (d->m_preview_widget)
-            d->m_preview_widget->clear();
-        } else {
-          updatePreview();
-          d->m_preview_window->show();
-        }
-      return;
-    } else if (action == tr("Menu")) {
-      if (!viewport() || !viewport()->workspace()) {
-          return;
-      }
-
-      QPointF _menu_pos =
-          viewport()->center(d->m_action_activity->window()->boundingRect(),
-                             QRectF(), UIKit::Space::kCenterOnViewportLeft);
-      _menu_pos.setX(d->m_navigation_dock->frame_geometry().width() + 5);
-
-      if (d->m_action_activity && d->m_action_activity->window()) {
-          d->m_action_activity->window()->setPos(_menu_pos);
-          d->m_action_activity->window()->show();
-        }
-
-    } else if (action == tr("Add")) {
-      onAddSpaceButtonClicked();
+    removeSpace();
+    return;
+  } else if (action == tr("Up")) {
+    this->previousSpace();
+  } else if (action == tr("Down")) {
+    this->nextSpace();
+  } else if (action == tr("Seamless")) {
+    this->toggleSeamless();
+  } else if (action == tr("Expose")) {
+    if (d->m_preview_window->isVisible()) {
+      d->m_preview_window->hide();
+      if (d->m_preview_widget)
+        d->m_preview_widget->clear();
+    } else {
+      updatePreview();
+      d->m_preview_window->show();
     }
+    return;
+  } else if (action == tr("Menu")) {
+    if (!viewport() || !viewport()->workspace()) {
+      return;
+    }
+
+    QPointF _menu_pos =
+        viewport()->center(d->m_action_activity->window()->boundingRect(),
+                           QRectF(), UIKit::Space::kCenterOnViewportLeft);
+    _menu_pos.setX(d->m_dock_window->geometry().width() + 5);
+
+    if (d->m_action_activity && d->m_action_activity->window()) {
+      d->m_action_activity->window()->setPos(_menu_pos);
+      d->m_action_activity->window()->show();
+    }
+
+  } else if (action == tr("Add")) {
+    onAddSpaceButtonClicked();
+  }
 }
 
 void DockControllerImpl::onAddSpaceButtonClicked() {
@@ -524,56 +567,36 @@ void DockControllerImpl::updatePreview() {
     float lWidth = 0;
 
     if (_workspace) {
-        foreach(UIKit::Space * _space, _workspace->current_spaces()) {
-            QPixmap _preview = _workspace->thumbnail(_space);
+      foreach(UIKit::Space * _space, _workspace->current_spaces()) {
+        QPixmap _preview = _workspace->thumbnail(_space);
 
-            UIKit::ImageView *p = new UIKit::ImageView();
+        UIKit::ImageView *p = new UIKit::ImageView();
 
-            p->setMinimumSize(_preview.size());
-            p->set_pixmap(_preview);
-            lHeight += _preview.size().height();
-            lWidth = _preview.size().width();
+        p->setMinimumSize(_preview.size());
+        p->set_pixmap(_preview);
+        lHeight += _preview.size().height();
+        lWidth = _preview.size().width();
 
-            UIKit::ModelViewItem *model_item = new UIKit::ModelViewItem();
-            model_item->set_view(p);
-            model_item->on_view_removed([=](UIKit::ModelViewItem *a_item) {
-                if (a_item && a_item->view()) {
-                    UIKit::Widget *view = a_item->view();
-                    if (view)
-                      delete view;
-                  }
-            });
-
-            d->m_preview_widget->insert(model_item);
+        UIKit::ModelViewItem *model_item = new UIKit::ModelViewItem();
+        model_item->set_view(p);
+        model_item->on_view_removed([=](UIKit::ModelViewItem *a_item) {
+          if (a_item && a_item->view()) {
+            UIKit::Widget *view = a_item->view();
+            if (view)
+              delete view;
           }
+        });
+
+        d->m_preview_widget->insert(model_item);
       }
+    }
 
     QPointF lMenuPos =
         viewport()->center(d->m_action_activity->window()->boundingRect(),
                            QRectF(), UIKit::Space::kCenterOnViewportLeft);
 
-    lMenuPos.setX(d->m_navigation_dock->geometry().width() + 5.0);
+    lMenuPos.setX(d->m_dock_window->geometry().width() + 5.0);
     d->m_preview_window->setGeometry(
         QRectF(lMenuPos.x(), lMenuPos.y(), lWidth, lHeight + 24));
-  }
-}
-
-void DockControllerImpl::onPreviewItemClicked(TableViewItem *item) {
-  DefaultTableComponent *_item = qobject_cast<DefaultTableComponent *>(item);
-
-  if (_item) {
-    bool _ok = false;
-    int _space_id = _item->label().toUInt(&_ok);
-
-    if (_ok) {
-      if (this->viewport() && this->viewport()->workspace()) {
-        UIKit::WorkSpace *_workspace =
-            qobject_cast<UIKit::WorkSpace *>(viewport()->workspace());
-
-        if (_workspace) {
-          _workspace->expose(_space_id);
-        }
-      }
-    }
   }
 }

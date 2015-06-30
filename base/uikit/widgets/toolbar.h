@@ -8,7 +8,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT ToolBar : public Widget {
   Q_OBJECT
 public:
-  ToolBar(QGraphicsObject *a_parent_ptr = 0);
+  ToolBar(Widget *a_parent_ptr = 0);
   virtual ~ToolBar();
 
   virtual void add_action(const QString &a_lable, const QString &a_icon,

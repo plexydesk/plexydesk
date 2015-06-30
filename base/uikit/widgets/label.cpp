@@ -24,7 +24,7 @@ public:
   bool m_mode;
 };
 
-Label::Label(QGraphicsObject *parent) : Widget(parent), d(new PrivateLabel) {
+Label::Label(Widget *parent) : Widget(parent), d(new PrivateLabel) {
   d->m_font_size = 14;
   d->m_alignment = Qt::AlignCenter;
   d->m_mode = false;
@@ -61,6 +61,7 @@ void Label::setGeometry(const QRectF &a_rect) {
     d->m_label_size = a_rect.size();
 
     update();
+    Widget::setGeometry(a_rect);
 }
 
 QRectF Label::contents_bounding_rect() const {

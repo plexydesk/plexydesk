@@ -179,6 +179,7 @@ void WorkSpace::expose_sub_region(const QRectF &a_region) {
       return;
 
   ensureVisible(a_region);
+  update();
 }
 
 void WorkSpace::paintEvent(QPaintEvent *event) {
@@ -196,12 +197,25 @@ void WorkSpace::paintEvent(QPaintEvent *event) {
   }
 
 #ifdef QT
-  //QGraphicsView::paintEvent(event);
+  QGraphicsView::paintEvent(event);
 #else
   //current_active_space()->draw();
-#endif
 
   current_active_space()->draw();
+  GraphicsSurface *surface =
+          current_active_space()->surface();
+  if (!(*surface))
+      return;
+
+  QImage device((*surface), geometry().width(),
+                geometry().height(),
+                QImage::Format_ARGB32_Premultiplied);
+  QPainter p;
+  p.begin(viewport());
+  //p.fillRect(event->rect(), QColor("#ffffff"));
+  p.drawImage(event->rect(), device);
+  p.end();
+#endif
 }
 
 void WorkSpace::dragEnterEvent(QDragEnterEvent *a_event_ptr) {

@@ -21,7 +21,7 @@ public:
   int mProgressValue;
 };
 
-RangeWidget::RangeWidget(QGraphicsObject *parent)
+RangeWidget::RangeWidget(Widget *parent)
     : UIKit::Widget(parent), d(new PrivateRangeWidget) {
   this->set_widget_flag(UIKit::Widget::kRenderBackground);
   this->set_widget_flag(UIKit::Widget::kConvertToWindowType, false);

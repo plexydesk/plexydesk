@@ -266,6 +266,7 @@ void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
 
 void CocoaStyle::draw_window_frame(const StyleFeatures &features,
                                    QPainter *a_ctx) {
+    qDebug() << Q_FUNC_INFO;
   QRectF rect = features.geometry.adjusted(4, 4, -4, -4);
 
   a_ctx->save();

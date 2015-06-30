@@ -26,7 +26,7 @@ public:
   QVariantAnimation *mProgressAnimation;
 };
 
-ProgressBar::ProgressBar(QGraphicsObject *parent)
+ProgressBar::ProgressBar(Widget *parent)
     : Widget(parent), d(new PrivateProgressBar) {
   d->mMaxValue = 100.0;
   d->mMinValue = 1.0;

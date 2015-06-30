@@ -27,7 +27,6 @@
 #include <desktopactivity.h>
 #include <widget.h>
 #include <window.h>
-#include <abstractcellcomponent.h>
 
 using namespace UIKit;
 

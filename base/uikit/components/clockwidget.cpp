@@ -77,7 +77,7 @@ public:
   std::vector<timeout_callback_func> m_timeout_callback_list;
 };
 
-ClockWidget::ClockWidget(QGraphicsObject *parent)
+ClockWidget::ClockWidget(Widget *parent)
     : UIKit::Widget(parent), d(new PrivateClockWidget) {
   d->m_clock_timer = new QTimer(this);
   d->m_range_timer = new QTimer(this);

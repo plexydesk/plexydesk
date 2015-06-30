@@ -12,7 +12,7 @@ namespace UIKit {
 class DECL_UI_KIT_EXPORT LineEdit : public Widget {
   Q_OBJECT
 public:
-  explicit LineEdit(QGraphicsObject *a_parent_ptr = 0);
+  explicit LineEdit(Widget *a_parent_ptr = 0);
   virtual ~LineEdit();
 
   virtual void set_text(const QString &a_txt);

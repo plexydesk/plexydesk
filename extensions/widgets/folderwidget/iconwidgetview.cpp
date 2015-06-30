@@ -21,7 +21,7 @@ public:
   FolderProvider *mFolderViewSource;
 };
 
-IconWidgetView::IconWidgetView(QGraphicsObject *parent)
+IconWidgetView::IconWidgetView(Widget *parent)
     : UIKit::Widget(parent), d(new PrivateIconWidgetView) {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->set_widget_flag(UIKit::Widget::kRenderBackground, false);

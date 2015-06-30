@@ -22,7 +22,7 @@ public:
   } ScalingMode;
 
   explicit ClassicBackgroundRender(const QRectF &rect,
-                                   QGraphicsObject *a_parent_ptr = 0,
+                                   Widget *a_parent_ptr = 0,
                                    const QImage &background_image = QImage());
 
   void setBackgroundImage(const QString &path);

@@ -35,7 +35,7 @@ public:
   QGraphicsObject *m_viewport;
 };
 
-ScrollWidget::ScrollWidget(const QRectF &a_rect, QGraphicsObject *parent)
+ScrollWidget::ScrollWidget(const QRectF &a_rect, Widget *parent)
     : Widget(parent), d(new Private) {
   d->m_viewport = 0;
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);

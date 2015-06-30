@@ -20,7 +20,7 @@ public:
   ~PrivateChooserItem() {}
 
   // UI::Button *mOptButton;
-  QGraphicsWidget *mLayoutBase;
+  UIKit::Widget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
   QGraphicsGridLayout *mGridLayout;
   QRectF mBoundingRect;
@@ -44,8 +44,8 @@ GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
   d->mType = type;
   // this->setCacheMode(DeviceCoordinateCache);
 
-  d->mLayoutBase = new QGraphicsWidget(this);
-  d->mLayout = new QGraphicsLinearLayout(this);
+  d->mLayoutBase = new UIKit::Widget();
+  d->mLayout = new QGraphicsLinearLayout(d->mLayoutBase);
 
   d->mImageView = new UIKit::ImageView(d->mLayoutBase);
   d->mImageView->set_pixmap(

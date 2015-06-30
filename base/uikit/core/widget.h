@@ -33,6 +33,9 @@ namespace UIKit {
  * @brief The Base Class for All types of Desktop Widgets.
  */
 class ViewController;
+typedef unsigned char * GraphicsSurface;
+typedef std::function<void (const Widget *)> UpdateCallback;
+typedef std::vector<Widget *> WidgetList;
 
 class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
                                   public QGraphicsLayoutItem {
@@ -63,7 +66,7 @@ public:
 
   typedef std::function<void(InputEvent, const Widget *)> InputCallback;
 
-  Widget(QGraphicsObject *a_parent_ptr = 0);
+  Widget(Widget *a_parent_ptr = 0);
   virtual ~Widget();
 
   void setGeometry(const QRectF &a_rect);
@@ -81,7 +84,7 @@ public:
   virtual StylePtr style() const;
 
   virtual RenderLevel layer_type() const;
-  virtual void set_layer_type(RenderLevel a_level) const;
+  virtual void set_layer_type(RenderLevel a_level);
 
   virtual void set_widget_flag(int a_flags, bool a_enable = true);
 
@@ -97,6 +100,11 @@ public:
   //experimental.
   virtual void draw();
   virtual void render(unsigned char ** a_ctx);
+  virtual GraphicsSurface *surface();
+  virtual void request_update();
+  virtual void on_update(UpdateCallback a_callback);
+
+  virtual WidgetList children();
 
 Q_SIGNALS:
   void clicked();
