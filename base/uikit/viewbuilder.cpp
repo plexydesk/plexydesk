@@ -7,6 +7,9 @@
 #include <imagebutton.h>
 #include <label.h>
 #include <texteditor.h>
+#include <calendarwidget.h>
+#include <clockwidget.h>
+
 #include <widget.h>
 
 namespace UIKit {
@@ -52,6 +55,8 @@ public:
 
   Widget *add_new_text_edit_at(int a_row, int a_col,
                                const ViewProperties &a_props);
+  Widget *add_new_calendar_at(int a_row, int a_col,
+                              const ViewProperties &a_props);
 
   void layout();
 
@@ -87,6 +92,7 @@ void ViewBuilder::set_geometry(float a_x, float a_y, float a_width,
   d->m_content_frame->setGeometry(d->m_grid_geometry);
   set_margine(d->m_left_margine, d->m_right_margine, d->m_top_margine,
               d->m_bottom_margine);
+  layout();
 }
 
 void ViewBuilder::set_margine(float a_left, float a_right, float a_top,
@@ -101,6 +107,7 @@ void ViewBuilder::set_margine(float a_left, float a_right, float a_top,
                                (a_top + a_bottom));
 
   d->m_content_frame->setPos(a_left, a_top);
+  layout();
 }
 
 void ViewBuilder::PrivateViewBuilder::layout() {
@@ -124,7 +131,7 @@ void ViewBuilder::add_column(int a_count) { d->m_column_count = a_count; }
 
 void ViewBuilder::split_column(int a_column_index, int a_count) {}
 
-void ViewBuilder::add_rows(int a_row_count) {
+void ViewBuilder::set_row_count(int a_row_count) {
   d->m_row_count = a_row_count;
   for (int i = 0; i < a_row_count; i++) {
     if (!(d->m_row_data[i] > 1))
@@ -205,6 +212,9 @@ Widget *ViewBuilder::add_widget(int a_row, int a_column,
   case kImageButton:
     rv = d->add_new_image_button_at(a_row, a_column, a_properties);
     break;
+  case kCalendar:
+    rv = d->add_new_calendar_at(a_row, a_column, a_properties);
+    break;
   default:
     rv = 0;
   }
@@ -242,6 +252,8 @@ void ViewBuilder::PrivateViewBuilder::build_ui_map() {
   m_ui_dict["dial"] = ViewBuilder::kDial;
   m_ui_dict["model_view"] = ViewBuilder::kModelView;
   m_ui_dict["divider"] = ViewBuilder::kDivider;
+  m_ui_dict["calendar"] = ViewBuilder::kCalendar;
+  m_ui_dict["clock"] = ViewBuilder::kClock;
 }
 
 float ViewBuilder::PrivateViewBuilder::get_layout_width() { return 0; }
@@ -446,5 +458,20 @@ Widget *ViewBuilder::PrivateViewBuilder::add_new_text_edit_at(
   layout();
 
   return editor;
+}
+
+Widget *ViewBuilder::PrivateViewBuilder::add_new_calendar_at(
+    int a_row, int a_col, const ViewProperties &a_props) {
+  CalendarView *calendar = new CalendarView(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = calendar;
+  m_ui_type_dict[pos] = kTextEdit;
+
+  calendar->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                               calculate_cell_height(a_row, a_col)));
+  layout();
+
+  return calendar;
 }
 }
