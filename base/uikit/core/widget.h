@@ -69,7 +69,7 @@ public:
   Widget(Widget *a_parent_ptr = 0);
   virtual ~Widget();
 
-  void setGeometry(const QRectF &a_rect);
+  virtual void setGeometry(const QRectF &a_rect);
   virtual QRectF boundingRect() const;
 
   virtual void set_controller(ViewController *a_view_controller_ptr);
@@ -103,11 +103,7 @@ public:
   virtual GraphicsSurface *surface();
   virtual void request_update();
   virtual void on_update(UpdateCallback a_callback);
-
   virtual WidgetList children();
-
-Q_SIGNALS:
-  void clicked();
 
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
