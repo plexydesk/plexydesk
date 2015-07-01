@@ -223,21 +223,21 @@ void
 DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
   UIKit::Window *window = new UIKit::Window();
 
-  UIKit::ViewBuilder *view = new UIKit::ViewBuilder(window);
-  view->set_margine(10, 10, 10, 10);
+  UIKit::HybridLayout *view = new UIKit::HybridLayout(window);
+  view->set_content_margin(10, 10, 10, 10);
   view->set_geometry(0, 0, 320, 200);
 
-  view->set_row_count(2);
-  view->split_row(0, 1);
-  view->split_row(1, 4);
+  view->set_horizontal_segment_count(2);
+  view->add_horizontal_segments(0, 1);
+  view->add_horizontal_segments(1, 4);
 
-  view->set_row_height(0, "85%");
-  view->set_row_height(1, "15%");
+  view->set_horizontal_height(0, "85%");
+  view->set_horizontal_height(1, "15%");
 
-  UIKit::ViewProperties top_label_prop;
+  UIKit::WidgetProperties top_label_prop;
   top_label_prop["label"] = "reminder";
 
-  UIKit::ViewProperties text_editor_prop;
+  UIKit::WidgetProperties text_editor_prop;
   text_editor_prop["text"] = "";
 
   if (a_session->session_keys().contains("text")) {
@@ -245,7 +245,7 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
         std::string(a_session->session_data("text").toByteArray());
   }
 
-  UIKit::ViewProperties accept_button_prop;
+  UIKit::WidgetProperties accept_button_prop;
 
   view->add_widget(0, 0, "text_edit", text_editor_prop);
 
@@ -278,7 +278,7 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
   accept_button_prop["icon"] = "actions/pd_delete.png";
   view->add_widget(1, 3, "image_button", accept_button_prop);
 
-  window->set_window_content(view->ui());
+  window->set_window_content(view->viewport());
   window->set_window_title("Reminder");
 
   a_session->bind_to_window(window);
@@ -349,7 +349,7 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
             editor->style("border: 0; background: #29CDA8; color: #ffffff");
         }
 
-        UIKit::ViewProperties update_prop;
+        UIKit::WidgetProperties update_prop;
         if (is_complete) {
           update_prop["label"] = "Done";
           update_prop["icon"] = "actions/pd_done.png";

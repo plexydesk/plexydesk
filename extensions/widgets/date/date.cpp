@@ -101,35 +101,31 @@ void DateControllerImpl::request_action(const QString &a_name,
 
 QString DateControllerImpl::icon() const { return QString(); }
 
-void DateControllerImpl::add_action_button(UIKit::ViewBuilder *ui,
+void DateControllerImpl::add_action_button(UIKit::HybridLayout *ui,
                                            int a_row,
                                            int a_col,
                                            const std::string &a_label,
                                            const std::string &a_icon)
 {
-    UIKit::ViewProperties ui_data;
+    UIKit::WidgetProperties ui_data;
     ui_data["label"] = a_label;
     ui_data["icon"] = "actions/" + a_icon + ".png";
     ui->add_widget(a_row, a_col, "image_button", ui_data);
 }
 
 void DateControllerImpl::create_ui_calendar_ui(UIKit::SessionSync *a_session) {
-
   UIKit::Window *window = new UIKit::Window();
+  UIKit::HybridLayout *ui = new UIKit::HybridLayout(window);
 
-  UIKit::ViewBuilder *ui = new UIKit::ViewBuilder(window);
-
-  ui->set_margine(10, 10, 10, 10);
+  ui->set_content_margin(10, 10, 10, 10);
   ui->set_geometry(0, 0, 360, 480);
+  ui->set_horizontal_segment_count(2);
+  ui->add_horizontal_segments(0, 1);
+  ui->add_horizontal_segments(1, 3);
+  ui->set_horizontal_height(0, "95%");
+  ui->set_horizontal_height(1, "5%");
 
-  ui->set_row_count(2);
-  ui->split_row(0, 1);
-  ui->split_row(1, 3);
-
-  ui->set_row_height(0, "95%");
-  ui->set_row_height(1, "5%");
-
-  UIKit::ViewProperties ui_data;
+  UIKit::WidgetProperties ui_data;
   ui_data["text"] + "";
 
   ui->add_widget(0, 0, "calendar", ui_data);
@@ -138,9 +134,10 @@ void DateControllerImpl::create_ui_calendar_ui(UIKit::SessionSync *a_session) {
   add_action_button(ui, 1, 1, "Zoom Out", "pd_zoom_out");
   add_action_button(ui, 1, 2, "Tasks", "pd_view_list");
 
-  window->set_window_content(ui->ui());
+  window->set_window_content(ui->viewport());
 
   a_session->bind_to_window(window);
+
   window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
   });

@@ -40,7 +40,7 @@ public:
   void request_action(const QString &a_name, const QVariantMap &a_args);
 
   QString icon() const;
-  void add_action_button(UIKit::ViewBuilder *ui, int a_row, int a_col, const std::string &a_label, const std::string &a_icon);
+  void add_action_button(UIKit::HybridLayout *ui, int a_row, int a_col, const std::string &a_label, const std::string &a_icon);
 
 private:
   void create_ui_calendar_ui(UIKit::SessionSync *a_session);

@@ -40,6 +40,7 @@
 // Qt
 #include <QAction>
 #include <label.h>
+#include <viewbuilder.h>
 
 class Clock::PrivateClockController {
 public:
@@ -48,9 +49,12 @@ public:
 
   void _create_clock_ui(Clock *a_controller, UIKit::SessionSync *a_session);
   void _create_timer_ui(Clock *a_controller, UIKit::SessionSync *a_session);
+  void setup_create_clock_ui(Clock *a_controller,
+                             UIKit::SessionSync *a_session);
+  void add_action_button(UIKit::HybridLayout *ui, int a_row, int a_col,
+                         const std::string &a_label, const std::string &a_icon);
 
   UIKit::ActionList m_supported_action_list;
-  void _create_countdown_ui(Clock *a_controller, UIKit::SessionSync *a_session);
 };
 
 Clock::Clock(QObject *parent)
@@ -79,8 +83,6 @@ void Clock::init() {
                                              "pd_clock_frame_icon.png");
   d->m_supported_action_list << createAction(3, tr("Alarm"),
                                              "pd_clock_frame_icon.png");
-  d->m_supported_action_list << createAction(3, tr("Countdown"),
-                                             "pd_clock_frame_icon.png");
 }
 
 void Clock::set_view_rect(const QRectF &rect) {}
@@ -89,25 +91,18 @@ void
 Clock::session_data_available(const QuetzalKit::SyncObject &a_session_root) {
   revoke_previous_session("Clock", [this](UIKit::ViewController *a_controller,
                                           UIKit::SessionSync *a_session) {
-    d->_create_clock_ui((Clock *)a_controller, a_session);
+    d->setup_create_clock_ui((Clock *)a_controller, a_session);
   });
 
   revoke_previous_session("Timer", [this](UIKit::ViewController *a_controller,
                                           UIKit::SessionSync *a_session) {
     d->_create_timer_ui((Clock *)a_controller, a_session);
   });
-
-  revoke_previous_session("Countdown",
-                          [this](UIKit::ViewController *a_controller,
-                                 UIKit::SessionSync *a_session) {
-    d->_create_countdown_ui((Clock *)a_controller, a_session);
-  });
 }
 
 void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj) {
   write_session_data("Clock");
   write_session_data("Timer");
-  write_session_data("Countdown");
 }
 
 bool Clock::remove_widget(UIKit::Widget *widget) {
@@ -139,7 +134,8 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
     start_session("Clock", session_args, false,
                   [this](UIKit::ViewController *a_controller,
                          UIKit::SessionSync *a_session) {
-      d->_create_clock_ui((Clock *)a_controller, a_session);
+      // d->_create_clock_ui((Clock *)a_controller, a_session);
+      d->setup_create_clock_ui((Clock *)a_controller, a_session);
     });
     return;
   }
@@ -156,25 +152,7 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
     start_session("Timer", session_args, false,
                   [this](UIKit::ViewController *a_controller,
                          UIKit::SessionSync *a_session) {
-      qDebug() << Q_FUNC_INFO << "Create Timer";
       d->_create_timer_ui((Clock *)a_controller, a_session);
-    });
-    return;
-  }
-
-  if (actionName == tr("Countdown")) {
-    QVariantMap session_args;
-
-    session_args["x"] = window_location.x();
-    session_args["y"] = window_location.y();
-    session_args["countdown_id"] = session_count();
-    session_args["database_name"] =
-        QString::fromStdString(session_database_name("countdown"));
-
-    start_session("Countdown", session_args, false,
-                  [this](UIKit::ViewController *a_controller,
-                         UIKit::SessionSync *a_session) {
-      d->_create_countdown_ui((Clock *)a_controller, a_session);
     });
     return;
   }
@@ -184,63 +162,55 @@ QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
 
 void Clock::onDataUpdated(const QVariantMap &data) {}
 
-void
-Clock::PrivateClockController::_create_countdown_ui(Clock *a_controller,
-                                                UIKit::SessionSync *a_session) {
-  float window_width = 200;
+void Clock::PrivateClockController::add_action_button(
+    UIKit::HybridLayout *ui, int a_row, int a_col, const std::string &a_label,
+    const std::string &a_icon) {
+  UIKit::WidgetProperties ui_data;
+  ui_data["label"] = a_label;
+  ui_data["icon"] = "actions/" + a_icon + ".png";
+  ui->add_widget(a_row, a_col, "image_button", ui_data);
+}
 
-  UIKit::Window *m_clock_session_window = new UIKit::Window();
-  UIKit::Widget *m_content_view = new UIKit::Widget(m_clock_session_window);
+void Clock::PrivateClockController::setup_create_clock_ui(
+    Clock *a_controller, UIKit::SessionSync *a_session) {
+  UIKit::Window *window = new UIKit::Window();
+  UIKit::HybridLayout *ui = new UIKit::HybridLayout(window);
 
-  UIKit::Label *m_countdown_widget =
-          new UIKit::Label(m_content_view);
-  UIKit::ToolBar *m_toolbar = new UIKit::ToolBar(m_content_view);
-  UIKit::Label *m_timezone_label = new UIKit::Label(m_toolbar);
-  m_timezone_label->set_size(QSizeF(window_width - 72, 32));
+  ui->set_content_margin(10, 10, 10, 10);
+  ui->set_geometry(0, 0, 320, 320);
 
-  m_content_view->setGeometry(QRectF(0, 0, window_width, window_width));
-  m_countdown_widget->set_size(QSize(window_width, window_width - 100));
-  m_countdown_widget->set_label("+");
-  m_countdown_widget->set_font_size(30);
-  m_countdown_widget->show();
-  m_clock_session_window->set_window_title("Countdown");
+  ui->set_horizontal_segment_count(2);
+  ui->add_horizontal_segments(0, 1);
+  ui->add_horizontal_segments(1, 3);
 
-  // toolbar placement.
-  m_toolbar->set_icon_resolution("hdpi");
-  m_toolbar->set_icon_size(QSize(24, 24));
+  ui->set_horizontal_height(0, "90%");
+  ui->set_horizontal_height(1, "10%");
 
-  m_toolbar->add_action("Date", "actions/pd_location", false);
-  m_toolbar->insert_widget(m_timezone_label);
+  UIKit::WidgetProperties ui_data;
+  ui_data["text"] + "";
 
-  m_toolbar->setGeometry(m_toolbar->frame_geometry());
-  m_toolbar->show();
-  m_toolbar->setPos(0, window_width - 32);
+  ui->add_widget(0, 0, "clock", ui_data);
 
-  m_clock_session_window->set_window_content(m_content_view);
+  add_action_button(ui, 1, 0, "Location", "pd_location");
+  add_action_button(ui, 1, 1, "Alarm", "pd_notification");
+  add_action_button(ui, 1, 2, "Timer", "pd_history");
 
-  a_session->bind_to_window(m_clock_session_window);
+  window->set_window_content(ui->viewport());
+  window->set_window_title("Clock");
 
-  m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
-      a_session->unbind_window(aWindow);
-  });
-
-  m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {
+  a_session->bind_to_window(window);
+  window->on_window_discarded([this](UIKit::Window *aWindow) {
     delete aWindow;
   });
 
-  m_toolbar->on_item_activated([=](const QString &a_action) {
-      //todo : invoke calendar activity to get the date ?
-  });
-
-  if (a_controller && a_controller->viewport()) {
-    a_controller->insert(m_clock_session_window);
+  if (a_controller->viewport()) {
+    a_controller->insert(window);
     QPointF window_location;
     window_location.setX(a_session->session_data("x").toFloat());
     window_location.setY(a_session->session_data("y").toFloat());
-    m_clock_session_window->setPos(window_location);
+    window->setPos(window_location);
   }
 }
-
 
 void
 Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
@@ -266,7 +236,7 @@ Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
   m_clock_session_window->set_window_title("Clock");
 
   m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
-      a_session->unbind_window(aWindow);
+    a_session->unbind_window(aWindow);
   });
 
   m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {
@@ -276,13 +246,11 @@ Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
   // toolbar placement.
   m_toolbar->set_icon_resolution("hdpi");
   m_toolbar->set_icon_size(QSize(24, 24));
+  m_toolbar->setGeometry(QRectF(0, 0, window_width - 32, 48));
 
   m_toolbar->add_action("TimeZone", "actions/pd_location", false);
   m_toolbar->insert_widget(m_timezone_label);
-
-  m_toolbar->setGeometry(m_toolbar->frame_geometry());
-  m_toolbar->show();
-  m_toolbar->setPos(0, window_width);
+  m_toolbar->setPos(10, window_width);
 
   m_clock_session_window->set_window_content(m_content_view);
 
@@ -386,22 +354,21 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
   // toolbar placement.
   m_toolbar->set_icon_resolution("hdpi");
   m_toolbar->set_icon_size(QSize(24, 24));
+  m_toolbar->setGeometry(QRectF(0, 0, window_width - 32, 48));
 
   m_toolbar->add_action("Start", "actions/pd_play", false);
   m_toolbar->insert_widget(m_timezone_label);
   m_toolbar->add_action("Pause", "actions/pd_pause", false);
   m_toolbar->add_action("Stop", "actions/pd_stop", false);
 
-  m_toolbar->setGeometry(QRectF(0, 0, window_width, 48));
-  m_toolbar->show();
-  m_toolbar->setPos(0, window_width);
+  m_toolbar->setPos(10, window_width);
 
   m_clock_session_window->set_window_content(m_content_view);
 
   a_session->bind_to_window(m_clock_session_window);
 
   m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
-      a_session->unbind_window(aWindow);
+    a_session->unbind_window(aWindow);
   });
 
   m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {

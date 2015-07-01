@@ -57,7 +57,7 @@ public:
   QVariantMap m_config_data;
 
   // new ui
-  UIKit::ViewBuilder *m_ui;
+  UIKit::HybridLayout *m_ui;
 };
 
 void NoteWidget::createToolBar() {
@@ -100,24 +100,24 @@ NoteWidget::NoteWidget(UIKit::SessionSync *a_session, UIKit::Widget *parent)
   if (!parent)
     return;
 
-  d->m_ui = new UIKit::ViewBuilder(this);
-  d->m_ui->set_margine(10, 10, 10, 20);
+  d->m_ui = new UIKit::HybridLayout(this);
+  d->m_ui->set_content_margin(10, 10, 10, 20);
   d->m_ui->set_geometry(parent->geometry().x(), parent->geometry().y(),
                         parent->geometry().width(),
                         parent->geometry().height());
-  d->m_ui->set_row_count(2);
-  d->m_ui->split_row(0, 1);
-  d->m_ui->split_row(1, 9);
-  d->m_ui->set_row_height(0, "85%");
-  d->m_ui->set_row_height(1, "15%");
+  d->m_ui->set_horizontal_segment_count(2);
+  d->m_ui->add_horizontal_segments(0, 1);
+  d->m_ui->add_horizontal_segments(1, 9);
+  d->m_ui->set_horizontal_height(0, "85%");
+  d->m_ui->set_horizontal_height(1, "15%");
 
-  UIKit::ViewProperties text_editor_prop;
+  UIKit::WidgetProperties text_editor_prop;
   text_editor_prop["text"] = "";
 
   d->m_text_editor_widget = dynamic_cast<UIKit::TextEditor *>(
       d->m_ui->add_widget(0, 0, "text_edit", text_editor_prop));
 
-  UIKit::ViewProperties button_props;
+  UIKit::WidgetProperties button_props;
 
   button_props["label"] = "Delete";
   button_props["icon"] = "actions/pd_delete.png";

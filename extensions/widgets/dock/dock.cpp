@@ -143,19 +143,19 @@ void DockControllerImpl::init() {
   d->m_preview_window->enable_window_background(false);
 
   // navigation
-  UIKit::ViewBuilder *build = new UIKit::ViewBuilder(d->m_dock_window);
-  build->set_margine(6, 10, 10, 10);
+  UIKit::HybridLayout *build = new UIKit::HybridLayout(d->m_dock_window);
+  build->set_content_margin(6, 10, 10, 10);
   build->set_geometry(0, 0, 48 + 16, 48 * 7);
-  build->set_row_count(7);
+  build->set_horizontal_segment_count(7);
 
   std::string default_height = std::to_string((48.0 / (48.0 * 7)) * 100) + "%";
 
   for (int i = 0; i < 7; i++) {
-    build->split_row(i, 1);
-    build->set_row_height(i, default_height);
+    build->add_horizontal_segments(i, 1);
+    build->set_horizontal_height(i, default_height);
   }
 
-  UIKit::ViewProperties accept_button_prop;
+  UIKit::WidgetProperties accept_button_prop;
 
   accept_button_prop["label"] = "Up";
   accept_button_prop["icon"] = "actions/pd_to_top.png";
@@ -204,7 +204,7 @@ void DockControllerImpl::init() {
   }
 
   //base->setGeometry(build->ui()->geometry());
-  d->m_dock_window->set_window_content(build->ui());
+  d->m_dock_window->set_window_content(build->viewport());
   d->m_preview_window->set_window_content(d->m_preview_widget);
 
   insert(d->m_dock_window);
