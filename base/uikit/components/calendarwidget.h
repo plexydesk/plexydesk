@@ -4,6 +4,8 @@
 #include <widget.h>
 
 namespace UIKit {
+class Widget;
+
 class CalendarView : public UIKit::Widget {
 public:
   explicit CalendarView(Widget *a_parent_ptr = 0);
@@ -16,12 +18,12 @@ public:
 
   virtual void next();
   virtual void previous();
+
 protected:
   virtual void clear();
   virtual void reset();
-
-  void add_weekday_header(int i);
   virtual void paint_view(QPainter *painter, const QRectF &rect);
+
 private:
   class PrivateCalendarWidget;
   PrivateCalendarWidget *const d;

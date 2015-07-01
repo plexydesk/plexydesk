@@ -199,17 +199,16 @@ void DesktopNotesControllerImpl::createNoteUI(UIKit::SessionSync *a_session) {
     }
   });
 
-  note->on_note_config_changed([=](const QString &a_key,
-                                   const QString &a_value) {
-    a_session->save_session_attribute(
-        session_database_name("notes"), "Notes", "notes_id",
-        a_session->session_id_to_string(), a_key.toStdString(),
-        a_value.toStdString());
-  });
+  note->on_note_config_changed(
+      [=](const QString &a_key, const QString &a_value) {
+        a_session->save_session_attribute(
+            session_database_name("notes"), "Notes", "notes_id",
+            a_session->session_id_to_string(), a_key.toStdString(),
+            a_value.toStdString());
+      });
 
-  window->on_window_discarded([this](UIKit::Window *aWindow) {
-    delete aWindow;
-  });
+  window->on_window_discarded(
+      [this](UIKit::Window *aWindow) { delete aWindow; });
 
   if (viewport()) {
     insert(window);
@@ -289,8 +288,8 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
       dynamic_cast<UIKit::ImageButton *>(view->at(1, 3));
 
   if (delete_btn) {
-    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
-                                            const UIKit::Widget *a_widget) {
+    UIKit::Widget::InputCallback func =
+        [=](UIKit::Widget::InputEvent a_event, const UIKit::Widget *a_widget) {
       if (a_event == UIKit::Widget::kMouseReleaseEvent) {
         a_session->unbind_window(window);
         window->close();
@@ -304,8 +303,8 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
       dynamic_cast<UIKit::ImageButton *>(view->at(1, 2));
 
   if (save_btn) {
-    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
-                                            const UIKit::Widget *a_widget) {
+    UIKit::Widget::InputCallback func =
+        [=](UIKit::Widget::InputEvent a_event, const UIKit::Widget *a_widget) {
       if (a_event == UIKit::Widget::kMouseReleaseEvent) {
         UIKit::TextEditor *editor =
             dynamic_cast<UIKit::TextEditor *>(view->at(0, 0));
@@ -326,16 +325,16 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
       dynamic_cast<UIKit::ImageButton *>(view->at(1, 1));
 
   if (done_btn) {
-    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
-                                            const UIKit::Widget *a_widget) {
+    UIKit::Widget::InputCallback func =
+        [=](UIKit::Widget::InputEvent a_event, const UIKit::Widget *a_widget) {
       if (a_event == UIKit::Widget::kMouseReleaseEvent) {
         UIKit::TextEditor *editor =
             dynamic_cast<UIKit::TextEditor *>(view->at(0, 0));
         bool is_complete = 0;
 
         if (a_session->session_keys().contains("state")) {
-            qDebug() << Q_FUNC_INFO << "Current state : "
-                     << a_session->session_data("state").toString();
+          qDebug() << Q_FUNC_INFO << "Current state : "
+                   << a_session->session_data("state").toString();
         }
 
         if (a_session->session_keys().contains("state") &&
@@ -375,8 +374,8 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
       dynamic_cast<UIKit::ImageButton *>(view->at(1, 0));
 
   if (set_btn) {
-    UIKit::Widget::InputCallback func = [=](UIKit::Widget::InputEvent a_event,
-                                            const UIKit::Widget *a_widget) {
+    UIKit::Widget::InputCallback func =
+        [=](UIKit::Widget::InputEvent a_event, const UIKit::Widget *a_widget) {
       if (a_event == UIKit::Widget::kMouseReleaseEvent) {
         // todo : invoke the calendar.
       }
@@ -385,9 +384,8 @@ DesktopNotesControllerImpl::createReminderUI(UIKit::SessionSync *a_session) {
     set_btn->on_input_event(func);
   }
 
-  window->on_window_discarded([this](UIKit::Window *aWindow) {
-    delete aWindow;
-  });
+  window->on_window_discarded(
+      [this](UIKit::Window *aWindow) { delete aWindow; });
 
   if (viewport()) {
     QPointF window_location;
