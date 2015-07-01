@@ -14,6 +14,8 @@ public:
   virtual void set_date(const QDate &a_date);
   virtual QDate a_date() const;
 
+  virtual void set_geometry(float a_x, float a_y, float a_width,
+                            float a_height);
   virtual QRectF geometry() const;
 
   virtual void next();

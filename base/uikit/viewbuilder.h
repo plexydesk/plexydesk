@@ -13,9 +13,9 @@ class Button;
 class ImageButton;
 class LineEdit;
 
-typedef std::map<std::string, std::string> ViewProperties;
+typedef std::map<std::string, std::string> WidgetProperties;
 
-class ViewBuilder {
+class HybridLayout {
   typedef enum {
     kAlignNone = 0,
     kAlignLeft = 1,
@@ -39,37 +39,37 @@ class ViewBuilder {
   } ViewIdentifier;
 
 public:
-  explicit ViewBuilder(Widget *a_window);
-  virtual ~ViewBuilder();
+  explicit HybridLayout(Widget *a_window);
+  virtual ~HybridLayout();
 
   virtual void set_geometry(float a_x, float a_y, float a_width,
                             float a_height);
-  virtual void set_margine(float a_left, float a_right, float a_top,
+  virtual void set_content_margin(float a_left, float a_right, float a_top,
                            float a_bottom);
 
   virtual void add_column(int a_count);
   virtual void split_column(int a_column_index, int a_count);
 
-  virtual void set_row_count(int a_count);
-  virtual void split_row(int a_index, int a_count);
-  virtual void set_row_height(int a_row, const std::string &a_height);
+  virtual void set_horizontal_segment_count(int a_count);
+  virtual void add_horizontal_segments(int a_index, int a_count);
+  virtual void set_horizontal_height(int a_row, const std::string &a_height);
   virtual void set_column_width(int a_row, int a_column, const std::string &a_width);
 
-  virtual Widget *ui() const;
+  virtual Widget *viewport() const;
   virtual Widget *at(int a_row, int a_column);
 
   virtual Widget *add_widget(int a_row, int a_column,
                              const std::string &a_widget,
-                             const ViewProperties &a_properties);
+                             const WidgetProperties &a_properties);
   virtual void update_property(int a_row, int a_column,
-                               const ViewProperties &a_properties);
+                               const WidgetProperties &a_properties);
 
 protected:
   Widget *add_new_widget_at(int a_col, int a_row,
-                            const ViewProperties &a_props);
+                            const WidgetProperties &a_props);
   Widget *add_new_button_at(int a_row, int a_col,
-                            const ViewProperties &a_props);
-  Widget *add_new_label_at(int a_col, int a_row, const ViewProperties &a_props);
+                            const WidgetProperties &a_props);
+  Widget *add_new_label_at(int a_col, int a_row, const WidgetProperties &a_props);
 
   void layout();
 

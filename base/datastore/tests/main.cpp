@@ -235,17 +235,14 @@ int main(int argc, char *argv[]) {
   // test cases:
   test_object_create();
   test_object_update();
-  /*
   test_object_find_fail();
   test_object_add_child();
   test_object_add_child();
   test_object_find();
   test_session_list();
   test_find_all();
-
   test_object_delete_matching();
   test_object_delete();
-  */
 
   qDebug() << Q_FUNC_INFO << "Done";
 
