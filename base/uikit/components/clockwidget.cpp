@@ -234,7 +234,8 @@ void ClockWidget::PrivateClockWidget::notify_timeout(const ClockWidget *a_widget
 }
 
 void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
-  QRectF rect(r.x() + 16, r.y() + 16, r.width() - 32, r.height() - 32);
+  //done intentionally to make the clock look squre.
+  QRectF rect(r.x() + 16, r.y(), r.width() - 32, r.width() - 32);
 
   StyleFeatures feature;
 
