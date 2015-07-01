@@ -98,6 +98,7 @@ void TextEditor::setGeometry(const QRectF &a_rect) {
   d->mProxyWidget->setMinimumSize(a_rect.size());
   d->mProxyWidget->setMaximumSize(a_rect.size());
   d->mProxyWidget->resize(a_rect.size());
+  d->mEditor->resize(a_rect.width() - 10, a_rect.height());
   d->mEditor->move(0.0, 0.0);
 
   Widget::setGeometry(a_rect);
@@ -149,7 +150,7 @@ void TextEditor::convert_to_link() {
   const QMimeData *mimeData = clipboard->mimeData();
 
   if (mimeData->hasUrls()) {
-    Q_FOREACH(const QUrl & url, mimeData->urls()) {
+    Q_FOREACH (const QUrl &url, mimeData->urls()) {
       qDebug() << Q_FUNC_INFO << url;
       cursor.beginEditBlock();
       cursor.insertFragment(QTextDocumentFragment::fromHtml(
@@ -202,8 +203,8 @@ void TextEditor::set_text_scale_factor(qreal a_scale_factor) {
 
 qreal TextEditor::text_scale_factor() const { return d->mTextScaleFactor; }
 
-QString TextEditor::PrivateTextEditor::extractHeader(
-    const QString &headerText) {
+QString
+TextEditor::PrivateTextEditor::extractHeader(const QString &headerText) {
   QString headerString = QString("<h1><b>" + headerText + "</b></h1>");
 
   return headerString;

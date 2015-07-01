@@ -53,6 +53,7 @@ public:
   virtual void set_row_count(int a_count);
   virtual void split_row(int a_index, int a_count);
   virtual void set_row_height(int a_row, const std::string &a_height);
+  virtual void set_column_width(int a_row, int a_column, const std::string &a_width);
 
   virtual Widget *ui() const;
   virtual Widget *at(int a_row, int a_column);

@@ -145,7 +145,7 @@ void DockControllerImpl::init() {
   // navigation
   UIKit::ViewBuilder *build = new UIKit::ViewBuilder(d->m_dock_window);
   build->set_margine(6, 10, 10, 10);
-  build->set_geometry(0, 0, 48 + 10, 48 * 7);
+  build->set_geometry(0, 0, 48 + 16, 48 * 7);
   build->set_row_count(7);
 
   std::string default_height = std::to_string((48.0 / (48.0 * 7)) * 100) + "%";

@@ -58,8 +58,6 @@ void DesktopWindow::set_background(const QString &a_image_name) {
 }
 
 void DesktopWindow::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
-  qDebug() << Q_FUNC_INFO << a_rect;
-
   /*
   if (!p_window->m_background_buffer) {
     UIKit::Window::paint_view(a_ctx, a_rect);

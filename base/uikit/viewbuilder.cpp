@@ -20,10 +20,7 @@ class Row {};
 typedef std::pair<int, int> GridPos;
 
 class ViewBuilder::PrivateViewBuilder {
-  typedef enum {
-    kPercentageValue = 1,
-    kAutoValue
-  } HeightValue;
+  typedef enum { kPercentageValue = 1, kAutoValue } Value;
 
 public:
   PrivateViewBuilder(Widget *a_window) : m_row_count(1), m_column_count(1) {
@@ -44,7 +41,7 @@ public:
   float get_x(int a_row, int a_column);
   float get_y(int a_row, int a_column);
 
-  HeightValue get_value_type(const std::string &a_value) const;
+  Value get_value_type(const std::string &a_value) const;
   float get_percentage(const std::string &a_value) const;
 
   Widget *add_new_label_at(int a_row, int a_col, const ViewProperties &a_props);
@@ -67,6 +64,7 @@ public:
   std::map<int, int> m_column_data;
   std::map<int, int> m_row_data;
   std::map<int, std::string> m_row_height_data;
+  std::map<GridPos, std::string> m_column_width_data;
 
   std::map<GridPos, Widget *> m_widget_grid;
   std::map<GridPos, int> m_ui_type_dict;
@@ -134,19 +132,28 @@ void ViewBuilder::split_column(int a_column_index, int a_count) {}
 void ViewBuilder::set_row_count(int a_row_count) {
   d->m_row_count = a_row_count;
   for (int i = 0; i < a_row_count; i++) {
-    if (!(d->m_row_data[i] > 1))
-      continue;
+    // if (!(d->m_row_data[i] > 1))
+    //  continue;
     split_row(i, 1);
   }
 }
 
 void ViewBuilder::split_row(int a_index, int a_count) {
   d->m_row_data[a_index] = a_count;
+
+  for (int i = 0; i < a_count; i++) {
+    set_column_width(a_index, i, "auto");
+  }
 }
 
 void ViewBuilder::set_row_height(int a_row, const std::string &a_height) {
-  d->m_row_height_data.insert(std::make_pair(a_row, a_height));
-  qDebug() << Q_FUNC_INFO << d->get_value_type(a_height);
+  d->m_row_height_data[a_row] = a_height;
+}
+
+void ViewBuilder::set_column_width(int a_row, int a_column,
+                                   const std::string &a_width) {
+  GridPos pos = std::make_pair(a_row, a_column);
+  d->m_column_width_data[pos] = a_width;
 }
 
 Widget *ViewBuilder::ui() const { return d->m_content_frame; }
@@ -224,7 +231,6 @@ Widget *ViewBuilder::add_widget(int a_row, int a_column,
 
 void ViewBuilder::update_property(int a_row, int a_column,
                                   const ViewProperties &a_properties) {
-  qDebug() << Q_FUNC_INFO;
   GridPos pos = std::make_pair(a_row, a_column);
 
   if (d->m_ui_type_dict.find(pos) == d->m_ui_type_dict.end()) {
@@ -263,13 +269,35 @@ float ViewBuilder::PrivateViewBuilder::get_layout_height() { return 0; }
 float
 ViewBuilder::PrivateViewBuilder::calculate_cell_width(int a_row,
                                                       int a_column) const {
+
   int column_count = m_row_data.at(a_row);
+  GridPos pos = std::make_pair(a_row, a_column);
 
   if (!column_count)
     return m_grid_geometry.width();
 
-  float cell_width = m_grid_geometry.width() / column_count;
-  return cell_width;
+  if (get_value_type(m_column_width_data.at(pos)) == kAutoValue) {
+
+    return (m_grid_geometry.width() / column_count);
+  }
+
+  int auto_width = (m_left_margine + m_right_margine);
+
+  for (int i = 0; i < column_count; i++) {
+    GridPos _pos = std::make_pair(a_row, i);
+    if (get_value_type(m_column_width_data.at(_pos)) == kAutoValue) {
+      Widget *widget = m_widget_grid.at(_pos);
+      if (!widget)
+        continue;
+
+      auto_width += widget->geometry().width();
+    }
+  }
+
+  int width_value = get_percentage(m_column_width_data.at(pos));
+  float rv = ((m_grid_geometry.width() - auto_width) / 100) * width_value;
+
+  return rv;
 }
 
 float
@@ -305,6 +333,7 @@ ViewBuilder::PrivateViewBuilder::calculate_cell_height(int a_row,
       auto_height += calculate_cell_height(i, 0);
     }
   }
+
   rv = ((m_grid_geometry.height() - auto_height) / 100) *
        get_percentage(m_row_height_data.at(a_row));
 
@@ -312,8 +341,12 @@ ViewBuilder::PrivateViewBuilder::calculate_cell_height(int a_row,
 }
 
 float ViewBuilder::PrivateViewBuilder::get_x(int a_row, int a_column) {
-  float cell_width = calculate_cell_width(a_row, a_column);
-  return (cell_width * a_column) + m_left_margine;
+  float cell_width = (m_left_margine);
+
+  for (int i = 0; i < a_column; i++) {
+    cell_width += calculate_cell_width(a_row, i);
+  }
+  return cell_width;
 }
 
 float ViewBuilder::PrivateViewBuilder::get_y(int a_row, int a_column) {
@@ -321,16 +354,15 @@ float ViewBuilder::PrivateViewBuilder::get_y(int a_row, int a_column) {
 
   for (int i = 0; i < a_row; i++) {
     float _height = calculate_cell_height(i, 0);
-    qDebug() << Q_FUNC_INFO << " Row -> " << i << _height;
     cell_height += _height;
   }
 
   return cell_height;
 }
 
-ViewBuilder::PrivateViewBuilder::HeightValue
-ViewBuilder::PrivateViewBuilder::get_value_type(const std::string &a_value)
-    const {
+ViewBuilder::PrivateViewBuilder::Value
+ViewBuilder::PrivateViewBuilder::get_value_type(
+    const std::string &a_value) const {
 
   if (a_value.empty())
     return kAutoValue;
@@ -434,8 +466,6 @@ void ViewBuilder::PrivateViewBuilder::update_image_button_properties(
 
   image_button->set_lable(text);
   image_button->set_pixmap(pixmap);
-
-  qDebug() << Q_FUNC_INFO << "Property Updated";
 }
 
 Widget *ViewBuilder::PrivateViewBuilder::add_new_text_edit_at(

@@ -106,6 +106,7 @@ NoteWidget::NoteWidget(UIKit::SessionSync *a_session, UIKit::Widget *parent)
                         parent->geometry().width(),
                         parent->geometry().height());
   d->m_ui->set_row_count(2);
+  d->m_ui->split_row(0, 1);
   d->m_ui->split_row(1, 9);
   d->m_ui->set_row_height(0, "85%");
   d->m_ui->set_row_height(1, "15%");

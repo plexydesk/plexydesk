@@ -1,15 +1,10 @@
 #include "calendarwidget.h"
-#include <QGraphicsLinearLayout>
-#include <QGraphicsWidget>
-#include <imagebutton.h>
-#include <imageview.h>
+
 #include <label.h>
-#include <tableview.h>
-#include <toolbar.h>
-#include <resource_manager.h>
-#include <item_view.h>
 #include <button.h>
 #include <viewbuilder.h>
+#include <imagebutton.h>
+#include <resource_manager.h>
 
 namespace UIKit {
 class CalendarView::PrivateCalendarWidget {
@@ -17,32 +12,12 @@ public:
   PrivateCalendarWidget() {}
   ~PrivateCalendarWidget() {}
 
-  Widget *m_calendar_base_frame;
-
-  UIKit::ToolBar *m_toolbar;
-
-  UIKit::ImageButton *m_next_btn;
-  UIKit::ImageButton *m_previous_btn;
-  UIKit::Label *mYearLable;
-  UIKit::Widget *m_content_widget;
-  UIKit::ItemView *m_header_view;
-  UIKit::ItemView *m_cell_view;
+  int days_in_month(int a_day, int a_month, int a_year);
+  int days_of_week(int a_day, int a_month, int a_year);
 
   QDate m_current_date;
-
   UIKit::ViewBuilder *m_ui;
 };
-
-void CalendarView::add_weekday_header(int i) {
-  UIKit::Label *day_label = new UIKit::Label(d->m_header_view);
-  day_label->set_label(QDate::shortDayName(i));
-  day_label->set_size(QSizeF(32, 32));
-  day_label->setMinimumSize(QSizeF(32, 32));
-  UIKit::ModelViewItem *grid_item = new UIKit::ModelViewItem();
-  grid_item->set_view(day_label);
-
-  d->m_header_view->insert(grid_item);
-}
 
 CalendarView::CalendarView(Widget *parent)
     : UIKit::Widget(parent), d(new PrivateCalendarWidget) {
@@ -53,160 +28,88 @@ CalendarView::CalendarView(Widget *parent)
 
   d->m_ui->set_row_count(9);
 
-  d->m_ui->split_row(0, 6);
+  d->m_ui->split_row(0, 3);
   d->m_ui->split_row(1, 7);
 
   d->m_ui->set_row_height(0, "10%");
   d->m_ui->set_row_height(1, "10%");
 
-  for (int i = 2; i < 10; i++) {
+  for (int i = 2; i < 9; i++) {
     d->m_ui->split_row(i, 7);
     d->m_ui->set_row_height(i, "8%");
   }
 
+  d->m_ui->set_column_width(0, 0, "10%");
+  d->m_ui->set_column_width(0, 1, "80%");
+  d->m_ui->set_column_width(0, 2, "10%");
+
   ViewProperties ui_data;
+
   ui_data["label"] = "";
   ui_data["icon"] = "actions/pd_previous.png";
-
   d->m_ui->add_widget(0, 0, "image_button", ui_data);
 
-  ui_data["label"] = "20";
-  ui_data["icon"] = "";
+  ui_data["label"] = "Year";
   d->m_ui->add_widget(0, 1, "label", ui_data);
-  ui_data["label"] = "15";
-  ui_data["icon"] = "";
-  d->m_ui->add_widget(0, 2, "label", ui_data);
-
 
   ui_data["label"] = "";
   ui_data["icon"] = "actions/pd_next.png";
-  d->m_ui->add_widget(0, 5, "image_button", ui_data);
+  d->m_ui->add_widget(0, 2, "image_button", ui_data);
 
-  // old.
-  /*
-  d->m_calendar_base_frame = new Widget(this);
-  d->m_calendar_base_frame->setMinimumSize(QSizeF(300, 128));
-  d->m_calendar_base_frame->setGeometry(QRectF(0.0, 0.0, 300.0, 128));
-  d->m_calendar_base_frame->setPos(0.0, 0.0);
+  char day_name_table[7][4] = {"Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat"};
 
-  d->m_toolbar = new UIKit::ToolBar(this);
-  d->m_toolbar->set_icon_resolution("hdpi");
-  d->m_toolbar->set_icon_size(QSize(24, 24));
-
-  d->mYearLable = new UIKit::Label(d->m_toolbar);
-  d->mYearLable->setMinimumSize(QSize(220, 24));
-  d->mYearLable->set_size(QSize(220, 24));
-
-  d->mYearLable->set_label_style(Qt::transparent, Qt::white);
-  d->mYearLable->set_font_size(14);
-
-  d->mYearLable->set_label(
-      QString("%1 %2")
-          .arg(QDate::longMonthName(QDate::currentDate().month()))
-          .arg(QDate::currentDate().year()));
-
-  d->m_toolbar->add_action("Previous", "actions/pd_previous", false);
-  d->m_toolbar->insert_widget(d->mYearLable);
-  d->m_toolbar->add_action("Next", "actions/pd_next", false);
-  d->m_toolbar->setGeometry(QRectF(0, 0, 380, 24));
-  d->m_toolbar->show();
-
-  d->m_toolbar->on_item_activated([this](const QString &a_action) {
-      qDebug() << Q_FUNC_INFO << a_action;
-      if (a_action == "Next")
-        next();
-
-      if (a_action == "Previous")
-        previous();
-  });
-
-  d->m_content_widget = new UIKit::Widget(d->m_calendar_base_frame);
-  d->m_content_widget->setGeometry(QRectF(0, 0, 300, 480));
-
-  d->m_current_date.setDate(QDate::currentDate().year(),
-                          QDate::currentDate().month(), 1);
-
-  d->m_header_view = new UIKit::ItemView(d->m_content_widget,
-                                         UIKit::ItemView::kGridModel);
-  d->m_header_view->setGeometry(QRectF(0, 0, 300, 48));
-  d->m_header_view->set_view_geometry(QRectF(0, 0, 300, 48));
-  d->m_header_view->setPos(0, d->m_toolbar->frame_geometry().height());
-
-  // data
-  d->m_cell_view =
-      new UIKit::ItemView(d->m_content_widget, UIKit::ItemView::kGridModel);
-  d->m_cell_view->set_view_geometry(QRectF(0, 0, 300 - 20, 480));
-  d->m_cell_view->setPos(0.0,
-                       d->m_toolbar->frame_geometry().height() +
-                       d->m_header_view->boundingRect().height());
-
-  add_weekday_header(7);
-  for (int i = 1; i <= 6; i++) {
-    add_weekday_header(i);
+  for (int i = 0; i < 7; i++) {
+    ui_data["label"] = day_name_table[i];
+    d->m_ui->add_widget(1, i, "label", ui_data);
   }
 
-  for (int i = 0; i < 43; i++) {
-      UIKit::Label *day_label = new UIKit::Label(d->m_cell_view);
-      //day_label->set_label(QString("%1").arg(i));
-      day_label->set_size(QSizeF(32, 32));
-      day_label->setMinimumSize(QSizeF(32, 32));
-      UIKit::ModelViewItem *grid_item = new UIKit::ModelViewItem();
-      grid_item->set_view(day_label);
+  for (int r = 2; r < 9; r++) {
+    for (int c = 0; c < 7; c++) {
+      ui_data["label"] = "";
+      d->m_ui->add_widget(r, c, "label", ui_data);
+    }
+  }
 
-      d->m_cell_view->insert(grid_item);
-
-      day_label->on_input_event([=](UIKit::Widget::InputEvent a_event,
-                                const UIKit::Widget *a_widget) {
-        if (a_event == UIKit::Widget::kMouseReleaseEvent) {
-            if (day_label) {
-              reset();
-              day_label->set_highlight(1);
-            }
-        }
-      });
-   }
-
-  this->set_date(d->m_current_date);
-
-  d->m_calendar_base_frame->hide();
-  */
+  set_date(QDate());
 }
 
 CalendarView::~CalendarView() { delete d; }
 
 void CalendarView::clear() {
-  for (int i = 0; i < 43; i++) {
-    UIKit::ModelViewItem *com = d->m_cell_view->at(i);
+  for (int r = 2; r < 9; r++) {
+    for (int c = 0; c < 7; c++) {
+      UIKit::Widget *widget = d->m_ui->at(r, c);
 
-    if (!com) {
-      continue;
+      if (!widget)
+        continue;
+
+      UIKit::Label *label = dynamic_cast<UIKit::Label *>(widget);
+
+      if (!label)
+        continue;
+
+      label->set_label("");
+      label->set_highlight(false);
     }
-
-    UIKit::Label *cell = qobject_cast<UIKit::Label *>(com->view());
-
-    if (!cell) {
-      continue;
-    }
-
-    cell->set_label("");
   }
 }
 
 void CalendarView::reset() {
-  for (int i = 0; i < 43; i++) {
-    UIKit::ModelViewItem *com = d->m_cell_view->at(i);
+  for (int r = 2; r < 9; r++) {
+    for (int c = 0; c < 7; c++) {
+      UIKit::Widget *widget = d->m_ui->at(r, c);
 
-    if (!com) {
-      continue;
+      if (!widget)
+        continue;
+
+      UIKit::Label *label = dynamic_cast<UIKit::Label *>(widget);
+
+      if (!label)
+        continue;
+
+      label->set_label("");
+      label->set_highlight(false);
     }
-
-    UIKit::Label *cell = qobject_cast<UIKit::Label *>(com->view());
-
-    if (!cell) {
-      continue;
-    }
-
-    cell->set_highlight(0);
   }
 }
 
@@ -216,78 +119,57 @@ QRectF CalendarView::geometry() const { return d->m_ui->ui()->geometry(); }
 
 void CalendarView::set_date(const QDate &date) {
   clear();
-  for (int s = date.dayOfWeek(); s < 43; s++) {
-    UIKit::ModelViewItem *com = d->m_cell_view->at(s);
+  int day = 1;
+  int month = 7;
+  int year = 2015;
 
-    if (!com) {
+  int week_num = 2;
+  for (int i = 1; i <= d->days_in_month(day, month, year); i++) {
+    if (d->days_of_week(i, month, year) == 0)
+      week_num++;
+
+    UIKit::Widget *widget =
+        d->m_ui->at(week_num, d->days_of_week(i, month, year));
+
+    if (!widget)
       continue;
-    }
 
-    UIKit::Label *cell = qobject_cast<UIKit::Label *>(com->view());
+    UIKit::Label *label = dynamic_cast<UIKit::Label *>(widget);
 
-    if (!cell) {
+    if (!label)
       continue;
-    }
 
-    int value = s - date.dayOfWeek() + 1;
-    if (value > date.daysInMonth()) {
-      continue;
-    }
-
-    cell->set_label(QString("%1").arg(value));
+    label->set_label(QString("%1").arg(i));
   }
 }
 
-void CalendarView::next() {
-  int currentMonth = d->m_current_date.month();
-  int currentYear = d->m_current_date.year();
-  int currentDay = d->m_current_date.day();
+void CalendarView::next() {}
 
-  if ((currentMonth + 1) > 12) {
-    currentMonth = 1;
-    currentYear += 1;
-  } else {
-    currentMonth += 1;
+void CalendarView::previous() {}
+
+void CalendarView::paint_view(QPainter *painter, const QRectF &rect) {}
+
+int CalendarView::PrivateCalendarWidget::days_in_month(int day, int month,
+                                                       int year) {
+  if (month == 4 || month == 6 || month == 9 || month == 11)
+    return 30;
+
+  if (month == 2) {
+    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+      return 29;
+    }
+    return 28;
   }
 
-  d->m_current_date.setDate(currentYear, currentMonth, currentDay);
-  update();
-
-  d->mYearLable->set_label(
-      QString("%1 %2").arg(QDate::longMonthName(d->m_current_date.month())).arg(
-          d->m_current_date.year()));
-  set_date(d->m_current_date);
+  return 31;
 }
 
-void CalendarView::previous() {
-  int currentMonth = d->m_current_date.month();
-  int currentYear = d->m_current_date.year();
-  int currentDay = d->m_current_date.day();
-
-  if ((currentMonth - 1) < 1) {
-    currentMonth = 12;
-    currentYear -= 1;
-  } else {
-    currentMonth -= 1;
-  }
-
-  d->m_current_date.setDate(currentYear, currentMonth, currentDay);
-  update();
-  d->mYearLable->set_label(
-      QString("%1 %2").arg(QDate::longMonthName(d->m_current_date.month())).arg(
-          d->m_current_date.year()));
-  set_date(d->m_current_date);
-}
-
-void CalendarView::paint_view(QPainter *painter, const QRectF &rect) {
-  painter->save();
-
-  painter->setRenderHint(QPainter::Antialiasing);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing);
-  painter->setRenderHint(QPainter::SmoothPixmapTransform);
-
-  //painter->fillRect(rect, QColor("#000000"));
-
-  painter->restore();
+int CalendarView::PrivateCalendarWidget::days_of_week(int a_day, int a_month,
+                                                      int a_year) {
+  static int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+  a_year -= a_month < 3;
+  return (a_year + a_year / 4 - a_year / 100 + a_year / 400 + t[a_month - 1] +
+          a_day) %
+         7;
 }
 }
