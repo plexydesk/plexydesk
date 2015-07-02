@@ -349,7 +349,6 @@ void Clock::PrivateClockController::setup_create_timer_ui(
       }
     }
   });
-
 }
 
 void Clock::PrivateClockController::_create_timer_ui(

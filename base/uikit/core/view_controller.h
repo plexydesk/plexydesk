@@ -54,7 +54,6 @@ typedef QList<QAction *> ActionList;
 
 class DECL_UI_KIT_EXPORT ViewController : public QObject {
   Q_OBJECT
-
 public:
   /**
       * @brief

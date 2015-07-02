@@ -196,7 +196,7 @@ void WorkSpace::paintEvent(QPaintEvent *event) {
     p.end();
   }
 
-#ifdef QT
+#ifdef USE_QT
   QGraphicsView::paintEvent(event);
 #else
   // current_active_space()->draw();
