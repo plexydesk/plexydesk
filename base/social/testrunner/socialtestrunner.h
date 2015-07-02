@@ -55,8 +55,8 @@ slots:
 
   // dropbox
   void onDropBoxAuthServiceComplete(QuetzalSocialKit::WebService *service);
-  void onDropBoxAccountInfoServiceComplete(
-      QuetzalSocialKit::WebService *service);
+  void
+  onDropBoxAccountInfoServiceComplete(QuetzalSocialKit::WebService *service);
 
 private:
   class PrivateSocialTestRunner;

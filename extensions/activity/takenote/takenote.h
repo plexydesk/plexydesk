@@ -27,7 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class TakeNoteActivity : public UIKit::DesktopActivity {
+class TakeNoteActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -42,12 +42,12 @@ public:
 
   QVariantMap result() const;
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
+  void onWidgetClosed(CherryKit::Widget *widget);
 
   void onHideAnimationFinished();
 
@@ -55,7 +55,7 @@ Q_SLOTS:
 
 private:
   class PrivateTakeNote;
-  PrivateTakeNote *const d;
+  PrivateTakeNote *const o_desktop_activity;
 };
 
 #endif

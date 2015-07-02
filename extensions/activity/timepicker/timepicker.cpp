@@ -28,9 +28,9 @@ public:
 };
 
 TimePickerActivity::TimePickerActivity(QGraphicsObject *object)
-    : UIKit::DesktopActivity(object), d(new PrivateTimePicker) {}
+    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateTimePicker) {}
 
-TimePickerActivity::~TimePickerActivity() { delete d; }
+TimePickerActivity::~TimePickerActivity() { delete o_desktop_activity; }
 
 void TimePickerActivity::create_window(const QRectF &window_geometry,
                                        const QString &window_title,
@@ -42,10 +42,10 @@ QRectF TimePickerActivity::geometry() const { return QRectF(); }
 
 QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
 
-UIKit::Window *TimePickerActivity::window() const { return 0; }
+CherryKit::Window *TimePickerActivity::window() const { return 0; }
 
 void TimePickerActivity::cleanup() {}
 
-void TimePickerActivity::onWidgetClosed(UIKit::Widget *widget) {}
+void TimePickerActivity::onWidgetClosed(CherryKit::Widget *widget) {}
 
 void TimePickerActivity::onHideAnimationFinished() {}

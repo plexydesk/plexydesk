@@ -25,7 +25,7 @@
 #include <QPainter>
 #include <QObject>
 
-namespace UIKit {
+namespace CherryKit {
 class Widget;
 
 class DECL_UI_KIT_EXPORT Style {
@@ -48,9 +48,8 @@ public:
 protected:
   virtual QVariantMap attribute_map(const QString &a_type) const = 0;
   virtual QVariantMap color_scheme_map() const = 0;
-
 };
 }
 
-typedef QSharedPointer<UIKit::Style> StylePtr;
+typedef QSharedPointer<CherryKit::Style> StylePtr;
 #endif // STYLE_H

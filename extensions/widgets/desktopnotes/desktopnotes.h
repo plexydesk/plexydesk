@@ -27,7 +27,7 @@
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl : public UIKit::ViewController {
+class DesktopNotesControllerImpl : public CherryKit::ViewController {
   Q_OBJECT
 
 public:
@@ -41,10 +41,10 @@ public:
 
   virtual void set_view_rect(const QRectF &rect);
 
-  UIKit::ActionList actions() const;
+  CherryKit::ActionList actions() const;
   virtual void request_action(const QString &actionName,
                               const QVariantMap &args);
-  virtual void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
+  virtual void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
 
   QString icon() const;
 
@@ -53,11 +53,11 @@ Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:
-  void createNoteUI(UIKit::SessionSync *a_session);
-  void createReminderUI(UIKit::SessionSync *a_session);
+  void createNoteUI(CherryKit::SessionSync *a_session);
+  void createReminderUI(CherryKit::SessionSync *a_session);
 
   class PrivateDesktopNotes;
-  PrivateDesktopNotes *const d;
+  PrivateDesktopNotes *const o_view_controller;
 };
 
 #endif

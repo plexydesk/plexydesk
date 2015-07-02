@@ -47,15 +47,15 @@ action.
 \returns A list of action label supported by the widget  plugin
 */
 
-namespace UIKit {
+namespace CherryKit {
 class Widget;
 class SessionSync;
-typedef QList<QAction*> ActionList;
+typedef QList<QAction *> ActionList;
 
 class DECL_UI_KIT_EXPORT ViewController : public QObject {
   Q_OBJECT
 
- public:
+public:
   /**
       * @brief
       *
@@ -74,14 +74,14 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
       *
       * @param rect
       */
-  virtual void set_view_rect(const QRectF& a_rect) = 0;
+  virtual void set_view_rect(const QRectF &a_rect) = 0;
 
   /**
       * @brief
       *
       * @param view
       */
-  void set_viewport(Space* a_view_ptr);
+  void set_viewport(Space *a_view_ptr);
 
   /**
       * @brief This method returns the current viewport of the controller. this
@@ -91,22 +91,22 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
       * @return UI::AbstractDesktopView return the current viewport of
       *  the controller
       */
-  virtual Space* viewport() const;
+  virtual Space *viewport() const;
   /**
       * @brief
       *
       * @param args
       */
-  virtual void session_data_available(
-      const QuetzalKit::SyncObject& a_root_obj) = 0;
-  virtual void submit_session_data(QuetzalKit::SyncObject* a_root_obj) = 0;
+  virtual void
+  session_data_available(const QuetzalKit::SyncObject &a_root_obj) = 0;
+  virtual void submit_session_data(QuetzalKit::SyncObject *a_root_obj) = 0;
 
-  void start_session(const std::string &a_session_name,
-      const QVariantMap& a_data,
+  void start_session(
+      const std::string &a_session_name, const QVariantMap &a_data,
       bool a_restore,
-      std::function<void(ViewController*, SessionSync*)> a_callback);
-  virtual std::string session_database_name(
-          const std::string &a_session_name) const;
+      std::function<void(ViewController *, SessionSync *)> a_callback);
+  virtual std::string
+  session_database_name(const std::string &a_session_name) const;
   /**
       * @brief
       *
@@ -120,8 +120,8 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
       * @param actionName
       * @param args
       */
-  virtual void request_action(const QString& a_actionName,
-                              const QVariantMap& a_args = QVariantMap());
+  virtual void request_action(const QString &a_actionName,
+                              const QVariantMap &a_args = QVariantMap());
 
   /**
       * @brief
@@ -129,14 +129,14 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
       * @param widget
       * @param event
       */
-  virtual void handle_drop_event(Widget* a_widget_ptr, QDropEvent* a_event_ptr);
+  virtual void handle_drop_event(Widget *a_widget_ptr, QDropEvent *a_event_ptr);
 
   /**
       * @brief
       *
       * @return DataSource
       */
-  virtual DataSource* dataSource();
+  virtual DataSource *dataSource();
 
   /**
       * @brief
@@ -144,16 +144,16 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
       * @param widget
       * @return bool
       */
-  virtual bool remove_widget(Widget* a_widget_ptr);
+  virtual bool remove_widget(Widget *a_widget_ptr);
 
-  virtual void insert(Window* a_window_ptr);
+  virtual void insert(Window *a_window_ptr);
 
   /**
       * @brief
       *
       * @param name
       */
-  virtual void set_controller_name(const QString& a_name);
+  virtual void set_controller_name(const QString &a_name);
 
   /**
       * @brief
@@ -166,20 +166,20 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
 
   virtual QString label() const;
 
-  virtual void configure(const QPointF& a_pos);
+  virtual void configure(const QPointF &a_pos);
 
   virtual void prepare_removal();
 
- protected:
+protected:
   /**
       * @brief
       *
       * @param parent
       */
-  explicit ViewController(QObject* a_parent_ptr = 0);
+  explicit ViewController(QObject *a_parent_ptr = 0);
   virtual void revoke_previous_session(
-      const std::string& a_session_object_name,
-      std::function<void (ViewController*, SessionSync*)> a_callback);
+      const std::string &a_session_object_name,
+      std::function<void(ViewController *, SessionSync *)> a_callback);
   virtual void write_session_data(const std::string &a_session_name);
   virtual int session_count();
 
@@ -189,7 +189,7 @@ class DECL_UI_KIT_EXPORT ViewController : public QObject {
       * @param source
       * @return bool
       */
-  virtual bool connect_to_data_source(const QString& a_source);
+  virtual bool connect_to_data_source(const QString &a_source);
 
 Q_SIGNALS:
   /**
@@ -198,9 +198,9 @@ Q_SIGNALS:
       * @param source Emits the DataSource when the controller is ready
       * \sa onReady()
       */
-  void data(const DataSource* a_source_ptr);
+  void data(const DataSource *a_source_ptr);
 
- private
+private
 Q_SLOTS:
   /**
       * @brief
@@ -208,9 +208,9 @@ Q_SLOTS:
       */
   virtual void on_ready();
 
- private:
+private:
   class PrivateViewControllerPlugin;
-  PrivateViewControllerPlugin* const d;
+  PrivateViewControllerPlugin *const o_view_controller;
 };
 
 /**

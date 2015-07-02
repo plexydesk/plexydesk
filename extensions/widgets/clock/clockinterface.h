@@ -26,13 +26,14 @@
 #include <view_controller.h>
 #include <controllerplugininterface.h>
 
-class ClockInterface : public QObject, public UIKit::ControllerPluginInterface {
+class ClockInterface : public QObject,
+                       public CherryKit::ControllerPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(UIKit::ControllerPluginInterface)
+  Q_INTERFACES(CherryKit::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.clock")
 
 public:
-  QSharedPointer<UIKit::ViewController> controller();
+  QSharedPointer<CherryKit::ViewController> controller();
 
 private:
   Clock *mClock;

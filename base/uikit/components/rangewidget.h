@@ -6,9 +6,9 @@
 #include <QGraphicsSceneMouseEvent>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 
-class DECL_UI_KIT_EXPORT RangeWidget : public UIKit::Widget {
+class DECL_UI_KIT_EXPORT RangeWidget : public CherryKit::Widget {
   Q_OBJECT
 public:
   RangeWidget(Widget *a_parent_ptr = 0);
@@ -33,7 +33,7 @@ protected:
 
 private:
   class PrivateRangeWidget;
-  PrivateRangeWidget *const d;
+  PrivateRangeWidget *const o_range_widget;
 };
 }
 

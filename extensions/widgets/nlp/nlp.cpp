@@ -25,34 +25,28 @@ public:
 };
 
 NLPControllerImpl::NLPControllerImpl(QObject *object)
-    : UIKit::ViewController(object), d(new PrivateNLP) {
-}
+    : CherryKit::ViewController(object), o_view_controller(new PrivateNLP) {}
 
-NLPControllerImpl::~NLPControllerImpl() { delete d; }
+NLPControllerImpl::~NLPControllerImpl() { delete o_view_controller; }
 
 void NLPControllerImpl::init() {}
 
 void NLPControllerImpl::session_data_available(
-    const QuetzalKit::SyncObject &a_session_root) {
-}
+    const QuetzalKit::SyncObject &a_session_root) {}
 
-void NLPControllerImpl::submit_session_data(
-    QuetzalKit::SyncObject *a_obj) {
-}
+void NLPControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
 
 void NLPControllerImpl::set_view_rect(const QRectF &rect) {}
 
-bool NLPControllerImpl::remove_widget(UIKit::Widget *widget) {
+bool NLPControllerImpl::remove_widget(CherryKit::Widget *widget) {
   return false;
 }
 
-UIKit::ActionList NLPControllerImpl::actions() const {
-  return UIKit::ActionList();
+CherryKit::ActionList NLPControllerImpl::actions() const {
+  return CherryKit::ActionList();
 }
 
 void NLPControllerImpl::request_action(const QString &actionName,
-                                            const QVariantMap &args) {}
+                                       const QVariantMap &args) {}
 
-QString NLPControllerImpl::icon() const {
-  return QString();
-}
+QString NLPControllerImpl::icon() const { return QString(); }

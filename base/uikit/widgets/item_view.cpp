@@ -7,12 +7,11 @@
 
 #include <QScroller>
 
-namespace UIKit {
+namespace CherryKit {
 
 class ItemView::PrivateModelView {
 public:
-  PrivateModelView() : m_item_remove_handler(0),
-  m_activation_handler (0) {}
+  PrivateModelView() : m_item_remove_handler(0), m_activation_handler(0) {}
   ~PrivateModelView() {}
 
   ModelType m_model_view_type;
@@ -25,7 +24,7 @@ public:
   QList<ModelViewItem *> m_model_item_list;
 
   std::function<void(int index)> m_activation_handler;
-  std::function<void (ModelViewItem *)> m_item_remove_handler;
+  std::function<void(ModelViewItem *)> m_item_remove_handler;
 };
 
 ItemView::ItemView(Widget *parent, ModelType a_model_type)
@@ -82,9 +81,8 @@ void ItemView::insert_to_grid_view(Widget *a_widget_ptr) {
   }
 
   a_widget_ptr->set_widget_id(d->m_grid_layout->count());
-  int l_item_per_row =
-      (d->m_viewport_geometry.width() - 4)
-      / a_widget_ptr->boundingRect().width();
+  int l_item_per_row = (d->m_viewport_geometry.width() - 4) /
+                       a_widget_ptr->boundingRect().width();
 
   d->m_grid_layout->addItem(a_widget_ptr,
                             d->m_grid_layout->count() / (l_item_per_row - 1),
@@ -111,15 +109,15 @@ void ItemView::insert(Widget *a_widget_ptr) {
   });
 
   switch (d->m_model_view_type) {
-    case kListModel:
-      insert_to_list_view(a_widget_ptr);
-      break;
-    case kGridModel:
-      insert_to_grid_view(a_widget_ptr);
-      break;
-    case kTableModel:
-      insert_to_table_view(a_widget_ptr);
-      break;
+  case kListModel:
+    insert_to_list_view(a_widget_ptr);
+    break;
+  case kGridModel:
+    insert_to_grid_view(a_widget_ptr);
+    break;
+  case kTableModel:
+    insert_to_table_view(a_widget_ptr);
+    break;
   }
 
   update();
@@ -127,15 +125,15 @@ void ItemView::insert(Widget *a_widget_ptr) {
 
 void ItemView::remove(Widget *a_widget_ptr) {
   switch (d->m_model_view_type) {
-    case kListModel:
-      remove_from_list_view(a_widget_ptr);
-      break;
-    case kGridModel:
-      // insert_to_grid_view(a_widget_ptr);
-      break;
-    case kTableModel:
-      // insert_to_table_view(a_widget_ptr);
-      break;
+  case kListModel:
+    remove_from_list_view(a_widget_ptr);
+    break;
+  case kGridModel:
+    // insert_to_grid_view(a_widget_ptr);
+    break;
+  case kTableModel:
+    // insert_to_table_view(a_widget_ptr);
+    break;
   }
 }
 
@@ -175,32 +173,34 @@ void ItemView::clear() {
     return;
 
   if (d->m_model_view_type == kListModel) {
-      if (d->m_list_layout->count() <= 0) {
-          return;
-        }
-
-      while (d->m_list_layout->count() > 0) {
-          d->m_list_layout->removeAt(d->m_list_layout->count() - 1);
-        }
-
-
-      d->m_list_layout->invalidate();
-      d->m_list_layout->updateGeometry();
+    if (d->m_list_layout->count() <= 0) {
+      return;
     }
+
+    while (d->m_list_layout->count() > 0) {
+      d->m_list_layout->removeAt(d->m_list_layout->count() - 1);
+    }
+
+    d->m_list_layout->invalidate();
+    d->m_list_layout->updateGeometry();
+  }
 
   if (d->m_model_view_type == kGridModel) {
-      if (d->m_grid_layout->count() <= 0) return;
+    if (d->m_grid_layout->count() <= 0)
+      return;
 
-      while (d->m_grid_layout->count() > 0) {
-          d->m_grid_layout->removeAt(d->m_grid_layout->count() - 1);
-      }
+    while (d->m_grid_layout->count() > 0) {
+      d->m_grid_layout->removeAt(d->m_grid_layout->count() - 1);
     }
+  }
 
-  Q_FOREACH(ModelViewItem *item, d->m_model_item_list) {
-      if (!item) continue;
+  Q_FOREACH(ModelViewItem * item, d->m_model_item_list) {
+    if (!item)
+      continue;
 
-      item->remove_view();
-      if (d->m_item_remove_handler) d->m_item_remove_handler(item);
+    item->remove_view();
+    if (d->m_item_remove_handler)
+      d->m_item_remove_handler(item);
   }
 
   d->m_model_item_list.clear();
@@ -225,10 +225,9 @@ void ItemView::on_activated(std::function<void(int)> a_callback) {
   d->m_activation_handler = a_callback;
 }
 
-void ItemView::on_item_removed(std::function<void (ModelViewItem *)> a_handler)
-{
-  //please note that the item can be set only once, and can't be over-ridden
-  //once set. without destruction of the class.
+void ItemView::on_item_removed(std::function<void(ModelViewItem *)> a_handler) {
+  // please note that the item can be set only once, and can't be over-ridden
+  // once set. without destruction of the class.
   if (d->m_item_remove_handler)
     return;
 
@@ -237,55 +236,55 @@ void ItemView::on_item_removed(std::function<void (ModelViewItem *)> a_handler)
 
 bool ItemView::event(QEvent *e) {
   switch (e->type()) {
-    case QEvent::GraphicsSceneMouseDoubleClick: {
-      return QGraphicsObject::event(e);
-    }
-    case QScrollPrepareEvent::ScrollPrepare: {
-      QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(e);
-      se->setViewportSize(d->m_viewport_geometry.size());
-      QRectF br = d->m_scroll_frame->geometry();
+  case QEvent::GraphicsSceneMouseDoubleClick: {
+    return QGraphicsObject::event(e);
+  }
+  case QScrollPrepareEvent::ScrollPrepare: {
+    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(e);
+    se->setViewportSize(d->m_viewport_geometry.size());
+    QRectF br = d->m_scroll_frame->geometry();
 
-      qreal _max_width =
-          qMax(qreal(0), br.width() - boundingRect().size().width());
-      qreal _max_height =
-          qMax(qreal(0), br.height() - boundingRect().size().height());
+    qreal _max_width =
+        qMax(qreal(0), br.width() - boundingRect().size().width());
+    qreal _max_height =
+        qMax(qreal(0), br.height() - boundingRect().size().height());
 
-      se->setContentPosRange(QRectF(0, 0, _max_width, _max_height));
-      se->setContentPos(-d->m_scroll_frame->pos());
+    se->setContentPosRange(QRectF(0, 0, _max_width, _max_height));
+    se->setContentPos(-d->m_scroll_frame->pos());
 
-      se->accept();
-      return QGraphicsObject::event(e);
-    }
-    case QScrollEvent::Scroll: {
-      QScrollEvent *se = static_cast<QScrollEvent *>(e);
-      d->m_scroll_frame->setPos(-se->contentPos() - se->overshootDistance());
-      return true;
-    }
+    se->accept();
+    return QGraphicsObject::event(e);
+  }
+  case QScrollEvent::Scroll: {
+    QScrollEvent *se = static_cast<QScrollEvent *>(e);
+    d->m_scroll_frame->setPos(-se->contentPos() - se->overshootDistance());
+    return true;
+  }
 
-    default:
-      break;
+  default:
+    break;
   }
   return QGraphicsObject::event(e);
 }
 
 bool ItemView::sceneEvent(QEvent *e) {
   switch (e->type()) {
-    case QEvent::TouchBegin: {
-      // We need to return true for the TouchBegin here in the
-      // top-most graphics object - otherwise gestures in our parent
-      // objects will NOT work at all (the accept() flag is already
-      // set due to our setAcceptTouchEvents(true) call in the c'tor
-      return true;
-    }
-    case QEvent::GraphicsSceneMousePress: {
-      // We need to return true for the MousePress here in the
-      // top-most graphics object - otherwise gestures in our parent
-      // objects will NOT work at all (the accept() flag is already
-      // set to true by Qt)
-      return true;
-    }
-    default:
-      break;
+  case QEvent::TouchBegin: {
+    // We need to return true for the TouchBegin here in the
+    // top-most graphics object - otherwise gestures in our parent
+    // objects will NOT work at all (the accept() flag is already
+    // set due to our setAcceptTouchEvents(true) call in the c'tor
+    return true;
+  }
+  case QEvent::GraphicsSceneMousePress: {
+    // We need to return true for the MousePress here in the
+    // top-most graphics object - otherwise gestures in our parent
+    // objects will NOT work at all (the accept() flag is already
+    // set to true by Qt)
+    return true;
+  }
+  default:
+    break;
   }
   return QGraphicsObject::sceneEvent(e);
 }

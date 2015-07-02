@@ -30,7 +30,7 @@ public:
 };
 
 FolderItem::FolderItem(const QRectF &rect, QGraphicsItem *parent)
-    : UIKit::TableViewItem(rect, parent), d(new PrivateFolderItem) {
+    : CherryKit::TableViewItem(rect, parent), d(new PrivateFolderItem) {
   this->setCacheMode(DeviceCoordinateCache);
   d->mRect = rect;
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);

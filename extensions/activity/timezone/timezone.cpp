@@ -34,9 +34,9 @@ public:
   PrivateTimeZone() {}
   ~PrivateTimeZone() {
     if (m_timezone_browser_ptr) {
-        m_timezone_browser_ptr->clear();
-        delete m_timezone_browser_ptr;
-        m_timezone_browser_ptr = 0;
+      m_timezone_browser_ptr->clear();
+      delete m_timezone_browser_ptr;
+      m_timezone_browser_ptr = 0;
     }
     if (m_window_ptr) {
       delete m_window_ptr;
@@ -44,37 +44,37 @@ public:
     qDebug() << Q_FUNC_INFO << "Delete TimeZone Activity";
   }
 
-  UIKit::Window *m_window_ptr;
-  UIKit::Widget *m_content_widget_ptr;
-  UIKit::ItemView *m_timezone_browser_ptr;
-  UIKit::LineEdit *m_filter_widget_ptr;
+  CherryKit::Window *m_window_ptr;
+  CherryKit::Widget *m_content_widget_ptr;
+  CherryKit::ItemView *m_timezone_browser_ptr;
+  CherryKit::LineEdit *m_filter_widget_ptr;
 
   QVariantMap m_result_data;
 };
 
 TimeZoneActivity::TimeZoneActivity(QGraphicsObject *aParent)
-    : UIKit::DesktopActivity(aParent), m_priv_ptr(new PrivateTimeZone) {}
+    : CherryKit::DesktopActivity(aParent), m_priv_ptr(new PrivateTimeZone) {}
 
 TimeZoneActivity::~TimeZoneActivity() { delete m_priv_ptr; }
 
 void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
                                      const QString &aWindowTitle,
                                      const QPointF &aWindowPos) {
-  m_priv_ptr->m_window_ptr = new UIKit::Window();
+  m_priv_ptr->m_window_ptr = new CherryKit::Window();
   m_priv_ptr->m_window_ptr->set_window_title(aWindowTitle);
 
   m_priv_ptr->m_content_widget_ptr =
-      new UIKit::Widget(m_priv_ptr->m_window_ptr);
+      new CherryKit::Widget(m_priv_ptr->m_window_ptr);
   m_priv_ptr->m_content_widget_ptr->setGeometry(aWindowGeometry);
 
   m_priv_ptr->m_filter_widget_ptr =
-      new UIKit::LineEdit(m_priv_ptr->m_content_widget_ptr);
+      new CherryKit::LineEdit(m_priv_ptr->m_content_widget_ptr);
   m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width() - 16,
                                                   32);
   m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(8, 0, 0, 0));
 
   m_priv_ptr->m_timezone_browser_ptr =
-      new UIKit::ItemView(m_priv_ptr->m_content_widget_ptr);
+      new CherryKit::ItemView(m_priv_ptr->m_content_widget_ptr);
   /*
   m_priv_ptr->m_timezone_browser_ptr->setGeometry(
         QRectF(0, 0, aWindowGeometry.width(),
@@ -102,18 +102,19 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
     m_priv_ptr->m_timezone_browser_ptr->set_filter(a_txt);
   });
 
-  m_priv_ptr->m_window_ptr->on_window_closed([this](UIKit::Window *aWindow) {
+  m_priv_ptr->m_window_ptr->on_window_closed([this](
+      CherryKit::Window *aWindow) {
     if (m_priv_ptr->m_timezone_browser_ptr) {
-        m_priv_ptr->m_timezone_browser_ptr->clear();
-        delete m_priv_ptr->m_timezone_browser_ptr;
-        m_priv_ptr->m_timezone_browser_ptr = 0;
+      m_priv_ptr->m_timezone_browser_ptr->clear();
+      delete m_priv_ptr->m_timezone_browser_ptr;
+      m_priv_ptr->m_timezone_browser_ptr = 0;
     }
   });
 
-  m_priv_ptr->m_timezone_browser_ptr->on_item_removed(
-        [](UIKit::ModelViewItem *a_item) {
-     if (a_item)
-       delete a_item;
+  m_priv_ptr->m_timezone_browser_ptr->on_item_removed([](
+      CherryKit::ModelViewItem *a_item) {
+    if (a_item)
+      delete a_item;
   });
 
   loadTimeZones();
@@ -126,7 +127,7 @@ QVariantMap TimeZoneActivity::result() const {
 void TimeZoneActivity::update_attribute(const QString &aName,
                                         const QVariant &aVariantData) {}
 
-UIKit::Window *TimeZoneActivity::window() const {
+CherryKit::Window *TimeZoneActivity::window() const {
   return m_priv_ptr->m_window_ptr;
 }
 
@@ -141,7 +142,7 @@ void TimeZoneActivity::cleanup() {
 }
 
 void TimeZoneActivity::loadTimeZones() {
-  std::vector<UIKit::ModelViewItem *> _item_list;
+  std::vector<CherryKit::ModelViewItem *> _item_list;
 
   foreach(const QByteArray id, QTimeZone::availableTimeZoneIds()) {
     QString l_time_zone_lable_str = QString(id);
@@ -149,13 +150,13 @@ void TimeZoneActivity::loadTimeZones() {
         " " + QTimeZone(id).displayName(QDateTime::currentDateTime(),
                                         QTimeZone::OffsetName);
 
-    UIKit::Label *lTimeZoneLabelPtr =
-        new UIKit::Label(m_priv_ptr->m_timezone_browser_ptr);
-    UIKit::ModelViewItem *l_item = new UIKit::ModelViewItem();
+    CherryKit::Label *lTimeZoneLabelPtr =
+        new CherryKit::Label(m_priv_ptr->m_timezone_browser_ptr);
+    CherryKit::ModelViewItem *l_item = new CherryKit::ModelViewItem();
 
     l_item->set_data("label", l_time_zone_lable_str);
     l_item->set_data("zone_id", id);
-    l_item->on_activated([&](UIKit::ModelViewItem *a_item) {
+    l_item->on_activated([&](CherryKit::ModelViewItem *a_item) {
       if (a_item) {
         m_priv_ptr->m_result_data["timezone"] =
             a_item->data("label").toString();
@@ -166,17 +167,17 @@ void TimeZoneActivity::loadTimeZones() {
     });
 
     l_item->set_view(lTimeZoneLabelPtr);
-    l_item->on_view_removed([&] (UIKit::ModelViewItem *a_item) {
+    l_item->on_view_removed([&](CherryKit::ModelViewItem *a_item) {
       if (a_item && a_item->view()) {
-          UIKit::Widget *view = a_item->view();
-          if (view)
-            delete view;
+        CherryKit::Widget *view = a_item->view();
+        if (view)
+          delete view;
       }
     });
-    l_item->on_filter([&](const UIKit::Widget *a_view,
+    l_item->on_filter([&](const CherryKit::Widget *a_view,
                           const QString &a_keyword) {
-      const UIKit::Label *_lbl_widget =
-          dynamic_cast<const UIKit::Label *>(a_view);
+      const CherryKit::Label *_lbl_widget =
+          dynamic_cast<const CherryKit::Label *>(a_view);
 
       if (_lbl_widget) {
         if (_lbl_widget->label().toLower().contains(a_keyword.toLower())) {
@@ -198,12 +199,12 @@ void TimeZoneActivity::loadTimeZones() {
   }
 
   std::sort(_item_list.begin(), _item_list.end(),
-            [](UIKit::ModelViewItem *a_a, UIKit::ModelViewItem *a_b) {
+            [](CherryKit::ModelViewItem *a_a, CherryKit::ModelViewItem *a_b) {
     return a_a->data("label").toString() < a_b->data("label").toString();
   });
 
   std::for_each(_item_list.begin(), _item_list.end(),
-                [this](UIKit::ModelViewItem *a) {
+                [this](CherryKit::ModelViewItem *a) {
     if (a) {
       m_priv_ptr->m_timezone_browser_ptr->insert(a);
     }

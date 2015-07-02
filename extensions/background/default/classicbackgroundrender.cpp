@@ -11,14 +11,14 @@
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
                                                  Widget *parent,
                                                  const QImage &background_image)
-    : UIKit::Window(parent) {
+    : CherryKit::Window(parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
 
   mBackgroundImage = background_image;
   mScalingMode = None;
   mSeamLessMode = false;
-  set_window_type(UIKit::Window::kFramelessWindow);
+  set_window_type(CherryKit::Window::kFramelessWindow);
   enable_window_background(false);
 }
 
@@ -72,7 +72,7 @@ void ClassicBackgroundRender::setBackgroundMode(
 }
 
 StylePtr ClassicBackgroundRender::style() const {
-  return UIKit::ResourceManager::style();
+  return CherryKit::ResourceManager::style();
 }
 
 void ClassicBackgroundRender::drawBackroundFrame(QPainter *painter,
@@ -117,34 +117,34 @@ void ClassicBackgroundRender::paint_view(QPainter *painter,
 
   qDebug() << Q_FUNC_INFO << "Image Size ->" << mBackgroundImage.size();
   switch (mScalingMode) {
-    case None: {
-      painter->drawImage(rect, mBackgroundImage);
-    } break;
-    case Tile: {
-      QBrush brush(mBackgroundImage);
-      painter->setBrush(brush);
-      painter->setBackground(brush);
-      painter->fillRect(rect, painter->background());
-    } break;
-    case Streach: {
-      painter->drawImage(rect, mBackgroundImage);
-    } break;
-    case Frame: {
-      drawBackroundFrame(painter, rect);
-    } break;
-    case FitWidth: {
-      painter->drawImage(rect, mBackgroundImageWidthScaled);
-    } break;
-    case FitHeight: {
-      painter->drawImage(rect, mBackgroundImageHeightScaled);
-    } break;
-    case CenterFocus:
-      painter->drawImage(rect, mBackgroundImage, rect,
-                         Qt::ColorOnly | Qt::DiffuseAlphaDither |
-                             Qt::DiffuseDither | Qt::PreferDither);
-      break;
-    default:
-      break;
+  case None: {
+    painter->drawImage(rect, mBackgroundImage);
+  } break;
+  case Tile: {
+    QBrush brush(mBackgroundImage);
+    painter->setBrush(brush);
+    painter->setBackground(brush);
+    painter->fillRect(rect, painter->background());
+  } break;
+  case Streach: {
+    painter->drawImage(rect, mBackgroundImage);
+  } break;
+  case Frame: {
+    drawBackroundFrame(painter, rect);
+  } break;
+  case FitWidth: {
+    painter->drawImage(rect, mBackgroundImageWidthScaled);
+  } break;
+  case FitHeight: {
+    painter->drawImage(rect, mBackgroundImageHeightScaled);
+  } break;
+  case CenterFocus:
+    painter->drawImage(rect, mBackgroundImage, rect,
+                       Qt::ColorOnly | Qt::DiffuseAlphaDither |
+                           Qt::DiffuseDither | Qt::PreferDither);
+    break;
+  default:
+    break;
   }
 
   px_bench_stop(&data);

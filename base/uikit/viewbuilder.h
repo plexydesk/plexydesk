@@ -6,7 +6,7 @@
 
 #include <widget.h>
 
-namespace UIKit {
+namespace CherryKit {
 class Window;
 class Label;
 class Button;
@@ -31,11 +31,11 @@ class HybridLayout {
     kLineEdit,
     kTextEdit,
     kProgressBar,
-    kDial,
     kDivider,
     kModelView,
     kCalendar,
     kClock,
+    kDialView,
   } ViewIdentifier;
 
 public:
@@ -45,7 +45,7 @@ public:
   virtual void set_geometry(float a_x, float a_y, float a_width,
                             float a_height);
   virtual void set_content_margin(float a_left, float a_right, float a_top,
-                           float a_bottom);
+                                  float a_bottom);
 
   virtual void add_column(int a_count);
   virtual void split_column(int a_column_index, int a_count);
@@ -53,7 +53,8 @@ public:
   virtual void set_horizontal_segment_count(int a_count);
   virtual void add_horizontal_segments(int a_index, int a_count);
   virtual void set_horizontal_height(int a_row, const std::string &a_height);
-  virtual void set_column_width(int a_row, int a_column, const std::string &a_width);
+  virtual void set_segment_width(int a_row, int a_column,
+                                const std::string &a_width);
 
   virtual Widget *viewport() const;
   virtual Widget *at(int a_row, int a_column);
@@ -69,13 +70,14 @@ protected:
                             const WidgetProperties &a_props);
   Widget *add_new_button_at(int a_row, int a_col,
                             const WidgetProperties &a_props);
-  Widget *add_new_label_at(int a_col, int a_row, const WidgetProperties &a_props);
+  Widget *add_new_label_at(int a_col, int a_row,
+                           const WidgetProperties &a_props);
 
   void layout();
 
 private:
   class PrivateViewBuilder;
-  PrivateViewBuilder *const d;
+  PrivateViewBuilder *const o_view_builder;
 };
 }
 #endif // VIEWBUILDER_H

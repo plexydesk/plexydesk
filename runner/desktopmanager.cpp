@@ -31,7 +31,7 @@ public:
 };
 
 DesktopManager::DesktopManager(QWidget *parent)
-    : UIKit::WorkSpace(new QGraphicsScene, parent),
+    : CherryKit::WorkSpace(new QGraphicsScene, parent),
       m_priv_impl(new PrivateDesktopManager) {}
 
 DesktopManager::~DesktopManager() { delete m_priv_impl; }
@@ -50,5 +50,5 @@ void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
     }
   }
 
-  UIKit::WorkSpace::mouseReleaseEvent(event);
+  CherryKit::WorkSpace::mouseReleaseEvent(event);
 }

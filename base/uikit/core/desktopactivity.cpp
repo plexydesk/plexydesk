@@ -8,7 +8,7 @@
 
 #include <future>
 
-namespace UIKit {
+namespace CherryKit {
 
 class DesktopActivity::PrivateDesktopActivity {
 public:
@@ -34,25 +34,25 @@ public:
 };
 
 DesktopActivity::DesktopActivity(QGraphicsObject *parent)
-    : QObject(parent), d(new PrivateDesktopActivity) {
-  d->m_current_viewport = 0;
+    : QObject(parent), o_desktop_activity(new PrivateDesktopActivity) {
+  o_desktop_activity->m_current_viewport = 0;
 }
 
-DesktopActivity::~DesktopActivity() { delete d; }
+DesktopActivity::~DesktopActivity() { delete o_desktop_activity; }
 
 void DesktopActivity::set_activity_attribute(const QString &a_name,
                                              const QVariant &a_data) {
-  d->m_arguments[a_name] = a_data;
+  o_desktop_activity->m_arguments[a_name] = a_data;
 }
 
-QVariantMap DesktopActivity::attributes() const { return d->m_arguments; }
+QVariantMap DesktopActivity::attributes() const { return o_desktop_activity->m_arguments; }
 
 void DesktopActivity::update_attribute(const QString &a_name,
                                        const QVariant &a_data) {
   set_activity_attribute(a_name, a_data);
   Q_EMIT attribute_changed();
 
-  foreach(std::function<void()> l_handler, d->m_arg_handler_list) {
+  foreach(std::function<void()> l_handler, o_desktop_activity->m_arg_handler_list) {
     if (l_handler) {
       l_handler();
     }
@@ -62,17 +62,17 @@ void DesktopActivity::update_attribute(const QString &a_name,
 QString DesktopActivity::error_message() const { return QString(); }
 
 void DesktopActivity::set_geometry(const QRectF &a_geometry) {
-  d->m_geometry = a_geometry;
+  o_desktop_activity->m_geometry = a_geometry;
 
   if (window()) {
     window()->setGeometry(a_geometry);
   }
 }
 
-QRectF DesktopActivity::geometry() const { return d->m_geometry; }
+QRectF DesktopActivity::geometry() const { return o_desktop_activity->m_geometry; }
 
 bool DesktopActivity::has_attribute(const QString &a_arg) {
-  return d->m_arguments.keys().contains(a_arg);
+  return o_desktop_activity->m_arguments.keys().contains(a_arg);
 }
 
 void DesktopActivity::exec(const QPointF &a_pos) {
@@ -89,7 +89,7 @@ void DesktopActivity::show_activity() {
 
 void DesktopActivity::discard_activity() {
   foreach(std::function<void(const DesktopActivity *)> func,
-          d->m_discard_handler_list) {
+          o_desktop_activity->m_discard_handler_list) {
     if (func) {
       func(this);
     }
@@ -109,44 +109,44 @@ void DesktopActivity::hide() {
 }
 
 void DesktopActivity::set_controller(const ViewControllerPtr &a_controller) {
-  d->m_controller_ptr = a_controller;
+  o_desktop_activity->m_controller_ptr = a_controller;
 }
 
 ViewControllerPtr DesktopActivity::controller() const {
-  return d->m_controller_ptr;
+  return o_desktop_activity->m_controller_ptr;
 }
 
 void DesktopActivity::set_viewport(Space *a_viewport_ptr) {
-  if (d->m_current_viewport) {
+  if (o_desktop_activity->m_current_viewport) {
     return;
   }
 
-  d->m_current_viewport = a_viewport_ptr;
+  o_desktop_activity->m_current_viewport = a_viewport_ptr;
 }
 
-Space *DesktopActivity::viewport() const { return d->m_current_viewport; }
+Space *DesktopActivity::viewport() const { return o_desktop_activity->m_current_viewport; }
 
 void DesktopActivity::on_arguments_updated(std::function<void()> a_handler) {
-  d->m_arg_handler_list.append(a_handler);
+  o_desktop_activity->m_arg_handler_list.append(a_handler);
 }
 
 void DesktopActivity::on_action_completed(
     std::function<void(const QVariantMap &)> a_handler) {
-  d->m_action_completed_list.append(a_handler);
+  o_desktop_activity->m_action_completed_list.append(a_handler);
 }
 
 void DesktopActivity::on_discarded(
     std::function<void(const DesktopActivity *)> a_handler) {
-  d->m_discard_handler_list.append(a_handler);
+  o_desktop_activity->m_discard_handler_list.append(a_handler);
 }
 
 void DesktopActivity::update_action() {
-  if (!d->m_controller_ptr.data()) {
+  if (!o_desktop_activity->m_controller_ptr.data()) {
     qWarning() << Q_FUNC_INFO << "Error: Controller Not Set";
     return;
   }
 
-  d->m_controller_ptr->request_action(result()["action"].toString(), result());
+  o_desktop_activity->m_controller_ptr->request_action(result()["action"].toString(), result());
 }
 
 // todo: remove this
@@ -160,15 +160,15 @@ void DesktopActivity::update_content_geometry(Widget *a_widget_ptr) {
 
 void DesktopActivity::notify_done() {
   foreach(std::function<void(const QVariantMap & l_data)> l_func,
-          d->m_action_completed_list) {
+          o_desktop_activity->m_action_completed_list) {
     if (l_func) {
       l_func(result());
     }
   }
 
-  d->m_async_notification_result = std::async(std::launch::async, [this] () {
-     if (window())
-         window()->close();
+  o_desktop_activity->m_async_notification_result = std::async(std::launch::async, [this]() {
+    if (window())
+      window()->close();
   });
 }
 }

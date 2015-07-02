@@ -36,7 +36,7 @@
 
 #include "resource_manager.h"
 
-namespace UIKit {
+namespace CherryKit {
 
 ResourceManager *ResourceManager::s_theme_instance = 0;
 
@@ -70,28 +70,28 @@ public:
 };
 
 ResourceManager::ResourceManager(const QString &a_theme_name)
-    : d(new ThemepackLoaderPrivate) {
-  d->mThemePackPath = QDir::toNativeSeparators(
-      QString("%1/%2").arg(UIKit::Config::instance()->prefix()).arg(
+    : o_resource_manager(new ThemepackLoaderPrivate) {
+  o_resource_manager->mThemePackPath = QDir::toNativeSeparators(
+      QString("%1/%2").arg(CherryKit::Config::instance()->prefix()).arg(
           "/share/plexy/themepack"));
 
-  d->mThemeName = a_theme_name;
+  o_resource_manager->mThemeName = a_theme_name;
   QDir mainConfig(QDir::toNativeSeparators(
-      QString("%1/%2/").arg(d->mThemePackPath).arg(a_theme_name)));
+      QString("%1/%2/").arg(o_resource_manager->mThemePackPath).arg(a_theme_name)));
 
-  d->mXmlConfigFile = mainConfig.absoluteFilePath("layout.xml");
-  d->mXmlRawFile = new QFile(d->mXmlConfigFile);
+  o_resource_manager->mXmlConfigFile = mainConfig.absoluteFilePath("layout.xml");
+  o_resource_manager->mXmlRawFile = new QFile(o_resource_manager->mXmlConfigFile);
 
-  if (!d->mXmlRawFile->open(QIODevice::ReadOnly | QIODevice::Text)) {
-    qWarning() << Q_FUNC_INFO << "Failed to open " << d->mXmlConfigFile;
+  if (!o_resource_manager->mXmlRawFile->open(QIODevice::ReadOnly | QIODevice::Text)) {
+    qWarning() << Q_FUNC_INFO << "Failed to open " << o_resource_manager->mXmlConfigFile;
   } else {
-    if (!d->mXmlDocumentRoot.setContent(d->mXmlRawFile)) {
+    if (!o_resource_manager->mXmlDocumentRoot.setContent(o_resource_manager->mXmlRawFile)) {
       qWarning() << Q_FUNC_INFO << "Failed to load the xml file";
     }
   }
 
   set_color_scheme("default");
-  d->mStyle = UIKit::ExtensionManager::instance()->style("cocoastyle");
+  o_resource_manager->mStyle = CherryKit::ExtensionManager::instance()->style("cocoastyle");
 }
 
 ResourceManager::~ResourceManager() {
@@ -103,10 +103,10 @@ ResourceManager::~ResourceManager() {
   }
   */
 
-  delete d;
+  delete o_resource_manager;
 }
 
-StylePtr ResourceManager::default_desktop_style() { return d->mStyle; }
+StylePtr ResourceManager::default_desktop_style() { return o_resource_manager->mStyle; }
 
 StylePtr ResourceManager::style() {
   return instance()->default_desktop_style();
@@ -135,13 +135,13 @@ QPixmap ResourceManager::drawable(const QString &a_fileName,
   QPixmap rv;
 
   QString iconThemePath =
-      QDir::toNativeSeparators(d->mThemePackPath + "/" + d->mThemeName +
+      QDir::toNativeSeparators(o_resource_manager->mThemePackPath + "/" + o_resource_manager->mThemeName +
                                "/resources/" + a_dpi + "/" + a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
 
-  if (d->mImageCache.keys().contains(iconThemePath)) {
-    return d->mImageCache[iconThemePath];
+  if (o_resource_manager->mImageCache.keys().contains(iconThemePath)) {
+    return o_resource_manager->mImageCache[iconThemePath];
   }
 
   if (!fileInfo.exists()) {
@@ -150,20 +150,20 @@ QPixmap ResourceManager::drawable(const QString &a_fileName,
   }
 
   rv = QPixmap(iconThemePath);
-  d->mImageCache[iconThemePath] = rv;
+  o_resource_manager->mImageCache[iconThemePath] = rv;
 
   return rv;
 }
 
 void ResourceManager::load_default_color_values() {
-  d->m_color_map[kDarkPrimaryColor] = "#1976D2";
-  d->m_color_map[kPrimaryColor] = "#2196F3";
-  d->m_color_map[kLightPrimaryColor] = "#FFFFFF";
-  d->m_color_map[kTextBackground] = "#212121";
-  d->m_color_map[kAccentColor] = "#FF4081";
-  d->m_color_map[kTextColor] = "#646464";
-  d->m_color_map[kSecondryTextColor] = "#FFFFFF";
-  d->m_color_map[kDividerColor] = "#B6B6B6";
+  o_resource_manager->m_color_map[kDarkPrimaryColor] = "#1976D2";
+  o_resource_manager->m_color_map[kPrimaryColor] = "#2196F3";
+  o_resource_manager->m_color_map[kLightPrimaryColor] = "#FFFFFF";
+  o_resource_manager->m_color_map[kTextBackground] = "#212121";
+  o_resource_manager->m_color_map[kAccentColor] = "#FF4081";
+  o_resource_manager->m_color_map[kTextColor] = "#646464";
+  o_resource_manager->m_color_map[kSecondryTextColor] = "#FFFFFF";
+  o_resource_manager->m_color_map[kDividerColor] = "#B6B6B6";
 }
 
 void ResourceManager::set_color_scheme(const std::string &a_name) {
@@ -179,21 +179,21 @@ void ResourceManager::set_color_scheme(const std::string &a_name) {
       return;
     }
 
-    d->m_color_map[kDarkPrimaryColor] = std::string(
+    o_resource_manager->m_color_map[kDarkPrimaryColor] = std::string(
         a_object.attributeValue("dark_primary_color").toByteArray());
-    d->m_color_map[kPrimaryColor] =
+    o_resource_manager->m_color_map[kPrimaryColor] =
         std::string(a_object.attributeValue("primary_color").toByteArray());
-    d->m_color_map[kLightPrimaryColor] = std::string(
+    o_resource_manager->m_color_map[kLightPrimaryColor] = std::string(
         a_object.attributeValue("light_primary_color").toByteArray());
-    d->m_color_map[kTextBackground] = std::string(
+    o_resource_manager->m_color_map[kTextBackground] = std::string(
         a_object.attributeValue("text_background_color").toByteArray());
-    d->m_color_map[kAccentColor] =
+    o_resource_manager->m_color_map[kAccentColor] =
         std::string(a_object.attributeValue("accent_color").toByteArray());
-    d->m_color_map[kTextColor] =
+    o_resource_manager->m_color_map[kTextColor] =
         std::string(a_object.attributeValue("text_color").toByteArray());
-    d->m_color_map[kSecondryTextColor] = std::string(
+    o_resource_manager->m_color_map[kSecondryTextColor] = std::string(
         a_object.attributeValue("secondry_text_color").toByteArray());
-    d->m_color_map[kDividerColor] =
+    o_resource_manager->m_color_map[kDividerColor] =
         std::string(a_object.attributeValue("divider_color").toByteArray());
   });
 
@@ -208,12 +208,12 @@ const char *ResourceManager::color_code(ResourceManager::ColorName a_name) {
   std::string error_rv = "#000000";
   const char *rv;
 
-  if (d->m_color_map.find(a_name) == d->m_color_map.end()) {
+  if (o_resource_manager->m_color_map.find(a_name) == o_resource_manager->m_color_map.end()) {
     rv = error_rv.c_str();
     return rv;
   }
 
-  rv = d->m_color_map.at(a_name).c_str();
+  rv = o_resource_manager->m_color_map.at(a_name).c_str();
 
   return rv;
 }

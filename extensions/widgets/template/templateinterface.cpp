@@ -20,9 +20,9 @@
 #include "templateinterface.h"
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::ViewController> TemplateInterface::controller() {
-  QSharedPointer<UIKit::ViewController> obj =
-      QSharedPointer<UIKit::ViewController>(
+QSharedPointer<CherryKit::ViewController> TemplateInterface::controller() {
+  QSharedPointer<CherryKit::ViewController> obj =
+      QSharedPointer<CherryKit::ViewController>(
           new TemplateControllerImpl(this), &QObject::deleteLater);
 
   return obj;

@@ -3,7 +3,7 @@
 
 #include <abstractcellcomponent.h>
 
-class GridIcon : public UIKit::TableViewItem {
+class GridIcon : public CherryKit::TableViewItem {
   Q_OBJECT
 public:
   typedef enum {

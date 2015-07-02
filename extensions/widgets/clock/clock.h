@@ -28,7 +28,7 @@
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public UIKit::ViewController {
+class Clock : public CherryKit::ViewController {
   Q_OBJECT
 
 public:
@@ -41,21 +41,22 @@ public:
   void session_data_available(const QuetzalKit::SyncObject &a_session_root);
   virtual void submit_session_data(QuetzalKit::SyncObject *a_obj);
 
-  bool remove_widget(UIKit::Widget *widget);
+  bool remove_widget(CherryKit::Widget *widget);
 
-  UIKit::ActionList actions() const;
+  CherryKit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;
 
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
-public Q_SLOTS:
+public
+Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:
   class PrivateClockController;
-  PrivateClockController *const d;
+  PrivateClockController *const o_view_controller;
 };
 
 #endif

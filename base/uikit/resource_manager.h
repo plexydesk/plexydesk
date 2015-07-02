@@ -5,7 +5,7 @@
 
 #include <style.h>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT ResourceManager {
 public:
   ResourceManager(const QString &a_theme_name);
@@ -42,7 +42,7 @@ private:
   void load_default_color_values();
 
   class ThemepackLoaderPrivate;
-  ThemepackLoaderPrivate *const d;
+  ThemepackLoaderPrivate *const o_resource_manager;
 
   static ResourceManager *s_theme_instance;
 };

@@ -36,7 +36,7 @@ public:
 };
 
 ImageCellAdaptor::ImageCellAdaptor(QGraphicsObject *parent)
-    : UIKit::TableModel(parent), d(new PrivateImageCellAdaptor) {
+    : CherryKit::TableModel(parent), d(new PrivateImageCellAdaptor) {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
 }
@@ -142,7 +142,7 @@ void ImageCellAdaptor::getImageFromPath(const QString &str) {
           localPictureDir.absolutePath() + "/" + pictureName);
       QuetzalSocialKit::AsyncImageCreator *creator =
           new QuetzalSocialKit::AsyncImageCreator(this);
-      creator->setData(imageFile, UIKit::Config::cache_dir());
+      creator->setData(imageFile, CherryKit::Config::cache_dir());
       connect(creator, SIGNAL(ready()), this, SLOT(onImageRady()));
 
       d->mCreatorList << creator;

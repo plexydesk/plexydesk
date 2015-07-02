@@ -26,7 +26,7 @@
 #include <resource_manager.h>
 #include "photowidget.h"
 
-class PhotoFrameController : public UIKit::ViewController {
+class PhotoFrameController : public CherryKit::ViewController {
   Q_OBJECT
 
 public:
@@ -38,13 +38,13 @@ public:
   void session_data_available(const QuetzalKit::SyncObject &a_session_root);
   virtual void submit_session_data(QuetzalKit::SyncObject *a_obj);
 
-  virtual void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
+  virtual void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
 
   virtual void set_view_rect(const QRectF &rect);
 
-  bool remove_widget(UIKit::Widget *widget);
+  bool remove_widget(CherryKit::Widget *widget);
 
-  UIKit::ActionList actions() const;
+  CherryKit::ActionList actions() const;
 
   void request_action(const QString &actionName, const QVariantMap &args);
 
@@ -58,7 +58,7 @@ private:
   PhotoWidget *mFrameParentitem;
   QList<PhotoWidget *> mPhotoList;
   QString mImageSource;
-  UIKit::ActionList m_supported_action_list;
+  CherryKit::ActionList m_supported_action_list;
   QStringList m_current_url_list;
 };
 

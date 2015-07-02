@@ -31,11 +31,11 @@
 #include <functional>
 
 DirectoryController::DirectoryController(QObject *object)
-    : UIKit::ViewController(object) {
+    : CherryKit::ViewController(object) {
   /*
-  mThemePack = UIKit::Theme::instance();
+  mThemePack = CherryKit::Theme::instance();
 
-  UIKit::Widget *parent = new UIKit::Widget();
+  CherryKit::Widget *parent = new CherryKit::Widget();
 
   IconWidgetView *view = new IconWidgetView(parent);
   view->setPos(0.0, 64.0);
@@ -69,7 +69,7 @@ void DirectoryController::session_data_available(
 
 void DirectoryController::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
 
-UIKit::ActionList DirectoryController::actions() const {
+CherryKit::ActionList DirectoryController::actions() const {
   return m_supported_action_list;
 }
 
@@ -79,11 +79,12 @@ void DirectoryController::request_action(const QString &actionName,
   if (actionName == CREATE_DIR) {
     qDebug() << "Not supported yet";
   } else if (actionName == tr("Folder")) {
-    UIKit::Window *window = new UIKit::Window();
+    CherryKit::Window *window = new CherryKit::Window();
 
-    window->on_window_closed([&](UIKit::Window *aWindow) { delete aWindow; });
+    window->on_window_closed([&](CherryKit::Window *aWindow) { delete aWindow;
+  });
 
-    UIKit::Widget *parent = new UIKit::Widget();
+    CherryKit::Widget *parent = new CherryKit::Widget();
 
     window->set_window_content(parent);
 
@@ -103,7 +104,7 @@ void DirectoryController::request_action(const QString &actionName,
   */
 }
 
-void DirectoryController::handle_drop_event(UIKit::Widget *widget,
+void DirectoryController::handle_drop_event(CherryKit::Widget *widget,
                                             QDropEvent *event) {
   /*
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
@@ -123,7 +124,7 @@ void DirectoryController::handle_drop_event(UIKit::Widget *widget,
 
 void DirectoryController::set_view_rect(const QRectF &rect) {
   /*
-  Q_FOREACH(UIKit::Widget * view, mFolderViewList) {
+  Q_FOREACH(CherryKit::Widget * view, mFolderViewList) {
     if (view) {
       view->setPos(rect.x(), rect.y());
     }

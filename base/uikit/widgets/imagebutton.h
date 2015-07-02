@@ -6,7 +6,7 @@
 #include <QGraphicsObject>
 #include <widget.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class DECL_UI_KIT_EXPORT ImageButton : public Widget {
   Q_OBJECT
@@ -42,7 +42,7 @@ protected:
 
 private:
   class PrivateImageButton;
-  PrivateImageButton *const d;
+  PrivateImageButton *const o_image_button;
 };
 }
 

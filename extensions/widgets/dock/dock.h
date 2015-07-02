@@ -28,9 +28,9 @@
 #include <QtNetwork>
 #include <abstractcellcomponent.h>
 
-using namespace UIKit;
+using namespace CherryKit;
 
-class DockControllerImpl : public UIKit::ViewController {
+class DockControllerImpl : public CherryKit::ViewController {
   Q_OBJECT
 
 public:
@@ -45,7 +45,7 @@ public:
 
   void set_view_rect(const QRectF &rect);
 
-  UIKit::ActionList actions() const;
+  CherryKit::ActionList actions() const;
 
   void request_action(const QString &actionName, const QVariantMap &args);
 
@@ -85,13 +85,13 @@ protected:
 
 private:
   class PrivateDock;
-  PrivateDock *const d;
+  PrivateDock *const o_view_controller;
 
-  UIKit::DesktopActivityPtr createActivity(const QString &controller_name,
-                                           const QString &activity,
-                                           const QString &title,
-                                           const QPoint &pos,
-                                           const QVariantMap &dataItem);
+  CherryKit::DesktopActivityPtr createActivity(const QString &controller_name,
+                                               const QString &activity,
+                                               const QString &title,
+                                               const QPoint &pos,
+                                               const QVariantMap &dataItem);
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
 };

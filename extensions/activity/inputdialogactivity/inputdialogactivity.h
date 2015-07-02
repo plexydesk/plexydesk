@@ -28,7 +28,7 @@
 #include <widget.h>
 #include <window.h>
 
-class InputDialogActivityData : public UIKit::DesktopActivity {
+class InputDialogActivityData : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -50,12 +50,12 @@ public:
 
   QVariantMap result() const;
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
+  void onWidgetClosed(CherryKit::Widget *widget);
   void onMotionAnimFinished();
   void onOkButtonPressed();
 
@@ -64,7 +64,7 @@ private:
                      QWidget *widget = 0);
 
   class PrivateInputDialogActivity;
-  PrivateInputDialogActivity *const d;
+  PrivateInputDialogActivity *const o_desktop_activity;
 };
 
 #endif

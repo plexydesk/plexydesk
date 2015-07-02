@@ -26,7 +26,7 @@
 #include <QtNetwork>
 #include <webservice.h>
 
-class FlickrPhotoSearchData : public UIKit::DataSource {
+class FlickrPhotoSearchData : public CherryKit::DataSource {
   Q_OBJECT
 
 public:
@@ -44,7 +44,7 @@ Q_SLOTS:
 
 private:
   class PrivateFlickrPhotoSearch;
-  PrivateFlickrPhotoSearch *const d;
+  PrivateFlickrPhotoSearch *const o_data_soure;
 };
 
 #endif

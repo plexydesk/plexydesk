@@ -28,13 +28,13 @@
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 
-namespace UIKit {
+namespace CherryKit {
 /*
  * @brief The Base Class for All types of Desktop Widgets.
  */
 class ViewController;
-typedef unsigned char * GraphicsSurface;
-typedef std::function<void (const Widget *)> UpdateCallback;
+typedef unsigned char *GraphicsSurface;
+typedef std::function<void(const Widget *)> UpdateCallback;
 typedef std::vector<Widget *> WidgetList;
 
 class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
@@ -97,9 +97,9 @@ public:
   virtual void set_style_attribute(const QString &a_key, QVariant a_data);
   virtual QVariant style_attribute(const QString &a_key);
 
-  //experimental.
+  // experimental.
   virtual void draw();
-  virtual void render(unsigned char ** a_ctx);
+  virtual void render(unsigned char **a_ctx);
   virtual GraphicsSurface *surface();
   virtual void request_update();
   virtual void on_update(UpdateCallback a_callback);

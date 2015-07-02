@@ -19,7 +19,7 @@
 
 #include "tableviewcellinterface.h"
 
-namespace UIKit {
+namespace CherryKit {
 
 TableModel::TableModel(QObject *parent) : QObject(parent) {}
 

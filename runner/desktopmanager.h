@@ -24,9 +24,9 @@
 #include <workspace.h>
 #include <view_controller.h>
 
-using namespace UIKit;
+using namespace CherryKit;
 
-class DesktopManager : public UIKit::WorkSpace {
+class DesktopManager : public CherryKit::WorkSpace {
 public:
   explicit DesktopManager(QWidget *a_parent_ptr = 0);
   virtual ~DesktopManager();

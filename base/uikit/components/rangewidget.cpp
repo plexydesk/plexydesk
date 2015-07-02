@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace UIKit {
+namespace CherryKit {
 class RangeWidget::PrivateRangeWidget {
 public:
   PrivateRangeWidget() {}
@@ -22,34 +22,34 @@ public:
 };
 
 RangeWidget::RangeWidget(Widget *parent)
-    : UIKit::Widget(parent), d(new PrivateRangeWidget) {
-  this->set_widget_flag(UIKit::Widget::kRenderBackground);
-  this->set_widget_flag(UIKit::Widget::kConvertToWindowType, false);
-  this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
+    : CherryKit::Widget(parent), o_range_widget(new PrivateRangeWidget) {
+  this->set_widget_flag(CherryKit::Widget::kRenderBackground);
+  this->set_widget_flag(CherryKit::Widget::kConvertToWindowType, false);
+  this->set_widget_flag(CherryKit::Widget::kRenderDropShadow, false);
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
   this->setFlag(QGraphicsItem::ItemIsSelectable, true);
 
-  d->mAngle = 270;
-  d->mMaxAngle = 360;
-  d->mProgressValue = 0;
-  d->mStartAngle = 270;
-  d->mMaxValue = 24;
+  o_range_widget->mAngle = 270;
+  o_range_widget->mMaxAngle = 360;
+  o_range_widget->mProgressValue = 0;
+  o_range_widget->mStartAngle = 270;
+  o_range_widget->mMaxValue = 24;
 }
 
 RangeWidget::~RangeWidget() {}
 
-void RangeWidget::setMaxValue(float maxValue) { d->mMaxValue = maxValue; }
+void RangeWidget::setMaxValue(float maxValue) { o_range_widget->mMaxValue = maxValue; }
 
-float RangeWidget::maxValue() const { return d->mMaxValue; }
+float RangeWidget::maxValue() const { return o_range_widget->mMaxValue; }
 
-float RangeWidget::currentValue() const { return d->mProgressValue; }
+float RangeWidget::currentValue() const { return o_range_widget->mProgressValue; }
 
 void RangeWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
   qDebug() << Q_FUNC_INFO << event->pos();
 }
 
 void RangeWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-  d->mInitPos = mapToScene(event->pos());
+  o_range_widget->mInitPos = mapToScene(event->pos());
   event->accept();
   QGraphicsItem::mousePressEvent(event);
 }

@@ -4,7 +4,7 @@
 #include <tableviewcellinterface.h>
 #include <plexydesk_ui_exports.h>
 
-using namespace UIKit;
+using namespace CherryKit;
 
 class DECL_UI_KIT_EXPORT DefaultTableModel : public TableModel {
   Q_OBJECT

@@ -9,7 +9,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class ViewController;
 class Space;
@@ -55,13 +55,14 @@ public:
 
   virtual void on_arguments_updated(std::function<void()> a_handler);
 
-  virtual void on_action_completed(
-      std::function<void(const QVariantMap &)> a_handler);
+  virtual void
+  on_action_completed(std::function<void(const QVariantMap &)> a_handler);
 
-  virtual void on_discarded(
-      std::function<void(const DesktopActivity *)> a_handler);
+  virtual void
+  on_discarded(std::function<void(const DesktopActivity *)> a_handler);
 
   virtual void discard_activity();
+
 protected:
   virtual void update_action();
   virtual QRectF geometry() const;
@@ -76,7 +77,7 @@ Q_SIGNALS:
 
 private:
   class PrivateDesktopActivity;
-  PrivateDesktopActivity *const d;
+  PrivateDesktopActivity *const o_desktop_activity;
 };
 
 typedef QSharedPointer<DesktopActivity> DesktopActivityPtr;

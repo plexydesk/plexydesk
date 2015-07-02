@@ -30,7 +30,7 @@ public:
 };
 
 ImageCell::ImageCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : UIKit::TableViewItem(rect, parent), d(new PrivateImageCell) {
+    : CherryKit::TableViewItem(rect, parent), d(new PrivateImageCell) {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mVisibility = true;

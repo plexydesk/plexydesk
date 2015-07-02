@@ -90,8 +90,8 @@ void DataSync::on_object_found(
   m_priv->m_on_object_found_handler_list.push_back(a_handler);
 }
 
-void DataSync::on_object_saved(
-    std::function<void(const SyncObject &)> a_handler) {
+void
+DataSync::on_object_saved(std::function<void(const SyncObject &)> a_handler) {
   m_priv->m_on_saved_handler_list.push_back(a_handler);
 }
 }

@@ -26,29 +26,29 @@ public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
 
-  UIKit::Window *mFrame;
+  CherryKit::Window *mFrame;
 };
 
 SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
-    : UIKit::DesktopActivity(object), d(new PrivateSocialAuth) {}
+    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateSocialAuth) {}
 
-SocialAuthActivity::~SocialAuthActivity() { delete d; }
+SocialAuthActivity::~SocialAuthActivity() { delete o_desktop_activity; }
 
 void SocialAuthActivity::create_window(const QRectF &window_geometry,
                                        const QString &window_title,
                                        const QPointF &window_pos) {
   set_geometry(window_geometry);
 
-  d->mFrame = new UIKit::Window();
-  d->mFrame->setGeometry(geometry());
-  d->mFrame->setVisible(true);
-  d->mFrame->set_widget_name("Message Dialog");
+  o_desktop_activity->mFrame = new CherryKit::Window();
+  o_desktop_activity->mFrame->setGeometry(geometry());
+  o_desktop_activity->mFrame->setVisible(true);
+  o_desktop_activity->mFrame->set_widget_name("Message Dialog");
 
-  d->mFrame->set_widget_flag(UIKit::Widget::kRenderBackground);
-  d->mFrame->set_widget_flag(UIKit::Widget::kConvertToWindowType);
-  d->mFrame->set_widget_flag(UIKit::Widget::kRenderDropShadow);
+  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderBackground);
+  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kConvertToWindowType);
+  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderDropShadow);
 
-  update_content_geometry(d->mFrame);
+  update_content_geometry(o_desktop_activity->mFrame);
   exec();
 
   show_activity();
@@ -56,15 +56,15 @@ void SocialAuthActivity::create_window(const QRectF &window_geometry,
 
 QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
 
-UIKit::Window *SocialAuthActivity::window() const { return d->mFrame; }
+CherryKit::Window *SocialAuthActivity::window() const { return o_desktop_activity->mFrame; }
 
 void SocialAuthActivity::cleanup() {
-  if (d->mFrame) {
-    delete d->mFrame;
+  if (o_desktop_activity->mFrame) {
+    delete o_desktop_activity->mFrame;
   }
-  d->mFrame = 0;
+  o_desktop_activity->mFrame = 0;
 }
 
-void SocialAuthActivity::onWidgetClosed(UIKit::Widget *widget) {}
+void SocialAuthActivity::onWidgetClosed(CherryKit::Widget *widget) {}
 
 void SocialAuthActivity::onHideAnimationFinished() {}

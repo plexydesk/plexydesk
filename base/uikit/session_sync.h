@@ -26,7 +26,7 @@
 #include <label.h>
 #include <clockwidget.h>
 
-namespace UIKit {
+namespace CherryKit {
 class SessionSync {
 public:
   SessionSync(const std::string &a_session_name,
@@ -48,7 +48,7 @@ public:
 
   virtual void update_session();
 
-  virtual void bind_to_window(UIKit::Window *a_window);
+  virtual void bind_to_window(CherryKit::Window *a_window);
   virtual void unbind_window(const Window *a_window);
 
   virtual void delete_session_data(const std::string &a_session_name,
@@ -58,15 +58,17 @@ public:
 
   virtual void save_session_attribute(const std::string &a_session_name,
                                       const std::string &a_object_name,
-                                      const std::string &a_object_key, const std::string &a_object_value,
+                                      const std::string &a_object_key,
+                                      const std::string &a_object_value,
                                       const std::string &a_key,
                                       const std::string &a_value);
 
-  virtual void on_session_init(std::function<void ()> a_handler);
-  virtual void on_session_update(std::function<void ()> a_handler);
-  virtual void on_session_end(std::function<void ()> a_handler);
+  virtual void on_session_init(std::function<void()> a_handler);
+  virtual void on_session_update(std::function<void()> a_handler);
+  virtual void on_session_end(std::function<void()> a_handler);
 
   std::string session_group_key() const;
+
 private:
   class PrivSessionSync;
   PrivSessionSync *const d;

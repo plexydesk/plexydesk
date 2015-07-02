@@ -33,18 +33,18 @@ public:
   QVariantMap data;
 };
 
-RestData::RestData(QObject * /*object*/) : d(new Private) {
-  d->manager = new QNetworkAccessManager(this);
-  connect(d->manager, SIGNAL(finished(QNetworkReply *)), this,
+RestData::RestData(QObject * /*object*/) : o_data_soure(new Private) {
+  o_data_soure->manager = new QNetworkAccessManager(this);
+  connect(o_data_soure->manager, SIGNAL(finished(QNetworkReply *)), this,
           SLOT(replyFinished(QNetworkReply *)));
-  connect(d->manager,
+  connect(o_data_soure->manager,
           SIGNAL(authenticationRequired(QNetworkReply *, QAuthenticator *)),
           this, SLOT(handleAuth(QNetworkReply *, QAuthenticator *)));
 }
 
 void RestData::init() { qDebug() << Q_FUNC_INFO; }
 
-RestData::~RestData() { delete d; }
+RestData::~RestData() { delete o_data_soure; }
 
 void RestData::set_arguments(QVariant arg) {
   qDebug() << Q_FUNC_INFO << arg;
@@ -53,26 +53,26 @@ void RestData::set_arguments(QVariant arg) {
   QUrl url = param["url"].toUrl();
   int type = param["type"].toInt();
   QString par = param["params"].toString();
-  d->user = param["user"].toString();
-  d->pass = param["pass"].toString();
+  o_data_soure->user = param["user"].toString();
+  o_data_soure->pass = param["pass"].toString();
 
   if (type == GET) {
-    d->manager->get(QNetworkRequest(url));
+    o_data_soure->manager->get(QNetworkRequest(url));
   } else if (type == POST) {
-    d->manager->post(QNetworkRequest(url), par.toLatin1());
+    o_data_soure->manager->post(QNetworkRequest(url), par.toLatin1());
   }
 }
 
 void RestData::replyFinished(QNetworkReply *reply) {
   QVariantMap response;
   response["data"] = QVariant(reply->readAll());
-  d->data = response;
+  o_data_soure->data = response;
   Q_EMIT ready();
 }
 
 void RestData::handleAuth(QNetworkReply * /*r*/, QAuthenticator *auth) {
-  auth->setUser(d->user);
-  auth->setPassword(d->pass);
+  auth->setUser(o_data_soure->user);
+  auth->setPassword(o_data_soure->pass);
 }
 
-QVariantMap RestData::readAll() { return d->data; }
+QVariantMap RestData::readAll() { return o_data_soure->data; }

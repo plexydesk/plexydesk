@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity> DatePickerInterface::activity() {
-  QSharedPointer<UIKit::DesktopActivity> obj =
-      QSharedPointer<UIKit::DesktopActivity>(new DatePickerActivity(),
-                                             &QObject::deleteLater);
+QSharedPointer<CherryKit::DesktopActivity> DatePickerInterface::activity() {
+  QSharedPointer<CherryKit::DesktopActivity> obj =
+      QSharedPointer<CherryKit::DesktopActivity>(new DatePickerActivity(),
+                                                 &QObject::deleteLater);
 
   return obj;
 }

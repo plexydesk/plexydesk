@@ -26,22 +26,22 @@ public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
 
-  UIKit::Window *m_main_window;
+  CherryKit::Window *m_main_window;
 };
 
 SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
-    : UIKit::DesktopActivity(object), d(new PrivateSpacePreview) {}
+    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateSpacePreview) {}
 
-SpacePreviewActivity::~SpacePreviewActivity() { delete d; }
+SpacePreviewActivity::~SpacePreviewActivity() { delete o_desktop_activity; }
 
 void SpacePreviewActivity::create_window(const QRectF &window_geometry,
                                          const QString &window_title,
                                          const QPointF &window_pos) {
-  d->m_main_window = new UIKit::Window();
-  d->m_main_window->set_window_type(UIKit::Window::kPopupWindow);
+  o_desktop_activity->m_main_window = new CherryKit::Window();
+  o_desktop_activity->m_main_window->set_window_type(CherryKit::Window::kPopupWindow);
 
   set_geometry(window_geometry);
-  update_content_geometry(d->m_main_window);
+  update_content_geometry(o_desktop_activity->m_main_window);
 
   exec(window_pos);
 }
@@ -51,12 +51,14 @@ QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
 void SpacePreviewActivity::update_attribute(const QString &name,
                                             const QVariant &data) {}
 
-UIKit::Window *SpacePreviewActivity::window() const { return d->m_main_window; }
+CherryKit::Window *SpacePreviewActivity::window() const {
+  return o_desktop_activity->m_main_window;
+}
 
 void SpacePreviewActivity::cleanup() {
-  if (d->m_main_window) {
-    delete d->m_main_window;
+  if (o_desktop_activity->m_main_window) {
+    delete o_desktop_activity->m_main_window;
   }
 
-  d->m_main_window = 0;
+  o_desktop_activity->m_main_window = 0;
 }

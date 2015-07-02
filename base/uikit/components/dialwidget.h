@@ -6,8 +6,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
-class DECL_UI_KIT_EXPORT DialWidget : public UIKit::Widget {
+namespace CherryKit {
+class DECL_UI_KIT_EXPORT DialWidget : public CherryKit::Widget {
   Q_OBJECT
 public:
   DialWidget(Widget *a_parent_ptr = 0);
@@ -20,7 +20,7 @@ public:
   virtual float current_dial_value() const;
   virtual void reset();
 
-  virtual void on_dialed(std::function<void (int)> a_callback);
+  virtual void on_dialed(std::function<void(int)> a_callback);
 Q_SIGNALS:
   void value(float value);
 
@@ -33,7 +33,7 @@ protected:
 
 private:
   class PrivateDialWidget;
-  PrivateDialWidget *const d;
+  PrivateDialWidget *const o_dial_widget;
 };
 }
 

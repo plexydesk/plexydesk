@@ -27,7 +27,7 @@
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class SocialAuthActivity : public UIKit::DesktopActivity {
+class SocialAuthActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -40,18 +40,18 @@ public:
 
   QVariantMap result() const;
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
+  void onWidgetClosed(CherryKit::Widget *widget);
 
   void onHideAnimationFinished();
 
 private:
   class PrivateSocialAuth;
-  PrivateSocialAuth *const d;
+  PrivateSocialAuth *const o_desktop_activity;
 };
 
 #endif

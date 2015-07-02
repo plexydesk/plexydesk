@@ -40,16 +40,16 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  UIKit::Window *mWindowFrame;
-  UIKit::ProgressBar *mProgressBar;
-  UIKit::TableView *mTable;
+  CherryKit::Window *mWindowFrame;
+  CherryKit::ProgressBar *mProgressBar;
+  CherryKit::TableView *mTable;
   ImageCellAdaptor *mFactory;
   QRectF mGeometry;
   QVariantMap mResult;
 };
 
 PhotoSearchActivity::PhotoSearchActivity(QGraphicsObject *object)
-    : UIKit::DesktopActivity(object), d(new PrivatePhotoSearch) {}
+    : CherryKit::DesktopActivity(object), d(new PrivatePhotoSearch) {}
 
 PhotoSearchActivity::~PhotoSearchActivity() {
   qDebug() << Q_FUNC_INFO;
@@ -62,12 +62,12 @@ void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->mGeometry = aWindowGeometry;
 
   // todo: invoke UI
-  d->mWindowFrame = new UIKit::Window();
+  d->mWindowFrame = new CherryKit::Window();
   d->mWindowFrame->setGeometry(aWindowGeometry);
   d->mWindowFrame->set_window_title(aWindowTitle);
 
   // table
-  d->mTable = new UIKit::TableView(d->mWindowFrame);
+  d->mTable = new CherryKit::TableView(d->mWindowFrame);
   d->mFactory = new ImageCellAdaptor(d->mWindowFrame);
 
   d->mTable->set_model(d->mFactory);
@@ -139,7 +139,7 @@ void PhotoSearchActivity::locateLocalFiles() const {
   pathList << QLatin1String("C:\\Windows\\Web\\Wallpaper\\Windows\\");
 #endif
 
-  pathList << UIKit::Config::cache_dir("wallpaper");
+  pathList << CherryKit::Config::cache_dir("wallpaper");
 
   d->mFactory->addPathList(pathList);
 }

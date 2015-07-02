@@ -6,7 +6,7 @@
 #include <imagebutton.h>
 #include <resource_manager.h>
 
-namespace UIKit {
+namespace CherryKit {
 class CalendarView::PrivateCalendarWidget {
 public:
   PrivateCalendarWidget() {}
@@ -16,45 +16,45 @@ public:
   int days_of_week(int a_day, int a_month, int a_year);
 
   QDate m_current_date;
-  UIKit::HybridLayout *m_ui;
+  CherryKit::HybridLayout *m_ui;
 };
 
 CalendarView::CalendarView(Widget *parent)
-    : UIKit::Widget(parent), d(new PrivateCalendarWidget) {
+    : CherryKit::Widget(parent), o_calendar_widget(new PrivateCalendarWidget) {
 
-  d->m_ui = new HybridLayout(this);
-  d->m_ui->set_content_margin(10, 10, 10, 10);
-  d->m_ui->set_geometry(0, 0, 320, 320);
+  o_calendar_widget->m_ui = new HybridLayout(this);
+  o_calendar_widget->m_ui->set_content_margin(10, 10, 10, 10);
+  o_calendar_widget->m_ui->set_geometry(0, 0, 320, 320);
 
-  d->m_ui->set_horizontal_segment_count(9);
+  o_calendar_widget->m_ui->set_horizontal_segment_count(9);
 
-  d->m_ui->add_horizontal_segments(0, 3);
-  d->m_ui->add_horizontal_segments(1, 7);
+  o_calendar_widget->m_ui->add_horizontal_segments(0, 3);
+  o_calendar_widget->m_ui->add_horizontal_segments(1, 7);
 
-  d->m_ui->set_horizontal_height(0, "10%");
-  d->m_ui->set_horizontal_height(1, "10%");
+  o_calendar_widget->m_ui->set_horizontal_height(0, "7%");
+  o_calendar_widget->m_ui->set_horizontal_height(1, "13%");
 
   for (int i = 2; i < 9; i++) {
-    d->m_ui->add_horizontal_segments(i, 7);
-    d->m_ui->set_horizontal_height(i, "8%");
+    o_calendar_widget->m_ui->add_horizontal_segments(i, 7);
+    o_calendar_widget->m_ui->set_horizontal_height(i, "8%");
   }
 
-  d->m_ui->set_column_width(0, 0, "10%");
-  d->m_ui->set_column_width(0, 1, "80%");
-  d->m_ui->set_column_width(0, 2, "10%");
+  o_calendar_widget->m_ui->set_segment_width(0, 0, "10%");
+  o_calendar_widget->m_ui->set_segment_width(0, 1, "80%");
+  o_calendar_widget->m_ui->set_segment_width(0, 2, "10%");
 
   WidgetProperties ui_data;
 
   ui_data["label"] = "";
   ui_data["icon"] = "actions/pd_previous.png";
-  d->m_ui->add_widget(0, 0, "image_button", ui_data);
+  o_calendar_widget->m_ui->add_widget(0, 0, "image_button", ui_data);
 
   ui_data["label"] = "Year";
-  d->m_ui->add_widget(0, 1, "label", ui_data);
+  o_calendar_widget->m_ui->add_widget(0, 1, "label", ui_data);
 
   ui_data["label"] = "";
   ui_data["icon"] = "actions/pd_next.png";
-  d->m_ui->add_widget(0, 2, "image_button", ui_data);
+  o_calendar_widget->m_ui->add_widget(0, 2, "image_button", ui_data);
 
   char day_name_table[7][4] = {
     "Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat"
@@ -62,30 +62,30 @@ CalendarView::CalendarView(Widget *parent)
 
   for (int i = 0; i < 7; i++) {
     ui_data["label"] = day_name_table[i];
-    d->m_ui->add_widget(1, i, "label", ui_data);
+    o_calendar_widget->m_ui->add_widget(1, i, "label", ui_data);
   }
 
   for (int r = 2; r < 9; r++) {
     for (int c = 0; c < 7; c++) {
       ui_data["label"] = "";
-      d->m_ui->add_widget(r, c, "label", ui_data);
+      o_calendar_widget->m_ui->add_widget(r, c, "label", ui_data);
     }
   }
 
   set_date(QDate());
 }
 
-CalendarView::~CalendarView() { delete d; }
+CalendarView::~CalendarView() { delete o_calendar_widget; }
 
 void CalendarView::clear() {
   for (int r = 2; r < 9; r++) {
     for (int c = 0; c < 7; c++) {
-      UIKit::Widget *widget = d->m_ui->at(r, c);
+      CherryKit::Widget *widget = o_calendar_widget->m_ui->at(r, c);
 
       if (!widget)
         continue;
 
-      UIKit::Label *label = dynamic_cast<UIKit::Label *>(widget);
+      CherryKit::Label *label = dynamic_cast<CherryKit::Label *>(widget);
 
       if (!label)
         continue;
@@ -99,12 +99,12 @@ void CalendarView::clear() {
 void CalendarView::reset() {
   for (int r = 2; r < 9; r++) {
     for (int c = 0; c < 7; c++) {
-      UIKit::Widget *widget = d->m_ui->at(r, c);
+      CherryKit::Widget *widget = o_calendar_widget->m_ui->at(r, c);
 
       if (!widget)
         continue;
 
-      UIKit::Label *label = dynamic_cast<UIKit::Label *>(widget);
+      CherryKit::Label *label = dynamic_cast<CherryKit::Label *>(widget);
 
       if (!label)
         continue;
@@ -115,14 +115,16 @@ void CalendarView::reset() {
   }
 }
 
-QDate CalendarView::a_date() const { return d->m_current_date; }
+QDate CalendarView::a_date() const { return o_calendar_widget->m_current_date; }
 
 void CalendarView::set_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
-  d->m_ui->set_geometry(a_x, a_y, a_width, a_height);
+  o_calendar_widget->m_ui->set_geometry(a_x, a_y, a_width, a_height);
 }
 
-QRectF CalendarView::geometry() const { return d->m_ui->viewport()->geometry(); }
+QRectF CalendarView::geometry() const {
+  return o_calendar_widget->m_ui->viewport()->geometry();
+}
 
 void CalendarView::set_date(const QDate &date) {
   clear();
@@ -131,17 +133,17 @@ void CalendarView::set_date(const QDate &date) {
   int year = 2015;
 
   int week_num = 2;
-  for (int i = 1; i <= d->days_in_month(day, month, year); i++) {
-    if (d->days_of_week(i, month, year) == 0)
+  for (int i = 1; i <= o_calendar_widget->days_in_month(day, month, year); i++) {
+    if (o_calendar_widget->days_of_week(i, month, year) == 0)
       week_num++;
 
-    UIKit::Widget *widget =
-        d->m_ui->at(week_num, d->days_of_week(i, month, year));
+    CherryKit::Widget *widget =
+        o_calendar_widget->m_ui->at(week_num, o_calendar_widget->days_of_week(i, month, year));
 
     if (!widget)
       continue;
 
-    UIKit::Label *label = dynamic_cast<UIKit::Label *>(widget);
+    CherryKit::Label *label = dynamic_cast<CherryKit::Label *>(widget);
 
     if (!label)
       continue;

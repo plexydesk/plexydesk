@@ -24,8 +24,8 @@ public:
 
   virtual void on_object_found(
       std::function<void(SyncObject &, const std::string &, bool)> a_handler);
-  virtual void on_object_saved(
-      std::function<void(const SyncObject &a_object)> a_handler);
+  virtual void
+  on_object_saved(std::function<void(const SyncObject &a_object)> a_handler);
 
 private:
   class PrivateDataSync;

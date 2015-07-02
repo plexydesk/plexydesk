@@ -60,7 +60,7 @@ void PhotoFrameController::revoke_session(const QVariantMap &args) {
   }
 
   foreach(const QString & str, photoList) {
-    UIKit::Window *window = new UIKit::Window();
+    CherryKit::Window *window = new CherryKit::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
     window->set_window_content(photoWidget);
 
@@ -89,7 +89,7 @@ void PhotoFrameController::session_data_available(
 
 void PhotoFrameController::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
 
-void PhotoFrameController::handle_drop_event(UIKit::Widget *widget,
+void PhotoFrameController::handle_drop_event(CherryKit::Widget *widget,
                                              QDropEvent *event) {
   if (event->mimeData()->urls().count() >= 0) {
     const QString droppedFile =
@@ -109,7 +109,7 @@ void PhotoFrameController::handle_drop_event(UIKit::Widget *widget,
       }
 
       if (viewport()) {
-        UIKit::Space *view = viewport();
+        CherryKit::Space *view = viewport();
         if (view) {
           view->update_session_value(controller_name(), "photos",
                                      m_current_url_list.join(","));
@@ -127,7 +127,7 @@ void PhotoFrameController::set_view_rect(const QRectF &rect) {
   }
 }
 
-bool PhotoFrameController::remove_widget(UIKit::Widget *widget) {
+bool PhotoFrameController::remove_widget(CherryKit::Widget *widget) {
   if (!widget) {
     return 1;
   }
@@ -158,14 +158,14 @@ bool PhotoFrameController::remove_widget(UIKit::Widget *widget) {
   return 1;
 }
 
-UIKit::ActionList PhotoFrameController::actions() const {
+CherryKit::ActionList PhotoFrameController::actions() const {
   return m_supported_action_list;
 }
 
 void PhotoFrameController::request_action(const QString &actionName,
                                           const QVariantMap &args) {
   if (actionName == tr("Photo")) {
-    UIKit::Window *window = new UIKit::Window();
+    CherryKit::Window *window = new CherryKit::Window();
     PhotoWidget *photoWidget = new PhotoWidget();
 
     window->set_window_content(photoWidget);

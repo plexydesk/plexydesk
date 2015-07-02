@@ -27,7 +27,7 @@
 #include <window.h>
 #include <desktopactivity.h>
 
-class ProgressDialogActivity : public UIKit::DesktopActivity {
+class ProgressDialogActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -42,18 +42,18 @@ public:
 
   virtual void update_attribute(const QString &name, const QVariant &data);
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
+  void onWidgetClosed(CherryKit::Widget *widget);
 
   void onHideAnimationFinished();
 
 private:
   class PrivateProgressDialog;
-  PrivateProgressDialog *const d;
+  PrivateProgressDialog *const o_desktop_activity;
 };
 
 #endif

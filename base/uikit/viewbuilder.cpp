@@ -10,9 +10,10 @@
 #include <calendarwidget.h>
 #include <clockwidget.h>
 
+#include <dialwidget.h>
 #include <widget.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class Column {};
 class Row {};
@@ -47,7 +48,8 @@ public:
   Value get_value_type(const std::string &a_value) const;
   float get_percentage(const std::string &a_value) const;
 
-  Widget *add_new_label_at(int a_row, int a_col, const WidgetProperties &a_props);
+  Widget *add_new_label_at(int a_row, int a_col,
+                           const WidgetProperties &a_props);
   Widget *add_new_image_button_at(int a_row, int a_col,
                                   const WidgetProperties &a_props);
   void update_image_button_properties(int a_row, int a_col,
@@ -57,7 +59,11 @@ public:
                                const WidgetProperties &a_props);
   Widget *add_new_calendar_at(int a_row, int a_col,
                               const WidgetProperties &a_props);
-  Widget *add_new_clock_at(int a_row, int a_col, const WidgetProperties &a_props);
+  Widget *add_new_clock_at(int a_row, int a_col,
+                           const WidgetProperties &a_props);
+  Widget *add_new_dial_at(int a_row, int a_col,
+                          const WidgetProperties &a_props);
+
   void layout();
 
   // members
@@ -73,7 +79,7 @@ public:
   std::map<GridPos, int> m_ui_type_dict;
   std::map<std::string, int> m_ui_dict;
 
-  UIKit::Widget *m_content_frame;
+  CherryKit::Widget *m_content_frame;
   QRectF m_grid_geometry;
 
   float m_left_margine;
@@ -83,31 +89,33 @@ public:
 };
 
 HybridLayout::HybridLayout(Widget *a_window)
-    : d(new PrivateViewBuilder(a_window)) {}
+    : o_view_builder(new PrivateViewBuilder(a_window)) {}
 
-HybridLayout::~HybridLayout() { delete d; }
+HybridLayout::~HybridLayout() { delete o_view_builder; }
 
 void HybridLayout::set_geometry(float a_x, float a_y, float a_width,
-                               float a_height) {
-  d->m_grid_geometry = QRectF(a_x, a_y, a_width, a_height);
-  d->m_content_frame->setGeometry(d->m_grid_geometry);
-  set_content_margin(d->m_left_margine, d->m_right_margine, d->m_top_margine,
-              d->m_bottom_margine);
+                                float a_height) {
+  o_view_builder->m_grid_geometry = QRectF(a_x, a_y, a_width, a_height);
+  o_view_builder->m_content_frame->setGeometry(o_view_builder->m_grid_geometry);
+  set_content_margin(
+      o_view_builder->m_left_margine, o_view_builder->m_right_margine,
+      o_view_builder->m_top_margine, o_view_builder->m_bottom_margine);
   layout();
 }
 
 void HybridLayout::set_content_margin(float a_left, float a_right, float a_top,
-                              float a_bottom) {
-  d->m_left_margine = a_left;
-  d->m_right_margine = a_right;
-  d->m_top_margine = a_top;
-  d->m_bottom_margine = a_bottom;
+                                      float a_bottom) {
+  o_view_builder->m_left_margine = a_left;
+  o_view_builder->m_right_margine = a_right;
+  o_view_builder->m_top_margine = a_top;
+  o_view_builder->m_bottom_margine = a_bottom;
 
-  d->m_grid_geometry.setWidth(d->m_grid_geometry.width() - (a_left + a_right));
-  d->m_grid_geometry.setHeight(d->m_grid_geometry.height() -
-                               (a_top + a_bottom));
+  o_view_builder->m_grid_geometry.setWidth(
+      o_view_builder->m_grid_geometry.width() - (a_left + a_right));
+  o_view_builder->m_grid_geometry.setHeight(
+      o_view_builder->m_grid_geometry.height() - (a_top + a_bottom));
 
-  d->m_content_frame->setPos(a_left, a_top);
+  o_view_builder->m_content_frame->setPos(a_left, a_top);
 
   layout();
 }
@@ -129,12 +137,14 @@ void HybridLayout::PrivateViewBuilder::layout() {
   }
 }
 
-void HybridLayout::add_column(int a_count) { d->m_column_count = a_count; }
+void HybridLayout::add_column(int a_count) {
+  o_view_builder->m_column_count = a_count;
+}
 
 void HybridLayout::split_column(int a_column_index, int a_count) {}
 
 void HybridLayout::set_horizontal_segment_count(int a_row_count) {
-  d->m_row_count = a_row_count;
+  o_view_builder->m_row_count = a_row_count;
   for (int i = 0; i < a_row_count; i++) {
     // if (!(d->m_row_data[i] > 1))
     //  continue;
@@ -143,52 +153,55 @@ void HybridLayout::set_horizontal_segment_count(int a_row_count) {
 }
 
 void HybridLayout::add_horizontal_segments(int a_index, int a_count) {
-  d->m_row_data[a_index] = a_count;
+  o_view_builder->m_row_data[a_index] = a_count;
 
   for (int i = 0; i < a_count; i++) {
-    set_column_width(a_index, i, "auto");
+    set_segment_width(a_index, i, "auto");
   }
 }
 
-void HybridLayout::set_horizontal_height(int a_row, const std::string &a_height) {
-  d->m_row_height_data[a_row] = a_height;
+void HybridLayout::set_horizontal_height(int a_row,
+                                         const std::string &a_height) {
+  o_view_builder->m_row_height_data[a_row] = a_height;
 }
 
-void HybridLayout::set_column_width(int a_row, int a_column,
-                                   const std::string &a_width) {
+void HybridLayout::set_segment_width(int a_row, int a_column,
+                                    const std::string &a_width) {
   GridPos pos = std::make_pair(a_row, a_column);
-  d->m_column_width_data[pos] = a_width;
+  o_view_builder->m_column_width_data[pos] = a_width;
 }
 
-Widget *HybridLayout::viewport() const { return d->m_content_frame; }
+Widget *HybridLayout::viewport() const {
+  return o_view_builder->m_content_frame;
+}
 
 Widget *HybridLayout::at(int a_row, int a_column) {
   GridPos pos = std::make_pair(a_row, a_column);
-  return d->m_widget_grid[pos];
+  return o_view_builder->m_widget_grid[pos];
 }
 
 Widget *HybridLayout::add_new_widget_at(int a_col, int a_row,
-                                       const WidgetProperties &a_props) {
-  Widget *widget = new Widget(d->m_content_frame);
+                                        const WidgetProperties &a_props) {
+  Widget *widget = new Widget(o_view_builder->m_content_frame);
   GridPos pos(a_col, a_row);
-  d->m_widget_grid[pos] = widget;
-  d->m_ui_type_dict[pos] = kWidget;
+  o_view_builder->m_widget_grid[pos] = widget;
+  o_view_builder->m_ui_type_dict[pos] = kWidget;
 
   return widget;
 }
 
 Widget *HybridLayout::add_new_button_at(int a_row, int a_col,
-                                       const WidgetProperties &a_props) {
-  Button *btn = new Button(d->m_content_frame);
+                                        const WidgetProperties &a_props) {
+  Button *btn = new Button(o_view_builder->m_content_frame);
   GridPos pos(a_row, a_col);
 
-  d->m_widget_grid[pos] = btn;
-  d->m_ui_type_dict[pos] = kButton;
+  o_view_builder->m_widget_grid[pos] = btn;
+  o_view_builder->m_ui_type_dict[pos] = kButton;
 
   // set view properties.
   btn->set_label(QString::fromStdString(a_props.at("label")));
-  btn->set_size(QSizeF(d->calculate_cell_width(a_row, a_col),
-                       d->calculate_cell_height(a_row, a_col)));
+  btn->set_size(QSizeF(o_view_builder->calculate_cell_width(a_row, a_col),
+                       o_view_builder->calculate_cell_height(a_row, a_col)));
 
   layout();
 
@@ -196,18 +209,18 @@ Widget *HybridLayout::add_new_button_at(int a_row, int a_col,
 }
 
 Widget *HybridLayout::add_new_label_at(int a_col, int a_row,
-                                      const WidgetProperties &a_props) {
+                                       const WidgetProperties &a_props) {
   return 0;
 }
 
-void HybridLayout::layout() { d->layout(); }
+void HybridLayout::layout() { o_view_builder->layout(); }
 
 Widget *HybridLayout::add_widget(int a_row, int a_column,
-                                const std::string &a_widget,
-                                const WidgetProperties &a_properties) {
+                                 const std::string &a_widget,
+                                 const WidgetProperties &a_properties) {
   Widget *rv = 0;
 
-  switch (d->m_ui_dict[a_widget]) {
+  switch (o_view_builder->m_ui_dict[a_widget]) {
   case kWidget:
     rv = add_new_widget_at(a_row, a_column, a_properties);
     break;
@@ -215,19 +228,22 @@ Widget *HybridLayout::add_widget(int a_row, int a_column,
     rv = add_new_button_at(a_row, a_column, a_properties);
     break;
   case kLabel:
-    rv = d->add_new_label_at(a_row, a_column, a_properties);
+    rv = o_view_builder->add_new_label_at(a_row, a_column, a_properties);
     break;
   case kTextEdit:
-    rv = d->add_new_text_edit_at(a_row, a_column, a_properties);
+    rv = o_view_builder->add_new_text_edit_at(a_row, a_column, a_properties);
     break;
   case kImageButton:
-    rv = d->add_new_image_button_at(a_row, a_column, a_properties);
+    rv = o_view_builder->add_new_image_button_at(a_row, a_column, a_properties);
     break;
   case kCalendar:
-    rv = d->add_new_calendar_at(a_row, a_column, a_properties);
+    rv = o_view_builder->add_new_calendar_at(a_row, a_column, a_properties);
     break;
   case kClock:
-    rv = d->add_new_clock_at(a_row, a_column, a_properties);
+    rv = o_view_builder->add_new_clock_at(a_row, a_column, a_properties);
+    break;
+  case kDialView:
+    rv = o_view_builder->add_new_dial_at(a_row, a_column, a_properties);
     break;
   default:
     rv = 0;
@@ -237,17 +253,19 @@ Widget *HybridLayout::add_widget(int a_row, int a_column,
 }
 
 void HybridLayout::update_property(int a_row, int a_column,
-                                  const WidgetProperties &a_properties) {
+                                   const WidgetProperties &a_properties) {
   GridPos pos = std::make_pair(a_row, a_column);
 
-  if (d->m_ui_type_dict.find(pos) == d->m_ui_type_dict.end()) {
+  if (o_view_builder->m_ui_type_dict.find(pos) ==
+      o_view_builder->m_ui_type_dict.end()) {
     qWarning() << Q_FUNC_INFO << "Error: No widget at index : ";
     return;
   }
 
-  switch (d->m_ui_type_dict[pos]) {
+  switch (o_view_builder->m_ui_type_dict[pos]) {
   case kImageButton:
-    d->update_image_button_properties(a_row, a_column, a_properties);
+    o_view_builder->update_image_button_properties(a_row, a_column,
+                                                   a_properties);
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Unknown Widget type";
@@ -262,11 +280,11 @@ void HybridLayout::PrivateViewBuilder::build_ui_map() {
   m_ui_dict["line_edit"] = HybridLayout::kLineEdit;
   m_ui_dict["text_edit"] = HybridLayout::kTextEdit;
   m_ui_dict["progress_bar"] = HybridLayout::kProgressBar;
-  m_ui_dict["dial"] = HybridLayout::kDial;
   m_ui_dict["model_view"] = HybridLayout::kModelView;
   m_ui_dict["divider"] = HybridLayout::kDivider;
   m_ui_dict["calendar"] = HybridLayout::kCalendar;
   m_ui_dict["clock"] = HybridLayout::kClock;
+  m_ui_dict["dial"] = HybridLayout::kDialView;
 }
 
 float HybridLayout::PrivateViewBuilder::get_layout_width() { return 0; }
@@ -275,7 +293,7 @@ float HybridLayout::PrivateViewBuilder::get_layout_height() { return 0; }
 
 float
 HybridLayout::PrivateViewBuilder::calculate_cell_width(int a_row,
-                                                      int a_column) const {
+                                                       int a_column) const {
 
   int column_count = m_row_data.at(a_row);
   GridPos pos = std::make_pair(a_row, a_column);
@@ -309,7 +327,7 @@ HybridLayout::PrivateViewBuilder::calculate_cell_width(int a_row,
 
 float
 HybridLayout::PrivateViewBuilder::calculate_cell_height(int a_row,
-                                                       int a_column) const {
+                                                        int a_column) const {
   if (get_value_type(m_row_height_data.at(a_row)) == kAutoValue) {
     float max_height = 16;
 
@@ -521,9 +539,24 @@ Widget *HybridLayout::PrivateViewBuilder::add_new_clock_at(
   m_ui_type_dict[pos] = kClock;
 
   clock->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                               calculate_cell_height(a_row, a_col)));
+                            calculate_cell_height(a_row, a_col)));
   layout();
 
   return clock;
+}
+
+Widget *HybridLayout::PrivateViewBuilder::add_new_dial_at(
+    int a_row, int a_col, const WidgetProperties &a_props) {
+  DialWidget *dial_widget = new DialWidget(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = dial_widget;
+  m_ui_type_dict[pos] = kClock;
+
+  dial_widget->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                            calculate_cell_height(a_row, a_col)));
+  layout();
+
+  return dial_widget;
 }
 }

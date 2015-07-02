@@ -24,16 +24,17 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class DesktopClockInterface : public QObject, public UIKit::ActivityInterface {
+class DesktopClockInterface : public QObject,
+                              public CherryKit::ActivityInterface {
   Q_OBJECT
-  Q_INTERFACES(UIKit::ActivityInterface)
+  Q_INTERFACES(CherryKit::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.desktopclock")
 
 public:
   virtual ~DesktopClockInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UIKit::DesktopActivity> activity();
+  QSharedPointer<CherryKit::DesktopActivity> activity();
 };
 
 #endif

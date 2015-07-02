@@ -21,9 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DataSource> RestInterface::model() {
-  QSharedPointer<UIKit::DataSource> obj =
-      QSharedPointer<UIKit::DataSource>(new RestData(), &QObject::deleteLater);
+QSharedPointer<CherryKit::DataSource> RestInterface::model() {
+  QSharedPointer<CherryKit::DataSource> obj =
+      QSharedPointer<CherryKit::DataSource>(new RestData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

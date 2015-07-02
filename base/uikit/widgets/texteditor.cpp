@@ -15,7 +15,7 @@
 #include <widget.h>
 #include <resource_manager.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class TextEditor::PrivateTextEditor {
 public:
@@ -30,38 +30,38 @@ public:
 };
 
 TextEditor::TextEditor(Widget *parent)
-    : UIKit::Widget(parent), d(new PrivateTextEditor) {
-  d->mProxyWidget = new QGraphicsProxyWidget(this);
-  d->mEditor = new QTextBrowser(0);
-  d->mEditor->setFontPointSize(16 * ResourceManager::style()->scale_factor());
-  d->mEditor->setReadOnly(false);
-  d->mEditor->setAcceptRichText(true);
-  d->mEditor->setAutoFormatting(QTextEdit::AutoAll);
-  d->mEditor->setStyleSheet("background-color: #ffffff;"
+    : CherryKit::Widget(parent), o_text_editor(new PrivateTextEditor) {
+  o_text_editor->mProxyWidget = new QGraphicsProxyWidget(this);
+  o_text_editor->mEditor = new QTextBrowser(0);
+  o_text_editor->mEditor->setFontPointSize(16 * ResourceManager::style()->scale_factor());
+  o_text_editor->mEditor->setReadOnly(false);
+  o_text_editor->mEditor->setAcceptRichText(true);
+  o_text_editor->mEditor->setAutoFormatting(QTextEdit::AutoAll);
+  o_text_editor->mEditor->setStyleSheet("background-color: #ffffff;"
                             "border : 0");
-  d->mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  d->mEditor->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  o_text_editor->mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  o_text_editor->mEditor->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-  d->mProxyWidget->setWidget(d->mEditor);
+  o_text_editor->mProxyWidget->setWidget(o_text_editor->mEditor);
 
-  d->mProxyWidget->show();
-  d->mEditor->move(0.0, 0.0);
-  d->mProxyWidget->setPos(0.0, 0.0);
+  o_text_editor->mProxyWidget->show();
+  o_text_editor->mEditor->move(0.0, 0.0);
+  o_text_editor->mProxyWidget->setPos(0.0, 0.0);
 
-  d->mTextScaleFactor = 1.0;
-  set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
-  set_widget_flag(UIKit::Widget::kRenderBackground, false);
+  o_text_editor->mTextScaleFactor = 1.0;
+  set_widget_flag(CherryKit::Widget::kRenderDropShadow, false);
+  set_widget_flag(CherryKit::Widget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
-  connect(d->mEditor, SIGNAL(textChanged()), this, SLOT(on_text_updated()));
-  connect(d->mEditor->document(), SIGNAL(blockCountChanged(int)), this,
+  connect(o_text_editor->mEditor, SIGNAL(textChanged()), this, SLOT(on_text_updated()));
+  connect(o_text_editor->mEditor->document(), SIGNAL(blockCountChanged(int)), this,
           SLOT(on_block_count_changed(int)));
 }
 
-TextEditor::~TextEditor() { delete d; }
+TextEditor::~TextEditor() { delete o_text_editor; }
 
 void TextEditor::set_text(const QString &a_text) {
-  d->mEditor->setText(a_text);
+  o_text_editor->mEditor->setText(a_text);
 }
 
 void TextEditor::set_placeholder_text(const QString &a_placeholderText) {
@@ -70,36 +70,36 @@ void TextEditor::set_placeholder_text(const QString &a_placeholderText) {
 }
 
 void TextEditor::set_font_point_size(qreal a_s) {
-  if (d->mEditor) {
-    d->mEditor->setFontPointSize(a_s);
+  if (o_text_editor->mEditor) {
+    o_text_editor->mEditor->setFontPointSize(a_s);
   }
 }
 
 QString TextEditor::text() const {
-  if (d->mEditor) {
-    return d->mEditor->toPlainText();
+  if (o_text_editor->mEditor) {
+    return o_text_editor->mEditor->toPlainText();
   }
 
   return QString();
 }
 
 void TextEditor::style(const QString &style) {
-  if (d->mEditor) {
-    d->mEditor->setStyleSheet(style);
+  if (o_text_editor->mEditor) {
+    o_text_editor->mEditor->setStyleSheet(style);
   }
 }
 
 QSizeF TextEditor::sizeHint(Qt::SizeHint which,
                             const QSizeF &constraint) const {
-  return d->mEditor->size();
+  return o_text_editor->mEditor->size();
 }
 
 void TextEditor::setGeometry(const QRectF &a_rect) {
-  d->mProxyWidget->setMinimumSize(a_rect.size());
-  d->mProxyWidget->setMaximumSize(a_rect.size());
-  d->mProxyWidget->resize(a_rect.size());
-  d->mEditor->resize(a_rect.width() - 10, a_rect.height());
-  d->mEditor->move(0.0, 0.0);
+  o_text_editor->mProxyWidget->setMinimumSize(a_rect.size());
+  o_text_editor->mProxyWidget->setMaximumSize(a_rect.size());
+  o_text_editor->mProxyWidget->resize(a_rect.size());
+  o_text_editor->mEditor->resize(a_rect.width() - 10, a_rect.height());
+  o_text_editor->mEditor->move(0.0, 0.0);
 
   Widget::setGeometry(a_rect);
 }
@@ -107,25 +107,25 @@ void TextEditor::setGeometry(const QRectF &a_rect) {
 void TextEditor::update_text_scale() {
   QRectF bounds = boundingRect();
   const QRectF newBounds(bounds.x(), bounds.y(),
-                         bounds.width() / d->mTextScaleFactor,
-                         bounds.height() / d->mTextScaleFactor);
+                         bounds.width() / o_text_editor->mTextScaleFactor,
+                         bounds.height() / o_text_editor->mTextScaleFactor);
   setGeometry(newBounds);
 
-  d->mProxyWidget->setMinimumSize(newBounds.size());
-  d->mProxyWidget->setMaximumSize(newBounds.size());
+  o_text_editor->mProxyWidget->setMinimumSize(newBounds.size());
+  o_text_editor->mProxyWidget->setMaximumSize(newBounds.size());
 
-  d->mProxyWidget->setGeometry(newBounds);
-  d->mProxyWidget->resize(newBounds.size());
+  o_text_editor->mProxyWidget->setGeometry(newBounds);
+  o_text_editor->mProxyWidget->resize(newBounds.size());
 
-  setScale(d->mTextScaleFactor);
+  setScale(o_text_editor->mTextScaleFactor);
 }
 
 void TextEditor::begin_list() {
-  if (!d->mEditor) {
+  if (!o_text_editor->mEditor) {
     return;
   }
 
-  QTextCursor cursor = d->mEditor->textCursor();
+  QTextCursor cursor = o_text_editor->mEditor->textCursor();
 
   cursor.beginEditBlock();
   cursor.insertList(QTextListFormat::ListCircle);
@@ -134,23 +134,23 @@ void TextEditor::begin_list() {
 }
 
 void TextEditor::end_list() {
-  if (!d->mEditor) {
+  if (!o_text_editor->mEditor) {
     return;
   }
 }
 
 void TextEditor::convert_to_link() {
-  if (!d->mEditor) {
+  if (!o_text_editor->mEditor) {
     return;
   }
 
-  QTextCursor cursor = d->mEditor->textCursor();
+  QTextCursor cursor = o_text_editor->mEditor->textCursor();
 
   const QClipboard *clipboard = QApplication::clipboard();
   const QMimeData *mimeData = clipboard->mimeData();
 
   if (mimeData->hasUrls()) {
-    Q_FOREACH (const QUrl &url, mimeData->urls()) {
+    Q_FOREACH(const QUrl & url, mimeData->urls()) {
       qDebug() << Q_FUNC_INFO << url;
       cursor.beginEditBlock();
       cursor.insertFragment(QTextDocumentFragment::fromHtml(
@@ -174,14 +174,14 @@ void TextEditor::convert_to_link() {
 }
 
 void TextEditor::on_text_updated() {
-  QTextDocument *doc = d->mEditor->document();
+  QTextDocument *doc = o_text_editor->mEditor->document();
 
   Q_EMIT text_updated(doc->toPlainText());
 }
 
 void TextEditor::on_block_count_changed(int a_count) {
   if (a_count == 2) {
-    QTextDocument *document = d->mEditor->document();
+    QTextDocument *document = o_text_editor->mEditor->document();
     QTextCursor cursor(document);
 
     cursor.movePosition(QTextCursor::Start);
@@ -197,11 +197,11 @@ void TextEditor::on_block_count_changed(int a_count) {
 }
 
 void TextEditor::set_text_scale_factor(qreal a_scale_factor) {
-  d->mTextScaleFactor = a_scale_factor;
+  o_text_editor->mTextScaleFactor = a_scale_factor;
   update_text_scale();
 }
 
-qreal TextEditor::text_scale_factor() const { return d->mTextScaleFactor; }
+qreal TextEditor::text_scale_factor() const { return o_text_editor->mTextScaleFactor; }
 
 QString
 TextEditor::PrivateTextEditor::extractHeader(const QString &headerText) {

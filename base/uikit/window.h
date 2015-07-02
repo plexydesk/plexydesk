@@ -9,7 +9,7 @@ class QRectF;
 class QPointF;
 class QSizeF;
 
-namespace UIKit {
+namespace CherryKit {
 class Space;
 class DECL_UI_KIT_EXPORT Window : public Widget {
 public:
@@ -23,7 +23,7 @@ public:
     kPopupWindow = 7
   } WindowType;
 
-  typedef std::function<void (Window *, int, int)> ResizeCallback;
+  typedef std::function<void(Window *, int, int)> ResizeCallback;
 
   Window(Widget *a_parent_ptr = 0);
   virtual ~Window();
@@ -38,11 +38,11 @@ public:
   virtual void set_window_type(WindowType a_window_type);
 
   virtual void on_window_resized(ResizeCallback a_handler);
-  virtual void on_window_moved(
-      std::function<void(const QPointF &pos)> a_handler);
+  virtual void
+  on_window_moved(std::function<void(const QPointF &pos)> a_handler);
   virtual void on_window_closed(std::function<void(Window *)> a_handler);
   virtual void on_window_discarded(std::function<void(Window *)> a_handler);
-  virtual void on_window_focused(std::function<void (Window *)> a_handler);
+  virtual void on_window_focused(std::function<void(Window *)> a_handler);
 
   virtual void raise();
   virtual void close();
@@ -53,6 +53,7 @@ public:
   virtual void resize(float a_width, float a_height);
 
   virtual void enable_window_background(bool a_visibility = true);
+
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
@@ -62,9 +63,10 @@ protected:
   void invoke_focus_handlers();
   void invoke_window_closed_action();
   void invoke_window_moved_action();
+
 private:
   class PrivateWindow;
-  PrivateWindow *const p_window;
+  PrivateWindow *const o_window;
 };
 }
 #endif // WINDOW_H

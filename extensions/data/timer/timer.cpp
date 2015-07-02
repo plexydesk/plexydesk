@@ -28,7 +28,7 @@ public:
 };
 
 TimerData::TimerData(QObject *object)
-    : UIKit::DataSource(object), d(new Private) {
+    : CherryKit::DataSource(object), o_data_soure(new Private) {
   startTimer(1000);
 }
 
@@ -36,7 +36,7 @@ void TimerData::init() { qDebug() << Q_FUNC_INFO; }
 
 TimerData::~TimerData() {
   qDebug() << Q_FUNC_INFO;
-  delete d;
+  delete o_data_soure;
 }
 
 void TimerData::set_arguments(QVariant arg) {}
