@@ -24,17 +24,18 @@ CalendarView::CalendarView(Widget *parent)
 
   o_calendar_widget->m_ui = new HybridLayout(this);
   o_calendar_widget->m_ui->set_content_margin(10, 10, 10, 10);
-  o_calendar_widget->m_ui->set_geometry(0, 0, 320, 320);
+  o_calendar_widget->m_ui->set_geometry(0, 0, 320, 400);
 
-  o_calendar_widget->m_ui->set_horizontal_segment_count(9);
+  o_calendar_widget->m_ui->set_horizontal_segment_count(10);
 
   o_calendar_widget->m_ui->add_horizontal_segments(0, 3);
-  o_calendar_widget->m_ui->add_horizontal_segments(1, 7);
+  o_calendar_widget->m_ui->add_horizontal_segments(2, 7);
 
   o_calendar_widget->m_ui->set_horizontal_height(0, "7%");
-  o_calendar_widget->m_ui->set_horizontal_height(1, "13%");
+  o_calendar_widget->m_ui->set_horizontal_height(1, "6%");
+  o_calendar_widget->m_ui->set_horizontal_height(2, "7%");
 
-  for (int i = 2; i < 9; i++) {
+  for (int i = 3; i < 10; i++) {
     o_calendar_widget->m_ui->add_horizontal_segments(i, 7);
     o_calendar_widget->m_ui->set_horizontal_height(i, "8%");
   }
@@ -62,10 +63,10 @@ CalendarView::CalendarView(Widget *parent)
 
   for (int i = 0; i < 7; i++) {
     ui_data["label"] = day_name_table[i];
-    o_calendar_widget->m_ui->add_widget(1, i, "label", ui_data);
+    o_calendar_widget->m_ui->add_widget(2, i, "label", ui_data);
   }
 
-  for (int r = 2; r < 9; r++) {
+  for (int r = 3; r < 10; r++) {
     for (int c = 0; c < 7; c++) {
       ui_data["label"] = "";
       o_calendar_widget->m_ui->add_widget(r, c, "label", ui_data);
@@ -78,7 +79,7 @@ CalendarView::CalendarView(Widget *parent)
 CalendarView::~CalendarView() { delete o_calendar_widget; }
 
 void CalendarView::clear() {
-  for (int r = 2; r < 9; r++) {
+  for (int r = 3; r < 10; r++) {
     for (int c = 0; c < 7; c++) {
       CherryKit::Widget *widget = o_calendar_widget->m_ui->at(r, c);
 
@@ -97,7 +98,7 @@ void CalendarView::clear() {
 }
 
 void CalendarView::reset() {
-  for (int r = 2; r < 9; r++) {
+  for (int r = 3; r < 10; r++) {
     for (int c = 0; c < 7; c++) {
       CherryKit::Widget *widget = o_calendar_widget->m_ui->at(r, c);
 
@@ -132,7 +133,7 @@ void CalendarView::set_date(const QDate &date) {
   int month = 7;
   int year = 2015;
 
-  int week_num = 2;
+  int week_num = 3;
   for (int i = 1; i <= o_calendar_widget->days_in_month(day, month, year); i++) {
     if (o_calendar_widget->days_of_week(i, month, year) == 0)
       week_num++;
