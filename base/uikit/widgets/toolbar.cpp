@@ -9,7 +9,7 @@
 
 #include <viewbuilder.h>
 
-namespace UIKit {
+namespace CherryKit {
 class ToolBar::PrivateToolBar {
 public:
   PrivateToolBar() : m_item_count(1) {}
@@ -23,27 +23,27 @@ public:
   HybridLayout *m_layout;
 };
 
-ToolBar::ToolBar(Widget *parent) : Widget(parent), d(new PrivateToolBar) {
-  d->m_layout = new HybridLayout(this);
-  d->m_layout->set_content_margin(10, 10, 10, 10);
-  d->m_layout->set_horizontal_segment_count(1);
-  d->m_layout->set_horizontal_height(0, "100%");
+ToolBar::ToolBar(Widget *parent) : Widget(parent), o_tool_bar(new PrivateToolBar) {
+  o_tool_bar->m_layout = new HybridLayout(this);
+  o_tool_bar->m_layout->set_content_margin(10, 10, 10, 10);
+  o_tool_bar->m_layout->set_horizontal_segment_count(1);
+  o_tool_bar->m_layout->set_horizontal_height(0, "100%");
 }
 
-ToolBar::~ToolBar() { delete d; }
+ToolBar::~ToolBar() { delete o_tool_bar; }
 
 void ToolBar::add_action(const QString &a_lable, const QString &a_icon,
                          bool a_togle_action) {
 
-  d->m_layout->add_horizontal_segments(0, d->m_item_count);
+  o_tool_bar->m_layout->add_horizontal_segments(0, o_tool_bar->m_item_count);
 
-  UIKit::WidgetProperties accept_button_prop;
+  CherryKit::WidgetProperties accept_button_prop;
   accept_button_prop["label"] = "";
   accept_button_prop["icon"] = a_icon.toStdString();
 
-  d->m_layout->add_widget(0, (d->m_item_count - 1), "image_button",
+  o_tool_bar->m_layout->add_widget(0, (o_tool_bar->m_item_count - 1), "image_button",
                           accept_button_prop);
-  d->m_item_count += 1;
+  o_tool_bar->m_item_count += 1;
 
   update();
 }
@@ -53,23 +53,21 @@ void ToolBar::insert_widget(Widget *a_widget_ptr) {}
 void ToolBar::set_orientation(Qt::Orientation a_orientation) {}
 
 void ToolBar::set_icon_resolution(const QString &a_res) {
-  d->m_icon_resolution = a_res;
+  o_tool_bar->m_icon_resolution = a_res;
 }
 
 void ToolBar::set_icon_size(const QSize &a_size) {
-  d->m_icon_size = a_size * ResourceManager::style()->scale_factor();
+  o_tool_bar->m_icon_size = a_size * ResourceManager::style()->scale_factor();
 }
 
 StylePtr ToolBar::style() const { return ResourceManager::style(); }
 
 void ToolBar::setGeometry(const QRectF &a_rect) {
-  d->m_layout->set_geometry(0, 0, a_rect.width(), a_rect.height());
+  o_tool_bar->m_layout->set_geometry(0, 0, a_rect.width(), a_rect.height());
   Widget::setGeometry(a_rect);
 }
 
-QRectF ToolBar::contents_geometry() const {
-  return geometry();
-}
+QRectF ToolBar::contents_geometry() const { return geometry(); }
 
 QRectF ToolBar::frame_geometry() const { return geometry(); }
 
@@ -79,7 +77,7 @@ QSizeF ToolBar::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const {
 
 void
 ToolBar::on_item_activated(std::function<void(const QString &)> a_handler) {
-  d->m_action_handler_list.push_back(a_handler);
+  o_tool_bar->m_action_handler_list.push_back(a_handler);
 }
 
 void ToolBar::paint_view(QPainter *painter, const QRectF &exposeRect) {
@@ -91,8 +89,8 @@ void ToolBar::tool_button_press_handler(const Widget *a_widget_ptr) {
     const ImageButton *button = qobject_cast<const ImageButton *>(a_widget_ptr);
     if (button) {
 
-      std::for_each(std::begin(d->m_action_handler_list),
-                    std::end(d->m_action_handler_list),
+      std::for_each(std::begin(o_tool_bar->m_action_handler_list),
+                    std::end(o_tool_bar->m_action_handler_list),
                     [&](std::function<void(const QString &)> a_func) {
         if (a_func)
           a_func(button->label());

@@ -24,7 +24,7 @@
 
 #include <QDebug>
 
-namespace UIKit {
+namespace CherryKit {
 class SessionSync::PrivSessionSync {
 public:
   PrivSessionSync() : m_purged(0) {}
@@ -93,12 +93,12 @@ std::string SessionSync::session_group_key() const {
   return key_name + "_id";
 }
 
-void SessionSync::bind_to_window(UIKit::Window *a_window) {
+void SessionSync::bind_to_window(CherryKit::Window *a_window) {
   if (!a_window)
     return;
 
   /*
-  a_window->on_window_closed([this](const UIKit::Window *a_window) {
+  a_window->on_window_closed([this](const CherryKit::Window *a_window) {
       unbind_window(a_window);
   });
   */

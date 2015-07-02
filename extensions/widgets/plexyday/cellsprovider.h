@@ -22,8 +22,8 @@ public:
 
   virtual float rightMargin() const;
 
-  PlexyDesk::Widget *loadWidgetControlllerByName(const QString &controllerName)
-      const;
+  PlexyDesk::Widget *
+  loadWidgetControlllerByName(const QString &controllerName) const;
 
   PlexyDesk::DataSourcePtr loadDataSourceEngine(const QString &engine);
 

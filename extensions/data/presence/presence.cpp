@@ -127,8 +127,8 @@ void PresenceData::init() {
           SLOT(accountRemoved(const QString &)));
 }
 
-void PresenceData::onAccountReady(
-    Telepathy::Client::PendingOperation *operation) {
+void
+PresenceData::onAccountReady(Telepathy::Client::PendingOperation *operation) {
   qDebug() << "onAccountReady() called";
   if (operation->isError()) {
     qDebug() << operation->errorName() << ": " << operation->errorMessage();

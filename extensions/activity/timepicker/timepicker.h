@@ -27,7 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class TimePickerActivity : public UIKit::DesktopActivity {
+class TimePickerActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -42,18 +42,18 @@ public:
 
   QVariantMap result() const;
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
+  void onWidgetClosed(CherryKit::Widget *widget);
 
   void onHideAnimationFinished();
 
 private:
   class PrivateTimePicker;
-  PrivateTimePicker *const d;
+  PrivateTimePicker *const o_desktop_activity;
 };
 
 #endif

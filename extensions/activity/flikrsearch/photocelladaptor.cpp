@@ -35,7 +35,7 @@ public:
 };
 
 PhotoCellAdaptor::PhotoCellAdaptor(QObject *parent)
-    : UIKit::TableModel(parent), d(new PrivatePhotoCellAdaptor) {
+    : CherryKit::TableModel(parent), d(new PrivatePhotoCellAdaptor) {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
 }
@@ -157,8 +157,8 @@ QList<QString> PhotoCellAdaptor::availableSizesForImage(const QString &id) {
   return rv;
 }
 
-void PhotoCellAdaptor::onServiceComplete(
-    QuetzalSocialKit::WebService *service) {
+void
+PhotoCellAdaptor::onServiceComplete(QuetzalSocialKit::WebService *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
   if (service->methodData("photos").count() > 0) {
@@ -188,8 +188,8 @@ void PhotoCellAdaptor::onServiceComplete(
   ;
 }
 
-void PhotoCellAdaptor::onSizeServiceComplete(
-    QuetzalSocialKit::WebService *service) {
+void
+PhotoCellAdaptor::onSizeServiceComplete(QuetzalSocialKit::WebService *service) {
   if (service->methodData("sizes").count() == 0) {
     Q_EMIT completed(10);
     service->deleteLater();
@@ -252,7 +252,8 @@ void PhotoCellAdaptor::onImageReady() {
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), UIKit::Config::cache_dir(), false);
+    imageSave->setData(downloader->data(), CherryKit::Config::cache_dir(),
+                       false);
     imageSave->start();
     downloader->deleteLater();
 

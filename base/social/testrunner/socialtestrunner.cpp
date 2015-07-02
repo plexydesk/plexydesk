@@ -121,8 +121,8 @@ void SocialTestRunner::testDirLoader(const QString &path) {
   connect(loader, SIGNAL(ready()), this, SLOT(onImageReady()));
 }
 
-void SocialTestRunner::onServiceComplete(
-    QuetzalSocialKit::WebService *service) {
+void
+SocialTestRunner::onServiceComplete(QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO
@@ -141,8 +141,8 @@ void SocialTestRunner::onServiceComplete(
   ;
 }
 
-void SocialTestRunner::onSizeServiceComplete(
-    QuetzalSocialKit::WebService *service) {
+void
+SocialTestRunner::onSizeServiceComplete(QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("size").count();
   qDebug() << Q_FUNC_INFO
@@ -175,8 +175,8 @@ void SocialTestRunner::onSizeServiceComplete(
   service->deleteLater();
 }
 
-void SocialTestRunner::onDownloadComplete(
-    QuetzalSocialKit::WebService *service) {
+void
+SocialTestRunner::onDownloadComplete(QuetzalSocialKit::WebService *service) {
   if (service) {
     QByteArray data = service->rawServiceData();
 
@@ -221,8 +221,8 @@ void SocialTestRunner::onImageSaveReady() {
 
 void SocialTestRunner::onImageReady(const QString &fileName) {}
 
-void SocialTestRunner::onServiceCompleteJson(
-    QuetzalSocialKit::WebService *service) {
+void
+SocialTestRunner::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO

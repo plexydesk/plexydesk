@@ -10,10 +10,10 @@ Login::~Login() { delete ui; }
 void Login::changeEvent(QEvent *e) {
   QWidget::changeEvent(e);
   switch (e->type()) {
-    case QEvent::LanguageChange:
-      ui->retranslateUi(this);
-      break;
-    default:
-      break;
+  case QEvent::LanguageChange:
+    ui->retranslateUi(this);
+    break;
+  default:
+    break;
   }
 }

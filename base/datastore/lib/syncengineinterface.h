@@ -38,8 +38,8 @@ public:
   virtual void on_search_complete(std::function<void(
       SyncObject &a_object, const std::string &a_app_name, bool)> a_handler);
 
-  virtual void on_insert_complete(
-      std::function<void(const SyncObject &)> a_handler);
+  virtual void
+  on_insert_complete(std::function<void(const SyncObject &)> a_handler);
 
 protected:
   virtual void search_request_complete(SyncObject &a_object,

@@ -9,7 +9,7 @@
 #include <widget.h>
 #include <syncobject.h>
 
-namespace UIKit {
+namespace CherryKit {
 class WorkSpace;
 
 class DECL_UI_KIT_EXPORT Space {
@@ -61,12 +61,12 @@ public:
                                     const QString &a_key,
                                     const QString &a_value);
 
-  virtual void add_activity(UIKit::DesktopActivityPtr a_activity_ptr);
-  UIKit::DesktopActivityPtr create_activity(const QString &a_activity,
-                                            const QString &a_title,
-                                            const QPointF &a_pos,
-                                            const QRectF &a_rect,
-                                            const QVariantMap &a_data_map);
+  virtual void add_activity(CherryKit::DesktopActivityPtr a_activity_ptr);
+  CherryKit::DesktopActivityPtr create_activity(const QString &a_activity,
+                                                const QString &a_title,
+                                                const QPointF &a_pos,
+                                                const QRectF &a_rect,
+                                                const QVariantMap &a_data_map);
 
   virtual QPointF cursor_pos() const;
   virtual QPointF
@@ -87,16 +87,17 @@ public:
 
   virtual void on_activity_finished(const DesktopActivity *a_activity);
 
-  //experimental:
+  // experimental:
   virtual void draw();
   virtual GraphicsSurface *surface();
+
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
 
 private:
   class PrivateSpace;
-  PrivateSpace *const p_space;
+  PrivateSpace *const o_space;
 };
 }
 #endif // SPACE_H

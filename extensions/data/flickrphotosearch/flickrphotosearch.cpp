@@ -32,11 +32,11 @@ public:
 };
 
 FlickrPhotoSearchData::FlickrPhotoSearchData(QObject *object)
-    : UIKit::DataSource(object), d(new PrivateFlickrPhotoSearch) {}
+    : CherryKit::DataSource(object), o_data_soure(new PrivateFlickrPhotoSearch) {}
 
 void FlickrPhotoSearchData::init() {}
 
-FlickrPhotoSearchData::~FlickrPhotoSearchData() { delete d; }
+FlickrPhotoSearchData::~FlickrPhotoSearchData() { delete o_data_soure; }
 
 void FlickrPhotoSearchData::set_arguments(QVariant arg) {
   QVariantMap data = arg.toMap();

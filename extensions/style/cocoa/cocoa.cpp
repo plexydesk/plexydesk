@@ -157,8 +157,8 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
     draw_label(options, painter);
     break;
   case 10:
-    // draw_clock_surface(options, painter);
-    draw_clock_surface_to_buffer(options, painter);
+    draw_clock_surface(options, painter);
+    //draw_clock_surface_to_buffer(options, painter);
     break;
   case 13:
     draw_knob(options, painter);
@@ -187,7 +187,7 @@ void CocoaStyle::PrivateCocoa::set_pen_color(QPainter *painter,
 void CocoaStyle::set_default_painter_hints(QPainter *painter) {
   painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
                               QPainter::SmoothPixmapTransform |
-                              QPainter::NonCosmeticDefaultPen,
+                          QPainter::HighQualityAntialiasing,
                           true);
 }
 
@@ -266,7 +266,6 @@ void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
 
 void CocoaStyle::draw_window_frame(const StyleFeatures &features,
                                    QPainter *a_ctx) {
-    qDebug() << Q_FUNC_INFO;
   QRectF rect = features.geometry.adjusted(4, 4, -4, -4);
 
   a_ctx->save();
@@ -278,10 +277,12 @@ void CocoaStyle::draw_window_frame(const StyleFeatures &features,
 
   /* draw a border around the window */
   // todo : do this only when drop shadows are disabled
+  /*
   a_ctx->save();
   a_ctx->setOpacity(0.3);
   a_ctx->fillPath(drop_shadow, d->color(ResourceManager::kTextColor));
   a_ctx->restore();
+  */
 
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
@@ -422,7 +423,13 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
   PxBenchData data;
   px_bench_run(&data);
 
-  QRectF rect = features.geometry.adjusted(16, 16, -32, -32);
+  float border_len = features.geometry.width() - 16;
+
+  QRectF rect = QRectF(
+      features.geometry.x() + ((features.geometry.width() - border_len) / 2),
+      (features.geometry.y() + ((features.geometry.height() - border_len) / 2)),
+      border_len, border_len);
+
   double second_value = features.attributes["seconds"].toDouble();
   double minutes_value = features.attributes["minutes"].toDouble();
   double hour_value = features.attributes["hour"].toDouble();
@@ -576,32 +583,57 @@ void CocoaStyle::draw_clock_surface_to_buffer(const StyleFeatures &features,
 }
 
 void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
-  a_ctx->setRenderHint(QPainter::Antialiasing, true);
-  a_ctx->setRenderHint(QPainter::TextAntialiasing, true);
-  a_ctx->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  set_default_painter_hints(a_ctx);
 
-  QRectF rect = features.geometry;
+  float border_len = features.geometry.width() - 8;
+  float outer_len = features.geometry.width() - 10;
+  float inner_len = features.geometry.width() - 24;
+
+  QRectF border_rect = QRectF(
+      features.geometry.x() + ((features.geometry.width() - border_len) / 2),
+      (features.geometry.y() + ((features.geometry.height() - border_len) / 2)),
+      border_len, border_len);
+
+  QRectF rect = QRectF(
+      features.geometry.x() + ((features.geometry.width() - outer_len) / 2),
+      (features.geometry.y() + ((features.geometry.height() - outer_len) / 2)),
+      outer_len, outer_len);
+
+  QRectF handle_rect = QRectF(
+      features.geometry.x() + ((features.geometry.width() - inner_len) / 2),
+      (features.geometry.y() + ((features.geometry.height() - inner_len) / 2)),
+      inner_len, inner_len);
+
   double angle_percent = features.attributes["angle"].toDouble();
   double max_value = features.attributes["max_value"].toDouble();
 
-  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 18);
+  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 1);
   QPainterPath _clock_background;
+  QPainterPath _marker_background;
+  QPainterPath _border_background;
+
+  _marker_background.addEllipse(features.geometry);
+  _border_background.addEllipse(border_rect);
 
   _clock_background.addEllipse(rect);
+  a_ctx->fillPath(_marker_background,
+                  d->color(ResourceManager::kLightPrimaryColor));
   a_ctx->fillPath(_clock_background, d->color(ResourceManager::kTextColor));
-  a_ctx->drawEllipse(rect);
+  a_ctx->drawPath(_clock_background);
+
+  d->set_pen_color(a_ctx, ResourceManager::kDividerColor, 1);
+  a_ctx->drawPath(_border_background);
 
   // draw segement markers.
   for (int i = 0; i < max_value; i++) {
     double percent = (i / max_value);
-    QPointF marker_location = _clock_background.pointAtPercent(percent);
+    QPointF marker_location = _marker_background.pointAtPercent(percent);
 
-    a_ctx->save();
-    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 2);
+    d->set_pen_color(a_ctx, ResourceManager::kTextColor, 1);
     a_ctx->drawPoint(marker_location);
-    a_ctx->restore();
   }
 
+  /*
   // main points.
   for (int i = 0; i < max_value; i = i + (max_value / 4)) {
     double percent = (i / max_value);
@@ -612,18 +644,23 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
     a_ctx->drawPoint(marker_location);
     a_ctx->restore();
   }
+  */
 
-  QPointF transPos = rect.center();
+  QPointF transPos = handle_rect.center();
   QPainterPath border_path;
-  QRectF dial_handle = rect;
-  border_path.addEllipse(dial_handle);
+  QPainterPath knob_path;
+  QRectF dial_handle = handle_rect;
+
+  border_path.addEllipse(rect);
+  knob_path.addEllipse(handle_rect);
 
   QPointF current_marker_location_for_min =
-      border_path.pointAtPercent(angle_percent);
+      knob_path.pointAtPercent(angle_percent);
 
   /* draw the dial */
   a_ctx->save();
   set_default_painter_hints(a_ctx);
+  a_ctx->fillPath(border_path, d->color(ResourceManager::kLightPrimaryColor));
 
   QTransform xform;
   xform.translate(transPos.x(), transPos.y());
@@ -633,23 +670,20 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
   a_ctx->setTransform(xform);
 
   a_ctx->save();
-
-  a_ctx->setOpacity(0.5);
-  d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 18);
+  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 8);
   a_ctx->drawPoint(current_marker_location_for_min);
 
   if (features.render_state == StyleFeatures::kRenderRaised) {
-    d->set_pen_color(a_ctx, ResourceManager::kAccentColor, 14);
+    d->set_pen_color(a_ctx, ResourceManager::kAccentColor, 8);
     a_ctx->drawPoint(current_marker_location_for_min);
   }
 
   if (features.render_state == StyleFeatures::kRenderPressed) {
-    d->set_pen_color(a_ctx, ResourceManager::kPrimaryColor, 14);
+    d->set_pen_color(a_ctx, ResourceManager::kPrimaryColor, 4);
     a_ctx->drawPoint(current_marker_location_for_min);
   }
 
   a_ctx->restore();
-
   a_ctx->restore();
 }
 
@@ -666,7 +700,7 @@ void CocoaStyle::draw_line_edit(const StyleFeatures &features,
   painter->fillPath(background_path,
                     d->color(ResourceManager::kLightPrimaryColor));
 
-  d->set_default_font_size(painter, 11);
+  d->set_default_font_size(painter, 18);
 
   if (features.render_state == StyleFeatures::kRenderRaised) {
     d->set_pen_color(painter, ResourceManager::kDividerColor);
@@ -883,7 +917,11 @@ void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
   }
 
   QRect icon_rect = a_rect.toRect();
+  if (a_features.text_data.isNull() || a_features.text_data.isEmpty()) {
+  icon_rect.setX(a_rect.center().x() - (icon_rect.height() / 2));
+  } else {
   icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
+  }
   icon_rect.setWidth(icon_rect.height());
 
   QRect text_rect = a_rect.toRect();

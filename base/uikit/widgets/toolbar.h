@@ -4,7 +4,7 @@
 #include <widget.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT ToolBar : public Widget {
   Q_OBJECT
 public:
@@ -27,8 +27,8 @@ public:
   virtual QRectF frame_geometry() const;
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 
-  virtual void on_item_activated(
-      std::function<void (const QString &)> a_handler);
+  virtual void
+  on_item_activated(std::function<void(const QString &)> a_handler);
 
 Q_SIGNALS:
   void action(const QString &a_actionName);
@@ -40,7 +40,7 @@ protected:
 
 private:
   class PrivateToolBar;
-  PrivateToolBar *const d;
+  PrivateToolBar *const o_tool_bar;
 };
 }
 

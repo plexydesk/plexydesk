@@ -23,16 +23,16 @@
 #include <plexy.h>
 #include <widgetstyleinterface.h>
 
-class CocoaInterface : public QObject, public UIKit::WidgetStyleInterface {
+class CocoaInterface : public QObject, public CherryKit::WidgetStyleInterface {
   Q_OBJECT
-  Q_INTERFACES(UIKit::WidgetStyleInterface)
+  Q_INTERFACES(CherryKit::WidgetStyleInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.cocoa")
 
 public:
   virtual ~CocoaInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UIKit::Style> style();
+  QSharedPointer<CherryKit::Style> style();
 };
 
 #endif

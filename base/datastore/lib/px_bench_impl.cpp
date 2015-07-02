@@ -14,6 +14,6 @@ void px_bench_stop(PxBenchData *a_bench_data) {
 
 void px_bench_print(PxBenchData *a_bench_data, const char *a_func_name) {
   std::cout << a_func_name << "Duration -> "
-           << std::chrono::duration_cast<std::chrono::microseconds>(
-                  a_bench_data->elapsed_seconds).count() << std::endl;
+            << std::chrono::duration_cast<std::chrono::microseconds>(
+                   a_bench_data->elapsed_seconds).count() << std::endl;
 }

@@ -9,7 +9,7 @@
 #include <QVariantAnimation>
 #include <resource_manager.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class ProgressBar::PrivateProgressBar {
 public:
@@ -27,21 +27,23 @@ public:
 };
 
 ProgressBar::ProgressBar(Widget *parent)
-    : Widget(parent), d(new PrivateProgressBar) {
-  d->mMaxValue = 100.0;
-  d->mMinValue = 1.0;
-  d->mValue = (float)0.01;
+    : Widget(parent), o_progress_bar(new PrivateProgressBar) {
+  o_progress_bar->mMaxValue = 100.0;
+  o_progress_bar->mMinValue = 1.0;
+  o_progress_bar->mValue = (float)0.01;
 
-  d->mProgressAnimation = new QVariantAnimation(this);
-  d->mProgressAnimation->setDuration(100);
-  d->mProgressAnimation->setStartValue(d->mMinValue);
-  d->mProgressAnimation->setEndValue(d->mMaxValue);
+  o_progress_bar->mProgressAnimation = new QVariantAnimation(this);
+  o_progress_bar->mProgressAnimation->setDuration(100);
+  o_progress_bar->mProgressAnimation->setStartValue(o_progress_bar->mMinValue);
+  o_progress_bar->mProgressAnimation->setEndValue(o_progress_bar->mMaxValue);
 
-  set_size(
-      QSize(ResourceManager::style()->attribute("widget", "line_edit_width").toInt(),
-            ResourceManager::style()->attribute("widget", "line_edit_height").toInt()));
+  set_size(QSize(
+      ResourceManager::style()->attribute("widget", "line_edit_width").toInt(),
+      ResourceManager::style()
+          ->attribute("widget", "line_edit_height")
+          .toInt()));
 
-  connect(d->mProgressAnimation, SIGNAL(valueChanged(QVariant)), this,
+  connect(o_progress_bar->mProgressAnimation, SIGNAL(valueChanged(QVariant)), this,
           SLOT(valueChanged(QVariant)));
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -49,11 +51,11 @@ ProgressBar::ProgressBar(Widget *parent)
 
 ProgressBar::~ProgressBar() {
   qDebug() << Q_FUNC_INFO;
-  delete d;
+  delete o_progress_bar;
 }
 
 void ProgressBar::set_label(const QString &a_txt) {
-  d->mString = a_txt;
+  o_progress_bar->mString = a_txt;
   Q_EMIT contentBoundingRectChaned();
 }
 
@@ -61,7 +63,7 @@ void ProgressBar::set_label(const QString &a_txt) {
      this is a comment
      */
 
-QString ProgressBar::label() const { return d->mString; }
+QString ProgressBar::label() const { return o_progress_bar->mString; }
 
 void ProgressBar::set_size(const QSizeF &size) {
   setGeometry(QRectF(0, 0, size.width(), size.height()));
@@ -72,45 +74,45 @@ QSizeF ProgressBar::sizeHint(Qt::SizeHint which,
   return boundingRect().size();
 }
 
-int ProgressBar::max_range() { return d->mMaxValue; }
+int ProgressBar::max_range() { return o_progress_bar->mMaxValue; }
 
-int ProgressBar::min_range() { return d->mMinValue; }
+int ProgressBar::min_range() { return o_progress_bar->mMinValue; }
 
 void ProgressBar::set_range(int a_min, int a_max) {
-  d->mMinValue = a_min;
-  d->mMaxValue = a_max;
+  o_progress_bar->mMinValue = a_min;
+  o_progress_bar->mMaxValue = a_max;
 
-  d->mProgressAnimation->setStartValue(d->mMinValue);
-  d->mProgressAnimation->setEndValue(d->mMaxValue);
+  o_progress_bar->mProgressAnimation->setStartValue(o_progress_bar->mMinValue);
+  o_progress_bar->mProgressAnimation->setEndValue(o_progress_bar->mMaxValue);
 
   update();
 }
 
 void ProgressBar::set_value(int a_value) {
-  if (a_value > d->mMaxValue) {
-    d->mValue = d->mMaxValue;
-    d->mProgressAnimation->setEndValue(d->mValue);
-    d->mProgressAnimation->start();
+  if (a_value > o_progress_bar->mMaxValue) {
+    o_progress_bar->mValue = o_progress_bar->mMaxValue;
+    o_progress_bar->mProgressAnimation->setEndValue(o_progress_bar->mValue);
+    o_progress_bar->mProgressAnimation->start();
     update();
     return;
   }
 
-  if (a_value < d->mMinValue) {
-    d->mValue = d->mMinValue;
-    d->mProgressAnimation->setEndValue(d->mValue);
-    d->mProgressAnimation->start();
+  if (a_value < o_progress_bar->mMinValue) {
+    o_progress_bar->mValue = o_progress_bar->mMinValue;
+    o_progress_bar->mProgressAnimation->setEndValue(o_progress_bar->mValue);
+    o_progress_bar->mProgressAnimation->start();
     update();
     return;
   }
 
-  d->mValue = a_value;
-  d->mProgressAnimation->setEndValue(d->mValue);
-  d->mProgressAnimation->start();
+  o_progress_bar->mValue = a_value;
+  o_progress_bar->mProgressAnimation->setEndValue(o_progress_bar->mValue);
+  o_progress_bar->mProgressAnimation->start();
   update();
 }
 
 void ProgressBar::on_value_changed(const QVariant &a_value) {
-  d->mValue = a_value.toFloat();
+  o_progress_bar->mValue = a_value.toFloat();
   update();
 }
 
@@ -126,11 +128,12 @@ void ProgressBar::paint(QPainter *a_painter_ptr,
   features.render_state = StyleFeatures::kRenderBackground;
   features.geometry = a_option_ptr->exposedRect;
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("linear_progress_bar", features, a_painter_ptr);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("linear_progress_bar", features,
+                                              a_painter_ptr);
   }
 
-  float percentage = (d->mValue / d->mMaxValue) * 100;
+  float percentage = (o_progress_bar->mValue / o_progress_bar->mMaxValue) * 100;
   float progressLevel = (a_option_ptr->exposedRect.width() / 100) * percentage;
 
   StyleFeatures progressFeatures;
@@ -139,9 +142,9 @@ void ProgressBar::paint(QPainter *a_painter_ptr,
 
   progressFeatures.render_state = StyleFeatures::kRenderForground;
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("linear_progress_bar", progressFeatures,
-                                a_painter_ptr);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("linear_progress_bar",
+                                              progressFeatures, a_painter_ptr);
   }
 
   a_painter_ptr->restore();

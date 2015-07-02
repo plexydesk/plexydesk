@@ -5,7 +5,7 @@
 
 class QPainter;
 
-class DesktopWindow : public UIKit::Window {
+class DesktopWindow : public CherryKit::Window {
 public:
   DesktopWindow();
   virtual ~DesktopWindow();
@@ -13,12 +13,13 @@ public:
   void set_background(const QString &a_image_name);
 
   void reset_window_background();
+
 protected:
   void paint_view(QPainter *a_ctx, const QRectF &a_rect);
 
 private:
   class PrivateDesktopWindow;
-  PrivateDesktopWindow *p_window;
+  PrivateDesktopWindow *o_window;
 };
 
 #endif // DESKTOPWINDOW_H

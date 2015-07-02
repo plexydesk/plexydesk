@@ -28,8 +28,8 @@
 #include <desktopactivity.h>
 #include <abstractcellcomponent.h>
 
-using namespace UIKit;
-class PhotoSearchActivity : public UIKit::DesktopActivity {
+using namespace CherryKit;
+class PhotoSearchActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:

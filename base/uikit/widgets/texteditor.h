@@ -6,7 +6,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT TextEditor : public Widget {
   Q_OBJECT
 public:
@@ -43,7 +43,7 @@ Q_SIGNALS:
 
 private:
   class PrivateTextEditor;
-  PrivateTextEditor *const d;
+  PrivateTextEditor *const o_text_editor;
 };
 }
 

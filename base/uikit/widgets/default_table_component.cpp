@@ -18,9 +18,9 @@ public:
   ~PrivateTableComponent() {}
 
 public:
-  UIKit::Button *m_option_button;
-  UIKit::Label *m_label_widget;
-  UIKit::ImageView *m_image_view_widget;
+  CherryKit::Button *m_option_button;
+  CherryKit::Label *m_label_widget;
+  CherryKit::ImageView *m_image_view_widget;
 
   QGraphicsWidget *m_layout_base;
   QGraphicsLinearLayout *m_linear_layout;
@@ -38,7 +38,7 @@ public:
 DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
                                              LayoutType type,
                                              QGraphicsItem *parent)
-    : UIKit::TableViewItem(a_rect, parent),
+    : CherryKit::TableViewItem(a_rect, parent),
       m_priv_ptr(new PrivateTableComponent) {
   m_priv_ptr->m_current_geometry = a_rect;
   m_priv_ptr->m_current_item_selection = false;
@@ -52,13 +52,15 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
       new QGraphicsLinearLayout(m_priv_ptr->m_layout_base);
 
   m_priv_ptr->m_image_view_widget =
-      new UIKit::ImageView(m_priv_ptr->m_layout_base);
+      new CherryKit::ImageView(m_priv_ptr->m_layout_base);
   m_priv_ptr->m_image_view_widget->set_pixmap(
-      UIKit::ResourceManager::instance()->drawable("setup-wizard.png", "hdpi"));
+      CherryKit::ResourceManager::instance()->drawable("setup-wizard.png",
+                                                       "hdpi"));
 
-  m_priv_ptr->m_label_widget = new UIKit::Label(m_priv_ptr->m_layout_base);
+  m_priv_ptr->m_label_widget = new CherryKit::Label(m_priv_ptr->m_layout_base);
 
-  m_priv_ptr->m_option_button = new UIKit::Button(m_priv_ptr->m_layout_base);
+  m_priv_ptr->m_option_button =
+      new CherryKit::Button(m_priv_ptr->m_layout_base);
 
   connect(m_priv_ptr->m_image_view_widget, SIGNAL(clicked()), this,
           SLOT(onClicked()));
@@ -169,9 +171,9 @@ void DefaultTableComponent::paint(QPainter *painter,
   if (m_priv_ptr->m_current_layout_type == kListLayout ||
       m_priv_ptr->m_current_item_selection) {
 
-    UIKit::StyleFeatures features;
+    CherryKit::StyleFeatures features;
 
-    features.render_state = UIKit::StyleFeatures::kRenderElement;
+    features.render_state = CherryKit::StyleFeatures::kRenderElement;
     features.geometry = boundingRect();
     features.text_data = m_priv_ptr->m_current_label_str;
 
@@ -179,8 +181,9 @@ void DefaultTableComponent::paint(QPainter *painter,
     painter->setRenderHint(QPainter::TextAntialiasing, true);
     painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
-    if (UIKit::ResourceManager::style()) {
-      UIKit::ResourceManager::style()->draw("vertical_list_item", features, painter);
+    if (CherryKit::ResourceManager::style()) {
+      CherryKit::ResourceManager::style()->draw("vertical_list_item", features,
+                                                painter);
     }
 
     /*

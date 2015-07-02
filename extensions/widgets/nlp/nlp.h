@@ -25,7 +25,7 @@
 #include <view_controller.h>
 #include <QtNetwork>
 
-class NLPControllerImpl : public UIKit::ViewController {
+class NLPControllerImpl : public CherryKit::ViewController {
   Q_OBJECT
 
 public:
@@ -39,17 +39,16 @@ public:
 
   void set_view_rect(const QRectF &rect);
 
-  bool remove_widget(UIKit::Widget *widget);
+  bool remove_widget(CherryKit::Widget *widget);
 
-  UIKit::ActionList actions() const;
-  void request_action(const QString &actionName,
-                      const QVariantMap &args);
+  CherryKit::ActionList actions() const;
+  void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;
 
 private:
   class PrivateNLP;
-  PrivateNLP *const d;
+  PrivateNLP *const o_view_controller;
 };
 
 #endif

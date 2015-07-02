@@ -5,7 +5,7 @@
 
 #include <widget.h>
 
-namespace UIKit {
+namespace CherryKit {
 class ModelViewItem {
 public:
   explicit ModelViewItem();
@@ -25,12 +25,12 @@ public:
 
   virtual void on_activated(std::function<void(ModelViewItem *)> a_handler);
   virtual void on_view_removed(std::function<void(ModelViewItem *)> a_handler);
-  virtual void on_filter(
-      std::function<bool(const Widget *, const QString &)> a_handler);
+  virtual void
+  on_filter(std::function<bool(const Widget *, const QString &)> a_handler);
 
 private:
   class PrivateModelViewItem;
-  PrivateModelViewItem *const d;
+  PrivateModelViewItem *const o_model_view_item;
 };
 }
 

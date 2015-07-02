@@ -4,7 +4,7 @@
 #include <cstring>
 #include <string>
 
-namespace UIKit {
+namespace CherryKit {
 
 class ControllerAction {
 public:
@@ -30,7 +30,7 @@ public:
 
 private:
   class PrivateControllerAction;
-  PrivateControllerAction *const d;
+  PrivateControllerAction *const o_controller_action;
 };
 }
 

@@ -173,18 +173,9 @@ struct NETExtendedStrut {
   Constructor to initialize this struct to 0,0,0,0
   **/
   NETExtendedStrut()
-      : left_width(0),
-        left_start(0),
-        left_end(0),
-        right_width(0),
-        right_start(0),
-        right_end(0),
-        top_width(0),
-        top_start(0),
-        top_end(0),
-        bottom_width(0),
-        bottom_start(0),
-        bottom_end(0) {}
+      : left_width(0), left_start(0), left_end(0), right_width(0),
+        right_start(0), right_end(0), top_width(0), top_start(0), top_end(0),
+        bottom_width(0), bottom_start(0), bottom_end(0) {}
 
   /**
   Left border of the strut, width and range.

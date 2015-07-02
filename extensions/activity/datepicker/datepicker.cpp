@@ -32,52 +32,52 @@ public:
   PrivateDatePicker() {}
   ~PrivateDatePicker() {}
 
-  UIKit::Window *m_activity_window;
-  UIKit::Widget *m_window_content;
-  UIKit::Button *m_done_button;
-  UIKit::CalendarView *mCalendarWidget;
+  CherryKit::Window *m_activity_window;
+  CherryKit::Widget *m_window_content;
+  CherryKit::Button *m_done_button;
+  CherryKit::CalendarView *mCalendarWidget;
 
   QVariantMap m_result_data;
 };
 
 DatePickerActivity::DatePickerActivity(QGraphicsObject *object)
-    : UIKit::DesktopActivity(object), d(new PrivateDatePicker) {}
+    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateDatePicker) {}
 
-DatePickerActivity::~DatePickerActivity() { delete d; }
+DatePickerActivity::~DatePickerActivity() { delete o_desktop_activity; }
 
 void DatePickerActivity::create_window(const QRectF &window_geometry,
                                        const QString &window_title,
                                        const QPointF &window_pos) {
-  d->m_activity_window = new UIKit::Window();
-  d->m_activity_window->setGeometry(window_geometry);
-  d->m_activity_window->set_window_title(window_title);
+  o_desktop_activity->m_activity_window = new CherryKit::Window();
+  o_desktop_activity->m_activity_window->setGeometry(window_geometry);
+  o_desktop_activity->m_activity_window->set_window_title(window_title);
 
-  d->m_window_content = new UIKit::Widget(d->m_activity_window);
-  d->m_window_content->setGeometry(window_geometry);
+  o_desktop_activity->m_window_content = new CherryKit::Widget(o_desktop_activity->m_activity_window);
+  o_desktop_activity->m_window_content->setGeometry(window_geometry);
 
-  d->mCalendarWidget = new UIKit::CalendarView(d->m_window_content);
-  d->mCalendarWidget->setGeometry(window_geometry);
-  d->mCalendarWidget->setPos(0, 0);
+  o_desktop_activity->mCalendarWidget = new CherryKit::CalendarView(o_desktop_activity->m_window_content);
+  o_desktop_activity->mCalendarWidget->setGeometry(window_geometry);
+  o_desktop_activity->mCalendarWidget->setPos(0, 0);
 
-  d->m_done_button = new UIKit::Button(d->m_window_content);
-  d->m_done_button->set_label(tr("Done"));
-  d->m_done_button->show();
+  o_desktop_activity->m_done_button = new CherryKit::Button(o_desktop_activity->m_window_content);
+  o_desktop_activity->m_done_button->set_label(tr("Done"));
+  o_desktop_activity->m_done_button->show();
 
-  d->m_done_button->setPos(
-        d->mCalendarWidget->geometry().width() / 2
-        - (d->m_done_button->boundingRect().width() + 10) / 2,
-        310);
+  o_desktop_activity->m_done_button->setPos(o_desktop_activity->mCalendarWidget->geometry().width() / 2 -
+                               (o_desktop_activity->m_done_button->boundingRect().width() + 10) /
+                                   2,
+                           310);
 
-  d->m_done_button->on_input_event([this](UIKit::Widget::InputEvent a_event,
-                            const UIKit::Widget *a_widget) {
-    if (a_event == UIKit::Widget::kMouseReleaseEvent) {
-        qDebug() << Q_FUNC_INFO << "Activity complete";
-        end_calendar();
-        notify_done();
+  o_desktop_activity->m_done_button->on_input_event([this](CherryKit::Widget::InputEvent a_event,
+                                          const CherryKit::Widget *a_widget) {
+    if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
+      qDebug() << Q_FUNC_INFO << "Activity complete";
+      end_calendar();
+      notify_done();
     }
   });
 
-  d->m_activity_window->set_window_content(d->m_window_content);
+  o_desktop_activity->m_activity_window->set_window_content(o_desktop_activity->m_window_content);
 
   QRectF view_geometry = window_geometry;
   view_geometry.setHeight(window_geometry.height() + 64);
@@ -87,27 +87,26 @@ void DatePickerActivity::create_window(const QRectF &window_geometry,
   exec(window_pos);
 }
 
-QVariantMap DatePickerActivity::result() const { return d->m_result_data; }
+QVariantMap DatePickerActivity::result() const { return o_desktop_activity->m_result_data; }
 
-UIKit::Window *DatePickerActivity::window() const {
-    return d->m_activity_window;
+CherryKit::Window *DatePickerActivity::window() const {
+  return o_desktop_activity->m_activity_window;
 }
 
 void DatePickerActivity::cleanup() {
-  if (d->m_activity_window) {
-    delete d->m_activity_window;
+  if (o_desktop_activity->m_activity_window) {
+    delete o_desktop_activity->m_activity_window;
   }
 
-  d->m_activity_window = 0;
+  o_desktop_activity->m_activity_window = 0;
 }
 
-void DatePickerActivity::onImageReady(const QImage &img) {
-}
+void DatePickerActivity::onImageReady(const QImage &img) {}
 
 void DatePickerActivity::end_calendar() {
-  if (!d->mCalendarWidget) {
-    d->m_result_data["date"] = QVariant(QDate::currentDate().toString());
+  if (!o_desktop_activity->mCalendarWidget) {
+    o_desktop_activity->m_result_data["date"] = QVariant(QDate::currentDate().toString());
   } else {
-    d->m_result_data["date"] = QVariant(d->mCalendarWidget->a_date());
+    o_desktop_activity->m_result_data["date"] = QVariant(o_desktop_activity->mCalendarWidget->a_date());
   }
 }

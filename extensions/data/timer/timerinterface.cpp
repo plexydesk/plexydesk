@@ -21,9 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DataSource> TimerInterface::model() {
-  QSharedPointer<UIKit::DataSource> obj =
-      QSharedPointer<UIKit::DataSource>(new TimerData(), &QObject::deleteLater);
+QSharedPointer<CherryKit::DataSource> TimerInterface::model() {
+  QSharedPointer<CherryKit::DataSource> obj =
+      QSharedPointer<CherryKit::DataSource>(new TimerData(),
+                                            &QObject::deleteLater);
 
   return obj;
 }

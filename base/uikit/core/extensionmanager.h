@@ -31,7 +31,7 @@
 #include <desktopactivity.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 /**
     * @brief PlexyDesk Plugin Manager Class
     *
@@ -100,7 +100,7 @@ public:
       * @param name
       * @return DesktopActivityPtr
       */
-  UIKit::DesktopActivityPtr activity(const QString &a_name);
+  CherryKit::DesktopActivityPtr activity(const QString &a_name);
   /**
       * @brief
       *
@@ -161,7 +161,7 @@ private:
   QString plugin_prefix() const;
 
   class PrivateExtManager;
-  PrivateExtManager *const d; /**< TODO */
+  PrivateExtManager *const o_extension_manager; /**< TODO */
 
 #ifdef Q_OS_WIN
   static ExtensionManager *mInstance;

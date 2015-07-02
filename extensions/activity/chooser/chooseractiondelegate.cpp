@@ -15,7 +15,7 @@ public:
 };
 
 ChooserActionDelegate::ChooserActionDelegate(QGraphicsObject *parent)
-    : UIKit::TableModel(parent), d(new PrivateChooserActionDelegate) {}
+    : CherryKit::TableModel(parent), d(new PrivateChooserActionDelegate) {}
 
 ChooserActionDelegate::~ChooserActionDelegate() {
   qDebug() << Q_FUNC_INFO;

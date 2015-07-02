@@ -578,12 +578,12 @@ NETRootInfo::NETRootInfo(Display *display, const unsigned long properties[],
   for (int i = 0; i < properties_size; ++i)
     // remap from [0]=NET::Property,[1]=NET::Property2
     switch (i) {
-      case 0:
-        p->client_properties[PROTOCOLS] = properties[i];
-        break;
-      case 1:
-        p->client_properties[PROTOCOLS2] = properties[i];
-        break;
+    case 0:
+      p->client_properties[PROTOCOLS] = properties[i];
+      break;
+    case 1:
+      p->client_properties[PROTOCOLS2] = properties[i];
+      break;
     }
   for (int i = 0; i < PROPERTIES_SIZE; ++i) {
     p->properties[i] = 0;
@@ -2741,61 +2741,61 @@ void NETWinInfo::setWindowType(WindowType type) {
   int len;
   long data[2];
   switch (type) {
-    case Override:
-      // spec extension: override window type.  we must comply with the spec
-      // and provide a fall back (normal seems best)
-      data[0] = kde_net_wm_window_type_override;
-      data[1] = net_wm_window_type_normal;
-      len = 2;
-      break;
-    case Dialog:
-      data[0] = net_wm_window_type_dialog;
-      data[1] = None;
-      len = 1;
-      break;
-    case Menu:
-      data[0] = net_wm_window_type_menu;
-      data[1] = None;
-      len = 1;
-      break;
-    case TopMenu:
-      // spec extension: override window type.  we must comply with the spec
-      // and provide a fall back (dock seems best)
-      data[0] = kde_net_wm_window_type_topmenu;
-      data[1] = net_wm_window_type_dock;
-      len = 2;
-      break;
-    case Tool:
-      data[0] = net_wm_window_type_toolbar;
-      data[1] = None;
-      len = 1;
-      break;
-    case Dock:
-      data[0] = net_wm_window_type_dock;
-      data[1] = None;
-      len = 1;
-      break;
-    case Desktop:
-      data[0] = net_wm_window_type_desktop;
-      data[1] = None;
-      len = 1;
-      break;
-    case Utility:
-      data[0] = net_wm_window_type_utility;
-      data[1] = net_wm_window_type_dialog; // fallback for old netwm version
-      len = 2;
-      break;
-    case Splash:
-      data[0] = net_wm_window_type_splash;
-      data[1] = net_wm_window_type_dock; // fallback (dock seems best)
-      len = 2;
-      break;
-    default:
-    case Normal:
-      data[0] = net_wm_window_type_normal;
-      data[1] = None;
-      len = 1;
-      break;
+  case Override:
+    // spec extension: override window type.  we must comply with the spec
+    // and provide a fall back (normal seems best)
+    data[0] = kde_net_wm_window_type_override;
+    data[1] = net_wm_window_type_normal;
+    len = 2;
+    break;
+  case Dialog:
+    data[0] = net_wm_window_type_dialog;
+    data[1] = None;
+    len = 1;
+    break;
+  case Menu:
+    data[0] = net_wm_window_type_menu;
+    data[1] = None;
+    len = 1;
+    break;
+  case TopMenu:
+    // spec extension: override window type.  we must comply with the spec
+    // and provide a fall back (dock seems best)
+    data[0] = kde_net_wm_window_type_topmenu;
+    data[1] = net_wm_window_type_dock;
+    len = 2;
+    break;
+  case Tool:
+    data[0] = net_wm_window_type_toolbar;
+    data[1] = None;
+    len = 1;
+    break;
+  case Dock:
+    data[0] = net_wm_window_type_dock;
+    data[1] = None;
+    len = 1;
+    break;
+  case Desktop:
+    data[0] = net_wm_window_type_desktop;
+    data[1] = None;
+    len = 1;
+    break;
+  case Utility:
+    data[0] = net_wm_window_type_utility;
+    data[1] = net_wm_window_type_dialog; // fallback for old netwm version
+    len = 2;
+    break;
+  case Splash:
+    data[0] = net_wm_window_type_splash;
+    data[1] = net_wm_window_type_dock; // fallback (dock seems best)
+    len = 2;
+    break;
+  default:
+  case Normal:
+    data[0] = net_wm_window_type_normal;
+    data[1] = None;
+    len = 1;
+    break;
   }
   XChangeProperty(p->display, p->window, net_wm_window_type, XA_ATOM, 32,
                   PropModeReplace, (unsigned char *)&data, len);
@@ -3146,17 +3146,17 @@ void NETWinInfo::event(XEvent *event, unsigned long *properties,
       }
       // when removing, we just leave newstate == 0
       switch (event->xclient.data.l[0]) {
-        case 1: // set
-          // to set... the change state should be the same as the mask
-          state = mask;
-          break;
-        case 2: // toggle
-          // to toggle, we need to xor the current state with the new state
-          state = (p->state & mask) ^ mask;
-          break;
-        default:
-          // to clear state, the new state should stay zero
-          ;
+      case 1: // set
+        // to set... the change state should be the same as the mask
+        state = mask;
+        break;
+      case 2: // toggle
+        // to toggle, we need to xor the current state with the new state
+        state = (p->state & mask) ^ mask;
+        break;
+      default:
+        // to clear state, the new state should stay zero
+        ;
       }
 #ifdef NETWMDEBUG
       fprintf(stderr, "NETWinInfo::event: calling changeState(%lx, %lx)\n",
@@ -3300,16 +3300,16 @@ void NETWinInfo::update(const unsigned long dirty_props[]) {
       if (type_ret == xa_wm_state && format_ret == 32 && nitems_ret == 1) {
         long *state = (long *)data_ret;
         switch (*state) {
-          case IconicState:
-            p->mapping_state = Iconic;
-            break;
-          case NormalState:
-            p->mapping_state = Visible;
-            break;
-          case WithdrawnState:
-          default:
-            p->mapping_state = Withdrawn;
-            break;
+        case IconicState:
+          p->mapping_state = Iconic;
+          break;
+        case NormalState:
+          p->mapping_state = Visible;
+          break;
+        case WithdrawnState:
+        default:
+          p->mapping_state = Withdrawn;
+          break;
         }
         p->mapping_state_dirty = False;
       }
@@ -3809,8 +3809,8 @@ bool NET::typeMatchesMask(WindowType type, unsigned long mask) {
     CHECK_TYPE_MASK(Utility)
     CHECK_TYPE_MASK(Splash)
 #undef CHECK_TYPE_MASK
-    default:
-      break;
+  default:
+    break;
   }
   return false;
 }

@@ -126,8 +126,8 @@ controllerName;
 }
 */
 
-PlexyDesk::DataSourcePtr CellsProvider::loadDataSourceEngine(
-    const QString &engine) {
+PlexyDesk::DataSourcePtr
+CellsProvider::loadDataSourceEngine(const QString &engine) {
   QSharedPointer<PlexyDesk::DataSource> dataSource =
       PlexyDesk::ExtensionManager::instance()->desktopDataEngineExtension(
           engine);

@@ -31,7 +31,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-namespace UIKit {
+namespace CherryKit {
 
 class Config::Private {
 public:
@@ -43,8 +43,7 @@ Config *Config::config = 0;
 
 Config *Config::instance() {
   if (config == 0) {
-    config =
-        new Config();
+    config = new Config();
     return config;
   } else {
     return config;
@@ -91,6 +90,5 @@ QString Config::cache_dir(const QString &a_folder) {
   return rv;
 }
 
-Config::Config() : d(new Private){
-}
+Config::Config() : d(new Private) {}
 }

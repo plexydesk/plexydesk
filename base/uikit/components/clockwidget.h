@@ -27,7 +27,7 @@
 // Qt
 #include <QTimeZone>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT ClockWidget : public Widget {
 public:
   typedef enum {
@@ -50,15 +50,15 @@ public:
 
   virtual void run_timer(Direction a_direction = kRunForwards);
 
-  virtual void on_timer_ended(std::function<void ()> a_callback);
-  virtual void on_timeout(std::function<void (const ClockWidget *)> a_callback);
+  virtual void on_timer_ended(std::function<void()> a_callback);
+  virtual void on_timeout(std::function<void(const ClockWidget *)> a_callback);
 
 protected:
   void paint_view(QPainter *painter, const QRectF &r);
 
 private:
   class PrivateClockWidget;
-  PrivateClockWidget *const d;
+  PrivateClockWidget *const o_clock_widget;
 };
 }
 #endif

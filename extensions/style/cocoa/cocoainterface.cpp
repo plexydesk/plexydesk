@@ -21,11 +21,11 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-static void destroyStyle(UIKit::Style *style) { delete style; }
+static void destroyStyle(CherryKit::Style *style) { delete style; }
 
-QSharedPointer<UIKit::Style> CocoaInterface::style() {
-  QSharedPointer<UIKit::Style> obj = QSharedPointer<UIKit::Style>(
-      (UIKit::Style *)new CocoaStyle(), &destroyStyle);
+QSharedPointer<CherryKit::Style> CocoaInterface::style() {
+  QSharedPointer<CherryKit::Style> obj = QSharedPointer<CherryKit::Style>(
+      (CherryKit::Style *)new CocoaStyle(), &destroyStyle);
 
   return obj;
 }

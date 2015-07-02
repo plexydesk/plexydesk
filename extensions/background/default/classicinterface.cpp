@@ -22,15 +22,15 @@
 
 #include <QtPlugin>
 
-ClassicBackdrop::ClassicBackdrop(QObject* /*parent*/)
-    : UIKit::ControllerPluginInterface() {}
+ClassicBackdrop::ClassicBackdrop(QObject * /*parent*/)
+    : CherryKit::ControllerPluginInterface() {}
 
 ClassicBackdrop::~ClassicBackdrop() {}
 
-QSharedPointer<UIKit::ViewController> ClassicBackdrop::controller() {
-  QSharedPointer<UIKit::ViewController> obj =
-      QSharedPointer<UIKit::ViewController>(new BackgroundController(),
-                                            &QObject::deleteLater);
+QSharedPointer<CherryKit::ViewController> ClassicBackdrop::controller() {
+  QSharedPointer<CherryKit::ViewController> obj =
+      QSharedPointer<CherryKit::ViewController>(new BackgroundController(),
+                                                &QObject::deleteLater);
 
   return obj;
 }

@@ -7,7 +7,7 @@
 #include <QGraphicsLayoutItem>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT ImageView : public Widget {
   Q_OBJECT
 public:
@@ -36,7 +36,7 @@ private:
 
 private:
   class PrivateImageView;
-  PrivateImageView *const d;
+  PrivateImageView *const o_image_view;
 };
 }
 #endif // IMAGEVIEW_H

@@ -3,7 +3,7 @@
 
 #include <abstractcellcomponent.h>
 
-class ImageCell : public UIKit::TableViewItem {
+class ImageCell : public CherryKit::TableViewItem {
   Q_OBJECT
 public:
   typedef enum {

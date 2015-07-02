@@ -88,7 +88,7 @@ operation.
 \param args The argument to be passed to the data source, The data source should
 define the protocol to be used.
 **/
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT DataSource : public QObject {
   Q_OBJECT
 
@@ -111,7 +111,7 @@ Q_SIGNALS:
 
 private:
   class PrivateDataSource;
-  PrivateDataSource *const d;
+  PrivateDataSource *const o_data_soure;
 };
 
 typedef QSharedPointer<DataSource> DataSourcePtr;

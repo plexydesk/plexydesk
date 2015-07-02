@@ -30,7 +30,7 @@
 #include <view_controller.h>
 #include "widget.h"
 
-namespace UIKit {
+namespace CherryKit {
 typedef std::function<void(Widget::InputEvent, const Widget *)>
 EventCallbackFunc;
 
@@ -135,21 +135,19 @@ void Widget::render(unsigned char **a_ctx) {
 GraphicsSurface *Widget::surface() { return &p_widget->m_surface; }
 
 void Widget::request_update() {
-   std::for_each(std::begin(p_widget->m_update_monitor_list),
-                 std::end(p_widget->m_update_monitor_list),
-                 [this](UpdateCallback a_func) {
-     if (a_func)
-         a_func(this);
-   });
+  std::for_each(std::begin(p_widget->m_update_monitor_list),
+                std::end(p_widget->m_update_monitor_list),
+                [this](UpdateCallback a_func) {
+    if (a_func)
+      a_func(this);
+  });
 }
 
 void Widget::on_update(UpdateCallback a_callback) {
-    p_widget->m_update_monitor_list.push_back(a_callback);
+  p_widget->m_update_monitor_list.push_back(a_callback);
 }
 
-WidgetList Widget::children() {
-    return p_widget->m_child_list;
-}
+WidgetList Widget::children() { return p_widget->m_child_list; }
 
 void Widget::set_widget_name(const QString &a_name) {
   p_widget->m_name = a_name;

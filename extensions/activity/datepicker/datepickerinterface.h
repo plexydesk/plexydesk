@@ -24,16 +24,17 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class DatePickerInterface : public QObject, public UIKit::ActivityInterface {
+class DatePickerInterface : public QObject,
+                            public CherryKit::ActivityInterface {
   Q_OBJECT
-  Q_INTERFACES(UIKit::ActivityInterface)
+  Q_INTERFACES(CherryKit::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.datepicker")
 
 public:
   virtual ~DatePickerInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UIKit::DesktopActivity> activity();
+  QSharedPointer<CherryKit::DesktopActivity> activity();
 };
 
 #endif

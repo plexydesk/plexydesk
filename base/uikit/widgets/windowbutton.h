@@ -25,9 +25,9 @@
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
 
-namespace UIKit {
+namespace CherryKit {
 
-class DECL_UI_KIT_EXPORT WindowButton : public UIKit::Button {
+class DECL_UI_KIT_EXPORT WindowButton : public CherryKit::Button {
   Q_OBJECT
 public:
   typedef enum {
@@ -52,7 +52,7 @@ protected:
 
 private:
   class PrivateWindowButton;
-  PrivateWindowButton *const d;
+  PrivateWindowButton *const o_button;
 };
 } // PlexyDesk
 #endif // WINDOWBUTTON_H

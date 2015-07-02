@@ -29,8 +29,8 @@
 #include <abstractcellcomponent.h>
 #include <window.h>
 
-using namespace UIKit;
-class FlickrSearchActivity : public UIKit::DesktopActivity {
+using namespace CherryKit;
+class FlickrSearchActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 public:
   FlickrSearchActivity(QGraphicsObject *object = 0);
@@ -48,7 +48,7 @@ Q_SLOTS:
 
 private
 Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
+  void onWidgetClosed(CherryKit::Widget *widget);
   void onButtonClicked();
   void onNextButtonClicked();
   void onPreviousButtonClicked();

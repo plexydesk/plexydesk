@@ -28,7 +28,7 @@
 class QLineEdit;
 class QWidget;
 
-class DirectoryController : public UIKit::ViewController {
+class DirectoryController : public CherryKit::ViewController {
   Q_OBJECT
 
 public:
@@ -40,17 +40,17 @@ public:
   void session_data_available(const QuetzalKit::SyncObject &a_session_root);
   virtual void submit_session_data(QuetzalKit::SyncObject *a_obj);
 
-  UIKit::ActionList actions() const;
+  CherryKit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
-  void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
+  void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
   void set_view_rect(const QRectF &rect);
 
   QString icon() const;
 
 private:
-  //UIKit::Theme *mThemePack;
-  //QList<UIKit::Widget *> mFolderViewList;
-  UIKit::ActionList m_supported_action_list;
+  // CherryKit::Theme *mThemePack;
+  // QList<CherryKit::Widget *> mFolderViewList;
+  CherryKit::ActionList m_supported_action_list;
 };
 
 #endif

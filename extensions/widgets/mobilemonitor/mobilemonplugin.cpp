@@ -183,8 +183,8 @@ void MobileMonController::requestAction(const QString &actionName,
   }
 }
 
-bool MobileMonController::deleteWidget(
-    PlexyDesk::AbstractDesktopWidget *widget) {
+bool
+MobileMonController::deleteWidget(PlexyDesk::AbstractDesktopWidget *widget) {
   return 0;
 }
 

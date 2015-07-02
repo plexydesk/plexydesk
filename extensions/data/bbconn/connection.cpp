@@ -264,19 +264,19 @@ void Connection::processData() {
   }
 
   switch (currentDataType) {
-    case PlainText:
-      if (isApproved) {
-        emit newMessage(peerAddress().toString(), QString::fromUtf8(buffer));
-      }
-      break;
-    case Ping:
-      write("PONG 1 p");
-      break;
-    case Pong:
-      pongTime.restart();
-      break;
-    default:
-      break;
+  case PlainText:
+    if (isApproved) {
+      emit newMessage(peerAddress().toString(), QString::fromUtf8(buffer));
+    }
+    break;
+  case Ping:
+    write("PONG 1 p");
+    break;
+  case Pong:
+    pongTime.restart();
+    break;
+  default:
+    break;
   }
 
   currentDataType = Undefined;

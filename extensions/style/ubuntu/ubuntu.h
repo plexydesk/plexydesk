@@ -42,8 +42,8 @@ public:
   virtual void paintControlElementText(ControlElement element,
                                        const PlexyDesk::StyleFeatures &feature,
                                        const QString &text, QPainter *painter);
-  virtual PlexyDesk::StyleFeatures controlElementFeatures(
-      ControlElement element = ControlElement());
+  virtual PlexyDesk::StyleFeatures
+  controlElementFeatures(ControlElement element = ControlElement());
 
 private:
   void drawPushButton(const StyleFeatures &features, QPainter *painter);

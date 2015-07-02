@@ -61,8 +61,8 @@ public:
   PrivateIconGrid() : m_activity_window_ptr(0) {}
   ~PrivateIconGrid() { qDeleteAll(m_action_list); }
 
-  UIKit::Window *m_activity_window_ptr;
-  UIKit::ItemView *m_grid_view;
+  CherryKit::Window *m_activity_window_ptr;
+  CherryKit::ItemView *m_grid_view;
 
   QString mSelection;
 
@@ -75,30 +75,30 @@ public:
 };
 
 IconGridActivity::IconGridActivity(QGraphicsObject *object)
-    : UIKit::DesktopActivity(object), d(new PrivateIconGrid) {}
+    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateIconGrid) {}
 
 IconGridActivity::~IconGridActivity() {
   qDebug() << Q_FUNC_INFO;
-  delete d;
+  delete o_desktop_activity;
 }
 
 void IconGridActivity::create_window(const QRectF &window_geometry,
                                      const QString &window_title,
                                      const QPointF &window_pos) {
-  if (d->m_activity_window_ptr) {
+  if (o_desktop_activity->m_activity_window_ptr) {
     return;
   }
 
-  d->m_auto_scale_frame = false;
+  o_desktop_activity->m_auto_scale_frame = false;
 
-  d->m_activity_window_ptr = new UIKit::Window();
-  d->m_activity_window_ptr->set_window_title(window_title);
-  d->m_activity_window_ptr->setGeometry(window_geometry);
+  o_desktop_activity->m_activity_window_ptr = new CherryKit::Window();
+  o_desktop_activity->m_activity_window_ptr->set_window_title(window_title);
+  o_desktop_activity->m_activity_window_ptr->setGeometry(window_geometry);
 
-  d->m_grid_view = new UIKit::ItemView(d->m_activity_window_ptr,
-                                       UIKit::ItemView::kGridModel);
-  d->m_grid_view->set_view_geometry(window_geometry);
-  d->m_grid_view->on_item_removed([](UIKit::ModelViewItem *a_item) {
+  o_desktop_activity->m_grid_view = new CherryKit::ItemView(o_desktop_activity->m_activity_window_ptr,
+                                           CherryKit::ItemView::kGridModel);
+  o_desktop_activity->m_grid_view->set_view_geometry(window_geometry);
+  o_desktop_activity->m_grid_view->on_item_removed([](CherryKit::ModelViewItem *a_item) {
     if (a_item)
       delete a_item;
   });
@@ -110,22 +110,22 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
       foreach(const QVariant & var, data.values()) {
         QVariantMap _item = var.toMap();
         Action *l_action_item = new Action;
-        d->m_action_list.append(l_action_item);
+        o_desktop_activity->m_action_list.append(l_action_item);
         l_action_item->onActionActivated([this](const Action *aAction) {
-          d->m_activity_result.clear();
-          d->m_activity_result["controller"] = aAction->controller_name();
-          d->m_activity_result["action"] = aAction->label();
-          d->mSelection = aAction->label();
+          o_desktop_activity->m_activity_result.clear();
+          o_desktop_activity->m_activity_result["controller"] = aAction->controller_name();
+          o_desktop_activity->m_activity_result["action"] = aAction->label();
+          o_desktop_activity->mSelection = aAction->label();
           update_action();
         });
 
-        UIKit::ModelViewItem *grid_item = new UIKit::ModelViewItem();
+        CherryKit::ModelViewItem *grid_item = new CherryKit::ModelViewItem();
 
-        grid_item->on_view_removed([](UIKit::ModelViewItem *a_item) {
+        grid_item->on_view_removed([](CherryKit::ModelViewItem *a_item) {
           if (a_item && a_item->view()) {
-              UIKit::Widget *view = a_item->view();
-              if (view)
-                delete view;
+            CherryKit::Widget *view = a_item->view();
+            if (view)
+              delete view;
           }
         });
 
@@ -133,53 +133,53 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
             _item["icon"].toString(), _item["label"].toString(),
             _item["controller"].toString()));
 
-        d->m_grid_view->insert(grid_item);
-        d->m_grid_view->updateGeometry();
+        o_desktop_activity->m_grid_view->insert(grid_item);
+        o_desktop_activity->m_grid_view->updateGeometry();
 
-        QRectF _content_rect = d->m_grid_view->boundingRect();
+        QRectF _content_rect = o_desktop_activity->m_grid_view->boundingRect();
 
         set_geometry(_content_rect);
 
-        d->m_activity_window_ptr->setGeometry(_content_rect);
-        }
+        o_desktop_activity->m_activity_window_ptr->setGeometry(_content_rect);
+      }
     }
 
     if (has_attribute("auto_scale")) {
-      d->m_auto_scale_frame = attributes()["auto_scale"].toBool();
+      o_desktop_activity->m_auto_scale_frame = attributes()["auto_scale"].toBool();
     }
 
-    if (d->m_auto_scale_frame) {
-      QRectF _content_rect = d->m_grid_view->boundingRect();
+    if (o_desktop_activity->m_auto_scale_frame) {
+      QRectF _content_rect = o_desktop_activity->m_grid_view->boundingRect();
       _content_rect.setHeight(_content_rect.height() + 64);
       set_geometry(_content_rect);
-      d->m_activity_window_ptr->setGeometry(_content_rect);
+      o_desktop_activity->m_activity_window_ptr->setGeometry(_content_rect);
     }
   });
 
-  d->m_activity_window_ptr->set_window_content(d->m_grid_view);
+  o_desktop_activity->m_activity_window_ptr->set_window_content(o_desktop_activity->m_grid_view);
 
   exec(window_pos);
 }
 
 QVariantMap IconGridActivity::result() const {
-  d->m_activity_result["action"] = d->mSelection;
-  return d->m_activity_result;
+  o_desktop_activity->m_activity_result["action"] = o_desktop_activity->mSelection;
+  return o_desktop_activity->m_activity_result;
 }
 
-Window *IconGridActivity::window() const { return d->m_activity_window_ptr; }
+Window *IconGridActivity::window() const { return o_desktop_activity->m_activity_window_ptr; }
 
 void IconGridActivity::cleanup() {
-  if (d->m_grid_view)
-    d->m_grid_view->clear();
+  if (o_desktop_activity->m_grid_view)
+    o_desktop_activity->m_grid_view->clear();
 
-  if (d->m_activity_window_ptr) {
-    delete d->m_activity_window_ptr;
+  if (o_desktop_activity->m_activity_window_ptr) {
+    delete o_desktop_activity->m_activity_window_ptr;
   }
 
-  d->m_activity_window_ptr = 0;
+  o_desktop_activity->m_activity_window_ptr = 0;
 }
 
-void IconGridActivity::onWidgetClosed(UIKit::Widget *widget) {
+void IconGridActivity::onWidgetClosed(CherryKit::Widget *widget) {
   discard_activity();
 }
 
@@ -192,17 +192,18 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   m_label = aLabel;
   m_icon = aIcon;
 
-  QSizeF item_icon_size (96, 64);
+  QSizeF item_icon_size(96, 64);
   QSizeF item_label_size(96, 32);
 
   Widget *l_rv = new Widget();
 
-  UIKit::ImageView *l_image_view = new UIKit::ImageView(l_rv);
-  UIKit::Label *l_action_label = new UIKit::Label(l_rv);
+  CherryKit::ImageView *l_image_view = new CherryKit::ImageView(l_rv);
+  CherryKit::Label *l_action_label = new CherryKit::Label(l_rv);
   l_action_label->set_label(aLabel);
   l_action_label->set_widget_name(aLabel);
 
-  QPixmap l_view_pixmap(UIKit::ResourceManager::instance()->drawable(aIcon, "hdpi"));
+  QPixmap l_view_pixmap(
+      CherryKit::ResourceManager::instance()->drawable(aIcon, "hdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size);
@@ -219,9 +220,9 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
 
   l_rv->setMinimumSize(l_action_item_size);
 
-  l_image_view->on_input_event([this](UIKit::Widget::InputEvent aEvent,
+  l_image_view->on_input_event([this](CherryKit::Widget::InputEvent aEvent,
                                       const Widget *aWidget) {
-    if (aEvent == UIKit::Widget::kMouseReleaseEvent) {
+    if (aEvent == CherryKit::Widget::kMouseReleaseEvent) {
       if (m_action_handler) {
         m_action_handler(this);
       }

@@ -26,7 +26,7 @@
 #include <QIcon>
 #include <QFileInfo>
 
-class FileInforView : public UIKit::Widget {
+class FileInforView : public CherryKit::Widget {
   Q_OBJECT
 public:
   FileInforView(Widget *a_parent_ptr = 0);
