@@ -42,13 +42,16 @@ public:
 };
 
 DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
-    : CherryKit::ViewController(object), o_view_controller(new PrivateDesktopNotes) {
+    : CherryKit::ViewController(object),
+      o_view_controller(new PrivateDesktopNotes) {
   o_view_controller->mNoteActions["Note"] = 1;
   o_view_controller->mNoteActions["Task"] = 2;
   o_view_controller->mNoteActions["Reminder"] = 3;
 }
 
-DesktopNotesControllerImpl::~DesktopNotesControllerImpl() { delete o_view_controller; }
+DesktopNotesControllerImpl::~DesktopNotesControllerImpl() {
+  delete o_view_controller;
+}
 
 void DesktopNotesControllerImpl::init() {
   QAction *_add_note_action = new QAction(this);
@@ -226,8 +229,8 @@ DesktopNotesControllerImpl::createNoteUI(CherryKit::SessionSync *a_session) {
 void DesktopNotesControllerImpl::createReminderUI(
     CherryKit::SessionSync *a_session) {
   CherryKit::Window *window = new CherryKit::Window();
-
   CherryKit::HybridLayout *view = new CherryKit::HybridLayout(window);
+
   view->set_content_margin(10, 10, 10, 10);
   view->set_geometry(0, 0, 320, 200);
 
@@ -319,7 +322,6 @@ void DesktopNotesControllerImpl::createReminderUI(
               session_database_name("reminders"), "Reminders", "reminders_id",
               a_session->session_id_to_string(), "text",
               editor->text().toStdString());
-          qDebug() << Q_FUNC_INFO << "Save Reminder :" << editor->text();
         }
       }
     };
@@ -386,6 +388,18 @@ void DesktopNotesControllerImpl::createReminderUI(
         const CherryKit::Widget *a_widget) {
       if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
         // todo : invoke the calendar.
+        if (!viewport())
+          return;
+
+        QPointF _activity_window_location = viewport()->center(
+            QRectF(0, 0, 240, 320),
+            QRectF(window->x(), window->y(), window->geometry().width(),
+                   window->geometry().height()),
+            CherryKit::Space::kCenterOnWindow);
+
+        CherryKit::DesktopActivityPtr activity = viewport()->create_activity(
+            "date_dialog", "Date", _activity_window_location,
+            QRectF(0, 0, 340, 320.0), QVariantMap());
       }
     };
 

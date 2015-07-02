@@ -24,30 +24,30 @@ SET(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(datepickeractivity SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(date_dialog SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
 IF(MINGW)
-    SET_TARGET_PROPERTIES(datepickeractivity PROPERTIES
+    SET_TARGET_PROPERTIES(date_dialog PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
 ENDIF(MINGW)
 
-TARGET_LINK_LIBRARIES(datepickeractivity
+TARGET_LINK_LIBRARIES(date_dialog
     ${PLEXY_UI_CORE_LIBRARY}
     ${libs}
     )
 
-QT5_USE_MODULES(datepickeractivity Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(date_dialog Widgets Xml OpenGL Core  )
 
 IF (NOT APPLE)
-INSTALL(TARGETS datepickeractivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
+INSTALL(TARGETS date_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES datepicker.desktop DESTINATION share/plexy/ext/groups)
 ENDIF (NOT APPLE)
 
 IF (APPLE)
-   INSTALL(TARGETS datepickeractivity LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(TARGETS date_dialog LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES datepicker.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 ENDIF(APPLE)
 
