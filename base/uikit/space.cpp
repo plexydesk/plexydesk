@@ -40,8 +40,8 @@ public:
   int mID;
   QString mName;
   QRectF m_geometry;
-  WorkSpace *m_viewport;
-  QGraphicsScene *mMainScene;
+  WorkSpace *mWorkSpace;
+  QGraphicsScene *m_native_scene;
   QList<CherryKit::DesktopActivityPtr> mActivityList;
   std::vector<CherryKit::Window *> mWindowList;
   QMap<QString, ViewControllerPtr> mCurrentControllerMap;
@@ -54,8 +54,8 @@ public:
 };
 
 Space::Space() : o_space(new PrivateSpace) {
-  o_space->m_viewport = 0;
-  o_space->mMainScene = 0;
+  o_space->mWorkSpace = 0;
+  o_space->m_native_scene = 0;
 }
 
 Space::~Space() {
@@ -163,7 +163,7 @@ void Space::add_activity(CherryKit::DesktopActivityPtr a_activity_ptr) {
     a_activity_ptr->discard_activity();
   });
 
-  if (a_activity_ptr->window() && o_space->mMainScene) {
+  if (a_activity_ptr->window() && o_space->m_native_scene) {
     if (o_space->mActivityList.contains(a_activity_ptr)) {
       qWarning() << Q_FUNC_INFO << "Space already contains the activity";
       return;
@@ -182,7 +182,7 @@ void Space::insert_window_to_view(Window *a_window) {
     return;
   }
 
-  if (!o_space->mMainScene) {
+  if (!o_space->m_native_scene) {
     qWarning() << Q_FUNC_INFO << "Scene not Set";
     return;
   }
@@ -195,7 +195,7 @@ void Space::insert_window_to_view(Window *a_window) {
   _widget_location.setY(_center_of_space_location.y() -
                         a_window->boundingRect().height() / 2);
 
-  o_space->mMainScene->addItem(a_window);
+  o_space->m_native_scene->addItem(a_window);
   if (a_window->window_type() == Window::kApplicationWindow)
     a_window->setZValue(kMaximumZOrder);
 
@@ -250,7 +250,7 @@ void Space::insert_window_to_view(Window *a_window) {
 }
 
 void Space::remove_window_from_view(Window *a_window) {
-  if (!o_space->mMainScene) {
+  if (!o_space->m_native_scene) {
     return;
   }
 
@@ -264,7 +264,7 @@ void Space::remove_window_from_view(Window *a_window) {
     }
   }
 
-  o_space->mMainScene->removeItem(a_window);
+  o_space->m_native_scene->removeItem(a_window);
 
   qDebug() << Q_FUNC_INFO << "Before :" << o_space->mWindowList.size();
   o_space->mWindowList.erase(std::remove(o_space->mWindowList.begin(),
@@ -474,7 +474,7 @@ Space::PrivateSpace::~PrivateSpace() { mCurrentControllerMap.clear(); }
 
 QString Space::PrivateSpace::sessionNameForSpace() {
   return QString("%1_%2_Space_%3")
-      .arg(QString::fromStdString(m_viewport->workspace_instance_name()))
+      .arg(QString::fromStdString(mWorkSpace->workspace_instance_name()))
       .arg(mName)
       .arg(mID);
 }
@@ -504,8 +504,8 @@ void Space::clear() {
   // delete owner widgets
   for (Window *_widget : o_space->mWindowList) {
     if (_widget) {
-      if (o_space->mMainScene->items().contains(_widget)) {
-        o_space->mMainScene->removeItem(_widget);
+      if (o_space->m_native_scene->items().contains(_widget)) {
+        o_space->m_native_scene->removeItem(_widget);
         _widget->discard();
       }
       qDebug() << Q_FUNC_INFO << "Widget Deleted: OK";
@@ -529,12 +529,12 @@ void Space::clear() {
 }
 
 QPointF Space::cursor_pos() const {
-  if (!o_space->m_viewport) {
+  if (!o_space->mWorkSpace) {
     return QCursor::pos();
   }
 
   QGraphicsView *_view_parent =
-      qobject_cast<QGraphicsView *>(o_space->m_viewport);
+      qobject_cast<QGraphicsView *>(o_space->mWorkSpace);
 
   if (!_view_parent) {
     return QCursor::pos();
@@ -636,25 +636,25 @@ void Space::setGeometry(const QRectF &a_geometry) {
   }
 }
 
-WorkSpace *Space::workspace() { return o_space->m_viewport; }
+WorkSpace *Space::workspace() { return o_space->mWorkSpace; }
 
 void Space::set_workspace(WorkSpace *a_workspace_ptr) {
-  o_space->m_viewport = a_workspace_ptr;
+  o_space->mWorkSpace = a_workspace_ptr;
 }
 
 void Space::restore_session() { o_space->initSessionStorage(this); }
 
 void Space::set_qt_graphics_scene(QGraphicsScene *a_qt_graphics_scene_ptr) {
-  o_space->mMainScene = a_qt_graphics_scene_ptr;
+  o_space->m_native_scene = a_qt_graphics_scene_ptr;
 }
 
 QRectF Space::geometry() const { return o_space->m_geometry; }
 
 void Space::drop_event_handler(QDropEvent *event,
                                const QPointF &local_event_location) {
-  if (o_space->mMainScene) {
+  if (o_space->m_native_scene) {
     QList<QGraphicsItem *> items =
-        o_space->mMainScene->items(local_event_location);
+        o_space->m_native_scene->items(local_event_location);
 
     Q_FOREACH(QGraphicsItem * item, items) {
       QGraphicsObject *itemObject = item->toGraphicsObject();
