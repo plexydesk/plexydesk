@@ -40,7 +40,7 @@ public:
   int mID;
   QString mName;
   QRectF m_geometry;
-  WorkSpace *mWorkSpace;
+  WorkSpace *m_viewport;
   QGraphicsScene *mMainScene;
   QList<CherryKit::DesktopActivityPtr> mActivityList;
   std::vector<CherryKit::Window *> mWindowList;
@@ -54,7 +54,7 @@ public:
 };
 
 Space::Space() : o_space(new PrivateSpace) {
-  o_space->mWorkSpace = 0;
+  o_space->m_viewport = 0;
   o_space->mMainScene = 0;
 }
 
@@ -474,7 +474,7 @@ Space::PrivateSpace::~PrivateSpace() { mCurrentControllerMap.clear(); }
 
 QString Space::PrivateSpace::sessionNameForSpace() {
   return QString("%1_%2_Space_%3")
-      .arg(QString::fromStdString(mWorkSpace->workspace_instance_name()))
+      .arg(QString::fromStdString(m_viewport->workspace_instance_name()))
       .arg(mName)
       .arg(mID);
 }
@@ -529,12 +529,12 @@ void Space::clear() {
 }
 
 QPointF Space::cursor_pos() const {
-  if (!o_space->mWorkSpace) {
+  if (!o_space->m_viewport) {
     return QCursor::pos();
   }
 
   QGraphicsView *_view_parent =
-      qobject_cast<QGraphicsView *>(o_space->mWorkSpace);
+      qobject_cast<QGraphicsView *>(o_space->m_viewport);
 
   if (!_view_parent) {
     return QCursor::pos();
@@ -636,10 +636,10 @@ void Space::setGeometry(const QRectF &a_geometry) {
   }
 }
 
-QObject *Space::workspace() { return o_space->mWorkSpace; }
+WorkSpace *Space::workspace() { return o_space->m_viewport; }
 
 void Space::set_workspace(WorkSpace *a_workspace_ptr) {
-  o_space->mWorkSpace = a_workspace_ptr;
+  o_space->m_viewport = a_workspace_ptr;
 }
 
 void Space::restore_session() { o_space->initSessionStorage(this); }

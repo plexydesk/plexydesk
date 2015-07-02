@@ -6,6 +6,10 @@
 #include <space.h>
 #include <plexydesk_ui_exports.h>
 
+#ifdef USE_QT
+  typedef QGraphicsView PlatformScrollView;
+#endif
+
 namespace CherryKit {
 typedef QList<Space *> SpacesList;
 
