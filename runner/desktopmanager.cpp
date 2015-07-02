@@ -32,9 +32,9 @@ public:
 
 DesktopManager::DesktopManager(QWidget *parent)
     : CherryKit::WorkSpace(new QGraphicsScene, parent),
-      m_priv_impl(new PrivateDesktopManager) {}
+      p_workspace(new PrivateDesktopManager) {}
 
-DesktopManager::~DesktopManager() { delete m_priv_impl; }
+DesktopManager::~DesktopManager() { delete p_workspace; }
 
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
   if (event->button() == Qt::RightButton) {
