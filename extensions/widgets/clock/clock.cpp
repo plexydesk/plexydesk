@@ -39,6 +39,7 @@
 
 // Qt
 #include <QAction>
+#include <imagebutton.h>
 #include <label.h>
 #include <viewbuilder.h>
 
@@ -47,22 +48,26 @@ public:
   PrivateClockController() {}
   ~PrivateClockController() {}
 
-  void _create_clock_ui(Clock *a_controller, UIKit::SessionSync *a_session);
-  void _create_timer_ui(Clock *a_controller, UIKit::SessionSync *a_session);
+  void _create_timer_ui(Clock *a_controller, CherryKit::SessionSync *a_session);
   void setup_create_clock_ui(Clock *a_controller,
-                             UIKit::SessionSync *a_session);
-  void add_action_button(UIKit::HybridLayout *ui, int a_row, int a_col,
-                         const std::string &a_label, const std::string &a_icon);
+                             CherryKit::SessionSync *a_session);
+  CherryKit::ImageButton *add_action_button(CherryKit::HybridLayout *ui,
+                                            int a_row, int a_col,
+                                            const std::string &a_label,
+                                            const std::string &a_icon);
 
-  UIKit::ActionList m_supported_action_list;
+  CherryKit::ActionList m_supported_action_list;
+  void setup_create_timer_ui(Clock *a_controller,
+                             CherryKit::SessionSync *a_session);
 };
 
 Clock::Clock(QObject *parent)
-    : UIKit::ViewController(parent), d(new PrivateClockController) {}
+    : CherryKit::ViewController(parent),
+      o_view_controller(new PrivateClockController) {}
 
 Clock::~Clock() {
   qDebug() << Q_FUNC_INFO << "Deleted";
-  delete d;
+  delete o_view_controller;
 }
 
 QAction *Clock::createAction(int id, const QString &action_name,
@@ -77,26 +82,28 @@ QAction *Clock::createAction(int id, const QString &action_name,
 }
 
 void Clock::init() {
-  d->m_supported_action_list << createAction(1, tr("Clock"),
-                                             "pd_clock_frame_icon.png");
-  d->m_supported_action_list << createAction(2, tr("Timer"),
-                                             "pd_clock_frame_icon.png");
-  d->m_supported_action_list << createAction(3, tr("Alarm"),
-                                             "pd_clock_frame_icon.png");
+  o_view_controller->m_supported_action_list
+      << createAction(1, tr("Clock"), "pd_clock_frame_icon.png");
+  o_view_controller->m_supported_action_list
+      << createAction(2, tr("Timer"), "pd_clock_frame_icon.png");
+  o_view_controller->m_supported_action_list
+      << createAction(3, tr("Alarm"), "pd_clock_frame_icon.png");
 }
 
 void Clock::set_view_rect(const QRectF &rect) {}
 
 void
 Clock::session_data_available(const QuetzalKit::SyncObject &a_session_root) {
-  revoke_previous_session("Clock", [this](UIKit::ViewController *a_controller,
-                                          UIKit::SessionSync *a_session) {
-    d->setup_create_clock_ui((Clock *)a_controller, a_session);
+  revoke_previous_session("Clock",
+                          [this](CherryKit::ViewController *a_controller,
+                                 CherryKit::SessionSync *a_session) {
+    o_view_controller->setup_create_clock_ui((Clock *)a_controller, a_session);
   });
 
-  revoke_previous_session("Timer", [this](UIKit::ViewController *a_controller,
-                                          UIKit::SessionSync *a_session) {
-    d->_create_timer_ui((Clock *)a_controller, a_session);
+  revoke_previous_session("Timer",
+                          [this](CherryKit::ViewController *a_controller,
+                                 CherryKit::SessionSync *a_session) {
+    o_view_controller->setup_create_timer_ui((Clock *)a_controller, a_session);
   });
 }
 
@@ -105,17 +112,18 @@ void Clock::submit_session_data(QuetzalKit::SyncObject *a_obj) {
   write_session_data("Timer");
 }
 
-bool Clock::remove_widget(UIKit::Widget *widget) {
+bool Clock::remove_widget(CherryKit::Widget *widget) {
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
 
   return 1;
 }
 
-UIKit::ActionList Clock::actions() const { return d->m_supported_action_list; }
+CherryKit::ActionList Clock::actions() const {
+  return o_view_controller->m_supported_action_list;
+}
 
 void Clock::request_action(const QString &actionName, const QVariantMap &args) {
-
   QPointF window_location;
 
   if (viewport()) {
@@ -132,10 +140,11 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
         QString::fromStdString(session_database_name("clock"));
 
     start_session("Clock", session_args, false,
-                  [this](UIKit::ViewController *a_controller,
-                         UIKit::SessionSync *a_session) {
+                  [this](CherryKit::ViewController *a_controller,
+                         CherryKit::SessionSync *a_session) {
       // d->_create_clock_ui((Clock *)a_controller, a_session);
-      d->setup_create_clock_ui((Clock *)a_controller, a_session);
+      o_view_controller->setup_create_clock_ui((Clock *)a_controller,
+                                               a_session);
     });
     return;
   }
@@ -150,9 +159,9 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
         QString::fromStdString(session_database_name("timer"));
 
     start_session("Timer", session_args, false,
-                  [this](UIKit::ViewController *a_controller,
-                         UIKit::SessionSync *a_session) {
-      d->_create_timer_ui((Clock *)a_controller, a_session);
+                  [this](CherryKit::ViewController *a_controller,
+                         CherryKit::SessionSync *a_session) {
+      o_view_controller->setup_create_timer_ui((Clock *)a_controller, a_session);
     });
     return;
   }
@@ -162,118 +171,174 @@ QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
 
 void Clock::onDataUpdated(const QVariantMap &data) {}
 
-void Clock::PrivateClockController::add_action_button(
-    UIKit::HybridLayout *ui, int a_row, int a_col, const std::string &a_label,
-    const std::string &a_icon) {
-  UIKit::WidgetProperties ui_data;
-  ui_data["label"] = a_label;
-  ui_data["icon"] = "actions/" + a_icon + ".png";
-  ui->add_widget(a_row, a_col, "image_button", ui_data);
+CherryKit::ImageButton *Clock::PrivateClockController::add_action_button(
+    CherryKit::HybridLayout *ui, int a_row, int a_col,
+    const std::string &a_label, const std::string &a_icon) {
+  CherryKit::ImageButton *ck_rv = 0;
+  CherryKit::WidgetProperties ck_ui_data;
+  ck_ui_data["label"] = a_label;
+  ck_ui_data["icon"] = "actions/" + a_icon + ".png";
+  ck_rv = dynamic_cast<CherryKit::ImageButton *>(
+      ui->add_widget(a_row, a_col, "image_button", ck_ui_data));
+  return ck_rv;
 }
 
 void Clock::PrivateClockController::setup_create_clock_ui(
-    Clock *a_controller, UIKit::SessionSync *a_session) {
-  UIKit::Window *window = new UIKit::Window();
-  UIKit::HybridLayout *ui = new UIKit::HybridLayout(window);
+    Clock *a_controller, CherryKit::SessionSync *a_session) {
+  CherryKit::Window *ck_window = new CherryKit::Window();
+  CherryKit::HybridLayout *ck_ui = new CherryKit::HybridLayout(ck_window);
 
-  ui->set_content_margin(10, 10, 10, 10);
-  ui->set_geometry(0, 0, 320, 320);
+  CherryKit::ImageButton *ck_location_btn = 0;
+  CherryKit::ClockWidget *ck_clock = 0;
 
-  ui->set_horizontal_segment_count(2);
-  ui->add_horizontal_segments(0, 1);
-  ui->add_horizontal_segments(1, 3);
+  ck_ui->set_content_margin(10, 10, 10, 10);
+  ck_ui->set_geometry(0, 0, 240, 260);
 
-  ui->set_horizontal_height(0, "90%");
-  ui->set_horizontal_height(1, "10%");
+  ck_ui->set_horizontal_segment_count(2);
+  ck_ui->add_horizontal_segments(0, 1);
+  ck_ui->add_horizontal_segments(1, 3);
 
-  UIKit::WidgetProperties ui_data;
+  ck_ui->set_horizontal_height(0, "90%");
+  ck_ui->set_horizontal_height(1, "10%");
+  ck_ui->set_segment_width(1, 0, "30%");
+  ck_ui->set_segment_width(1, 1, "60%");
+  ck_ui->set_segment_width(1, 2, "10%");
+
+  CherryKit::WidgetProperties ui_data;
   ui_data["text"] + "";
 
-  ui->add_widget(0, 0, "clock", ui_data);
+  ck_clock = dynamic_cast<CherryKit::ClockWidget*> (ck_ui->add_widget(0, 0, "clock", ui_data));
 
-  add_action_button(ui, 1, 0, "Location", "pd_location");
-  add_action_button(ui, 1, 1, "Alarm", "pd_notification");
-  add_action_button(ui, 1, 2, "Timer", "pd_history");
+  ck_location_btn = add_action_button(ck_ui, 1, 1, "Location", "pd_location");
+  // add_action_button(ck_ui, 1, 1, "Alarm", "pd_notification");
+  // add_action_button(ck_ui, 1, 2, "Timer", "pd_history");
 
-  window->set_window_content(ui->viewport());
-  window->set_window_title("Clock");
+  ck_window->set_window_content(ck_ui->viewport());
+  ck_window->set_window_title("Clock");
 
-  a_session->bind_to_window(window);
-  window->on_window_discarded([this](UIKit::Window *aWindow) {
+  a_session->bind_to_window(ck_window);
+  ck_window->on_window_discarded([this](CherryKit::Window *aWindow) {
     delete aWindow;
   });
 
+  if (a_session->session_keys().contains("zone_id")) {
+    ck_clock->set_timezone_id(a_session->session_data("zone_id").toByteArray());
+    ck_window->set_window_title(a_session->session_data("zone_id").toString());
+  }
+
   if (a_controller->viewport()) {
-    a_controller->insert(window);
+    a_controller->insert(ck_window);
     QPointF window_location;
     window_location.setX(a_session->session_data("x").toFloat());
     window_location.setY(a_session->session_data("y").toFloat());
-    window->setPos(window_location);
-  }
-}
-
-void
-Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
-                                                UIKit::SessionSync *a_session) {
-  float window_width = 248;
-
-  UIKit::Window *m_clock_session_window = new UIKit::Window();
-
-  UIKit::Widget *m_content_view = new UIKit::Widget(m_clock_session_window);
-  UIKit::ClockWidget *m_clock_widget = new UIKit::ClockWidget(m_content_view);
-  UIKit::ToolBar *m_toolbar = new UIKit::ToolBar(m_content_view);
-  UIKit::Label *m_timezone_label = new UIKit::Label(m_toolbar);
-  m_timezone_label->set_size(QSizeF(window_width - 72, 32));
-
-  if (a_session->session_keys().contains("zone_id")) {
-    m_clock_widget->set_timezone_id(
-        a_session->session_data("zone_id").toByteArray());
-    m_timezone_label->set_label(a_session->session_data("zone_id").toString());
+    ck_window->setPos(window_location);
   }
 
-  m_content_view->setGeometry(QRectF(0, 0, window_width, window_width + 48));
-  m_clock_widget->setGeometry(QRectF(0, 0, window_width, window_width));
-  m_clock_session_window->set_window_title("Clock");
-
-  m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
-    a_session->unbind_window(aWindow);
-  });
-
-  m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {
-    delete aWindow;
-  });
-
-  // toolbar placement.
-  m_toolbar->set_icon_resolution("hdpi");
-  m_toolbar->set_icon_size(QSize(24, 24));
-  m_toolbar->setGeometry(QRectF(0, 0, window_width - 32, 48));
-
-  m_toolbar->add_action("TimeZone", "actions/pd_location", false);
-  m_toolbar->insert_widget(m_timezone_label);
-  m_toolbar->setPos(10, window_width);
-
-  m_clock_session_window->set_window_content(m_content_view);
-
-  a_session->bind_to_window(m_clock_session_window);
-
-  m_toolbar->on_item_activated([=](const QString &a_action) {
-    if (a_action == "TimeZone") {
+  ck_location_btn->on_input_event([=](CherryKit::Widget::InputEvent a_event,
+                                      const CherryKit::Widget *a_widget) {
+    if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
       if (a_controller && a_controller->viewport()) {
-        UIKit::Space *viewport = a_controller->viewport();
+        CherryKit::Space *ck_space = a_controller->viewport();
 
-        QPointF _activity_window_location = viewport->center(
-            QRectF(0, 0, 240, 320),
-            QRectF(m_clock_session_window->x(), m_clock_session_window->y(),
-                   m_clock_session_window->geometry().width(),
-                   m_clock_session_window->geometry().height()),
-            UIKit::Space::kCenterOnWindow);
-        UIKit::DesktopActivityPtr activity = viewport->create_activity(
+        QPointF _activity_window_location = ck_space->center(
+            QRectF(0, 0, 240, 320), QRectF(ck_window->x(), ck_window->y(),
+                                           ck_window->geometry().width(),
+                                           ck_window->geometry().height()),
+            CherryKit::Space::kCenterOnWindow);
+        CherryKit::DesktopActivityPtr activity = ck_space->create_activity(
             "timezone", "TimeZone", _activity_window_location,
             QRectF(0, 0, 240, 320.0), QVariantMap());
 
         activity->on_action_completed([=](const QVariantMap &a_data) {
-          m_clock_widget->set_timezone_id(a_data["zone_id"].toByteArray());
-          m_timezone_label->set_label(a_data["zone_id"].toString());
+          ck_clock->set_timezone_id(a_data["zone_id"].toByteArray());
+          ck_window->set_window_title(a_data["zone_id"].toString());
+
+          std::string zone_id(a_data["zone_id"].toByteArray().data());
+
+          a_session->save_session_attribute(
+              a_controller->session_database_name("clock"), "Clock", "clock_id",
+              a_session->session_id_to_string(), "zone_id", zone_id);
+        });
+      }
+    }
+  });
+}
+
+void Clock::PrivateClockController::setup_create_timer_ui(
+    Clock *a_controller, CherryKit::SessionSync *a_session) {
+  CherryKit::Window *ck_window = new CherryKit::Window();
+  CherryKit::HybridLayout *ck_ui = new CherryKit::HybridLayout(ck_window);
+
+  CherryKit::ImageButton *ck_location_btn = 0;
+  CherryKit::DialWidget *ck_clock = 0;
+
+  ck_ui->set_content_margin(10, 10, 10, 10);
+  ck_ui->set_geometry(0, 0, 240, 260);
+
+  ck_ui->set_horizontal_segment_count(4);
+
+  ck_ui->add_horizontal_segments(0, 1);
+  ck_ui->add_horizontal_segments(1, 1);
+  ck_ui->add_horizontal_segments(2, 3);
+  ck_ui->add_horizontal_segments(3, 3);
+
+  ck_ui->set_horizontal_height(0, "10%");
+  ck_ui->set_horizontal_height(1, "70%");
+  ck_ui->set_horizontal_height(2, "10%");
+  ck_ui->set_horizontal_height(3, "10%");
+
+  CherryKit::WidgetProperties ui_data;
+
+  ck_ui->add_widget(1, 0, "dial", ui_data);
+
+  ui_data["label"] = "00";
+  ck_ui->add_widget(2, 0, "label", ui_data);
+  ck_ui->add_widget(2, 1, "label", ui_data);
+  ck_ui->add_widget(2, 2, "label", ui_data);
+
+  ck_location_btn = add_action_button(ck_ui, 3, 0, "Start", "pd_play");
+  add_action_button(ck_ui, 3, 1, "Pause", "pd_pause");
+  add_action_button(ck_ui, 3, 2, "Stop", "pd_stop");
+
+  ck_window->set_window_content(ck_ui->viewport());
+  ck_window->set_window_title("Timer");
+
+  a_session->bind_to_window(ck_window);
+  ck_window->on_window_discarded([this](CherryKit::Window *aWindow) {
+    delete aWindow;
+  });
+
+  if (a_session->session_keys().contains("zone_id")) {
+    //ck_clock->set_timezone_id(a_session->session_data("zone_id").toByteArray());
+    ck_window->set_window_title(a_session->session_data("zone_id").toString());
+  }
+
+  if (a_controller->viewport()) {
+    a_controller->insert(ck_window);
+    QPointF window_location;
+    window_location.setX(a_session->session_data("x").toFloat());
+    window_location.setY(a_session->session_data("y").toFloat());
+    ck_window->setPos(window_location);
+  }
+
+  ck_location_btn->on_input_event([=](CherryKit::Widget::InputEvent a_event,
+                                      const CherryKit::Widget *a_widget) {
+    if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
+      if (a_controller && a_controller->viewport()) {
+        CherryKit::Space *ck_space = a_controller->viewport();
+
+        QPointF _activity_window_location = ck_space->center(
+            QRectF(0, 0, 240, 320), QRectF(ck_window->x(), ck_window->y(),
+                                           ck_window->geometry().width(),
+                                           ck_window->geometry().height()),
+            CherryKit::Space::kCenterOnWindow);
+        CherryKit::DesktopActivityPtr activity = ck_space->create_activity(
+            "timezone", "TimeZone", _activity_window_location,
+            QRectF(0, 0, 240, 320.0), QVariantMap());
+
+        activity->on_action_completed([=](const QVariantMap &a_data) {
+          //ck_clock->set_timezone_id(a_data["zone_id"].toByteArray());
+          ck_window->set_window_title(a_data["zone_id"].toString());
 
           std::string zone_id(a_data["zone_id"].toByteArray().data());
 
@@ -285,33 +350,27 @@ Clock::PrivateClockController::_create_clock_ui(Clock *a_controller,
     }
   });
 
-  if (a_controller && a_controller->viewport()) {
-    a_controller->insert(m_clock_session_window);
-    QPointF window_location;
-    window_location.setX(a_session->session_data("x").toFloat());
-    window_location.setY(a_session->session_data("y").toFloat());
-    m_clock_session_window->setPos(window_location);
-  }
 }
 
-void
-Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
-                                                UIKit::SessionSync *a_session) {
+void Clock::PrivateClockController::_create_timer_ui(
+    Clock *a_controller, CherryKit::SessionSync *a_session) {
   float window_width = 248;
 
-  UIKit::Window *m_clock_session_window = new UIKit::Window();
-  UIKit::Widget *m_content_view = new UIKit::Widget(m_clock_session_window);
-  UIKit::ClockWidget *m_clock_widget = new UIKit::ClockWidget(m_content_view);
+  CherryKit::Window *m_clock_session_window = new CherryKit::Window();
+  CherryKit::Widget *m_content_view =
+      new CherryKit::Widget(m_clock_session_window);
+  CherryKit::ClockWidget *m_clock_widget =
+      new CherryKit::ClockWidget(m_content_view);
 
-  UIKit::DialWidget *m_dial_widget_seconds_ptr =
-      new UIKit::DialWidget(m_content_view);
-  UIKit::DialWidget *m_dial_widget_mintues_ptr =
-      new UIKit::DialWidget(m_dial_widget_seconds_ptr);
-  UIKit::DialWidget *m_dial_widget_hours_ptr =
-      new UIKit::DialWidget(m_dial_widget_mintues_ptr);
+  CherryKit::DialWidget *m_dial_widget_seconds_ptr =
+      new CherryKit::DialWidget(m_content_view);
+  CherryKit::DialWidget *m_dial_widget_mintues_ptr =
+      new CherryKit::DialWidget(m_dial_widget_seconds_ptr);
+  CherryKit::DialWidget *m_dial_widget_hours_ptr =
+      new CherryKit::DialWidget(m_dial_widget_mintues_ptr);
 
-  UIKit::ToolBar *m_toolbar = new UIKit::ToolBar(m_content_view);
-  UIKit::Label *m_timezone_label = new UIKit::Label(m_toolbar);
+  CherryKit::ToolBar *m_toolbar = new CherryKit::ToolBar(m_content_view);
+  CherryKit::Label *m_timezone_label = new CherryKit::Label(m_toolbar);
   m_timezone_label->set_size(QSizeF(window_width / 2, 32));
 
   if (a_session->session_keys().contains("zone_id")) {
@@ -367,13 +426,12 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
 
   a_session->bind_to_window(m_clock_session_window);
 
-  m_clock_session_window->on_window_closed([=](UIKit::Window *aWindow) {
+  m_clock_session_window->on_window_closed([=](CherryKit::Window *aWindow) {
     a_session->unbind_window(aWindow);
   });
 
-  m_clock_session_window->on_window_discarded([this](UIKit::Window *aWindow) {
-    delete aWindow;
-  });
+  m_clock_session_window->on_window_discarded([this](
+      CherryKit::Window *aWindow) { delete aWindow; });
 
   // todo:
   // Fix duplication.
@@ -470,7 +528,7 @@ Clock::PrivateClockController::_create_timer_ui(Clock *a_controller,
                                 m_clock_widget->completion_time_as_string());
   });
 
-  m_clock_widget->on_timeout([=](const UIKit::ClockWidget *a_widget) {
+  m_clock_widget->on_timeout([=](const CherryKit::ClockWidget *a_widget) {
     if (!a_widget)
       return;
     int duration = a_widget->elapsed_time_in_seconds();

@@ -8,7 +8,7 @@
 #include <QTextOption>
 #include <resource_manager.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class Label::PrivateLabel {
 public:
@@ -24,52 +24,50 @@ public:
   bool m_mode;
 };
 
-Label::Label(Widget *parent) : Widget(parent), d(new PrivateLabel) {
-  d->m_font_size = 14;
-  d->m_alignment = Qt::AlignCenter;
-  d->m_mode = false;
+Label::Label(Widget *parent) : Widget(parent), o_label(new PrivateLabel) {
+  o_label->m_font_size = 14;
+  o_label->m_alignment = Qt::AlignCenter;
+  o_label->m_mode = false;
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
 
-Label::~Label() {
-  delete d;
-}
+Label::~Label() { delete o_label; }
 
 void Label::set_label(const QString &a_txt) {
-  d->m_label_string = a_txt;
+  o_label->m_label_string = a_txt;
   update();
 }
 
-QString Label::label() const { return d->m_label_string; }
+QString Label::label() const { return o_label->m_label_string; }
 
 QRectF Label::boundingRect() const {
-  return QRectF(0.0, 0.0, d->m_label_size.width(), d->m_label_size.height());
+  return QRectF(0.0, 0.0, o_label->m_label_size.width(), o_label->m_label_size.height());
 }
 
-void Label::set_size(const QSizeF &_asize) { d->m_label_size = _asize; }
+void Label::set_size(const QSizeF &_asize) { o_label->m_label_size = _asize; }
 
-void Label::set_font_size(uint pixelSize) { d->m_font_size = pixelSize; }
+void Label::set_font_size(uint pixelSize) { o_label->m_font_size = pixelSize; }
 
 QSizeF Label::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
   return boundingRect().size();
 }
 
 void Label::setGeometry(const QRectF &a_rect) {
-    prepareGeometryChange();
-    setPos(a_rect.topLeft());
-    d->m_label_size = a_rect.size();
+  prepareGeometryChange();
+  setPos(a_rect.topLeft());
+  o_label->m_label_size = a_rect.size();
 
-    update();
-    Widget::setGeometry(a_rect);
+  update();
+  Widget::setGeometry(a_rect);
 }
 
 QRectF Label::contents_bounding_rect() const {
   QFont font;
   font.setFamily(font.defaultFamily());
-  font.setPixelSize(d->m_font_size);
+  font.setPixelSize(o_label->m_font_size);
   QFontMetrics metic(font);
-  QRectF rect = metic.boundingRect(d->m_label_string);
+  QRectF rect = metic.boundingRect(o_label->m_label_string);
   rect.setX(0.0);
   rect.setY(0.0);
 
@@ -82,33 +80,33 @@ void Label::set_label_style(const QColor &a_backgroundColor,
 }
 
 void Label::set_highlight(bool a_mode) {
-  d->m_mode = a_mode;
+  o_label->m_mode = a_mode;
   update();
 }
 
-int Label::alignment() { return d->m_alignment; }
+int Label::alignment() { return o_label->m_alignment; }
 
 void Label::set_alignment(int a_alignment) {
-  d->m_alignment = (Qt::Alignment)a_alignment;
+  o_label->m_alignment = (Qt::Alignment)a_alignment;
 }
 
 void Label::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   StyleFeatures feature;
 
-  feature.text_data = d->m_label_string;
+  feature.text_data = o_label->m_label_string;
   feature.geometry = a_rect;
-  if (!d->m_mode)
+  if (!o_label->m_mode)
     feature.render_state = StyleFeatures::kRenderElement;
   else
     feature.render_state = StyleFeatures::kRenderRaised;
 
   QTextOption text_option;
-  text_option.setAlignment(d->m_alignment);
+  text_option.setAlignment(o_label->m_alignment);
   feature.text_options = text_option;
-  feature.attributes["font_size"] = d->m_font_size;
+  feature.attributes["font_size"] = o_label->m_font_size;
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("label", feature, a_painter_ptr);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("label", feature, a_painter_ptr);
   }
 }
 

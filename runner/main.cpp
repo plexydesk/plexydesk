@@ -216,17 +216,17 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 #endif
 
   QApplication app(argc, argv);
-  UIKit::ExtensionManager *loader = 0;
+  CherryKit::ExtensionManager *loader = 0;
 
-  loader = UIKit::ExtensionManager::instance(
-      QDir::toNativeSeparators(UIKit::Config::instance()->prefix() +
+  loader = CherryKit::ExtensionManager::instance(
+      QDir::toNativeSeparators(CherryKit::Config::instance()->prefix() +
                                QLatin1String("/share/plexy/ext/groups/")),
-      QDir::toNativeSeparators(UIKit::Config::instance()->prefix() +
+      QDir::toNativeSeparators(CherryKit::Config::instance()->prefix() +
                                QLatin1String("/lib/plexyext/")));
 
 #ifndef Q_WS_QPA
   QString appIconPath =
-      UIKit::Config::instance()->prefix() + "/share/plexy/plexydesk.png";
+      CherryKit::Config::instance()->prefix() + "/share/plexy/plexydesk.png";
   QIcon appIcon = QIcon(QDir::toNativeSeparators(appIconPath));
   app.setWindowIcon(appIcon);
   app.setApplicationName(QString(PLEXYNAME));

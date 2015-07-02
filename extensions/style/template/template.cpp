@@ -32,14 +32,16 @@ TemplateStyle::TemplateStyle(QObject *parent)
 
 TemplateStyle::~TemplateStyle() { delete d; }
 
-void TemplateStyle::paintControlElement(
-    PlexyDesk::Style::ControlElement element,
-    const PlexyDesk::StyleFeatures &feature, QPainter *painter) {}
+void
+TemplateStyle::paintControlElement(PlexyDesk::Style::ControlElement element,
+                                   const PlexyDesk::StyleFeatures &feature,
+                                   QPainter *painter) {}
 
-void TemplateStyle::paintControlElementText(
-    PlexyDesk::Style::ControlElement element,
-    const PlexyDesk::StyleFeatures &feature, const QString &text,
-    QPainter *painter) {}
+void
+TemplateStyle::paintControlElementText(PlexyDesk::Style::ControlElement element,
+                                       const PlexyDesk::StyleFeatures &feature,
+                                       const QString &text, QPainter *painter) {
+}
 
 PlexyDesk::StyleFeatures TemplateStyle::controlElementFeatures(
     PlexyDesk::Style::ControlElement element) {}

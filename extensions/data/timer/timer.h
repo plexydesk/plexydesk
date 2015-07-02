@@ -25,7 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class TimerData : public UIKit::DataSource {
+class TimerData : public CherryKit::DataSource {
   Q_OBJECT
 
 public:
@@ -42,7 +42,7 @@ Q_SLOTS:
 
 private:
   class Private;
-  Private *const d;
+  Private *const o_data_soure;
 };
 
 #endif

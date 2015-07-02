@@ -53,14 +53,15 @@ public:
 
   void updateProgress(float progress);
 
-  UIKit::ActionList m_supported_actions;
+  CherryKit::ActionList m_supported_actions;
   QVariantMap m_session_data;
 
   DesktopWindow *m_background_window;
 };
 
 BackgroundController::BackgroundController(QObject *object)
-    : UIKit::ViewController(object), p_ctr(new PrivateBackgroundController) {}
+    : CherryKit::ViewController(object),
+      p_ctr(new PrivateBackgroundController) {}
 
 BackgroundController::~BackgroundController() {
   qDebug() << Q_FUNC_INFO;
@@ -70,14 +71,14 @@ BackgroundController::~BackgroundController() {
 void BackgroundController::init() {
   // todo : port toNativeSeperator to our datakit
   QString default_wallpaper_file = QDir::toNativeSeparators(
-      UIKit::Config::instance()->prefix() +
+      CherryKit::Config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
   p_ctr->m_background_window = new DesktopWindow();
   p_ctr->m_background_window->set_background(default_wallpaper_file);
 
   p_ctr->m_background_window->on_window_discarded([this](
-      UIKit::Window *a_window) {
+      CherryKit::Window *a_window) {
     if (p_ctr->m_background_window)
       delete p_ctr->m_background_window;
   });
@@ -148,7 +149,7 @@ qDebug() << Q_FUNC_INFO << "Updating session Value End ->";
 */
 }
 
-UIKit::ActionList BackgroundController::actions() const {
+CherryKit::ActionList BackgroundController::actions() const {
   return p_ctr->m_supported_actions;
 }
 
@@ -243,7 +244,7 @@ if (d->m_background_render_item) {
 */
 }
 
-void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
+void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
                                              QDropEvent *event) {
   qDebug() << Q_FUNC_INFO;
 
@@ -252,7 +253,7 @@ void BackgroundController::handle_drop_event(UIKit::Widget * /*widget*/,
 
     if (!image.isNull()) {
       qDebug() << Q_FUNC_INFO << "Request Save Image Locally";
-      saveImageLocally(image, UIKit::Config::cache_dir("wallpaper"), true);
+      saveImageLocally(image, CherryKit::Config::cache_dir("wallpaper"), true);
     }
     return;
   }
@@ -289,7 +290,6 @@ void BackgroundController::set_view_rect(const QRectF &rect) {
     p_ctr->m_background_window->resize(rect.width(), rect.height());
     p_ctr->m_background_window->setPos(rect.x(), rect.y());
   }
-
 }
 
 void BackgroundController::saveImageLocally(const QByteArray &data,
@@ -303,7 +303,8 @@ void BackgroundController::saveImageLocally(const QByteArray &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, UIKit::Config::cache_dir("wallpaper"), saveLocally);
+  imageSave->setData(data, CherryKit::Config::cache_dir("wallpaper"),
+                     saveLocally);
   imageSave->start();
 }
 
@@ -318,7 +319,8 @@ void BackgroundController::saveImageLocally(const QImage &data,
   QVariantMap metaData;
   metaData["url"] = source;
   imageSave->setMetaData(metaData);
-  imageSave->setData(data, UIKit::Config::cache_dir("wallpaper"), saveLocally);
+  imageSave->setData(data, CherryKit::Config::cache_dir("wallpaper"),
+                     saveLocally);
   imageSave->start();
 }
 
@@ -405,7 +407,7 @@ void BackgroundController::createModeActivity(const QString &activity,
 
   QRectF _view_geometry(0.0, 0.0, 420.0, 192.0);
 
-  UIKit::DesktopActivityPtr intent = viewport()->create_activity(
+  CherryKit::DesktopActivityPtr intent = viewport()->create_activity(
       activity, title, viewport()->center(_view_geometry), _view_geometry,
       data);
   intent->set_controller(viewport()->controller("classicbackdrop"));
@@ -420,7 +422,7 @@ void BackgroundController::createWallpaperActivity(const QString &activity,
 
   QRectF _view_geometry(0.0, 0.0, 600, 480);
 
-  UIKit::DesktopActivityPtr intent = viewport()->create_activity(
+  CherryKit::DesktopActivityPtr intent = viewport()->create_activity(
       "photosearchactivity", title, viewport()->center(_view_geometry),
       _view_geometry, data);
   intent->set_controller(viewport()->controller("classicbackdrop"));
@@ -435,7 +437,7 @@ void BackgroundController::createSearchActivity(const QString &activity,
 
   QRectF _activity_geometry(0.0, 0.0, 572, 480);
 
-  UIKit::DesktopActivityPtr intent = viewport()->create_activity(
+  CherryKit::DesktopActivityPtr intent = viewport()->create_activity(
       "flikrsearchactivity", title, viewport()->center(_activity_geometry),
       _activity_geometry, data);
   intent->set_controller(viewport()->controller("classicbackdrop"));

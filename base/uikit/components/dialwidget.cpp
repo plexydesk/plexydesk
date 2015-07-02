@@ -8,11 +8,11 @@
 
 #define PI 3.14159258
 
-namespace UIKit {
+namespace CherryKit {
 typedef std::function<void(int)> on_dial_callback_func;
 
 class DialWidget::PrivateDialWidget {
- public:
+public:
   PrivateDialWidget() : m_is_set(0), m_is_pressed(0) {}
   ~PrivateDialWidget() {}
 
@@ -33,59 +33,61 @@ class DialWidget::PrivateDialWidget {
   std::vector<on_dial_callback_func> m_on_dial_callback_list;
 };
 
-DialWidget::DialWidget(Widget* parent)
-    : UIKit::Widget(parent), d(new PrivateDialWidget) {
-  set_widget_flag(UIKit::Widget::kRenderBackground, false);
-  set_widget_flag(UIKit::Widget::kConvertToWindowType, false);
-  set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
+DialWidget::DialWidget(Widget *parent)
+    : CherryKit::Widget(parent), o_dial_widget(new PrivateDialWidget) {
+  set_widget_flag(CherryKit::Widget::kRenderBackground, false);
+  set_widget_flag(CherryKit::Widget::kConvertToWindowType, false);
+  set_widget_flag(CherryKit::Widget::kRenderDropShadow, false);
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsSelectable, true);
 
-  d->mAngle = 0;
-  d->mMaxAngle = 360;
-  d->mProgressValue = 0;
-  d->mStartAngle = 0;
-  d->mMaxValue = 24;
+  o_dial_widget->mAngle = 0;
+  o_dial_widget->mMaxAngle = 360;
+  o_dial_widget->mProgressValue = 0;
+  o_dial_widget->mStartAngle = 0;
+  o_dial_widget->mMaxValue = 24;
 }
 
 DialWidget::~DialWidget() {}
 
-void DialWidget::set_maximum_dial_value(float maxValue) { d->mMaxValue = maxValue; }
+void DialWidget::set_maximum_dial_value(float maxValue) {
+  o_dial_widget->mMaxValue = maxValue;
+}
 
-float DialWidget::maximum_dial_value() const { return d->mMaxValue; }
+float DialWidget::maximum_dial_value() const { return o_dial_widget->mMaxValue; }
 
-float DialWidget::current_dial_value() const { return d->mProgressValue; }
+float DialWidget::current_dial_value() const { return o_dial_widget->mProgressValue; }
 
 void DialWidget::reset() {
-  d->mAngle = 0;
-  d->mMaxAngle = 360;
-  d->mProgressValue = 0;
-  d->mStartAngle = 0;
-  d->mMaxValue = 24;
-  d->m_is_set = 0;
+  o_dial_widget->mAngle = 0;
+  o_dial_widget->mMaxAngle = 360;
+  o_dial_widget->mProgressValue = 0;
+  o_dial_widget->mStartAngle = 0;
+  o_dial_widget->mMaxValue = 24;
+  o_dial_widget->m_is_set = 0;
   update();
 }
 
-void DialWidget::on_dialed(std::function<void (int)> a_callback) {
-    d->m_on_dial_callback_list.push_back(a_callback);
+void DialWidget::on_dialed(std::function<void(int)> a_callback) {
+  o_dial_widget->m_on_dial_callback_list.push_back(a_callback);
 }
 
-void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent* event) {
+void DialWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
   qDebug() << Q_FUNC_INFO << event->pos();
 }
 
-void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-  d->mInitPos = mapToScene(event->pos());
+void DialWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+  o_dial_widget->mInitPos = mapToScene(event->pos());
   event->accept();
   QGraphicsItem::mousePressEvent(event);
-  d->m_is_set = 1;
+  o_dial_widget->m_is_set = 1;
 }
 
-void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
+void DialWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
   event->accept();
   // QGraphicsItem::mouseReleaseEvent(event);
-  d->m_is_pressed = 0;
+  o_dial_widget->m_is_pressed = 0;
 }
 
 void DialWidget::PrivateDialWidget::calculateValue() {
@@ -119,7 +121,7 @@ QString DialWidget::PrivateDialWidget::convertAngleToTimeString(float angle) {
 
   float minutes = ((int)angle % (int)15) / 0.25;
 
-  return QString("%1:%2").arg(hours).arg(minutes);  // time;
+  return QString("%1:%2").arg(hours).arg(minutes); // time;
 }
 
 static double angle_to(QLineF line1, QLineF line2) {
@@ -149,53 +151,54 @@ static double angle_to(QLineF line1, QLineF line2) {
   return angle;
 }
 
-void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
-  d->mInitPos = event->pos();
-  QLineF line(boundingRect().center(), d->mInitPos);
-  QLineF base_line(boundingRect().width() / 2,
-                   0.0,
-                   boundingRect().center().x(),
+void DialWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+  o_dial_widget->mInitPos = event->pos();
+  QLineF line(boundingRect().center(), o_dial_widget->mInitPos);
+  QLineF base_line(boundingRect().width() / 2, 0.0, boundingRect().center().x(),
                    boundingRect().center().y());
-  d->mAngle = angle_to(line, base_line) - 180;
-  d->m_is_pressed = 1;
+  o_dial_widget->mAngle = angle_to(line, base_line) - 180;
+  o_dial_widget->m_is_pressed = 1;
   update();
 
-  std::for_each(std::begin(d->m_on_dial_callback_list),
-                std::end(d->m_on_dial_callback_list),
+  std::for_each(std::begin(o_dial_widget->m_on_dial_callback_list),
+                std::end(o_dial_widget->m_on_dial_callback_list),
                 [=](on_dial_callback_func a_func) {
 
-      if (a_func)
-          a_func(d->mProgressValue);
+    if (a_func)
+      a_func(o_dial_widget->mProgressValue);
   });
 }
 
-void DialWidget::paint_view(QPainter* painter, const QRectF& rect) {
-  QRectF r(rect.x() + 16, rect.y() + 16, rect.width() - 32, rect.height() - 32);
-  double angle = d->mAngle;
+void DialWidget::paint_view(QPainter *painter, const QRectF &rect) {
+  float min_len = std::min(rect.width(), rect.height());
+  min_len -= 16.0;
+  QRectF r(rect.x() + ((rect.width() - min_len) / 2),
+           rect.y() + ((rect.height() - min_len) / 2), min_len, min_len);
+  double angle = o_dial_widget->mAngle;
 
-  if (d->mInitPos.x() < (boundingRect().width() / 2)) {
-    angle = 360 + d->mAngle;
+  if (o_dial_widget->mInitPos.x() < (boundingRect().width() / 2)) {
+    angle = 360 + o_dial_widget->mAngle;
   }
 
-  double angle_percent = (std::abs(angle) / d->mMaxAngle);
-  if (d->m_is_set)
-     d->mProgressValue = angle_percent * d->mMaxValue;
+  double angle_percent = (std::abs(angle) / o_dial_widget->mMaxAngle);
+  if (o_dial_widget->m_is_set)
+    o_dial_widget->mProgressValue = angle_percent * o_dial_widget->mMaxValue;
 
   StyleFeatures feature;
 
   feature.geometry = r;
   feature.render_state = StyleFeatures::kRenderElement;
-  if (d->m_is_set)
-      feature.render_state = StyleFeatures::kRenderRaised;
-  if (d->m_is_pressed)
-      feature.render_state = StyleFeatures::kRenderPressed;
+  if (o_dial_widget->m_is_set)
+    feature.render_state = StyleFeatures::kRenderRaised;
+  if (o_dial_widget->m_is_pressed)
+    feature.render_state = StyleFeatures::kRenderPressed;
 
   feature.attributes["angle"] = angle_percent;
-  feature.attributes["max_value"] = d->mMaxValue;
-  feature.text_data = QString("%1").arg(d->mProgressValue);
+  feature.attributes["max_value"] = o_dial_widget->mMaxValue;
+  feature.text_data = QString("%1").arg(o_dial_widget->mProgressValue);
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("knob", feature, painter);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("knob", feature, painter);
   }
 }
 }

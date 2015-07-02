@@ -4,7 +4,7 @@
 #include <plexy.h>
 #include <widget.h>
 
-class SnapFrame : public UIKit::Widget {
+class SnapFrame : public CherryKit::Widget {
   Q_OBJECT
 public:
   SnapFrame(Widget *a_parent_ptr = 0);

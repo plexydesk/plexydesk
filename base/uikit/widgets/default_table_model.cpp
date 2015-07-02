@@ -15,7 +15,7 @@ public:
 };
 
 DefaultTableModel::DefaultTableModel(QGraphicsObject *parent)
-    : UIKit::TableModel(parent), d(new PrivateTableDelegate) {
+    : CherryKit::TableModel(parent), d(new PrivateTableDelegate) {
   d->m_current_item_label_visibility = false;
   set_cell_size(QSize(96, 96));
 }

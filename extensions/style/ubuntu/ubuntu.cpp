@@ -36,20 +36,20 @@ void ubuntuStyle::paintControlElement(Style::ControlElement element,
                                       const StyleFeatures &feature,
                                       QPainter *painter) {
   switch (element) {
-    case CE_PushButton:
-      drawPushButton(feature, painter);
-      break;
-    case CE_Frame:
-      drawFrame(feature, painter);
-      break;
-    case CE_LineEdit:
-      drawLineEdit(feature, painter);
-      break;
-    case CE_Seperator:
-      drawSeperatorLine(feature, painter);
-      break;
-    default:
-      qWarning() << Q_FUNC_INFO << "Unknown Control Element";
+  case CE_PushButton:
+    drawPushButton(feature, painter);
+    break;
+  case CE_Frame:
+    drawFrame(feature, painter);
+    break;
+  case CE_LineEdit:
+    drawLineEdit(feature, painter);
+    break;
+  case CE_Seperator:
+    drawSeperatorLine(feature, painter);
+    break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Unknown Control Element";
   }
 }
 
@@ -58,22 +58,22 @@ void ubuntuStyle::paintControlElementText(Style::ControlElement element,
                                           const QString &text,
                                           QPainter *painter) {
   switch (element) {
-    case CE_PushButton:
-      drawPushButtonText(feature, text, painter);
-      break;
-    case CE_LineEdit:
-      drawLineEditText(feature, text, painter);
-      break;
-    case CE_Label:
-      drawLabelEditText(feature, text, painter);
-      break;
-    default:
-      qWarning() << Q_FUNC_INFO << "Unknown Control Element";
+  case CE_PushButton:
+    drawPushButtonText(feature, text, painter);
+    break;
+  case CE_LineEdit:
+    drawLineEditText(feature, text, painter);
+    break;
+  case CE_Label:
+    drawLabelEditText(feature, text, painter);
+    break;
+  default:
+    qWarning() << Q_FUNC_INFO << "Unknown Control Element";
   }
 }
 
-StyleFeatures ubuntuStyle::controlElementFeatures(
-    Style::ControlElement element) {
+StyleFeatures
+ubuntuStyle::controlElementFeatures(Style::ControlElement element) {
   StyleFeatures style;
 
   style.windowTitleHeight = 16;

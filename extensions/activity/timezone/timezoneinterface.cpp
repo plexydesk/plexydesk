@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity> TimeZoneInterface::activity() {
-  QSharedPointer<UIKit::DesktopActivity> obj =
-      QSharedPointer<UIKit::DesktopActivity>(new TimeZoneActivity(),
-                                             &QObject::deleteLater);
+QSharedPointer<CherryKit::DesktopActivity> TimeZoneInterface::activity() {
+  QSharedPointer<CherryKit::DesktopActivity> obj =
+      QSharedPointer<CherryKit::DesktopActivity>(new TimeZoneActivity(),
+                                                 &QObject::deleteLater);
 
   return obj;
 }

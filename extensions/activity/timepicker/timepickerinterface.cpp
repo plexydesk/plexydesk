@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity> TimePickerInterface::activity() {
-  QSharedPointer<UIKit::DesktopActivity> obj =
-      QSharedPointer<UIKit::DesktopActivity>(new TimePickerActivity(),
-                                             &QObject::deleteLater);
+QSharedPointer<CherryKit::DesktopActivity> TimePickerInterface::activity() {
+  QSharedPointer<CherryKit::DesktopActivity> obj =
+      QSharedPointer<CherryKit::DesktopActivity>(new TimePickerActivity(),
+                                                 &QObject::deleteLater);
 
   return obj;
 }

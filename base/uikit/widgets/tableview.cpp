@@ -28,7 +28,7 @@
 #include <QDebug>
 #include <resource_manager.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class TableView::PrivateTableView {
 
@@ -112,8 +112,8 @@ void TableView::set_model(TableModel *a_model_ptr) {
   }
 
   connect(a_model_ptr, SIGNAL(cleared()), this, SLOT(on_clear()));
-  connect(a_model_ptr, SIGNAL(add(UIKit::TableViewItem *)), this,
-          SLOT(on_add_viewItem(UIKit::TableViewItem *)));
+  connect(a_model_ptr, SIGNAL(add(CherryKit::TableViewItem *)), this,
+          SLOT(on_add_viewItem(CherryKit::TableViewItem *)));
 
   if (a_model_ptr) {
     a_model_ptr->init();
@@ -226,7 +226,7 @@ void TableView::on_item_click(TableViewItem *a_component_ptr) {
   qDebug() << Q_FUNC_INFO << " Activated :";
 }
 
-void TableView::on_add_viewItem(UIKit::TableViewItem *a_item_ptr) {
+void TableView::on_add_viewItem(CherryKit::TableViewItem *a_item_ptr) {
   if (!d->m_table_delegate_ptr) {
     return;
   }
@@ -368,69 +368,69 @@ void TableView::wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr) {
 
 bool TableView::event(QEvent *a_event_ptr) {
   switch (a_event_ptr->type()) {
-    case QEvent::GraphicsSceneMouseDoubleClick: {
-      return QGraphicsObject::event(a_event_ptr);
-    }
-    case QScrollPrepareEvent::ScrollPrepare: {
-      if (!d->m_table_viewport) {
-        return false;
-      }
-
-      QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(a_event_ptr);
-      se->setViewportSize(d->m_table_view_geometry.size());
-      QRectF br = d->m_table_viewport->boundingRect();
-
-      qDebug() << Q_FUNC_INFO << " Content Range : Width"
-               << qMax(qreal(0),
-                       br.width() - d->m_table_view_geometry.size().width())
-               << " Height : "
-               << qMax(qreal(0),
-                       br.height() - d->m_table_view_geometry.size().height())
-               << "Content Pos : " << d->m_table_viewport->pos();
-
-      se->setContentPosRange(QRectF(
-          0, 0,
-          qMax(qreal(0), br.width() - d->m_table_view_geometry.size().width()),
-          qMax(qreal(0),
-               br.height() - d->m_table_view_geometry.size().height())));
-      se->setContentPos(-d->m_table_viewport->pos());
-
-      se->accept();
-      return QGraphicsObject::event(a_event_ptr);
-    }
-    case QScrollEvent::Scroll: {
-      if (!d->m_table_viewport) {
-        return false;
-      }
-      QScrollEvent *se = static_cast<QScrollEvent *>(a_event_ptr);
-      d->m_table_viewport->setPos(-se->contentPos() - se->overshootDistance());
-      return true;
+  case QEvent::GraphicsSceneMouseDoubleClick: {
+    return QGraphicsObject::event(a_event_ptr);
+  }
+  case QScrollPrepareEvent::ScrollPrepare: {
+    if (!d->m_table_viewport) {
+      return false;
     }
 
-    default:
-      break;
+    QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(a_event_ptr);
+    se->setViewportSize(d->m_table_view_geometry.size());
+    QRectF br = d->m_table_viewport->boundingRect();
+
+    qDebug() << Q_FUNC_INFO << " Content Range : Width"
+             << qMax(qreal(0),
+                     br.width() - d->m_table_view_geometry.size().width())
+             << " Height : "
+             << qMax(qreal(0),
+                     br.height() - d->m_table_view_geometry.size().height())
+             << "Content Pos : " << d->m_table_viewport->pos();
+
+    se->setContentPosRange(QRectF(
+        0, 0,
+        qMax(qreal(0), br.width() - d->m_table_view_geometry.size().width()),
+        qMax(qreal(0),
+             br.height() - d->m_table_view_geometry.size().height())));
+    se->setContentPos(-d->m_table_viewport->pos());
+
+    se->accept();
+    return QGraphicsObject::event(a_event_ptr);
+  }
+  case QScrollEvent::Scroll: {
+    if (!d->m_table_viewport) {
+      return false;
+    }
+    QScrollEvent *se = static_cast<QScrollEvent *>(a_event_ptr);
+    d->m_table_viewport->setPos(-se->contentPos() - se->overshootDistance());
+    return true;
+  }
+
+  default:
+    break;
   }
   return QGraphicsObject::event(a_event_ptr);
 }
 
 bool TableView::sceneEvent(QEvent *a_event_ptr) {
   switch (a_event_ptr->type()) {
-    case QEvent::TouchBegin: {
-      // We need to return true for the TouchBegin here in the
-      // top-most graphics object - otherwise gestures in our parent
-      // objects will NOT work at all (the accept() flag is already
-      // set due to our setAcceptTouchEvents(true) call in the c'tor
-      return true;
-    }
-    case QEvent::GraphicsSceneMousePress: {
-      // We need to return true for the MousePress here in the
-      // top-most graphics object - otherwise gestures in our parent
-      // objects will NOT work at all (the accept() flag is already
-      // set to true by Qt)
-      return true;
-    }
-    default:
-      break;
+  case QEvent::TouchBegin: {
+    // We need to return true for the TouchBegin here in the
+    // top-most graphics object - otherwise gestures in our parent
+    // objects will NOT work at all (the accept() flag is already
+    // set due to our setAcceptTouchEvents(true) call in the c'tor
+    return true;
+  }
+  case QEvent::GraphicsSceneMousePress: {
+    // We need to return true for the MousePress here in the
+    // top-most graphics object - otherwise gestures in our parent
+    // objects will NOT work at all (the accept() flag is already
+    // set to true by Qt)
+    return true;
+  }
+  default:
+    break;
   }
   return QGraphicsObject::sceneEvent(a_event_ptr);
 }

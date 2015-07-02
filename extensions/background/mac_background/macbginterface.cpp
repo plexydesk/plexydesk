@@ -22,7 +22,7 @@
 
 #include <QtPlugin>
 
-MacBackgroundPlugin::MacBackgroundPlugin(QObject* /*object*/)
+MacBackgroundPlugin::MacBackgroundPlugin(QObject * /*object*/)
     : PlexyDesk::ControllerPluginInterface() {}
 
 MacBackgroundPlugin::~MacBackgroundPlugin() {}

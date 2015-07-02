@@ -23,13 +23,13 @@
 
 #include <controllerplugininterface.h>
 
-class Interface : public QObject, public UIKit::ControllerPluginInterface {
+class Interface : public QObject, public CherryKit::ControllerPluginInterface {
   Q_OBJECT
-  Q_INTERFACES(UIKit::ControllerPluginInterface)
+  Q_INTERFACES(CherryKit::ControllerPluginInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.foo")
 
 public:
-  QSharedPointer<UIKit::ViewController> controller();
+  QSharedPointer<CherryKit::ViewController> controller();
 };
 
 #endif

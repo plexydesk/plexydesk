@@ -45,18 +45,17 @@ void test_object_update() {
 
   sync->remove_object("clock", "", "");
 
-  for (int i = 0 ; i < 10 ; i++ ) {
-      QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
-      obj->setName("clock");
+  for (int i = 0; i < 10; i++) {
+    QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
+    obj->setName("clock");
 
-      obj->setObjectAttribute("zone_id", "Asia/South");
-      obj->setObjectAttribute("id", i);
+    obj->setObjectAttribute("zone_id", "Asia/South");
+    obj->setObjectAttribute("id", i);
 
-      sync->add_object(*obj);
+    sync->add_object(*obj);
   }
 
-
-  //test update
+  // test update
   sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "Expected True");

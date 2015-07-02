@@ -10,11 +10,11 @@
 #include <desktopactivity.h>
 #include <session_sync.h>
 
-class NoteWidget : public UIKit::Widget {
+class NoteWidget : public CherryKit::Widget {
   Q_OBJECT
 public:
-  explicit NoteWidget(UIKit::SessionSync *a_session,
-                      UIKit::Widget *a_parent_ptr = 0);
+  explicit NoteWidget(CherryKit::SessionSync *a_session,
+                      CherryKit::Widget *a_parent_ptr = 0);
   virtual ~NoteWidget();
 
   void setTitle(const QString &title);
@@ -37,7 +37,7 @@ public:
   void resize(const QSizeF &size);
   void createToolBar();
 
-  void setViewport(UIKit::Space *space);
+  void setViewport(CherryKit::Space *space);
 
   void on_text_data_changed(std::function<void(const QString &)> a_callback);
   void on_note_config_changed(

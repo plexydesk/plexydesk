@@ -27,7 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class DesktopClockActivity : public UIKit::DesktopActivity {
+class DesktopClockActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -40,7 +40,7 @@ public:
 
   QVariantMap result() const;
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
 
 private

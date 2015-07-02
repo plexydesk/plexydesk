@@ -25,7 +25,7 @@
 #include <datasource.h>
 #include <QtNetwork>
 
-class HttpServerData : public UIKit::DataSource {
+class HttpServerData : public CherryKit::DataSource {
   Q_OBJECT
 
 public:
@@ -42,7 +42,7 @@ Q_SLOTS:
 
 private:
   class PrivateHttpServer;
-  PrivateHttpServer *const d;
+  PrivateHttpServer *const o_data_soure;
 };
 
 #endif

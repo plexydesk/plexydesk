@@ -5,7 +5,7 @@
 #include <tableviewcellinterface.h>
 #include <webservice.h>
 
-using namespace UIKit;
+using namespace CherryKit;
 
 class ImageCellAdaptor : public TableModel {
   Q_OBJECT

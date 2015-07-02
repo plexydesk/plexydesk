@@ -3,10 +3,10 @@
 
 #include <widget.h>
 
-namespace UIKit {
+namespace CherryKit {
 class Widget;
 
-class CalendarView : public UIKit::Widget {
+class CalendarView : public CherryKit::Widget {
 public:
   explicit CalendarView(Widget *a_parent_ptr = 0);
   virtual ~CalendarView();
@@ -28,7 +28,7 @@ protected:
 
 private:
   class PrivateCalendarWidget;
-  PrivateCalendarWidget *const d;
+  PrivateCalendarWidget *const o_calendar_widget;
 };
 }
 

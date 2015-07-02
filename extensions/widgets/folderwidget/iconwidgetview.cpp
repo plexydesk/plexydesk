@@ -17,15 +17,15 @@ public:
   ~PrivateIconWidgetView() { delete mInfoView; }
 
   FileInforView *mInfoView;
-  UIKit::TableView *mTableView;
+  CherryKit::TableView *mTableView;
   FolderProvider *mFolderViewSource;
 };
 
 IconWidgetView::IconWidgetView(Widget *parent)
-    : UIKit::Widget(parent), d(new PrivateIconWidgetView) {
+    : CherryKit::Widget(parent), d(new PrivateIconWidgetView) {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->set_widget_flag(UIKit::Widget::kRenderBackground, false);
-  this->set_widget_flag(UIKit::Widget::kRenderDropShadow, false);
+  this->set_widget_flag(CherryKit::Widget::kRenderBackground, false);
+  this->set_widget_flag(CherryKit::Widget::kRenderDropShadow, false);
 
   QRectF rect(0.0, 0.0, 200.0, 200.0);
   QRectF iconViewRect =
@@ -36,7 +36,7 @@ IconWidgetView::IconWidgetView(Widget *parent)
 
   d->mInfoView = new FileInforView(this);
 
-  d->mTableView = new UIKit::TableView(this);
+  d->mTableView = new CherryKit::TableView(this);
 
   d->mFolderViewSource = new FolderProvider(iconViewRectTable, this);
   d->mTableView->set_model(d->mFolderViewSource);

@@ -15,7 +15,7 @@
 #include <imagebutton.h>
 #include <syncobject.h>
 
-namespace UIKit {
+namespace CherryKit {
 class WorkSpace::PrivateWorkSpace {
 public:
   PrivateWorkSpace() {}
@@ -32,12 +32,12 @@ public:
 };
 
 void WorkSpace::set_workspace_geometry(int a_screen_id) {
-  QRect _current_desktop_geometry = QApplication::desktop()->screenGeometry(
-                                      a_screen_id);
+  QRect _current_desktop_geometry =
+      QApplication::desktop()->screenGeometry(a_screen_id);
 
 #ifdef Q_OS_LINUX
-  _current_desktop_geometry = QApplication::desktop()->availableGeometry(
-                                a_screen_id);
+  _current_desktop_geometry =
+      QApplication::desktop()->availableGeometry(a_screen_id);
 #endif
 
 #ifdef Q_OS_MAC
@@ -46,8 +46,8 @@ void WorkSpace::set_workspace_geometry(int a_screen_id) {
 #endif
 
 #ifdef Q_OS_WIN
-  _current_desktop_geometry = QApplication::desktop()->availableGeometry(
-                                a_screen_id);
+  _current_desktop_geometry =
+      QApplication::desktop()->availableGeometry(a_screen_id);
 #endif
 
   setGeometry(_current_desktop_geometry);
@@ -123,8 +123,8 @@ void WorkSpace::set_accelerated_rendering(bool a_on) {
         QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
                   QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
     setCacheMode(QGraphicsView::CacheNone);
-    //setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    //setOptimizationFlag(QGraphicsView::DontClipPainter);
+    // setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    // setOptimizationFlag(QGraphicsView::DontClipPainter);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
     setupViewport(new QWidget);
@@ -176,7 +176,7 @@ void WorkSpace::expose_sub_region(const QRectF &a_region) {
   QGraphicsScene *current_scene = scene();
 
   if (!current_scene)
-      return;
+    return;
 
   ensureVisible(a_region);
   update();
@@ -199,20 +199,18 @@ void WorkSpace::paintEvent(QPaintEvent *event) {
 #ifdef QT
   QGraphicsView::paintEvent(event);
 #else
-  //current_active_space()->draw();
+  // current_active_space()->draw();
 
   current_active_space()->draw();
-  GraphicsSurface *surface =
-          current_active_space()->surface();
+  GraphicsSurface *surface = current_active_space()->surface();
   if (!(*surface))
-      return;
+    return;
 
-  QImage device((*surface), geometry().width(),
-                geometry().height(),
+  QImage device((*surface), geometry().width(), geometry().height(),
                 QImage::Format_ARGB32_Premultiplied);
   QPainter p;
   p.begin(viewport());
-  //p.fillRect(event->rect(), QColor("#ffffff"));
+  // p.fillRect(event->rect(), QColor("#ffffff"));
   p.drawImage(event->rect(), device);
   p.end();
 #endif
@@ -401,8 +399,7 @@ void WorkSpace::update_space_geometry(Space *a_space_ptr,
   }
 }
 
-std::string WorkSpace::workspace_instance_name()
-{
+std::string WorkSpace::workspace_instance_name() {
   std::string workspace_name =
       "org.workspace.space_" + std::to_string(m_priv_impl->m_screen_id);
 
@@ -551,8 +548,8 @@ void WorkSpace::add_default_space() {
 }
 
 void WorkSpace::restore_session() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
-                                 workspace_instance_name());
+  QuetzalKit::DataSync *sync =
+      new QuetzalKit::DataSync(workspace_instance_name());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);

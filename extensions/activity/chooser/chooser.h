@@ -28,9 +28,9 @@
 #include <widget.h>
 #include <window.h>
 
-using namespace UIKit;
+using namespace CherryKit;
 
-class IconGridActivity : public UIKit::DesktopActivity {
+class IconGridActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -46,12 +46,12 @@ public:
 
 private
 Q_SLOTS:
-  void onWidgetClosed(UIKit::Widget *widget);
+  void onWidgetClosed(CherryKit::Widget *widget);
   void onDiscard();
 
 private:
   class PrivateIconGrid;
-  PrivateIconGrid *const d;
+  PrivateIconGrid *const o_desktop_activity;
 };
 
 #endif

@@ -9,7 +9,7 @@
 #include <view_controller.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class DECL_UI_KIT_EXPORT ControllerPluginInterface {
 public:
@@ -20,6 +20,6 @@ public:
 };
 }
 
-Q_DECLARE_INTERFACE(UIKit::ControllerPluginInterface,
+Q_DECLARE_INTERFACE(CherryKit::ControllerPluginInterface,
                     "org.plexydesk.ControllerPluginInterface")
 #endif // CONTROLLERPLUGININTERFACE_H

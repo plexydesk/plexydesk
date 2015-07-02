@@ -30,7 +30,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 class TableModel;
 
 class DECL_UI_KIT_EXPORT TableView : public Widget {
@@ -58,7 +58,7 @@ public:
 private
 Q_SLOTS:
   virtual void on_item_click(TableViewItem *a_component_ptr);
-  virtual void on_add_viewItem(UIKit::TableViewItem *a_item_ptr);
+  virtual void on_add_viewItem(CherryKit::TableViewItem *a_item_ptr);
   virtual void on_clear();
 Q_SIGNALS:
   void activated(TableViewItem *a_component_ptr);

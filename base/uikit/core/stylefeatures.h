@@ -7,7 +7,7 @@
 #include <plexydesk_ui_exports.h>
 #include <QtCore>
 
-namespace UIKit {
+namespace CherryKit {
 
 class DECL_UI_KIT_EXPORT StyleFeatures {
 

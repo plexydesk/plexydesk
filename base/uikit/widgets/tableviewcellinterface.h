@@ -25,7 +25,7 @@
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 /**
     * \class this is a interface definition cell creators
     *
@@ -124,9 +124,9 @@ Q_SIGNALS:
       */
   void updated();
 
-  void add(UIKit::TableViewItem *a_item_ptr);
+  void add(CherryKit::TableViewItem *a_item_ptr);
 
-  void removed(UIKit::TableViewItem *a_item_ptr);
+  void removed(CherryKit::TableViewItem *a_item_ptr);
 
   void cleared();
 };

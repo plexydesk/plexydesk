@@ -8,7 +8,7 @@
 #include <extensionmanager.h>
 #include <resource_manager.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class Button::PrivateButton {
 public:
@@ -28,12 +28,13 @@ public:
 };
 
 Button::Button(Widget *a_parent_ptr)
-    : Widget(a_parent_ptr), d(new PrivateButton) {
-  d->mState = PrivateButton::NORMAL;
+    : Widget(a_parent_ptr), o_button(new PrivateButton) {
+  o_button->mState = PrivateButton::NORMAL;
 
   if (ResourceManager::style()) {
-    set_size(QSize(ResourceManager::style()->attribute("button", "width").toFloat(),
-                  ResourceManager::style()->attribute("button", "height").toFloat()));
+    set_size(QSize(
+        ResourceManager::style()->attribute("button", "width").toFloat(),
+        ResourceManager::style()->attribute("button", "height").toFloat()));
   }
 
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -43,37 +44,35 @@ Button::Button(Widget *a_parent_ptr)
   setAcceptHoverEvents(true);
 }
 
-Button::~Button() { delete d; }
+Button::~Button() { delete o_button; }
 
 void Button::set_label(const QString &a_txt) {
-  d->mLabel = a_txt;
+  o_button->mLabel = a_txt;
   update();
 }
 
 void Button::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  d->mState = PrivateButton::PRESS;
+  o_button->mState = PrivateButton::PRESS;
   update();
   Widget::mousePressEvent(a_event_ptr);
 }
 
 void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  d->mState = PrivateButton::NORMAL;
+  o_button->mState = PrivateButton::NORMAL;
   update();
 
   Widget::mouseReleaseEvent(a_event_ptr);
 }
 
-void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr)
-{
-  d->mState = PrivateButton::HOVER;
+void Button::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
+  o_button->mState = PrivateButton::HOVER;
   update();
 
   Widget::hoverEnterEvent(a_event_ptr);
 }
 
-void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr)
-{
-  d->mState = PrivateButton::NORMAL;
+void Button::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
+  o_button->mState = PrivateButton::NORMAL;
   update();
 
   Widget::hoverLeaveEvent(a_event_ptr);
@@ -83,45 +82,44 @@ void Button::paint_normal_button(QPainter *a_painter_ptr,
                                  const QRectF &a_rect) {
   StyleFeatures feature;
 
-  feature.text_data = d->mLabel;
+  feature.text_data = o_button->mLabel;
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("button", feature, a_painter_ptr);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("button", feature, a_painter_ptr);
   }
 }
 
 void Button::paint_sunken_button(QPainter *painter, const QRectF &a_rect) {
   StyleFeatures feature;
 
-  feature.text_data = d->mLabel;
+  feature.text_data = o_button->mLabel;
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderPressed;
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("button", feature, painter);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("button", feature, painter);
   }
 }
 
-void Button::paint_hover_button(QPainter *a_painter, const QRectF &a_rect)
-{
+void Button::paint_hover_button(QPainter *a_painter, const QRectF &a_rect) {
   StyleFeatures feature;
 
-  feature.text_data = d->mLabel;
+  feature.text_data = o_button->mLabel;
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderRaised;
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("button", feature, a_painter);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("button", feature, a_painter);
   }
 }
 
-StylePtr Button::style() const { return UIKit::ResourceManager::style(); }
+StylePtr Button::style() const { return CherryKit::ResourceManager::style(); }
 
 void Button::set_size(const QSizeF &a_size) {
   prepareGeometryChange();
-  d->m_button_size = a_size;
+  o_button->m_button_size = a_size;
   setMinimumSize(a_size);
   update();
 }
@@ -131,36 +129,33 @@ QSizeF Button::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
 }
 
 QRectF Button::boundingRect() const {
-  return QRectF(0, 0, d->m_button_size.width(),
-                d->m_button_size.height());
+  return QRectF(0, 0, o_button->m_button_size.width(), o_button->m_button_size.height());
 }
 
-void Button::setGeometry(const QRectF &a_rect) {
-  setPos(a_rect.topLeft());
-}
+void Button::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
 
-void Button::set_action_data(const QVariant &a_data) { d->mData = a_data; }
+void Button::set_action_data(const QVariant &a_data) { o_button->mData = a_data; }
 
-QVariant Button::action_data() const { return d->mData; }
+QVariant Button::action_data() const { return o_button->mData; }
 
 void Button::on_button_pressed(std::function<void()> a_handler) {}
 
 void Button::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
-  switch (d->mState) {
-    case PrivateButton::NORMAL:
-      paint_normal_button(a_painter_ptr, a_rect);
-      break;
-    case PrivateButton::PRESS:
-      paint_sunken_button(a_painter_ptr, a_rect);
-      break;
+  switch (o_button->mState) {
+  case PrivateButton::NORMAL:
+    paint_normal_button(a_painter_ptr, a_rect);
+    break;
+  case PrivateButton::PRESS:
+    paint_sunken_button(a_painter_ptr, a_rect);
+    break;
   case PrivateButton::HOVER:
-      paint_hover_button(a_painter_ptr, a_rect);
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown Button State";
+    paint_hover_button(a_painter_ptr, a_rect);
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown Button State";
   }
 }
 
 void Button::setIcon(const QImage & /*img*/) {}
 
-QString Button::label() const { return d->mLabel; }
+QString Button::label() const { return o_button->mLabel; }
 }

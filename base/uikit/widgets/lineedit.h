@@ -8,7 +8,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT LineEdit : public Widget {
   Q_OBJECT
 public:
@@ -45,9 +45,10 @@ protected:
   virtual void keyPressEvent(QKeyEvent *a_event_ptr);
 
   QRectF current_text_rect(QPainter *a_painter) const;
+
 private:
   class PrivateLineEdit;
-  PrivateLineEdit *const d;
+  PrivateLineEdit *const o_line_edit;
 };
 }
 #endif // LINEEDIT_H

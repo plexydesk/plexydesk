@@ -122,23 +122,23 @@ std::string Variant::__data__::toString() const {
   std::ostringstream string_stream;
 
   switch (m_variant_type) {
-    case kStringType:
-      rv = m_string_data;
-      break;
-    case kFloatType:
-      string_stream << m_float_data;
-      rv = string_stream.str();
-      break;
-    case kDoubleType:
-      string_stream << m_double_data;
-      rv = string_stream.str();
-      break;
-    case kCharType:
-      string_stream << m_char_data;
-      rv = string_stream.str();
-      break;
-    default:
-      rv = "";
+  case kStringType:
+    rv = m_string_data;
+    break;
+  case kFloatType:
+    string_stream << m_float_data;
+    rv = string_stream.str();
+    break;
+  case kDoubleType:
+    string_stream << m_double_data;
+    rv = string_stream.str();
+    break;
+  case kCharType:
+    string_stream << m_char_data;
+    rv = string_stream.str();
+    break;
+  default:
+    rv = "";
   };
 
   return rv;

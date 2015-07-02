@@ -27,7 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class SpacePreviewActivity : public UIKit::DesktopActivity {
+class SpacePreviewActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -42,12 +42,12 @@ public:
 
   virtual void update_attribute(const QString &name, const QVariant &data);
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
 
 private:
   class PrivateSpacePreview;
-  PrivateSpacePreview *const d;
+  PrivateSpacePreview *const o_desktop_activity;
 };
 
 #endif

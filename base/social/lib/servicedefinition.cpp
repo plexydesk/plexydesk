@@ -184,8 +184,9 @@ QUrl ServiceDefinition::queryURL(const QString &method,
   return serviceURL;
 }
 
-QMultiMap<QString, QVariantMap> ServiceDefinition::queryResult(
-    const QString &method, const QString &data) const {
+QMultiMap<QString, QVariantMap>
+ServiceDefinition::queryResult(const QString &method,
+                               const QString &data) const {
   // QVariantMap rv;
 
   QHash<QString, PrivateResultQuery> result = d->queryForMethod(method);
@@ -291,16 +292,16 @@ QVariant ServiceDefinition::PrivateServiceDefinition::JsonValueToVariant(
   QVariant rv;
 
   switch (object.type()) {
-    case QJsonValue::Double:
-      rv = object.toDouble();
-      break;
-    case QJsonValue::String:
-      rv = object.toString();
-      break;
-    case QJsonValue::Bool:
-      rv = object.toBool();
-    default:
-      qDebug() << Q_FUNC_INFO << "Unknown Type Found";
+  case QJsonValue::Double:
+    rv = object.toDouble();
+    break;
+  case QJsonValue::String:
+    rv = object.toString();
+    break;
+  case QJsonValue::Bool:
+    rv = object.toBool();
+  default:
+    qDebug() << Q_FUNC_INFO << "Unknown Type Found";
   }
 
   qDebug() << Q_FUNC_INFO << rv;
@@ -431,8 +432,8 @@ QString ServiceDefinition::PrivateServiceDefinition::defaultValue(
   return "";
 }
 
-int ServiceDefinition::PrivateServiceDefinition::nativeType(
-    const QString &type) {
+int
+ServiceDefinition::PrivateServiceDefinition::nativeType(const QString &type) {
   return mTypeMap[type];
 }
 

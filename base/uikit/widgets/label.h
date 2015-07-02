@@ -9,7 +9,7 @@
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 class DECL_UI_KIT_EXPORT Label : public Widget {
   Q_OBJECT
@@ -17,7 +17,6 @@ class DECL_UI_KIT_EXPORT Label : public Widget {
 
 public:
   explicit Label(Widget *a_parent_ptr = 0);
-
   virtual ~Label();
 
   virtual void set_label(const QString &a_txt);
@@ -39,11 +38,11 @@ public:
   virtual void set_alignment(int a_alignment);
 
 protected:
-    virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 
 private:
   class PrivateLabel;
-  PrivateLabel *const d;
+  PrivateLabel *const o_label;
 };
 }
 

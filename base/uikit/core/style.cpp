@@ -20,7 +20,7 @@
 #include <QVariant>
 #include <style.h>
 
-namespace UIKit {
+namespace CherryKit {
 
 Style::Style() {}
 
@@ -34,9 +34,5 @@ QString Style::color(const QString &a_element) const {
   return color_scheme_map()[a_element].toString();
 }
 
-float Style::scale_factor()
-{
-  return 1.0f;
-}
-
+float Style::scale_factor() { return 1.0f; }
 }

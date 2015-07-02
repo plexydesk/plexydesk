@@ -12,7 +12,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT Button : public Widget {
   Q_OBJECT
 public:
@@ -50,7 +50,7 @@ protected:
 
 private:
   class PrivateButton;
-  PrivateButton *const d;
+  PrivateButton *const o_button;
 };
 }
 #endif // UI_BUTTON_H

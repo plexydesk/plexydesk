@@ -8,7 +8,7 @@
 
 #include <functional>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT ItemView : public Widget {
   Q_OBJECT
 public:
@@ -18,8 +18,7 @@ public:
     kTableModel
   } ModelType;
 
-  ItemView(Widget *a_parent_ptr = 0,
-           ModelType a_model_type = kListModel);
+  ItemView(Widget *a_parent_ptr = 0, ModelType a_model_type = kListModel);
   virtual ~ItemView();
 
   virtual void insert(ModelViewItem *a_item_ptr);
@@ -37,8 +36,8 @@ public:
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 
   virtual void on_activated(std::function<void(int index)> a_callback);
-  virtual void on_item_removed(
-      std::function<void (ModelViewItem *item)> a_handler);
+  virtual void
+  on_item_removed(std::function<void(ModelViewItem *item)> a_handler);
 
 protected:
   virtual void insert(Widget *a_widget_ptr);

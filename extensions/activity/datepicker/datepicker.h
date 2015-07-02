@@ -27,7 +27,7 @@
 #include <desktopactivity.h>
 #include <window.h>
 
-class DatePickerActivity : public UIKit::DesktopActivity {
+class DatePickerActivity : public CherryKit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -40,15 +40,16 @@ public:
 
   QVariantMap result() const;
 
-  UIKit::Window *window() const;
+  CherryKit::Window *window() const;
   void cleanup();
+
 private:
   void onImageReady(const QImage &img);
   void end_calendar();
 
 private:
   class PrivateDatePicker;
-  PrivateDatePicker *const d;
+  PrivateDatePicker *const o_desktop_activity;
 };
 
 #endif

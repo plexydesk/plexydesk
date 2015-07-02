@@ -9,7 +9,7 @@
 
 #include <QDebug>
 
-namespace UIKit {
+namespace CherryKit {
 
 class ImageButton::PrivateImageButton {
 public:
@@ -30,22 +30,22 @@ public:
 };
 
 void ImageButton::set_background_color(const QColor &a_color) {
-  d->mBgColor = a_color;
+  o_image_button->mBgColor = a_color;
   update();
 }
 
 StylePtr ImageButton::style() const { return ResourceManager::style(); }
 
 ImageButton::ImageButton(Widget *a_parent_ptr)
-    : Widget(a_parent_ptr), d(new PrivateImageButton) {
+    : Widget(a_parent_ptr), o_image_button(new PrivateImageButton) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   setAcceptHoverEvents(true);
 
-  d->mBgColor = Qt::transparent;
+  o_image_button->mBgColor = Qt::transparent;
 }
 
-ImageButton::~ImageButton() { delete d; }
+ImageButton::~ImageButton() { delete o_image_button; }
 
 void ImageButton::set_size(const QSize &a_size) {
   setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
@@ -57,44 +57,44 @@ QSizeF ImageButton::sizeHint(Qt::SizeHint which,
 }
 
 void ImageButton::set_pixmap(const QPixmap &a_pixmap) {
-  d->m_button_icon = a_pixmap;
+  o_image_button->m_button_icon = a_pixmap;
   update();
 }
 
 void ImageButton::set_lable(const QString &a_text) {
-  d->m_button_text = a_text;
+  o_image_button->m_button_text = a_text;
   update();
 }
 
-QString ImageButton::label() const { return d->m_button_text; }
+QString ImageButton::label() const { return o_image_button->m_button_text; }
 
 void ImageButton::onZoomDone() {}
 
 void ImageButton::onZoomOutDone() {}
 
 void ImageButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  d->m_state = PrivateImageButton::_kNormal;
+  o_image_button->m_state = PrivateImageButton::_kNormal;
   update();
   Widget::mouseReleaseEvent(a_event_ptr);
 }
 
 void ImageButton::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   Q_EMIT selected(true);
-  d->m_state = PrivateImageButton::_kPressed;
+  o_image_button->m_state = PrivateImageButton::_kPressed;
   update();
   Widget::mousePressEvent(a_event_ptr);
 }
 
 void ImageButton::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
   a_event_ptr->accept();
-  d->m_state = PrivateImageButton::_kHover;
+  o_image_button->m_state = PrivateImageButton::_kHover;
   update();
   Widget::hoverEnterEvent(a_event_ptr);
 }
 
 void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
   a_event_ptr->accept();
-  d->m_state = PrivateImageButton::_kNormal;
+  o_image_button->m_state = PrivateImageButton::_kNormal;
   update();
   Widget::hoverLeaveEvent(a_event_ptr);
 }
@@ -102,12 +102,12 @@ void ImageButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
 void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
   StyleFeatures feature;
 
-  feature.text_data = d->m_button_text;
-  feature.image_data = d->m_button_icon;
+  feature.text_data = o_image_button->m_button_text;
+  feature.image_data = o_image_button->m_button_icon;
   feature.geometry = a_rect;
   feature.render_state = StyleFeatures::kRenderElement;
 
-  switch (d->m_state) {
+  switch (o_image_button->m_state) {
   case PrivateImageButton::_kNormal:
     feature.render_state = StyleFeatures::kRenderElement;
     break;
@@ -118,9 +118,9 @@ void ImageButton::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
     qDebug() << Q_FUNC_INFO << "Unknown Button State";
   }
 
-  if (UIKit::ResourceManager::style()) {
-    UIKit::ResourceManager::style()->draw("image_button", feature,
-                                          a_painter_ptr);
+  if (CherryKit::ResourceManager::style()) {
+    CherryKit::ResourceManager::style()->draw("image_button", feature,
+                                              a_painter_ptr);
   }
 }
 }

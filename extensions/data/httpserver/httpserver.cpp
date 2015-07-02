@@ -29,13 +29,13 @@ public:
 };
 
 HttpServerData::HttpServerData(QObject *object)
-    : UIKit::DataSource(object), d(new PrivateHttpServer) {
+    : CherryKit::DataSource(object), o_data_soure(new PrivateHttpServer) {
   startTimer(1000);
 }
 
 void HttpServerData::init() {}
 
-HttpServerData::~HttpServerData() { delete d; }
+HttpServerData::~HttpServerData() { delete o_data_soure; }
 
 void HttpServerData::set_arguments(QVariant arg) {}
 

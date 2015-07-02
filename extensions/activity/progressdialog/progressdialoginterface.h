@@ -25,16 +25,16 @@
 #include <desktopactivity.h>
 
 class ProgressDialogInterface : public QObject,
-                                public UIKit::ActivityInterface {
+                                public CherryKit::ActivityInterface {
   Q_OBJECT
-  Q_INTERFACES(UIKit::ActivityInterface)
+  Q_INTERFACES(CherryKit::ActivityInterface)
   Q_PLUGIN_METADATA(IID "org.qt-project.progressdialog")
 
 public:
   virtual ~ProgressDialogInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<UIKit::DesktopActivity> activity();
+  QSharedPointer<CherryKit::DesktopActivity> activity();
 };
 
 #endif

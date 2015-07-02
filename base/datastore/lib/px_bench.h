@@ -13,7 +13,6 @@ extern void px_bench_run(PxBenchData *a_bench_data);
 
 extern void px_bench_stop(PxBenchData *a_bench_data);
 
-extern void px_bench_print(PxBenchData *a_bench_data,
-                                  const char *a_func_name);
+extern void px_bench_print(PxBenchData *a_bench_data, const char *a_func_name);
 
 #endif // PX_BENCH_H

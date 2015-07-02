@@ -28,7 +28,7 @@
 // self
 #include "classicbackgroundrender.h"
 
-class BackgroundController : public UIKit::ViewController {
+class BackgroundController : public CherryKit::ViewController {
   Q_OBJECT
 public:
   BackgroundController(QObject *object = 0);
@@ -39,7 +39,7 @@ public:
   void session_data_available(const QuetzalKit::SyncObject &a_session_root);
   void submit_session_data(QuetzalKit::SyncObject *a_object);
 
-  UIKit::ActionList actions() const;
+  CherryKit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &data);
 
   void set_view_rect(const QRectF &rect);
@@ -49,12 +49,13 @@ public:
 
   void prepare_removal();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void onImageReady();
   void onImageSaveReady();
 
 protected:
-  void handle_drop_event(UIKit::Widget *widget, QDropEvent *event);
+  void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
   void createSeamlessDesktop();
 
 private:

@@ -26,25 +26,25 @@ public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
 
-  UIKit::Window *m_main_window;
+  CherryKit::Window *m_main_window;
 };
 
 TemplateActivity::TemplateActivity(QGraphicsObject *object)
-    : UIKit::DesktopActivity(object), d(new PrivateTemplate) {}
+    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateTemplate) {}
 
-TemplateActivity::~TemplateActivity() { delete d; }
+TemplateActivity::~TemplateActivity() { delete o_desktop_activity; }
 
 void TemplateActivity::create_window(const QRectF &window_geometry,
                                      const QString &window_title,
                                      const QPointF &window_pos) {
-  d->m_main_window = new UIKit::Window();
+  o_desktop_activity->m_main_window = new CherryKit::Window();
 
-  d->m_main_window->set_widget_flag(UIKit::Widget::kRenderBackground);
-  d->m_main_window->set_widget_flag(UIKit::Widget::kConvertToWindowType);
-  d->m_main_window->set_widget_flag(UIKit::Widget::kRenderDropShadow);
+  o_desktop_activity->m_main_window->set_widget_flag(CherryKit::Widget::kRenderBackground);
+  o_desktop_activity->m_main_window->set_widget_flag(CherryKit::Widget::kConvertToWindowType);
+  o_desktop_activity->m_main_window->set_widget_flag(CherryKit::Widget::kRenderDropShadow);
 
   set_geometry(window_geometry);
-  update_content_geometry(d->m_main_window);
+  update_content_geometry(o_desktop_activity->m_main_window);
 
   exec(window_pos);
 }
@@ -54,16 +54,16 @@ QVariantMap TemplateActivity::result() const { return QVariantMap(); }
 void TemplateActivity::update_attribute(const QString &name,
                                         const QVariant &data) {}
 
-UIKit::Window *TemplateActivity::window() const { return d->m_main_window; }
+CherryKit::Window *TemplateActivity::window() const { return o_desktop_activity->m_main_window; }
 
 void TemplateActivity::cleanup() {
-  if (d->m_main_window) {
-    delete d->m_main_window;
+  if (o_desktop_activity->m_main_window) {
+    delete o_desktop_activity->m_main_window;
   }
-  d->m_main_window = 0;
+  o_desktop_activity->m_main_window = 0;
 }
 
-void TemplateActivity::onWidgetClosed(UIKit::Widget *widget) {
+void TemplateActivity::onWidgetClosed(CherryKit::Widget *widget) {
   discard_activity();
 }
 

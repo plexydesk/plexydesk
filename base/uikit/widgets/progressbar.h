@@ -6,7 +6,7 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace UIKit {
+namespace CherryKit {
 class DECL_UI_KIT_EXPORT ProgressBar : public Widget {
   Q_OBJECT
 public:
@@ -37,7 +37,7 @@ protected:
 
 private:
   class PrivateProgressBar;
-  PrivateProgressBar *const d;
+  PrivateProgressBar *const o_progress_bar;
 };
 }
 

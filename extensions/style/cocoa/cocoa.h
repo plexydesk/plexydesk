@@ -27,16 +27,16 @@
 #include <style.h>
 #include <resource_manager.h>
 
-using namespace UIKit;
+using namespace CherryKit;
 
-class CocoaStyle : public UIKit::Style {
+class CocoaStyle : public CherryKit::Style {
 public:
   CocoaStyle();
 
   virtual ~CocoaStyle();
 
   virtual void draw(const QString &type, const StyleFeatures &options,
-                    QPainter *painter, const UIKit::Widget *aWidget = 0);
+                    QPainter *painter, const CherryKit::Widget *aWidget = 0);
   void load_default_widget_style_properties();
 
   void draw_timer_marker(QRectF rect, QTransform _xform_hour, QPainter *p,
@@ -59,9 +59,10 @@ private:
   void draw_push_button(const StyleFeatures &features, QPainter *painter);
   void draw_window_button(const StyleFeatures &features, QPainter *painter);
   void draw_window_frame(const StyleFeatures &features, QPainter *a_ctx);
-  void draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor, float angle,
-                        UIKit::ResourceManager::ColorName a_clock_hand_color,
-                        int a_thikness);
+  void
+  draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor, float angle,
+                   CherryKit::ResourceManager::ColorName a_clock_hand_color,
+                   int a_thikness);
   void draw_clock_surface(const StyleFeatures &features, QPainter *painter);
   void draw_clock_surface_to_buffer(const StyleFeatures &features,
                                     QPainter *a_ctx);

@@ -21,11 +21,11 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<UIKit::DesktopActivity>
+QSharedPointer<CherryKit::DesktopActivity>
 InputDialogActivityInterface::activity() {
-  QSharedPointer<UIKit::DesktopActivity> obj =
-      QSharedPointer<UIKit::DesktopActivity>(new InputDialogActivityData(),
-                                             &QObject::deleteLater);
+  QSharedPointer<CherryKit::DesktopActivity> obj =
+      QSharedPointer<CherryKit::DesktopActivity>(new InputDialogActivityData(),
+                                                 &QObject::deleteLater);
 
   return obj;
 }
