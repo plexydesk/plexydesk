@@ -3,4 +3,4 @@ Encoding=UTF-8
 Name=DatePicker
 Type=Activity
 Comment=Add a comment about the Activity
-X-PLEXYDESK-Library=datepickeractivity
+X-PLEXYDESK-Library=date_dialog
