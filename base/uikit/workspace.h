@@ -21,7 +21,7 @@ public:
 
   virtual void move_to_screen(int a_screen_id);
 
-  virtual void add_default_controller(const QString &a_controller_name);
+  virtual void add_default_controller(const std::string &a_controller_name);
 
   virtual Space *create_blank_space();
   virtual void add_default_space();
@@ -58,7 +58,7 @@ protected:
 
 private:
   class PrivateWorkSpace;
-  PrivateWorkSpace *const m_priv_impl;
+  PrivateWorkSpace *const p_workspace;
 
   void update_space_geometry(Space *a_space_ptr, QRectF a_deleted_geometry);
   void set_workspace_geometry(int a_screen_id);
