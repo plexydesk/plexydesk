@@ -1,0 +1,48 @@
+#iphone{
+    /* The iphone frame div */
+    width:90%;
+}
+
+#webpage{
+    /* Contains the webpage screenshot */
+    width:90%;
+}
+
+#retina{
+    /* The Retina effect */
+    background:url('../images/screenshot_small.png') no-repeat center center white;
+    border:2px solid white;
+
+    /* Positioned absolutely, so we can move it around */
+    position:absolute;
+    height:180px;
+    width:180px;
+
+    /* Hidden by default */
+    display:none;
+
+    /* A blank cursor, notice the default fallback */
+    cursor:url('images/blank.cur'),default;
+
+    /* CSS3 Box Shadow */
+    -moz-box-shadow:0 0 5px #777, 0 0 10px #aaa inset;
+    -webkit-box-shadow:0 0 5px #777;
+    box-shadow:0 0 5px #777, 0 0 10px #aaa inset;
+
+    /* CSS3 rounded corners */
+    -moz-border-radius:90px;
+    -webkit-border-radius:90px;
+    border-radius:90px;
+}
+
+#retina.chrome{
+    /* A special chrome version of the cursor */
+    cursor:url('blank_google_chrome.cur'),default;
+}
+
+#main{
+    /* The main div */
+    margin:40px auto;
+    position:relative;
+    width:750px;
+}

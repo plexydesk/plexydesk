@@ -1,0 +1,60 @@
+/* plexydesk specific style proeprties */
+@import url(http://fonts.googleapis.com/css?family=Merriweather:400,900,900italic,300,300italic,400italic,700,700italic);
+
+.body {
+  font-size: 1.1em; font-family: 'Merriweather', serif; font-style: normal; font-weight:200;
+}
+
+h2 {
+   font-size: 1.4em; 
+   font-family: 'Merriweather', serif; font-style: normal; font-weight:400;
+}
+
+a {
+  color: #4949494;
+  text-decoration: none;
+  font-weight: 200;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#buy {
+  font-size: 8pt;
+}
+
+#glow {
+    -webkit-box-shadow:0 0 1px white; 
+    -moz-box-shadow: 0 0 2px white; 
+    box-shadow:0 0 2px white;
+}
+
+.dropshadow {
+	-webkit-box-shadow: 0px 0px 31px 8px rgba(53,54,61,0.7);
+	-moz-box-shadow: 0px 0px 31px 8px rgba(53,54,61,0.7);
+	box-shadow: 0px 0px 31px 8px rgba(53,54,61,0.7);
+}
+
+.softshadow {
+	box-shadow: 0px 0px 8px 8px #D8D8D8;
+}
+.typewritter
+{
+    
+    font-family: 'Merriweather', serif;
+    text-indent: 50px;
+    /*background: url('/static/images/textures/paper.png') repeat */
+}
+.offshadow {
+    display:none;
+    visibility: hidden;
+}
+
+#blureffect {
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
