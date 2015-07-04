@@ -420,9 +420,6 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
 void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
                                     QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
-  PxBenchData data;
-  px_bench_run(&data);
-
   float border_len = features.geometry.width() - 16;
 
   QRectF rect = QRectF(
@@ -551,14 +548,10 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
 
   draw_clock_hands(a_ctx, rect, 5, second_value, ResourceManager::kAccentColor,
                    2);
-  px_bench_stop(&data);
 }
 
 void CocoaStyle::draw_clock_surface_to_buffer(const StyleFeatures &features,
                                               QPainter *a_ctx) {
-  PxBenchData data;
-  px_bench_run(&data);
-
   QRectF src_rect = features.geometry;
   int width = src_rect.width();
   int height = src_rect.height();
@@ -579,7 +572,6 @@ void CocoaStyle::draw_clock_surface_to_buffer(const StyleFeatures &features,
   a_ctx->drawImage(src_rect, surface, target_rect);
 
   free(imgbuf);
-  px_bench_stop(&data);
 }
 
 void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {

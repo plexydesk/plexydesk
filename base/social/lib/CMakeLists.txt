@@ -63,7 +63,6 @@ SET(sourceFiles
     asyncdatadownloader.cpp
     webserver.cpp
     webcontentinterface.cpp
-    variant.cpp
    )
 
 SET(headerFiles
@@ -74,7 +73,6 @@ SET(headerFiles
     asyncdatadownloader.h
     webserver.h
     webcontentinterface.h
-    variant.h
    )
 
 IF (APPLE)

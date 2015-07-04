@@ -22,12 +22,9 @@
 
 #include <QVariant>
 #include <view_controller.h>
-#include <toolbar.h>
-#include <label.h>
-#include <clockwidget.h>
 
 namespace CherryKit {
-class SessionSync {
+class DECL_UI_KIT_EXPORT SessionSync {
 public:
   SessionSync(const std::string &a_session_name,
               const QVariantMap &a_data = QVariantMap());

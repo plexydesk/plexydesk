@@ -6,7 +6,7 @@
 #include <string>
 
 namespace QuetzalKit {
-class DataSync {
+class QuetzalDataKit_EXPORT DataSync {
 public:
   DataSync(const std::string &a_app_name);
   virtual ~DataSync();

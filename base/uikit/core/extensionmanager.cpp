@@ -166,7 +166,7 @@ void ExtensionManager::load(const QString &a_interface,
                             const QString &a_plugin_name) {
 #ifdef Q_OS_MAC
   QPluginLoader *loader =
-      new QPluginLoader(d->mPluginPrefix + QLatin1String("lib") +
+      new QPluginLoader(o_extension_manager->mPluginPrefix + QLatin1String("lib") +
                         a_plugin_name + QLatin1String(".dylib"));
 #endif
 
@@ -177,12 +177,12 @@ void ExtensionManager::load(const QString &a_interface,
 
 #ifdef Q_OS_WIN
   QPluginLoader *loader =
-      new QPluginLoader(d->mPluginPrefix + a_plugin_name + ".dll");
+      new QPluginLoader(o_extension_manager->mPluginPrefix + a_plugin_name + ".dll");
 #endif
 
 #ifdef Q_OS_QPA
   QPluginLoader *loader = new QPluginLoader(
-      d->mPluginPrefix + QLatin1String("lib") + a_plugin_name + ".so");
+      o_extension_manager->mPluginPrefix + QLatin1String("lib") + a_plugin_name + ".so");
 #endif
 
   if (a_interface.toLower() == "engine") {
