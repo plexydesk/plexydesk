@@ -11,15 +11,15 @@ class DataSync;
     * @brief
     *
     */
-class QuetzalDataKit_EXPORT SyncObject : public QObject {
-  Q_OBJECT
+class QuetzalDataKit_EXPORT SyncObject {
+
 public:
   /**
       * @brief
       *
       * @param parent
       */
-  explicit SyncObject(QObject *a_parent_ptr = 0);
+  explicit SyncObject(SyncObject *a_parent_ptr = 0);
 
   /**
       * @brief
@@ -103,11 +103,6 @@ public:
   bool contains(SyncObject *object);
   bool similarObject(SyncObject *object);
   void replace(SyncObject *object);
-
-Q_SIGNALS:
-  void childAdded();
-  void childCreated();
-  void updated();
 
 private:
   class PrivateSyncObject;

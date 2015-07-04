@@ -211,6 +211,28 @@ void test_find_all() {
 
   delete sync;
 }
+void test_stack_object_delete() {
+  SyncObject stack_object;
+  stack_object.setName("stack object");
+}
+
+void test_sync_object_delete() {
+  using namespace QuetzalKit;
+
+  SyncObject *object = new SyncObject();
+
+  object->setName("parent");
+
+  for (int i = 0; i < 10; i++) {
+      SyncObject *child = new SyncObject();
+      object->addChildObject(child);
+      child->setName(QString("%1").arg(i));
+  }
+
+  delete object;
+
+  test_stack_object_delete();
+}
 
 void test_session_list() {
   QStringList test_data_list;
@@ -232,6 +254,9 @@ int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
 
   // test cases:
+  test_sync_object_delete();
+
+  /*
   test_object_create();
   test_object_update();
   test_object_find_fail();
@@ -242,6 +267,7 @@ int main(int argc, char *argv[]) {
   test_find_all();
   test_object_delete_matching();
   test_object_delete();
+  */
 
   qDebug() << Q_FUNC_INFO << "Done";
 
