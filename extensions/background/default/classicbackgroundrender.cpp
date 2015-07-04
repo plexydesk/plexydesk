@@ -6,7 +6,6 @@
 #include <resource_manager.h>
 #include <QPixmapCache>
 
-#include <px_bench.h>
 
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
                                                  Widget *parent,
@@ -100,9 +99,6 @@ void ClassicBackgroundRender::setSeamLessMode(bool value) {
 
 void ClassicBackgroundRender::paint_view(QPainter *painter,
                                          const QRectF &rect /*rect*/) {
-  PxBenchData data;
-  px_bench_run(&data);
-
   if (mSeamLessMode) {
     painter->save();
     painter->setRenderHints(QPainter::SmoothPixmapTransform |
@@ -146,7 +142,4 @@ void ClassicBackgroundRender::paint_view(QPainter *painter,
   default:
     break;
   }
-
-  px_bench_stop(&data);
-  px_bench_print(&data, Q_FUNC_INFO);
 }

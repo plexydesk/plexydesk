@@ -1,4 +1,4 @@
-# Desk :
+﻿# Desk :
 # Project Author: siraj@plexydesk.org
 # CMAKE files by: siraj@plexydesk.org
 #                 PhobosK (phobosk@kbfx.net)
@@ -55,7 +55,7 @@ FIND_PACKAGE(Qt5OpenGL REQUIRED)
 FIND_PACKAGE(Qt5Network REQUIRED)
 
 FIND_PACKAGE(OpenGL REQUIRED)
-FIND_PACKAGE(MITIE REQUIRED)
+#FIND_PACKAGE(MITIE REQUIRED)
 
 #plugins
 if (APPLE)
@@ -287,7 +287,10 @@ ADD_SUBDIRECTORY(base/social/data)
 ADD_SUBDIRECTORY(base/datastore/lib)
 ADD_SUBDIRECTORY(base/social/lib)
 ADD_SUBDIRECTORY(base/social/testrunner)
+
+if (NOT WIN32)
 ADD_SUBDIRECTORY(base/datastore/tests)
+endif ()
 
 ADD_SUBDIRECTORY(extensions/widgets/clock)
 ADD_SUBDIRECTORY(extensions/widgets/photoframe)

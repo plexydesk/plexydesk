@@ -2,8 +2,6 @@
 #define VIEWBUILDER_H
 
 #include <iostream>
-#include <variant.h>
-
 #include <widget.h>
 
 namespace CherryKit {
@@ -15,7 +13,7 @@ class LineEdit;
 
 typedef std::map<std::string, std::string> WidgetProperties;
 
-class HybridLayout {
+class DECL_UI_KIT_EXPORT HybridLayout {
   typedef enum {
     kAlignNone = 0,
     kAlignLeft = 1,

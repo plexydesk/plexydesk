@@ -11,7 +11,7 @@ namespace CherryKit {
 
 class ItemView::PrivateModelView {
 public:
-  PrivateModelView() : m_item_remove_handler(0), m_activation_handler(0) {}
+  PrivateModelView() {}
   ~PrivateModelView() {}
 
   ModelType m_model_view_type;
