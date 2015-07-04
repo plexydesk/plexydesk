@@ -6,7 +6,7 @@
 #include <widget.h>
 
 namespace CherryKit {
-class ModelViewItem {
+class DECL_UI_KIT_EXPORT ModelViewItem {
 public:
   explicit ModelViewItem();
   virtual ~ModelViewItem();

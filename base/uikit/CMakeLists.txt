@@ -71,7 +71,6 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/windowbutton.cpp
     widgets/tableviewcellinterface.cpp
     widgets/abstractcellcomponent.cpp
-    widgets/toolbar.cpp
     widgets/item_view.cpp
     components/dialwidget.cpp
     components/clockwidget.cpp
@@ -113,7 +112,6 @@ set(LIBRARY_HEADER_FILES
     widgets/imagebutton.h
     widgets/tableviewcellinterface.h
     widgets/abstractcellcomponent.h
-    widgets/toolbar.h
     widgets/item_view.h
     components/dialwidget.h
     components/clockwidget.h

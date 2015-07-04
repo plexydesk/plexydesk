@@ -6,7 +6,7 @@
 namespace CherryKit {
 class Widget;
 
-class CalendarView : public CherryKit::Widget {
+class DECL_UI_KIT_EXPORT CalendarView : public CherryKit::Widget {
 public:
   explicit CalendarView(Widget *a_parent_ptr = 0);
   virtual ~CalendarView();
