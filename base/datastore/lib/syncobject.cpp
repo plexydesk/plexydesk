@@ -16,6 +16,7 @@ public:
   ~PrivateSyncObject() {
     // qDeleteAll(mChildList);
     // todo : delete later;
+      qDeleteAll(mChildMap);
   }
 
   void addChildNode(SyncObject *object);
@@ -47,8 +48,8 @@ QDomNode SyncObject::node() { return d->mNode; }
 
 void SyncObject::setDomNode(const QDomNode &node) { d->mNode = node; }
 
-SyncObject::SyncObject(QObject *parent)
-    : QObject(parent), d(new PrivateSyncObject) {
+SyncObject::SyncObject(SyncObject *parent)
+    : d(new PrivateSyncObject) {
   updateTimeStamp();
   d->mKey = -1;
   d->mCount = -1;
@@ -56,7 +57,7 @@ SyncObject::SyncObject(QObject *parent)
 }
 
 SyncObject::~SyncObject() {
-  // qDebug() << Q_FUNC_INFO << name();
+  qDebug() << Q_FUNC_INFO << name();
   delete d;
 }
 
@@ -198,7 +199,7 @@ SyncObject *SyncObject::createNewObject(const QString &name) {
     qFatal("No Node Found");
   }
 
-  rv->setParent(this);
+  //rv->setParent(this);
   rv->setParentObject(this);
   d->mChildMap[d->mCount] = rv;
 
@@ -330,7 +331,7 @@ void SyncObject::addChildObject(SyncObject *object) {
     d->mChildMap[currentKey] = object;
     // object->setKey(currentKey);
     object->setParentObject(this);
-    object->setParent(this);
+    //object->setParent(this);
   } else {
     SyncObject *tmpObject = d->mChildMap[object->key()];
     d->mChildMap.remove(object->key());
@@ -341,7 +342,7 @@ void SyncObject::addChildObject(SyncObject *object) {
 
     d->mChildMap[object->key()] = object;
     object->setParentObject(this);
-    object->setParent(this);
+    //object->setParent(this);
   }
   updateTimeStamp();
 }
