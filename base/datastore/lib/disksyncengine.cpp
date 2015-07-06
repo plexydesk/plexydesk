@@ -1,5 +1,6 @@
 #include "disksyncengine.h"
 
+#include <QDomDocument>
 #include <QFileSystemWatcher>
 #include <QDebug>
 #include <QDir>
@@ -65,7 +66,7 @@ void DiskSyncEngine::set_app_name(const std::string &a_app_name) {
 }
 
 void DiskSyncEngine::insert_request(const SyncObject &a_obj) {
-  if (a_obj.name().isNull() || a_obj.name().isEmpty())
+  if (a_obj.name().empty())
     return;
 
   QString home_path = db_home_path();
@@ -111,11 +112,20 @@ void DiskSyncEngine::insert_request(const SyncObject &a_obj) {
 
     QDomElement root =
         dom_doc.firstChildElement(QString::fromStdString(d->m_app_name));
-    QDomElement main_element = dom_doc.createElement(a_obj.name());
+    QDomElement main_element = dom_doc.createElement(a_obj.name().c_str());
 
-    foreach(const QString & key, a_obj.attributes()) {
-      main_element.setAttribute(key, a_obj.attributeValue(key).toString());
+    /*
+    foreach(const QString & key, a_obj.property_list()) {
+      main_element.setAttribute(key, a_obj.property(key).toString());
     }
+    */
+
+    CkStringList ck_prop_list = a_obj.property_list();
+
+    std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
+                  [&](const std::string &a_prop) {
+      main_element.setAttribute(a_prop.c_str(), a_obj.property(a_prop).c_str());
+    });
 
     int index = root.childNodes().count();
 
@@ -149,11 +159,13 @@ void DiskSyncEngine::insert_request(const SyncObject &a_obj) {
       dom_doc.createElement(QString::fromStdString(d->m_app_name));
   dom_doc.appendChild(root_element);
 
-  QDomElement main_element = dom_doc.createElement(a_obj.name());
+  QDomElement main_element = dom_doc.createElement(a_obj.name().c_str());
+  CkStringList prop_list = a_obj.property_list();
 
-  foreach(const QString & key, a_obj.attributes()) {
-    main_element.setAttribute(key, a_obj.attributeValue(key).toString());
-  }
+  std::for_each(std::begin(prop_list), std::end(prop_list),
+                [&](const std::string &a_key) {
+    main_element.setAttribute(a_key.c_str(), a_obj.property(a_key).c_str());
+  });
 
   int index = root_element.childNodes().count();
   main_element.setAttribute("db_key", index);
@@ -192,7 +204,7 @@ QString DiskSyncEngine::db_app_path() {
 }
 
 void DiskSyncEngine::update_request(const SyncObject &a_obj) {
-  if (a_obj.name().isNull() || a_obj.name().isEmpty())
+  if (a_obj.name().empty())
     return;
 
   QString home_path = db_home_path();
@@ -245,22 +257,36 @@ void DiskSyncEngine::update_request(const SyncObject &a_obj) {
 
         QDomElement child_element = child_node.toElement();
 
-        if (a_obj.name() == child_element.tagName()) {
+        if (a_obj.name().compare(child_element.tagName().toLatin1()) == 0) {
           int db_key = child_element.attribute("db_key").toInt();
 
           if (a_obj.key() == db_key) {
-            foreach(const QString & key, a_obj.attributes()) {
-              child_element.setAttribute(key,
-                                         a_obj.attributeValue(key).toString());
+            /*
+            foreach(const QString & key, a_obj.property_list()) {
+              child_element.setAttribute(key, a_obj.property(key).toString());
             }
+            */
+
+            CkStringList ck_prop_list = a_obj.property_list();
+
+            std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
+                          [&](const std::string &a_prop) {
+              child_element.setAttribute(a_prop.c_str(),
+                                         a_obj.property(a_prop).c_str());
+            });
           }
         }
       }
     } else {
-      QDomElement main_element = dom_doc.createElement(a_obj.name());
-      foreach(const QString & key, a_obj.attributes()) {
-        main_element.setAttribute(key, a_obj.attributeValue(key).toString());
-      }
+      QDomElement main_element = dom_doc.createElement(a_obj.name().c_str());
+
+      CkStringList ck_prop_list = a_obj.property_list();
+
+      std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
+                    [&](const std::string &a_prop) {
+        main_element.setAttribute(a_prop.c_str(),
+                                  a_obj.property(a_prop).c_str());
+      });
 
       int index = root.childNodes().count();
       main_element.setAttribute("db_key", index);
@@ -293,11 +319,14 @@ void DiskSyncEngine::update_request(const SyncObject &a_obj) {
       dom_doc.createElement(QString::fromStdString(d->m_app_name));
   dom_doc.appendChild(root_element);
 
-  QDomElement main_element = dom_doc.createElement(a_obj.name());
+  QDomElement main_element = dom_doc.createElement(a_obj.name().c_str());
 
-  foreach(const QString & key, a_obj.attributes()) {
-    main_element.setAttribute(key, a_obj.attributeValue(key).toString());
-  }
+  CkStringList ck_prop_list = a_obj.property_list();
+
+  std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
+                [&](const std::string &a_prop) {
+    main_element.setAttribute(a_prop.c_str(), a_obj.property(a_prop).c_str());
+  });
 
   int index = root_element.childNodes().count();
   main_element.setAttribute("db_key", index);
@@ -519,7 +548,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
 
         if (QString::fromStdString(a_object_name) == child_element.tagName()) {
           QuetzalKit::SyncObject obj;
-          obj.setName(QString::fromStdString(a_object_name));
+          obj.set_name(a_object_name);
 
           QDomNamedNodeMap attrMap = child_node.attributes();
 
@@ -542,10 +571,10 @@ void DiskSyncEngine::find(const std::string &a_object_name,
 
               if (!attr.isNull()) {
                 if (attr.name() == "db_key") {
-                  obj.setKey(attr.value().toInt());
+                  obj.set_key(attr.value().toInt());
                   continue;
                 }
-                obj.setObjectAttribute(attr.name(), attr.value());
+                obj.set_property(attr.name().toStdString(), attr.value().toStdString());
               }
             }
           }

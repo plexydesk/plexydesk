@@ -38,9 +38,12 @@ void ViewController::revoke_previous_session(
     if (a_found) {
       QVariantMap session_data;
 
-      Q_FOREACH(const QString & a_key, a_object.attributes()) {
-        session_data[a_key] = a_object.attributeValue(a_key);
-      }
+      QuetzalKit::CkStringList prop_list = a_object.property_list();
+
+      std::for_each(std::begin(prop_list), std::end(prop_list),
+                    [&](const std::string &a_prop) {
+        session_data[a_prop.c_str()] = a_object.property(a_prop).c_str();
+      });
 
       start_session(
           a_session_object_name, session_data, true,
@@ -60,7 +63,8 @@ void ViewController::write_session_data(const std::string &a_session_name) {
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
   key_name += "_id";
 
-  std::for_each(std::begin(o_view_controller->m_session_list), std::end(o_view_controller->m_session_list),
+  std::for_each(std::begin(o_view_controller->m_session_list),
+                std::end(o_view_controller->m_session_list),
                 [&](CherryKit::SessionSync *session_ref) {
     if (session_ref->is_purged())
       return;
@@ -75,10 +79,11 @@ void ViewController::write_session_data(const std::string &a_session_name) {
     session_ref->update_session();
     QuetzalKit::SyncObject clock_session_obj;
 
-    clock_session_obj.setName(QString::fromStdString(a_session_name));
+    clock_session_obj.set_name(a_session_name);
     Q_FOREACH(const QString & a_key, session_ref->session_keys()) {
-      clock_session_obj.setObjectAttribute(a_key,
-                                           session_ref->session_data(a_key));
+      clock_session_obj.set_property(
+          a_key.toStdString(),
+          std::string(session_ref->session_data(a_key).toByteArray()));
     }
 
     sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
@@ -95,7 +100,9 @@ void ViewController::write_session_data(const std::string &a_session_name) {
   });
 }
 
-int ViewController::session_count() { return o_view_controller->m_session_list.size(); }
+int ViewController::session_count() {
+  return o_view_controller->m_session_list.size();
+}
 
 ViewController::~ViewController() { delete o_view_controller; }
 
@@ -103,7 +110,9 @@ void ViewController::set_viewport(Space *a_view_ptr) {
   o_view_controller->m_viewport = a_view_ptr;
 }
 
-Space *ViewController::viewport() const { return o_view_controller->m_viewport; }
+Space *ViewController::viewport() const {
+  return o_view_controller->m_viewport;
+}
 
 void ViewController::start_session(
     const std::string &a_session_name, const QVariantMap &a_data,
@@ -133,8 +142,8 @@ ViewController::session_database_name(const std::string &a_session_name) const {
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
   std::string session_db_name =
-      o_view_controller->m_viewport->session_name_for_controller(controller_name())
-          .toStdString() +
+      o_view_controller->m_viewport->session_name_for_controller(
+                                         controller_name()).toStdString() +
       "_org." + key_name + ".data";
   return session_db_name;
 }
@@ -147,28 +156,36 @@ void ViewController::request_action(const QString & /*actionName*/,
 void ViewController::handle_drop_event(Widget * /*widget*/,
                                        QDropEvent * /*event*/) {}
 
-DataSource *ViewController::dataSource() { return o_view_controller->m_data_source.data(); }
+DataSource *ViewController::dataSource() {
+  return o_view_controller->m_data_source.data();
+}
 
 void ViewController::set_controller_name(const QString &a_name) {
   o_view_controller->m_name = a_name;
 }
 
-QString ViewController::controller_name() const { return o_view_controller->m_name; }
+QString ViewController::controller_name() const {
+  return o_view_controller->m_name;
+}
 
 QString ViewController::label() const { return QString(); }
 
 void ViewController::configure(const QPointF &a_pos) { Q_UNUSED(a_pos) }
 
-void ViewController::prepare_removal() { o_view_controller->m_data_source.clear(); }
+void ViewController::prepare_removal() {
+  o_view_controller->m_data_source.clear();
+}
 
 bool ViewController::connect_to_data_source(const QString &a_source) {
-  o_view_controller->m_data_source = ExtensionManager::instance()->data_engine(a_source);
+  o_view_controller->m_data_source =
+      ExtensionManager::instance()->data_engine(a_source);
 
   if (!o_view_controller->m_data_source.data()) {
     return 0;
   }
 
-  connect(o_view_controller->m_data_source.data(), SIGNAL(ready()), this, SLOT(on_ready()));
+  connect(o_view_controller->m_data_source.data(), SIGNAL(ready()), this,
+          SLOT(on_ready()));
 
   return true;
 }

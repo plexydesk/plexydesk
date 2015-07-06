@@ -14,211 +14,149 @@ class SyncObject::PrivateSyncObject {
 public:
   PrivateSyncObject() : m_sync_store(0) {}
   ~PrivateSyncObject() {
-    // qDeleteAll(mChildList);
-    // todo : delete later;
-      qDeleteAll(mChildMap);
+    // qDeleteAll(m_child_map);
   }
 
-  void addChildNode(SyncObject *object);
+  uint m_time_stamp;
+  // QMap<QString, QVariant> m_property_dict;
+  std::map<std::string, std::string> m_property_dict;
+  std::map<uint, SyncObject *> m_child_map;
+  SyncObject *m_parent;
+  uint m_child_count;
 
-  uint mTimeStamp;
-  QMap<QString, QVariant> mPropertyMap;
-  /// QList<SyncObject*> mChildList;
-  QMap<uint, SyncObject *> mChildMap;
-  SyncObject *mParent;
-  uint mCount;
-
-  QDomNode mNode;
-  QString mName;
-  QString mTextData;
-  uint mKey;
+  std::string m_object_name;
+  uint m_object_key;
 
   DataSync *m_sync_store;
 };
 
-void SyncObject::updateTimeStamp() {
-  d->mTimeStamp = QDateTime::currentDateTime().currentMSecsSinceEpoch();
+void SyncObject::update_time_stamp() {
+  // todo: Add the creation time from System::Now
+  p_object->m_time_stamp = 0;
 }
 
 void SyncObject::removeObject(uint key) {
   // todo;
 }
 
-QDomNode SyncObject::node() { return d->mNode; }
+SyncObject::SyncObject(SyncObject *parent) : p_object(new PrivateSyncObject) {
+  update_time_stamp();
+  p_object->m_object_key = -1;
+  p_object->m_child_count = -1;
+  p_object->m_parent = 0;
 
-void SyncObject::setDomNode(const QDomNode &node) { d->mNode = node; }
-
-SyncObject::SyncObject(SyncObject *parent)
-    : d(new PrivateSyncObject) {
-  updateTimeStamp();
-  d->mKey = -1;
-  d->mCount = -1;
-  d->mParent = 0;
+  if (parent)
+    parent->add_child(this);
 }
 
-SyncObject::~SyncObject() {
-  qDebug() << Q_FUNC_INFO << name();
-  delete d;
+SyncObject::~SyncObject() { delete p_object; }
+
+uint SyncObject::time_stamp() const { return p_object->m_time_stamp; }
+
+void SyncObject::set_time_stamp(uint timestamp) {
+  p_object->m_time_stamp = timestamp;
 }
 
-uint SyncObject::timeStamp() const { return d->mTimeStamp; }
-
-void SyncObject::setTimeStamp(uint timestamp) { d->mTimeStamp = timestamp; }
-
-uint SyncObject::updatedTimeStamp() const {
+unsigned int SyncObject::update_time_stamp() const {
   return QDateTime::currentDateTime().currentMSecsSinceEpoch();
 }
 
-void SyncObject::setName(const QString &name) { d->mName = name; }
-
-QString SyncObject::name() const { return d->mName; }
-
-void SyncObject::setKey(uint key) { d->mKey = key; }
-
-uint SyncObject::key() const { return d->mKey; }
-
-SyncObject *SyncObject::parentObject() const { return d->mParent; }
-
-void SyncObject::setParentObject(SyncObject *parent) { d->mParent = parent; }
-
-void SyncObject::setObjectAttribute(const QString &name,
-                                    const QVariant &value) {
-  d->mPropertyMap[name] = value;
-
-  if (!d->mNode.isNull()) {
-    QDomElement elem = d->mNode.toElement();
-    elem.setAttribute(name, value.toString());
-  } else {
-    // qFatal("Failed to convert the node to an element");
-  }
-  updateTimeStamp();
+void SyncObject::set_name(const std::string &name) {
+  p_object->m_object_name = name;
 }
 
-void SyncObject::attachTextNode(const QString &data) {
-  d->mTextData = data;
+std::string SyncObject::name() const { return p_object->m_object_name; }
 
-  if (!d->mNode.isNull()) {
-    if (d->mNode.hasChildNodes()) {
-      for (int i = 0; i < d->mNode.childNodes().count(); i++) {
-        QDomNode node = d->mNode.childNodes().at(i);
-        if (node.isText()) {
-          QDomText textNode = node.toText();
-          textNode.setNodeValue(data);
+void SyncObject::set_key(uint key) { p_object->m_object_key = key; }
 
-          return;
-        }
-      }
-    }
+uint SyncObject::key() const { return p_object->m_object_key; }
 
-    QDomDocument doc = d->mNode.ownerDocument();
-    QDomText textNode = doc.createTextNode(data);
+SyncObject *SyncObject::parent() const { return p_object->m_parent; }
 
-    d->mNode.appendChild(textNode);
-  } else {
-    qFatal("Failed to convert the node to an element");
-  }
+void SyncObject::set_parent(SyncObject *parent) { p_object->m_parent = parent; }
 
-  updateTimeStamp();
-}
-
-void SyncObject::setTextData(const QString &data) { d->mTextData = data; }
-
-QString SyncObject::textData() const { return d->mTextData; }
-
-SyncObject *SyncObject::clone(SyncObject *object) {
-  if (!object) {
-    return 0;
-  }
-
-  SyncObject *rv = createNewObject(object->name());
-
-  Q_FOREACH(const QString & key, object->attributes()) {
-    if (key == "key") {
-      continue;
-    }
-    rv->setObjectAttribute(key, object->attributeValue(key));
-  }
-
-  // attach any text nodes
-  rv->attachTextNode(object->textData());
-
-  return rv;
+void SyncObject::set_property(const std::string &name,
+                              const std::string &value) {
+  p_object->m_property_dict[name] = value;
+  update_time_stamp();
 }
 
 void SyncObject::set_data_sync(DataSync *a_sync) {
-  if (d->m_sync_store)
+  if (p_object->m_sync_store)
     return;
 
-  d->m_sync_store = a_sync;
+  p_object->m_sync_store = a_sync;
 }
 
 void SyncObject::sync() {
-  if (d->m_sync_store) {
+  if (p_object->m_sync_store) {
     qDebug() << Q_FUNC_INFO << "Saved";
-    d->m_sync_store->save_object(*this);
+    p_object->m_sync_store->save_object(*this);
   }
 }
 
-QStringList SyncObject::attributes() const { return d->mPropertyMap.keys(); }
-
-QVariant SyncObject::attributeValue(const QString &name) const {
-  return d->mPropertyMap[name];
-}
-
-QList<SyncObject *> SyncObject::childObjects() const {
-  return d->mChildMap.values();
-}
-
-SyncObject *SyncObject::childObject(uint key) {
-  if (d->mChildMap.keys().contains(key)) {
-    return d->mChildMap[key];
+CkStringList SyncObject::property_list() const {
+  CkStringList rv;
+  for (auto handle : p_object->m_property_dict) {
+    rv.push_back(handle.first);
   }
-
-  return 0;
+  return rv;
 }
 
-SyncObject *SyncObject::createNewObject(const QString &name) {
-  SyncObject *rv = new SyncObject(this);
-  rv->setName(name);
-  d->mCount = d->mCount + 1;
-  rv->setKey(d->mCount);
+std::string SyncObject::property(const std::string &name) const {
+  return p_object->m_property_dict.at(name);
+}
 
-  if (!d->mNode.isNull()) {
-    // qDebug() << Q_FUNC_INFO << "Create Element";
-    QDomElement childNode = d->mNode.ownerDocument().createElement(name);
-
-    childNode.setAttribute("key", d->mCount);
-    childNode.setAttribute("timestamp", rv->timeStamp());
-    d->mNode.appendChild(childNode);
-
-    rv->setDomNode(childNode);
-
-    updateTimeStamp();
-  } else {
-    qDebug() << Q_FUNC_INFO << this->name();
-    qFatal("No Node Found");
+CkObjectList SyncObject::child_objects() const {
+  CkObjectList rv;
+  for (auto handle : p_object->m_child_map) {
+    rv.push_back(handle.second);
   }
-
-  //rv->setParent(this);
-  rv->setParentObject(this);
-  d->mChildMap[d->mCount] = rv;
 
   return rv;
 }
 
-QString SyncObject::dumpContent() const {
-  qDebug() << Q_FUNC_INFO << d->mNode.ownerDocument().toString();
-  return d->mNode.ownerDocument().toString();
+SyncObject *SyncObject::childObject(uint key) {
+  if (p_object->m_child_map.find(key) != p_object->m_child_map.end()) {
+    return p_object->m_child_map[key];
+  }
+
+  return nullptr;
 }
 
+SyncObject *SyncObject::create_new(const std::string &name) {
+  SyncObject *rv = new SyncObject(this);
+  rv->set_name(name);
+  p_object->m_child_count = p_object->m_child_count + 1;
+  rv->set_key(p_object->m_child_count);
+  rv->set_parent(this);
+  p_object->m_child_map[p_object->m_child_count] = rv;
+  return rv;
+}
+
+std::string SyncObject::dump_content() const { return ""; }
+
 bool SyncObject::contains(SyncObject *object) {
-  if (!this->hasChildren()) {
+  if (!this->has_children()) {
     qDebug() << Q_FUNC_INFO
-             << "Error: No Children for Object : " << object->name();
+             << "Error: No Children for Object : " << object->name().c_str();
     return false;
   }
 
-  Q_FOREACH(SyncObject * child, d->mChildMap.values()) {
+  for (std::map<uint, SyncObject *>::iterator it =
+           p_object->m_child_map.begin();
+       it != p_object->m_child_map.end(); ++it) {
+
+    if (!it->second)
+      continue;
+
+    if (it->second->similarObject(object)) {
+      return true;
+    }
+  }
+
+  /*
+  Q_FOREACH(SyncObject * child, p_object->m_child_map.values()) {
     if (!child) {
       continue;
     }
@@ -227,8 +165,10 @@ bool SyncObject::contains(SyncObject *object) {
       return true;
     }
   }
+  */
 
-  qDebug() << Q_FUNC_INFO << "No Object found for Object:" << object->name();
+  qDebug() << Q_FUNC_INFO
+           << "No Object found for Object:" << object->name().c_str();
   return false;
 }
 
@@ -244,19 +184,22 @@ bool SyncObject::similarObject(SyncObject *object) {
   */
 
   // check properties
-  for (int p = 0; p < object->attributes().count(); p++) {
-    QString prop = object->attributes().at(p);
+  CkStringList ck_prop_list = object->property_list();
+
+  for (int p = 0; p < ck_prop_list.size(); p++) {
+    std::string prop = ck_prop_list.at(p);
 
     if (prop == "timestamp" || prop == "key") {
       continue;
     }
 
-    if (!this->attributes().contains(prop)) {
+    if (p_object->m_property_dict.find(prop) ==
+        p_object->m_property_dict.end()) {
       // qDebug() << Q_FUNC_INFO << "Missing Property:" << prop;
       return false;
     }
 
-    if (this->attributeValue(prop) != object->attributeValue(prop)) {
+    if (this->property(prop).compare(object->property(prop)) != 0) {
       // qDebug() << Q_FUNC_INFO << "Property Missmatch:" << prop;
       return false;
     }
@@ -268,30 +211,45 @@ bool SyncObject::similarObject(SyncObject *object) {
 }
 
 void SyncObject::replace(SyncObject *object) {
-  if (!object) {
-    return;
-  }
-  QDomNode node = object->node();
+  /*
+if (!object) {
+  return;
+}
+QDomNode node = object->node();
 
-  if (!node.isNull()) {
-    Q_FOREACH(const QString & prop, object->attributes()) {
-      // qDebug() << Q_FUNC_INFO << "Replace Property: " << prop;
-      if (prop == "key") {
-        continue;
-      }
-      QDomElement elm = node.toElement();
-      elm.setAttribute(prop, object->attributeValue(prop).toString());
+if (!node.isNull()) {
+  Q_FOREACH(const QString & prop, object->property_list()) {
+    // qDebug() << Q_FUNC_INFO << "Replace Property: " << prop;
+    if (prop == "key") {
+      continue;
     }
+    QDomElement elm = node.toElement();
+    elm.setAttribute(prop, object->property(prop).toString());
   }
 }
+*/
+}
 
-SyncObject *SyncObject::childObject(const QString &name) {
-  if (!this->hasChildren()) {
-    SyncObject *rv = createNewObject(name);
+SyncObject *SyncObject::childObject(const std::string &name) {
+  if (!this->has_children()) {
+    SyncObject *rv = create_new(name);
     return rv;
   }
 
-  Q_FOREACH(SyncObject * object, d->mChildMap.values()) {
+  for (std::map<uint, SyncObject *>::iterator it =
+           p_object->m_child_map.begin();
+       it != p_object->m_child_map.end(); ++it) {
+
+    if (!it->second)
+      continue;
+
+    if (it->second->name() == name) {
+      return it->second;
+    }
+  }
+
+  /*
+  Q_FOREACH(SyncObject * object, p_object->m_child_map.values()) {
     if (!object) {
       continue;
     }
@@ -299,12 +257,13 @@ SyncObject *SyncObject::childObject(const QString &name) {
       return object;
     }
   }
+  */
 
   return 0;
 }
 
-void SyncObject::linksToObject(const QString &dataStoreName,
-                               const QString &objectName) {}
+void SyncObject::linksToObject(const std::string &dataStoreName,
+                               const std::string &objectName) {}
 
 /*
 SyncObject SyncObject::linkedObject() const
@@ -314,49 +273,51 @@ SyncObject SyncObject::linkedObject() const
 }
 */
 
-bool SyncObject::hasChildren() const {
-  if (d->mChildMap.keys().count() > 0) {
+bool SyncObject::has_children() const {
+  if (child_count() > 0) {
     return true;
   }
   return false;
 }
 
-uint SyncObject::childCount() const { return d->mChildMap.keys().count(); }
+uint SyncObject::child_count() const {
+  unsigned int count = 0;
 
-void SyncObject::addChildObject(SyncObject *object) {
-  d->mCount += 1;
-  uint currentKey = d->mCount;
+  for (std::map<uint, SyncObject *>::iterator it =
+           p_object->m_child_map.begin();
+       it != p_object->m_child_map.end(); ++it) {
+      count++;
+  }
 
-  if (!d->mChildMap.keys().contains(object->key())) {
-    d->mChildMap[currentKey] = object;
+  return count;
+}
+
+void SyncObject::add_child(SyncObject *object) {
+  p_object->m_child_count += 1;
+  uint currentKey = p_object->m_child_count;
+
+  object->set_parent(this);
+  p_object->m_child_map[currentKey] = object;
+
+  /*
+  if (!p_object->m_child_map.keys().contains(object->key())) {
+    p_object->m_child_map[currentKey] = object;
     // object->setKey(currentKey);
-    object->setParentObject(this);
-    //object->setParent(this);
+    object->set_parent(this);
+    // object->setParent(this);
   } else {
-    SyncObject *tmpObject = d->mChildMap[object->key()];
-    d->mChildMap.remove(object->key());
+    SyncObject *tmpObject = p_object->m_child_map[object->key()];
+    p_object->m_child_map.erase(object->key());
 
     if (tmpObject) {
       delete tmpObject;
     }
 
-    d->mChildMap[object->key()] = object;
-    object->setParentObject(this);
-    //object->setParent(this);
+    p_object->m_child_map[object->key()] = object;
+    object->set_parent(this);
+    // object->setParent(this);
   }
-  updateTimeStamp();
-}
-
-void SyncObject::PrivateSyncObject::addChildNode(SyncObject *object) {
-  if (!object) {
-    return;
-  }
-
-  if (!mNode.isNull()) {
-    QDomDocument doc = mNode.ownerDocument();
-
-    QDomNode node = doc.createElement(object->name());
-    mNode.appendChild(node);
-  }
+  */
+  update_time_stamp();
 }
 }

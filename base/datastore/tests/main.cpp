@@ -28,10 +28,10 @@ void test_object_create() {
   sync->set_sync_engine(engine);
 
   QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
-  obj->setName("clock");
+  obj->set_name("clock");
 
-  obj->setObjectAttribute("zone_id", "America/North");
-  obj->setObjectAttribute("id", 1);
+  obj->set_property("zone_id", "America/North");
+  obj->set_property("id", std::to_string(1));
 
   sync->add_object(*obj);
   delete sync;
@@ -47,10 +47,10 @@ void test_object_update() {
 
   for (int i = 0; i < 10; i++) {
     QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
-    obj->setName("clock");
+    obj->set_name("clock");
 
-    obj->setObjectAttribute("zone_id", "Asia/South");
-    obj->setObjectAttribute("id", i);
+    obj->set_property("zone_id", "Asia/South");
+    obj->set_property("id", std::to_string(i));
 
     sync->add_object(*obj);
   }
@@ -60,7 +60,7 @@ void test_object_update() {
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "Expected True");
     QZ_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
-    a_object.setObjectAttribute("zone_id", "North/Africa");
+    a_object.set_property("zone_id", "North/Africa");
     sync->save_object(a_object);
   });
 
@@ -81,8 +81,8 @@ void test_object_find() {
     QZ_ASSERT(a_found == 1, "Expected True");
     QZ_ASSERT(a_app_name.compare("Clock") == 0, "Expected Clock");
     QZ_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
-    QZ_ASSERT(a_object.attributes().count() == 2,
-              "Expected 2 got :" << a_object.attributes().count());
+    QZ_ASSERT(a_object.property_list().size() == 2,
+              "Expected 2 got :" << a_object.property_list().size());
   });
 
   sync->find("clock", "zone_id", "Asia/South");
@@ -152,7 +152,7 @@ void test_connected_objects() {
   sync->set_sync_engine(engine);
 
   QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
-  obj->setName("note");
+  obj->set_name("note");
 
   delete sync;
 }
@@ -164,16 +164,16 @@ void test_object_add_child() {
   sync->set_sync_engine(engine);
 
   QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
-  obj->setName("clock");
+  obj->set_name("clock");
 
-  obj->setObjectAttribute("zone_id", "America/North");
-  obj->setObjectAttribute("id", 1);
+  obj->set_property("zone_id", "America/North");
+  obj->set_property("id", std::to_string(1));
 
   sync->add_object(*obj);
   delete sync;
 }
 
-void test_save_controller_to_session(const QString &a_controller_name) {
+void test_save_controller_to_session(const std::string &a_controller_name) {
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("test_default_space_0");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
@@ -183,15 +183,15 @@ void test_save_controller_to_session(const QString &a_controller_name) {
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       QuetzalKit::SyncObject obj;
-      obj.setName("Controller");
-      obj.setObjectAttribute("name", a_controller_name);
+      obj.set_name("Controller");
+      obj.set_property("name", a_controller_name);
 
       sync->add_object(obj);
       QZ_ASSERT(a_found == 0, "Object Should not be found Error");
     }
   });
 
-  sync->find("Controller", "name", a_controller_name.toStdString());
+  sync->find("Controller", "name", a_controller_name);
 
   delete sync;
 }
@@ -213,7 +213,7 @@ void test_find_all() {
 }
 void test_stack_object_delete() {
   SyncObject stack_object;
-  stack_object.setName("stack object");
+  stack_object.set_name("stack object");
 }
 
 void test_sync_object_delete() {
@@ -221,12 +221,11 @@ void test_sync_object_delete() {
 
   SyncObject *object = new SyncObject();
 
-  object->setName("parent");
+  object->set_name("parent");
 
   for (int i = 0; i < 10; i++) {
-      SyncObject *child = new SyncObject();
-      object->addChildObject(child);
-      child->setName(QString("%1").arg(i));
+    SyncObject *child = new SyncObject(object);
+    child->set_name(QString("%1").arg(i).toStdString());
   }
 
   delete object;
@@ -235,19 +234,19 @@ void test_sync_object_delete() {
 }
 
 void test_session_list() {
-  QStringList test_data_list;
+  std::vector<std::string> test_data_list;
 
-  test_data_list << "classicbackdrop"
-                 << "desktopclock"
-                 << "timezone"
-                 << "calendar"
-                 << "dock"
-                 << "fail_dock"
-                 << "panel";
+  test_data_list.push_back("classicbackdrop");
+  test_data_list.push_back("desktopclock");
+  test_data_list.push_back("timezone");
+  test_data_list.push_back("calendar");
+  test_data_list.push_back("dock");
+  test_data_list.push_back("fail_dock");
+  test_data_list.push_back("panel");
 
-  foreach(const QString & data, test_data_list) {
-    test_save_controller_to_session(data);
-  }
+  std::for_each(
+      std::begin(test_data_list), std::end(test_data_list),
+      [&](const std::string &data) { test_save_controller_to_session(data); });
 }
 
 int main(int argc, char *argv[]) {
@@ -256,7 +255,6 @@ int main(int argc, char *argv[]) {
   // test cases:
   test_sync_object_delete();
 
-  /*
   test_object_create();
   test_object_update();
   test_object_find_fail();
@@ -267,7 +265,6 @@ int main(int argc, char *argv[]) {
   test_find_all();
   test_object_delete_matching();
   test_object_delete();
-  */
 
   qDebug() << Q_FUNC_INFO << "Done";
 
