@@ -1,11 +1,18 @@
 #ifndef SYNCOBJECT_H
 #define SYNCOBJECT_H
 
-#include <QObject>
-#include <QDomNode>
 #include <QuetzalDataKit_export.h>
+#include <vector>
+#include <string>
+#include <algorithm>
 
 namespace QuetzalKit {
+
+class SyncObject;
+
+typedef std::vector<std::string> CkStringList;
+typedef std::vector<SyncObject *> CkObjectList;
+
 class DataSync;
 /**
     * @brief
@@ -15,9 +22,9 @@ class QuetzalDataKit_EXPORT SyncObject {
 
 public:
   /**
-      * @brief
+      * @brief Creates a new Object
       *
-      * @param parent
+      * @param parent the pointer to the parent object
       */
   explicit SyncObject(SyncObject *a_parent_ptr = 0);
 
@@ -32,81 +39,72 @@ public:
       *
       * @return uint
       */
-  virtual uint timeStamp() const;
+  virtual uint time_stamp() const;
 
   /**
       * @brief
       *
       * @param timestamp
       */
-  virtual void setTimeStamp(uint timestamp);
+  virtual void set_time_stamp(uint timestamp);
 
   /**
-      * @brief
+      * @brief Time stamp data of the object.
       *
       * @return uint
       */
-  virtual uint updatedTimeStamp() const;
+  virtual unsigned int update_time_stamp() const;
 
   /**
       * @brief
       *
       * @param name
       */
-  void setName(const QString &name);
+  void set_name(const std::string &name);
 
   /**
       * @brief
       *
       * @return QString
       */
-  QString name() const;
+  std::string name() const;
 
-  void setKey(uint key);
+  void set_key(uint key);
   uint key() const;
 
-  SyncObject *parentObject() const;
-  void setParentObject(SyncObject *a_parent_ptr);
+  SyncObject *parent() const;
+  void set_parent(SyncObject *a_parent_ptr);
 
-  void setObjectAttribute(const QString &name, const QVariant &attributeValue);
-  QStringList attributes() const;
-  QVariant attributeValue(const QString &name) const;
+  void set_property(const std::string &name, const std::string &property);
+  std::string property(const std::string &name) const;
+  CkStringList property_list() const;
 
-  bool hasChildren() const;
-  uint childCount() const;
-  void addChildObject(SyncObject *object);
-  QList<SyncObject *> childObjects() const;
+  bool has_children() const;
+  uint child_count() const;
+  void add_child(SyncObject *object);
+
+  CkObjectList child_objects() const;
   SyncObject *childObject(uint key);
-  SyncObject *childObject(const QString &name);
-  void linksToObject(const QString &dataStoreName, const QString &objectName);
+  SyncObject *childObject(const std::string &name);
+  void linksToObject(const std::string &dataStoreName, const std::string &objectName);
 
-  // SyncObject linkedObject() const;
-
-  void updateTimeStamp();
+  void update_time_stamp();
 
   void removeObject(uint key);
-
-  void attachTextNode(const QString &data);
-  void setTextData(const QString &data);
-  QString textData() const;
-
-  SyncObject *clone(SyncObject *object);
 
   void set_data_sync(DataSync *a_sync);
   virtual void sync();
 
   // protected:
-  QDomNode node();
-  void setDomNode(const QDomNode &node);
-  SyncObject *createNewObject(const QString &name);
-  QString dumpContent() const;
+  SyncObject *create_new(const std::string &name);
+  std::string dump_content() const;
   bool contains(SyncObject *object);
   bool similarObject(SyncObject *object);
   void replace(SyncObject *object);
 
 private:
   class PrivateSyncObject;
-  PrivateSyncObject *const d; /**< TODO */
+  PrivateSyncObject *const p_object; /**< TODO */
 };
 }
 #endif // SYNCOBJECT_H

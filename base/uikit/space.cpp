@@ -134,9 +134,9 @@ void Space::update_session_value(const QString &a_controller_name,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       QuetzalKit::SyncObject obj;
-      obj.setName("AppSession");
-      obj.setObjectAttribute(
-          "name", o_space->sessionNameForController(a_controller_name));
+      obj.set_name("AppSession");
+      obj.set_property("name", o_space->sessionNameForController(
+                                            a_controller_name).toStdString());
 
       sync->add_object(obj);
     }
@@ -389,8 +389,8 @@ void Space::save_controller_to_session(const QString &a_controller_name) {
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       QuetzalKit::SyncObject obj;
-      obj.setName("Controller");
-      obj.setObjectAttribute("name", a_controller_name);
+      obj.set_name("Controller");
+      obj.set_property("name", a_controller_name.toStdString());
 
       sync->add_object(obj);
     }
@@ -414,10 +414,11 @@ Space::revoke_controller_session_attributes(const QString &a_controller_name) {
     qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
              << a_controller_name;
 
-    a_object.setObjectAttribute(
-        "name", o_space->sessionNameForController(a_controller_name));
+    a_object.set_property(
+        "name",
+        o_space->sessionNameForController(a_controller_name).toStdString());
     if (!a_found) {
-      a_object.setName("AppSession");
+      a_object.set_name("AppSession");
       sync->add_object(a_object);
     }
 
@@ -453,8 +454,7 @@ void Space::PrivateSpace::initSessionStorage(Space *space) {
   sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
-      QString _current_controller_name =
-          a_object.attributeValue("name").toString();
+      QString _current_controller_name = a_object.property("name").c_str();
 
       ViewControllerPtr _controller_ptr =
           space->controller(_current_controller_name);
