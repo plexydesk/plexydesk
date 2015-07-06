@@ -139,7 +139,7 @@ void
 BackgroundController::submit_session_data(QuetzalKit::SyncObject *a_object) {
   /*
 foreach(const QString & key, d->m_session_data.keys()) {
-  a_object->setObjectAttribute(key, d->m_session_data[key]);
+  a_object->set_property(key, d->m_session_data[key]);
   qDebug() << Q_FUNC_INFO << key << " : " << d->m_session_data[key];
 }
 

@@ -70,7 +70,6 @@ void DataSync::find(const std::string &a_object_name,
     m_priv->m_engine->on_search_complete([this](QuetzalKit::SyncObject &a_obj,
                                                 const std::string &a_app_name,
                                                 bool a_found) {
-
       a_obj.set_data_sync(this);
       std::for_each(m_priv->m_on_object_found_handler_list.begin(),
                     m_priv->m_on_object_found_handler_list.end(),

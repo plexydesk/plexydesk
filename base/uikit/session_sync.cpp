@@ -162,8 +162,7 @@ void SessionSync::save_session_attribute(const std::string &a_session_name,
   sync->on_object_found([=](QuetzalKit::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
-      a_object.setObjectAttribute(QString::fromStdString(a_key),
-                                  QString::fromStdString(a_value));
+      a_object.set_property(a_key, a_value);
       sync->save_object(a_object);
       const QVariant value(a_value.c_str());
       set_session_data(QString::fromStdString(a_key), value);

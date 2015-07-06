@@ -56,13 +56,13 @@ void WindowObject::updateDuration(int duration) {
   QuetzalKit::SyncObject *rootObject = data->mStore->begin("WindowList");
 
   data->mTaskObject = rootObject->createNewObject("Task");
-  data->mTaskObject->setObjectAttribute("app", QVariant(""));
+  data->mTaskObject->set_property("app", QVariant(""));
 
   // save the data.
-  data->mTaskObject->setObjectAttribute("app", data->name);
-  data->mTaskObject->setObjectAttribute("task", data->title);
-  data->mTaskObject->setObjectAttribute("start", data->time);
-  data->mTaskObject->setObjectAttribute("end", QTime::currentTime());
+  data->mTaskObject->set_property("app", data->name);
+  data->mTaskObject->set_property("task", data->title);
+  data->mTaskObject->set_property("start", data->time);
+  data->mTaskObject->set_property("end", QTime::currentTime());
 
   data->mStore->insert(data->mTaskObject);
 

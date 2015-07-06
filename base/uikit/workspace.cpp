@@ -538,10 +538,10 @@ void WorkSpace::add_default_space() {
   sync->set_sync_engine(engine);
 
   QuetzalKit::SyncObject obj;
-  obj.setName("Space");
-  obj.setObjectAttribute("ref", _space->session_name());
-  obj.setObjectAttribute("name", _space->name());
-  obj.setKey(_space->id());
+  obj.set_name("Space");
+  obj.set_property("ref", _space->session_name().toStdString());
+  obj.set_property("name", _space->name().toStdString());
+  obj.set_key(_space->id());
 
   sync->add_object(obj);
 
@@ -559,7 +559,7 @@ void WorkSpace::restore_session() {
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       qDebug() << Q_FUNC_INFO << "Adding Space ";
-      QString _space_name = a_object.attributeValue("name").toString();
+      QString _space_name = a_object.property("name").c_str();
       revoke_space(_space_name, a_object.key());
     }
   });
