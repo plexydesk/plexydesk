@@ -75,7 +75,8 @@ public:
 };
 
 IconGridActivity::IconGridActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateIconGrid) {}
+    : CherryKit::DesktopActivity(object),
+      o_desktop_activity(new PrivateIconGrid) {}
 
 IconGridActivity::~IconGridActivity() {
   qDebug() << Q_FUNC_INFO;
@@ -95,13 +96,18 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
   o_desktop_activity->m_activity_window_ptr->set_window_title(window_title);
   o_desktop_activity->m_activity_window_ptr->setGeometry(window_geometry);
 
-  o_desktop_activity->m_grid_view = new CherryKit::ItemView(o_desktop_activity->m_activity_window_ptr,
-                                           CherryKit::ItemView::kGridModel);
+  o_desktop_activity->m_grid_view =
+      new CherryKit::ItemView(o_desktop_activity->m_activity_window_ptr,
+                              CherryKit::ItemView::kGridModel);
   o_desktop_activity->m_grid_view->set_view_geometry(window_geometry);
-  o_desktop_activity->m_grid_view->on_item_removed([](CherryKit::ModelViewItem *a_item) {
+  o_desktop_activity->m_grid_view->on_item_removed([](
+      CherryKit::ModelViewItem *a_item) {
     if (a_item)
       delete a_item;
   });
+
+  o_desktop_activity->m_activity_window_ptr->set_window_content(
+      o_desktop_activity->m_grid_view);
 
   on_arguments_updated([this]() {
     if (has_attribute("data")) {
@@ -113,7 +119,8 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
         o_desktop_activity->m_action_list.append(l_action_item);
         l_action_item->onActionActivated([this](const Action *aAction) {
           o_desktop_activity->m_activity_result.clear();
-          o_desktop_activity->m_activity_result["controller"] = aAction->controller_name();
+          o_desktop_activity->m_activity_result["controller"] =
+              aAction->controller_name();
           o_desktop_activity->m_activity_result["action"] = aAction->label();
           o_desktop_activity->mSelection = aAction->label();
           update_action();
@@ -145,28 +152,34 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
     }
 
     if (has_attribute("auto_scale")) {
-      o_desktop_activity->m_auto_scale_frame = attributes()["auto_scale"].toBool();
+      o_desktop_activity->m_auto_scale_frame =
+          attributes()["auto_scale"].toBool();
     }
 
     if (o_desktop_activity->m_auto_scale_frame) {
       QRectF _content_rect = o_desktop_activity->m_grid_view->boundingRect();
-      _content_rect.setHeight(_content_rect.height() + 64);
-      set_geometry(_content_rect);
-      o_desktop_activity->m_activity_window_ptr->setGeometry(_content_rect);
+      _content_rect.setWidth(_content_rect.width() + 8);
+      _content_rect.setHeight(_content_rect.height() + 8);
+      //set_geobmetry(_content_rect);
+      //o_desktop_activity->m_activity_window_ptr->setGeometry(_content_rect);
+      o_desktop_activity->m_activity_window_ptr->resize(_content_rect.width(),
+                                                        _content_rect.height());
+
     }
   });
-
-  o_desktop_activity->m_activity_window_ptr->set_window_content(o_desktop_activity->m_grid_view);
 
   exec(window_pos);
 }
 
 QVariantMap IconGridActivity::result() const {
-  o_desktop_activity->m_activity_result["action"] = o_desktop_activity->mSelection;
+  o_desktop_activity->m_activity_result["action"] =
+      o_desktop_activity->mSelection;
   return o_desktop_activity->m_activity_result;
 }
 
-Window *IconGridActivity::window() const { return o_desktop_activity->m_activity_window_ptr; }
+Window *IconGridActivity::window() const {
+  return o_desktop_activity->m_activity_window_ptr;
+}
 
 void IconGridActivity::cleanup() {
   if (o_desktop_activity->m_grid_view)
@@ -203,7 +216,7 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   l_action_label->set_widget_name(aLabel);
 
   QPixmap l_view_pixmap(
-      CherryKit::ResourceManager::instance()->drawable(aIcon, "hdpi"));
+      CherryKit::ResourceManager::instance()->drawable(aIcon, "mdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size);

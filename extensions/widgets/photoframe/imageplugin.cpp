@@ -42,7 +42,7 @@ void PhotoFrameController::init() {
   _add_dir_action->setText(tr("Photo"));
 
   _add_dir_action->setProperty("id", QVariant(1));
-  _add_dir_action->setProperty("icon_name", "pd_photo_frame_icon.png");
+  _add_dir_action->setProperty("icon_name", "pd_photo_icon.png");
 
   m_supported_action_list << _add_dir_action;
 }

@@ -40,7 +40,7 @@ ItemView::ItemView(Widget *parent, ModelType a_model_type)
 
   if (d->m_model_view_type == kGridModel) {
     d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
-    d->m_grid_layout->setContentsMargins(4, 0, 0, 0);
+    d->m_grid_layout->setContentsMargins(4, 4, 4, 4);
   }
 
   d->m_viewport_geometry = QRectF();
@@ -212,7 +212,12 @@ void ItemView::set_view_geometry(const QRectF &a_rect) {
     d->m_grid_layout->setGeometry(a_rect);
 }
 
-QRectF ItemView::boundingRect() const { return d->m_viewport_geometry; }
+QRectF ItemView::boundingRect() const {
+  if (d->m_model_view_type == kGridModel)
+    return d->m_grid_layout->contentsRect();
+
+  return d->m_viewport_geometry;
+}
 
 void ItemView::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
 

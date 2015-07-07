@@ -58,19 +58,19 @@ void DesktopNotesControllerImpl::init() {
   _add_note_action->setText(tr("Note"));
 
   _add_note_action->setProperty("id", QVariant(1));
-  _add_note_action->setProperty("icon_name", "pd_add_note_frame_icon.png");
+  _add_note_action->setProperty("icon_name", "pd_note_icon.png");
 
   QAction *_add_task_action = new QAction(this);
   _add_task_action->setText(tr("Task"));
 
   _add_task_action->setProperty("id", QVariant(2));
-  _add_task_action->setProperty("icon_name", "pd_add_note_frame_icon.png");
+  _add_task_action->setProperty("icon_name", "pd_todo_list_icon.png");
 
   QAction *_add_reminder_action = new QAction(this);
   _add_reminder_action->setText(tr("Reminder"));
 
   _add_reminder_action->setProperty("id", QVariant(2));
-  _add_reminder_action->setProperty("icon_name", "pd_add_note_frame_icon.png");
+  _add_reminder_action->setProperty("icon_name", "pd_reminder_icon.png");
 
   o_view_controller->m_supported_action_list << _add_note_action;
   o_view_controller->m_supported_action_list << _add_task_action;

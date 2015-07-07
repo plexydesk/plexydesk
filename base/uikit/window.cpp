@@ -241,7 +241,8 @@ void Window::resize(float a_width, float a_height) {
   setGeometry(QRectF(x(), y(), a_width, a_height + 72.0));
 
   if (o_window->m_window_content) {
-    if (o_window->m_window_type == kApplicationWindow) {
+    if (o_window->m_window_type == kApplicationWindow ||
+            o_window->m_window_type == kPopupWindow) {
       o_window->m_window_content->setPos(0.0, 72.0);
     }
   }
