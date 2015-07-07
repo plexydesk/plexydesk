@@ -7,6 +7,17 @@ class QPainter;
 
 class DesktopWindow : public CherryKit::Window {
 public:
+
+typedef enum {
+    kNone,
+    kStreachBackground,
+    kTileBackground,
+    kFrameBackground,
+    kCenterFocusBackground,
+    kFitWidthBackground,
+    kFitHeightBackground
+  } DesktopScalingMode;
+
   DesktopWindow();
   virtual ~DesktopWindow();
 
@@ -16,6 +27,9 @@ public:
 
   bool is_seamless();
   void set_seamless(bool mode = true);
+
+  void set_desktop_scale_mode(DesktopScalingMode a_desktop_mode = kNone);
+  DesktopScalingMode desktop_scale_mode() const;
 
 protected:
   void paint_view(QPainter *a_ctx, const QRectF &a_rect);
