@@ -78,6 +78,7 @@ public:
   void set_property(const std::string &name, const std::string &property);
   std::string property(const std::string &name) const;
   CkStringList property_list() const;
+  bool has_property(const std::string &a_property) const;
 
   bool has_children() const;
   uint child_count() const;
@@ -86,7 +87,8 @@ public:
   CkObjectList child_objects() const;
   SyncObject *childObject(uint key);
   SyncObject *childObject(const std::string &name);
-  void linksToObject(const std::string &dataStoreName, const std::string &objectName);
+  void linksToObject(const std::string &dataStoreName,
+                     const std::string &objectName);
 
   void update_time_stamp();
 
@@ -99,7 +101,7 @@ public:
   SyncObject *create_new(const std::string &name);
   std::string dump_content() const;
   bool contains(SyncObject *object);
-  bool similarObject(SyncObject *object);
+  bool is_similar(SyncObject *object);
   void replace(SyncObject *object);
 
 private:
