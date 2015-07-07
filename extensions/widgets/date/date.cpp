@@ -46,7 +46,7 @@ void DateControllerImpl::init() {
   _add_note_action->setText(tr("Calendar"));
 
   _add_note_action->setProperty("id", QVariant(1));
-  _add_note_action->setProperty("icon_name", "pd_add_note_frame_icon.png");
+  _add_note_action->setProperty("icon_name", "pd_calendar_icon.png");
 
   o_view_controller->m_supported_action_list << _add_note_action;
 }

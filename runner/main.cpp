@@ -139,8 +139,8 @@ public:
       workspace->add_default_controller("plexyclock");
       workspace->add_default_controller("desktopnoteswidget");
       workspace->add_default_controller("folderwidget");
-      workspace->add_default_controller("photoframe");
       workspace->add_default_controller("datewidget");
+      workspace->add_default_controller("photoframe");
 
       workspace->restore_session();
 
