@@ -81,11 +81,11 @@ QAction *Clock::createAction(int id, const QString &action_name,
 
 void Clock::init() {
   o_view_controller->m_supported_action_list
-      << createAction(1, tr("Clock"), "pd_clock_frame_icon.png");
+      << createAction(1, tr("Clock"), "pd_clock_icon.png");
   o_view_controller->m_supported_action_list
-      << createAction(2, tr("Timer"), "pd_clock_frame_icon.png");
+      << createAction(3, tr("Alarm"), "pd_alarm_icon.png");
   o_view_controller->m_supported_action_list
-      << createAction(3, tr("Alarm"), "pd_clock_frame_icon.png");
+      << createAction(2, tr("Timer"), "pd_timer_icon.png");
 }
 
 void Clock::set_view_rect(const QRectF &rect) {}
@@ -159,7 +159,8 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
     start_session("Timer", session_args, false,
                   [this](CherryKit::ViewController *a_controller,
                          CherryKit::SessionSync *a_session) {
-      o_view_controller->setup_create_timer_ui((Clock *)a_controller, a_session);
+      o_view_controller->setup_create_timer_ui((Clock *)a_controller,
+                                               a_session);
     });
     return;
   }
@@ -205,7 +206,8 @@ void Clock::PrivateClockController::setup_create_clock_ui(
   CherryKit::WidgetProperties ui_data;
   ui_data["text"] + "";
 
-  ck_clock = dynamic_cast<CherryKit::ClockWidget*> (ck_ui->add_widget(0, 0, "clock", ui_data));
+  ck_clock = dynamic_cast<CherryKit::ClockWidget *>(
+      ck_ui->add_widget(0, 0, "clock", ui_data));
 
   ck_location_btn = add_action_button(ck_ui, 1, 1, "Location", "pd_location");
   // add_action_button(ck_ui, 1, 1, "Alarm", "pd_notification");
@@ -307,7 +309,7 @@ void Clock::PrivateClockController::setup_create_timer_ui(
   });
 
   if (a_session->session_keys().contains("zone_id")) {
-    //ck_clock->set_timezone_id(a_session->session_data("zone_id").toByteArray());
+    // ck_clock->set_timezone_id(a_session->session_data("zone_id").toByteArray());
     ck_window->set_window_title(a_session->session_data("zone_id").toString());
   }
 
@@ -335,7 +337,7 @@ void Clock::PrivateClockController::setup_create_timer_ui(
             QRectF(0, 0, 240, 320.0), QVariantMap());
 
         activity->on_action_completed([=](const QVariantMap &a_data) {
-          //ck_clock->set_timezone_id(a_data["zone_id"].toByteArray());
+          // ck_clock->set_timezone_id(a_data["zone_id"].toByteArray());
           ck_window->set_window_title(a_data["zone_id"].toString());
 
           std::string zone_id(a_data["zone_id"].toByteArray().data());
