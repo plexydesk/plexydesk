@@ -27,7 +27,10 @@ void DesktopWindow::reset_window_background() {
 
 bool DesktopWindow::is_seamless() { return o_window->m_seamless; }
 
-void DesktopWindow::set_seamless(bool mode) { o_window->m_seamless = mode; }
+void DesktopWindow::set_seamless(bool mode) {
+  o_window->m_seamless = mode;
+  update();
+}
 
 DesktopWindow::DesktopWindow()
     : CherryKit::Window(0), o_window(new PrivateDesktopWindow) {
@@ -59,8 +62,13 @@ void DesktopWindow::set_background(const QString &a_image_name) {
   */
 
   if (!o_window->m_background_texture.load(a_image_name))
-      qDebug() << Q_FUNC_INFO << "Failed to load image";
+    qDebug() << Q_FUNC_INFO << "Failed to load image";
 
+  update();
+}
+
+void DesktopWindow::set_background(const QImage &a_image_name) {
+  o_window->m_background_texture = a_image_name;
   update();
 }
 

@@ -11,6 +11,7 @@ public:
   virtual ~DesktopWindow();
 
   void set_background(const QString &a_image_name);
+  void set_background(const QImage &a_image_name);
   void reset_window_background();
 
   bool is_seamless();
