@@ -160,11 +160,8 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
       QRectF _content_rect = o_desktop_activity->m_grid_view->boundingRect();
       _content_rect.setWidth(_content_rect.width() + 8);
       _content_rect.setHeight(_content_rect.height() + 8);
-      //set_geobmetry(_content_rect);
-      //o_desktop_activity->m_activity_window_ptr->setGeometry(_content_rect);
       o_desktop_activity->m_activity_window_ptr->resize(_content_rect.width(),
                                                         _content_rect.height());
-
     }
   });
 
