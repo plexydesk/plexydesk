@@ -235,5 +235,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
   Runtime runtime(runtime_platform_name);
 
+  if (runtime_platform_name)
+      free(runtime_platform_name);
+
   return app.exec();
 }
