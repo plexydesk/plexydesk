@@ -55,7 +55,7 @@ public:
 
   CherryKit::ActionList m_supported_actions;
   std::string m_background_texture;
-  //QVariantMap m_session_data;
+  // QVariantMap m_session_data;
   std::map<std::string, std::string> m_session_data;
 
   DesktopWindow *m_background_window;
@@ -65,9 +65,7 @@ BackgroundController::BackgroundController(QObject *object)
     : CherryKit::ViewController(object),
       p_ctr(new PrivateBackgroundController) {}
 
-BackgroundController::~BackgroundController() {
-  delete p_ctr;
-}
+BackgroundController::~BackgroundController() { delete p_ctr; }
 
 void BackgroundController::init() {
   // todo : port toNativeSeperator to our datakit
@@ -87,9 +85,9 @@ void BackgroundController::init() {
   });
 
   p_ctr->add_action(this, tr("Desktop"), "pd_background_frame_icon.png", 1);
-  //p_ctr->add_action(this, tr("Search"), "pd_search_frame_icon.png", 2);
-  //p_ctr->add_action(this, tr("Adjust"), "pd_adjust_frame_icon.png", 3);
-  //p_ctr->add_action(this, tr("Seamless"), "pd_eye_frame_icon.png", 4);
+  // p_ctr->add_action(this, tr("Search"), "pd_search_frame_icon.png", 2);
+  // p_ctr->add_action(this, tr("Adjust"), "pd_adjust_frame_icon.png", 3);
+  // p_ctr->add_action(this, tr("Seamless"), "pd_eye_frame_icon.png", 4);
 
   insert(p_ctr->m_background_window);
 }
@@ -154,7 +152,7 @@ void BackgroundController::createSeamlessDesktop() {
         qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
 
     if (_workspace) {
-     // _workspace->set_accelerated_rendering(!_is_seamless_set);
+// _workspace->set_accelerated_rendering(!_is_seamless_set);
 
 #ifdef Q_OS_WIN
       if (!_is_seamless_set) {
@@ -247,10 +245,13 @@ void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
     QUrl fileUrl = event->mimeData()->urls().value(0);
     QString droppedFile;
 
+    qDebug() << Q_FUNC_INFO << " Dropped Url ->" << event->mimeData()->urls();
+
     if (fileUrl.isLocalFile()) {
       droppedFile = fileUrl.toLocalFile();
     } else {
       // handle remote files;
+      qDebug() << Q_FUNC_INFO << " Dropped Url ->" << fileUrl;
       downloadRemoteFile(fileUrl);
       return;
     }
@@ -261,7 +262,7 @@ void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
       if (p_ctr->m_background_window) {
         p_ctr->m_background_window->set_background(droppedFile);
         p_ctr->m_background_texture = fileUrl.toString().toStdString();
-        saveSession("background",  fileUrl.toString());
+        saveSession("background", fileUrl.toString());
       }
     }
   }
@@ -318,40 +319,44 @@ void BackgroundController::onImageReady() {
 }
 
 void BackgroundController::onImageSaveReady() {
-  /*
-QuetzalSocialKit::AsyncImageCreator *c =
-    qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+  QuetzalSocialKit::AsyncImageCreator *c =
+      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
-if (c) {
-  if (c->image().isNull()) {
+  if (c) {
+    if (c->image().isNull()) {
+      c->quit();
+      c->deleteLater();
+      return;
+    }
+
+    if (p_ctr->m_background_window) {
+      p_ctr->m_background_window->set_background(c->image());
+    }
+
+    if (viewport()) {
+      if (!c->offline()) {
+        p_ctr->m_background_texture =
+            c->metaData()["url"].toString().toStdString();
+        saveSession("background", c->metaData()["url"].toString());
+      } else {
+        p_ctr->m_background_texture =
+            QDir::toNativeSeparators("file:///" + c->imagePath()).toStdString();
+        saveSession("background",
+                    QDir::toNativeSeparators("file:///" + c->imagePath()));
+      }
+    }
+
+    /*
+    if (d->mCurrentMode.isEmpty() || d->mCurrentMode.isNull()) {
+      createModeChooser();
+    } else {
+      setScaleMode(d->mCurrentMode);
+    }
+    */
+
     c->quit();
     c->deleteLater();
-    return;
   }
-
-  if (d->m_background_render_item) {
-    d->m_background_render_item->setBackgroundImage(c->image());
-  }
-
-  if (viewport()) {
-    if (!c->offline()) {
-      saveSession("background", c->metaData()["url"].toString());
-    } else {
-      saveSession("background",
-                  QDir::toNativeSeparators("file:///" + c->imagePath()));
-    }
-  }
-
-  if (d->mCurrentMode.isEmpty() || d->mCurrentMode.isNull()) {
-    createModeChooser();
-  } else {
-    setScaleMode(d->mCurrentMode);
-  }
-
-  c->quit();
-  c->deleteLater();
-}
-*/
 }
 
 void BackgroundController::setScaleMode(const QString &action) {
