@@ -27,6 +27,7 @@
 
 // self
 #include "classicbackgroundrender.h"
+#include "desktopwindow.h"
 
 class BackgroundController : public CherryKit::ViewController {
   Q_OBJECT
@@ -51,47 +52,30 @@ public:
 
 private
 Q_SLOTS:
-  void onImageReady();
-  void onImageSaveReady();
+  void image_locally_available();
+  void on_image_data_available();
 
 protected:
   void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
-  void createSeamlessDesktop();
+  void expose_platform_desktop();
 
 private:
-  void downloadRemoteFile(QUrl fileUrl);
+  void download_image_from_url(QUrl fileUrl);
   void revoke_session(const QVariantMap &args);
 
-  void saveImageLocally(const QByteArray &data, const QString &source,
+  void sync_image_data_to_disk(const QByteArray &data, const QString &source,
+                        bool a_local_file = false);
+
+  void sync_image_data_to_disk(const QImage &data, const QString &source,
                         bool saveLocally = false);
 
-  void saveImageLocally(const QImage &data, const QString &source,
-                        bool saveLocally = false);
+  void set_desktop_scale_type(DesktopWindow::DesktopScalingMode a_desktop_mode);
+  void set_desktop_scale_type(const QString &a_action);
 
-  void createModeChooser();
+  void sync_session_data(const QString &key, const QVariant &value);
 
-  void setScaleMode(ClassicBackgroundRender::ScalingMode mode);
-
-  void setScaleMode(const QString &action);
-
-  void createModeActivity(const QString &activity, const QString &title,
-                          const QVariantMap &data);
-
-  void createWallpaperActivity(const QString &activity, const QString &title,
-                               const QVariantMap &data);
-
-  void createSearchActivity(const QString &activity, const QString &title,
-                            const QVariantMap &data);
-
-  void saveSession(const QString &key, const QVariant &value);
-
-  QVariant sessionValue(const QString &key);
-
-  QList<ClassicBackgroundRender *> mBackgroundRenderList;
-
-  const QRectF mBackgroundRect;
   class PrivateBackgroundController;
-  PrivateBackgroundController *const p_ctr;
+  PrivateBackgroundController *const o_ctr;
 };
 
 #endif // PLEXY_BACKGROUND_CONTROLLER_H

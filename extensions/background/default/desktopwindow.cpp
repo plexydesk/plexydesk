@@ -7,7 +7,7 @@ class DesktopWindow::PrivateDesktopWindow {
 public:
   PrivateDesktopWindow()
       : m_background_buffer(0), m_background_width(0), m_background_height(0),
-        m_seamless(0) {}
+        m_seamless(0), m_desktop_mode(kNone) {}
   ~PrivateDesktopWindow() {
     if (m_background_buffer)
       free(m_background_buffer);
@@ -18,6 +18,7 @@ public:
   int m_background_width;
   int m_background_height;
   bool m_seamless;
+  DesktopScalingMode m_desktop_mode;
 };
 
 void DesktopWindow::reset_window_background() {
@@ -30,6 +31,15 @@ bool DesktopWindow::is_seamless() { return o_window->m_seamless; }
 void DesktopWindow::set_seamless(bool mode) {
   o_window->m_seamless = mode;
   update();
+}
+
+void DesktopWindow::set_desktop_scale_mode(
+    DesktopWindow::DesktopScalingMode a_desktop_mode) {
+  o_window->m_desktop_mode = a_desktop_mode;
+}
+
+DesktopWindow::DesktopScalingMode DesktopWindow::desktop_scale_mode() const {
+  return o_window->m_desktop_mode;
 }
 
 DesktopWindow::DesktopWindow()
