@@ -27,6 +27,7 @@
 #include <widget.h>
 #include <QtNetwork>
 #include <abstractcellcomponent.h>
+#include <viewbuilder.h>
 
 using namespace CherryKit;
 
@@ -63,6 +64,9 @@ public:
 
   void prepare_removal();
 
+  void create_dock_action(CherryKit::HybridLayout *build, int row, int column,
+                          const std::string &icon,
+                          std::function<void()> a_button_action_func);
 public
 Q_SLOTS:
 
@@ -76,7 +80,7 @@ Q_SLOTS:
 
   void removeSpace();
 
-  void onNavigationPanelClicked(const QString &action);
+  void exec_dock_action(const QString &action);
 
   void onAddSpaceButtonClicked();
 
