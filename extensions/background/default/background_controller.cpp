@@ -54,7 +54,9 @@ public:
   void updateProgress(float progress);
 
   CherryKit::ActionList m_supported_actions;
-  QVariantMap m_session_data;
+  std::string m_background_texture;
+  //QVariantMap m_session_data;
+  std::map<std::string, std::string> m_session_data;
 
   DesktopWindow *m_background_window;
 };
@@ -64,7 +66,6 @@ BackgroundController::BackgroundController(QObject *object)
       p_ctr(new PrivateBackgroundController) {}
 
 BackgroundController::~BackgroundController() {
-  qDebug() << Q_FUNC_INFO;
   delete p_ctr;
 }
 
@@ -74,7 +75,9 @@ void BackgroundController::init() {
       CherryKit::Config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
+  p_ctr->m_background_texture = default_wallpaper_file.toStdString();
   p_ctr->m_background_window = new DesktopWindow();
+  p_ctr->m_background_window->set_controller(this);
   p_ctr->m_background_window->set_background(default_wallpaper_file);
 
   p_ctr->m_background_window->on_window_discarded([this](
@@ -84,15 +87,14 @@ void BackgroundController::init() {
   });
 
   p_ctr->add_action(this, tr("Desktop"), "pd_background_frame_icon.png", 1);
-  p_ctr->add_action(this, tr("Search"), "pd_search_frame_icon.png", 2);
-  p_ctr->add_action(this, tr("Adjust"), "pd_adjust_frame_icon.png", 3);
-  p_ctr->add_action(this, tr("Seamless"), "pd_eye_frame_icon.png", 4);
+  //p_ctr->add_action(this, tr("Search"), "pd_search_frame_icon.png", 2);
+  //p_ctr->add_action(this, tr("Adjust"), "pd_adjust_frame_icon.png", 3);
+  //p_ctr->add_action(this, tr("Seamless"), "pd_eye_frame_icon.png", 4);
 
   insert(p_ctr->m_background_window);
 }
 
 void BackgroundController::revoke_session(const QVariantMap &args) {
-  /*
   QUrl backgroundUrl = args["background"].toString();
   QString mode = args["mode"].toString();
 
@@ -100,53 +102,40 @@ void BackgroundController::revoke_session(const QVariantMap &args) {
     return;
   }
 
-  d->mCurrentMode = mode;
-
-  qDebug() << Q_FUNC_INFO << backgroundUrl.isLocalFile();
-
   if (backgroundUrl.isLocalFile()) {
-    d->m_background_render_item->setBackgroundImage(
-        QUrl(args["background"].toString()));
+    p_ctr->m_background_window->set_background(backgroundUrl.toLocalFile());
+    p_ctr->m_background_texture = backgroundUrl.toString().toStdString();
   } else {
     downloadRemoteFile(backgroundUrl);
   }
-  */
 }
 
 void BackgroundController::session_data_available(
     const QuetzalKit::SyncObject &a_session_root) {
-  /*
-QUrl background_url = a_session_root.attributeValue("background").toString();
-QString mode = a_session_root.attributeValue("mode").toString();
+  if (!a_session_root.has_property("background") ||
+      !a_session_root.has_property("mode"))
+    return;
 
-if (background_url.isEmpty()) {
-return;
-}
+  std::string background_url_str = a_session_root.property("background");
+  QUrl background_url = QUrl(background_url_str.c_str());
+  QString mode = a_session_root.property("mode").c_str();
 
-d->mCurrentMode = mode;
+  if (background_url.isEmpty()) {
+    return;
+  }
 
-qDebug() << Q_FUNC_INFO << background_url.isLocalFile();
-
-if (background_url.isLocalFile()) {
-d->m_background_render_item->setBackgroundImage(background_url);
-} else {
-downloadRemoteFile(background_url);
-}
-    */
+  if (background_url.isLocalFile()) {
+    p_ctr->m_background_window->set_background(background_url.toLocalFile());
+    p_ctr->m_background_texture = background_url_str;
+  } else {
+    downloadRemoteFile(background_url);
+  }
 }
 
 void
 BackgroundController::submit_session_data(QuetzalKit::SyncObject *a_object) {
-  /*
-foreach(const QString & key, d->m_session_data.keys()) {
-  a_object->set_property(key, d->m_session_data[key]);
-  qDebug() << Q_FUNC_INFO << key << " : " << d->m_session_data[key];
-}
-
-a_object->sync();
-
-qDebug() << Q_FUNC_INFO << "Updating session Value End ->";
-*/
+  a_object->set_property("background", p_ctr->m_background_texture);
+  a_object->set_property("mode", "scale");
 }
 
 CherryKit::ActionList BackgroundController::actions() const {
@@ -154,39 +143,38 @@ CherryKit::ActionList BackgroundController::actions() const {
 }
 
 void BackgroundController::createSeamlessDesktop() {
-  /*
-      bool _is_seamless_set = false;
+  bool _is_seamless_set = false;
 
-      if (d->m_background_render_item) {
-          _is_seamless_set = d->m_background_render_item->isSeamlessModeSet();
+  if (p_ctr->m_background_window) {
+    _is_seamless_set = p_ctr->m_background_window->is_seamless();
+  }
+
+  if (viewport() && viewport()->workspace()) {
+    CherryKit::WorkSpace *_workspace =
+        qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+
+    if (_workspace) {
+     // _workspace->set_accelerated_rendering(!_is_seamless_set);
+
+#ifdef Q_OS_WIN
+      if (!_is_seamless_set) {
+        SetParent((HWND)_workspace->winId(), NULL);
+      } else {
+        HWND hShellWnd = GetShellWindow();
+        HWND hDefView =
+            FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
+        HWND folderView =
+            FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
+
+        SetParent((HWND)_workspace->winId(), folderView);
       }
-      if (viewport() && viewport()->workspace()) {
-          UI::WorkSpace *_workspace = qobject_cast<UI::WorkSpace*>
-  (viewport()->workspace());
+#endif
+    }
+  }
 
-          if (_workspace) {
-              _workspace->setAcceleratedRendering(!_is_seamless_set);
-
-  #ifdef Q_OS_WIN
-              if (!_is_seamless_set) {
-                  SetParent((HWND)_workspace->winId(), NULL);
-              } else {
-                  HWND hShellWnd = GetShellWindow();
-                  HWND hDefView = FindWindowEx(hShellWnd, NULL,
-  _T("SHELLDLL_DefView"), NULL);
-                  HWND folderView = FindWindowEx(hDefView, NULL,
-  _T("SysListView32"), NULL);
-
-                  SetParent((HWND)_workspace->winId(), folderView);
-              }
-  #endif
-          }
-      }
-
-  if (d->m_background_render_item)
-    d->m_background_render_item->setSeamLessMode(
-        !(d->m_background_render_item->isSeamlessModeSet()));
-  */
+  if (p_ctr->m_background_window)
+    p_ctr->m_background_window->set_seamless(
+        !p_ctr->m_background_window->is_seamless());
 }
 
 void BackgroundController::request_action(const QString &actionName,
@@ -246,13 +234,10 @@ if (d->m_background_render_item) {
 
 void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
                                              QDropEvent *event) {
-  qDebug() << Q_FUNC_INFO;
-
   if (event->mimeData()->hasImage()) {
     QImage image = qvariant_cast<QImage>(event->mimeData()->imageData());
 
     if (!image.isNull()) {
-      qDebug() << Q_FUNC_INFO << "Request Save Image Locally";
       saveImageLocally(image, CherryKit::Config::cache_dir("wallpaper"), true);
     }
     return;
@@ -273,14 +258,11 @@ void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
     QFileInfo info(droppedFile);
 
     if (!info.isDir()) {
-      /*
-    if (d->m_background_render_item) {
-      d->m_background_render_item->setBackgroundImage(droppedFile);
-    }
-    */
-
-      createModeChooser();
-      saveSession("background", fileUrl.toString());
+      if (p_ctr->m_background_window) {
+        p_ctr->m_background_window->set_background(droppedFile);
+        p_ctr->m_background_texture = fileUrl.toString().toStdString();
+        saveSession("background",  fileUrl.toString());
+      }
     }
   }
 }
@@ -445,12 +427,12 @@ void BackgroundController::createSearchActivity(const QString &activity,
 
 void BackgroundController::saveSession(const QString &key,
                                        const QVariant &value) {
-  p_ctr->m_session_data[key] = value;
+  p_ctr->m_session_data[key.toStdString()] = value.toString().toStdString();
 
   if (!viewport())
     return;
 
-  viewport()->update_session_value(controller_name(), key, value.toString());
+  viewport()->update_session_value(controller_name(), "", "");
 }
 
 QVariant BackgroundController::sessionValue(const QString &key) {
