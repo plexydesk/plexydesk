@@ -25,27 +25,25 @@ typedef std::function<void(Space::ViewportNotificationType, const QVariant &,
 class Space::PrivateSpace {
 public:
   PrivateSpace() : m_surface(0) {}
-
   ~PrivateSpace();
 
-  QString sessionNameForSpace();
+  QString session_name_of_space();
+  void init_session_registry(Space *space);
 
-  void initSessionStorage(Space *space);
+  QString session_controller_name(const QString &controllerName);
 
-  QString sessionNameForController(const QString &controllerName);
-
-  void createActionsFromController(const Space *space, ViewControllerPtr ptr);
+  void controller_action_list(const Space *space, ViewControllerPtr ptr);
 
 public:
-  int mID;
-  QString mName;
+  int m_id;
+  QString m_name;
   QRectF m_geometry;
-  WorkSpace *mWorkSpace;
+  WorkSpace *m_workspace;
   QGraphicsScene *m_native_scene;
-  QList<CherryKit::DesktopActivityPtr> mActivityList;
-  std::vector<CherryKit::Window *> mWindowList;
-  QMap<QString, ViewControllerPtr> mCurrentControllerMap;
-  QList<ViewControllerPtr> mControllerList;
+  QList<CherryKit::DesktopActivityPtr> m_activity_list;
+  std::vector<CherryKit::Window *> m_window_list;
+  QMap<QString, ViewControllerPtr> m_current_controller_list;
+  QList<ViewControllerPtr> m_controller_list;
 
   QList<NotifyFunc> m_notify_chain;
 
@@ -54,7 +52,7 @@ public:
 };
 
 Space::Space() : o_space(new PrivateSpace) {
-  o_space->mWorkSpace = 0;
+  o_space->m_workspace = 0;
   o_space->m_native_scene = 0;
 }
 
@@ -64,7 +62,7 @@ Space::~Space() {
 }
 
 void Space::add_controller(const QString &a_name) {
-  if (o_space->mCurrentControllerMap.keys().contains(a_name)) {
+  if (o_space->m_current_controller_list.keys().contains(a_name)) {
     return;
   }
 
@@ -76,7 +74,7 @@ void Space::add_controller(const QString &a_name) {
     return;
   }
 
-  o_space->mCurrentControllerMap[a_name] = controllerPtr;
+  o_space->m_current_controller_list[a_name] = controllerPtr;
 
   controllerPtr->set_viewport(this);
   controllerPtr->set_controller_name(a_name);
@@ -84,7 +82,7 @@ void Space::add_controller(const QString &a_name) {
   controllerPtr->init();
   controllerPtr->set_view_rect(geometry());
 
-  o_space->createActionsFromController(this, controllerPtr);
+  o_space->controller_action_list(this, controllerPtr);
 
   register_controller(a_name);
 
@@ -125,7 +123,7 @@ Space::create_activity(const QString &a_activity, const QString &a_title,
 void Space::update_session_value(const QString &a_controller_name,
                                  const QString &a_key, const QString &a_value) {
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
-      o_space->sessionNameForController(a_controller_name).toStdString());
+      o_space->session_controller_name(a_controller_name).toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -135,7 +133,7 @@ void Space::update_session_value(const QString &a_controller_name,
     if (!a_found) {
       QuetzalKit::SyncObject obj;
       obj.set_name("AppSession");
-      obj.set_property("name", o_space->sessionNameForController(
+      obj.set_property("name", o_space->session_controller_name(
                                             a_controller_name).toStdString());
 
       sync->add_object(obj);
@@ -164,12 +162,12 @@ void Space::add_activity(CherryKit::DesktopActivityPtr a_activity_ptr) {
   });
 
   if (a_activity_ptr->window() && o_space->m_native_scene) {
-    if (o_space->mActivityList.contains(a_activity_ptr)) {
+    if (o_space->m_activity_list.contains(a_activity_ptr)) {
       qWarning() << Q_FUNC_INFO << "Space already contains the activity";
       return;
     }
 
-    o_space->mActivityList << a_activity_ptr;
+    o_space->m_activity_list << a_activity_ptr;
 
     a_activity_ptr->set_viewport(this);
 
@@ -203,7 +201,7 @@ void Space::insert_window_to_view(Window *a_window) {
     a_window->controller()->set_view_rect(o_space->m_geometry);
   }
 
-  o_space->mWindowList.push_back(a_window);
+  o_space->m_window_list.push_back(a_window);
 
   a_window->on_update([this](const Widget *window) {
     qDebug() << Q_FUNC_INFO << "Got Update Request";
@@ -219,8 +217,8 @@ void Space::insert_window_to_view(Window *a_window) {
       return;
     }
 
-    std::for_each(std::begin(o_space->mWindowList),
-                  std::end(o_space->mWindowList), [&](Window *a_win) {
+    std::for_each(std::begin(o_space->m_window_list),
+                  std::end(o_space->m_window_list), [&](Window *a_win) {
       if (a_win->window_type() == Window::kFramelessWindow) {
         a_win->setZValue(kMinimumZOrder);
       }
@@ -266,11 +264,12 @@ void Space::remove_window_from_view(Window *a_window) {
 
   o_space->m_native_scene->removeItem(a_window);
 
-  qDebug() << Q_FUNC_INFO << "Before :" << o_space->mWindowList.size();
-  o_space->mWindowList.erase(std::remove(o_space->mWindowList.begin(),
-                                         o_space->mWindowList.end(), a_window),
-                             o_space->mWindowList.end());
-  qDebug() << Q_FUNC_INFO << "After:" << o_space->mWindowList.size();
+  qDebug() << Q_FUNC_INFO << "Before :" << o_space->m_window_list.size();
+  o_space->m_window_list.erase(std::remove(o_space->m_window_list.begin(),
+                                           o_space->m_window_list.end(),
+                                           a_window),
+                               o_space->m_window_list.end());
+  qDebug() << Q_FUNC_INFO << "After:" << o_space->m_window_list.size();
 
   a_window->discard();
 }
@@ -284,14 +283,16 @@ void Space::on_viewport_event_notify(
 void Space::on_activity_finished(const DesktopActivity *a_activity) {
   if (a_activity) {
     int i = 0;
-    foreach(DesktopActivityPtr _activity, o_space->mActivityList) {
+    foreach(DesktopActivityPtr _activity, o_space->m_activity_list) {
       // todo : enable runtime identification of activities.
       if (_activity.data() == a_activity) {
         _activity.clear();
-        qDebug() << Q_FUNC_INFO << "Before :" << o_space->mActivityList.count();
-        o_space->mActivityList.removeAt(i);
-        o_space->mActivityList.removeAll(_activity);
-        qDebug() << Q_FUNC_INFO << "After :" << o_space->mActivityList.count();
+        qDebug() << Q_FUNC_INFO
+                 << "Before :" << o_space->m_activity_list.count();
+        o_space->m_activity_list.removeAt(i);
+        o_space->m_activity_list.removeAll(_activity);
+        qDebug() << Q_FUNC_INFO
+                 << "After :" << o_space->m_activity_list.count();
       }
       i++;
     }
@@ -323,11 +324,11 @@ void qtz_set_color_value_at_pos(GraphicsSurface *surface, int width, int x,
 void Space::draw() {
   // todo: Move this expensive loop out of here.
   std::sort(
-      std::begin(o_space->mWindowList), std::end(o_space->mWindowList),
+      std::begin(o_space->m_window_list), std::end(o_space->m_window_list),
       [&](Window *a_a, Window *a_b) { return a_a->zValue() < a_b->zValue(); });
 
-  std::for_each(std::begin(o_space->mWindowList),
-                std::end(o_space->mWindowList), [&](Window *a_win) {
+  std::for_each(std::begin(o_space->m_window_list),
+                std::end(o_space->m_window_list), [&](Window *a_win) {
 
     if (!a_win)
       return;
@@ -380,7 +381,7 @@ GraphicsSurface *Space::surface() { return &o_space->m_surface; }
 
 void Space::save_controller_to_session(const QString &a_controller_name) {
   QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(o_space->sessionNameForSpace().toStdString());
+      new QuetzalKit::DataSync(o_space->session_name_of_space().toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -404,7 +405,7 @@ void Space::save_controller_to_session(const QString &a_controller_name) {
 void
 Space::revoke_controller_session_attributes(const QString &a_controller_name) {
   QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
-      o_space->sessionNameForController(a_controller_name).toStdString());
+      o_space->session_controller_name(a_controller_name).toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -416,7 +417,7 @@ Space::revoke_controller_session_attributes(const QString &a_controller_name) {
 
     a_object.set_property(
         "name",
-        o_space->sessionNameForController(a_controller_name).toStdString());
+        o_space->session_controller_name(a_controller_name).toStdString());
     if (!a_found) {
       a_object.set_name("AppSession");
       sync->add_object(a_object);
@@ -437,17 +438,17 @@ void Space::register_controller(const QString &a_controller_name) {
   revoke_controller_session_attributes(a_controller_name);
 }
 
-void Space::PrivateSpace::createActionsFromController(const Space *space,
-                                                      ViewControllerPtr ptr) {
+void Space::PrivateSpace::controller_action_list(const Space *space,
+                                                 ViewControllerPtr ptr) {
   Q_FOREACH(const QAction * action, ptr->actions()) {
     // qDebug() << action->text();
     // qDebug() << action->icon();
   }
 }
 
-void Space::PrivateSpace::initSessionStorage(Space *space) {
+void Space::PrivateSpace::init_session_registry(Space *space) {
   QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(sessionNameForSpace().toStdString());
+      new QuetzalKit::DataSync(session_name_of_space().toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
@@ -470,39 +471,39 @@ void Space::PrivateSpace::initSessionStorage(Space *space) {
   delete sync;
 }
 
-Space::PrivateSpace::~PrivateSpace() { mCurrentControllerMap.clear(); }
+Space::PrivateSpace::~PrivateSpace() { m_current_controller_list.clear(); }
 
-QString Space::PrivateSpace::sessionNameForSpace() {
+QString Space::PrivateSpace::session_name_of_space() {
   return QString("%1_%2_Space_%3")
-      .arg(QString::fromStdString(mWorkSpace->workspace_instance_name()))
-      .arg(mName)
-      .arg(mID);
+      .arg(QString::fromStdString(m_workspace->workspace_instance_name()))
+      .arg(m_name)
+      .arg(m_id);
 }
 
 QString
-Space::PrivateSpace::sessionNameForController(const QString &controllerName) {
-  return QString("%1_Controller_%2").arg(sessionNameForSpace()).arg(
+Space::PrivateSpace::session_controller_name(const QString &controllerName) {
+  return QString("%1_Controller_%2").arg(session_name_of_space()).arg(
       controllerName);
 }
 
-QString Space::session_name() const { return o_space->sessionNameForSpace(); }
+QString Space::session_name() const { return o_space->session_name_of_space(); }
 
 QString Space::session_name_for_controller(const QString &a_controller_name) {
-  return o_space->sessionNameForController(a_controller_name);
+  return o_space->session_controller_name(a_controller_name);
 }
 
 void Space::clear() {
   int i = 0;
-  foreach(DesktopActivityPtr _activity, o_space->mActivityList) {
+  foreach(DesktopActivityPtr _activity, o_space->m_activity_list) {
     qDebug() << Q_FUNC_INFO << "Remove Activity: ";
     if (_activity) {
-      o_space->mActivityList.removeAt(i);
+      o_space->m_activity_list.removeAt(i);
     }
     i++;
   }
 
   // delete owner widgets
-  for (Window *_widget : o_space->mWindowList) {
+  for (Window *_widget : o_space->m_window_list) {
     if (_widget) {
       if (o_space->m_native_scene->items().contains(_widget)) {
         o_space->m_native_scene->removeItem(_widget);
@@ -512,29 +513,30 @@ void Space::clear() {
     }
   }
 
-  o_space->mWindowList.clear();
+  o_space->m_window_list.clear();
   // remove spaces which belongs to the space.
-  foreach(const QString & _key, o_space->mCurrentControllerMap.keys()) {
+  foreach(const QString & _key, o_space->m_current_controller_list.keys()) {
     qDebug() << Q_FUNC_INFO << _key;
-    ViewControllerPtr _controller_ptr = o_space->mCurrentControllerMap[_key];
+    ViewControllerPtr _controller_ptr =
+        o_space->m_current_controller_list[_key];
     _controller_ptr->prepare_removal();
     qDebug() << Q_FUNC_INFO
-             << "Before Removal:" << o_space->mCurrentControllerMap.count();
-    o_space->mCurrentControllerMap.remove(_key);
+             << "Before Removal:" << o_space->m_current_controller_list.count();
+    o_space->m_current_controller_list.remove(_key);
     qDebug() << Q_FUNC_INFO
-             << "After Removal:" << o_space->mCurrentControllerMap.count();
+             << "After Removal:" << o_space->m_current_controller_list.count();
   }
 
-  o_space->mCurrentControllerMap.clear();
+  o_space->m_current_controller_list.clear();
 }
 
 QPointF Space::cursor_pos() const {
-  if (!o_space->mWorkSpace) {
+  if (!o_space->m_workspace) {
     return QCursor::pos();
   }
 
   QGraphicsView *_view_parent =
-      qobject_cast<QGraphicsView *>(o_space->mWorkSpace);
+      qobject_cast<QGraphicsView *>(o_space->m_workspace);
 
   if (!_view_parent) {
     return QCursor::pos();
@@ -588,24 +590,24 @@ QPointF Space::center(const QRectF &a_view_geometry,
 }
 
 ViewControllerPtr Space::controller(const QString &a_name) {
-  if (!o_space->mCurrentControllerMap.keys().contains(a_name)) {
+  if (!o_space->m_current_controller_list.keys().contains(a_name)) {
     return ViewControllerPtr();
   }
 
-  return o_space->mCurrentControllerMap[a_name];
+  return o_space->m_current_controller_list[a_name];
 }
 
 QStringList Space::current_controller_list() const {
-  return o_space->mCurrentControllerMap.keys();
+  return o_space->m_current_controller_list.keys();
 }
 
-void Space::set_name(const QString &a_name) { o_space->mName = a_name; }
+void Space::set_name(const QString &a_name) { o_space->m_name = a_name; }
 
-QString Space::name() const { return o_space->mName; }
+QString Space::name() const { return o_space->m_name; }
 
-void Space::set_id(int a_id) { o_space->mID = a_id; }
+void Space::set_id(int a_id) { o_space->m_id = a_id; }
 
-int Space::id() const { return o_space->mID; }
+int Space::id() const { return o_space->m_id; }
 
 void Space::setGeometry(const QRectF &a_geometry) {
   o_space->m_geometry = a_geometry;
@@ -619,7 +621,7 @@ void Space::setGeometry(const QRectF &a_geometry) {
         o_space->m_surface, (4 * a_geometry.width() * a_geometry.height()));
   }
 
-  foreach(DesktopActivityPtr _activity, o_space->mActivityList) {
+  foreach(DesktopActivityPtr _activity, o_space->m_activity_list) {
     if (_activity && _activity->window()) {
       QPointF _activity_pos = _activity->window()->pos();
 
@@ -630,19 +632,20 @@ void Space::setGeometry(const QRectF &a_geometry) {
     }
   }
 
-  foreach(const QString & _key, o_space->mCurrentControllerMap.keys()) {
-    ViewControllerPtr _controller_ptr = o_space->mCurrentControllerMap[_key];
+  foreach(const QString & _key, o_space->m_current_controller_list.keys()) {
+    ViewControllerPtr _controller_ptr =
+        o_space->m_current_controller_list[_key];
     _controller_ptr->set_view_rect(o_space->m_geometry);
   }
 }
 
-WorkSpace *Space::workspace() { return o_space->mWorkSpace; }
+WorkSpace *Space::workspace() { return o_space->m_workspace; }
 
 void Space::set_workspace(WorkSpace *a_workspace_ptr) {
-  o_space->mWorkSpace = a_workspace_ptr;
+  o_space->m_workspace = a_workspace_ptr;
 }
 
-void Space::restore_session() { o_space->initSessionStorage(this); }
+void Space::restore_session() { o_space->init_session_registry(this); }
 
 void Space::set_qt_graphics_scene(QGraphicsScene *a_qt_graphics_scene_ptr) {
   o_space->m_native_scene = a_qt_graphics_scene_ptr;
