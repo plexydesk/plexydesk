@@ -13,7 +13,7 @@ class SyncObject;
 typedef std::vector<std::string> CkStringList;
 typedef std::vector<SyncObject *> CkObjectList;
 
-class DataSync;
+class data_sync;
 /**
     * @brief
     *
@@ -94,7 +94,7 @@ public:
 
   void removeObject(uint key);
 
-  void set_data_sync(DataSync *a_sync);
+  void set_data_sync(data_sync *a_sync);
   virtual void sync();
 
   // protected:

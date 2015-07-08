@@ -122,7 +122,7 @@ Space::create_activity(const QString &a_activity, const QString &a_title,
 
 void Space::update_session_value(const QString &a_controller_name,
                                  const QString &a_key, const QString &a_value) {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
@@ -380,8 +380,8 @@ void Space::draw() {
 GraphicsSurface *Space::surface() { return &o_space->m_surface; }
 
 void Space::save_controller_to_session(const QString &a_controller_name) {
-  QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(o_space->session_name_of_space().toStdString());
+  QuetzalKit::data_sync *sync =
+      new QuetzalKit::data_sync(o_space->session_name_of_space().toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -404,7 +404,7 @@ void Space::save_controller_to_session(const QString &a_controller_name) {
 
 void
 Space::revoke_controller_session_attributes(const QString &a_controller_name) {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
@@ -447,8 +447,8 @@ void Space::PrivateSpace::controller_action_list(const Space *space,
 }
 
 void Space::PrivateSpace::init_session_registry(Space *space) {
-  QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(session_name_of_space().toStdString());
+  QuetzalKit::data_sync *sync =
+      new QuetzalKit::data_sync(session_name_of_space().toStdString());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 

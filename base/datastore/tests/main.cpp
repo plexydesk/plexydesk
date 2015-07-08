@@ -22,7 +22,7 @@
 using namespace QuetzalKit;
 
 void test_object_create() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -38,7 +38,7 @@ void test_object_create() {
 }
 
 void test_object_update() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -70,7 +70,7 @@ void test_object_update() {
 }
 
 void test_object_find() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -91,7 +91,7 @@ void test_object_find() {
 }
 
 void test_object_find_fail() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -108,7 +108,7 @@ void test_object_find_fail() {
 }
 
 void test_object_delete_matching() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -127,7 +127,7 @@ void test_object_delete_matching() {
 }
 
 void test_object_delete() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -146,7 +146,7 @@ void test_object_delete() {
 }
 
 void test_connected_objects() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("NoteList");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("NoteList");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -158,7 +158,7 @@ void test_connected_objects() {
 }
 
 void test_object_add_child() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Clock");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -174,7 +174,7 @@ void test_object_add_child() {
 }
 
 void test_save_controller_to_session(const std::string &a_controller_name) {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("test_default_space_0");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("test_default_space_0");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
@@ -197,7 +197,7 @@ void test_save_controller_to_session(const std::string &a_controller_name) {
 }
 
 void test_find_all() {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("test_default_space_0");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("test_default_space_0");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
