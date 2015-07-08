@@ -6,10 +6,10 @@
 #include <string>
 
 namespace QuetzalKit {
-class QuetzalDataKit_EXPORT DataSync {
+class QuetzalDataKit_EXPORT data_sync {
 public:
-  DataSync(const std::string &a_app_name);
-  virtual ~DataSync();
+  data_sync(const std::string &a_app_name);
+  virtual ~data_sync();
 
   virtual void set_sync_engine(SyncEngineInterface *a_iface);
 
@@ -28,8 +28,8 @@ public:
   on_object_saved(std::function<void(const SyncObject &a_object)> a_handler);
 
 private:
-  class PrivateDataSync;
-  PrivateDataSync *const m_priv;
+  class Privatedata_sync;
+  Privatedata_sync *const m_priv;
 };
 }
 

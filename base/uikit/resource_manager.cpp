@@ -177,7 +177,7 @@ void ResourceManager::load_default_color_values() {
 }
 
 void ResourceManager::set_color_scheme(const std::string &a_name) {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync("Palette");
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Palette");
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
