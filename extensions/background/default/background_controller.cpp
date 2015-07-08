@@ -170,14 +170,29 @@ void BackgroundController::expose_platform_desktop() {
 
 void BackgroundController::request_action(const QString &actionName,
                                           const QVariantMap &data) {
-    if (actionName == "Desktop") {
-        return;
-    }
+  if (actionName == "Desktop") {
+    if (!viewport())
+      return;
 
-    if (actionName == "Seamless") {
-        expose_platform_desktop();
-        return;
-    }
+    QRectF dialog_window_geometry(0, 0, 640, 640);
+    QPointF qt_activity_window_location = viewport()->center(
+        dialog_window_geometry,
+        QRectF(0, 0, o_ctr->m_background_window->geometry().width(),
+               o_ctr->m_background_window->geometry().height()),
+        CherryKit::Space::kCenterOnWindow);
+
+    CherryKit::DesktopActivityPtr activity = viewport()->create_activity(
+        "system_wallpapers", "Desktop", qt_activity_window_location,
+        dialog_window_geometry, QVariantMap());
+
+    activity->on_action_completed([=](const QVariantMap &a_data) {});
+    return;
+  }
+
+  if (actionName == "Seamless") {
+    expose_platform_desktop();
+    return;
+  }
 }
 
 void BackgroundController::download_image_from_url(QUrl fileUrl) {
@@ -196,8 +211,7 @@ void BackgroundController::download_image_from_url(QUrl fileUrl) {
 }
 
 void BackgroundController::set_desktop_scale_type(
-    DesktopWindow::DesktopScalingMode a_desktop_mode) {
-}
+    DesktopWindow::DesktopScalingMode a_desktop_mode) {}
 
 void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
                                              QDropEvent *event) {

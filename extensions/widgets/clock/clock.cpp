@@ -193,12 +193,12 @@ void Clock::PrivateClockController::setup_create_clock_ui(
   ck_ui->set_content_margin(10, 10, 10, 10);
   ck_ui->set_geometry(0, 0, 240, 260);
 
-  ck_ui->set_horizontal_segment_count(2);
-  ck_ui->add_horizontal_segments(0, 1);
-  ck_ui->add_horizontal_segments(1, 3);
+  ck_ui->add_rows(2);
+  ck_ui->add_segments(0, 1);
+  ck_ui->add_segments(1, 3);
 
-  ck_ui->set_horizontal_height(0, "90%");
-  ck_ui->set_horizontal_height(1, "10%");
+  ck_ui->set_row_height(0, "90%");
+  ck_ui->set_row_height(1, "10%");
   ck_ui->set_segment_width(1, 0, "30%");
   ck_ui->set_segment_width(1, 1, "60%");
   ck_ui->set_segment_width(1, 2, "10%");
@@ -275,17 +275,17 @@ void Clock::PrivateClockController::setup_create_timer_ui(
   ck_ui->set_content_margin(10, 10, 10, 10);
   ck_ui->set_geometry(0, 0, 240, 260);
 
-  ck_ui->set_horizontal_segment_count(4);
+  ck_ui->add_rows(4);
 
-  ck_ui->add_horizontal_segments(0, 1);
-  ck_ui->add_horizontal_segments(1, 1);
-  ck_ui->add_horizontal_segments(2, 3);
-  ck_ui->add_horizontal_segments(3, 3);
+  ck_ui->add_segments(0, 1);
+  ck_ui->add_segments(1, 1);
+  ck_ui->add_segments(2, 3);
+  ck_ui->add_segments(3, 3);
 
-  ck_ui->set_horizontal_height(0, "10%");
-  ck_ui->set_horizontal_height(1, "70%");
-  ck_ui->set_horizontal_height(2, "10%");
-  ck_ui->set_horizontal_height(3, "10%");
+  ck_ui->set_row_height(0, "10%");
+  ck_ui->set_row_height(1, "70%");
+  ck_ui->set_row_height(2, "10%");
+  ck_ui->set_row_height(3, "10%");
 
   CherryKit::WidgetProperties ui_data;
 

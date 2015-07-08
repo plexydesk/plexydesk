@@ -7,6 +7,7 @@
 #include <asyncdatadownloader.h>
 #include <asyncimagecreator.h>
 #include <asyncimageloader.h>
+
 #include <QFileInfo>
 #include <QDir>
 #include <plexyconfig.h>
@@ -140,6 +141,7 @@ void ImageCellAdaptor::getImageFromPath(const QString &str) {
     Q_FOREACH(const QString & pictureName, localPictureList) {
       QString imageFile = QDir::toNativeSeparators(
           localPictureDir.absolutePath() + "/" + pictureName);
+
       QuetzalSocialKit::AsyncImageCreator *creator =
           new QuetzalSocialKit::AsyncImageCreator(this);
       creator->setData(imageFile, CherryKit::Config::cache_dir());
