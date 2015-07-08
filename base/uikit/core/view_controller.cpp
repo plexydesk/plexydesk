@@ -28,8 +28,8 @@ ViewController::ViewController(QObject *parent)
 void ViewController::revoke_previous_session(
     const std::string &a_session_object_name,
     std::function<void(ViewController *, SessionSync *)> a_callback) {
-  QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(session_database_name(a_session_object_name));
+  QuetzalKit::data_sync *sync =
+      new QuetzalKit::data_sync(session_database_name(a_session_object_name));
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
@@ -72,7 +72,7 @@ void ViewController::write_session_data(const std::string &a_session_name) {
     if (session_ref->session_group_key().compare(key_name) != 0)
       return;
 
-    QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(session_name);
+    QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(session_name);
     QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
     sync->set_sync_engine(engine);
 

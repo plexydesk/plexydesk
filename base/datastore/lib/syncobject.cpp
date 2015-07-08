@@ -32,7 +32,7 @@ public:
   std::string m_object_name;
   uint m_object_key;
 
-  DataSync *m_sync_store;
+  data_sync *m_sync_store;
 };
 
 void SyncObject::update_time_stamp() {
@@ -87,7 +87,7 @@ void SyncObject::set_property(const std::string &name,
   update_time_stamp();
 }
 
-void SyncObject::set_data_sync(DataSync *a_sync) {
+void SyncObject::set_data_sync(data_sync *a_sync) {
   if (p_object->m_sync_store)
     return;
 

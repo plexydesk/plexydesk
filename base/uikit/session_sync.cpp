@@ -139,7 +139,7 @@ void SessionSync::delete_session_data(const std::string &a_session_name,
                                       const std::string &a_object_name,
                                       const std::string &a_object_key,
                                       const std::string &a_object_value) {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(a_session_name);
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(a_session_name);
 
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
@@ -155,7 +155,7 @@ void SessionSync::save_session_attribute(const std::string &a_session_name,
                                          const std::string &a_object_value,
                                          const std::string &a_key,
                                          const std::string &a_value) {
-  QuetzalKit::DataSync *sync = new QuetzalKit::DataSync(a_session_name);
+  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(a_session_name);
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 

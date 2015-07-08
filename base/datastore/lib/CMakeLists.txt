@@ -56,6 +56,7 @@ ADD_DEFINITIONS(-DPLEXYPREFIX="${CMAKE_INSTALL_PREFIX}"
                )
 
 SET(sourceFiles
+    image_io.cpp
     datasync.cpp
     syncobject.cpp
     syncengineinterface.cpp
@@ -65,6 +66,7 @@ SET(sourceFiles
    )
 
 SET(headerFiles
+    image_io.h
     datasync.h
     syncobject.h
     memorysyncengine.h

@@ -407,8 +407,8 @@ std::string WorkSpace::workspace_instance_name() {
 }
 
 void WorkSpace::save_space_removal_session_data(const QString &a_space_name) {
-  QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(workspace_instance_name());
+  QuetzalKit::data_sync *sync =
+      new QuetzalKit::data_sync(workspace_instance_name());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
@@ -532,8 +532,8 @@ void WorkSpace::add_default_space() {
   this->expose_sub_region(_space_geometry);
   p_workspace->m_current_activty_space_id = _space->id();
 
-  QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(workspace_instance_name());
+  QuetzalKit::data_sync *sync =
+      new QuetzalKit::data_sync(workspace_instance_name());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
@@ -549,8 +549,8 @@ void WorkSpace::add_default_space() {
 }
 
 void WorkSpace::restore_session() {
-  QuetzalKit::DataSync *sync =
-      new QuetzalKit::DataSync(workspace_instance_name());
+  QuetzalKit::data_sync *sync =
+      new QuetzalKit::data_sync(workspace_instance_name());
   QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
