@@ -30,30 +30,30 @@ SET(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(photosearchactivity SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(system_wallpapers SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
 IF(MINGW)
-    SET_TARGET_PROPERTIES(photosearchactivity PROPERTIES
+    SET_TARGET_PROPERTIES(system_wallpapers PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
 ENDIF(MINGW)
 
-TARGET_LINK_LIBRARIES(photosearchactivity
+TARGET_LINK_LIBRARIES(system_wallpapers
     ${PLEXY_UI_CORE_LIBRARY}
     ${QUETZAL_SOCIAL_KIT_LIBRARY}
     ${libs}
     )
 
-QT5_USE_MODULES(photosearchactivity Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(system_wallpapers Widgets Xml OpenGL Core  )
 
 IF (NOT APPLE)
-    INSTALL(TARGETS photosearchactivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
+    INSTALL(TARGETS system_wallpapers DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
     INSTALL(FILES photosearch.desktop DESTINATION share/plexy/ext/groups)
 ENDIF (NOT APPLE)
 
 IF (APPLE)
-   INSTALL(TARGETS photosearchactivity LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(TARGETS system_wallpapers LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES photosearch.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 ENDIF(APPLE)

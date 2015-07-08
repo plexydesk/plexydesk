@@ -234,12 +234,12 @@ void DesktopNotesControllerImpl::createReminderUI(
   view->set_content_margin(10, 10, 10, 10);
   view->set_geometry(0, 0, 320, 200);
 
-  view->set_horizontal_segment_count(2);
-  view->add_horizontal_segments(0, 1);
-  view->add_horizontal_segments(1, 4);
+  view->add_rows(2);
+  view->add_segments(0, 1);
+  view->add_segments(1, 4);
 
-  view->set_horizontal_height(0, "85%");
-  view->set_horizontal_height(1, "15%");
+  view->set_row_height(0, "85%");
+  view->set_row_height(1, "15%");
 
   CherryKit::WidgetProperties top_label_prop;
   top_label_prop["label"] = "reminder";

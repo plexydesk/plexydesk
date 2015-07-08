@@ -14,7 +14,6 @@ public:
   virtual ~AsyncDataDownloader();
 
   void setMetaData(const QVariantMap &metaData);
-
   QVariantMap metaData() const;
 
   void setUrl(const QUrl &url);
