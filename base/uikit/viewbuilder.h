@@ -46,11 +46,12 @@ public:
                                   float a_bottom);
 
   virtual void add_column(int a_count);
-  virtual void split_column(int a_column_index, int a_count);
 
-  virtual void set_horizontal_segment_count(int a_count);
-  virtual void add_horizontal_segments(int a_index, int a_count);
-  virtual void set_horizontal_height(int a_row, const std::string &a_height);
+  virtual void add_rows(int a_count);
+
+  virtual void set_row_height(int a_row, const std::string &a_height);
+
+  virtual void add_segments(int a_index, int a_count);
   virtual void set_segment_width(int a_row, int a_column,
                                 const std::string &a_width);
 

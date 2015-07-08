@@ -35,6 +35,8 @@ public:
   QSize mThumbNailSize;
   QRect mCropRect;
   bool mCropImage;
+
+  std::function<void(AsyncImageCreator *)> m_on_complete_call;
 };
 
 AsyncImageCreator::AsyncImageCreator(QObject *parent)
@@ -43,9 +45,14 @@ AsyncImageCreator::AsyncImageCreator(QObject *parent)
   d->mScaleHeight = 0;
   d->mThumbNailSize = QSize(150, 150);
   d->mCropImage = false;
+  setTerminationEnabled(true);
+  connect(this, SIGNAL(finished()), this, SLOT(on_finished()));
 }
 
-AsyncImageCreator::~AsyncImageCreator() { delete d; }
+AsyncImageCreator::~AsyncImageCreator() {
+    qDebug() << Q_FUNC_INFO;
+    delete d;
+}
 
 void AsyncImageCreator::setMetaData(const QVariantMap &data) {
   d->mMetaData = data;
@@ -122,6 +129,18 @@ QByteArray AsyncImageCreator::imageToByteArray(const QImage &img) const {
   return array;
 }
 
+void AsyncImageCreator::on_task_complete(
+    std::function<void(AsyncImageCreator *)> a_callback) {
+  d->m_on_complete_call = a_callback;
+}
+
+void AsyncImageCreator::on_finished() {
+  qDebug() << Q_FUNC_INFO << "Finished";
+  //quit();
+  if (d->m_on_complete_call)
+    d->m_on_complete_call(this);
+}
+
 void AsyncImageCreator::run() {
   // first we make sure we have an image
   QString cacheFileName;
@@ -184,6 +203,8 @@ void AsyncImageCreator::run() {
     d->mCropedImage = imageToCrop.copy(d->mCropRect);
   }
 
+  qDebug() << Q_FUNC_INFO << "Image Is Null within Thread : " <<
+              d->mImage.isNull();
   Q_EMIT ready();
 }
 

@@ -141,18 +141,16 @@ void HybridLayout::add_column(int a_count) {
   o_view_builder->m_column_count = a_count;
 }
 
-void HybridLayout::split_column(int a_column_index, int a_count) {}
-
-void HybridLayout::set_horizontal_segment_count(int a_row_count) {
+void HybridLayout::add_rows(int a_row_count) {
   o_view_builder->m_row_count = a_row_count;
   for (int i = 0; i < a_row_count; i++) {
     // if (!(d->m_row_data[i] > 1))
     //  continue;
-    add_horizontal_segments(i, 1);
+    add_segments(i, 1);
   }
 }
 
-void HybridLayout::add_horizontal_segments(int a_index, int a_count) {
+void HybridLayout::add_segments(int a_index, int a_count) {
   o_view_builder->m_row_data[a_index] = a_count;
 
   for (int i = 0; i < a_count; i++) {
@@ -160,7 +158,7 @@ void HybridLayout::add_horizontal_segments(int a_index, int a_count) {
   }
 }
 
-void HybridLayout::set_horizontal_height(int a_row,
+void HybridLayout::set_row_height(int a_row,
                                          const std::string &a_height) {
   o_view_builder->m_row_height_data[a_row] = a_height;
 }

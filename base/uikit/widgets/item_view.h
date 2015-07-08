@@ -27,10 +27,10 @@ public:
   virtual ModelViewItem *at(int index);
 
   virtual void set_filter(const QString &a_keyword);
-
   virtual void clear();
 
   virtual void set_view_geometry(const QRectF &a_rect);
+
   virtual QRectF boundingRect() const;
   virtual void setGeometry(const QRectF &a_rect);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;

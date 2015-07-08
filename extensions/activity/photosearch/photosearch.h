@@ -60,7 +60,7 @@ Q_SLOTS:
 
   // void onImageSaved();
 
-  void locateLocalFiles() const;
+  void load_from_system_path() const;
 
 private:
   class PrivatePhotoSearch;

@@ -118,11 +118,11 @@ DateControllerImpl::create_ui_calendar_ui(CherryKit::SessionSync *a_session) {
 
   ui->set_content_margin(10, 10, 10, 10);
   ui->set_geometry(0, 0, 360, 340);
-  ui->set_horizontal_segment_count(2);
-  ui->add_horizontal_segments(0, 1);
-  ui->add_horizontal_segments(1, 3);
-  ui->set_horizontal_height(0, "95%");
-  ui->set_horizontal_height(1, "5%");
+  ui->add_rows(2);
+  ui->add_segments(0, 1);
+  ui->add_segments(1, 3);
+  ui->set_row_height(0, "95%");
+  ui->set_row_height(1, "5%");
 
   CherryKit::WidgetProperties ui_data;
   ui_data["text"] + "";

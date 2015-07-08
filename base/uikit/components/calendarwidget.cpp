@@ -26,18 +26,18 @@ CalendarView::CalendarView(Widget *parent)
   o_calendar_widget->m_ui->set_content_margin(10, 10, 10, 10);
   o_calendar_widget->m_ui->set_geometry(0, 0, 320, 400);
 
-  o_calendar_widget->m_ui->set_horizontal_segment_count(10);
+  o_calendar_widget->m_ui->add_rows(10);
 
-  o_calendar_widget->m_ui->add_horizontal_segments(0, 3);
-  o_calendar_widget->m_ui->add_horizontal_segments(2, 7);
+  o_calendar_widget->m_ui->add_segments(0, 3);
+  o_calendar_widget->m_ui->add_segments(2, 7);
 
-  o_calendar_widget->m_ui->set_horizontal_height(0, "7%");
-  o_calendar_widget->m_ui->set_horizontal_height(1, "6%");
-  o_calendar_widget->m_ui->set_horizontal_height(2, "7%");
+  o_calendar_widget->m_ui->set_row_height(0, "7%");
+  o_calendar_widget->m_ui->set_row_height(1, "6%");
+  o_calendar_widget->m_ui->set_row_height(2, "7%");
 
   for (int i = 3; i < 10; i++) {
-    o_calendar_widget->m_ui->add_horizontal_segments(i, 7);
-    o_calendar_widget->m_ui->set_horizontal_height(i, "8%");
+    o_calendar_widget->m_ui->add_segments(i, 7);
+    o_calendar_widget->m_ui->set_row_height(i, "8%");
   }
 
   o_calendar_widget->m_ui->set_segment_width(0, 0, "10%");

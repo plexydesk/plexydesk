@@ -106,11 +106,11 @@ NoteWidget::NoteWidget(CherryKit::SessionSync *a_session,
   d->m_ui->set_geometry(parent->geometry().x(), parent->geometry().y(),
                         parent->geometry().width(),
                         parent->geometry().height());
-  d->m_ui->set_horizontal_segment_count(2);
-  d->m_ui->add_horizontal_segments(0, 1);
-  d->m_ui->add_horizontal_segments(1, 9);
-  d->m_ui->set_horizontal_height(0, "90%");
-  d->m_ui->set_horizontal_height(1, "10%");
+  d->m_ui->add_rows(2);
+  d->m_ui->add_segments(0, 1);
+  d->m_ui->add_segments(1, 9);
+  d->m_ui->set_row_height(0, "90%");
+  d->m_ui->set_row_height(1, "10%");
 
   CherryKit::WidgetProperties text_editor_prop;
   text_editor_prop["text"] = "";
@@ -389,6 +389,7 @@ void NoteWidget::onToolBarAction(const QString &action) {
       QPointF window_pos(mapToScene(QPointF()));
 
       QRectF window_geometry(window_pos.x(), window_pos.y(), 300, 348);
+
       d->m_viewport->create_activity(
           "datepickeractivity", tr("Calendar"),
           d->m_viewport->center(window_geometry, window_geometry,

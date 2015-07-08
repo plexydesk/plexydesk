@@ -169,13 +169,13 @@ void DockControllerImpl::init() {
       new CherryKit::HybridLayout(o_view_controller->m_dock_window);
   build->set_content_margin(6, 10, 10, 10);
   build->set_geometry(0, 0, 48 + 16, 48 * 7);
-  build->set_horizontal_segment_count(7);
+  build->add_rows(7);
 
   std::string default_height = std::to_string((48.0 / (48.0 * 7)) * 100) + "%";
 
   for (int i = 0; i < 7; i++) {
-    build->add_horizontal_segments(i, 1);
-    build->set_horizontal_height(i, default_height);
+    build->add_segments(i, 1);
+    build->set_row_height(i, default_height);
   }
 
   CherryKit::WidgetProperties accept_button_prop;
