@@ -6,7 +6,7 @@
 
 namespace ck {
 
-class QuetzalDataKit_EXPORT DiskSyncEngine : public SyncEngineInterface {
+class QuetzalDataKit_EXPORT DiskSyncEngine : public sync_engine_interface {
   Q_OBJECT
 public:
   explicit DiskSyncEngine(QObject *a_parent_ptr = 0);

@@ -6,7 +6,7 @@
 
 namespace ck {
 
-class QuetzalDataKit_EXPORT MemorySyncEngine : public SyncEngineInterface {
+class QuetzalDataKit_EXPORT MemorySyncEngine : public sync_engine_interface {
   Q_OBJECT
 
 public:

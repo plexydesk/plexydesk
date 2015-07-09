@@ -23,7 +23,7 @@ public:
 };
 
 DiskSyncEngine::DiskSyncEngine(QObject *parent)
-    : SyncEngineInterface(parent), d(new PrivateDiskSyncEngine) {
+    : sync_engine_interface(parent), d(new PrivateDiskSyncEngine) {
   d->mFileWatch = new QFileSystemWatcher(this);
 
   connect(d->mFileWatch, SIGNAL(fileChanged(QString)), this,
