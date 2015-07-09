@@ -409,7 +409,7 @@ std::string WorkSpace::workspace_instance_name() {
 void WorkSpace::save_space_removal_session_data(const QString &a_space_name) {
   cherry::data_sync *sync =
       new cherry::data_sync(workspace_instance_name());
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
   sync->set_sync_engine(engine);
 
   sync->remove_object("Space", "ref", a_space_name.toStdString());
@@ -534,7 +534,7 @@ void WorkSpace::add_default_space() {
 
   cherry::data_sync *sync =
       new cherry::data_sync(workspace_instance_name());
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
   sync->set_sync_engine(engine);
 
   cherry::sync_object obj;
@@ -551,7 +551,7 @@ void WorkSpace::add_default_space() {
 void WorkSpace::restore_session() {
   cherry::data_sync *sync =
       new cherry::data_sync(workspace_instance_name());
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
