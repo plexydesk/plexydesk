@@ -13,7 +13,7 @@ public:
   QTime time;
   int duration;
   ck::DataStore *mStore;
-  ck::SyncObject *mTaskObject;
+  ck::sync_object *mTaskObject;
 };
 
 WindowObject::WindowObject() : data(new WindowObjectData) {
@@ -53,7 +53,7 @@ void WindowObject::updateDuration(int duration) {
       new ck::DiskSyncEngine(data->mStore);
   data->mStore->setSyncEngine(engine);
 
-  ck::SyncObject *rootObject = data->mStore->begin("WindowList");
+  ck::sync_object *rootObject = data->mStore->begin("WindowList");
 
   data->mTaskObject = rootObject->createNewObject("Task");
   data->mTaskObject->set_property("app", QVariant(""));

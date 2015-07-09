@@ -182,7 +182,7 @@ void ResourceManager::set_color_scheme(const std::string &a_name) {
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       load_default_color_values();

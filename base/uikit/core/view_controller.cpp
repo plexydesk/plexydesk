@@ -33,7 +33,7 @@ void ViewController::revoke_previous_session(
   ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       QVariantMap session_data;
@@ -77,7 +77,7 @@ void ViewController::write_session_data(const std::string &a_session_name) {
     sync->set_sync_engine(engine);
 
     session_ref->update_session();
-    ck::SyncObject clock_session_obj;
+    ck::sync_object clock_session_obj;
 
     clock_session_obj.set_name(a_session_name);
     Q_FOREACH(const QString & a_key, session_ref->session_keys()) {
@@ -86,7 +86,7 @@ void ViewController::write_session_data(const std::string &a_session_name) {
           std::string(session_ref->session_data(a_key).toByteArray()));
     }
 
-    sync->on_object_found([&](ck::SyncObject &a_object,
+    sync->on_object_found([&](ck::sync_object &a_object,
                               const std::string &a_app_name, bool a_found) {
       if (!a_found) {
         sync->add_object(clock_session_obj);

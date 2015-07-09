@@ -41,8 +41,8 @@ public:
 
   void init();
 
-  void session_data_available(const ck::SyncObject &a_sesion_root);
-  virtual void submit_session_data(ck::SyncObject *a_obj);
+  void session_data_available(const ck::sync_object &a_sesion_root);
+  virtual void submit_session_data(ck::sync_object *a_obj);
 
   void set_view_rect(const QRectF &rect);
 
