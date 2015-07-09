@@ -12,8 +12,8 @@ public:
   QString title;
   QTime time;
   int duration;
-  QuetzalKit::DataStore *mStore;
-  QuetzalKit::SyncObject *mTaskObject;
+  ck::DataStore *mStore;
+  ck::SyncObject *mTaskObject;
 };
 
 WindowObject::WindowObject() : data(new WindowObjectData) {
@@ -48,12 +48,12 @@ int WindowObject::duration() const { return data->duration; }
 void WindowObject::updateDuration(int duration) {
   data->duration += duration;
 
-  data->mStore = new QuetzalKit::DataStore("DesktopActivity");
-  QuetzalKit::DiskSyncEngine *engine =
-      new QuetzalKit::DiskSyncEngine(data->mStore);
+  data->mStore = new ck::DataStore("DesktopActivity");
+  ck::DiskSyncEngine *engine =
+      new ck::DiskSyncEngine(data->mStore);
   data->mStore->setSyncEngine(engine);
 
-  QuetzalKit::SyncObject *rootObject = data->mStore->begin("WindowList");
+  ck::SyncObject *rootObject = data->mStore->begin("WindowList");
 
   data->mTaskObject = rootObject->createNewObject("Task");
   data->mTaskObject->set_property("app", QVariant(""));

@@ -4,7 +4,7 @@
 #include <syncengineinterface.h>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit {
+namespace ck {
 
 class QuetzalDataKit_EXPORT DiskSyncEngine : public SyncEngineInterface {
   Q_OBJECT

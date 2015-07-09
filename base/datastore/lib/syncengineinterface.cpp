@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace QuetzalKit {
+namespace ck {
 
 class SyncEngineInterface::PrivateSyncEngineIface {
 public:
