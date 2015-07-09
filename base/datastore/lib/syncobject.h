@@ -8,17 +8,17 @@
 
 namespace ck {
 
-class SyncObject;
+class sync_object;
 
 typedef std::vector<std::string> CkStringList;
-typedef std::vector<SyncObject *> CkObjectList;
+typedef std::vector<sync_object *> CkObjectList;
 
 class data_sync;
 /**
     * @brief
     *
     */
-class QuetzalDataKit_EXPORT SyncObject {
+class QuetzalDataKit_EXPORT sync_object {
 
 public:
   /**
@@ -26,13 +26,13 @@ public:
       *
       * @param parent the pointer to the parent object
       */
-  explicit SyncObject(SyncObject *a_parent_ptr = 0);
+  explicit sync_object(sync_object *a_parent_ptr = 0);
 
   /**
       * @brief
       *
       */
-  virtual ~SyncObject();
+  virtual ~sync_object();
 
   /**
       * @brief
@@ -72,8 +72,8 @@ public:
   void set_key(uint key);
   uint key() const;
 
-  SyncObject *parent() const;
-  void set_parent(SyncObject *a_parent_ptr);
+  sync_object *parent() const;
+  void set_parent(sync_object *a_parent_ptr);
 
   void set_property(const std::string &name, const std::string &property);
   std::string property(const std::string &name) const;
@@ -82,11 +82,11 @@ public:
 
   bool has_children() const;
   uint child_count() const;
-  void add_child(SyncObject *object);
+  void add_child(sync_object *object);
 
   CkObjectList child_objects() const;
-  SyncObject *childObject(uint key);
-  SyncObject *childObject(const std::string &name);
+  sync_object *childObject(uint key);
+  sync_object *childObject(const std::string &name);
   void linksToObject(const std::string &dataStoreName,
                      const std::string &objectName);
 
@@ -98,15 +98,15 @@ public:
   virtual void sync();
 
   // protected:
-  SyncObject *create_new(const std::string &name);
+  sync_object *create_new(const std::string &name);
   std::string dump_content() const;
-  bool contains(SyncObject *object);
-  bool is_similar(SyncObject *object);
-  void replace(SyncObject *object);
+  bool contains(sync_object *object);
+  bool is_similar(sync_object *object);
+  void replace(sync_object *object);
 
 private:
-  class PrivateSyncObject;
-  PrivateSyncObject *const p_object; /**< TODO */
+  class Privatesync_object;
+  Privatesync_object *const p_object; /**< TODO */
 };
 }
 #endif // SYNCOBJECT_H

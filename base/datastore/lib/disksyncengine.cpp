@@ -65,7 +65,7 @@ void DiskSyncEngine::set_app_name(const std::string &a_app_name) {
   d->m_app_name = a_app_name;
 }
 
-void DiskSyncEngine::insert_request(const SyncObject &a_obj) {
+void DiskSyncEngine::insert_request(const sync_object &a_obj) {
   if (a_obj.name().empty())
     return;
 
@@ -203,7 +203,7 @@ QString DiskSyncEngine::db_app_path() {
   return db_file_path;
 }
 
-void DiskSyncEngine::update_request(const SyncObject &a_obj) {
+void DiskSyncEngine::update_request(const sync_object &a_obj) {
   if (a_obj.name().empty())
     return;
 
@@ -487,7 +487,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   if (!fileInfo.exists()) {
     qDebug() << Q_FUNC_INFO << "DB File Not found:" << home_path;
 
-    SyncObject null_obj;
+    sync_object null_obj;
     search_request_complete(null_obj, d->m_app_name, 0);
     return;
   }
@@ -499,7 +499,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
     qDebug() << Q_FUNC_INFO << "DB File Not Found :" << db_file_path;
     ;
 
-    SyncObject null_obj;
+    sync_object null_obj;
     search_request_complete(null_obj, d->m_app_name, 0);
     return;
   }
@@ -515,7 +515,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   if (object_file.exists()) {
     if (!object_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << Q_FUNC_INFO << "Failed to open device read-only";
-      SyncObject null_obj;
+      sync_object null_obj;
       search_request_complete(null_obj, d->m_app_name, 0);
       return;
     }
@@ -532,7 +532,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
       qDebug() << Q_FUNC_INFO << "Error :" << error_msg << " Line : " << line
                << " Column : " << column;
 
-      SyncObject null_obj;
+      sync_object null_obj;
       search_request_complete(null_obj, d->m_app_name, 0);
       return;
     }
@@ -547,7 +547,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
         QDomElement child_element = child_node.toElement();
 
         if (QString::fromStdString(a_object_name) == child_element.tagName()) {
-          ck::SyncObject obj;
+          ck::sync_object obj;
           obj.set_name(a_object_name);
 
           QDomNamedNodeMap attrMap = child_node.attributes();
@@ -587,7 +587,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   }
 
   if (!match_found) {
-    SyncObject null_obj;
+    sync_object null_obj;
     search_request_complete(null_obj, d->m_app_name, match_found);
   }
 }

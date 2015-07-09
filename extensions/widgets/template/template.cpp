@@ -32,10 +32,10 @@ TemplateControllerImpl::~TemplateControllerImpl() { delete o_view_controller; }
 void TemplateControllerImpl::init() {}
 
 void TemplateControllerImpl::session_data_available(
-    const ck::SyncObject &a_session_root) {}
+    const ck::sync_object &a_session_root) {}
 
 void
-TemplateControllerImpl::submit_session_data(ck::SyncObject *a_obj) {}
+TemplateControllerImpl::submit_session_data(ck::sync_object *a_obj) {}
 
 void TemplateControllerImpl::set_view_rect(const QRectF &a_rect) {}
 
