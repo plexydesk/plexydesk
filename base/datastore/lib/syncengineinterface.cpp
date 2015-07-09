@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace ck {
+namespace cherry {
 
 class sync_engine_interface::PrivateSyncEngineIface {
 public:
