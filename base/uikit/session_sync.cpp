@@ -139,9 +139,9 @@ void SessionSync::delete_session_data(const std::string &a_session_name,
                                       const std::string &a_object_name,
                                       const std::string &a_object_key,
                                       const std::string &a_object_value) {
-  ck::data_sync *sync = new ck::data_sync(a_session_name);
+  cherry::data_sync *sync = new cherry::data_sync(a_session_name);
 
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
   sync->remove_object(a_object_name, a_object_key, a_object_value);
@@ -155,11 +155,11 @@ void SessionSync::save_session_attribute(const std::string &a_session_name,
                                          const std::string &a_object_value,
                                          const std::string &a_key,
                                          const std::string &a_value) {
-  ck::data_sync *sync = new ck::data_sync(a_session_name);
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync(a_session_name);
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([=](ck::sync_object &a_object,
+  sync->on_object_found([=](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       a_object.set_property(a_key, a_value);

@@ -91,7 +91,7 @@ void Clock::init() {
 void Clock::set_view_rect(const QRectF &rect) {}
 
 void
-Clock::session_data_available(const ck::sync_object &a_session_root) {
+Clock::session_data_available(const cherry::sync_object &a_session_root) {
   revoke_previous_session("Clock",
                           [this](CherryKit::ViewController *a_controller,
                                  CherryKit::SessionSync *a_session) {
@@ -105,7 +105,7 @@ Clock::session_data_available(const ck::sync_object &a_session_root) {
   });
 }
 
-void Clock::submit_session_data(ck::sync_object *a_obj) {
+void Clock::submit_session_data(cherry::sync_object *a_obj) {
   write_session_data("Clock");
   write_session_data("Timer");
 }

@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QDir>
 
-namespace ck {
+namespace cherry {
 
 class DiskSyncEngine::PrivateDiskSyncEngine {
 public:
@@ -547,7 +547,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
         QDomElement child_element = child_node.toElement();
 
         if (QString::fromStdString(a_object_name) == child_element.tagName()) {
-          ck::sync_object obj;
+          cherry::sync_object obj;
           obj.set_name(a_object_name);
 
           QDomNamedNodeMap attrMap = child_node.attributes();

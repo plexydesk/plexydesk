@@ -12,8 +12,8 @@ public:
   QString title;
   QTime time;
   int duration;
-  ck::DataStore *mStore;
-  ck::sync_object *mTaskObject;
+  cherry::DataStore *mStore;
+  cherry::sync_object *mTaskObject;
 };
 
 WindowObject::WindowObject() : data(new WindowObjectData) {
@@ -48,12 +48,12 @@ int WindowObject::duration() const { return data->duration; }
 void WindowObject::updateDuration(int duration) {
   data->duration += duration;
 
-  data->mStore = new ck::DataStore("DesktopActivity");
-  ck::DiskSyncEngine *engine =
-      new ck::DiskSyncEngine(data->mStore);
+  data->mStore = new cherry::DataStore("DesktopActivity");
+  cherry::DiskSyncEngine *engine =
+      new cherry::DiskSyncEngine(data->mStore);
   data->mStore->setSyncEngine(engine);
 
-  ck::sync_object *rootObject = data->mStore->begin("WindowList");
+  cherry::sync_object *rootObject = data->mStore->begin("WindowList");
 
   data->mTaskObject = rootObject->createNewObject("Task");
   data->mTaskObject->set_property("app", QVariant(""));

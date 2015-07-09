@@ -4,7 +4,7 @@
 #include <syncengineinterface.h>
 #include <QuetzalDataKit_export.h>
 
-namespace ck {
+namespace cherry {
 
 class QuetzalDataKit_EXPORT MemorySyncEngine : public sync_engine_interface {
   Q_OBJECT

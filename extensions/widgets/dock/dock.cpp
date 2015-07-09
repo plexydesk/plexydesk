@@ -213,9 +213,9 @@ void DockControllerImpl::init() {
 }
 
 void DockControllerImpl::session_data_available(
-    const ck::sync_object &a_sesion_root) {}
+    const cherry::sync_object &a_sesion_root) {}
 
-void DockControllerImpl::submit_session_data(ck::sync_object *a_obj) {}
+void DockControllerImpl::submit_session_data(cherry::sync_object *a_obj) {}
 
 void DockControllerImpl::set_view_rect(const QRectF &rect) {
   if (!viewport()) {
