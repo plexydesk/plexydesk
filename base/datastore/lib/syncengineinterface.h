@@ -10,11 +10,11 @@
 
 namespace ck {
 
-class QuetzalDataKit_EXPORT SyncEngineInterface : public QObject {
+class QuetzalDataKit_EXPORT sync_engine_interface : public QObject {
   Q_OBJECT
 public:
-  explicit SyncEngineInterface(QObject *a_parent_ptr = 0);
-  virtual ~SyncEngineInterface();
+  explicit sync_engine_interface(QObject *a_parent_ptr = 0);
+  virtual ~sync_engine_interface();
 
   virtual QString data(const QString &storeName) = 0;
 
