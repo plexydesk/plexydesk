@@ -7,10 +7,10 @@
 
 namespace cherry {
 
-class DiskSyncEngine::PrivateDiskSyncEngine {
+class disk_engine::Privatedisk_engine {
 public:
-  PrivateDiskSyncEngine() {}
-  ~PrivateDiskSyncEngine() {
+  Privatedisk_engine() {}
+  ~Privatedisk_engine() {
     if (mFile) {
       delete mFile;
     }
@@ -22,8 +22,8 @@ public:
   std::string m_app_name;
 };
 
-DiskSyncEngine::DiskSyncEngine(QObject *parent)
-    : sync_engine_interface(parent), d(new PrivateDiskSyncEngine) {
+disk_engine::disk_engine(QObject *parent)
+    : sync_engine_interface(parent), d(new Privatedisk_engine) {
   d->mFileWatch = new QFileSystemWatcher(this);
 
   connect(d->mFileWatch, SIGNAL(fileChanged(QString)), this,
@@ -36,9 +36,9 @@ DiskSyncEngine::DiskSyncEngine(QObject *parent)
           SLOT(onBytesWritten(qint64)));
 }
 
-DiskSyncEngine::~DiskSyncEngine() { delete d; }
+disk_engine::~disk_engine() { delete d; }
 
-void DiskSyncEngine::setEngineName(const QString &name) {
+void disk_engine::setEngineName(const QString &name) {
   d->mCurrentEngine = name;
   QString homePath =
       QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");
@@ -61,11 +61,11 @@ void DiskSyncEngine::setEngineName(const QString &name) {
   }
 }
 
-void DiskSyncEngine::set_app_name(const std::string &a_app_name) {
+void disk_engine::set_app_name(const std::string &a_app_name) {
   d->m_app_name = a_app_name;
 }
 
-void DiskSyncEngine::insert_request(const sync_object &a_obj) {
+void disk_engine::insert_request(const sync_object &a_obj) {
   if (a_obj.name().empty())
     return;
 
@@ -188,14 +188,14 @@ void DiskSyncEngine::insert_request(const sync_object &a_obj) {
   qDebug() << Q_FUNC_INFO << "Done";
 }
 
-QString DiskSyncEngine::db_home_path() {
+QString disk_engine::db_home_path() {
   QString home_path =
       QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");
 
   return home_path;
 }
 
-QString DiskSyncEngine::db_app_path() {
+QString disk_engine::db_app_path() {
   QString db_file_path =
       QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/" +
                                QString::fromStdString(d->m_app_name) + "/");
@@ -203,7 +203,7 @@ QString DiskSyncEngine::db_app_path() {
   return db_file_path;
 }
 
-void DiskSyncEngine::update_request(const sync_object &a_obj) {
+void disk_engine::update_request(const sync_object &a_obj) {
   if (a_obj.name().empty())
     return;
 
@@ -352,7 +352,7 @@ void DiskSyncEngine::update_request(const sync_object &a_obj) {
   qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void DiskSyncEngine::delete_request(const std::string &a_object_name,
+void disk_engine::delete_request(const std::string &a_object_name,
                                     const std::string &a_key,
                                     const std::string &a_value) {
   QString home_path = db_home_path();
@@ -447,7 +447,7 @@ void DiskSyncEngine::delete_request(const std::string &a_object_name,
   }
 }
 
-QString DiskSyncEngine::data(const QString &fileName) {
+QString disk_engine::data(const QString &fileName) {
   QFile file(QDir::toNativeSeparators(
       QDir::homePath() + "/.quetzal/datastore/" + fileName + ".xml"));
 
@@ -477,7 +477,7 @@ QString DiskSyncEngine::data(const QString &fileName) {
   return data;
 }
 
-void DiskSyncEngine::find(const std::string &a_object_name,
+void disk_engine::find(const std::string &a_object_name,
                           const std::string &a_attrib,
                           const std::string &a_value) {
   bool match_found = false;
@@ -592,15 +592,15 @@ void DiskSyncEngine::find(const std::string &a_object_name,
   }
 }
 
-void DiskSyncEngine::sync(const QString &datqstoreName, const QString &data) {
+void disk_engine::sync(const QString &datqstoreName, const QString &data) {
   // qDebug() << Q_FUNC_INFO << data;
   d->mData = data;
   this->saveDataToDisk(datqstoreName, data);
 }
 
-bool DiskSyncEngine::hasLock() { return false; }
+bool disk_engine::hasLock() { return false; }
 
-void DiskSyncEngine::saveDataToDisk(const QString &fileName,
+void disk_engine::saveDataToDisk(const QString &fileName,
                                     const QString &data) {
   QString homePath =
       QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore");
@@ -631,12 +631,12 @@ void DiskSyncEngine::saveDataToDisk(const QString &fileName,
   Q_EMIT modified();
 }
 
-void DiskSyncEngine::onBytesWritten(qint64 bytes) {
+void disk_engine::onBytesWritten(qint64 bytes) {
   qDebug() << Q_FUNC_INFO << "File Writtent to disk:" << bytes;
   qFatal("Done Writing");
 }
 
-void DiskSyncEngine::onDirectoryChanged(const QString &name) {
+void disk_engine::onDirectoryChanged(const QString &name) {
   qDebug() << Q_FUNC_INFO << name;
   QString homePath =
       QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");

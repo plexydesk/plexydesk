@@ -6,11 +6,11 @@
 
 namespace cherry {
 
-class QuetzalDataKit_EXPORT DiskSyncEngine : public sync_engine_interface {
+class QuetzalDataKit_EXPORT disk_engine : public sync_engine_interface {
   Q_OBJECT
 public:
-  explicit DiskSyncEngine(QObject *a_parent_ptr = 0);
-  virtual ~DiskSyncEngine();
+  explicit disk_engine(QObject *a_parent_ptr = 0);
+  virtual ~disk_engine();
 
   virtual void setEngineName(const QString &name);
 
@@ -39,8 +39,8 @@ Q_SLOTS:
   void onDirectoryChanged(const QString &name);
 
 private:
-  class PrivateDiskSyncEngine;
-  PrivateDiskSyncEngine *const d;
+  class Privatedisk_engine;
+  Privatedisk_engine *const d;
 };
 }
 #endif // DISKSYNCENGINE_H

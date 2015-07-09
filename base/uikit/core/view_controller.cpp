@@ -30,7 +30,7 @@ void ViewController::revoke_previous_session(
     std::function<void(ViewController *, SessionSync *)> a_callback) {
   cherry::data_sync *sync =
       new cherry::data_sync(session_database_name(a_session_object_name));
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry::sync_object &a_object,
@@ -73,7 +73,7 @@ void ViewController::write_session_data(const std::string &a_session_name) {
       return;
 
     cherry::data_sync *sync = new cherry::data_sync(session_name);
-    cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+    cherry::disk_engine *engine = new cherry::disk_engine();
     sync->set_sync_engine(engine);
 
     session_ref->update_session();

@@ -23,7 +23,7 @@ using namespace cherry;
 
 void test_object_create() {
   cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -39,7 +39,7 @@ void test_object_create() {
 
 void test_object_update() {
   cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -71,7 +71,7 @@ void test_object_update() {
 
 void test_object_find() {
   cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -92,7 +92,7 @@ void test_object_find() {
 
 void test_object_find_fail() {
   cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -109,7 +109,7 @@ void test_object_find_fail() {
 
 void test_object_delete_matching() {
   cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -128,7 +128,7 @@ void test_object_delete_matching() {
 
 void test_object_delete() {
   cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -147,7 +147,7 @@ void test_object_delete() {
 
 void test_connected_objects() {
   cherry::data_sync *sync = new cherry::data_sync("NoteList");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -159,7 +159,7 @@ void test_connected_objects() {
 
 void test_object_add_child() {
   cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -175,7 +175,7 @@ void test_object_add_child() {
 
 void test_save_controller_to_session(const std::string &a_controller_name) {
   cherry::data_sync *sync = new cherry::data_sync("test_default_space_0");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -198,7 +198,7 @@ void test_save_controller_to_session(const std::string &a_controller_name) {
 
 void test_find_all() {
   cherry::data_sync *sync = new cherry::data_sync("test_default_space_0");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 

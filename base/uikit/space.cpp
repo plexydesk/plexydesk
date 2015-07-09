@@ -124,7 +124,7 @@ void Space::update_session_value(const QString &a_controller_name,
                                  const QString &a_key, const QString &a_value) {
   cherry::data_sync *sync = new cherry::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -382,7 +382,7 @@ GraphicsSurface *Space::surface() { return &o_space->m_surface; }
 void Space::save_controller_to_session(const QString &a_controller_name) {
   cherry::data_sync *sync =
       new cherry::data_sync(o_space->session_name_of_space().toStdString());
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -406,7 +406,7 @@ void
 Space::revoke_controller_session_attributes(const QString &a_controller_name) {
   cherry::data_sync *sync = new cherry::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
@@ -449,7 +449,7 @@ void Space::PrivateSpace::controller_action_list(const Space *space,
 void Space::PrivateSpace::init_session_registry(Space *space) {
   cherry::data_sync *sync =
       new cherry::data_sync(session_name_of_space().toStdString());
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry::sync_object &a_object,
