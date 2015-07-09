@@ -1,7 +1,7 @@
 /*******************************************************************************
 * This file is part of PlexyDesk.
-*  Maintained by : Siraj Razick <siraj@plexydesk.org>
-*  Authored By  : Siraj Razick <siraj@plexydesk.org>
+*  Maintained by : Siraj Razick <siraj@plexydesk.com>
+*  Authored By  : Siraj Razick <siraj@plexydesk.com>
 *                 PhobosK <phobosk@kbfx.net>
 *
 *  PlexyDesk is free software: you can redistribute it and/or modify

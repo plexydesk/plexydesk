@@ -1,6 +1,6 @@
 /*******************************************************************************
 * This file is part of PlexyDesk.
-*  Maintained by : Siraj Razick <siraj@kde.org>
+*  Maintained by : Siraj Razick <siraj@plexydesk.com>
 *  Authored By  : Lahiru Lakmal Priyadarshana <llahiru@gmail.com>
 *
 *  PlexyDesk is free software: you can redistribute it and/or modify
