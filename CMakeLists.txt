@@ -1,6 +1,6 @@
 ﻿# Desk :
-# Project Author: siraj@plexydesk.org
-# CMAKE files by: siraj@plexydesk.org
+# Project Author: siraj@plexydesk.com
+# CMAKE files by: siraj@plexydesk.com
 #                 PhobosK (phobosk@kbfx.net)
 #Copyright (c) 2015, Plexydesk
 PROJECT(PlexyDesk)

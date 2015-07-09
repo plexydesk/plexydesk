@@ -1,5 +1,5 @@
 #UiKit
-#siraj@plexydesk.org
+#siraj@plexydesk.com
 
 cmake_policy(SET CMP0043 NEW)
 

@@ -1,4 +1,4 @@
-// GPL2 siraj@kde.org
+// GPL2 siraj@plexydesk.com
 
 #ifndef WELLCOME_ITEM_H
 #define WELLCOME_ITEM_H

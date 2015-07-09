@@ -6,7 +6,7 @@
 #  BBPIM_LIBRARIES - Link these to use BBPim
 #
 #  Copyright (c) 2013 Laszlo Papp <lpapp@kde.org>
-#  Copyright (c) 2013 Siraj Razic <siraj@kde.org> 
+#  Copyright (c) 2013 Siraj Razic <siraj@plexydesk.com> 
 #
 #  Redistribution and use is allowed according to the terms of the New
 #  BSD license.
