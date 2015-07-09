@@ -1,6 +1,6 @@
 #include "memorysyncengine.h"
 
-namespace ck {
+namespace cherry {
 
 MemorySyncEngine::MemorySyncEngine(QObject *parent) {}
 

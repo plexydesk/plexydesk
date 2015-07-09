@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 
-namespace ck {
+namespace cherry {
 
 class sync_object;
 

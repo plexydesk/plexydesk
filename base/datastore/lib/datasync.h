@@ -5,7 +5,7 @@
 #include <syncobject.h>
 #include <string>
 
-namespace ck {
+namespace cherry {
 class QuetzalDataKit_EXPORT data_sync {
 public:
   data_sync(const std::string &a_app_name);

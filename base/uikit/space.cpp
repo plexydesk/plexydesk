@@ -122,16 +122,16 @@ Space::create_activity(const QString &a_activity, const QString &a_title,
 
 void Space::update_session_value(const QString &a_controller_name,
                                  const QString &a_key, const QString &a_value) {
-  ck::data_sync *sync = new ck::data_sync(
+  cherry::data_sync *sync = new cherry::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      ck::sync_object obj;
+      cherry::sync_object obj;
       obj.set_name("AppSession");
       obj.set_property("name", o_space->session_controller_name(
                                             a_controller_name).toStdString());
@@ -380,16 +380,16 @@ void Space::draw() {
 GraphicsSurface *Space::surface() { return &o_space->m_surface; }
 
 void Space::save_controller_to_session(const QString &a_controller_name) {
-  ck::data_sync *sync =
-      new ck::data_sync(o_space->session_name_of_space().toStdString());
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync =
+      new cherry::data_sync(o_space->session_name_of_space().toStdString());
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      ck::sync_object obj;
+      cherry::sync_object obj;
       obj.set_name("Controller");
       obj.set_property("name", a_controller_name.toStdString());
 
@@ -404,13 +404,13 @@ void Space::save_controller_to_session(const QString &a_controller_name) {
 
 void
 Space::revoke_controller_session_attributes(const QString &a_controller_name) {
-  ck::data_sync *sync = new ck::data_sync(
+  cherry::data_sync *sync = new cherry::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
              << a_controller_name;
@@ -447,12 +447,12 @@ void Space::PrivateSpace::controller_action_list(const Space *space,
 }
 
 void Space::PrivateSpace::init_session_registry(Space *space) {
-  ck::data_sync *sync =
-      new ck::data_sync(session_name_of_space().toStdString());
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync =
+      new cherry::data_sync(session_name_of_space().toStdString());
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       QString _current_controller_name = a_object.property("name").c_str();

@@ -6,7 +6,7 @@
 
 #include <chrono>
 
-namespace ck {
+namespace cherry {
 
 class sync_object::Privatesync_object {
 public:

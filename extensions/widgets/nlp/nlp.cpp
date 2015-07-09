@@ -32,9 +32,9 @@ NLPControllerImpl::~NLPControllerImpl() { delete o_view_controller; }
 void NLPControllerImpl::init() {}
 
 void NLPControllerImpl::session_data_available(
-    const ck::sync_object &a_session_root) {}
+    const cherry::sync_object &a_session_root) {}
 
-void NLPControllerImpl::submit_session_data(ck::sync_object *a_obj) {}
+void NLPControllerImpl::submit_session_data(cherry::sync_object *a_obj) {}
 
 void NLPControllerImpl::set_view_rect(const QRectF &rect) {}
 

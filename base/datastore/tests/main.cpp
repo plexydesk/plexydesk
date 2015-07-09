@@ -19,15 +19,15 @@
     }                                                                          \
   } while (false)
 
-using namespace ck;
+using namespace cherry;
 
 void test_object_create() {
-  ck::data_sync *sync = new ck::data_sync("Clock");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("Clock");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  ck::sync_object *obj = new ck::sync_object();
+  cherry::sync_object *obj = new cherry::sync_object();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -38,15 +38,15 @@ void test_object_create() {
 }
 
 void test_object_update() {
-  ck::data_sync *sync = new ck::data_sync("Clock");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("Clock");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "", "");
 
   for (int i = 0; i < 10; i++) {
-    ck::sync_object *obj = new ck::sync_object();
+    cherry::sync_object *obj = new cherry::sync_object();
     obj->set_name("clock");
 
     obj->set_property("zone_id", "Asia/South");
@@ -56,7 +56,7 @@ void test_object_update() {
   }
 
   // test update
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "Expected True");
     QZ_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
@@ -70,12 +70,12 @@ void test_object_update() {
 }
 
 void test_object_find() {
-  ck::data_sync *sync = new ck::data_sync("Clock");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("Clock");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 1, "Expected True");
@@ -91,12 +91,12 @@ void test_object_find() {
 }
 
 void test_object_find_fail() {
-  ck::data_sync *sync = new ck::data_sync("Clock");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("Clock");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -108,14 +108,14 @@ void test_object_find_fail() {
 }
 
 void test_object_delete_matching() {
-  ck::data_sync *sync = new ck::data_sync("Clock");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("Clock");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "zone_id", "Asia/South");
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -127,14 +127,14 @@ void test_object_delete_matching() {
 }
 
 void test_object_delete() {
-  ck::data_sync *sync = new ck::data_sync("Clock");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("Clock");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "", "");
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -146,24 +146,24 @@ void test_object_delete() {
 }
 
 void test_connected_objects() {
-  ck::data_sync *sync = new ck::data_sync("NoteList");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("NoteList");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  ck::sync_object *obj = new ck::sync_object();
+  cherry::sync_object *obj = new cherry::sync_object();
   obj->set_name("note");
 
   delete sync;
 }
 
 void test_object_add_child() {
-  ck::data_sync *sync = new ck::data_sync("Clock");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("Clock");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  ck::sync_object *obj = new ck::sync_object();
+  cherry::sync_object *obj = new cherry::sync_object();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -174,15 +174,15 @@ void test_object_add_child() {
 }
 
 void test_save_controller_to_session(const std::string &a_controller_name) {
-  ck::data_sync *sync = new ck::data_sync("test_default_space_0");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("test_default_space_0");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      ck::sync_object obj;
+      cherry::sync_object obj;
       obj.set_name("Controller");
       obj.set_property("name", a_controller_name);
 
@@ -197,12 +197,12 @@ void test_save_controller_to_session(const std::string &a_controller_name) {
 }
 
 void test_find_all() {
-  ck::data_sync *sync = new ck::data_sync("test_default_space_0");
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync = new cherry::data_sync("test_default_space_0");
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "All Items are Found");
   });
@@ -217,7 +217,7 @@ void test_stack_object_delete() {
 }
 
 void test_sync_object_delete() {
-  using namespace ck;
+  using namespace cherry;
 
   sync_object *object = new sync_object();
 

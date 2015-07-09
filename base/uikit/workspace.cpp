@@ -407,9 +407,9 @@ std::string WorkSpace::workspace_instance_name() {
 }
 
 void WorkSpace::save_space_removal_session_data(const QString &a_space_name) {
-  ck::data_sync *sync =
-      new ck::data_sync(workspace_instance_name());
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync =
+      new cherry::data_sync(workspace_instance_name());
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
   sync->remove_object("Space", "ref", a_space_name.toStdString());
@@ -532,12 +532,12 @@ void WorkSpace::add_default_space() {
   this->expose_sub_region(_space_geometry);
   p_workspace->m_current_activty_space_id = _space->id();
 
-  ck::data_sync *sync =
-      new ck::data_sync(workspace_instance_name());
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync =
+      new cherry::data_sync(workspace_instance_name());
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  ck::sync_object obj;
+  cherry::sync_object obj;
   obj.set_name("Space");
   obj.set_property("ref", _space->session_name().toStdString());
   obj.set_property("name", _space->name().toStdString());
@@ -549,13 +549,13 @@ void WorkSpace::add_default_space() {
 }
 
 void WorkSpace::restore_session() {
-  ck::data_sync *sync =
-      new ck::data_sync(workspace_instance_name());
-  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
+  cherry::data_sync *sync =
+      new cherry::data_sync(workspace_instance_name());
+  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::sync_object &a_object,
+  sync->on_object_found([&](cherry::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       qDebug() << Q_FUNC_INFO << "Adding Space ";
