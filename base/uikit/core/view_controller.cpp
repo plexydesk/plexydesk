@@ -28,17 +28,17 @@ ViewController::ViewController(QObject *parent)
 void ViewController::revoke_previous_session(
     const std::string &a_session_object_name,
     std::function<void(ViewController *, SessionSync *)> a_callback) {
-  QuetzalKit::data_sync *sync =
-      new QuetzalKit::data_sync(session_database_name(a_session_object_name));
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync =
+      new ck::data_sync(session_database_name(a_session_object_name));
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       QVariantMap session_data;
 
-      QuetzalKit::CkStringList prop_list = a_object.property_list();
+      ck::CkStringList prop_list = a_object.property_list();
 
       std::for_each(std::begin(prop_list), std::end(prop_list),
                     [&](const std::string &a_prop) {
@@ -72,12 +72,12 @@ void ViewController::write_session_data(const std::string &a_session_name) {
     if (session_ref->session_group_key().compare(key_name) != 0)
       return;
 
-    QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(session_name);
-    QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+    ck::data_sync *sync = new ck::data_sync(session_name);
+    ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
     sync->set_sync_engine(engine);
 
     session_ref->update_session();
-    QuetzalKit::SyncObject clock_session_obj;
+    ck::SyncObject clock_session_obj;
 
     clock_session_obj.set_name(a_session_name);
     Q_FOREACH(const QString & a_key, session_ref->session_keys()) {
@@ -86,7 +86,7 @@ void ViewController::write_session_data(const std::string &a_session_name) {
           std::string(session_ref->session_data(a_key).toByteArray()));
     }
 
-    sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+    sync->on_object_found([&](ck::SyncObject &a_object,
                               const std::string &a_app_name, bool a_found) {
       if (!a_found) {
         sync->add_object(clock_session_obj);

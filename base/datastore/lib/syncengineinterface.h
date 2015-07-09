@@ -8,7 +8,7 @@
 #include <QStringList>
 #include <QuetzalDataKit_export.h>
 
-namespace QuetzalKit {
+namespace ck {
 
 class QuetzalDataKit_EXPORT SyncEngineInterface : public QObject {
   Q_OBJECT

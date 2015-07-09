@@ -78,7 +78,7 @@ void DesktopNotesControllerImpl::init() {
 }
 
 void DesktopNotesControllerImpl::session_data_available(
-    const QuetzalKit::SyncObject &a_sesion_root) {
+    const ck::SyncObject &a_sesion_root) {
   revoke_previous_session(
       "Notes",
       [this](CherryKit::ViewController *a_controller,
@@ -92,7 +92,7 @@ void DesktopNotesControllerImpl::session_data_available(
 }
 
 void
-DesktopNotesControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj) {
+DesktopNotesControllerImpl::submit_session_data(ck::SyncObject *a_obj) {
   write_session_data("Notes");
   write_session_data("Reminders");
 }

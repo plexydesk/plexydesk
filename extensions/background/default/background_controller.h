@@ -37,8 +37,8 @@ public:
 
   void init();
 
-  void session_data_available(const QuetzalKit::SyncObject &a_session_root);
-  void submit_session_data(QuetzalKit::SyncObject *a_object);
+  void session_data_available(const ck::SyncObject &a_session_root);
+  void submit_session_data(ck::SyncObject *a_object);
 
   CherryKit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &data);

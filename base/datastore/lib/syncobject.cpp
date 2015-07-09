@@ -6,7 +6,7 @@
 
 #include <chrono>
 
-namespace QuetzalKit {
+namespace ck {
 
 class SyncObject::PrivateSyncObject {
 public:

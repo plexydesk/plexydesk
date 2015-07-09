@@ -97,8 +97,8 @@ public:
       * @param args
       */
   virtual void
-  session_data_available(const QuetzalKit::SyncObject &a_root_obj) = 0;
-  virtual void submit_session_data(QuetzalKit::SyncObject *a_root_obj) = 0;
+  session_data_available(const ck::SyncObject &a_root_obj) = 0;
+  virtual void submit_session_data(ck::SyncObject *a_root_obj) = 0;
 
   void start_session(
       const std::string &a_session_name, const QVariantMap &a_data,

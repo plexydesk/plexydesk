@@ -177,12 +177,12 @@ void ResourceManager::load_default_color_values() {
 }
 
 void ResourceManager::set_color_scheme(const std::string &a_name) {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Palette");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Palette");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       load_default_color_values();
