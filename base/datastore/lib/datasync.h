@@ -11,7 +11,7 @@ public:
   data_sync(const std::string &a_app_name);
   virtual ~data_sync();
 
-  virtual void set_sync_engine(SyncEngineInterface *a_iface);
+  virtual void set_sync_engine(sync_engine_interface *a_iface);
 
   virtual void add_object(const sync_object &a_obj);
   virtual void save_object(const sync_object &a_obj);

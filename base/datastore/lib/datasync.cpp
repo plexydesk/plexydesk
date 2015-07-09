@@ -13,7 +13,7 @@ public:
       delete m_engine;
   }
 
-  SyncEngineInterface *m_engine;
+  sync_engine_interface *m_engine;
   std::string m_app_name;
 
   std::vector<FoundFunc> m_on_object_found_handler_list;
@@ -27,7 +27,7 @@ data_sync::data_sync(const std::string &a_app_name)
 
 data_sync::~data_sync() { delete m_priv; }
 
-void data_sync::set_sync_engine(SyncEngineInterface *a_iface) {
+void data_sync::set_sync_engine(sync_engine_interface *a_iface) {
   if (m_priv->m_engine)
     return;
 

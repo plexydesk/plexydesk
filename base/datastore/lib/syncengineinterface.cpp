@@ -4,7 +4,7 @@
 
 namespace ck {
 
-class SyncEngineInterface::PrivateSyncEngineIface {
+class sync_engine_interface::PrivateSyncEngineIface {
 public:
   PrivateSyncEngineIface() {}
   ~PrivateSyncEngineIface() {}
@@ -14,26 +14,26 @@ public:
   std::vector<std::function<void(const sync_object &)> > m_insert_handler_list;
 };
 
-SyncEngineInterface::SyncEngineInterface(QObject *parent)
+sync_engine_interface::sync_engine_interface(QObject *parent)
     : QObject(parent), d(new PrivateSyncEngineIface) {}
 
-SyncEngineInterface::~SyncEngineInterface() { delete d; }
+sync_engine_interface::~sync_engine_interface() { delete d; }
 
-void SyncEngineInterface::setEngineName(const QString &name) {
+void sync_engine_interface::setEngineName(const QString &name) {
   // engine name;
 }
 
-void SyncEngineInterface::on_search_complete(
+void sync_engine_interface::on_search_complete(
     std::function<void(sync_object &, const std::string &, bool)> a_handler) {
   d->m_search_handler_list.push_back(a_handler);
 }
 
-void SyncEngineInterface::on_insert_complete(
+void sync_engine_interface::on_insert_complete(
     std::function<void(const sync_object &)> a_handler) {
   d->m_insert_handler_list.push_back(a_handler);
 }
 
-void SyncEngineInterface::search_request_complete(sync_object &a_object,
+void sync_engine_interface::search_request_complete(sync_object &a_object,
                                                   std::string &a_app_name,
                                                   bool a_found) {
   std::for_each(
@@ -44,7 +44,7 @@ void SyncEngineInterface::search_request_complete(sync_object &a_object,
       });
 }
 
-void SyncEngineInterface::insert_request_complete(const sync_object &a_object) {
+void sync_engine_interface::insert_request_complete(const sync_object &a_object) {
   std::for_each(d->m_insert_handler_list.begin(),
                 d->m_insert_handler_list.end(),
                 [&](std::function<void(const sync_object &)> a_func) {
