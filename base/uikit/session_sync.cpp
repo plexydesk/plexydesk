@@ -159,7 +159,7 @@ void SessionSync::save_session_attribute(const std::string &a_session_name,
   ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([=](ck::SyncObject &a_object,
+  sync->on_object_found([=](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       a_object.set_property(a_key, a_value);

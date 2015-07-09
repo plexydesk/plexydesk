@@ -27,7 +27,7 @@ void test_object_create() {
 
   sync->set_sync_engine(engine);
 
-  ck::SyncObject *obj = new ck::SyncObject();
+  ck::sync_object *obj = new ck::sync_object();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -46,7 +46,7 @@ void test_object_update() {
   sync->remove_object("clock", "", "");
 
   for (int i = 0; i < 10; i++) {
-    ck::SyncObject *obj = new ck::SyncObject();
+    ck::sync_object *obj = new ck::sync_object();
     obj->set_name("clock");
 
     obj->set_property("zone_id", "Asia/South");
@@ -56,7 +56,7 @@ void test_object_update() {
   }
 
   // test update
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "Expected True");
     QZ_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
@@ -75,7 +75,7 @@ void test_object_find() {
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 1, "Expected True");
@@ -96,7 +96,7 @@ void test_object_find_fail() {
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -115,7 +115,7 @@ void test_object_delete_matching() {
 
   sync->remove_object("clock", "zone_id", "Asia/South");
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -134,7 +134,7 @@ void test_object_delete() {
 
   sync->remove_object("clock", "", "");
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -151,7 +151,7 @@ void test_connected_objects() {
 
   sync->set_sync_engine(engine);
 
-  ck::SyncObject *obj = new ck::SyncObject();
+  ck::sync_object *obj = new ck::sync_object();
   obj->set_name("note");
 
   delete sync;
@@ -163,7 +163,7 @@ void test_object_add_child() {
 
   sync->set_sync_engine(engine);
 
-  ck::SyncObject *obj = new ck::SyncObject();
+  ck::sync_object *obj = new ck::sync_object();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -179,10 +179,10 @@ void test_save_controller_to_session(const std::string &a_controller_name) {
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      ck::SyncObject obj;
+      ck::sync_object obj;
       obj.set_name("Controller");
       obj.set_property("name", a_controller_name);
 
@@ -202,7 +202,7 @@ void test_find_all() {
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "All Items are Found");
   });
@@ -212,19 +212,19 @@ void test_find_all() {
   delete sync;
 }
 void test_stack_object_delete() {
-  SyncObject stack_object;
+  sync_object stack_object;
   stack_object.set_name("stack object");
 }
 
 void test_sync_object_delete() {
   using namespace ck;
 
-  SyncObject *object = new SyncObject();
+  sync_object *object = new sync_object();
 
   object->set_name("parent");
 
   for (int i = 0; i < 10; i++) {
-    SyncObject *child = new SyncObject(object);
+    sync_object *child = new sync_object(object);
     child->set_name(QString("%1").arg(i).toStdString());
   }
 

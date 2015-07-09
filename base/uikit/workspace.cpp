@@ -537,7 +537,7 @@ void WorkSpace::add_default_space() {
   ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  ck::SyncObject obj;
+  ck::sync_object obj;
   obj.set_name("Space");
   obj.set_property("ref", _space->session_name().toStdString());
   obj.set_property("name", _space->name().toStdString());
@@ -555,7 +555,7 @@ void WorkSpace::restore_session() {
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](ck::SyncObject &a_object,
+  sync->on_object_found([&](ck::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       qDebug() << Q_FUNC_INFO << "Adding Space ";

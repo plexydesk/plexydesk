@@ -52,7 +52,7 @@ void DateControllerImpl::init() {
 }
 
 void DateControllerImpl::session_data_available(
-    const ck::SyncObject &a_session_root) {
+    const ck::sync_object &a_session_root) {
   revoke_previous_session("Calendar",
                           [this](CherryKit::ViewController *a_controller,
                                  CherryKit::SessionSync *a_session) {
@@ -60,7 +60,7 @@ void DateControllerImpl::session_data_available(
   });
 }
 
-void DateControllerImpl::submit_session_data(ck::SyncObject *a_obj) {
+void DateControllerImpl::submit_session_data(ck::sync_object *a_obj) {
   write_session_data("Calendar");
 }
 

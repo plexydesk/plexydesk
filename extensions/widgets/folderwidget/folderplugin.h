@@ -37,8 +37,8 @@ public:
 
   void init();
 
-  void session_data_available(const ck::SyncObject &a_session_root);
-  virtual void submit_session_data(ck::SyncObject *a_obj);
+  void session_data_available(const ck::sync_object &a_session_root);
+  virtual void submit_session_data(ck::sync_object *a_obj);
 
   CherryKit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
