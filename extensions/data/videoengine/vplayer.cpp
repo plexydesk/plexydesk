@@ -1,7 +1,7 @@
 /*******************************************************************************
 * This file is part of PlexyDesk.
-*  Maintained by : Siraj Razick <siraj@kde.org>
-*  Authored By  : Siraj Razick <siraj@kde.org>
+*  Maintained by : Siraj Razick <siraj@plexydesk.com>
+*  Authored By  : Siraj Razick <siraj@plexydesk.com>
 *
 *  PlexyDesk is free software: you can redistribute it and/or modify
 *  it under the terms of the GNU Lesser General Public License as published by
