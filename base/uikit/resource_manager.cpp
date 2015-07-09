@@ -178,7 +178,7 @@ void ResourceManager::load_default_color_values() {
 
 void ResourceManager::set_color_scheme(const std::string &a_name) {
   cherry::data_sync *sync = new cherry::data_sync("Palette");
-  cherry::DiskSyncEngine *engine = new cherry::DiskSyncEngine();
+  cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);
 
