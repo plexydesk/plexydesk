@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QDir>
 
-namespace QuetzalKit {
+namespace ck {
 
 class DiskSyncEngine::PrivateDiskSyncEngine {
 public:
@@ -547,7 +547,7 @@ void DiskSyncEngine::find(const std::string &a_object_name,
         QDomElement child_element = child_node.toElement();
 
         if (QString::fromStdString(a_object_name) == child_element.tagName()) {
-          QuetzalKit::SyncObject obj;
+          ck::SyncObject obj;
           obj.set_name(a_object_name);
 
           QDomNamedNodeMap attrMap = child_node.attributes();

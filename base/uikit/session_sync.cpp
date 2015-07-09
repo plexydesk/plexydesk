@@ -139,9 +139,9 @@ void SessionSync::delete_session_data(const std::string &a_session_name,
                                       const std::string &a_object_name,
                                       const std::string &a_object_key,
                                       const std::string &a_object_value) {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(a_session_name);
+  ck::data_sync *sync = new ck::data_sync(a_session_name);
 
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
   sync->remove_object(a_object_name, a_object_key, a_object_value);
@@ -155,11 +155,11 @@ void SessionSync::save_session_attribute(const std::string &a_session_name,
                                          const std::string &a_object_value,
                                          const std::string &a_key,
                                          const std::string &a_value) {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync(a_session_name);
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync(a_session_name);
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([=](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([=](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       a_object.set_property(a_key, a_value);

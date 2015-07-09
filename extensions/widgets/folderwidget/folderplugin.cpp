@@ -65,9 +65,9 @@ void DirectoryController::init() {
 }
 
 void DirectoryController::session_data_available(
-    const QuetzalKit::SyncObject &a_session_root) {}
+    const ck::SyncObject &a_session_root) {}
 
-void DirectoryController::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
+void DirectoryController::submit_session_data(ck::SyncObject *a_obj) {}
 
 CherryKit::ActionList DirectoryController::actions() const {
   return m_supported_action_list;

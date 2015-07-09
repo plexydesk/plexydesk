@@ -213,9 +213,9 @@ void DockControllerImpl::init() {
 }
 
 void DockControllerImpl::session_data_available(
-    const QuetzalKit::SyncObject &a_sesion_root) {}
+    const ck::SyncObject &a_sesion_root) {}
 
-void DockControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
+void DockControllerImpl::submit_session_data(ck::SyncObject *a_obj) {}
 
 void DockControllerImpl::set_view_rect(const QRectF &rect) {
   if (!viewport()) {

@@ -19,15 +19,15 @@
     }                                                                          \
   } while (false)
 
-using namespace QuetzalKit;
+using namespace ck;
 
 void test_object_create() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Clock");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
+  ck::SyncObject *obj = new ck::SyncObject();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -38,15 +38,15 @@ void test_object_create() {
 }
 
 void test_object_update() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Clock");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "", "");
 
   for (int i = 0; i < 10; i++) {
-    QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
+    ck::SyncObject *obj = new ck::SyncObject();
     obj->set_name("clock");
 
     obj->set_property("zone_id", "Asia/South");
@@ -56,7 +56,7 @@ void test_object_update() {
   }
 
   // test update
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "Expected True");
     QZ_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
@@ -70,12 +70,12 @@ void test_object_update() {
 }
 
 void test_object_find() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Clock");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 1, "Expected True");
@@ -91,12 +91,12 @@ void test_object_find() {
 }
 
 void test_object_find_fail() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Clock");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -108,14 +108,14 @@ void test_object_find_fail() {
 }
 
 void test_object_delete_matching() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Clock");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "zone_id", "Asia/South");
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -127,14 +127,14 @@ void test_object_delete_matching() {
 }
 
 void test_object_delete() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Clock");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "", "");
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     QZ_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -146,24 +146,24 @@ void test_object_delete() {
 }
 
 void test_connected_objects() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("NoteList");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("NoteList");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
+  ck::SyncObject *obj = new ck::SyncObject();
   obj->set_name("note");
 
   delete sync;
 }
 
 void test_object_add_child() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("Clock");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("Clock");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  QuetzalKit::SyncObject *obj = new QuetzalKit::SyncObject();
+  ck::SyncObject *obj = new ck::SyncObject();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -174,15 +174,15 @@ void test_object_add_child() {
 }
 
 void test_save_controller_to_session(const std::string &a_controller_name) {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("test_default_space_0");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("test_default_space_0");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      QuetzalKit::SyncObject obj;
+      ck::SyncObject obj;
       obj.set_name("Controller");
       obj.set_property("name", a_controller_name);
 
@@ -197,12 +197,12 @@ void test_save_controller_to_session(const std::string &a_controller_name) {
 }
 
 void test_find_all() {
-  QuetzalKit::data_sync *sync = new QuetzalKit::data_sync("test_default_space_0");
-  QuetzalKit::DiskSyncEngine *engine = new QuetzalKit::DiskSyncEngine();
+  ck::data_sync *sync = new ck::data_sync("test_default_space_0");
+  ck::DiskSyncEngine *engine = new ck::DiskSyncEngine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](QuetzalKit::SyncObject &a_object,
+  sync->on_object_found([&](ck::SyncObject &a_object,
                             const std::string &a_app_name, bool a_found) {
     QZ_ASSERT(a_found == 1, "All Items are Found");
   });
@@ -217,7 +217,7 @@ void test_stack_object_delete() {
 }
 
 void test_sync_object_delete() {
-  using namespace QuetzalKit;
+  using namespace ck;
 
   SyncObject *object = new SyncObject();
 

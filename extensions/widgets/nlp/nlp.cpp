@@ -32,9 +32,9 @@ NLPControllerImpl::~NLPControllerImpl() { delete o_view_controller; }
 void NLPControllerImpl::init() {}
 
 void NLPControllerImpl::session_data_available(
-    const QuetzalKit::SyncObject &a_session_root) {}
+    const ck::SyncObject &a_session_root) {}
 
-void NLPControllerImpl::submit_session_data(QuetzalKit::SyncObject *a_obj) {}
+void NLPControllerImpl::submit_session_data(ck::SyncObject *a_obj) {}
 
 void NLPControllerImpl::set_view_rect(const QRectF &rect) {}
 

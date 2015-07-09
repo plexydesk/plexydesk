@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 
-namespace QuetzalKit {
+namespace ck {
 
 class SyncObject;
 

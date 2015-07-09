@@ -106,7 +106,7 @@ void BackgroundController::revoke_session(const QVariantMap &args) {
 }
 
 void BackgroundController::session_data_available(
-    const QuetzalKit::SyncObject &a_session_root) {
+    const ck::SyncObject &a_session_root) {
   if (!a_session_root.has_property("background") ||
       !a_session_root.has_property("mode"))
     return;
@@ -127,7 +127,7 @@ void BackgroundController::session_data_available(
 }
 
 void
-BackgroundController::submit_session_data(QuetzalKit::SyncObject *a_object) {
+BackgroundController::submit_session_data(ck::SyncObject *a_object) {
   a_object->set_property("background", o_ctr->m_background_texture);
   a_object->set_property("mode", "scale");
 }

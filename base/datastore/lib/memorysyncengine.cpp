@@ -1,6 +1,6 @@
 #include "memorysyncengine.h"
 
-namespace QuetzalKit {
+namespace ck {
 
 MemorySyncEngine::MemorySyncEngine(QObject *parent) {}
 
