@@ -19,7 +19,7 @@
 #ifndef SYNCOBJECT_H
 #define SYNCOBJECT_H
 
-#include <QuetzalDataKit_export.h>
+#include <QuetzalDataKitQt_export.h>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -36,7 +36,7 @@ class data_sync;
     * @brief
     *
     */
-class QuetzalDataKit_EXPORT sync_object {
+class QuetzalDataKitQt_EXPORT sync_object {
 
 public:
   /**
@@ -110,7 +110,7 @@ public:
 
   void update_time_stamp();
 
-  void removeObject(uint key);
+  void remove_object(uint key);
 
   void set_data_sync(data_sync *a_sync);
   virtual void sync();

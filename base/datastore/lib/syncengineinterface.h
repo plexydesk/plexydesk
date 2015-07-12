@@ -24,11 +24,11 @@
 #include <QObject>
 #include <syncobject.h>
 #include <QStringList>
-#include <QuetzalDataKit_export.h>
+#include <QuetzalDataKitQt_export.h>
 
 namespace cherry {
 
-class QuetzalDataKit_EXPORT sync_engine_interface : public QObject {
+class QuetzalDataKitQt_EXPORT sync_engine_interface : public QObject {
   Q_OBJECT
 public:
   explicit sync_engine_interface(QObject *a_parent_ptr = 0);

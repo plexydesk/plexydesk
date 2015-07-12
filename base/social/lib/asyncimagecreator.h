@@ -21,14 +21,14 @@
 
 #include <QThread>
 #include <QImage>
-#include <QuetzalSocialKit_export.h>
+#include <QuetzalSocialKitQt_export.h>
 
 #include <functional>
 #include <string>
 
 namespace QuetzalSocialKit {
 
-class QuetzalSocialKit_EXPORT AsyncImageCreator : public QThread {
+class QuetzalSocialKitQt_EXPORT AsyncImageCreator : public QThread {
   Q_OBJECT
 public:
   explicit AsyncImageCreator(QObject *a_parent_ptr = 0);

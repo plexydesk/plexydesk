@@ -21,11 +21,11 @@
 
 #include <QObject>
 #include <QUrl>
-#include <QuetzalSocialKit_export.h>
+#include <QuetzalSocialKitQt_export.h>
 
 namespace QuetzalSocialKit {
 
-class QuetzalSocialKit_EXPORT ServiceDefinition : public QObject {
+class QuetzalSocialKitQt_EXPORT ServiceDefinition : public QObject {
   Q_OBJECT
 public:
   ServiceDefinition(const QString &input, QObject *a_parent_ptr = 0);
