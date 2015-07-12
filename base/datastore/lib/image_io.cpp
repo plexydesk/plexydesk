@@ -18,12 +18,90 @@
 *******************************************************************************/
 #include "image_io.h"
 
-namespace ck {
-image_io::image_io() {}
+#include <config.h>
 
-image_io::~image_io() {}
+#ifdef USE_QT
+#include <QImage>
+#include "qt5/qt_platform_image.h"
+#include <QDebug>
+#else
+#error "toolkit not set"
+#endif
 
-void image_io::set_buffer(unsigned char *a_buffer) {}
+namespace cherry {
 
-void image_io::scale(int a_method) {}
+class image_io::private_io_image_impl {
+public:
+  private_io_image_impl() : m_surface(0) {}
+  ~private_io_image_impl() { delete m_surface; }
+
+  io_surface *m_surface;
+  std::function<void(buffer_load_status_t, image_io *)> m_call_on_ready;
+};
+
+image_io::image_io(int a_width, int a_height)
+    : o_surface_proxy(new platform_image), o_image(new private_io_image_impl) {}
+
+image_io::~image_io() {
+  delete o_image;
+  delete o_surface_proxy;
 }
+
+void image_io::create(int a_width, int a_height) {}
+
+void image_io::create(image_data_ref a_buffer, int a_width, int a_height) {}
+
+void image_io::create(const std::string &a_file_name) {
+  o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
+                                           buffer_load_status_t a_status) {
+
+    if (a_status != kSuccess) {
+      if (o_image->m_call_on_ready)
+        o_image->m_call_on_ready(a_status, this);
+      return;
+    }
+
+    if (o_image->m_surface) {
+      delete o_image->m_surface;
+      o_image->m_surface = nullptr;
+    }
+
+    o_image->m_surface = a_surface;
+
+    if (o_image->m_call_on_ready)
+      o_image->m_call_on_ready(kSuccess, this);
+  });
+  o_surface_proxy->load_from_file(a_file_name);
+}
+
+io_surface *image_io::surface() const { return o_image->m_surface; }
+
+io_surface image_io::add_task(image_io::image_operation_t a_method,
+                            const image_io::scale_options &arg) {}
+
+void image_io::set_filter(const std::string &a_filter_name, int a_flag) {}
+
+void image_io::on_ready(
+    std::function<void(buffer_load_status_t, image_io *)> a_callback) {
+  o_image->m_call_on_ready = a_callback;
+}
+
+io_surface::io_surface() : width(0), height(0), buffer(nullptr) {}
+/*
+io_surface::io_surface(const io_surface &copy)
+    : width(copy.width), height(copy.height) {
+  std::memcpy(buffer, copy.buffer, 4 * copy.width * copy.height);
+}
+*/
+
+io_surface::~io_surface() {
+  if (buffer)
+    free(buffer);
+}
+}
+
+/*\class image_io
+ * \define class for manipulating alpha image buffers. This class allows you to
+ * create, resize, and set filters on the buffer. The filters are dynamically
+ * loadable during runtime with plugins.
+ * */
