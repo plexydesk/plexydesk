@@ -20,11 +20,11 @@
 #define WEBSERVER_H
 
 #include <QTcpServer>
-#include <QuetzalSocialKit_export.h>
+#include <QuetzalSocialKitQt_export.h>
 
 namespace QuetzalSocialKit {
 class WebContentInterface;
-class QuetzalSocialKit_EXPORT WebServer : public QTcpServer {
+class QuetzalSocialKitQt_EXPORT WebServer : public QTcpServer {
   Q_OBJECT
 public:
   explicit WebServer(QObject *a_parent_ptr = 0);

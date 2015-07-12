@@ -11,6 +11,13 @@ CMAKE_POLICY(SET CMP0003 OLD)
 CMAKE_POLICY(SET CMP0020 NEW) #Windows warning link qtmain
 CMAKE_POLICY(SET CMP0043 NEW)
 
+#handle platform options
+option(BUILD_WITH_QT "Enable Qt ToolKit to Build PlexyDesk" ON)
+
+if(BUILD_WITH_QT)
+	add_definitions(-DBUILD_WITH_QT=1)
+endif()
+
 #check if the compiler support c++11
 include(CheckCXXCompilerFlag)
 
@@ -84,10 +91,17 @@ SET(APPLICATION_NAME "${PROJECT_NAME}")
 SET(APPLICATION_MAIN_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
 
 #Library Names
-SET(APPLICATION_EXE_NAME plexydesk)
-SET(PLEXY_UI_CORE_LIBRARY PlexyDeskUICore)
-SET(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKit)
-SET(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKit)
+IF(BUILD_WITH_QT)
+  SET(APPLICATION_EXE_NAME plexydesk)
+  SET(PLEXY_UI_CORE_LIBRARY qt_cherry_kit)
+  SET(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKitQt)
+  SET(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKitQt)
+else()
+  SET(APPLICATION_EXE_NAME plexydesk)
+  SET(PLEXY_UI_CORE_LIBRARY cherry_kit)
+  SET(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKit)
+  SET(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKit)
+endif()
 
 # Check on Windows if we have used CMAKE_INSTALL_PREFIX or default it to
 # outsource special ready path
@@ -126,6 +140,10 @@ ENDIF (NOT WIN32)
 IF (APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gdwarf-2")
 ENDIF (APPLE)
+    
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -O1")
+endif()
 
 # Global variable CMAKE_BUILD_TYPE handling
 # None (CMAKE_C_FLAGS or CMAKE_CXX_FLAGS used)

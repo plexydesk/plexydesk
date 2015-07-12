@@ -21,11 +21,11 @@
 
 #include <QThread>
 #include <QNetworkReply>
-#include <QuetzalSocialKit_export.h>
+#include <QuetzalSocialKitQt_export.h>
 
 namespace QuetzalSocialKit {
 
-class QuetzalSocialKit_EXPORT AsyncImageLoader : public QThread {
+class QuetzalSocialKitQt_EXPORT AsyncImageLoader : public QThread {
   Q_OBJECT
 public:
   AsyncImageLoader(QObject *a_parent_ptr = 0);

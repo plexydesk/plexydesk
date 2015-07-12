@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QNetworkReply>
-#include <QuetzalSocialKit_export.h>
+#include <QuetzalSocialKitQt_export.h>
 
 namespace QuetzalSocialKit {
 
@@ -30,7 +30,7 @@ class ServiceDefinition;
 
 typedef QSharedPointer<ServiceDefinition> ServiceDefinitionPtr;
 
-class QuetzalSocialKit_EXPORT WebService : public QObject {
+class QuetzalSocialKitQt_EXPORT WebService : public QObject {
   Q_OBJECT
 public:
   explicit WebService(QObject *a_parent_ptr = 0);
