@@ -1,8 +1,8 @@
-SET (project_name query_jeff)
+set(project_name query_jeff)
 
 PROJECT(${project_name})
 
-SET (source main.cpp)
+set(source main.cpp)
 
 INCLUDE (${CMAKE_SOURCE_DIR}/deps/mitie/mitielib/cmake)
 

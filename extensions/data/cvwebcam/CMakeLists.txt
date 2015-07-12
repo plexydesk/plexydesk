@@ -2,29 +2,29 @@ INCLUDE_DIRECTORIES(
     ${OPENCV_INCLUDE_DIR}
     )
 
-SET(sourceFiles
+set(sourceFiles
     webcam.cpp
     webcaminterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     webcam.h
     webcaminterface.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     webcam.h
     webcaminterface.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

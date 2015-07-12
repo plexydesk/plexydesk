@@ -1,26 +1,26 @@
-SET(sourceFiles
+set(sourceFiles
     flicker.cpp
     flickerinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     flicker.h
     flickerinterface.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     flicker.h
     flickerinterface.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

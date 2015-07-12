@@ -1,16 +1,16 @@
-SET (sourceFiles
+set(sourceFiles
     snapframe.cpp
     dock.cpp
     dockinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     dock.h
     dockinterface.h
     snapframe.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     dock.h
     dockinterface.h
     snapframe.h
@@ -18,25 +18,25 @@ SET (QTMOC_SRCS
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${PLEXY_UI_CORE_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     )
 
 ADD_LIBRARY(dockwidget SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(dockwidget PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(dockwidget
     ${libs}
@@ -44,14 +44,14 @@ TARGET_LINK_LIBRARIES(dockwidget
 
 QT5_USE_MODULES(dockwidget Widgets Xml OpenGL Core  )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS dockwidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES dock.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS dockwidget LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES dock.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF(APPLE)
+endif(APPLE)
 
 

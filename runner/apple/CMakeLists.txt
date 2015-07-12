@@ -1,4 +1,4 @@
-IF (NOT APPLE)
+if (NOT APPLE)
 	IF(UNIX)
 		INCLUDE_DIRECTORIES(
 			${X11_INCLUDE_DIR}
@@ -7,73 +7,73 @@ IF (NOT APPLE)
 			${Qt5Gui_PRIVATE_INCLUDE_DIRS}
 			)
 
-		SET (extra_headers)
+		set(extra_headers)
 
-		SET (extra_source)
+		set(extra_source)
 
-		SET (extra_libs
+		set(extra_libs
 			Xcomposite
 			Xdamage
 			)
-	ENDIF(UNIX)
+	endif(UNIX)
 	IF(WIN32)
 		INCLUDE_DIRECTORIES(
 			${CMAKE_SOURCE_DIR}/dist/windows
 			${CMAKE_BINARY_DIR}/dist/windows
 			)
-		SET(resourceFiles
+		set(resourceFiles
 			${CMAKE_BINARY_DIR}/dist/windows/${APPLICATION_EXE_NAME}_windres.rc
 			)
-	ENDIF(WIN32)
-ENDIF(NOT APPLE)
+	endif(WIN32)
+endif(NOT APPLE)
 
 ########### Source files ###############
-SET(sourceFiles
+set(sourceFiles
 	${extra_source}
 	)
 
 
 if(APPLE)
-	SET(mainFiles main.mm)
+	set(mainFiles main.mm)
 	set(OSX_ICON_FILES ${CMAKE_SOURCE_DIR}/artwork/icons/plexydesk.icns)
 	set(MACOSX_BUNDLE_ICON_FILE "plexydesk.icns")
-ENDIF(APPLE)
+endif(APPLE)
 
-IF (NOT APPLE)
-	SET(mainFiles main.cpp
+if (NOT APPLE)
+	set(mainFiles main.cpp
 		)
-ENDIF(NOT APPLE)
+endif(NOT APPLE)
 
-SET(headerFiles ../desktopmanager.h
+set(headerFiles ../desktopmanager.h
 	${extra_headers}
 	)
 
-SET(QTMOC_SRCS ../desktopmanager.h
+set(QTMOC_SRCS ../desktopmanager.h
 	${extra_headers}
 	)
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
 	../desktopmanager.cpp
 	${sourceFiles}
 	${headerFiles}
 	${mainFiles}
 	)
 
-IF(WIN32)
-	SET(GUI_TYPE WIN32)
+if (WIN32)
+	set(GUI_TYPE WIN32)
 	ADD_DEFINITIONS(-DNODEFAULTLIB:library)
-	SET(libs
+	set(libs
 		${QT_QTGUI_LIBRARY}
 		${QT_QTCORE_LIBRARY}
 		${QT_QTOPENGL_LIBRARY}
 		${QT_QTMAIN_LIBRARY}
 		)
-ENDIF(WIN32)
+endif(WIN32)
 
-IF(UNIX)
-	SET(libs
+if (UNIX)
+	set(libs
 		${QT_QTGUI_LIBRARY}
 		${QT_QTCORE_LIBRARY}
 		${QT_QTOPENGL_LIBRARY}
@@ -81,10 +81,10 @@ IF(UNIX)
 		${Qt5X11Extras_LIBRARIES}
 		${extra_libs}
 		)
-ENDIF(UNIX)
+endif(UNIX)
 
 #Locate cococa framework on mac
-IF (APPLE)
+if (APPLE)
 	INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
 	FIND_LIBRARY(COCOA_LIBRARY Cocoa)
 	FIND_LIBRARY(GLUT_LIBRARY GLUT)
@@ -92,29 +92,29 @@ IF (APPLE)
 	MARK_AS_ADVANCED (COCOA_LIBRARY
 		GLUT_LIBRARY
 		OpenGL_LIBRARY)
-	SET(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY})
-ENDIF(APPLE)
+	set(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY})
+endif(APPLE)
 
 ########### Prepare files ###############
 
-IF (APPLE)
+if (APPLE)
 	set (APP_TYPE MACOSX_BUNDLE)
-ENDIF(APPLE)
+endif(APPLE)
 
 ADD_EXECUTABLE(${APPLICATION_EXE_NAME} ${APP_TYPE} ${WIN_APPLICATION} ${sourceFiles} ${resourceFiles} ${QT_MOC_SRCS})
-IF(APPLE)
+if (APPLE)
 	set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
 	SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES INSTALL_RPATH "@executable_path/../Frameworks/")
 	SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/cmakemodules/plexydesk-info.plist)
 	#rpath specific properties
 	message (${APPLICATION_EXE_NAME})
-	SET(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
+	set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
 
-ENDIF(APPLE)
+endif(APPLE)
 
-IF(MSVC)
+if (MSVC)
 	MSVC_SET_PROPER_CONSOLE_HANDLING(${APPLICATION_EXE_NAME})
-ENDIF(MSVC)
+endif(MSVC)
 SET_PROPERTY(TARGET ${APPLICATION_EXE_NAME} PROPERTY QT5_NO_LINK_QTMAIN ON)
 TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 	${QT_QTOPENGL_LIBRARY}
@@ -133,21 +133,21 @@ TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LI
 QT5_USE_MODULES(${APPLICATION_EXE_NAME} Widgets Xml OpenGL Core  )
 
 ########### Install files ###############
-IF(NOT APPLE)
+if (NOT APPLE)
 	INSTALL(TARGETS plexydesk DESTINATION bin)
-ENDIF(NOT APPLE)
+endif(NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
 	INSTALL(TARGETS plexydesk
 		BUNDLE DESTINATION . COMPONENT Runtime
 		RUNTIME DESTINATION bin COMPONENT Runtime)
 	INSTALL(FILES ${OSX_ICON_FILES}
 		DESTINATION plexydesk.app/Contents/Resources)
-ENDIF(APPLE)
+endif(APPLE)
 
 
-IF(UNIX)
+if (UNIX)
 	iF (NOT APPLE)
 		INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/plexydesk.desktop DESTINATION share/applications)
-	ENDIF(NOT APPLE)
-ENDIF(UNIX)
+	endif(NOT APPLE)
+endif(UNIX)

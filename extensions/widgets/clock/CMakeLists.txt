@@ -1,47 +1,47 @@
 set(CMAKE_AUTOMOC ON)
 
-ADD_SUBDIRECTORY(clock)
+add_subdirectory(clock)
 
-SET(clocksourceFiles
+set(clocksourceFiles
     clock.cpp
     clockinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     clock.h
     clockinterface.h
     )
 
-SET(sourceFiles
+set(sourceFiles
     ${clocksourceFiles}
     ${QT_MOC_SRCS}
     )
 
-SET(libs
+set(libs
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
 ADD_LIBRARY(plexyclock SHARED ${sourceFiles})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(plexyclock PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(plexyclock
     ${libs}
     )
 QT5_USE_MODULES(plexyclock Widgets Xml OpenGL Core  )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS plexyclock DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES clock.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS plexyclock LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES clock.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF(APPLE)
+endif(APPLE)

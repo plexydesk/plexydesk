@@ -1,17 +1,17 @@
-SET (sourceFiles
+set(sourceFiles
     idletimeengine.cpp
     idletimeengineinterface.cpp
     idletimedetector.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     idletimeengine.h
     idletimeengineinterface.h
     idletimedetector.h
     appleidletimedetector.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     idletimeengine.h
     idletimeengineinterface.h
     idletimedetector.h
@@ -20,16 +20,16 @@ SET (QTMOC_SRCS
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-IF(APPLE)
+if (APPLE)
     message("Looking for Apple Specific Depedencies")
     INCLUDE_DIRECTORIES (/System/Library/Frameworks)
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
@@ -43,20 +43,20 @@ IF(APPLE)
                       QUARTZ_CORE_LIBRARY
                       IOKIT_LIBRARY
                       OpenGL_LIBRARY)
-    SET(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_CORE_LIBRARY})
+    set(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_CORE_LIBRARY})
 
      set(APPLE_SRC appleidletimedetector.mm)
-ENDIF(APPLE)
+endif(APPLE)
 
 ADD_LIBRARY(idletimeengineengine SHARED ${sourceFiles} ${QT_MOC_SRCS} ${APPLE_SRC})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(idletimeengineengine PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(idletimeengineengine
     ${PLEXY_CORE_LIBRARY}
@@ -66,14 +66,14 @@ TARGET_LINK_LIBRARIES(idletimeengineengine
 
 QT5_USE_MODULES(idletimeengineengine Widgets Xml OpenGL Core   )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS idletimeengineengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES idletimeengine.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS idletimeengineengine LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
    INSTALL(FILES idletimeengine.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
-ENDIF(APPLE)
+endif(APPLE)
 
 

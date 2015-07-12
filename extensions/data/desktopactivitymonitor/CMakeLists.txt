@@ -1,17 +1,17 @@
-SET (sourceFiles
+set(sourceFiles
     desktopactivitymonitor.cpp
     desktopactivitymonitorinterface.cpp
     windowobject.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     desktopactivitymonitor.h
     desktopactivitymonitorinterface.h
     platformactivitymonitor.h
     windowobject.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     desktopactivitymonitor.h
     desktopactivitymonitorinterface.h
     platformactivitymonitor.h
@@ -19,17 +19,17 @@ SET (QTMOC_SRCS
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QUETZAL_DATA_KIT_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     )
 
-IF(APPLE)
+if (APPLE)
     message("Looking for Apple Specific Depedencies")
 
     INCLUDE_DIRECTORIES (/System/Library/Frameworks)
@@ -46,21 +46,21 @@ IF(APPLE)
                       IOKIT_LIBRARY
                       OpenGL_LIBRARY)
 
-    SET(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_CORE_LIBRARY})
+    set(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY} ${IOKIT_LIBRARY} ${QUARTZ_CORE_LIBRARY})
 
     set(MAC_EXTRA_SRC platformactivitymonitor.mm)
 
-ENDIF(APPLE)
+endif(APPLE)
 
 ADD_LIBRARY(desktopactivitymonitorengine SHARED ${sourceFiles} ${QT_MOC_SRCS} ${MAC_EXTRA_SRC})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(desktopactivitymonitorengine PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(desktopactivitymonitorengine
     ${PLEXY_CORE_LIBRARY}
@@ -70,13 +70,13 @@ TARGET_LINK_LIBRARIES(desktopactivitymonitorengine
 
 QT5_USE_MODULES(desktopactivitymonitorengine Widgets Xml OpenGL Core   )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS desktopactivitymonitorengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES desktopactivitymonitor.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS desktopactivitymonitorengine LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
    INSTALL(FILES desktopactivitymonitor.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
-ENDIF(APPLE)
+endif(APPLE)
 

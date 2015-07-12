@@ -1,20 +1,20 @@
 PROJECT(videoview)
 
-ADD_SUBDIRECTORY(img)
+add_subdirectory(img)
 
-SET(sourceFiles
+set(sourceFiles
     videoitem.cpp
     videointerface.cpp
     videoplugin.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     videoitem.h
     videointerface.h
     videoplugin.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     videoitem.h
     videointerface.h
     videoplugin.h
@@ -22,12 +22,12 @@ SET(QTMOC_SRCS
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

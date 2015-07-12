@@ -1,20 +1,20 @@
 set(CMAKE_AUTOMOC ON)
 
-ADD_SUBDIRECTORY(img)
+add_subdirectory(img)
 
-SET(sourceFiles
+set(sourceFiles
     interface.cpp
     imageplugin.cpp
     photowidget.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     interface.h
     imageplugin.h
     photowidget.h
     )
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
@@ -28,12 +28,12 @@ TARGET_LINK_LIBRARIES(photoframe
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS photoframe DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES photoframe.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS photoframe LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES photoframe.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF (APPLE)
+endif (APPLE)

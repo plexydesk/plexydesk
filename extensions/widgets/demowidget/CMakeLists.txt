@@ -1,9 +1,9 @@
-SET(widgetdemosrc
+set(widgetdemosrc
     widget.cpp
     widgetitem.cpp
     )
 
-SET(plexycore_MOC
+set(plexycore_MOC
     ${CMAKE_SOURCE_DIR}/base/qt4/abstractplugininterface.cpp
     ${CMAKE_SOURCE_DIR}/base/qt4/pluginloader.cpp
     ${CMAKE_SOURCE_DIR}/base/qt4/desktopwidget.cpp

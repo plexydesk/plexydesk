@@ -1,7 +1,7 @@
 INCLUDE(UsePkgConfig)
 
 MACRO(PKGCONFIG_GETVAR _package _var _output_variable)
-  SET(${_output_variable})
+  set(${_output_variable})
 
   # if pkg-config has been found
   IF(PKGCONFIG_EXECUTABLE)
@@ -13,9 +13,9 @@ MACRO(PKGCONFIG_GETVAR _package _var _output_variable)
 
       EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS ${_package} --variable ${_var} OUTPUT_VARIABLE ${_output_variable} )
 
-    ENDIF(NOT _return_VALUE)
+    endif(NOT _return_VALUE)
 
-  ENDIF(PKGCONFIG_EXECUTABLE)
+  endif(PKGCONFIG_EXECUTABLE)
 
 ENDMACRO(PKGCONFIG_GETVAR _package _var _output_variable)
 
@@ -24,7 +24,7 @@ MACRO(dbus_add_activation_service _sources)
     FOREACH (_i ${_sources})
         GET_FILENAME_COMPONENT(_service_file ${_i} ABSOLUTE)
         STRING(REGEX REPLACE "\\.service.*$" ".service" _output_file ${_i})
-        SET(_target ${CMAKE_CURRENT_BINARY_DIR}/${_output_file})
+        set(_target ${CMAKE_CURRENT_BINARY_DIR}/${_output_file})
         CONFIGURE_FILE(${_service_file} ${_target})
         INSTALL(FILES ${_target} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
     ENDFOREACH(_i ${ARGN})

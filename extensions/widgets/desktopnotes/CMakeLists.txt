@@ -1,16 +1,16 @@
-SET (sourceFiles
+set(sourceFiles
     desktopnotes.cpp
     desktopnotesinterface.cpp
     notewidget.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     desktopnotes.h
     desktopnotesinterface.h
     notewidget.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     desktopnotes.h
     desktopnotesinterface.h
     notewidget.h
@@ -18,24 +18,24 @@ SET (QTMOC_SRCS
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
 ADD_LIBRARY(desktopnoteswidget SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(desktopnoteswidget PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(desktopnoteswidget
     ${QUETZAL_SOCIAL_KIT_LIBRARY}
@@ -45,14 +45,14 @@ TARGET_LINK_LIBRARIES(desktopnoteswidget
 
 QT5_USE_MODULES(desktopnoteswidget Widgets Xml OpenGL Core  )
 
-IF (NOT APPLE)
+if (NOT APPLE)
     INSTALL(TARGETS desktopnoteswidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
     INSTALL(FILES desktopnotes.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS desktopnoteswidget LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES desktopnotes.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF(APPLE)
+endif(APPLE)
 
 

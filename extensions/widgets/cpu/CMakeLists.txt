@@ -1,17 +1,17 @@
-ADD_SUBDIRECTORY(cpu)
+add_subdirectory(cpu)
 
-SET(plexycpusrc
+set(plexycpusrc
     cpu.cpp
     cpuwidget.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     cpu.h
     cpuwidget.h
     cpuinterface.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     cpu.h
     cpuwidget.h
     cpuinterface.h
@@ -19,12 +19,12 @@ SET(QTMOC_SRCS
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${plexycpusrc}
     ${QT_MOC_SRCS}
     )
 
-SET(libs
+set(libs
     ${PLEXY_CORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}

@@ -1,38 +1,38 @@
-SET (sourceFiles
+set(sourceFiles
 	template.cpp
 	templateinterface.cpp
 	)
 
-SET(headerFiles
+set(headerFiles
 	template.h
 	templateinterface.h
 	)
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
 	template.h
 	templateinterface.h
 	)
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
 	${sourceFiles}
 	${headerFiles}
 	)
 
-SET(libs
+set(libs
 	${QT_QTCORE_LIBRARY}
 	)
 
 ADD_LIBRARY(templateengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
 	SET_TARGET_PROPERTIES(templateengine PROPERTIES
 		IMPORT_SUFFIX ".lib"
 		IMPORT_PREFIX ""
 		PREFIX ""
 		)
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(templateengine
 	${PLEXY_CORE_LIBRARY}
@@ -41,12 +41,12 @@ TARGET_LINK_LIBRARIES(templateengine
 
 QT5_USE_MODULES(templateengine Widgets Xml OpenGL Core   )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 	INSTALL(TARGETS templateengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 	INSTALL(FILES template.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
 	INSTALL(TARGETS templateengine LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
 	INSTALL(FILES template.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
-ENDIF(APPLE)
+endif(APPLE)

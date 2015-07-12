@@ -1,6 +1,6 @@
 set(CMAKE_AUTOMOC ON)
 
-SET(sourceFiles
+set(sourceFiles
     interface.cpp
     folderplugin.cpp
     iconwidgetview.cpp
@@ -10,7 +10,7 @@ SET(sourceFiles
     plexydesktopiconprovider.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     interface.h
     folderplugin.h
     iconwidgetview.h
@@ -20,12 +20,12 @@ SET(headerFiles
     plexydesktopiconprovider.h
     )
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(CONFIG_FILE folderwidget.desktop)
+set(CONFIG_FILE folderwidget.desktop)
 
 ADD_LIBRARY(folderwidget SHARED ${sourceFiles})
 
@@ -35,12 +35,12 @@ TARGET_LINK_LIBRARIES(folderwidget
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
-IF (NOT APPLE)
+if (NOT APPLE)
   INSTALL(TARGETS folderwidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
   INSTALL(FILES folderwidget.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS folderwidget LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES folderwidget.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF (APPLE)
+endif (APPLE)

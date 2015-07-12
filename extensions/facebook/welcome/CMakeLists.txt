@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES(
 
 QT4_WRAP_UI(QT_LOGIN_UI login.ui)
 
-SET(sourceFiles
+set(sourceFiles
     ${QT_LOGIN_UI}
     login.cpp
     welcomewidget.cpp
@@ -16,7 +16,7 @@ SET(sourceFiles
     welcomeitem.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     login.h
     welcomewidget.h
     frameitem.h
@@ -25,7 +25,7 @@ SET(headerFiles
     welcomeitem.h
     )
 
-SET(QTMOC_SRCS login.h
+set(QTMOC_SRCS login.h
     welcomewidget.h
     frameitem.h
     plugin.h
@@ -37,12 +37,12 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

@@ -1,12 +1,12 @@
 FILE (GLOB HTML_FILES *.html)
 FILE (GLOB CSS_FILES *.css)
 
-IF (NOT APPLE)
+if (NOT APPLE)
     INSTALL(FILES ${HTML_FILES} DESTINATION share/plexy/facebook/ui/data/)
     INSTALL(FILES ${CSS_FILES} DESTINATION share/plexy/facebook/ui/data/)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(FILES ${HTML_FILES} DESTINATION plexydesk.app/Contents/share/plexy/facebook/ui/data/)
    INSTALL(FILES ${CSS_FILES} DESTINATION plexydesk.app/Contents/share/plexy/facebook/ui/data/)
-ENDIF(APPLE)
+endif(APPLE)

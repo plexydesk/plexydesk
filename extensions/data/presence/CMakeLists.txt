@@ -4,29 +4,29 @@ INCLUDE_DIRECTORIES(
     ${TELEPATHY_QT4_INCLUDE_DIR}
     )
 
-SET(sourceFiles
+set(sourceFiles
     presence.cpp
     presenceinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     presence.h
     presenceinterface.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     presence.h
     presenceinterface.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

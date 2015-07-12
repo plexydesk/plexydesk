@@ -1,35 +1,35 @@
-SET (sourceFiles
+set(sourceFiles
      facebooksession.cpp
      facebookdatainterface.cpp
      facebookuserinfo.cpp
     )
 
-SET(headerFiles facebooksession.h facebookdatainterface.h facebookuserinfo.h
+set(headerFiles facebooksession.h facebookdatainterface.h facebookuserinfo.h
     )
 
-SET (QTMOC_SRCS facebooksession.h facebookdatainterface.h facebookuserinfo.h
+set(QTMOC_SRCS facebooksession.h facebookdatainterface.h facebookuserinfo.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     jsoncpp
     )
 
 ADD_LIBRARY(facebookengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(facebookengine PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(facebookengine
     ${PLEXY_CORE_LIBRARY}
@@ -38,12 +38,12 @@ TARGET_LINK_LIBRARIES(facebookengine
 
 QT5_USE_MODULES(facebookengine Widgets Xml OpenGL Core   )
 
-IF(NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS facebookengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES facebook.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS facebookengine LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
    INSTALL(FILES facebook.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
-ENDIF(APPLE)
+endif(APPLE)
