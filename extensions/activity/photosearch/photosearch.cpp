@@ -37,6 +37,7 @@
 #include <button.h>
 #include <dialwidget.h>
 #include <item_view.h>
+#include <image_io.h>
 
 #include "localwallpapers.h"
 
@@ -194,21 +195,23 @@ void PhotoSearchActivity::load_from_system_path() const {
         QString image_full_path = QDir::toNativeSeparators(
             qt_path.absolutePath() + "/" + image_file_name);
 
-        QuetzalSocialKit::AsyncImageCreator *ck_image_service =
-            new QuetzalSocialKit::AsyncImageCreator();
-        ck_image_service->setData(image_full_path,
-                                  CherryKit::Config::cache_dir());
-        ck_image_service->on_task_complete([this](
-            QuetzalSocialKit::AsyncImageCreator *a_service) {
-           if (!a_service)
-               return;
+        cherry::image_io *ck_image_service = new cherry::image_io(0, 0);
 
-           qDebug() << Q_FUNC_INFO << a_service->imagePath();
-           qDebug() << Q_FUNC_INFO << "Image Data : " << a_service->image().isNull();
-           qDebug() << Q_FUNC_INFO << "Image Thumbnail : " << a_service->thumbNail().isNull();
-           delete a_service;
+        ck_image_service->on_ready([&](
+            cherry::image_io::buffer_load_status_t a_status,
+            cherry::image_io *a_image_io) {
+          cherry::io_surface *ck_img_surface_ref = a_image_io->surface();
+
+          if (a_status != cherry::image_io::kSuccess || !ck_img_surface_ref) {
+            delete a_image_io;
+            return;
+          }
+
+          qDebug() << Q_FUNC_INFO << "Loaded!";
+          delete a_image_io;
         });
-        ck_image_service->start();
+
+        ck_image_service->create(image_full_path.toStdString());
       }
     }
   });

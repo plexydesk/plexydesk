@@ -21,11 +21,11 @@
 
 #include <QObject>
 #include <QNetworkReply>
-#include <QuetzalSocialKit_export.h>
+#include <QuetzalSocialKitQt_export.h>
 
 namespace QuetzalSocialKit {
 
-class QuetzalSocialKit_EXPORT AsyncDataDownloader : public QObject {
+class QuetzalSocialKitQt_EXPORT AsyncDataDownloader : public QObject {
   Q_OBJECT
 public:
   explicit AsyncDataDownloader(QObject *a_parent_ptr = 0);

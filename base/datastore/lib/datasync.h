@@ -24,7 +24,7 @@
 #include <string>
 
 namespace cherry {
-class QuetzalDataKit_EXPORT data_sync {
+class QuetzalDataKitQt_EXPORT data_sync {
 public:
   data_sync(const std::string &a_app_name);
   virtual ~data_sync();

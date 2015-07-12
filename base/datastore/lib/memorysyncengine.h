@@ -20,11 +20,11 @@
 #define MEMORYSYNCENGINE_H
 
 #include <syncengineinterface.h>
-#include <QuetzalDataKit_export.h>
+#include <QuetzalDataKitQt_export.h>
 
 namespace cherry {
 
-class QuetzalDataKit_EXPORT MemorySyncEngine : public sync_engine_interface {
+class QuetzalDataKitQt_EXPORT MemorySyncEngine : public sync_engine_interface {
   Q_OBJECT
 
 public:

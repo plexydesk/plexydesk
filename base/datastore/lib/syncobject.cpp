@@ -58,8 +58,17 @@ void sync_object::update_time_stamp() {
   p_object->m_time_stamp = 0;
 }
 
-void sync_object::removeObject(uint key) {
-  // todo;
+void sync_object::remove_object(uint key) {
+  std::map<uint, sync_object*>::iterator ck_it =
+          p_object->m_child_map.find(key);
+
+  if (ck_it == p_object->m_child_map.end())
+      return;
+
+  delete p_object->m_child_map.at(key);
+
+  p_object->m_child_map.erase(ck_it);
+  p_object->m_child_count -= 1;
 }
 
 sync_object::sync_object(sync_object *parent) : p_object(new Privatesync_object) {
@@ -73,7 +82,6 @@ sync_object::sync_object(sync_object *parent) : p_object(new Privatesync_object)
 }
 
 sync_object::~sync_object() {
-  qDebug() << Q_FUNC_INFO;
   delete p_object;
 }
 

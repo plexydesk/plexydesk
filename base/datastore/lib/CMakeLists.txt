@@ -75,6 +75,11 @@ SET(headerFiles
     px_bench.h
    )
 
+if (${BUILD_WITH_QT})
+  set (sourceFiles ${sourceFiles} qt5/qt_platform_image.cpp)
+  set (headerFiles ${sourceFiles} qt5/qt_platform_image.h)
+endif()
+
 IF (APPLE)
    INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
