@@ -1,18 +1,18 @@
 #ADD_SUBDIRECTORY(youtube)
 
-SET(sourceFiles
+set(sourceFiles
     sociotwitter.cpp
     sociotwitterinterface.cpp
     sociotwitterwidget.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     sociotwitter.h
     sociotwitterinterface.h
     sociotwitterwidget.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     sociotwitter.h
     sociotwitterinterface.h
     sociotwitterwidget.h
@@ -20,12 +20,12 @@ SET(QTMOC_SRCS
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

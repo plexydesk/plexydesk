@@ -1,17 +1,17 @@
 set(CMAKE_AUTOMOC ON)
 
 ########### Source files ###############
-SET(sourceFiles
+set(sourceFiles
     main.cpp
     extrunner.cpp
     )
 
-IF(WIN32)
-    SET(GUI_TYPE WIN32)
+if (WIN32)
+    set(GUI_TYPE WIN32)
     ADD_DEFINITIONS(-DNODEFAULTLIB:library)
-ENDIF(WIN32)
+endif(WIN32)
 
-SET(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
+set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${QT_QTSVG_LIBRARY}
     ${QT_QTNETWORK_LIBRARY}
@@ -30,9 +30,9 @@ ADD_EXECUTABLE(extloader_runtime ${WIN_APPLICATION} ${sourceFiles})
 SET_PROPERTY(TARGET extloader_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
 QT5_USE_MODULES(extloader_runtime Widgets Xml OpenGL Core)
 
-IF(MSVC)
+if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(extloader_runtime)
-ENDIF(MSVC)
+endif(MSVC)
 
 TARGET_LINK_LIBRARIES(extloader_runtime
     ${PLEXY_UI_CORE_LIBRARY}

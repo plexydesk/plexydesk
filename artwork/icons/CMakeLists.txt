@@ -4,6 +4,6 @@
 
 #INSTALL(FILES ${PNGFILES} DESTINATION share/plexy/skins/default)
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(FILES "plexydesk.png" DESTINATION share/plexy)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)

@@ -1,4 +1,4 @@
-SET(sourceFiles
+set(sourceFiles
     authplugin.cpp
     authwidgetinterface.cpp
     facebookcontactui.cpp
@@ -10,7 +10,7 @@ SET(sourceFiles
     facebookcontactcardbutton.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     authplugin.h
     authwidgetinterface.h
     facebookcontactui.h
@@ -22,7 +22,7 @@ SET(headerFiles
     facebookcontactcardbutton.h
 )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     authplugin.h
     authwidgetinterface.h
     facebookcontactui.h
@@ -42,12 +42,12 @@ SET(QTMOC_SRCS
 #   set(optional_libs ${QIMAGE_BLITZ_LIBRARY})
 #ENDIF (QIMAGE_BLITZ_FOUND)
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-#SET(libs
+#set(libs
 #    ${optional_libs}
 #    )
 
@@ -68,7 +68,7 @@ SET(sourceFiles
 #IF (APPLE)
 #   INSTALL(TARGETS plexyauth LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
 #   INSTALL(FILES authwidget.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
-#ENDIF(APPLE)
+#endif(APPLE)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -77,4 +77,4 @@ add_library(plexyauth SHARED ${sourceFiles})
 qt5_use_modules(plexyauth Widgets Xml OpenGL Core   )
 target_link_libraries(plexyauth ${PLEXY_UI_CORE_LIBRARY})
 
-ADD_SUBDIRECTORY(data)
+add_subdirectory(data)

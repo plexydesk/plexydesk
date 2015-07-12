@@ -51,18 +51,18 @@ if (NOT SOCIAL_KIT_DROPBOX_API_KEY)
    message(ERROR " Dropbox Developer key not defined by SOCIAL_KIT_DROPBOX_API_KEY, Remote Storage will not function")
 endif()
 
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmakemodules)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmakemodules)
 
 # Needed/optional packages definitions
-FIND_PACKAGE(Qt5Core REQUIRED)
-FIND_PACKAGE(Qt5Widgets REQUIRED)
-FIND_PACKAGE(Qt5Xml REQUIRED)
-FIND_PACKAGE(Qt5Gui REQUIRED)
-FIND_PACKAGE(Qt5OpenGL REQUIRED)
-FIND_PACKAGE(Qt5Network REQUIRED)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Network REQUIRED)
 
-FIND_PACKAGE(OpenGL REQUIRED)
-#FIND_PACKAGE(MITIE REQUIRED)
+find_package(OpenGL REQUIRED)
+#find_package(MITIE REQUIRED)
 
 #plugins
 if (APPLE)
@@ -74,72 +74,72 @@ set(QT_REQUIRED_VERSION 5.2.0)
 find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED Gui Core Xml Widgets Network)
 
 
-IF(UNIX AND NOT APPLE)
-    FIND_PACKAGE(Qt5X11Extras)
-ENDIF(UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
+    find_package(Qt5X11Extras)
+endif(UNIX AND NOT APPLE)
 
 # Project variables that need to be defined manually
-SET(LIB_MAJOR 1)
-SET(LIB_MINOR 0)
-SET(LIB_RELEASE 0)
+set(LIB_MAJOR 1)
+set(LIB_MINOR 0)
+set(LIB_RELEASE 0)
 
-SET(APPLICATION_INTERNAL_VERSION 20150101)
-SET(APPLICATION_DATE 2015-01-01)
+set(APPLICATION_INTERNAL_VERSION 20150101)
+set(APPLICATION_DATE 2015-01-01)
 
 # Auto defined project variables
-SET(APPLICATION_NAME "${PROJECT_NAME}")
-SET(APPLICATION_MAIN_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
+set(APPLICATION_NAME "${PROJECT_NAME}")
+set(APPLICATION_MAIN_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
 
 #Library Names
-IF(BUILD_WITH_QT)
-  SET(APPLICATION_EXE_NAME plexydesk)
-  SET(PLEXY_UI_CORE_LIBRARY qt_cherry_kit)
-  SET(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKitQt)
-  SET(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKitQt)
+if (BUILD_WITH_QT)
+  set(APPLICATION_EXE_NAME plexydesk)
+  set(PLEXY_UI_CORE_LIBRARY qt_cherry_kit)
+  set(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKitQt)
+  set(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKitQt)
 else()
-  SET(APPLICATION_EXE_NAME plexydesk)
-  SET(PLEXY_UI_CORE_LIBRARY cherry_kit)
-  SET(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKit)
-  SET(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKit)
+  set(APPLICATION_EXE_NAME plexydesk)
+  set(PLEXY_UI_CORE_LIBRARY cherry_kit)
+  set(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKit)
+  set(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKit)
 endif()
 
 # Check on Windows if we have used CMAKE_INSTALL_PREFIX or default it to
 # outsource special ready path
 # Set the install prefix
-IF(WIN32)
+if (WIN32)
     IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-        SET(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${APPLICATION_EXE_NAME}-ready-build" CACHE PATH "default install path" FORCE)
-    ENDIF()
+        set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${APPLICATION_EXE_NAME}-ready-build" CACHE PATH "default install path" FORCE)
+    endif()
     STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
     MESSAGE(STATUS "CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}")
-ENDIF(WIN32)
+endif(WIN32)
 
-IF (APPLE)
-    SET(MACOSX_BUNDLE_EXECUTABLE_NAME "plexydesk")
-    SET(MACOSX_BUNDLE_INFO_STRING "PlexyDesk")
-    SET(MACOSX_BUNDLE_GUI_IDENTIFIER ${MAC_BUNDLE_ID})
-    SET(MACOSX_BUNDLE_LONG_VERSION_STRING "plexydesk 1.0-mac")
-    SET(MACOSX_BUNDLE_BUNDLE_NAME "org.plexydesk.mac")
-    SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0")
-    SET(MACOSX_BUNDLE_BUNDLE_VERSION "1.0")
-    SET(MACOSX_BUNDLE_COPYRIGHT "© 2014, Siraj Razick")
-    SET(MACOSX_BUNDLE_CLASS "NSApplication")
+if (APPLE)
+    set(MACOSX_BUNDLE_EXECUTABLE_NAME "plexydesk")
+    set(MACOSX_BUNDLE_INFO_STRING "PlexyDesk")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER ${MAC_BUNDLE_ID})
+    set(MACOSX_BUNDLE_LONG_VERSION_STRING "plexydesk 1.0-mac")
+    set(MACOSX_BUNDLE_BUNDLE_NAME "org.plexydesk.mac")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "1.0")
+    set(MACOSX_BUNDLE_COPYRIGHT "© 2014, Siraj Razick")
+    set(MACOSX_BUNDLE_CLASS "NSApplication")
 
-    SET(RESOURCES_DEST_DIR plexydesk.app/Contents/share/plexy/themepack/default/resources)
-ENDIF (APPLE)
+    set(RESOURCES_DEST_DIR plexydesk.app/Contents/share/plexy/themepack/default/resources)
+endif (APPLE)
 
-IF (NOT APPLE)
-    SET(RESOURCES_DEST_DIR share/plexy/themepack/default/resources)
-ENDIF (NOT APPLE)
+if (NOT APPLE)
+    set(RESOURCES_DEST_DIR share/plexy/themepack/default/resources)
+endif (NOT APPLE)
 
 #set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS})
-IF (NOT WIN32)
+if (NOT WIN32)
 #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-ENDIF (NOT WIN32)
+endif (NOT WIN32)
 
-IF (APPLE)
+if (APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gdwarf-2")
-ENDIF (APPLE)
+endif (APPLE)
     
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -O1")
@@ -153,59 +153,59 @@ endif()
 # MinSizeRel (CMAKE_C_FLAGS_MINSIZEREL or CMAKE_CXX_FLAGS_MINSIZEREL)
 # By default we should set it to Release. This can be overridden by a -D command
 # line switch.
-IF (NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE Release
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release
         CACHE
         STRING "Specify build type: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
-ENDIF (NOT CMAKE_BUILD_TYPE)
+endif (NOT CMAKE_BUILD_TYPE)
 
 # Check if we use any Debug in the final release and if so use console in Windows
 # For the targets add ${WIN_APPLICATION} as second argument if you want a non
 # console application like:
 # example: ADD_EXECUTABLE(exe_target ${WIN_APPLICATION} ${sourceFiles})
-IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
     MESSAGE(STATUS "Setting Debug flags ...")
-    SET(WIN_APPLICATION "")
+    set(WIN_APPLICATION "")
 ELSE(CMAKE_BUILD_TYPE MATCHES "Debug")
     # Note: the WIN32 is ignored on other platforms than Windows
-    SET(WIN_APPLICATION "WIN32")
-ENDIF(CMAKE_BUILD_TYPE MATCHES "Debug")
+    set(WIN_APPLICATION "WIN32")
+endif(CMAKE_BUILD_TYPE MATCHES "Debug")
 
 INCLUDE(PkgConfigGetVar)
 INCLUDE(GNUInstallDirs)
 
-SET(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
+set(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
 
 # On Windows we use a predefined QT_IMPORTS_INSTALL_DIR
-IF (NOT WIN32)
+if (NOT WIN32)
 
     # Workaround for platforms that do not provide it (Ubuntu)
     IF(NOT QT_IMPORTS_DIR)
         MESSAGE("QT_IMPORTS_DIR not present...\nUsing a built in one: ${CMAKE_INSTALL_FULL_LIBDIR}/qt4/imports")
-        SET(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
+        set(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
     ELSE(NOT QT_IMPORTS_DIR)
         # Making QT_IMPORTS_INSTALL_DIR relative. This is a dirty hack but should work
         STRING(REGEX REPLACE "^/usr/" "" QT_IMPORTS_INSTALL_DIR "${QT_IMPORTS_DIR}")
         MESSAGE(STATUS "Relative QT Imports path set to: ${QT_IMPORTS_INSTALL_DIR}")
-    ENDIF(NOT QT_IMPORTS_DIR)
+    endif(NOT QT_IMPORTS_DIR)
 
-ENDIF(NOT WIN32)
+endif(NOT WIN32)
 
 INCLUDE_DIRECTORIES (
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
     )
 
-IF(MSVC AND MSVC_VERSION GREATER 1500)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
-ENDIF(MSVC AND MSVC_VERSION GREATER 1500)
+if (MSVC AND MSVC_VERSION GREATER 1500)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
+endif(MSVC AND MSVC_VERSION GREATER 1500)
 
-IF(WIN32)
-    SET(FFMPEG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/win32/ffmpeg/include)
-    SET(FFMPEG_LIBRARIES avcodec avdevice avformat avutil)
-    SET(FFMPEG_FOUND TRUE)
-ENDIF(WIN32)
+if (WIN32)
+    set(FFMPEG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/win32/ffmpeg/include)
+    set(FFMPEG_LIBRARIES avcodec avdevice avformat avutil)
+    set(FFMPEG_FOUND TRUE)
+endif(WIN32)
 
 CONFIGURE_FILE(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
@@ -246,7 +246,7 @@ ADD_CUSTOM_TARGET(uninstall
 CONFIGURE_FILE(
     "${CMAKE_CURRENT_SOURCE_DIR}/dist/windows/${APPLICATION_EXE_NAME}_windres.rc.in"
     "${CMAKE_CURRENT_BINARY_DIR}/dist/windows/${APPLICATION_EXE_NAME}_windres.rc")
-IF(MINGW)
+if (MINGW)
     ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/wally_rc.o
         COMMAND windres.exe
@@ -255,7 +255,7 @@ IF(MINGW)
         -i ${CMAKE_CURRENT_BINARY_DIR}/dist/windows/windres.rc
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist/windows
         COMMENT "Generating windows RC file ...")
-ENDIF(MINGW)
+endif(MINGW)
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}
@@ -281,15 +281,15 @@ INCLUDE_DIRECTORIES(
     ${QT_INCLUDE_DIR}
     )
 
-ADD_SUBDIRECTORY(deps/tinyxml2)
+add_subdirectory(deps/tinyxml2)
 
-IF(WIN32)
+if (WIN32)
     ADD_SUBDIRECTORY(dist/windows)
-ENDIF(WIN32)
+endif(WIN32)
 
 # *** ALL PLATFORMS ***
 #ADD_SUBDIRECTORY(base/core)
-ADD_SUBDIRECTORY(base/uikit)
+add_subdirectory(base/uikit)
 
 if (NOT APPLE)
     ADD_SUBDIRECTORY(runner)
@@ -299,47 +299,47 @@ if (APPLE)
     ADD_SUBDIRECTORY(runner/apple)
 endif()
 
-ADD_SUBDIRECTORY(extensions/runtime)
+add_subdirectory(extensions/runtime)
 
-ADD_SUBDIRECTORY(base/social/data)
-ADD_SUBDIRECTORY(base/datastore/lib)
-ADD_SUBDIRECTORY(base/social/lib)
-ADD_SUBDIRECTORY(base/social/testrunner)
+add_subdirectory(base/social/data)
+add_subdirectory(base/datastore/lib)
+add_subdirectory(base/social/lib)
+add_subdirectory(base/social/testrunner)
 
 if (NOT WIN32)
-ADD_SUBDIRECTORY(base/datastore/tests)
+add_subdirectory(base/datastore/tests)
 endif ()
 
-ADD_SUBDIRECTORY(extensions/widgets/clock)
-ADD_SUBDIRECTORY(extensions/widgets/photoframe)
+add_subdirectory(extensions/widgets/clock)
+add_subdirectory(extensions/widgets/photoframe)
 #ADD_SUBDIRECTORY(extensions/widgets/folderwidget)
-ADD_SUBDIRECTORY(extensions/background/default)
-ADD_SUBDIRECTORY(extensions/data/flickrphotosearch)
-ADD_SUBDIRECTORY(extensions/data/httpserver)
-ADD_SUBDIRECTORY(extensions/widgets/desktopnotes)
-ADD_SUBDIRECTORY(extensions/widgets/date)
-ADD_SUBDIRECTORY(extensions/widgets/template)
-ADD_SUBDIRECTORY(extensions/widgets/nlp)
-ADD_SUBDIRECTORY(extensions/widgets/nlp/tools/query_jeff)
-ADD_SUBDIRECTORY(extensions/widgets/nlp/tools/train_jeff)
+add_subdirectory(extensions/background/default)
+add_subdirectory(extensions/data/flickrphotosearch)
+add_subdirectory(extensions/data/httpserver)
+add_subdirectory(extensions/widgets/desktopnotes)
+add_subdirectory(extensions/widgets/date)
+add_subdirectory(extensions/widgets/template)
+add_subdirectory(extensions/widgets/nlp)
+add_subdirectory(extensions/widgets/nlp/tools/query_jeff)
+add_subdirectory(extensions/widgets/nlp/tools/train_jeff)
 
-ADD_SUBDIRECTORY(extensions/data/rest)
-ADD_SUBDIRECTORY(extensions/data/timer)
-ADD_SUBDIRECTORY(extensions/widgets/dock)
-ADD_SUBDIRECTORY(extensions/activity/inputdialogactivity)
-ADD_SUBDIRECTORY(extensions/activity/chooser)
-ADD_SUBDIRECTORY(extensions/activity/photosearch)
+add_subdirectory(extensions/data/rest)
+add_subdirectory(extensions/data/timer)
+add_subdirectory(extensions/widgets/dock)
+add_subdirectory(extensions/activity/inputdialogactivity)
+add_subdirectory(extensions/activity/chooser)
+add_subdirectory(extensions/activity/photosearch)
 #ADD_SUBDIRECTORY(extensions/activity/flikrsearch)
-ADD_SUBDIRECTORY(extensions/activity/progressdialog)
-ADD_SUBDIRECTORY(extensions/activity/socialauth)
-ADD_SUBDIRECTORY(extensions/activity/takenote)
-ADD_SUBDIRECTORY(extensions/activity/datepicker)
-ADD_SUBDIRECTORY(extensions/activity/timepicker)
+add_subdirectory(extensions/activity/progressdialog)
+add_subdirectory(extensions/activity/socialauth)
+add_subdirectory(extensions/activity/takenote)
+add_subdirectory(extensions/activity/datepicker)
+add_subdirectory(extensions/activity/timepicker)
 #ADD_SUBDIRECTORY(extensions/activity/desktopclock)
-ADD_SUBDIRECTORY(extensions/activity/timezone)
-ADD_SUBDIRECTORY(extensions/activity/spacepreview)
+add_subdirectory(extensions/activity/timezone)
+add_subdirectory(extensions/activity/spacepreview)
 
-ADD_SUBDIRECTORY(extensions/activity/template)
-ADD_SUBDIRECTORY(extensions/style/cocoa)
-ADD_SUBDIRECTORY(artwork)
+add_subdirectory(extensions/activity/template)
+add_subdirectory(extensions/style/cocoa)
+add_subdirectory(artwork)
 

@@ -1,26 +1,26 @@
-SET (sourceFiles
+set(sourceFiles
     utube.cpp
     youtubedatainterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     utube.h
     youtubedatainterface.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     utube.h
     youtubedatainterface.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

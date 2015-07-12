@@ -9,10 +9,10 @@ FILE(GLOB HDPI_ACTION_ICONS resources/hdpi/actions/*.png)
 
 # *** Check files in the final QT resources folder are unique - LINUX PLATFORMS ***
 # PLEASE ADD TO $UNIQUE_RC_FILES BELOW ALL RESOURCE FILES THAT GO TO ${RESOURCES_DEST_DIR}
-IF (NOT APPLE)
+if (NOT APPLE)
     IF (UNIX)
         MESSAGE(STATUS "Checking for name clashes in the QT RESOURCE folder...")
-        SET(UNIQUE_RC_FILES ${PNGFILES}
+        set(UNIQUE_RC_FILES ${PNGFILES}
                             ${JPEGFILES}
                             ${SVGFILES}
                             )
@@ -21,11 +21,11 @@ IF (NOT APPLE)
                         )
         IF(NOT ${OUT_UNIQ} STREQUAL "")
             MESSAGE(FATAL_ERROR "There are name clashes(MS Windows) in the QT RESOURCE folder:\n${OUT_UNIQ}")
-        ENDIF(NOT ${OUT_UNIQ} STREQUAL "")
+        endif(NOT ${OUT_UNIQ} STREQUAL "")
     ENDIF (UNIX)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(FILES ${PNGFILES}  DESTINATION ${RESOURCES_DEST_DIR})
 INSTALL(FILES ${JPEGFILES}  DESTINATION ${RESOURCES_DEST_DIR})
 INSTALL(FILES ${SVGFILES}  DESTINATION ${RESOURCES_DEST_DIR})
@@ -36,11 +36,11 @@ INSTALL(FILES ${MDPI}  DESTINATION ${RESOURCES_DEST_DIR}/mdpi)
 INSTALL(FILES ${CFG}  DESTINATION share/plexy/themepack/default)
 INSTALL(FILES ${LAYOUT}  DESTINATION share/plexy/themepack/default)
 
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
 
 ####################### APPLE ONLY #################################
-IF (APPLE)
+if (APPLE)
 
 INSTALL(FILES ${PNGFILES}  DESTINATION ${RESOURCES_DEST_DIR})
 INSTALL(FILES ${JPEGFILES}  DESTINATION ${RESOURCES_DEST_DIR})
@@ -54,4 +54,4 @@ INSTALL(FILES ${CFG}  DESTINATION
 INSTALL(FILES ${LAYOUT}  DESTINATION
     plexydesk.app/Contents/share/plexy/themepack/default)
 
-ENDIF(APPLE)
+endif(APPLE)

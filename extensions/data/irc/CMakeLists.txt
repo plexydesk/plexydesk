@@ -1,26 +1,26 @@
-SET(sourceFiles
+set(sourceFiles
     ircengine.cpp
     ircengineinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     ircengine.h
     ircengineinterface.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     ircengine.h
     ircengineinterface.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

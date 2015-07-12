@@ -1,1 +1,1 @@
-ADD_SUBDIRECTORY(artwork)
+add_subdirectory(artwork)

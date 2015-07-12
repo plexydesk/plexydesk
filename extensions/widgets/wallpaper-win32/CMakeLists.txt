@@ -1,10 +1,10 @@
-SET(sourceFiles
+set(sourceFiles
     wallpaper.cpp
     wallpaperwidget.cpp
     wallpaperinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     wallpaper.h
     wallpaperwidget.h
     wallpaperinterface.h
@@ -20,12 +20,12 @@ SOURCE_GROUP(headers
     ${headerFiles}
     )
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     wallpaper.h
     wallpaperwidget.h
     wallpaperinterface.h
@@ -33,22 +33,22 @@ SET(QTMOC_SRCS
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
 ADD_LIBRARY(wallpaperchange SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(wallpaperchange PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}
