@@ -1,20 +1,20 @@
-ADD_SUBDIRECTORY(twit)
+add_subdirectory(twit)
 
-SET(sourceFiles
+set(sourceFiles
     videoentity.cpp
     twit.cpp
     twitinterface.cpp
     twitwidget.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     videoentity.h
     twit.h
     twitinterface.h
     twitwidget.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     twit.h
     twitinterface.h
     twitwidget.h
@@ -22,12 +22,12 @@ SET(QTMOC_SRCS
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}

@@ -1,38 +1,38 @@
-SET (sourceFiles
+set(sourceFiles
     spacepreview.cpp
     spacepreviewinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     spacepreview.h
     spacepreviewinterface.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     spacepreview.h
     spacepreviewinterface.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
 ADD_LIBRARY(spacepreview SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(spacepreview PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(spacepreview
     ${PLEXY_UI_CORE_LIBRARY}
@@ -41,14 +41,14 @@ TARGET_LINK_LIBRARIES(spacepreview
 
 QT5_USE_MODULES(spacepreview Widgets Core)
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS spacepreview DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES spacepreview.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS spacepreview LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES spacepreview.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF(APPLE)
+endif(APPLE)
 
 

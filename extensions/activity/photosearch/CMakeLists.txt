@@ -1,18 +1,18 @@
-SET (sourceFiles
+set(sourceFiles
     photosearch.cpp
     photosearchinterface.cpp
     imagecell.cpp
     imagecelladaptor.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     photosearch.h
     photosearchinterface.h
     imagecell.h
     imagecelladaptor.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     photosearch.h
     photosearchinterface.h
     imagecell.h
@@ -21,24 +21,24 @@ SET (QTMOC_SRCS
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
 ADD_LIBRARY(system_wallpapers SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(system_wallpapers PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(system_wallpapers
     ${PLEXY_UI_CORE_LIBRARY}
@@ -48,12 +48,12 @@ TARGET_LINK_LIBRARIES(system_wallpapers
 
 QT5_USE_MODULES(system_wallpapers Widgets Xml OpenGL Core  )
 
-IF (NOT APPLE)
+if (NOT APPLE)
     INSTALL(TARGETS system_wallpapers DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
     INSTALL(FILES photosearch.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS system_wallpapers LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES photosearch.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF(APPLE)
+endif(APPLE)

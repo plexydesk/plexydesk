@@ -1,38 +1,38 @@
-SET (sourceFiles
+set(sourceFiles
     googleplacesengine.cpp
     googleplacesengineinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     googleplacesengine.h
     googleplacesengineinterface.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     googleplacesengine.h
     googleplacesengineinterface.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
 ADD_LIBRARY(googleplacesengineengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(googleplacesengineengine PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(googleplacesengineengine
     ${PLEXY_CORE_LIBRARY}
@@ -41,12 +41,12 @@ TARGET_LINK_LIBRARIES(googleplacesengineengine
 
 QT5_USE_MODULES(googleplacesengineengine Widgets Xml OpenGL Core  )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS googleplacesengineengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES googleplacesengine.desktop DESTINATION share/plexy/ext/groups)
-ENDIF(NOT APPLE)
+endif(NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS googleplacesengineengine LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
    INSTALL(FILES googleplacesengine.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
-ENDIF(APPLE)
+endif(APPLE)

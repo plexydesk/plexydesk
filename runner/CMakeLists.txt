@@ -6,11 +6,11 @@ if(UNIX)
 		${Qt5Gui_PRIVATE_INCLUDE_DIRS}
 		)
 
-	SET (extra_headers)
+	set(extra_headers)
 
-	SET (extra_source)
+	set(extra_source)
 
-	SET (extra_libs
+	set(extra_libs
 		Xcomposite
 		Xdamage
 		)
@@ -21,25 +21,25 @@ if(WIN32)
 		${CMAKE_SOURCE_DIR}/dist/windows
 		${CMAKE_BINARY_DIR}/dist/windows
 		)
-	SET(resourceFiles
+	set(resourceFiles
 		${CMAKE_BINARY_DIR}/dist/windows/${APPLICATION_EXE_NAME}_windres.rc
 		)
 endif(WIN32)
 
 ########### Source files ###############
-SET(sourceFiles
+set(sourceFiles
 	${extra_source}
 	)
 
-SET(mainFiles main.cpp)
+set(mainFiles main.cpp)
 
-SET(headerFiles desktopmanager.h ${extra_headers})
+set(headerFiles desktopmanager.h ${extra_headers})
 
-SET(QTMOC_SRCS ${extra_headers})
+set(QTMOC_SRCS ${extra_headers})
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
 	desktopmanager.cpp
 	${sourceFiles}
 	${headerFiles}
@@ -47,9 +47,9 @@ SET(sourceFiles
 	)
 
 if(WIN32)
-	SET(GUI_TYPE WIN32)
+	set(GUI_TYPE WIN32)
 	ADD_DEFINITIONS(-DNODEFAULTLIB:library)
-	SET(libs
+	set(libs
 		${QT_QTGUI_LIBRARY}
 		${QT_QTCORE_LIBRARY}
 		${QT_QTOPENGL_LIBRARY}
@@ -58,7 +58,7 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
-	SET(libs
+	set(libs
 		${QT_QTGUI_LIBRARY}
 		${QT_QTCORE_LIBRARY}
 		${QT_QTOPENGL_LIBRARY}

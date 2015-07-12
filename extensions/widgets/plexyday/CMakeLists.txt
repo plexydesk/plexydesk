@@ -1,6 +1,6 @@
-ADD_SUBDIRECTORY(plexyday)
+add_subdirectory(plexyday)
 
-SET(sourceFiles
+set(sourceFiles
     plexyday.cpp
     plexydayinterface.cpp
     plexydaywidget.cpp
@@ -8,7 +8,7 @@ SET(sourceFiles
     cellitem.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     plexyday.h
     plexydayinterface.h
     plexydaywidget.h
@@ -16,7 +16,7 @@ SET(headerFiles
     cellitem.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     plexyday.h
     plexydayinterface.h
     plexydaywidget.h
@@ -27,12 +27,12 @@ SET(QTMOC_SRCS
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTGUI_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${QT_QTCORE_LIBRARY}
@@ -41,13 +41,13 @@ SET(libs
 
 ADD_LIBRARY(plexyday SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(plexyday PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(plexyday
     ${PLEXY_UI_CORE_LIBRARY}
@@ -56,12 +56,12 @@ TARGET_LINK_LIBRARIES(plexyday
 
 QT5_USE_MODULES(plexyday Widgets Xml OpenGL Core )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS plexyday DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES plexyday.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS plexyday LIBRARY DESTINATION plexydesk.app/Contents/lib/plexyext/ COMPONENT Framework)
    INSTALL(FILES plexyday.desktop DESTINATION plexydesk.app/Contents/share/plexy/ext/groups)
-ENDIF (APPLE)
+endif (APPLE)

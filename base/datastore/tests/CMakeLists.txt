@@ -1,15 +1,15 @@
 set(CMAKE_AUTOMOC ON)
 ########### Source files ###############
-SET(sourceFiles
+set(sourceFiles
     main.cpp
     )
 
-IF(WIN32)
-    SET(GUI_TYPE WIN32)
+if (WIN32)
+    set(GUI_TYPE WIN32)
     ADD_DEFINITIONS(-DNODEFAULTLIB:library)
-ENDIF(WIN32)
+endif(WIN32)
 
-SET(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
+set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${QT_QTSVG_LIBRARY}
     ${QT_QTNETWORK_LIBRARY}
@@ -36,9 +36,9 @@ endif()
 #SET_PROPERTY(TARGET datasync_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
 #QT5_USE_MODULES(datasync_runtime Widgets Xml OpenGL Core)
 
-IF(MSVC)
+if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(datasync_runtime)
-ENDIF(MSVC)
+endif(MSVC)
 
 TARGET_LINK_LIBRARIES(datasync_runtime LINK_PUBLIC
     ${QUETZAL_DATA_KIT_LIBRARY}

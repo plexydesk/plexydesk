@@ -1,12 +1,12 @@
-ADD_SUBDIRECTORY(friends)
+add_subdirectory(friends)
 
-SET(plexyfriendssrc
+set(plexyfriendssrc
     friends.cpp
     friendswidget.cpp
     frienditem.cpp
     )
 
-SET(plexicore_MOC
+set(plexicore_MOC
     ${CMAKE_SOURCE_DIR}/base/qt4/pluginloader.cpp
     ${CMAKE_SOURCE_DIR}/base/qt4/abstractplugininterface.cpp
     ${CMAKE_SOURCE_DIR}/base/qt4/desktopwidget.cpp

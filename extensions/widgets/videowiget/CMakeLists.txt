@@ -1,4 +1,4 @@
-SET(videowidgetsrc
+set(videowidgetsrc
     video.cpp
     videoitem.cpp
     )

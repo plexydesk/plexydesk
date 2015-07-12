@@ -1,9 +1,9 @@
-SET (localphotosenginesrc
+set(localphotosenginesrc
     localphotos.cpp
     localphotosinterface.cpp
     )
 
-SET (plexicore_MOC
+set(plexicore_MOC
     ${CMAKE_SOURCE_DIR}/base/qt4/pluginloader.cpp
     ${CMAKE_SOURCE_DIR}/base/qt4/abstractplugininterface.cpp
     ${CMAKE_SOURCE_DIR}/base/qt4/dataplugin.cpp

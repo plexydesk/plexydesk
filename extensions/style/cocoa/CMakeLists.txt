@@ -1,37 +1,37 @@
-SET (sourceFiles
+set(sourceFiles
     cocoa.cpp
     cocoainterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     cocoa.h
     cocoainterface.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     cocoainterface.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
 ADD_LIBRARY(cocoastyle SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(cocoastyle PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(cocoastyle
     ${PLEXY_UI_CORE_LIBRARY}
@@ -40,14 +40,14 @@ TARGET_LINK_LIBRARIES(cocoastyle
 
 QT5_USE_MODULES(cocoastyle Widgets Xml OpenGL Core  )
 
-IF (NOT APPLE)
+if (NOT APPLE)
 INSTALL(TARGETS cocoastyle DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES cocoa.desktop DESTINATION share/plexy/ext/groups)
-ENDIF (NOT APPLE)
+endif (NOT APPLE)
 
-IF (APPLE)
+if (APPLE)
    INSTALL(TARGETS cocoastyle LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES cocoa.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
-ENDIF(APPLE)
+endif(APPLE)
 
 

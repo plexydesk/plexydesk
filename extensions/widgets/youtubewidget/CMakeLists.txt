@@ -1,13 +1,13 @@
-ADD_SUBDIRECTORY(youtube)
+add_subdirectory(youtube)
 
-SET(sourceFiles
+set(sourceFiles
     videoentity.cpp
     youtube.cpp
     youtubeinterface.cpp
     youtubewidget.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     videoentity.h
     youtube.h
     youtubeinterface.h
@@ -15,7 +15,7 @@ SET(headerFiles
     config.h
     )
 
-SET(QTMOC_SRCS
+set(QTMOC_SRCS
     youtube.h
     youtubeinterface.h
     youtubewidget.h
@@ -23,20 +23,20 @@ SET(QTMOC_SRCS
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
 ADD_LIBRARY(plexyyoutube SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(plexyyoutube PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(plexyyoutube
     ${PLEXY_UI_CORE_LIBRARY}

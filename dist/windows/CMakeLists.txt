@@ -1,4 +1,4 @@
-SET(FILES_in_install_path
+set(FILES_in_install_path
     ${APPLICATION_EXE_NAME}.ico
     ${CMAKE_SOURCE_DIR}/COPYING
     )

@@ -39,15 +39,15 @@ ENDMACRO(DBG_MSG)
 # required cv components with header and library if COMPONENTS unspecified
 IF    (NOT OpenCV_FIND_COMPONENTS)
   # default
-  SET(OpenCV_FIND_REQUIRED_COMPONENTS   CV CXCORE CVAUX HIGHGUI )
+  set(OpenCV_FIND_REQUIRED_COMPONENTS   CV CXCORE CVAUX HIGHGUI )
   IF   (WIN32)
     LIST(APPEND OpenCV_FIND_REQUIRED_COMPONENTS  CVCAM ) # WIN32 only actually
-  ENDIF(WIN32)  
-ENDIF (NOT OpenCV_FIND_COMPONENTS)
+  endif(WIN32)  
+endif (NOT OpenCV_FIND_COMPONENTS)
 
 
 # typical root dirs of installations, exactly one of them is used
-SET (OpenCV_POSSIBLE_ROOT_DIRS
+set(OpenCV_POSSIBLE_ROOT_DIRS
   "${OpenCV_ROOT_DIR}"
   "$ENV{OpenCV_ROOT_DIR}"  
   "$ENV{OPENCV_DIR}"  # only for backward compatibility deprecated by ROOT_DIR
@@ -68,14 +68,14 @@ IF    (${CMAKE_COMPILER_IS_GNUCXX})
   ENDIF (NOT OpenCV_FIND_QUIETLY)
   EXEC_PROGRAM(${CMAKE_CXX_COMPILER} ARGS --version OUTPUT_VARIABLE CXX_COMPILER_VERSION)  
   IF   (CXX_COMPILER_VERSION MATCHES ".*3\\.[0-9].*")
-    SET(IS_GNUCXX3 TRUE)
+    set(IS_GNUCXX3 TRUE)
     LIST(APPEND OpenCV_POSSIBLE_ROOT_DIRS /opt/net/gcc33/OpenCV )
-  ENDIF(CXX_COMPILER_VERSION MATCHES ".*3\\.[0-9].*")  
+  endif(CXX_COMPILER_VERSION MATCHES ".*3\\.[0-9].*")  
   IF   (CXX_COMPILER_VERSION MATCHES ".*4\\.[0-9].*")
-    SET(IS_GNUCXX4 TRUE)
+    set(IS_GNUCXX4 TRUE)
     LIST(APPEND OpenCV_POSSIBLE_ROOT_DIRS /opt/net/gcc41/OpenCV )
-  ENDIF(CXX_COMPILER_VERSION MATCHES ".*4\\.[0-9].*")
-ENDIF (${CMAKE_COMPILER_IS_GNUCXX})
+  endif(CXX_COMPILER_VERSION MATCHES ".*4\\.[0-9].*")
+endif (${CMAKE_COMPILER_IS_GNUCXX})
 
 DBG_MSG("DBG (OpenCV_POSSIBLE_ROOT_DIRS=${OpenCV_POSSIBLE_ROOT_DIRS}")
 
@@ -94,7 +94,7 @@ DBG_MSG("OpenCV_ROOT_DIR=${OpenCV_ROOT_DIR}")
 
 
 # header include dir suffixes appended to OpenCV_ROOT_DIR
-SET(OpenCV_INCDIR_SUFFIXES
+set(OpenCV_INCDIR_SUFFIXES
   include
   include/cv
   include/opencv
@@ -108,7 +108,7 @@ SET(OpenCV_INCDIR_SUFFIXES
   )
 
 # library linkdir suffixes appended to OpenCV_ROOT_DIR 
-SET(OpenCV_LIBDIR_SUFFIXES
+set(OpenCV_LIBDIR_SUFFIXES
   lib
   OpenCV/lib
   otherlibs/_graphics/lib
@@ -178,7 +178,7 @@ FIND_LIBRARY(OpenCV_TRS_LIBRARY
 #
 # Logic selecting required libs and headers
 #
-SET(OpenCV_FOUND ON)
+set(OpenCV_FOUND ON)
 DBG_MSG("OpenCV_FIND_REQUIRED_COMPONENTS=${OpenCV_FIND_REQUIRED_COMPONENTS}")
 FOREACH(NAME ${OpenCV_FIND_REQUIRED_COMPONENTS} )
 
@@ -191,7 +191,7 @@ FOREACH(NAME ${OpenCV_FIND_REQUIRED_COMPONENTS} )
     DBG_MSG("OpenCV component NAME=${NAME} not found! "
       "\nOpenCV_${NAME}_INCLUDE_DIR=${OpenCV_${NAME}_INCLUDE_DIR} "
       "\nOpenCV_${NAME}_LIBRARY=${OpenCV_${NAME}_LIBRARY} ")
-    SET(OpenCV_FOUND OFF)
+    set(OpenCV_FOUND OFF)
   ENDIF (OpenCV_${NAME}_INCLUDE_DIR AND OpenCV_${NAME}_LIBRARY)
   
 ENDFOREACH(NAME)
@@ -202,7 +202,7 @@ DBG_MSG("OpenCV_LIBRARIES=${OpenCV_LIBRARIES}")
 # get the link directory for rpath to be used with LINK_DIRECTORIES: 
 IF    (OpenCV_CV_LIBRARY)
   GET_FILENAME_COMPONENT(OpenCV_LINK_DIRECTORIES ${OpenCV_CV_LIBRARY} PATH)
-ENDIF (OpenCV_CV_LIBRARY)
+endif (OpenCV_CV_LIBRARY)
 
 MARK_AS_ADVANCED(
   OpenCV_ROOT_DIR
@@ -226,13 +226,13 @@ MARK_AS_ADVANCED(
 
 
 # be backward compatible:
-SET(OPENCV_LIBRARIES   ${OpenCV_LIBRARIES} )
-SET(OPENCV_INCLUDE_DIR ${OpenCV_INCLUDE_DIRS} )
-SET(OPENCV_FOUND       ${OpenCV_FOUND})
+set(OPENCV_LIBRARIES   ${OpenCV_LIBRARIES} )
+set(OPENCV_INCLUDE_DIR ${OpenCV_INCLUDE_DIRS} )
+set(OPENCV_FOUND       ${OpenCV_FOUND})
 
 
 # display help message
-IF(NOT OpenCV_FOUND)
+if (NOT OpenCV_FOUND)
   # make FIND_PACKAGE friendly
   IF(NOT OpenCV_FIND_QUIETLY)
     IF(OpenCV_FIND_REQUIRED)
@@ -241,7 +241,7 @@ IF(NOT OpenCV_FOUND)
     ELSE(OpenCV_FIND_REQUIRED)
       MESSAGE(STATUS 
         "ERROR: OpenCV was not found.")
-    ENDIF(OpenCV_FIND_REQUIRED)
-  ENDIF(NOT OpenCV_FIND_QUIETLY)
-ENDIF(NOT OpenCV_FOUND)
+    endif(OpenCV_FIND_REQUIRED)
+  endif(NOT OpenCV_FIND_QUIETLY)
+endif(NOT OpenCV_FOUND)
 

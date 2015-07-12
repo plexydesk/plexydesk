@@ -1,44 +1,44 @@
-SET (sourceFiles
+set(sourceFiles
     location.cpp
     locationinterface.cpp
     )
 
-SET(headerFiles
+set(headerFiles
     location.h
     locationinterface.h
     )
 
-SET (QTMOC_SRCS
+set(QTMOC_SRCS
     location.h
     locationinterface.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
-SET(sourceFiles
+set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
     )
 
-SET(libs
+set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-IF(QNX)
-   SET (GEO_LIBS 
+if (QNX)
+   set(GEO_LIBS 
       bps
       )
-ENDIF(QNX)
+endif(QNX)
 
 ADD_LIBRARY(locationengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-IF(MINGW)
+if (MINGW)
     SET_TARGET_PROPERTIES(locationengine PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
-ENDIF(MINGW)
+endif(MINGW)
 
 TARGET_LINK_LIBRARIES(locationengine
     ${PLEXY_CORE_LIBRARY}
