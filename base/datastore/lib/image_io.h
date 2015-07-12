@@ -31,7 +31,7 @@ typedef unsigned char *image_data_ref;
 class io_surface {
 public:
   io_surface();
-  //io_surface(const io_surface &copy);
+  // io_surface(const io_surface &copy);
   virtual ~io_surface();
 
   int width;
@@ -73,12 +73,12 @@ public:
   virtual io_surface *surface() const;
 
   virtual io_surface add_task(image_operation_t a_method,
-                            const scale_options &arg);
+                              const scale_options &arg);
 
   virtual void set_filter(const std::string &a_filter_name, int a_flag);
 
-  virtual void on_ready(std::function<void (buffer_load_status_t,
-                                            image_io *)> a_callback);
+  virtual void
+  on_ready(std::function<void(buffer_load_status_t, image_io *)> a_callback);
 
 private:
   class platform_image;
