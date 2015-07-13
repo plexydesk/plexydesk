@@ -1,15 +1,15 @@
 set(sourceFiles
-    progressdialog.cpp
+    progress_dialog_view.cpp
     progressdialoginterface.cpp
     )
 
 set(headerFiles
-    progressdialog.h
+    progress_dialog_view.h
     progressdialoginterface.h
     )
 
 set(QTMOC_SRCS
-    progressdialog.h
+    progress_dialog_view.h
     progressdialoginterface.h
     )
 
@@ -25,31 +25,31 @@ set(libs
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
-ADD_LIBRARY(progressdialogactivity SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(progress_dialog SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
 if (MINGW)
-    SET_TARGET_PROPERTIES(progressdialogactivity PROPERTIES
+    SET_TARGET_PROPERTIES(progress_dialog PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
         )
 endif(MINGW)
 
-TARGET_LINK_LIBRARIES(progressdialogactivity
+TARGET_LINK_LIBRARIES(progress_dialog
     ${PLEXY_UI_CORE_LIBRARY}
     ${libs}
     )
 
-QT5_USE_MODULES(progressdialogactivity Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(progress_dialog Widgets Xml OpenGL Core  )
 
 if (NOT APPLE)
-INSTALL(TARGETS progressdialogactivity DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
+INSTALL(TARGETS progress_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
 INSTALL(FILES progressdialog.desktop DESTINATION share/plexy/ext/groups)
 endif (NOT APPLE)
 
 if (APPLE)
-   INSTALL(TARGETS progressdialogactivity LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
-   INSTALL(FILES progressdialog.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
+   INSTALL(TARGETS progress_dialog LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
+   INSTALL(FILES progress_dialog.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 endif(APPLE)
 
 

@@ -16,14 +16,14 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "progressdialog.h"
+#include "progress_dialog_view.h"
 #include "progressdialoginterface.h"
 #include <ck_widget.h>
 #include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_dialog> ProgressDialogInterface::activity() {
   QSharedPointer<cherry_kit::desktop_dialog> obj =
-      QSharedPointer<cherry_kit::desktop_dialog>(new progress_dialog(),
+      QSharedPointer<cherry_kit::desktop_dialog>(new progress_dialog_view(),
                                                  &QObject::deleteLater);
 
   return obj;
