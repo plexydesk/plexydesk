@@ -23,7 +23,7 @@
 
 #include "scrollwidget.h"
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class ScrollWidget::Private {
 
@@ -35,8 +35,8 @@ public:
   QGraphicsObject *m_viewport;
 };
 
-ScrollWidget::ScrollWidget(const QRectF &a_rect, Widget *parent)
-    : Widget(parent), o_scroll_widget(new Private) {
+ScrollWidget::ScrollWidget(const QRectF &a_rect, widget *parent)
+    : widget(parent), o_scroll_widget(new Private) {
   o_scroll_widget->m_viewport = 0;
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
   o_scroll_widget->m_size = a_rect.size();
@@ -69,12 +69,15 @@ void ScrollWidget::scroll_by(int x, int y) {
     // resetric to viewport
     int y_pos = o_scroll_widget->m_viewport->y() + y;
     int view_height = this->boundingRect().height();
-    int y_max = (-1) * (o_scroll_widget->m_viewport->boundingRect().height() - view_height);
+    int y_max = (-1) * (o_scroll_widget->m_viewport->boundingRect().height() -
+                        view_height);
 
     if (y_pos < (this->y()) && y_pos > y_max) {
-      o_scroll_widget->m_viewport->setPos(o_scroll_widget->m_viewport->x() + x, o_scroll_widget->m_viewport->y() + y);
+      o_scroll_widget->m_viewport->setPos(o_scroll_widget->m_viewport->x() + x,
+                                          o_scroll_widget->m_viewport->y() + y);
     } else if (!(y_pos < (this->y()))) {
-      o_scroll_widget->m_viewport->setPos(o_scroll_widget->m_viewport->x() + x, this->y());
+      o_scroll_widget->m_viewport->setPos(o_scroll_widget->m_viewport->x() + x,
+                                          this->y());
     }
   }
 }
@@ -90,11 +93,11 @@ void ScrollWidget::wheelEvent(QGraphicsSceneWheelEvent *a_event_ptr) {
   a_event_ptr->accept();
 
   //?
-  Widget::wheelEvent(a_event_ptr);
+  widget::wheelEvent(a_event_ptr);
 }
 
 void ScrollWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *a_event_ptr) {
-  Widget::dragMoveEvent(a_event_ptr);
+  widget::dragMoveEvent(a_event_ptr);
 }
 
 bool ScrollWidget::event(QEvent *a_event_ptr) {
@@ -108,9 +111,9 @@ bool ScrollWidget::event(QEvent *a_event_ptr) {
     QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(a_event_ptr);
     se->setViewportSize(o_scroll_widget->m_size);
     QRectF br = o_scroll_widget->m_viewport->boundingRect();
-    se->setContentPosRange(
-        QRectF(0, 0, qMax(qreal(0), br.width() - o_scroll_widget->m_size.width()),
-               qMax(qreal(0), br.height() - o_scroll_widget->m_size.height())));
+    se->setContentPosRange(QRectF(
+        0, 0, qMax(qreal(0), br.width() - o_scroll_widget->m_size.width()),
+        qMax(qreal(0), br.height() - o_scroll_widget->m_size.height())));
     se->setContentPos(-o_scroll_widget->m_viewport->pos());
     se->accept();
     return QGraphicsObject::event(a_event_ptr);
@@ -118,7 +121,8 @@ bool ScrollWidget::event(QEvent *a_event_ptr) {
   case QScrollEvent::Scroll: {
     qDebug() << Q_FUNC_INFO << "Scroll";
     QScrollEvent *se = static_cast<QScrollEvent *>(a_event_ptr);
-    o_scroll_widget->m_viewport->setPos(-se->contentPos() - se->overshootDistance());
+    o_scroll_widget->m_viewport->setPos(-se->contentPos() -
+                                        se->overshootDistance());
     return true;
   }
 

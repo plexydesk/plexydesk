@@ -22,105 +22,114 @@
 #include <view_controller.h>
 #include <progressbar.h>
 
-class ProgressDialogActivity::PrivateProgressDialog {
+class progress_dialog::PrivateProgressDialog {
 public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
 
-  CherryKit::Window *mFrame;
-  CherryKit::ProgressBar *m_progress_bar_widget;
+  cherry_kit::window *mFrame;
+  cherry_kit::ProgressBar *m_progress_bar_widget;
   int mMax;
   int mMin;
   bool m_task_completed;
 };
 
-ProgressDialogActivity::ProgressDialogActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateProgressDialog) {}
+progress_dialog::progress_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object),
+      o_desktop_dialog(new PrivateProgressDialog) {}
 
-ProgressDialogActivity::~ProgressDialogActivity() {
+progress_dialog::~progress_dialog() {
   qDebug() << Q_FUNC_INFO;
-  delete o_desktop_activity;
+  delete o_desktop_dialog;
 }
 
-void ProgressDialogActivity::create_window(const QRectF &window_geometry,
+void progress_dialog::create_window(const QRectF &window_geometry,
                                            const QString &window_title,
                                            const QPointF &window_pos) {
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  o_desktop_activity->mFrame = new CherryKit::Window();
+  o_desktop_dialog->mFrame = new cherry_kit::window();
   set_geometry(window_geometry);
 
-  o_desktop_activity->mFrame->set_widget_name("Progress Dialog");
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderBackground, true);
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kConvertToWindowType, true);
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderDropShadow, true);
+  o_desktop_dialog->mFrame->set_widget_name("Progress Dialog");
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kRenderBackground, true);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kConvertToWindowType, true);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kRenderDropShadow, true);
 
-  o_desktop_activity->m_task_completed = 0;
+  o_desktop_dialog->m_task_completed = 0;
 
-  connect(o_desktop_activity->mFrame, SIGNAL(closed(CherryKit::Widget *)), this,
-          SLOT(onWidgetClosed(CherryKit::Widget *)));
+  connect(o_desktop_dialog->mFrame, SIGNAL(closed(cherry_kit::widget *)), this,
+          SLOT(onWidgetClosed(cherry_kit::widget *)));
 
-  o_desktop_activity->mMax = 100.0;
-  o_desktop_activity->mMin = 0.0;
+  o_desktop_dialog->mMax = 100.0;
+  o_desktop_dialog->mMin = 0.0;
 
   if (has_attribute("max")) {
-    o_desktop_activity->mMax = attributes()["max"].toFloat();
+    o_desktop_dialog->mMax = attributes()["max"].toFloat();
   }
 
   if (has_attribute("min")) {
-    o_desktop_activity->mMin = attributes()["min"].toFloat();
+    o_desktop_dialog->mMin = attributes()["min"].toFloat();
   }
 
-  o_desktop_activity->m_progress_bar_widget = new CherryKit::ProgressBar(o_desktop_activity->mFrame);
-  o_desktop_activity->m_progress_bar_widget->set_range(o_desktop_activity->mMin, o_desktop_activity->mMax);
-  o_desktop_activity->m_progress_bar_widget->set_size(QSize(window_geometry.width() - 10, 32));
-  o_desktop_activity->m_progress_bar_widget->set_value(0.0);
-  o_desktop_activity->m_progress_bar_widget->setPos(5.0, 64.0);
-  o_desktop_activity->m_progress_bar_widget->show();
+  o_desktop_dialog->m_progress_bar_widget =
+      new cherry_kit::ProgressBar(o_desktop_dialog->mFrame);
+  o_desktop_dialog->m_progress_bar_widget->set_range(o_desktop_dialog->mMin,
+                                                     o_desktop_dialog->mMax);
+  o_desktop_dialog->m_progress_bar_widget->set_size(
+      QSize(window_geometry.width() - 10, 32));
+  o_desktop_dialog->m_progress_bar_widget->set_value(0.0);
+  o_desktop_dialog->m_progress_bar_widget->setPos(5.0, 64.0);
+  o_desktop_dialog->m_progress_bar_widget->show();
 
-  update_content_geometry(o_desktop_activity->mFrame);
+  update_content_geometry(o_desktop_dialog->mFrame);
   exec(window_pos);
 
   show_activity();
 }
 
-QVariantMap ProgressDialogActivity::result() const { return QVariantMap(); }
+QVariantMap progress_dialog::result() const { return QVariantMap(); }
 
-void ProgressDialogActivity::update_attribute(const QString &name,
+void progress_dialog::update_attribute(const QString &name,
                                               const QVariant &data) {
-  if (!o_desktop_activity->mFrame) {
+  if (!o_desktop_dialog->mFrame) {
     return;
   }
 
-  if (o_desktop_activity->m_task_completed) {
+  if (o_desktop_dialog->m_task_completed) {
     return;
   }
 
   float progress = data.toFloat();
 
-  if (o_desktop_activity->m_progress_bar_widget) {
-    o_desktop_activity->m_progress_bar_widget->set_value(progress);
+  if (o_desktop_dialog->m_progress_bar_widget) {
+    o_desktop_dialog->m_progress_bar_widget->set_value(progress);
   }
 
-  if (o_desktop_activity->mMax == progress) {
+  if (o_desktop_dialog->mMax == progress) {
     discard_activity();
   }
 }
 
-CherryKit::Window *ProgressDialogActivity::window() const { return o_desktop_activity->mFrame; }
-
-void ProgressDialogActivity::cleanup() {
-  if (o_desktop_activity->mFrame) {
-    delete o_desktop_activity->mFrame;
-  }
-  o_desktop_activity->mFrame = 0;
+cherry_kit::window *progress_dialog::activity_window() const {
+  return o_desktop_dialog->mFrame;
 }
 
-void ProgressDialogActivity::onWidgetClosed(CherryKit::Widget *widget) {
+void progress_dialog::cleanup() {
+  if (o_desktop_dialog->mFrame) {
+    delete o_desktop_dialog->mFrame;
+  }
+  o_desktop_dialog->mFrame = 0;
+}
+
+void progress_dialog::onWidgetClosed(cherry_kit::widget *widget) {
   discard_activity();
 }
 
-void ProgressDialogActivity::onHideAnimationFinished() {
-  o_desktop_activity->m_task_completed = 1;
+void progress_dialog::onHideAnimationFinished() {
+  o_desktop_dialog->m_task_completed = 1;
 }

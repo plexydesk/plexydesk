@@ -27,14 +27,14 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class ViewController;
-class Space;
-class Widget;
-typedef QSharedPointer<ViewController> ViewControllerPtr;
+class desktop_controller_interface;
+class space;
+class widget;
+typedef QSharedPointer<desktop_controller_interface> desktop_controller_ref;
 
-class DECL_UI_KIT_EXPORT DesktopActivity : public QObject {
+class DECL_UI_KIT_EXPORT desktop_dialog : public QObject {
   Q_OBJECT
 public:
   enum ResultType {
@@ -42,13 +42,13 @@ public:
     mActivityCanceled
   };
 
-  explicit DesktopActivity(QGraphicsObject *a_parent_ptr = 0);
-  virtual ~DesktopActivity();
+  explicit desktop_dialog(QGraphicsObject *a_parent_ptr = 0);
+  virtual ~desktop_dialog();
 
   virtual void create_window(const QRectF &a_window_geometry,
                              const QString &a_window_title,
                              const QPointF &a_window_pos) = 0;
-  virtual Window *window() const = 0;
+  virtual window *activity_window() const = 0;
 
   virtual void set_activity_attribute(const QString &a_name,
                                       const QVariant &a_data);
@@ -63,11 +63,11 @@ public:
   virtual void show_activity();
   virtual void hide();
 
-  virtual void set_controller(const ViewControllerPtr &a_controller);
-  virtual ViewControllerPtr controller() const;
+  virtual void set_controller(const desktop_controller_ref &a_controller);
+  virtual desktop_controller_ref controller() const;
 
-  virtual void set_viewport(Space *a_viewport_ptr);
-  virtual Space *viewport() const;
+  virtual void set_viewport(space *a_viewport_ptr);
+  virtual space *viewport() const;
 
   virtual void cleanup() = 0;
 
@@ -77,7 +77,7 @@ public:
   on_action_completed(std::function<void(const QVariantMap &)> a_handler);
 
   virtual void
-  on_discarded(std::function<void(const DesktopActivity *)> a_handler);
+  on_discarded(std::function<void(const desktop_dialog *)> a_handler);
 
   virtual void discard_activity();
 
@@ -85,7 +85,7 @@ protected:
   virtual void update_action();
   virtual QRectF geometry() const;
   virtual void set_geometry(const QRectF &a_geometry);
-  virtual void update_content_geometry(Widget *a_widget_ptr);
+  virtual void update_content_geometry(widget *a_widget_ptr);
   virtual void notify_done();
 
 Q_SIGNALS:
@@ -95,9 +95,9 @@ Q_SIGNALS:
 
 private:
   class PrivateDesktopActivity;
-  PrivateDesktopActivity *const o_desktop_activity;
+  PrivateDesktopActivity *const o_desktop_dialog;
 };
 
-typedef QSharedPointer<DesktopActivity> DesktopActivityPtr;
+typedef QSharedPointer<desktop_dialog> desktop_dialog_ref;
 }
 #endif // DESKTOPACTIVITY_H

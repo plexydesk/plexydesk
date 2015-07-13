@@ -25,7 +25,8 @@ public:
 };
 
 TemplateControllerImpl::TemplateControllerImpl(QObject *object)
-    : CherryKit::ViewController(object), o_view_controller(new PrivateTemplate) {}
+    : cherry_kit::desktop_controller_interface(object),
+      o_view_controller(new PrivateTemplate) {}
 
 TemplateControllerImpl::~TemplateControllerImpl() { delete o_view_controller; }
 
@@ -34,17 +35,16 @@ void TemplateControllerImpl::init() {}
 void TemplateControllerImpl::session_data_available(
     const cherry::sync_object &a_session_root) {}
 
-void
-TemplateControllerImpl::submit_session_data(cherry::sync_object *a_obj) {}
+void TemplateControllerImpl::submit_session_data(cherry::sync_object *a_obj) {}
 
 void TemplateControllerImpl::set_view_rect(const QRectF &a_rect) {}
 
-bool TemplateControllerImpl::remove_widget(CherryKit::Widget *a_widget_ptr) {
+bool TemplateControllerImpl::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
 
-CherryKit::ActionList TemplateControllerImpl::actions() const {
-  return CherryKit::ActionList();
+cherry_kit::ActionList TemplateControllerImpl::actions() const {
+  return cherry_kit::ActionList();
 }
 
 void TemplateControllerImpl::request_action(const QString &a_name,

@@ -56,13 +56,14 @@ public:
 
   QByteArray imageToByteArray(const QImage &img) const;
 
-  virtual void on_task_complete(
-          std::function<void (AsyncImageCreator *)> a_callback);
+  virtual void
+  on_task_complete(std::function<void(AsyncImageCreator *)> a_callback);
 
 Q_SIGNALS:
   void ready();
 
-private Q_SLOTS:
+private
+Q_SLOTS:
   void on_finished();
 
 protected:

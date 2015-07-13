@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QtCore>
-#include <plexy.h>
+
 #include <datasource.h>
 #include <pendingjob.h>
 #include "facebookuserinfo.h"

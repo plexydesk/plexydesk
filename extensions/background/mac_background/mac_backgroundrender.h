@@ -20,8 +20,6 @@
 #ifndef MAC_BACKGROUNDRENDER_H
 #define MAC_BACKGROUNDRENDER_H
 
-#include <plexy.h>
-
 #include <QImage>
 
 #include <abstractdesktopwidget.h>

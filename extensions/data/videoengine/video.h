@@ -22,7 +22,7 @@
 #include "config.h"
 
 #include "vplayer.h"
-#include <plexy.h>
+
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

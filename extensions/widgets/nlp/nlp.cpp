@@ -25,7 +25,8 @@ public:
 };
 
 NLPControllerImpl::NLPControllerImpl(QObject *object)
-    : CherryKit::ViewController(object), o_view_controller(new PrivateNLP) {}
+    : cherry_kit::desktop_controller_interface(object),
+      o_view_controller(new PrivateNLP) {}
 
 NLPControllerImpl::~NLPControllerImpl() { delete o_view_controller; }
 
@@ -38,12 +39,12 @@ void NLPControllerImpl::submit_session_data(cherry::sync_object *a_obj) {}
 
 void NLPControllerImpl::set_view_rect(const QRectF &rect) {}
 
-bool NLPControllerImpl::remove_widget(CherryKit::Widget *widget) {
+bool NLPControllerImpl::remove_widget(cherry_kit::widget *widget) {
   return false;
 }
 
-CherryKit::ActionList NLPControllerImpl::actions() const {
-  return CherryKit::ActionList();
+cherry_kit::ActionList NLPControllerImpl::actions() const {
+  return cherry_kit::ActionList();
 }
 
 void NLPControllerImpl::request_action(const QString &actionName,

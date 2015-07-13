@@ -28,7 +28,7 @@
 #include <QDebug>
 #include <resource_manager.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class TableView::PrivateTableView {
 
@@ -112,8 +112,8 @@ void TableView::set_model(TableModel *a_model_ptr) {
   }
 
   connect(a_model_ptr, SIGNAL(cleared()), this, SLOT(on_clear()));
-  connect(a_model_ptr, SIGNAL(add(CherryKit::TableViewItem *)), this,
-          SLOT(on_add_viewItem(CherryKit::TableViewItem *)));
+  connect(a_model_ptr, SIGNAL(add(cherry_kit::TableViewItem *)), this,
+          SLOT(on_add_viewItem(cherry_kit::TableViewItem *)));
 
   if (a_model_ptr) {
     a_model_ptr->init();
@@ -226,7 +226,7 @@ void TableView::on_item_click(TableViewItem *a_component_ptr) {
   qDebug() << Q_FUNC_INFO << " Activated :";
 }
 
-void TableView::on_add_viewItem(CherryKit::TableViewItem *a_item_ptr) {
+void TableView::on_add_viewItem(cherry_kit::TableViewItem *a_item_ptr) {
   if (!d->m_table_delegate_ptr) {
     return;
   }

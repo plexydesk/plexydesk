@@ -22,7 +22,6 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <plexy.h>
 
 namespace PlexyDesk {
 class VISIBLE_SYM VPlayer : public QObject {

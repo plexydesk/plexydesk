@@ -20,13 +20,12 @@
 #ifndef FILEINFORVIEW_H
 #define FILEINFORVIEW_H
 
-#include <plexy.h>
 #include <widget.h>
 
 #include <QIcon>
 #include <QFileInfo>
 
-class FileInforView : public CherryKit::Widget {
+class FileInforView : public cherry_kit::Widget {
   Q_OBJECT
 public:
   FileInforView(Widget *a_parent_ptr = 0);

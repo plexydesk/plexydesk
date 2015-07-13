@@ -26,8 +26,8 @@
 
 #include <functional>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT ItemView : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT ItemView : public widget {
   Q_OBJECT
 public:
   typedef enum {
@@ -36,7 +36,7 @@ public:
     kTableModel
   } ModelType;
 
-  ItemView(Widget *a_parent_ptr = 0, ModelType a_model_type = kListModel);
+  ItemView(widget *a_parent_ptr = 0, ModelType a_model_type = kListModel);
   virtual ~ItemView();
 
   virtual void insert(ModelViewItem *a_item_ptr);
@@ -58,17 +58,17 @@ public:
   on_item_removed(std::function<void(ModelViewItem *item)> a_handler);
 
 protected:
-  virtual void insert(Widget *a_widget_ptr);
-  virtual void remove(Widget *a_widget_ptr);
+  virtual void insert(widget *a_widget_ptr);
+  virtual void remove(widget *a_widget_ptr);
 
   bool sceneEvent(QEvent *e);
   bool event(QEvent *e);
 
-  void insert_to_list_view(Widget *a_widget_ptr);
-  void remove_from_list_view(Widget *a_widget_ptr);
+  void insert_to_list_view(widget *a_widget_ptr);
+  void remove_from_list_view(widget *a_widget_ptr);
 
-  void insert_to_grid_view(Widget *a_widget_ptr);
-  void insert_to_table_view(Widget *a_widget_ptr);
+  void insert_to_grid_view(widget *a_widget_ptr);
+  void insert_to_table_view(widget *a_widget_ptr);
 
 private:
   class PrivateModelView;

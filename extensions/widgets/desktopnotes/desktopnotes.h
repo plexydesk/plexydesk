@@ -20,14 +20,14 @@
 #define DESKTOPNOTES_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <view_controller.h>
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl : public CherryKit::ViewController {
+class DesktopNotesControllerImpl
+    : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
@@ -41,10 +41,10 @@ public:
 
   virtual void set_view_rect(const QRectF &rect);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
   virtual void request_action(const QString &actionName,
                               const QVariantMap &args);
-  virtual void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
+  virtual void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
 
   QString icon() const;
 
@@ -53,8 +53,8 @@ Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:
-  void createNoteUI(CherryKit::SessionSync *a_session);
-  void createReminderUI(CherryKit::SessionSync *a_session);
+  void createNoteUI(cherry_kit::session_sync *a_session);
+  void createReminderUI(cherry_kit::session_sync *a_session);
 
   class PrivateDesktopNotes;
   PrivateDesktopNotes *const o_view_controller;

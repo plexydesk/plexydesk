@@ -39,7 +39,7 @@ public:
   QString controller_name() const;
   void set_controller_name(const QString &controller_name);
 
-  Widget *createActionItem(const QString &aIcon, const QString &aLabel,
+  widget *createActionItem(const QString &aIcon, const QString &aLabel,
                            const QString &aControllerName);
   void onActionActivated(std::function<void(const Action *aAction)> aHandler) {
     m_action_handler = aHandler;
@@ -56,13 +56,13 @@ private:
   std::function<void(const Action *aAction)> m_action_handler;
 };
 
-class IconGridActivity::PrivateIconGrid {
+class icon_dialog::PrivateIconGrid {
 public:
   PrivateIconGrid() : m_activity_window_ptr(0) {}
   ~PrivateIconGrid() { qDeleteAll(m_action_list); }
 
-  CherryKit::Window *m_activity_window_ptr;
-  CherryKit::ItemView *m_grid_view;
+  cherry_kit::window *m_activity_window_ptr;
+  cherry_kit::ItemView *m_grid_view;
 
   QString mSelection;
 
@@ -74,40 +74,40 @@ public:
   QList<Action *> m_action_list;
 };
 
-IconGridActivity::IconGridActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object),
-      o_desktop_activity(new PrivateIconGrid) {}
+icon_dialog::icon_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object),
+      o_desktop_dialog(new PrivateIconGrid) {}
 
-IconGridActivity::~IconGridActivity() {
+icon_dialog::~icon_dialog() {
   qDebug() << Q_FUNC_INFO;
-  delete o_desktop_activity;
+  delete o_desktop_dialog;
 }
 
-void IconGridActivity::create_window(const QRectF &window_geometry,
+void icon_dialog::create_window(const QRectF &window_geometry,
                                      const QString &window_title,
                                      const QPointF &window_pos) {
-  if (o_desktop_activity->m_activity_window_ptr) {
+  if (o_desktop_dialog->m_activity_window_ptr) {
     return;
   }
 
-  o_desktop_activity->m_auto_scale_frame = false;
+  o_desktop_dialog->m_auto_scale_frame = false;
 
-  o_desktop_activity->m_activity_window_ptr = new CherryKit::Window();
-  o_desktop_activity->m_activity_window_ptr->set_window_title(window_title);
-  o_desktop_activity->m_activity_window_ptr->setGeometry(window_geometry);
+  o_desktop_dialog->m_activity_window_ptr = new cherry_kit::window();
+  o_desktop_dialog->m_activity_window_ptr->set_window_title(window_title);
+  o_desktop_dialog->m_activity_window_ptr->setGeometry(window_geometry);
 
-  o_desktop_activity->m_grid_view =
-      new CherryKit::ItemView(o_desktop_activity->m_activity_window_ptr,
-                              CherryKit::ItemView::kGridModel);
-  o_desktop_activity->m_grid_view->set_view_geometry(window_geometry);
-  o_desktop_activity->m_grid_view->on_item_removed([](
-      CherryKit::ModelViewItem *a_item) {
+  o_desktop_dialog->m_grid_view =
+      new cherry_kit::ItemView(o_desktop_dialog->m_activity_window_ptr,
+                               cherry_kit::ItemView::kGridModel);
+  o_desktop_dialog->m_grid_view->set_view_geometry(window_geometry);
+  o_desktop_dialog->m_grid_view->on_item_removed([](
+      cherry_kit::ModelViewItem *a_item) {
     if (a_item)
       delete a_item;
   });
 
-  o_desktop_activity->m_activity_window_ptr->set_window_content(
-      o_desktop_activity->m_grid_view);
+  o_desktop_dialog->m_activity_window_ptr->set_window_content(
+      o_desktop_dialog->m_grid_view);
 
   on_arguments_updated([this]() {
     if (has_attribute("data")) {
@@ -116,21 +116,21 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
       foreach(const QVariant & var, data.values()) {
         QVariantMap _item = var.toMap();
         Action *l_action_item = new Action;
-        o_desktop_activity->m_action_list.append(l_action_item);
+        o_desktop_dialog->m_action_list.append(l_action_item);
         l_action_item->onActionActivated([this](const Action *aAction) {
-          o_desktop_activity->m_activity_result.clear();
-          o_desktop_activity->m_activity_result["controller"] =
+          o_desktop_dialog->m_activity_result.clear();
+          o_desktop_dialog->m_activity_result["controller"] =
               aAction->controller_name();
-          o_desktop_activity->m_activity_result["action"] = aAction->label();
-          o_desktop_activity->mSelection = aAction->label();
+          o_desktop_dialog->m_activity_result["action"] = aAction->label();
+          o_desktop_dialog->mSelection = aAction->label();
           update_action();
         });
 
-        CherryKit::ModelViewItem *grid_item = new CherryKit::ModelViewItem();
+        cherry_kit::ModelViewItem *grid_item = new cherry_kit::ModelViewItem();
 
-        grid_item->on_view_removed([](CherryKit::ModelViewItem *a_item) {
+        grid_item->on_view_removed([](cherry_kit::ModelViewItem *a_item) {
           if (a_item && a_item->view()) {
-            CherryKit::Widget *view = a_item->view();
+            cherry_kit::widget *view = a_item->view();
             if (view)
               delete view;
           }
@@ -140,63 +140,62 @@ void IconGridActivity::create_window(const QRectF &window_geometry,
             _item["icon"].toString(), _item["label"].toString(),
             _item["controller"].toString()));
 
-        o_desktop_activity->m_grid_view->insert(grid_item);
-        o_desktop_activity->m_grid_view->updateGeometry();
+        o_desktop_dialog->m_grid_view->insert(grid_item);
+        o_desktop_dialog->m_grid_view->updateGeometry();
 
-        QRectF _content_rect = o_desktop_activity->m_grid_view->boundingRect();
+        QRectF _content_rect = o_desktop_dialog->m_grid_view->boundingRect();
 
         set_geometry(_content_rect);
 
-        o_desktop_activity->m_activity_window_ptr->setGeometry(_content_rect);
+        o_desktop_dialog->m_activity_window_ptr->setGeometry(_content_rect);
       }
     }
 
     if (has_attribute("auto_scale")) {
-      o_desktop_activity->m_auto_scale_frame =
+      o_desktop_dialog->m_auto_scale_frame =
           attributes()["auto_scale"].toBool();
     }
 
-    if (o_desktop_activity->m_auto_scale_frame) {
-      QRectF _content_rect = o_desktop_activity->m_grid_view->boundingRect();
+    if (o_desktop_dialog->m_auto_scale_frame) {
+      QRectF _content_rect = o_desktop_dialog->m_grid_view->boundingRect();
       _content_rect.setWidth(_content_rect.width() + 8);
       _content_rect.setHeight(_content_rect.height() + 8);
-      o_desktop_activity->m_activity_window_ptr->resize(_content_rect.width(),
-                                                        _content_rect.height());
+      o_desktop_dialog->m_activity_window_ptr->resize(_content_rect.width(),
+                                                      _content_rect.height());
     }
   });
 
   exec(window_pos);
 }
 
-QVariantMap IconGridActivity::result() const {
-  o_desktop_activity->m_activity_result["action"] =
-      o_desktop_activity->mSelection;
-  return o_desktop_activity->m_activity_result;
+QVariantMap icon_dialog::result() const {
+  o_desktop_dialog->m_activity_result["action"] = o_desktop_dialog->mSelection;
+  return o_desktop_dialog->m_activity_result;
 }
 
-Window *IconGridActivity::window() const {
-  return o_desktop_activity->m_activity_window_ptr;
+window *icon_dialog::activity_window() const {
+  return o_desktop_dialog->m_activity_window_ptr;
 }
 
-void IconGridActivity::cleanup() {
-  if (o_desktop_activity->m_grid_view)
-    o_desktop_activity->m_grid_view->clear();
+void icon_dialog::cleanup() {
+  if (o_desktop_dialog->m_grid_view)
+    o_desktop_dialog->m_grid_view->clear();
 
-  if (o_desktop_activity->m_activity_window_ptr) {
-    delete o_desktop_activity->m_activity_window_ptr;
+  if (o_desktop_dialog->m_activity_window_ptr) {
+    delete o_desktop_dialog->m_activity_window_ptr;
   }
 
-  o_desktop_activity->m_activity_window_ptr = 0;
+  o_desktop_dialog->m_activity_window_ptr = 0;
 }
 
-void IconGridActivity::onWidgetClosed(CherryKit::Widget *widget) {
+void icon_dialog::onWidgetClosed(cherry_kit::widget *widget) {
   discard_activity();
 }
 
-void IconGridActivity::onDiscard() {}
+void icon_dialog::onDiscard() {}
 
 /// action class impl
-Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
+widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
                                  const QString &aControllerName) {
   m_controller_name = aControllerName;
   m_label = aLabel;
@@ -205,15 +204,15 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   QSizeF item_icon_size(96, 64);
   QSizeF item_label_size(96, 32);
 
-  Widget *l_rv = new Widget();
+  widget *l_rv = new widget();
 
-  CherryKit::ImageView *l_image_view = new CherryKit::ImageView(l_rv);
-  CherryKit::Label *l_action_label = new CherryKit::Label(l_rv);
+  cherry_kit::ImageView *l_image_view = new cherry_kit::ImageView(l_rv);
+  cherry_kit::Label *l_action_label = new cherry_kit::Label(l_rv);
   l_action_label->set_label(aLabel);
   l_action_label->set_widget_name(aLabel);
 
   QPixmap l_view_pixmap(
-      CherryKit::ResourceManager::instance()->drawable(aIcon, "mdpi"));
+      cherry_kit::resource_manager::instance()->drawable(aIcon, "mdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size);
@@ -230,9 +229,9 @@ Widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
 
   l_rv->setMinimumSize(l_action_item_size);
 
-  l_image_view->on_input_event([this](CherryKit::Widget::InputEvent aEvent,
-                                      const Widget *aWidget) {
-    if (aEvent == CherryKit::Widget::kMouseReleaseEvent) {
+  l_image_view->on_input_event([this](cherry_kit::widget::InputEvent aEvent,
+                                      const widget *aWidget) {
+    if (aEvent == cherry_kit::widget::kMouseReleaseEvent) {
       if (m_action_handler) {
         m_action_handler(this);
       }

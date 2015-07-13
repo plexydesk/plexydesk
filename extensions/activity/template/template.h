@@ -19,20 +19,19 @@
 #ifndef TEMPLATE_ACTIVITY_H
 #define TEMPLATE_ACTIVITY_H
 
-#include <QtCore>
-#include <plexy.h>
+#include <QObject>
+
 #include <datasource.h>
-#include <QtNetwork>
 #include <desktopactivity.h>
 #include <window.h>
 
-class TemplateActivity : public CherryKit::DesktopActivity {
+class template_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  TemplateActivity(QGraphicsObject *object = 0);
+  template_dialog(QGraphicsObject *object = 0);
 
-  virtual ~TemplateActivity();
+  virtual ~template_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
@@ -41,17 +40,12 @@ public:
 
   virtual void update_attribute(const QString &name, const QVariant &data);
 
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
-
-private
-Q_SLOTS:
-  void onWidgetClosed(CherryKit::Widget *widget);
-  void onHideAnimationFinished();
 
 private:
   class PrivateTemplate;
-  PrivateTemplate *const o_desktop_activity;
+  PrivateTemplate *const o_desktop_dialog;
 };
 
 #endif

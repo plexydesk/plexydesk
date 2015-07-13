@@ -20,7 +20,7 @@
 #define LPHOTOS_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

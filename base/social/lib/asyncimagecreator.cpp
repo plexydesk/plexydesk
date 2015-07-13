@@ -68,8 +68,8 @@ AsyncImageCreator::AsyncImageCreator(QObject *parent)
 }
 
 AsyncImageCreator::~AsyncImageCreator() {
-    qDebug() << Q_FUNC_INFO;
-    delete d;
+  qDebug() << Q_FUNC_INFO;
+  delete d;
 }
 
 void AsyncImageCreator::setMetaData(const QVariantMap &data) {
@@ -154,7 +154,7 @@ void AsyncImageCreator::on_task_complete(
 
 void AsyncImageCreator::on_finished() {
   qDebug() << Q_FUNC_INFO << "Finished";
-  //quit();
+  // quit();
   if (d->m_on_complete_call)
     d->m_on_complete_call(this);
 }
@@ -221,8 +221,8 @@ void AsyncImageCreator::run() {
     d->mCropedImage = imageToCrop.copy(d->mCropRect);
   }
 
-  qDebug() << Q_FUNC_INFO << "Image Is Null within Thread : " <<
-              d->mImage.isNull();
+  qDebug() << Q_FUNC_INFO
+           << "Image Is Null within Thread : " << d->mImage.isNull();
   Q_EMIT ready();
 }
 

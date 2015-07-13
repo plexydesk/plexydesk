@@ -25,11 +25,11 @@
 
 #include <QTimer>
 
-class ClockWidget : public CherryKit::Widget {
+class ClockWidget : public cherry_kit::widget {
   Q_OBJECT
 
 public:
-  ClockWidget(Widget *a_parent_ptr = 0);
+  ClockWidget(widget *a_parent_ptr = 0);
 
   virtual ~ClockWidget();
 

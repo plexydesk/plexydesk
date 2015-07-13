@@ -5,10 +5,9 @@
 
 class QPainter;
 
-class DesktopWindow : public CherryKit::Window {
+class DesktopWindow : public cherry_kit::window {
 public:
-
-typedef enum {
+  typedef enum {
     kNone,
     kStreachBackground,
     kTileBackground,

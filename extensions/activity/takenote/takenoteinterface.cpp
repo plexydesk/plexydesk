@@ -21,9 +21,9 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> TakeNoteInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new TakeNoteActivity(),
+QSharedPointer<cherry_kit::desktop_dialog> TakeNoteInterface::activity() {
+  QSharedPointer<cherry_kit::desktop_dialog> obj =
+      QSharedPointer<cherry_kit::desktop_dialog>(new note_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;

@@ -1,15 +1,13 @@
 #ifndef FOLDERITEM_H
 #define FOLDERITEM_H
 
-#include <plexy.h>
-
 #include <QGraphicsItem>
 #include <QGraphicsObject>
 #include <abstractcellcomponent.h>
 #include <QFileInfo>
 #include <QIcon>
 
-class FolderItem : public CherryKit::TableViewItem {
+class FolderItem : public cherry_kit::TableViewItem {
   Q_OBJECT
 public:
   explicit FolderItem(const QRectF &rect, QGraphicsItem *a_parent_ptr = 0);

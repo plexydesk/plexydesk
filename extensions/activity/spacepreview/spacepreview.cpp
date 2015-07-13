@@ -21,44 +21,46 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class SpacePreviewActivity::PrivateSpacePreview {
+class expose_dialog::PrivateSpacePreview {
 public:
   PrivateSpacePreview() {}
   ~PrivateSpacePreview() {}
 
-  CherryKit::Window *m_main_window;
+  cherry_kit::window *m_main_window;
 };
 
-SpacePreviewActivity::SpacePreviewActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateSpacePreview) {}
+expose_dialog::expose_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object),
+      o_desktop_dialog(new PrivateSpacePreview) {}
 
-SpacePreviewActivity::~SpacePreviewActivity() { delete o_desktop_activity; }
+expose_dialog::~expose_dialog() { delete o_desktop_dialog; }
 
-void SpacePreviewActivity::create_window(const QRectF &window_geometry,
+void expose_dialog::create_window(const QRectF &window_geometry,
                                          const QString &window_title,
                                          const QPointF &window_pos) {
-  o_desktop_activity->m_main_window = new CherryKit::Window();
-  o_desktop_activity->m_main_window->set_window_type(CherryKit::Window::kPopupWindow);
+  o_desktop_dialog->m_main_window = new cherry_kit::window();
+  o_desktop_dialog->m_main_window->set_window_type(
+      cherry_kit::window::kPopupWindow);
 
   set_geometry(window_geometry);
-  update_content_geometry(o_desktop_activity->m_main_window);
+  update_content_geometry(o_desktop_dialog->m_main_window);
 
   exec(window_pos);
 }
 
-QVariantMap SpacePreviewActivity::result() const { return QVariantMap(); }
+QVariantMap expose_dialog::result() const { return QVariantMap(); }
 
-void SpacePreviewActivity::update_attribute(const QString &name,
+void expose_dialog::update_attribute(const QString &name,
                                             const QVariant &data) {}
 
-CherryKit::Window *SpacePreviewActivity::window() const {
-  return o_desktop_activity->m_main_window;
+cherry_kit::window *expose_dialog::activity_window() const {
+  return o_desktop_dialog->m_main_window;
 }
 
-void SpacePreviewActivity::cleanup() {
-  if (o_desktop_activity->m_main_window) {
-    delete o_desktop_activity->m_main_window;
+void expose_dialog::cleanup() {
+  if (o_desktop_dialog->m_main_window) {
+    delete o_desktop_dialog->m_main_window;
   }
 
-  o_desktop_activity->m_main_window = 0;
+  o_desktop_dialog->m_main_window = 0;
 }

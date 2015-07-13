@@ -9,7 +9,7 @@ public:
   PrivateExtLaoderTestRunner() {}
   ~PrivateExtLaoderTestRunner() {}
 
-  CherryKit::DataSourcePtr mDataSource;
+  cherry_kit::DataSourcePtr mDataSource;
 };
 
 ExtLaoderTestRunner::ExtLaoderTestRunner(QObject *parent)
@@ -23,7 +23,8 @@ ExtLaoderTestRunner::~ExtLaoderTestRunner() {
 }
 
 bool ExtLaoderTestRunner::connectToDataSource(const QString &source) {
-  d->mDataSource = CherryKit::ExtensionManager::instance()->data_engine(source);
+  d->mDataSource =
+      cherry_kit::extension_manager::instance()->data_engine(source);
 
   if (!d->mDataSource.data()) {
     return 0;
@@ -37,8 +38,8 @@ bool ExtLaoderTestRunner::connectToDataSource(const QString &source) {
 }
 
 void ExtLaoderTestRunner::loadtest(const QString &source) {
-  CherryKit::DataSourcePtr _source =
-      CherryKit::ExtensionManager::instance()->data_engine(source);
+  cherry_kit::DataSourcePtr _source =
+      cherry_kit::extension_manager::instance()->data_engine(source);
 
   if (!_source) {
     return;

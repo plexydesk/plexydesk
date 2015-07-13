@@ -9,7 +9,7 @@
 
 #include <viewbuilder.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 class ToolBar::PrivateToolBar {
 public:
   PrivateToolBar() : m_item_count(1) {}
@@ -23,7 +23,8 @@ public:
   HybridLayout *m_layout;
 };
 
-ToolBar::ToolBar(Widget *parent) : Widget(parent), o_tool_bar(new PrivateToolBar) {
+ToolBar::ToolBar(Widget *parent)
+    : Widget(parent), o_tool_bar(new PrivateToolBar) {
   o_tool_bar->m_layout = new HybridLayout(this);
   o_tool_bar->m_layout->set_content_margin(10, 10, 10, 10);
   o_tool_bar->m_layout->set_horizontal_segment_count(1);
@@ -37,12 +38,12 @@ void ToolBar::add_action(const QString &a_lable, const QString &a_icon,
 
   o_tool_bar->m_layout->add_horizontal_segments(0, o_tool_bar->m_item_count);
 
-  CherryKit::WidgetProperties accept_button_prop;
+  cherry_kit::WidgetProperties accept_button_prop;
   accept_button_prop["label"] = "";
   accept_button_prop["icon"] = a_icon.toStdString();
 
-  o_tool_bar->m_layout->add_widget(0, (o_tool_bar->m_item_count - 1), "image_button",
-                          accept_button_prop);
+  o_tool_bar->m_layout->add_widget(0, (o_tool_bar->m_item_count - 1),
+                                   "image_button", accept_button_prop);
   o_tool_bar->m_item_count += 1;
 
   update();

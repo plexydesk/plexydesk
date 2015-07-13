@@ -20,12 +20,11 @@
 #define HTTPSERVER_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 
-class HttpServerData : public CherryKit::DataSource {
+class HttpServerData : public cherry_kit::data_source {
   Q_OBJECT
 
 public:

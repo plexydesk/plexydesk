@@ -20,10 +20,11 @@
 #include "dateinterface.h"
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::ViewController> DateInterface::controller() {
-  QSharedPointer<CherryKit::ViewController> obj =
-      QSharedPointer<CherryKit::ViewController>(new DateControllerImpl(this),
-                                                &QObject::deleteLater);
+QSharedPointer<cherry_kit::desktop_controller_interface>
+DateInterface::controller() {
+  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
+      QSharedPointer<cherry_kit::desktop_controller_interface>(
+          new DateControllerImpl(this), &QObject::deleteLater);
 
   return obj;
 }

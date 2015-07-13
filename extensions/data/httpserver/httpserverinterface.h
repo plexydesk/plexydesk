@@ -20,20 +20,20 @@
 #define HTTPSERVER_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <dataplugininterface.h>
 
 class HttpServerInterface : public QObject,
-                            public CherryKit::DataPluginInterface {
+                            public cherry_kit::data_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::DataPluginInterface)
+  Q_INTERFACES(cherry_kit::data_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.httpserver")
 
 public:
   virtual ~HttpServerInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<CherryKit::DataSource> model();
+  QSharedPointer<cherry_kit::data_source> model();
 };
 
 #endif

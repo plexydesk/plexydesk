@@ -29,14 +29,13 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDateTime>
 
-#include <plexy.h>
 #include <plexyconfig.h>
 #include <resource_manager.h>
 
 #include <math.h>
 #include <cmath>
 
-namespace CherryKit {
+namespace cherry_kit {
 bool double_equals(double a, double b, double epsilon = 0.001) {
   return std::abs(a - b) < epsilon;
 }
@@ -77,8 +76,8 @@ public:
   std::vector<timeout_callback_func> m_timeout_callback_list;
 };
 
-ClockWidget::ClockWidget(Widget *parent)
-    : CherryKit::Widget(parent), o_clock_widget(new PrivateClockWidget) {
+ClockWidget::ClockWidget(widget *parent)
+    : cherry_kit::widget(parent), o_clock_widget(new PrivateClockWidget) {
   o_clock_widget->m_clock_timer = new QTimer(this);
   o_clock_widget->m_range_timer = new QTimer(this);
   o_clock_widget->m_mark_hour_value = 0.0;
@@ -102,7 +101,7 @@ ClockWidget::ClockWidget(Widget *parent)
   o_clock_widget->m_clock_timer->start(1000);
   o_clock_widget->m_range_timer->stop();
 
-  set_widget_flag(Widget::kRenderDropShadow, false);
+  set_widget_flag(widget::kRenderDropShadow, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
   set_widget_name("Clock");
@@ -141,17 +140,21 @@ void ClockWidget::add_range_marker(double a_start, double a_end) {
   QDateTime current_date_time = QDateTime::currentDateTime();
 
   if (o_clock_widget->m_timezone)
-    current_date_time = current_date_time.toTimeZone(*o_clock_widget->m_timezone);
+    current_date_time =
+        current_date_time.toTimeZone(*o_clock_widget->m_timezone);
 
   QTime current_time = current_date_time.time();
 
   current_time = current_time.addSecs(duration);
   o_clock_widget->m_mark_minutes_value = current_time.minute();
   o_clock_widget->m_mark_hour_value = current_time.hour();
-  o_clock_widget->m_completion_time_label = current_time.toString("hh:mm:ss ap");
+  o_clock_widget->m_completion_time_label =
+      current_time.toString("hh:mm:ss ap");
 }
 
-int ClockWidget::duration() const { return o_clock_widget->m_range_timer_initial_duration; }
+int ClockWidget::duration() const {
+  return o_clock_widget->m_range_timer_initial_duration;
+}
 
 int ClockWidget::elapsed_time_in_seconds() const {
   return o_clock_widget->m_range_timer_duration;
@@ -238,14 +241,15 @@ void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   // done intentionally to make the clock look squre.
   QRectF rect(r.x() + 16, r.y(), r.width() - 32, r.width() - 32);
 
-  StyleFeatures feature;
+  style_data feature;
 
-  feature.text_data =
-      QString("%1:%2:%3").arg(o_clock_widget->m_hour_value).arg(o_clock_widget->m_minutes_value).arg(
-          o_clock_widget->m_second_value);
+  feature.text_data = QString("%1:%2:%3")
+                          .arg(o_clock_widget->m_hour_value)
+                          .arg(o_clock_widget->m_minutes_value)
+                          .arg(o_clock_widget->m_second_value);
 
   feature.geometry = rect;
-  feature.render_state = StyleFeatures::kRenderElement;
+  feature.render_state = style_data::kRenderElement;
   feature.attributes["hour"] = o_clock_widget->m_hour_value;
   feature.attributes["minutes"] = o_clock_widget->m_minutes_value;
   feature.attributes["seconds"] = o_clock_widget->m_second_value;
@@ -257,8 +261,8 @@ void ClockWidget::paint_view(QPainter *p, const QRectF &r) {
   feature.attributes["mark_end"] = o_clock_widget->m_mark_end;
   feature.text_data = o_clock_widget->m_completion_time_label;
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("clock", feature, p);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw("clock", feature, p);
   }
 }
 }

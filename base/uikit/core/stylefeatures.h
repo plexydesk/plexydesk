@@ -7,9 +7,9 @@
 #include <plexydesk_ui_exports.h>
 #include <QtCore>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT StyleFeatures {
+class DECL_UI_KIT_EXPORT style_data {
 
 public:
   typedef enum {

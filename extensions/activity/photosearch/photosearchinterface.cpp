@@ -21,9 +21,9 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> PhotoSearchInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new PhotoSearchActivity(),
+QSharedPointer<cherry_kit::desktop_dialog> PhotoSearchInterface::activity() {
+  QSharedPointer<cherry_kit::desktop_dialog> obj =
+      QSharedPointer<cherry_kit::desktop_dialog>(new wallpaper_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;

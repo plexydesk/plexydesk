@@ -19,8 +19,6 @@
 #ifndef PLEXY_WIDGET_IMAGEPILE_H
 #define PLEXY_WIDGET_IMAGEPILE_H
 
-#include <plexy.h>
-
 #include <view_controller.h>
 #include <resource_manager.h>
 #include "iconwidgetview.h"
@@ -28,7 +26,7 @@
 class QLineEdit;
 class QWidget;
 
-class DirectoryController : public CherryKit::ViewController {
+class DirectoryController : public cherry_kit::ViewController {
   Q_OBJECT
 
 public:
@@ -40,17 +38,17 @@ public:
   void session_data_available(const cherry::sync_object &a_session_root);
   virtual void submit_session_data(cherry::sync_object *a_obj);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
-  void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
+  void handle_drop_event(cherry_kit::Widget *widget, QDropEvent *event);
   void set_view_rect(const QRectF &rect);
 
   QString icon() const;
 
 private:
-  // CherryKit::Theme *mThemePack;
-  // QList<CherryKit::Widget *> mFolderViewList;
-  CherryKit::ActionList m_supported_action_list;
+  // cherry_kit::Theme *mThemePack;
+  // QList<cherry_kit::Widget *> mFolderViewList;
+  cherry_kit::ActionList m_supported_action_list;
 };
 
 #endif

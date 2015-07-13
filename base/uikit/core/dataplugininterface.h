@@ -25,18 +25,18 @@
 #include <datasource.h>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT DataPluginInterface {
+class DECL_UI_KIT_EXPORT data_plugin_interface {
 public:
-  DataPluginInterface() {}
+  data_plugin_interface() {}
 
-  virtual ~DataPluginInterface() {}
+  virtual ~data_plugin_interface() {}
 
-  virtual QSharedPointer<DataSource> model() = 0;
+  virtual QSharedPointer<data_source> model() = 0;
 };
 }
 
-Q_DECLARE_INTERFACE(CherryKit::DataPluginInterface,
+Q_DECLARE_INTERFACE(cherry_kit::data_plugin_interface,
                     "org.plexydesk.DataPluginInterface")
 #endif // DATA_PLUGININTERFACE_H

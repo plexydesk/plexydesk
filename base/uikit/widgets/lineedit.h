@@ -19,18 +19,16 @@
 #ifndef LINEEDIT_H
 #define LINEEDIT_H
 
-#include <plexy.h>
-
 #include <style.h>
 #include <widget.h>
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT LineEdit : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT LineEdit : public widget {
   Q_OBJECT
 public:
-  explicit LineEdit(Widget *a_parent_ptr = 0);
+  explicit LineEdit(widget *a_parent_ptr = 0);
   virtual ~LineEdit();
 
   virtual void set_text(const QString &a_txt);

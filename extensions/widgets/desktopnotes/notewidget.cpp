@@ -45,24 +45,24 @@ public:
 
   QPixmap m_image_attachment;
 
-  CherryKit::TextEditor *m_text_editor_widget;
-  CherryKit::ImageButton *m_attachment_del_button;
-  CherryKit::ImageView *m_image_attachment_view;
+  cherry_kit::TextEditor *m_text_editor_widget;
+  cherry_kit::ImageButton *m_attachment_del_button;
+  cherry_kit::ImageView *m_image_attachment_view;
 
   QImage mBackgroundPixmap;
 
-  CherryKit::Space *m_viewport;
+  cherry_kit::space *m_viewport;
   std::vector<on_title_callback_func> m_on_title_callback_func_list;
   std::vector<on_config_callback_func> m_on_config_callback_func_list;
   QVariantMap m_config_data;
 
   // new ui
-  CherryKit::HybridLayout *m_ui;
+  cherry_kit::fixed_layout *m_ui;
 };
 
 void NoteWidget::createToolBar() {
   /*
-d->m_note_toolbar_widget = new CherryKit::ToolBar(this);
+d->m_note_toolbar_widget = new cherry_kit::ToolBar(this);
 d->m_note_toolbar_widget->add_action("contact", "pd_add_contact_icon.png",
                                      false);
 d->m_note_toolbar_widget->add_action("list", "pd_list_icon.png", false);
@@ -82,7 +82,9 @@ d->m_note_toolbar_widget->add_action("delete", "actions/pd_delete.png",
                                      */
 }
 
-void NoteWidget::setViewport(CherryKit::Space *space) { d->m_viewport = space; }
+void NoteWidget::setViewport(cherry_kit::space *space) {
+  d->m_viewport = space;
+}
 
 void NoteWidget::on_text_data_changed(
     std::function<void(const QString &)> a_callback) {
@@ -94,14 +96,14 @@ void NoteWidget::on_note_config_changed(
   d->m_on_config_callback_func_list.push_back(a_callback);
 }
 
-NoteWidget::NoteWidget(CherryKit::SessionSync *a_session,
-                       CherryKit::Widget *parent)
-    : CherryKit::Widget(parent), d(new PrivateNoteWidget) {
+NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
+                       cherry_kit::widget *parent)
+    : cherry_kit::widget(parent), d(new PrivateNoteWidget) {
 
   if (!parent)
     return;
 
-  d->m_ui = new CherryKit::HybridLayout(this);
+  d->m_ui = new cherry_kit::fixed_layout(this);
   d->m_ui->set_content_margin(10, 10, 10, 20);
   d->m_ui->set_geometry(parent->geometry().x(), parent->geometry().y(),
                         parent->geometry().width(),
@@ -112,13 +114,13 @@ NoteWidget::NoteWidget(CherryKit::SessionSync *a_session,
   d->m_ui->set_row_height(0, "90%");
   d->m_ui->set_row_height(1, "10%");
 
-  CherryKit::WidgetProperties text_editor_prop;
+  cherry_kit::widget_properties_t text_editor_prop;
   text_editor_prop["text"] = "";
 
-  d->m_text_editor_widget = dynamic_cast<CherryKit::TextEditor *>(
+  d->m_text_editor_widget = dynamic_cast<cherry_kit::TextEditor *>(
       d->m_ui->add_widget(0, 0, "text_edit", text_editor_prop));
 
-  CherryKit::WidgetProperties button_props;
+  cherry_kit::widget_properties_t button_props;
 
   button_props["label"] = "";
   button_props["icon"] = "actions/pd_delete.png";
@@ -160,8 +162,8 @@ NoteWidget::NoteWidget(CherryKit::SessionSync *a_session,
   setAcceptDrops(true);
   setGeometry(parent->geometry());
   /*
-d->mLayoutBase = new CherryKit::Widget(this);
-d->mSubLayoutBase = new CherryKit::Widget(d->mLayoutBase);
+d->mLayoutBase = new cherry_kit::Widget(this);
+d->mSubLayoutBase = new cherry_kit::Widget(d->mLayoutBase);
 
 d->mMainVerticleLayout = new QGraphicsLinearLayout(d->mLayoutBase);
 d->mMainVerticleLayout->setOrientation(Qt::Horizontal);
@@ -179,9 +181,9 @@ d->m_note_toolbar_widget->on_item_activated([this](const QString &a_action) {
   onToolBarAction(a_action);
 });
 
-d->m_image_attachment_view = new CherryKit::ImageView(d->mSubLayoutBase);
+d->m_image_attachment_view = new cherry_kit::ImageView(d->mSubLayoutBase);
 d->m_image_attachment_view->setMinimumSize(0, 0);
-d->m_text_editor_widget = new CherryKit::TextEditor(d->mSubLayoutBase);
+d->m_text_editor_widget = new cherry_kit::TextEditor(d->mSubLayoutBase);
 d->m_text_editor_widget->style(
     "border: 0; background: rgba(255,255,255,255); color: #4E4945");
 
@@ -192,9 +194,9 @@ d->mSubLayout->addItem(d->m_note_toolbar_widget);
 d->m_text_editor_widget->set_placeholder_text("Title :");
 d->mMainVerticleLayout->addItem(d->mSubLayoutBase);
 
-d->m_attachment_del_button = new CherryKit::ImageButton(this);
+d->m_attachment_del_button = new cherry_kit::ImageButton(this);
 d->m_attachment_del_button->set_pixmap(
-    CherryKit::ResourceManager::instance()->drawable("pd_trash_icon.png",
+    cherry_kit::ResourceManager::instance()->drawable("pd_trash_icon.png",
                                                  "mdpi"));
 d->m_attachment_del_button->set_size(QSize(16, 16));
 d->m_attachment_del_button->hide();
@@ -305,7 +307,7 @@ d->mSubLayout->activate();
 void NoteWidget::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) {
-  CherryKit::Widget::paint(painter, option, widget);
+  cherry_kit::Widget::paint(painter, option, widget);
 
   painter->save();
   painter->setRenderHint(QPainter::SmoothPixmapTransform);
@@ -393,7 +395,7 @@ void NoteWidget::onToolBarAction(const QString &action) {
       d->m_viewport->create_activity(
           "datepickeractivity", tr("Calendar"),
           d->m_viewport->center(window_geometry, window_geometry,
-                                CherryKit::Space::kCenterOnWindow),
+                                cherry_kit::space::kCenterOnWindow),
           window_geometry, QVariantMap());
     }
 
@@ -481,7 +483,7 @@ void NoteWidget::onImageReady() {
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), CherryKit::Config::cache_dir(),
+    imageSave->setData(downloader->data(), cherry_kit::config::cache_dir(),
                        true);
     imageSave->setCrop(QRectF(0.0, 0.0, 300.0, 300.0));
     imageSave->start();

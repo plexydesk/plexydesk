@@ -19,8 +19,6 @@
 #ifndef PLEXY_WIDGET_VIDEO_H
 #define PLEXY_WIDGET_VIDEO_H
 
-#include <plexy.h>
-
 #include <QtCore>
 #include <datainterface.h>
 #include <widgetplugin.h>

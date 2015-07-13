@@ -57,8 +57,8 @@ public:
   PrivateCocoa() {}
   ~PrivateCocoa() {}
 
-  QColor color(ResourceManager::ColorName a_name);
-  void set_pen_color(QPainter *painter, ResourceManager::ColorName a_name,
+  QColor color(resource_manager::ColorName a_name);
+  void set_pen_color(QPainter *painter, resource_manager::ColorName a_name,
                      int a_thikness = 0);
   void set_default_font_size(QPainter *painter, int a_size = 11,
                              bool a_highlight = false);
@@ -138,8 +138,8 @@ QVariantMap CocoaStyle::attribute_map(const QString &type) const {
 
 QVariantMap CocoaStyle::color_scheme_map() const { return d->m_color_map; }
 
-void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
-                      QPainter *painter, const Widget *aWidget) {
+void CocoaStyle::draw(const QString &type, const style_data &options,
+                      QPainter *painter, const widget *aWidget) {
   switch (d->m_type_map[type]) {
   case 1:
     draw_push_button(options, painter);
@@ -158,7 +158,7 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
     break;
   case 10:
     draw_clock_surface(options, painter);
-    //draw_clock_surface_to_buffer(options, painter);
+    // draw_clock_surface_to_buffer(options, painter);
     break;
   case 13:
     draw_knob(options, painter);
@@ -178,7 +178,7 @@ void CocoaStyle::draw(const QString &type, const StyleFeatures &options,
 }
 
 void CocoaStyle::PrivateCocoa::set_pen_color(QPainter *painter,
-                                             ResourceManager::ColorName a_name,
+                                             resource_manager::ColorName a_name,
                                              int a_thikness) {
   painter->setPen(QPen(color(a_name), a_thikness, Qt::SolidLine, Qt::RoundCap,
                        Qt::RoundJoin));
@@ -187,11 +187,11 @@ void CocoaStyle::PrivateCocoa::set_pen_color(QPainter *painter,
 void CocoaStyle::set_default_painter_hints(QPainter *painter) {
   painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
                               QPainter::SmoothPixmapTransform |
-                          QPainter::HighQualityAntialiasing,
+                              QPainter::HighQualityAntialiasing,
                           true);
 }
 
-void CocoaStyle::draw_push_button(const StyleFeatures &features,
+void CocoaStyle::draw_push_button(const style_data &features,
                                   QPainter *painter) {
   QRectF rect = features.geometry;
 
@@ -202,22 +202,22 @@ void CocoaStyle::draw_push_button(const StyleFeatures &features,
   QPainterPath button_background_path;
   button_background_path.addRoundedRect(rect, 4.0, 4.0);
 
-  if (features.render_state == StyleFeatures::kRenderPressed) {
+  if (features.render_state == style_data::kRenderPressed) {
     painter->fillPath(button_background_path,
-                      d->color(ResourceManager::kPrimaryColor));
-    d->set_pen_color(painter, ResourceManager::kSecondryTextColor);
+                      d->color(resource_manager::kPrimaryColor));
+    d->set_pen_color(painter, resource_manager::kSecondryTextColor);
     d->set_default_font_size(painter);
     painter->drawPath(button_background_path);
-  } else if (features.render_state == StyleFeatures::kRenderRaised) {
+  } else if (features.render_state == style_data::kRenderRaised) {
     painter->fillPath(button_background_path,
-                      d->color(ResourceManager::kDarkPrimaryColor));
-    d->set_pen_color(painter, ResourceManager::kSecondryTextColor);
+                      d->color(resource_manager::kDarkPrimaryColor));
+    d->set_pen_color(painter, resource_manager::kSecondryTextColor);
     d->set_default_font_size(painter, 11, true);
     painter->drawPath(button_background_path);
   } else {
     painter->fillPath(button_background_path,
-                      d->color(ResourceManager::kDarkPrimaryColor));
-    d->set_pen_color(painter, ResourceManager::kSecondryTextColor);
+                      d->color(resource_manager::kDarkPrimaryColor));
+    d->set_pen_color(painter, resource_manager::kSecondryTextColor);
     d->set_default_font_size(painter);
     painter->drawPath(button_background_path);
   }
@@ -226,7 +226,7 @@ void CocoaStyle::draw_push_button(const StyleFeatures &features,
   painter->restore();
 }
 
-void CocoaStyle::draw_window_button(const StyleFeatures &features,
+void CocoaStyle::draw_window_button(const style_data &features,
                                     QPainter *painter) {
   QRectF rect = features.geometry.adjusted(0, 0, 0, 0);
 
@@ -236,15 +236,15 @@ void CocoaStyle::draw_window_button(const StyleFeatures &features,
   QPainterPath background;
   background.addRoundedRect(rect, 4.0, 4.0);
 
-  if (features.render_state == StyleFeatures::kRenderElement) {
-    painter->fillPath(background, d->color(ResourceManager::kAccentColor));
+  if (features.render_state == style_data::kRenderElement) {
+    painter->fillPath(background, d->color(resource_manager::kAccentColor));
   } else {
-    painter->fillPath(background, d->color(ResourceManager::kAccentColor));
+    painter->fillPath(background, d->color(resource_manager::kAccentColor));
   }
 
   painter->save();
 
-  d->set_pen_color(painter, ResourceManager::kSecondryTextColor, 2);
+  d->set_pen_color(painter, resource_manager::kSecondryTextColor, 2);
   QRectF cross_rect(6.0, 6.0, rect.width() - 12, rect.height() - 12);
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
@@ -264,7 +264,7 @@ void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
   painter->setFont(_font);
 }
 
-void CocoaStyle::draw_window_frame(const StyleFeatures &features,
+void CocoaStyle::draw_window_frame(const style_data &features,
                                    QPainter *a_ctx) {
   QRectF rect = features.geometry.adjusted(4, 4, -4, -4);
 
@@ -288,7 +288,7 @@ void CocoaStyle::draw_window_frame(const StyleFeatures &features,
   QPainterPath window_background_path;
   window_background_path.addRoundedRect(rect, 4.0, 4.0);
   a_ctx->fillPath(window_background_path,
-                  d->color(ResourceManager::kLightPrimaryColor));
+                  d->color(resource_manager::kLightPrimaryColor));
 
   /* draw seperator */
   if (!features.text_data.isNull() || !features.text_data.isEmpty()) {
@@ -297,17 +297,17 @@ void CocoaStyle::draw_window_frame(const StyleFeatures &features,
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
     seperator_line_grad.setColorAt(
-        0.0, d->color(ResourceManager::kLightPrimaryColor));
+        0.0, d->color(resource_manager::kLightPrimaryColor));
     seperator_line_grad.setColorAt(0.5,
-                                   d->color(ResourceManager::kDividerColor));
+                                   d->color(resource_manager::kDividerColor));
     seperator_line_grad.setColorAt(
-        1.0, d->color(ResourceManager::kLightPrimaryColor));
+        1.0, d->color(resource_manager::kLightPrimaryColor));
 
     // draw frame text;
     a_ctx->save();
 
     d->set_default_font_size(a_ctx, 18, true);
-    d->set_pen_color(a_ctx, ResourceManager::kTextColor);
+    d->set_pen_color(a_ctx, resource_manager::kTextColor);
     a_ctx->drawText(window_title_rect, features.text_data,
                     QTextOption(Qt::AlignCenter));
 
@@ -326,10 +326,9 @@ void CocoaStyle::draw_window_frame(const StyleFeatures &features,
   a_ctx->restore();
 }
 
-void CocoaStyle::draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor,
-                                  float angle,
-                                  ResourceManager::ColorName a_clock_hand_color,
-                                  int a_thikness) {
+void CocoaStyle::draw_clock_hands(
+    QPainter *a_ctx, QRectF rect, int factor, float angle,
+    resource_manager::ColorName a_clock_hand_color, int a_thikness) {
   float _adjustment = rect.width() / factor;
 
   QRectF _clock_hour_rect(rect.x() + _adjustment, rect.y() + _adjustment,
@@ -374,7 +373,7 @@ void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
   timer_path.arcTo(rect, start_angle, -(end_angle));
 
   a_ctx->setOpacity(0.5);
-  a_ctx->fillPath(timer_path, d->color(ResourceManager::kPrimaryColor));
+  a_ctx->fillPath(timer_path, d->color(resource_manager::kPrimaryColor));
   a_ctx->setOpacity(1.0);
 }
 
@@ -413,11 +412,11 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
                    multiply * angle_between_hands(mark_hour, mark_minutes));
 
   a_ctx->setOpacity(0.3);
-  a_ctx->fillPath(timer_path, d->color(ResourceManager::kLightPrimaryColor));
+  a_ctx->fillPath(timer_path, d->color(resource_manager::kLightPrimaryColor));
   a_ctx->setOpacity(1.0);
 }
 
-void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
+void CocoaStyle::draw_clock_surface(const style_data &features,
                                     QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
   float border_len = features.geometry.width() - 16;
@@ -437,12 +436,12 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
 
   set_default_painter_hints(a_ctx);
 
-  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 10);
+  d->set_pen_color(a_ctx, resource_manager::kTextColor, 10);
 
   QPainterPath _clock_background;
   _clock_background.addEllipse(rect);
 
-  a_ctx->fillPath(_clock_background, d->color(ResourceManager::kTextColor));
+  a_ctx->fillPath(_clock_background, d->color(resource_manager::kTextColor));
   a_ctx->drawEllipse(rect);
 
   // draw second markers.
@@ -450,7 +449,7 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     double percent = (i / 60.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
+    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -459,7 +458,7 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 4);
+    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 4);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -468,7 +467,7 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor, 8);
+    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 8);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -522,9 +521,9 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
 
   /* Draw Hour Hand */
   draw_clock_hands(a_ctx, rect, 3, hour_value,
-                   ResourceManager::kSecondryTextColor, 6);
+                   resource_manager::kSecondryTextColor, 6);
   draw_clock_hands(a_ctx, rect, 4, minutes_value,
-                   ResourceManager::kSecondryTextColor, 3);
+                   resource_manager::kSecondryTextColor, 3);
 
   QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16,
                            16);
@@ -538,19 +537,19 @@ void CocoaStyle::draw_clock_surface(const StyleFeatures &features,
   _clock_wheel_inner_path.addEllipse(_clock_wheel_inner_rect);
 
   a_ctx->fillPath(_clock_wheel_path,
-                  d->color(ResourceManager::kLightPrimaryColor));
+                  d->color(resource_manager::kLightPrimaryColor));
 
   /* second hand */
-  d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
+  d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor);
   a_ctx->drawPath(_clock_wheel_path);
   a_ctx->fillPath(_clock_wheel_inner_path,
-                  d->color(ResourceManager::kAccentColor));
+                  d->color(resource_manager::kAccentColor));
 
-  draw_clock_hands(a_ctx, rect, 5, second_value, ResourceManager::kAccentColor,
+  draw_clock_hands(a_ctx, rect, 5, second_value, resource_manager::kAccentColor,
                    2);
 }
 
-void CocoaStyle::draw_clock_surface_to_buffer(const StyleFeatures &features,
+void CocoaStyle::draw_clock_surface_to_buffer(const style_data &features,
                                               QPainter *a_ctx) {
   QRectF src_rect = features.geometry;
   int width = src_rect.width();
@@ -574,7 +573,7 @@ void CocoaStyle::draw_clock_surface_to_buffer(const StyleFeatures &features,
   free(imgbuf);
 }
 
-void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
+void CocoaStyle::draw_knob(const style_data &features, QPainter *a_ctx) {
   set_default_painter_hints(a_ctx);
 
   float border_len = features.geometry.width() - 8;
@@ -599,7 +598,7 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
   double angle_percent = features.attributes["angle"].toDouble();
   double max_value = features.attributes["max_value"].toDouble();
 
-  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 1);
+  d->set_pen_color(a_ctx, resource_manager::kTextColor, 1);
   QPainterPath _clock_background;
   QPainterPath _marker_background;
   QPainterPath _border_background;
@@ -609,11 +608,11 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
 
   _clock_background.addEllipse(rect);
   a_ctx->fillPath(_marker_background,
-                  d->color(ResourceManager::kLightPrimaryColor));
-  a_ctx->fillPath(_clock_background, d->color(ResourceManager::kTextColor));
+                  d->color(resource_manager::kLightPrimaryColor));
+  a_ctx->fillPath(_clock_background, d->color(resource_manager::kTextColor));
   a_ctx->drawPath(_clock_background);
 
-  d->set_pen_color(a_ctx, ResourceManager::kDividerColor, 1);
+  d->set_pen_color(a_ctx, resource_manager::kDividerColor, 1);
   a_ctx->drawPath(_border_background);
 
   // draw segement markers.
@@ -621,7 +620,7 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
     double percent = (i / max_value);
     QPointF marker_location = _marker_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, ResourceManager::kTextColor, 1);
+    d->set_pen_color(a_ctx, resource_manager::kTextColor, 1);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -652,7 +651,7 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
   /* draw the dial */
   a_ctx->save();
   set_default_painter_hints(a_ctx);
-  a_ctx->fillPath(border_path, d->color(ResourceManager::kLightPrimaryColor));
+  a_ctx->fillPath(border_path, d->color(resource_manager::kLightPrimaryColor));
 
   QTransform xform;
   xform.translate(transPos.x(), transPos.y());
@@ -662,16 +661,16 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
   a_ctx->setTransform(xform);
 
   a_ctx->save();
-  d->set_pen_color(a_ctx, ResourceManager::kTextColor, 8);
+  d->set_pen_color(a_ctx, resource_manager::kTextColor, 8);
   a_ctx->drawPoint(current_marker_location_for_min);
 
-  if (features.render_state == StyleFeatures::kRenderRaised) {
-    d->set_pen_color(a_ctx, ResourceManager::kAccentColor, 8);
+  if (features.render_state == style_data::kRenderRaised) {
+    d->set_pen_color(a_ctx, resource_manager::kAccentColor, 8);
     a_ctx->drawPoint(current_marker_location_for_min);
   }
 
-  if (features.render_state == StyleFeatures::kRenderPressed) {
-    d->set_pen_color(a_ctx, ResourceManager::kPrimaryColor, 4);
+  if (features.render_state == style_data::kRenderPressed) {
+    d->set_pen_color(a_ctx, resource_manager::kPrimaryColor, 4);
     a_ctx->drawPoint(current_marker_location_for_min);
   }
 
@@ -679,8 +678,7 @@ void CocoaStyle::draw_knob(const StyleFeatures &features, QPainter *a_ctx) {
   a_ctx->restore();
 }
 
-void CocoaStyle::draw_line_edit(const StyleFeatures &features,
-                                QPainter *painter) {
+void CocoaStyle::draw_line_edit(const style_data &features, QPainter *painter) {
 
   QRectF rect = features.geometry.adjusted(4, 4, 0, 0);
 
@@ -690,14 +688,14 @@ void CocoaStyle::draw_line_edit(const StyleFeatures &features,
   background_path.addRoundedRect(rect, 0, 0);
 
   painter->fillPath(background_path,
-                    d->color(ResourceManager::kLightPrimaryColor));
+                    d->color(resource_manager::kLightPrimaryColor));
 
   d->set_default_font_size(painter, 18);
 
-  if (features.render_state == StyleFeatures::kRenderRaised) {
-    d->set_pen_color(painter, ResourceManager::kDividerColor);
+  if (features.render_state == style_data::kRenderRaised) {
+    d->set_pen_color(painter, resource_manager::kDividerColor);
   } else {
-    d->set_pen_color(painter, ResourceManager::kPrimaryColor);
+    d->set_pen_color(painter, resource_manager::kPrimaryColor);
   }
   painter->setOpacity(0.8);
   painter->drawPath(background_path);
@@ -705,7 +703,7 @@ void CocoaStyle::draw_line_edit(const StyleFeatures &features,
 
   painter->save();
 
-  d->set_pen_color(painter, ResourceManager::kTextColor);
+  d->set_pen_color(painter, resource_manager::kTextColor);
   painter->drawText(features.geometry.adjusted(10.0, 4.0, 0.0, 0.0),
                     Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
   // cursor handling.
@@ -734,10 +732,10 @@ void CocoaStyle::draw_line_edit(const StyleFeatures &features,
   QPointF line1(_text_cursor_width_to_left, 10);
   QPointF line2(_text_cursor_width_to_left, m.height() + 4);
 
-  d->set_pen_color(painter, ResourceManager::kPrimaryColor, 2);
+  d->set_pen_color(painter, resource_manager::kPrimaryColor, 2);
   painter->drawLine(line1, line2);
 
-  if (features.render_state == StyleFeatures::kRenderPressed) {
+  if (features.render_state == style_data::kRenderPressed) {
     /*
      * if current text cursor is at x1 and selection cursor at x2
      * distence between the cursors (x1 - x2)
@@ -750,14 +748,14 @@ void CocoaStyle::draw_line_edit(const StyleFeatures &features,
 
     painter->save();
     painter->setOpacity(0.3);
-    painter->fillRect(selection_rect, d->color(ResourceManager::kAccentColor));
+    painter->fillRect(selection_rect, d->color(resource_manager::kAccentColor));
 
     painter->restore();
   }
   painter->restore();
 }
 
-void CocoaStyle::draw_text_editor(const StyleFeatures &features,
+void CocoaStyle::draw_text_editor(const style_data &features,
                                   const QString &text, QPainter *a_ctx) {
   /* Painter settings */
   a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
@@ -785,7 +783,7 @@ void CocoaStyle::draw_text_editor(const StyleFeatures &features,
   a_ctx->setPen(pen);
 }
 
-void CocoaStyle::drawSeperatorLine(const StyleFeatures &features,
+void CocoaStyle::drawSeperatorLine(const style_data &features,
                                    QPainter *a_ctx) {
   a_ctx->save();
   QPen pen = QPen(QColor(217, 217, 217), 1, Qt::SolidLine, Qt::RoundCap,
@@ -803,22 +801,23 @@ void CocoaStyle::drawSeperatorLine(const StyleFeatures &features,
   a_ctx->restore();
 }
 
-void CocoaStyle::draw_progress_bar(const StyleFeatures &features,
+void CocoaStyle::draw_progress_bar(const style_data &features,
                                    QPainter *a_ctx) {
   a_ctx->save();
 
   set_default_painter_hints(a_ctx);
 
   switch (features.render_state) {
-  case StyleFeatures::kRenderBackground: {
+  case style_data::kRenderBackground: {
     QRectF rect = features.geometry;
     QLinearGradient background_grad(QPointF(0, 0), QPointF(0.0, 20));
 
     background_grad.setColorAt(1,
-                               d->color(ResourceManager::kLightPrimaryColor));
-    background_grad.setColorAt(0.5, d->color(ResourceManager::kTextBackground));
+                               d->color(resource_manager::kLightPrimaryColor));
+    background_grad.setColorAt(0.5,
+                               d->color(resource_manager::kTextBackground));
     background_grad.setColorAt(0,
-                               d->color(ResourceManager::kLightPrimaryColor));
+                               d->color(resource_manager::kLightPrimaryColor));
 
     a_ctx->setPen(
         QPen(background_grad, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -830,11 +829,11 @@ void CocoaStyle::draw_progress_bar(const StyleFeatures &features,
 
     a_ctx->drawLine(background_line_begin, background_line_end);
   } break;
-  case StyleFeatures::kRenderForground: {
+  case style_data::kRenderForground: {
     QRectF rect = features.geometry;
     QLinearGradient progress_bar_grad(QPointF(0, 0), QPointF(0.0, 20));
-    progress_bar_grad.setColorAt(1, d->color(ResourceManager::kAccentColor));
-    progress_bar_grad.setColorAt(0, d->color(ResourceManager::kAccentColor));
+    progress_bar_grad.setColorAt(1, d->color(resource_manager::kAccentColor));
+    progress_bar_grad.setColorAt(0, d->color(resource_manager::kAccentColor));
     a_ctx->setPen(
         QPen(progress_bar_grad, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
@@ -851,8 +850,7 @@ void CocoaStyle::draw_progress_bar(const StyleFeatures &features,
   a_ctx->restore();
 }
 
-void CocoaStyle::drawVListItem(const StyleFeatures &features,
-                               QPainter *painter) {
+void CocoaStyle::drawVListItem(const style_data &features, QPainter *painter) {
   qWarning() << Q_FUNC_INFO << "This method is depricated and non-functional";
   // todo : Remove this method.
   /*
@@ -881,7 +879,7 @@ void CocoaStyle::drawVListItem(const StyleFeatures &features,
   */
 }
 
-void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
+void CocoaStyle::draw_image_button(const style_data &a_features,
                                    QPainter *a_ctx) {
   a_ctx->save();
 
@@ -893,16 +891,16 @@ void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
   background_path.addRoundRect(a_rect, 6, 6);
 
   switch (a_features.render_state) {
-  case StyleFeatures::kRenderElement:
+  case style_data::kRenderElement:
     a_ctx->fillPath(background_path,
-                    d->color(ResourceManager::kLightPrimaryColor));
+                    d->color(resource_manager::kLightPrimaryColor));
     break;
-  case StyleFeatures::kRenderPressed:
-    a_ctx->fillPath(background_path, d->color(ResourceManager::kPrimaryColor));
+  case style_data::kRenderPressed:
+    a_ctx->fillPath(background_path, d->color(resource_manager::kPrimaryColor));
     break;
-  case StyleFeatures::kRenderRaised:
+  case style_data::kRenderRaised:
     a_ctx->fillPath(background_path,
-                    d->color(ResourceManager::kLightPrimaryColor));
+                    d->color(resource_manager::kLightPrimaryColor));
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Unknown State";
@@ -910,9 +908,9 @@ void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
 
   QRect icon_rect = a_rect.toRect();
   if (a_features.text_data.isNull() || a_features.text_data.isEmpty()) {
-  icon_rect.setX(a_rect.center().x() - (icon_rect.height() / 2));
+    icon_rect.setX(a_rect.center().x() - (icon_rect.height() / 2));
   } else {
-  icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
+    icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
   }
   icon_rect.setWidth(icon_rect.height());
 
@@ -926,7 +924,7 @@ void CocoaStyle::draw_image_button(const StyleFeatures &a_features,
   a_ctx->restore();
 }
 
-void CocoaStyle::draw_label(const StyleFeatures &aFeatures, QPainter *a_ctx) {
+void CocoaStyle::draw_label(const style_data &aFeatures, QPainter *a_ctx) {
   a_ctx->save();
 
   set_default_painter_hints(a_ctx);
@@ -946,18 +944,18 @@ void CocoaStyle::draw_label(const StyleFeatures &aFeatures, QPainter *a_ctx) {
   QString text = metrics.elidedText(aFeatures.text_data, Qt::ElideRight,
                                     aFeatures.geometry.width());
 
-  if (aFeatures.render_state == StyleFeatures::kRenderRaised) {
-    d->set_pen_color(a_ctx, ResourceManager::kLightPrimaryColor);
+  if (aFeatures.render_state == style_data::kRenderRaised) {
+    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor);
     a_ctx->fillRect(aFeatures.geometry,
-                    d->color(ResourceManager::kAccentColor));
+                    d->color(resource_manager::kAccentColor));
   } else {
-    d->set_pen_color(a_ctx, ResourceManager::kTextColor);
+    d->set_pen_color(a_ctx, resource_manager::kTextColor);
   }
 
   a_ctx->drawText(aFeatures.geometry, text, aFeatures.text_options);
   a_ctx->restore();
 }
 
-QColor CocoaStyle::PrivateCocoa::color(ResourceManager::ColorName a_name) {
-  return ResourceManager::color(a_name);
+QColor CocoaStyle::PrivateCocoa::color(resource_manager::ColorName a_name) {
+  return resource_manager::color(a_name);
 }

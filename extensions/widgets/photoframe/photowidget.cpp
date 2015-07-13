@@ -7,9 +7,9 @@ public:
   QString m_photo_url;
 };
 
-PhotoWidget::PhotoWidget(Widget *parent)
-    : CherryKit::Widget(parent), d(new PrivatePhotoFrame) {
-  set_widget_flag(CherryKit::Widget::kRenderDropShadow, true);
+PhotoWidget::PhotoWidget(widget *parent)
+    : cherry_kit::widget(parent), d(new PrivatePhotoFrame) {
+  set_widget_flag(cherry_kit::widget::kRenderDropShadow, true);
   mValid = 0;
 }
 
@@ -67,10 +67,10 @@ void PhotoWidget::paint_view(QPainter *painter, const QRectF &rect) {
   painter->setOpacity(1.0);
 
   if (mContentPixmap.isNull()) {
-    CherryKit::Widget::paint_view(painter, rect);
+    cherry_kit::widget::paint_view(painter, rect);
     painter->drawText(QRect(0, 0, 190, 180), Qt::AlignCenter | Qt::AlignRight,
                       QLatin1String("Drag and Drop a Photo Here!"));
-    CherryKit::Widget::paint_view(painter, rect);
+    cherry_kit::widget::paint_view(painter, rect);
   } else {
     // experimental photo frame around the image
     // painter->fillRect(rect.x(), rect.y(), rect.width(), rect.height(),

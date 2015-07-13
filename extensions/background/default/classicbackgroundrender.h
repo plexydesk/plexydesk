@@ -1,14 +1,12 @@
 #ifndef CLASSICBACKGROUNDRENDER_H
 #define CLASSICBACKGROUNDRENDER_H
 
-#include <plexy.h>
-
 #include <QImage>
 
 #include <widget.h>
 #include <window.h>
 
-class ClassicBackgroundRender : public CherryKit::Window {
+class ClassicBackgroundRender : public cherry_kit::window {
   Q_OBJECT
 public:
   typedef enum {
@@ -21,7 +19,7 @@ public:
     FitHeight
   } ScalingMode;
 
-  explicit ClassicBackgroundRender(const QRectF &rect, Widget *a_parent_ptr = 0,
+  explicit ClassicBackgroundRender(const QRectF &rect, widget *a_parent_ptr = 0,
                                    const QImage &background_image = QImage());
 
   void setBackgroundImage(const QString &path);

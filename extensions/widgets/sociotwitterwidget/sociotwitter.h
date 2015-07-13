@@ -1,7 +1,6 @@
 #ifndef SOCIOTWITTER_H
 #define SOCIOTWITTER_H
 
-#include <plexy.h>
 #include <widgetinterface.h>
 #include <widgetplugin.h>
 #include "sociotwitterinterface.h"

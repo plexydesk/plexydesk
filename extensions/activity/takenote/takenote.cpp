@@ -25,71 +25,81 @@
 #include <resource_manager.h>
 #include <QGraphicsWidget>
 
-class TakeNoteActivity::PrivateTakeNote {
+class note_dialog::PrivateTakeNote {
 public:
   PrivateTakeNote() {}
 
   ~PrivateTakeNote() {}
 
-  CherryKit::Window *mFrame;
-  CherryKit::Widget *mLayoutBase;
+  cherry_kit::window *mFrame;
+  cherry_kit::widget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
-  CherryKit::ImageButton *mAddNoteBtn;
-  CherryKit::ImageButton *mAddTaskBtn;
-  CherryKit::ImageButton *mAddReminderBtn;
+  cherry_kit::ImageButton *mAddNoteBtn;
+  cherry_kit::ImageButton *mAddTaskBtn;
+  cherry_kit::ImageButton *mAddReminderBtn;
 
   QString mSelection;
 };
 
-TakeNoteActivity::TakeNoteActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateTakeNote) {
-  o_desktop_activity->mFrame = 0;
+note_dialog::note_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object),
+      o_desktop_dialog(new PrivateTakeNote) {
+  o_desktop_dialog->mFrame = 0;
 }
 
-TakeNoteActivity::~TakeNoteActivity() { delete o_desktop_activity; }
+note_dialog::~note_dialog() { delete o_desktop_dialog; }
 
-void TakeNoteActivity::create_window(const QRectF &window_geometry,
+void note_dialog::create_window(const QRectF &window_geometry,
                                      const QString &window_title,
                                      const QPointF &window_pos) {
   // todo: invoke UI
-  o_desktop_activity->mFrame = new CherryKit::Window();
-  o_desktop_activity->mFrame->setGeometry(window_geometry);
-  o_desktop_activity->mFrame->setVisible(true);
+  o_desktop_dialog->mFrame = new cherry_kit::window();
+  o_desktop_dialog->mFrame->setGeometry(window_geometry);
+  o_desktop_dialog->mFrame->setVisible(true);
   set_geometry(window_geometry);
 
-  o_desktop_activity->mFrame->set_widget_name("Message Dialog");
+  o_desktop_dialog->mFrame->set_widget_name("Message Dialog");
 
   if (has_attribute("title")) {
   }
 
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderBackground);
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kConvertToWindowType);
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderDropShadow);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kRenderBackground);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kConvertToWindowType);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kRenderDropShadow);
 
-  o_desktop_activity->mLayoutBase = new CherryKit::Widget(0);
-  o_desktop_activity->mLayoutBase->setParentItem(o_desktop_activity->mFrame);
+  o_desktop_dialog->mLayoutBase = new cherry_kit::widget(0);
+  o_desktop_dialog->mLayoutBase->setParentItem(o_desktop_dialog->mFrame);
 
-  o_desktop_activity->mLayout = new QGraphicsLinearLayout(o_desktop_activity->mLayoutBase);
-  o_desktop_activity->mLayoutBase->setGeometry(this->geometry());
-  o_desktop_activity->mLayoutBase->moveBy(0.0, 64.0);
+  o_desktop_dialog->mLayout =
+      new QGraphicsLinearLayout(o_desktop_dialog->mLayoutBase);
+  o_desktop_dialog->mLayoutBase->setGeometry(this->geometry());
+  o_desktop_dialog->mLayoutBase->moveBy(0.0, 64.0);
 
-  o_desktop_activity->mAddNoteBtn = new CherryKit::ImageButton(o_desktop_activity->mLayoutBase);
-  o_desktop_activity->mAddNoteBtn->set_pixmap(CherryKit::ResourceManager::instance()->drawable(
-      "pd_note_add_button_green.png", "hdpi"));
+  o_desktop_dialog->mAddNoteBtn =
+      new cherry_kit::ImageButton(o_desktop_dialog->mLayoutBase);
+  o_desktop_dialog->mAddNoteBtn->set_pixmap(
+      cherry_kit::resource_manager::instance()->drawable(
+          "pd_note_add_button_green.png", "hdpi"));
 
-  o_desktop_activity->mAddTaskBtn = new CherryKit::ImageButton(o_desktop_activity->mLayoutBase);
-  o_desktop_activity->mAddTaskBtn->set_pixmap(CherryKit::ResourceManager::instance()->drawable(
-      "pd_note_add_button_blue.png", "hdpi"));
+  o_desktop_dialog->mAddTaskBtn =
+      new cherry_kit::ImageButton(o_desktop_dialog->mLayoutBase);
+  o_desktop_dialog->mAddTaskBtn->set_pixmap(
+      cherry_kit::resource_manager::instance()->drawable(
+          "pd_note_add_button_blue.png", "hdpi"));
 
-  o_desktop_activity->mAddReminderBtn = new CherryKit::ImageButton(o_desktop_activity->mLayoutBase);
-  o_desktop_activity->mAddReminderBtn->set_pixmap(
-      CherryKit::ResourceManager::instance()->drawable(
+  o_desktop_dialog->mAddReminderBtn =
+      new cherry_kit::ImageButton(o_desktop_dialog->mLayoutBase);
+  o_desktop_dialog->mAddReminderBtn->set_pixmap(
+      cherry_kit::resource_manager::instance()->drawable(
           "pd_note_add_button_orange.png", "hdpi"));
 
-  o_desktop_activity->mLayout->addItem(o_desktop_activity->mAddNoteBtn);
-  o_desktop_activity->mLayout->addItem(o_desktop_activity->mAddTaskBtn);
-  o_desktop_activity->mLayout->addItem(o_desktop_activity->mAddReminderBtn);
+  o_desktop_dialog->mLayout->addItem(o_desktop_dialog->mAddNoteBtn);
+  o_desktop_dialog->mLayout->addItem(o_desktop_dialog->mAddTaskBtn);
+  o_desktop_dialog->mLayout->addItem(o_desktop_dialog->mAddReminderBtn);
 
   if (has_attribute("pos")) {
     QPoint point = attributes()["pos"].toPoint();
@@ -99,46 +109,51 @@ void TakeNoteActivity::create_window(const QRectF &window_geometry,
   }
 
   // todo: invoke UI
-  o_desktop_activity->mAddNoteBtn->set_lable(QLatin1String("Note"));
-  o_desktop_activity->mAddReminderBtn->set_lable(QLatin1String("Reminder"));
-  o_desktop_activity->mAddTaskBtn->set_lable(QLatin1String("Task"));
+  o_desktop_dialog->mAddNoteBtn->set_lable(QLatin1String("Note"));
+  o_desktop_dialog->mAddReminderBtn->set_lable(QLatin1String("Reminder"));
+  o_desktop_dialog->mAddTaskBtn->set_lable(QLatin1String("Task"));
 
-  connect(o_desktop_activity->mAddNoteBtn, SIGNAL(clicked()), this, SLOT(onClicked()));
-  connect(o_desktop_activity->mAddTaskBtn, SIGNAL(clicked()), this, SLOT(onClicked()));
-  connect(o_desktop_activity->mAddReminderBtn, SIGNAL(clicked()), this, SLOT(onClicked()));
+  connect(o_desktop_dialog->mAddNoteBtn, SIGNAL(clicked()), this,
+          SLOT(onClicked()));
+  connect(o_desktop_dialog->mAddTaskBtn, SIGNAL(clicked()), this,
+          SLOT(onClicked()));
+  connect(o_desktop_dialog->mAddReminderBtn, SIGNAL(clicked()), this,
+          SLOT(onClicked()));
 }
 
-QRectF TakeNoteActivity::geometry() const {
+QRectF note_dialog::geometry() const {
   return QRectF(0.0, 0.0, 240.0, 160.0);
 }
 
-QVariantMap TakeNoteActivity::result() const {
+QVariantMap note_dialog::result() const {
   QVariantMap rv;
-  rv["action"] = QVariant(o_desktop_activity->mSelection);
+  rv["action"] = QVariant(o_desktop_dialog->mSelection);
   return rv;
 }
 
-CherryKit::Window *TakeNoteActivity::window() const { return o_desktop_activity->mFrame; }
-
-void TakeNoteActivity::cleanup() {
-  if (o_desktop_activity->mFrame) {
-    delete o_desktop_activity->mFrame;
-  }
-  o_desktop_activity->mFrame = 0;
+cherry_kit::window *note_dialog::activity_window() const {
+  return o_desktop_dialog->mFrame;
 }
 
-void TakeNoteActivity::onWidgetClosed(CherryKit::Widget *widget) {
+void note_dialog::cleanup() {
+  if (o_desktop_dialog->mFrame) {
+    delete o_desktop_dialog->mFrame;
+  }
+  o_desktop_dialog->mFrame = 0;
+}
+
+void note_dialog::onWidgetClosed(cherry_kit::widget *widget) {
   discard_activity();
 }
 
-void TakeNoteActivity::onHideAnimationFinished() {}
+void note_dialog::onHideAnimationFinished() {}
 
-void TakeNoteActivity::onClicked() {
-  CherryKit::ImageButton *button =
-      qobject_cast<CherryKit::ImageButton *>(sender());
+void note_dialog::onClicked() {
+  cherry_kit::ImageButton *button =
+      qobject_cast<cherry_kit::ImageButton *>(sender());
 
   if (button) {
-    o_desktop_activity->mSelection = button->label();
+    o_desktop_dialog->mSelection = button->label();
     notify_done();
   }
 }

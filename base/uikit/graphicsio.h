@@ -1,11 +1,9 @@
 #ifndef GRAPHICSIO_H
 #define GRAPHICSIO_H
 
-
-class GraphicsIO
-{
+class GraphicsIO {
 public:
-    GraphicsIO();
+  GraphicsIO();
 };
 
 #endif // GRAPHICSIO_H

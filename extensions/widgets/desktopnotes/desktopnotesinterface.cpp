@@ -21,9 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::ViewController> DesktopNotesInterface::controller() {
-  QSharedPointer<CherryKit::ViewController> obj =
-      QSharedPointer<CherryKit::ViewController>(
+QSharedPointer<cherry_kit::desktop_controller_interface>
+DesktopNotesInterface::controller() {
+  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
+      QSharedPointer<cherry_kit::desktop_controller_interface>(
           new DesktopNotesControllerImpl(this), &QObject::deleteLater);
 
   return obj;

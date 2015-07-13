@@ -38,7 +38,7 @@
 #include <imageview.h>
 #include <viewbuilder.h>
 
-using namespace CherryKit;
+using namespace cherry_kit;
 
 class DockControllerImpl::PrivateDock {
 public:
@@ -46,22 +46,23 @@ public:
   ~PrivateDock() { qDebug() << Q_FUNC_INFO; }
 
 public:
-  Window *m_dock_window;
-  Window *m_preview_window;
+  window *m_dock_window;
+  window *m_preview_window;
 
-  CherryKit::ItemView *m_preview_widget;
+  cherry_kit::ItemView *m_preview_widget;
 
   QMap<QString, int> m_actions_map;
   QStringList m_controller_name_list;
   bool m_main_panel_is_hidden;
 
-  CherryKit::DesktopActivityPtr m_action_activity;
-  CherryKit::ImageButton *m_add_new_workspace_button_ptr;
-  CherryKit::ActionList m_supported_action_list;
+  cherry_kit::desktop_dialog_ref m_action_activity;
+  cherry_kit::ImageButton *m_add_new_workspace_button_ptr;
+  cherry_kit::ActionList m_supported_action_list;
 };
 
 DockControllerImpl::DockControllerImpl(QObject *object)
-    : CherryKit::ViewController(object), o_view_controller(new PrivateDock) {
+    : cherry_kit::desktop_controller_interface(object),
+      o_view_controller(new PrivateDock) {
   o_view_controller->m_actions_map["ToggleDock"] = 1;
   o_view_controller->m_actions_map["ShowDock"] = 2;
   o_view_controller->m_actions_map["HideDock"] = 3;
@@ -71,17 +72,17 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   o_view_controller->m_main_panel_is_hidden = true;
 
   // menu
-  o_view_controller->m_preview_widget = new CherryKit::ItemView();
+  o_view_controller->m_preview_widget = new cherry_kit::ItemView();
   o_view_controller->m_preview_widget->on_item_removed([this](
-      CherryKit::ModelViewItem *a_item) {
+      cherry_kit::ModelViewItem *a_item) {
     if (a_item) {
       delete a_item;
     }
   });
   o_view_controller->m_preview_widget->on_activated([this](int index) {
-    if (this->viewport() && this->viewport()->workspace()) {
-      CherryKit::WorkSpace *_workspace =
-          qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+    if (this->viewport() && this->viewport()->owner_workspace()) {
+      cherry_kit::workspace *_workspace =
+          qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
 
       if (_workspace) {
         _workspace->expose(index);
@@ -96,17 +97,17 @@ DockControllerImpl::~DockControllerImpl() {
 }
 
 void DockControllerImpl::create_dock_action(
-    CherryKit::HybridLayout *build, int row, int column,
+    cherry_kit::fixed_layout *build, int row, int column,
     const std::string &icon, std::function<void()> a_button_action_func) {
-  CherryKit::WidgetProperties prop;
-  CherryKit::Widget *ck_widget;
+  cherry_kit::widget_properties_t prop;
+  cherry_kit::widget *ck_widget;
   prop["label"] = "";
   prop["icon"] = icon;
   ck_widget = build->add_widget(row, column, "image_button", prop);
 
-  ck_widget->on_input_event([=](CherryKit::Widget::InputEvent a_event,
-                                const CherryKit::Widget *a_widget) {
-    if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
+  ck_widget->on_input_event([=](cherry_kit::widget::InputEvent a_event,
+                                const cherry_kit::widget *a_widget) {
+    if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
       if (a_button_action_func)
         a_button_action_func();
     }
@@ -129,16 +130,17 @@ void DockControllerImpl::init() {
     return;
   }
 
-  CherryKit::Space *_space = viewport();
+  cherry_kit::space *_space = viewport();
   if (_space) {
-    o_view_controller->m_action_activity =
-        createActivity("", "icongrid", "PlexyDesk 1.0", QPoint(), QVariantMap());
+    o_view_controller->m_action_activity = createActivity(
+        "", "icongrid", "PlexyDesk 1.0", QPoint(), QVariantMap());
 
     if (o_view_controller->m_action_activity &&
-        o_view_controller->m_action_activity->window()) {
-      o_view_controller->m_action_activity->window()->set_window_type(
-          Window::kPopupWindow);
-      o_view_controller->m_action_activity->window()->setVisible(false);
+        o_view_controller->m_action_activity->activity_window()) {
+      o_view_controller->m_action_activity->activity_window()->set_window_type(
+          window::kPopupWindow);
+      o_view_controller->m_action_activity->activity_window()->setVisible(
+          false);
     }
   }
 
@@ -148,25 +150,25 @@ void DockControllerImpl::init() {
   }
 
   viewport()->on_viewport_event_notify([this](
-      Space::ViewportNotificationType aType, const QVariant &aData,
-      const Space *aSpace) {
+      space::ViewportNotificationType aType, const QVariant &aData,
+      const space *aSpace) {
 
-    if (aType == Space::kControllerAddedNotification) {
+    if (aType == space::kControllerAddedNotification) {
       loadControllerActions(aData.toString());
     }
   });
 
-  o_view_controller->m_dock_window = new CherryKit::Window();
-  o_view_controller->m_dock_window->set_window_type(Window::kPanelWindow);
+  o_view_controller->m_dock_window = new cherry_kit::window();
+  o_view_controller->m_dock_window->set_window_type(window::kPanelWindow);
 
-  o_view_controller->m_preview_window = new CherryKit::Window();
+  o_view_controller->m_preview_window = new cherry_kit::window();
 
-  o_view_controller->m_preview_window->set_window_type(Window::kPopupWindow);
+  o_view_controller->m_preview_window->set_window_type(window::kPopupWindow);
   o_view_controller->m_preview_window->enable_window_background(false);
 
   // navigation
-  CherryKit::HybridLayout *build =
-      new CherryKit::HybridLayout(o_view_controller->m_dock_window);
+  cherry_kit::fixed_layout *build =
+      new cherry_kit::fixed_layout(o_view_controller->m_dock_window);
   build->set_content_margin(6, 10, 10, 10);
   build->set_geometry(0, 0, 48 + 16, 48 * 7);
   build->add_rows(7);
@@ -178,7 +180,7 @@ void DockControllerImpl::init() {
     build->set_row_height(i, default_height);
   }
 
-  CherryKit::WidgetProperties accept_button_prop;
+  cherry_kit::widget_properties_t accept_button_prop;
 
   create_dock_action(build, 0, 0, "actions/pd_to_top.png",
                      [&]() { exec_dock_action("Up"); });
@@ -224,7 +226,7 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
 
   o_view_controller->m_dock_window->setPos(
       viewport()->center(o_view_controller->m_dock_window->geometry(), QRectF(),
-                         Space::kCenterOnViewportLeft));
+                         space::kCenterOnViewportLeft));
 
   o_view_controller->m_preview_widget->set_view_geometry(
       QRectF(0.0, 0.0, 256, rect.height() - 24.0));
@@ -239,7 +241,8 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
   o_view_controller->m_preview_window->hide();
 
   if (o_view_controller->m_action_activity) {
-    o_view_controller->m_action_activity->window()->setPos(rect.x(), rect.y());
+    o_view_controller->m_action_activity->activity_window()->setPos(rect.x(),
+                                                                    rect.y());
   }
 }
 
@@ -252,10 +255,10 @@ void DockControllerImpl::request_action(const QString &actionName,
   if (actionName.toLower() == "menu") {
 
     if (o_view_controller->m_action_activity &&
-        o_view_controller->m_action_activity->window()) {
-      o_view_controller->m_action_activity->window()->setPos(
+        o_view_controller->m_action_activity->activity_window()) {
+      o_view_controller->m_action_activity->activity_window()->setPos(
           args["menu_pos"].toPoint());
-      o_view_controller->m_action_activity->window()->show();
+      o_view_controller->m_action_activity->activity_window()->show();
     }
 
     return;
@@ -306,15 +309,15 @@ void DockControllerImpl::createActivityForController(const QString &name) {
   }
 }
 
-DesktopActivityPtr DockControllerImpl::createActivity(
+desktop_dialog_ref DockControllerImpl::createActivity(
     const QString &controllerName, const QString &activity,
     const QString &title, const QPoint &pos, const QVariantMap &dataItem) {
   QPoint _activity_location = pos;
 
-  CherryKit::DesktopActivityPtr _intent = viewport()->create_activity(
+  cherry_kit::desktop_dialog_ref _intent = viewport()->create_activity(
       activity, title, _activity_location,
       QRectF(0, _activity_location.y(), 484, 420), dataItem);
-  _intent->set_controller(CherryKit::ViewControllerPtr(this));
+  _intent->set_controller(cherry_kit::desktop_controller_ref(this));
   _intent->set_activity_attribute("data", QVariant(dataItem));
   _intent->set_activity_attribute("auto_scale", QVariant(1));
 
@@ -322,9 +325,9 @@ DesktopActivityPtr DockControllerImpl::createActivity(
 }
 
 void DockControllerImpl::nextSpace() {
-  if (this->viewport() && this->viewport()->workspace()) {
-    CherryKit::WorkSpace *_workspace =
-        qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+  if (this->viewport() && this->viewport()->owner_workspace()) {
+    cherry_kit::workspace *_workspace =
+        qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
 
     if (_workspace) {
       toggleDesktopPanel();
@@ -338,7 +341,7 @@ void DockControllerImpl::toggleSeamless() {
     return;
   }
 
-  CherryKit::ViewControllerPtr controller =
+  cherry_kit::desktop_controller_ref controller =
       viewport()->controller("classicbackdrop");
 
   if (!controller) {
@@ -350,9 +353,9 @@ void DockControllerImpl::toggleSeamless() {
 }
 
 void DockControllerImpl::prepare_removal() {
-  if (viewport() && viewport()->workspace()) {
+  if (viewport() && viewport()->owner_workspace()) {
     QGraphicsView *_workspace =
-        qobject_cast<QGraphicsView *>(viewport()->workspace());
+        qobject_cast<QGraphicsView *>(viewport()->owner_workspace());
 
     if (_workspace) {
       o_view_controller->m_action_activity.clear();
@@ -367,9 +370,9 @@ void DockControllerImpl::prepare_removal() {
 }
 
 void DockControllerImpl::previousSpace() {
-  if (this->viewport() && this->viewport()->workspace()) {
-    CherryKit::WorkSpace *_workspace =
-        qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+  if (this->viewport() && this->viewport()->owner_workspace()) {
+    cherry_kit::workspace *_workspace =
+        qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
 
     if (_workspace) {
       toggleDesktopPanel();
@@ -379,9 +382,9 @@ void DockControllerImpl::previousSpace() {
 }
 
 void DockControllerImpl::toggleDesktopPanel() {
-  if (this->viewport() && this->viewport()->workspace()) {
-    CherryKit::WorkSpace *_workspace =
-        qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+  if (this->viewport() && this->viewport()->owner_workspace()) {
+    cherry_kit::workspace *_workspace =
+        qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
 
     if (_workspace) {
       QRectF _work_area = viewport()->geometry();
@@ -404,7 +407,7 @@ void DockControllerImpl::loadControllerActions(const QString &name) {
     return;
   }
 
-  CherryKit::ViewControllerPtr controller = viewport()->controller(name);
+  cherry_kit::desktop_controller_ref controller = viewport()->controller(name);
 
   if (!controller) {
     return;
@@ -449,22 +452,22 @@ void DockControllerImpl::onActivityAnimationFinished() {
     return;
   }
 
-  CherryKit::DesktopActivity *activity =
-      qobject_cast<CherryKit::DesktopActivity *>(sender());
+  cherry_kit::desktop_dialog *activity =
+      qobject_cast<cherry_kit::desktop_dialog *>(sender());
 
   if (!activity) {
     return;
   }
 
-  CherryKit::Widget *_activity_widget =
-      qobject_cast<CherryKit::Widget *>(activity->window());
+  cherry_kit::widget *_activity_widget =
+      qobject_cast<cherry_kit::widget *>(activity->activity_window());
 
   if (_activity_widget) {
-    _activity_widget->set_widget_flag(CherryKit::Widget::kRenderDropShadow,
+    _activity_widget->set_widget_flag(cherry_kit::widget::kRenderDropShadow,
                                       false);
-    _activity_widget->set_widget_flag(CherryKit::Widget::kConvertToWindowType,
+    _activity_widget->set_widget_flag(cherry_kit::widget::kConvertToWindowType,
                                       false);
-    _activity_widget->set_widget_flag(CherryKit::Widget::kRenderBackground,
+    _activity_widget->set_widget_flag(cherry_kit::widget::kRenderBackground,
                                       true);
     _activity_widget->setFlag(QGraphicsItem::ItemIsMovable, false);
     _activity_widget->setPos(QPoint());
@@ -472,14 +475,14 @@ void DockControllerImpl::onActivityAnimationFinished() {
 }
 
 void DockControllerImpl::onActivityFinished() {
-  CherryKit::DesktopActivity *_activity =
-      qobject_cast<CherryKit::DesktopActivity *>(sender());
+  cherry_kit::desktop_dialog *_activity =
+      qobject_cast<cherry_kit::desktop_dialog *>(sender());
 
   if (!_activity) {
     return;
   }
 
-  CherryKit::ViewControllerPtr _controller =
+  cherry_kit::desktop_controller_ref _controller =
       viewport()->controller(_activity->result()["controller"].toString());
 
   if (!_controller) {
@@ -491,9 +494,9 @@ void DockControllerImpl::onActivityFinished() {
 }
 
 void DockControllerImpl::removeSpace() {
-  if (this->viewport() && this->viewport()->workspace()) {
-    CherryKit::WorkSpace *_workspace =
-        qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+  if (this->viewport() && this->viewport()->owner_workspace()) {
+    cherry_kit::workspace *_workspace =
+        qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
     if (_workspace) {
       _workspace->remove(viewport());
     }
@@ -521,19 +524,20 @@ void DockControllerImpl::exec_dock_action(const QString &action) {
     }
     return;
   } else if (action == tr("Menu")) {
-    if (!viewport() || !viewport()->workspace()) {
+    if (!viewport() || !viewport()->owner_workspace()) {
       return;
     }
 
     QPointF _menu_pos = viewport()->center(
-        o_view_controller->m_action_activity->window()->boundingRect(),
-        QRectF(), CherryKit::Space::kCenterOnViewportLeft);
+        o_view_controller->m_action_activity->activity_window()->boundingRect(),
+        QRectF(), cherry_kit::space::kCenterOnViewportLeft);
     _menu_pos.setX(o_view_controller->m_dock_window->geometry().width() + 5);
 
     if (o_view_controller->m_action_activity &&
-        o_view_controller->m_action_activity->window()) {
-      o_view_controller->m_action_activity->window()->setPos(_menu_pos);
-      o_view_controller->m_action_activity->window()->show();
+        o_view_controller->m_action_activity->activity_window()) {
+      o_view_controller->m_action_activity->activity_window()->setPos(
+          _menu_pos);
+      o_view_controller->m_action_activity->activity_window()->show();
     }
 
   } else if (action == tr("Add")) {
@@ -542,9 +546,9 @@ void DockControllerImpl::exec_dock_action(const QString &action) {
 }
 
 void DockControllerImpl::onAddSpaceButtonClicked() {
-  if (this->viewport() && this->viewport()->workspace()) {
-    CherryKit::WorkSpace *_workspace =
-        qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+  if (this->viewport() && this->viewport()->owner_workspace()) {
+    cherry_kit::workspace *_workspace =
+        qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
 
     if (_workspace) {
       _workspace->add_default_space();
@@ -566,29 +570,29 @@ QAction *DockControllerImpl::createAction(int id, const QString &action_name,
 void DockControllerImpl::updatePreview() {
   o_view_controller->m_preview_widget->clear();
 
-  if (this->viewport() && this->viewport()->workspace()) {
-    CherryKit::WorkSpace *_workspace =
-        qobject_cast<CherryKit::WorkSpace *>(viewport()->workspace());
+  if (this->viewport() && this->viewport()->owner_workspace()) {
+    cherry_kit::workspace *_workspace =
+        qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
 
     float lHeight = 10;
     float lWidth = 0;
 
     if (_workspace) {
-      foreach(CherryKit::Space * _space, _workspace->current_spaces()) {
+      foreach(cherry_kit::space * _space, _workspace->current_spaces()) {
         QPixmap _preview = _workspace->thumbnail(_space);
 
-        CherryKit::ImageView *p = new CherryKit::ImageView();
+        cherry_kit::ImageView *p = new cherry_kit::ImageView();
 
         p->setMinimumSize(_preview.size());
         p->set_pixmap(_preview);
         lHeight += _preview.size().height();
         lWidth = _preview.size().width();
 
-        CherryKit::ModelViewItem *model_item = new CherryKit::ModelViewItem();
+        cherry_kit::ModelViewItem *model_item = new cherry_kit::ModelViewItem();
         model_item->set_view(p);
-        model_item->on_view_removed([=](CherryKit::ModelViewItem *a_item) {
+        model_item->on_view_removed([=](cherry_kit::ModelViewItem *a_item) {
           if (a_item && a_item->view()) {
-            CherryKit::Widget *view = a_item->view();
+            cherry_kit::widget *view = a_item->view();
             if (view)
               delete view;
           }
@@ -599,8 +603,8 @@ void DockControllerImpl::updatePreview() {
     }
 
     QPointF lMenuPos = viewport()->center(
-        o_view_controller->m_action_activity->window()->boundingRect(),
-        QRectF(), CherryKit::Space::kCenterOnViewportLeft);
+        o_view_controller->m_action_activity->activity_window()->boundingRect(),
+        QRectF(), cherry_kit::space::kCenterOnViewportLeft);
 
     lMenuPos.setX(o_view_controller->m_dock_window->geometry().width() + 5.0);
     o_view_controller->m_preview_window->setGeometry(

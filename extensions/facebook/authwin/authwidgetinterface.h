@@ -1,7 +1,6 @@
 #ifndef PLEXY_FB_AUTH_I
 #define PLEXY_FB_AUTH_I
 
-#include <plexy.h>
 #include <abstractplugininterface.h>
 #include <controllerinterface.h>
 #include <controllerplugininterface.h>

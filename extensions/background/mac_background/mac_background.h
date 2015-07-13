@@ -20,7 +20,6 @@
 #define PLEXY_MAC_BACKDROP_H
 
 #include <config.h>
-#include <plexy.h>
 
 #include <QDesktopWidget>
 #include <QGraphicsItem>

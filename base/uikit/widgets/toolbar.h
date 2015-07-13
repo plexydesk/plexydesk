@@ -4,16 +4,16 @@
 #include <widget.h>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT ToolBar : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT ToolBar : public widget {
   Q_OBJECT
 public:
-  ToolBar(Widget *a_parent_ptr = 0);
+  ToolBar(widget *a_parent_ptr = 0);
   virtual ~ToolBar();
 
   virtual void add_action(const QString &a_lable, const QString &a_icon,
                           bool a_togle_action = false);
-  virtual void insert_widget(Widget *a_widget_ptr);
+  virtual void insert_widget(widget *a_widget_ptr);
 
   virtual void set_orientation(Qt::Orientation a_orientation);
 
@@ -36,7 +36,7 @@ Q_SIGNALS:
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_expose_rect);
 
-  void tool_button_press_handler(const Widget *a_widget_ptr);
+  void tool_button_press_handler(const widget *a_widget_ptr);
 
 private:
   class PrivateToolBar;

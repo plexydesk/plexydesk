@@ -138,7 +138,7 @@ void disk_engine::insert_request(const sync_object &a_obj) {
     }
     */
 
-    CkStringList ck_prop_list = a_obj.property_list();
+    ck_string_list ck_prop_list = a_obj.property_list();
 
     std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
                   [&](const std::string &a_prop) {
@@ -178,7 +178,7 @@ void disk_engine::insert_request(const sync_object &a_obj) {
   dom_doc.appendChild(root_element);
 
   QDomElement main_element = dom_doc.createElement(a_obj.name().c_str());
-  CkStringList prop_list = a_obj.property_list();
+  ck_string_list prop_list = a_obj.property_list();
 
   std::for_each(std::begin(prop_list), std::end(prop_list),
                 [&](const std::string &a_key) {
@@ -285,7 +285,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
             }
             */
 
-            CkStringList ck_prop_list = a_obj.property_list();
+            ck_string_list ck_prop_list = a_obj.property_list();
 
             std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
                           [&](const std::string &a_prop) {
@@ -298,7 +298,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
     } else {
       QDomElement main_element = dom_doc.createElement(a_obj.name().c_str());
 
-      CkStringList ck_prop_list = a_obj.property_list();
+      ck_string_list ck_prop_list = a_obj.property_list();
 
       std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
                     [&](const std::string &a_prop) {
@@ -339,7 +339,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
 
   QDomElement main_element = dom_doc.createElement(a_obj.name().c_str());
 
-  CkStringList ck_prop_list = a_obj.property_list();
+  ck_string_list ck_prop_list = a_obj.property_list();
 
   std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
                 [&](const std::string &a_prop) {
@@ -371,8 +371,8 @@ void disk_engine::update_request(const sync_object &a_obj) {
 }
 
 void disk_engine::delete_request(const std::string &a_object_name,
-                                    const std::string &a_key,
-                                    const std::string &a_value) {
+                                 const std::string &a_key,
+                                 const std::string &a_value) {
   QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
 
@@ -496,8 +496,8 @@ QString disk_engine::data(const QString &fileName) {
 }
 
 void disk_engine::find(const std::string &a_object_name,
-                          const std::string &a_attrib,
-                          const std::string &a_value) {
+                       const std::string &a_attrib,
+                       const std::string &a_value) {
   bool match_found = false;
   QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
@@ -592,7 +592,8 @@ void disk_engine::find(const std::string &a_object_name,
                   obj.set_key(attr.value().toInt());
                   continue;
                 }
-                obj.set_property(attr.name().toStdString(), attr.value().toStdString());
+                obj.set_property(attr.name().toStdString(),
+                                 attr.value().toStdString());
               }
             }
           }
@@ -618,8 +619,7 @@ void disk_engine::sync(const QString &datqstoreName, const QString &data) {
 
 bool disk_engine::hasLock() { return false; }
 
-void disk_engine::saveDataToDisk(const QString &fileName,
-                                    const QString &data) {
+void disk_engine::saveDataToDisk(const QString &fileName, const QString &data) {
   QString homePath =
       QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore");
   QFileInfo fileInfo(homePath);

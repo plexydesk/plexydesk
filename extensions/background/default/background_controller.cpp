@@ -53,14 +53,14 @@ public:
 
   void updateProgress(float progress);
 
-  CherryKit::ActionList m_supported_actions;
+  cherry_kit::ActionList m_supported_actions;
 
   std::string m_background_texture;
   DesktopWindow *m_background_window;
 };
 
 BackgroundController::BackgroundController(QObject *object)
-    : CherryKit::ViewController(object),
+    : cherry_kit::desktop_controller_interface(object),
       o_ctr(new PrivateBackgroundController) {}
 
 BackgroundController::~BackgroundController() { delete o_ctr; }
@@ -68,7 +68,7 @@ BackgroundController::~BackgroundController() { delete o_ctr; }
 void BackgroundController::init() {
   // todo : port toNativeSeperator to our datakit
   QString default_wallpaper_file = QDir::toNativeSeparators(
-      CherryKit::Config::instance()->prefix() +
+      cherry_kit::config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
   o_ctr->m_background_texture = default_wallpaper_file.toStdString();
@@ -77,7 +77,7 @@ void BackgroundController::init() {
   o_ctr->m_background_window->set_background(default_wallpaper_file);
 
   o_ctr->m_background_window->on_window_discarded([this](
-      CherryKit::Window *a_window) {
+      cherry_kit::window *a_window) {
     if (o_ctr->m_background_window)
       delete o_ctr->m_background_window;
   });
@@ -126,13 +126,12 @@ void BackgroundController::session_data_available(
   }
 }
 
-void
-BackgroundController::submit_session_data(cherry::sync_object *a_object) {
+void BackgroundController::submit_session_data(cherry::sync_object *a_object) {
   a_object->set_property("background", o_ctr->m_background_texture);
   a_object->set_property("mode", "scale");
 }
 
-CherryKit::ActionList BackgroundController::actions() const {
+cherry_kit::ActionList BackgroundController::actions() const {
   return o_ctr->m_supported_actions;
 }
 
@@ -143,8 +142,8 @@ void BackgroundController::expose_platform_desktop() {
     _is_seamless_set = o_ctr->m_background_window->is_seamless();
   }
 
-  if (viewport() && viewport()->workspace()) {
-    CherryKit::WorkSpace *ck_workspace = viewport()->workspace();
+  if (viewport() && viewport()->owner_workspace()) {
+    cherry_kit::workspace *ck_workspace = viewport()->owner_workspace();
 
     if (ck_workspace) {
 #ifdef Q_OS_WIN
@@ -179,9 +178,9 @@ void BackgroundController::request_action(const QString &actionName,
         dialog_window_geometry,
         QRectF(0, 0, o_ctr->m_background_window->geometry().width(),
                o_ctr->m_background_window->geometry().height()),
-        CherryKit::Space::kCenterOnWindow);
+        cherry_kit::space::kCenterOnWindow);
 
-    CherryKit::DesktopActivityPtr activity = viewport()->create_activity(
+    cherry_kit::desktop_dialog_ref activity = viewport()->create_activity(
         "system_wallpapers", "Desktop", qt_activity_window_location,
         dialog_window_geometry, QVariantMap());
 
@@ -213,7 +212,7 @@ void BackgroundController::download_image_from_url(QUrl fileUrl) {
 void BackgroundController::set_desktop_scale_type(
     DesktopWindow::DesktopScalingMode a_desktop_mode) {}
 
-void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
+void BackgroundController::handle_drop_event(cherry_kit::widget * /*widget*/,
                                              QDropEvent *event) {
   if (event->mimeData()->hasImage()) {
     QImage qt_image_data =
@@ -221,7 +220,7 @@ void BackgroundController::handle_drop_event(CherryKit::Widget * /*widget*/,
 
     if (!qt_image_data.isNull()) {
       sync_image_data_to_disk(qt_image_data,
-                              CherryKit::Config::cache_dir("wallpaper"), true);
+                              cherry_kit::config::cache_dir("wallpaper"), true);
     }
     return;
   }
@@ -266,7 +265,7 @@ void BackgroundController::sync_image_data_to_disk(const QByteArray &data,
   QVariantMap ck_meta_data;
   ck_meta_data["url"] = source;
   ck_image_service->setMetaData(ck_meta_data);
-  ck_image_service->setData(data, CherryKit::Config::cache_dir("wallpaper"),
+  ck_image_service->setData(data, cherry_kit::config::cache_dir("wallpaper"),
                             a_local_file);
   ck_image_service->start();
 }
@@ -284,7 +283,7 @@ void BackgroundController::sync_image_data_to_disk(const QImage &data,
   ck_meta_data["url"] = source;
   ck_async_image_service->setMetaData(ck_meta_data);
   ck_async_image_service->setData(
-      data, CherryKit::Config::cache_dir("wallpaper"), saveLocally);
+      data, cherry_kit::config::cache_dir("wallpaper"), saveLocally);
   ck_async_image_service->start();
 }
 

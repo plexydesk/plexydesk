@@ -23,13 +23,13 @@
 
 #include <style.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT ResourceManager {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT resource_manager {
 public:
-  ResourceManager(const QString &a_theme_name);
-  virtual ~ResourceManager();
+  resource_manager(const QString &a_theme_name);
+  virtual ~resource_manager();
 
-  static ResourceManager *instance();
+  static resource_manager *instance();
 
   virtual void set_theme_name(const QString &a_name);
 
@@ -62,7 +62,7 @@ private:
   class ThemepackLoaderPrivate;
   ThemepackLoaderPrivate *const o_resource_manager;
 
-  static ResourceManager *s_theme_instance;
+  static resource_manager *s_theme_instance;
 };
 }
 #endif

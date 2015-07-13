@@ -20,10 +20,10 @@
 #include "interface.h"
 #include "folderplugin.h"
 
-QSharedPointer<CherryKit::ViewController> Interface::controller() {
-  QSharedPointer<CherryKit::ViewController> obj =
-      QSharedPointer<CherryKit::ViewController>(new DirectoryController(this),
-                                                &QObject::deleteLater);
+QSharedPointer<cherry_kit::ViewController> Interface::controller() {
+  QSharedPointer<cherry_kit::ViewController> obj =
+      QSharedPointer<cherry_kit::ViewController>(new DirectoryController(this),
+                                                 &QObject::deleteLater);
 
   return obj;
 }

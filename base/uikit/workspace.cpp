@@ -15,8 +15,8 @@
 #include <imagebutton.h>
 #include <syncobject.h>
 
-namespace CherryKit {
-class WorkSpace::PrivateWorkSpace {
+namespace cherry_kit {
+class workspace::PrivateWorkSpace {
 public:
   PrivateWorkSpace() {}
   ~PrivateWorkSpace() {}
@@ -31,7 +31,7 @@ public:
   int m_screen_id;
 };
 
-void WorkSpace::set_workspace_geometry(int a_screen_id) {
+void workspace::set_workspace_geometry(int a_screen_id) {
   QRect _current_desktop_geometry =
       QApplication::desktop()->screenGeometry(a_screen_id);
 
@@ -53,7 +53,7 @@ void WorkSpace::set_workspace_geometry(int a_screen_id) {
   setGeometry(_current_desktop_geometry);
 }
 
-WorkSpace::WorkSpace(QGraphicsScene *a_graphics_scene_ptr,
+workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
                      QWidget *a_parent_ptr)
     : QGraphicsView(a_graphics_scene_ptr, a_parent_ptr),
       p_workspace(new PrivateWorkSpace) {
@@ -84,27 +84,27 @@ WorkSpace::WorkSpace(QGraphicsScene *a_graphics_scene_ptr,
   setAcceptDrops(true);
 }
 
-WorkSpace::~WorkSpace() { delete p_workspace; }
+workspace::~workspace() { delete p_workspace; }
 
-void WorkSpace::move_to_screen(int a_screen_id) {
+void workspace::move_to_screen(int a_screen_id) {
   p_workspace->m_screen_id = a_screen_id;
   set_workspace_geometry(a_screen_id);
 }
 
-void WorkSpace::add_default_controller(const std::string &a_controller_name) {
+void workspace::add_default_controller(const std::string &a_controller_name) {
   p_workspace->m_default_controller_name_list.push_back(a_controller_name);
 }
 
-uint WorkSpace::space_count() const {
+uint workspace::space_count() const {
   return p_workspace->m_desktop_space_list.count();
 }
 
-Space *WorkSpace::current_active_space() const {
+space *workspace::current_active_space() const {
   if (p_workspace->m_desktop_space_list.count() <= 0) {
     return 0;
   }
 
-  Space *_current_space = p_workspace->m_desktop_space_list.at(
+  space *_current_space = p_workspace->m_desktop_space_list.at(
       p_workspace->m_current_activty_space_id);
 
   if (!_current_space) {
@@ -115,7 +115,7 @@ Space *WorkSpace::current_active_space() const {
   return _current_space;
 }
 
-void WorkSpace::set_accelerated_rendering(bool a_on) {
+void workspace::set_accelerated_rendering(bool a_on) {
   p_workspace->m_opengl_on = a_on;
 
   if (p_workspace->m_opengl_on) {
@@ -133,11 +133,11 @@ void WorkSpace::set_accelerated_rendering(bool a_on) {
   }
 }
 
-bool WorkSpace::is_accelerated_rendering_on() const {
+bool workspace::is_accelerated_rendering_on() const {
   return p_workspace->m_opengl_on;
 }
 
-void WorkSpace::auto_switch() {
+void workspace::auto_switch() {
   QScroller::grabGesture(this, QScroller::TouchGesture);
 
   if (QScroller::hasScroller(this)) {
@@ -157,7 +157,7 @@ void WorkSpace::auto_switch() {
   QScroller::ungrabGesture(this);
 }
 
-void WorkSpace::expose_sub_region(const QRectF &a_region) {
+void workspace::expose_sub_region(const QRectF &a_region) {
 
   /*
   QScroller::grabGesture(this, QScroller::TouchGesture);
@@ -182,7 +182,7 @@ void WorkSpace::expose_sub_region(const QRectF &a_region) {
   update();
 }
 
-void WorkSpace::paintEvent(QPaintEvent *event) {
+void workspace::paintEvent(QPaintEvent *event) {
   if (!p_workspace->m_opengl_on) {
     QPainter p;
     p.begin(viewport());
@@ -216,7 +216,7 @@ void WorkSpace::paintEvent(QPaintEvent *event) {
 #endif
 }
 
-void WorkSpace::dragEnterEvent(QDragEnterEvent *a_event_ptr) {
+void workspace::dragEnterEvent(QDragEnterEvent *a_event_ptr) {
   QPoint _global_drop_pos = a_event_ptr->pos();
   QPoint _scene_drop_pos = mapFromGlobal(_global_drop_pos);
 
@@ -226,16 +226,16 @@ void WorkSpace::dragEnterEvent(QDragEnterEvent *a_event_ptr) {
   a_event_ptr->accept();
 }
 
-void WorkSpace::dragMoveEvent(QDragMoveEvent *a_event_ptr) {
+void workspace::dragMoveEvent(QDragMoveEvent *a_event_ptr) {
   a_event_ptr->accept();
 }
 
-void WorkSpace::dropEvent(QDropEvent *a_event_ptr) {
+void workspace::dropEvent(QDropEvent *a_event_ptr) {
   QPoint _global_drop_pos = a_event_ptr->pos();
   QPointF _scene_drop_pos = mapToScene(mapFromGlobal(_global_drop_pos));
 
   for (int i = 0; i < p_workspace->m_desktop_space_list.count(); i++) {
-    Space *_space = p_workspace->m_desktop_space_list.at(i);
+    space *_space = p_workspace->m_desktop_space_list.at(i);
     if (!_space) {
       continue;
     }
@@ -249,13 +249,13 @@ void WorkSpace::dropEvent(QDropEvent *a_event_ptr) {
   a_event_ptr->accept();
 }
 
-void WorkSpace::wheelEvent(QWheelEvent *a_event_ptr) {
+void workspace::wheelEvent(QWheelEvent *a_event_ptr) {
   // ignore scroll wheel events.
   a_event_ptr->accept();
 }
 
-void WorkSpace::revoke_space(const QString &a_name, int a_id) {
-  Space *_space = create_blank_space();
+void workspace::revoke_space(const QString &a_name, int a_id) {
+  space *_space = create_blank_space();
 
   _space->set_workspace(this);
   _space->set_qt_graphics_scene(scene());
@@ -276,8 +276,8 @@ void WorkSpace::revoke_space(const QString &a_name, int a_id) {
   p_workspace->m_desktop_space_list << _space;
 }
 
-Space *WorkSpace::create_blank_space() {
-  Space *_space = new Space();
+space *workspace::create_blank_space() {
+  space *_space = new space();
 
   _space->set_workspace(this);
   _space->set_qt_graphics_scene(scene());
@@ -295,18 +295,18 @@ Space *WorkSpace::create_blank_space() {
   return _space;
 }
 
-QRectF WorkSpace::workspace_geometry() const {
+QRectF workspace::workspace_geometry() const {
   return p_workspace->m_workspace_geometry;
 }
 
-void WorkSpace::expose(uint a_space_id) {
+void workspace::expose(uint a_space_id) {
   uint _current_space_count = p_workspace->m_desktop_space_list.count();
 
   if (a_space_id > _current_space_count) {
     return;
   }
 
-  Space *_space = p_workspace->m_desktop_space_list.at(a_space_id);
+  space *_space = p_workspace->m_desktop_space_list.at(a_space_id);
 
   if (_space) {
     QRectF _space_rect = _space->geometry();
@@ -315,7 +315,7 @@ void WorkSpace::expose(uint a_space_id) {
   }
 }
 
-Space *WorkSpace::expose_next() {
+space *workspace::expose_next() {
   if (p_workspace->m_current_activty_space_id ==
       p_workspace->m_desktop_space_list.count()) {
     qDebug() << Q_FUNC_INFO << "Maximum Space Count Reached";
@@ -333,7 +333,7 @@ Space *WorkSpace::expose_next() {
     return 0;
   }
 
-  Space *_next_space = p_workspace->m_desktop_space_list.at(
+  space *_next_space = p_workspace->m_desktop_space_list.at(
       p_workspace->m_current_activty_space_id);
 
   if (!_next_space) {
@@ -349,7 +349,7 @@ Space *WorkSpace::expose_next() {
   return _next_space;
 }
 
-Space *WorkSpace::expose_previous() {
+space *workspace::expose_previous() {
   QRectF _space_geometry;
 
   p_workspace->m_current_activty_space_id =
@@ -359,7 +359,7 @@ Space *WorkSpace::expose_previous() {
     p_workspace->m_current_activty_space_id = 0;
   }
 
-  Space *_prev_space = p_workspace->m_desktop_space_list.at(
+  space *_prev_space = p_workspace->m_desktop_space_list.at(
       p_workspace->m_current_activty_space_id);
 
   if (!_prev_space) {
@@ -374,10 +374,10 @@ Space *WorkSpace::expose_previous() {
   return _prev_space;
 }
 
-void WorkSpace::update_space_geometry(Space *a_space_ptr,
+void workspace::update_space_geometry(space *a_space_ptr,
                                       QRectF a_deleted_geometry) {
   for (int i = 0; i < p_workspace->m_desktop_space_list.count(); i++) {
-    Space *__space = p_workspace->m_desktop_space_list.at(i);
+    space *__space = p_workspace->m_desktop_space_list.at(i);
     if (!__space) {
       continue;
     }
@@ -386,7 +386,7 @@ void WorkSpace::update_space_geometry(Space *a_space_ptr,
     }
   }
 
-  foreach(Space * _space, p_workspace->m_desktop_space_list) {
+  foreach(space * _space, p_workspace->m_desktop_space_list) {
     if (!_space) {
       continue;
     }
@@ -399,16 +399,15 @@ void WorkSpace::update_space_geometry(Space *a_space_ptr,
   }
 }
 
-std::string WorkSpace::workspace_instance_name() {
+std::string workspace::workspace_instance_name() {
   std::string workspace_name =
       "org.workspace.space_" + std::to_string(p_workspace->m_screen_id);
 
   return workspace_name;
 }
 
-void WorkSpace::save_space_removal_session_data(const QString &a_space_name) {
-  cherry::data_sync *sync =
-      new cherry::data_sync(workspace_instance_name());
+void workspace::save_space_removal_session_data(const QString &a_space_name) {
+  cherry::data_sync *sync = new cherry::data_sync(workspace_instance_name());
   cherry::disk_engine *engine = new cherry::disk_engine();
   sync->set_sync_engine(engine);
 
@@ -417,7 +416,7 @@ void WorkSpace::save_space_removal_session_data(const QString &a_space_name) {
   delete sync;
 }
 
-void WorkSpace::remove(Space *a_space_ptr) {
+void workspace::remove(space *a_space_ptr) {
   if (!a_space_ptr) {
     return;
   }
@@ -449,7 +448,7 @@ void WorkSpace::remove(Space *a_space_ptr) {
   save_space_removal_session_data(_space_ref);
 }
 
-QPixmap WorkSpace::thumbnail(Space *a_space, int a_scale_factor) {
+QPixmap workspace::thumbnail(space *a_space, int a_scale_factor) {
   if (!a_space) {
     return QPixmap();
   }
@@ -501,19 +500,19 @@ QPixmap WorkSpace::thumbnail(Space *a_space, int a_scale_factor) {
   return QPixmap::fromImage(_thumbnail);
 }
 
-SpacesList WorkSpace::current_spaces() {
+SpacesList workspace::current_spaces() {
   return p_workspace->m_desktop_space_list;
 }
 
-void WorkSpace::add_default_space() {
-  Space *_space = create_blank_space();
+void workspace::add_default_space() {
+  space *_space = create_blank_space();
 
   _space->set_name("default");
   _space->set_id(p_workspace->m_desktop_space_list.count());
 
   std::for_each(std::begin(p_workspace->m_default_controller_name_list),
                 std::end(p_workspace->m_default_controller_name_list),
-                [=] (std::string &a_controller_name){
+                [=](std::string &a_controller_name) {
     _space->add_controller(QString::fromStdString(a_controller_name));
   });
 
@@ -532,8 +531,7 @@ void WorkSpace::add_default_space() {
   this->expose_sub_region(_space_geometry);
   p_workspace->m_current_activty_space_id = _space->id();
 
-  cherry::data_sync *sync =
-      new cherry::data_sync(workspace_instance_name());
+  cherry::data_sync *sync = new cherry::data_sync(workspace_instance_name());
   cherry::disk_engine *engine = new cherry::disk_engine();
   sync->set_sync_engine(engine);
 
@@ -548,9 +546,8 @@ void WorkSpace::add_default_space() {
   delete sync;
 }
 
-void WorkSpace::restore_session() {
-  cherry::data_sync *sync =
-      new cherry::data_sync(workspace_instance_name());
+void workspace::restore_session() {
+  cherry::data_sync *sync = new cherry::data_sync(workspace_instance_name());
   cherry::disk_engine *engine = new cherry::disk_engine();
 
   sync->set_sync_engine(engine);

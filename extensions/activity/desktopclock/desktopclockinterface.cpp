@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> DesktopClockInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new DesktopClockActivity(),
-                                                 &QObject::deleteLater);
+QSharedPointer<cherry_kit::DesktopActivity> DesktopClockInterface::activity() {
+  QSharedPointer<cherry_kit::DesktopActivity> obj =
+      QSharedPointer<cherry_kit::DesktopActivity>(new DesktopClockActivity(),
+                                                  &QObject::deleteLater);
 
   return obj;
 }

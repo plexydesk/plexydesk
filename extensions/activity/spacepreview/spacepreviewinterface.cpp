@@ -21,9 +21,9 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> SpacePreviewInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new SpacePreviewActivity(),
+QSharedPointer<cherry_kit::desktop_dialog> SpacePreviewInterface::activity() {
+  QSharedPointer<cherry_kit::desktop_dialog> obj =
+      QSharedPointer<cherry_kit::desktop_dialog>(new expose_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;

@@ -20,7 +20,7 @@
 #define GOOGLEPLACESENGINE_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <dataplugininterface.h>
 
 class GooglePlacesEngineInterface : public QObject,

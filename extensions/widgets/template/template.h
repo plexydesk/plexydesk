@@ -21,7 +21,7 @@
 
 #include <view_controller.h>
 
-class TemplateControllerImpl : public CherryKit::ViewController {
+class TemplateControllerImpl : public cherry_kit::desktop_controller_interface {
 public:
   explicit TemplateControllerImpl(QObject *object = 0);
   virtual ~TemplateControllerImpl();
@@ -33,9 +33,9 @@ public:
 
   void set_view_rect(const QRectF &a_rect);
 
-  bool remove_widget(CherryKit::Widget *a_widget_ptr);
+  bool remove_widget(cherry_kit::widget *a_widget_ptr);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
   void request_action(const QString &a_name, const QVariantMap &a_args);
 
   QString icon() const;

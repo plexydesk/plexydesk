@@ -38,7 +38,6 @@
 
 #include "friendswidget.h"
 
-#include <plexy.h>
 #include <plexyconfig.h>
 #include <QPixmap>
 #include <QBitmap>

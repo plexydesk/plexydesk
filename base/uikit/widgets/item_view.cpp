@@ -7,7 +7,7 @@
 
 #include <QScroller>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class ItemView::PrivateModelView {
 public:
@@ -27,8 +27,8 @@ public:
   std::function<void(ModelViewItem *)> m_item_remove_handler;
 };
 
-ItemView::ItemView(Widget *parent, ModelType a_model_type)
-    : Widget(parent), d(new PrivateModelView) {
+ItemView::ItemView(widget *parent, ModelType a_model_type)
+    : widget(parent), d(new PrivateModelView) {
   d->m_model_view_type = a_model_type;
   d->m_scroll_frame = new QGraphicsWidget(this);
 
@@ -59,7 +59,7 @@ ItemView::~ItemView() {
   delete d;
 }
 
-void ItemView::insert_to_list_view(Widget *a_widget_ptr) {
+void ItemView::insert_to_list_view(widget *a_widget_ptr) {
   a_widget_ptr->set_widget_id(d->m_list_layout->count());
 
   d->m_list_layout->addItem(a_widget_ptr);
@@ -69,13 +69,13 @@ void ItemView::insert_to_list_view(Widget *a_widget_ptr) {
   d->m_scroll_frame->setGeometry(d->m_list_layout->geometry());
 }
 
-void ItemView::remove_from_list_view(Widget *a_widget_ptr) {
+void ItemView::remove_from_list_view(widget *a_widget_ptr) {
   if (!d->m_list_layout)
     return;
   d->m_list_layout->removeItem(a_widget_ptr);
 }
 
-void ItemView::insert_to_grid_view(Widget *a_widget_ptr) {
+void ItemView::insert_to_grid_view(widget *a_widget_ptr) {
   if (!d->m_grid_layout) {
     return;
   }
@@ -94,14 +94,14 @@ void ItemView::insert_to_grid_view(Widget *a_widget_ptr) {
   d->m_scroll_frame->setGeometry(d->m_grid_layout->geometry());
 }
 
-void ItemView::insert_to_table_view(Widget *a_widget_ptr) {}
+void ItemView::insert_to_table_view(widget *a_widget_ptr) {}
 
-void ItemView::insert(Widget *a_widget_ptr) {
+void ItemView::insert(widget *a_widget_ptr) {
   a_widget_ptr->setParentItem(d->m_scroll_frame);
   a_widget_ptr->setParent(d->m_scroll_frame);
 
-  a_widget_ptr->on_input_event([this](int type, const Widget *widget) {
-    if (type == Widget::kMouseReleaseEvent) {
+  a_widget_ptr->on_input_event([this](int type, const widget *widget) {
+    if (type == widget::kMouseReleaseEvent) {
       if (d->m_activation_handler) {
         d->m_activation_handler(widget->widget_id());
       }
@@ -123,7 +123,7 @@ void ItemView::insert(Widget *a_widget_ptr) {
   update();
 }
 
-void ItemView::remove(Widget *a_widget_ptr) {
+void ItemView::remove(widget *a_widget_ptr) {
   switch (d->m_model_view_type) {
   case kListModel:
     remove_from_list_view(a_widget_ptr);

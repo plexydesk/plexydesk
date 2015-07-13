@@ -19,7 +19,6 @@
 #ifndef PLEXY_WIDGET_CPU_H
 #define PLEXY_WIDGET_CPU_H
 
-#include <plexy.h>
 #include <widgetinterface.h>
 #include <widgetplugin.h>
 

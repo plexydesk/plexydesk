@@ -19,14 +19,12 @@
 #ifndef PLEXY_WIDGET_IMAGEPILE_H
 #define PLEXY_WIDGET_IMAGEPILE_H
 
-#include <plexy.h>
-
 #include <view_controller.h>
 
 #include <resource_manager.h>
 #include "photowidget.h"
 
-class PhotoFrameController : public CherryKit::ViewController {
+class PhotoFrameController : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
@@ -38,13 +36,13 @@ public:
   void session_data_available(const cherry::sync_object &a_session_root);
   virtual void submit_session_data(cherry::sync_object *a_obj);
 
-  virtual void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
+  virtual void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
 
   virtual void set_view_rect(const QRectF &rect);
 
-  bool remove_widget(CherryKit::Widget *widget);
+  bool remove_widget(cherry_kit::widget *widget);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
 
   void request_action(const QString &actionName, const QVariantMap &args);
 
@@ -58,7 +56,7 @@ private:
   PhotoWidget *mFrameParentitem;
   QList<PhotoWidget *> mPhotoList;
   QString mImageSource;
-  CherryKit::ActionList m_supported_action_list;
+  cherry_kit::ActionList m_supported_action_list;
   QStringList m_current_url_list;
 };
 

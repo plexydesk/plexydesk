@@ -2,7 +2,7 @@
 #define FACEBOOKDATAINTERFACE_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <dataplugininterface.h>
 #include <QtNetwork>
 

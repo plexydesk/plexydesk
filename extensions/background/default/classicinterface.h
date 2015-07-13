@@ -19,22 +19,21 @@
 #ifndef PLEXY_CLASSIC_BACKDROP_I
 #define PLEXY_CLASSIC_BACKDROP_I
 
-#include <plexy.h>
 #include <extensionmanager.h>
 
 #include <controllerplugininterface.h>
 
 class ClassicBackdrop : public QObject,
-                        public CherryKit::ControllerPluginInterface {
+                        public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::ControllerPluginInterface)
+  Q_INTERFACES(cherry_kit::desktop_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.classicbackground")
 
 public:
   ClassicBackdrop(QObject *a_parent_ptr = 0);
   virtual ~ClassicBackdrop();
 
-  QSharedPointer<CherryKit::ViewController> controller();
+  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
 };
 
 #endif

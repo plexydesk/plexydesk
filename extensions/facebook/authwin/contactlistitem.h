@@ -3,7 +3,7 @@
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
-#include <plexy.h>
+
 #include <style.h>
 
 class ContactListItem : public QGraphicsObject {

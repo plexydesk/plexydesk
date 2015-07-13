@@ -21,12 +21,12 @@
 
 #include <widget.h>
 
-namespace CherryKit {
-class Widget;
+namespace cherry_kit {
+class widget;
 
-class DECL_UI_KIT_EXPORT CalendarView : public CherryKit::Widget {
+class DECL_UI_KIT_EXPORT CalendarView : public cherry_kit::widget {
 public:
-  explicit CalendarView(Widget *a_parent_ptr = 0);
+  explicit CalendarView(widget *a_parent_ptr = 0);
   virtual ~CalendarView();
 
   virtual void set_date(const QDate &a_date);

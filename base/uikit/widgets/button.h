@@ -19,8 +19,6 @@
 #ifndef UI_BUTTON_H
 #define UI_BUTTON_H
 
-#include <plexy.h>
-
 #include <QGraphicsScene>
 
 #include <functional>
@@ -30,11 +28,11 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT Button : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT Button : public widget {
   Q_OBJECT
 public:
-  explicit Button(Widget *a_parent_ptr = 0);
+  explicit Button(widget *a_parent_ptr = 0);
   virtual ~Button();
 
   virtual void set_label(const QString &a_txt);

@@ -43,20 +43,20 @@ public:
     // if (m_view_delegate_window)
   }
 
-  CherryKit::Widget *m_main_frame_widget;
-  CherryKit::Widget *mWindowContentWidget;
+  cherry_kit::Widget *m_main_frame_widget;
+  cherry_kit::Widget *mWindowContentWidget;
   QGraphicsLinearLayout *m_verticle_layout;
 
-  CherryKit::ToolBar *m_top_toolbar;
-  CherryKit::ToolBar *m_bottom_toolbar;
+  cherry_kit::ToolBar *m_top_toolbar;
+  cherry_kit::ToolBar *m_bottom_toolbar;
 
-  CherryKit::Window *m_view_delegate_window;
+  cherry_kit::Window *m_view_delegate_window;
 
-  CherryKit::TableView *m_image_grid_view;
+  cherry_kit::TableView *m_image_grid_view;
   PhotoCellAdaptor *m_image_cell_model;
 
-  CherryKit::ProgressBar *m_progress_widget;
-  CherryKit::LineEdit *m_search_input_box;
+  cherry_kit::ProgressBar *m_progress_widget;
+  cherry_kit::LineEdit *m_search_input_box;
 
   int m_page_count;
   int m_current_page_index;
@@ -67,7 +67,7 @@ public:
 };
 
 FlickrSearchActivity::FlickrSearchActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), d(new PrivateFlikrSearch) {}
+    : cherry_kit::DesktopActivity(object), d(new PrivateFlikrSearch) {}
 
 FlickrSearchActivity::~FlickrSearchActivity() {
   // discardActivity();
@@ -79,22 +79,22 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
                                          const QPointF &window_pos) {
   d->m_is_new_search = true;
 
-  d->m_view_delegate_window = new CherryKit::Window();
+  d->m_view_delegate_window = new cherry_kit::Window();
   d->m_view_delegate_window->setGeometry(aWindowGeometry);
 
-  d->mWindowContentWidget = new CherryKit::Widget();
-  d->m_main_frame_widget = new CherryKit::Widget(d->mWindowContentWidget);
+  d->mWindowContentWidget = new cherry_kit::Widget();
+  d->m_main_frame_widget = new cherry_kit::Widget(d->mWindowContentWidget);
 
   d->m_main_frame_widget->setGeometry(aWindowGeometry);
   d->mWindowContentWidget->setGeometry(aWindowGeometry);
 
   d->m_view_delegate_window->set_window_content(d->mWindowContentWidget);
 
-  d->m_top_toolbar = new CherryKit::ToolBar(d->m_main_frame_widget);
+  d->m_top_toolbar = new cherry_kit::ToolBar(d->m_main_frame_widget);
   d->m_top_toolbar->set_icon_size(QSize(32, 32));
   d->m_top_toolbar->setMinimumSize(QSizeF(aWindowGeometry.width() - 20, 42));
 
-  d->m_search_input_box = new CherryKit::LineEdit(d->m_top_toolbar);
+  d->m_search_input_box = new cherry_kit::LineEdit(d->m_top_toolbar);
   d->m_search_input_box->setMinimumSize(
       QSizeF(aWindowGeometry.width() - 58, 32));
 
@@ -110,7 +110,7 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->m_verticle_layout->addItem(d->m_top_toolbar);
 
   // image
-  d->m_image_grid_view = new CherryKit::TableView(d->m_main_frame_widget);
+  d->m_image_grid_view = new cherry_kit::TableView(d->m_main_frame_widget);
   d->m_image_cell_model = new PhotoCellAdaptor(d->m_image_grid_view);
   d->m_image_cell_model->setLabelVisibility(false);
   d->m_image_grid_view->set_model(d->m_image_cell_model);
@@ -120,13 +120,13 @@ void FlickrSearchActivity::create_window(const QRectF &aWindowGeometry,
   d->m_verticle_layout->addItem(d->m_image_grid_view);
 
   // toolbar
-  d->m_bottom_toolbar = new CherryKit::ToolBar(d->m_main_frame_widget);
+  d->m_bottom_toolbar = new cherry_kit::ToolBar(d->m_main_frame_widget);
   d->m_bottom_toolbar->set_icon_size(QSize(32, 32));
   d->m_bottom_toolbar->setMinimumSize(
       QSizeF(d->m_top_toolbar->frame_geometry().width(),
              d->m_top_toolbar->frame_geometry().height()));
 
-  d->m_progress_widget = new CherryKit::ProgressBar(d->m_bottom_toolbar);
+  d->m_progress_widget = new cherry_kit::ProgressBar(d->m_bottom_toolbar);
   d->m_progress_widget->setMinimumSize(
       QSizeF(aWindowGeometry.width() - 116, 32));
 
@@ -172,11 +172,11 @@ void FlickrSearchActivity::cleanup() {
   d->m_view_delegate_window = 0;
 }
 
-void FlickrSearchActivity::onWidgetClosed(CherryKit::Widget *widget) {
+void FlickrSearchActivity::onWidgetClosed(cherry_kit::Widget *widget) {
   discard_activity();
 }
 
-void FlickrSearchActivity::photoItemClicked(CherryKit::TableViewItem *item) {
+void FlickrSearchActivity::photoItemClicked(cherry_kit::TableViewItem *item) {
   PhotoCell *i = qobject_cast<PhotoCell *>(item);
   if (i) {
     d->m_activity_result_map["action"] = QString("Change Background");

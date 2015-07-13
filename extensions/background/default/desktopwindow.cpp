@@ -43,10 +43,10 @@ DesktopWindow::DesktopScalingMode DesktopWindow::desktop_scale_mode() const {
 }
 
 DesktopWindow::DesktopWindow()
-    : CherryKit::Window(0), o_window(new PrivateDesktopWindow) {
-  set_window_type(CherryKit::Window::kFramelessWindow);
+    : cherry_kit::window(0), o_window(new PrivateDesktopWindow) {
+  set_window_type(cherry_kit::window::kFramelessWindow);
 
-  on_window_resized([this](Window *a_window, int a_width, int a_height) {
+  on_window_resized([this](window *a_window, int a_width, int a_height) {
     if (o_window->m_background_buffer) {
       /*
     //reset_window_background();
@@ -88,7 +88,7 @@ void DesktopWindow::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
     a_ctx->setCompositionMode(QPainter::CompositionMode_Source);
     a_ctx->fillRect(a_rect, Qt::transparent);
 
-    Widget::paint_view(a_ctx, a_rect);
+    widget::paint_view(a_ctx, a_rect);
 
     return;
   }

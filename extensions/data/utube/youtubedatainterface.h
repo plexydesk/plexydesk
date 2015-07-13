@@ -20,7 +20,6 @@
 #ifndef UINT_DATA_H
 #define UINT_DATA_H
 
-#include <plexy.h>
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

@@ -1,7 +1,6 @@
 #ifndef FACEBOOKCONTACTUI_H
 #define FACEBOOKCONTACTUI_H
 
-#include <plexy.h>
 #include <desktopwidget.h>
 
 #include "facebookcontactcard.h"

@@ -20,12 +20,11 @@
 #ifndef TABLEVIEWCELLINTERFACE_H
 #define TABLEVIEWCELLINTERFACE_H
 
-#include <plexy.h>
 #include <widget.h>
 #include <abstractcellcomponent.h>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 /**
     * \class this is a interface definition cell creators
     *
@@ -124,9 +123,9 @@ Q_SIGNALS:
       */
   void updated();
 
-  void add(CherryKit::TableViewItem *a_item_ptr);
+  void add(cherry_kit::TableViewItem *a_item_ptr);
 
-  void removed(CherryKit::TableViewItem *a_item_ptr);
+  void removed(cherry_kit::TableViewItem *a_item_ptr);
 
   void cleared();
 };

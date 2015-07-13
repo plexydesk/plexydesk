@@ -1,7 +1,7 @@
 #include "abstractcellcomponent.h"
 #include <QDebug>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 TableViewItem::TableViewItem(const QRectF &a_rect, QGraphicsItem *parent)
     : QGraphicsObject(parent), QGraphicsLayoutItem(0, false) {

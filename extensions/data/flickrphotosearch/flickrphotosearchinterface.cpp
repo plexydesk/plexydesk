@@ -21,10 +21,10 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DataSource> FlickrPhotoSearchInterface::model() {
-  QSharedPointer<CherryKit::DataSource> obj =
-      QSharedPointer<CherryKit::DataSource>(new FlickrPhotoSearchData(),
-                                            &QObject::deleteLater);
+QSharedPointer<cherry_kit::data_source> FlickrPhotoSearchInterface::model() {
+  QSharedPointer<cherry_kit::data_source> obj =
+      QSharedPointer<cherry_kit::data_source>(new FlickrPhotoSearchData(),
+                                              &QObject::deleteLater);
 
   return obj;
 }

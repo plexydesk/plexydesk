@@ -19,16 +19,15 @@
 #ifndef TEXTEDITOR_H
 #define TEXTEDITOR_H
 
-#include <plexy.h>
 #include <widget.h>
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT TextEditor : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT TextEditor : public widget {
   Q_OBJECT
 public:
-  TextEditor(Widget *a_parent_ptr = 0);
+  TextEditor(widget *a_parent_ptr = 0);
   virtual ~TextEditor();
 
   virtual void set_text(const QString &a_text);

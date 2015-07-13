@@ -4,16 +4,16 @@
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT WidgetStyleInterface {
+class DECL_UI_KIT_EXPORT style_interface {
 public:
-  WidgetStyleInterface() {}
-  virtual QSharedPointer<CherryKit::Style> style() = 0;
+  style_interface() {}
+  virtual QSharedPointer<cherry_kit::style> style() = 0;
 };
 }
 
-Q_DECLARE_INTERFACE(CherryKit::WidgetStyleInterface,
+Q_DECLARE_INTERFACE(cherry_kit::style_interface,
                     "org.plexydesk.WidgetStyleInterface")
 
 #endif // WIDGETSTYLEINTERFACE_H

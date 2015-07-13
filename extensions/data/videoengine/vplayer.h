@@ -25,8 +25,6 @@
 #include <QObject>
 #include <QImage>
 
-#include <plexy.h>
-
 namespace PlexyDesk {
 class VIDEOENGINE_EXPORT VPlayer : public QObject {
   Q_OBJECT
