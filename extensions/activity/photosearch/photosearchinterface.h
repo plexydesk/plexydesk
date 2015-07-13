@@ -24,14 +24,14 @@
 #include <ck_dialog_plugin_interface.h>
 #include <ck_desktop_dialog.h>
 
-class PhotoSearchInterface : public QObject,
+class desktop_settings_plugin_impl : public QObject,
                              public cherry_kit::dialog_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::dialog_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.photosearch")
 
 public:
-  virtual ~PhotoSearchInterface() {}
+  virtual ~desktop_settings_plugin_impl() {}
 
   /* this will return a valid data plugin pointer*/
   QSharedPointer<cherry_kit::desktop_dialog> activity();
