@@ -40,7 +40,7 @@
 
 using namespace cherry_kit;
 
-class DockControllerImpl::PrivateDock {
+class desktop_panel_controller_impl::PrivateDock {
 public:
   PrivateDock() {}
   ~PrivateDock() { qDebug() << Q_FUNC_INFO; }
@@ -60,7 +60,7 @@ public:
   cherry_kit::ActionList m_supported_action_list;
 };
 
-DockControllerImpl::DockControllerImpl(QObject *object)
+desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_view_controller(new PrivateDock) {
   o_view_controller->m_actions_map["ToggleDock"] = 1;
@@ -91,12 +91,12 @@ DockControllerImpl::DockControllerImpl(QObject *object)
   });
 }
 
-DockControllerImpl::~DockControllerImpl() {
+desktop_panel_controller_impl::~desktop_panel_controller_impl() {
   qDebug() << Q_FUNC_INFO;
   delete o_view_controller;
 }
 
-void DockControllerImpl::create_dock_action(
+void desktop_panel_controller_impl::create_dock_action(
     cherry_kit::fixed_layout *build, int row, int column,
     const std::string &icon, std::function<void()> a_button_action_func) {
   cherry_kit::widget_properties_t prop;
@@ -114,7 +114,7 @@ void DockControllerImpl::create_dock_action(
   });
 }
 
-void DockControllerImpl::init() {
+void desktop_panel_controller_impl::init() {
   o_view_controller->m_supported_action_list
       << createAction(1, tr("Menu"), "pd_menu_icon.png");
   o_view_controller->m_supported_action_list
@@ -214,12 +214,12 @@ void DockControllerImpl::init() {
   o_view_controller->m_preview_window->hide();
 }
 
-void DockControllerImpl::session_data_available(
+void desktop_panel_controller_impl::session_data_available(
     const cherry::sync_object &a_sesion_root) {}
 
-void DockControllerImpl::submit_session_data(cherry::sync_object *a_obj) {}
+void desktop_panel_controller_impl::submit_session_data(cherry::sync_object *a_obj) {}
 
-void DockControllerImpl::set_view_rect(const QRectF &rect) {
+void desktop_panel_controller_impl::set_view_rect(const QRectF &rect) {
   if (!viewport()) {
     return;
   }
@@ -246,11 +246,11 @@ void DockControllerImpl::set_view_rect(const QRectF &rect) {
   }
 }
 
-ActionList DockControllerImpl::actions() const {
+ActionList desktop_panel_controller_impl::actions() const {
   return o_view_controller->m_supported_action_list;
 }
 
-void DockControllerImpl::request_action(const QString &actionName,
+void desktop_panel_controller_impl::request_action(const QString &actionName,
                                         const QVariantMap &args) {
   if (actionName.toLower() == "menu") {
 
@@ -290,11 +290,11 @@ void DockControllerImpl::request_action(const QString &actionName,
   }
 }
 
-QString DockControllerImpl::icon() const {
+QString desktop_panel_controller_impl::icon() const {
   return QString("pd_desktop_icon.png");
 }
 
-void DockControllerImpl::createActionForController(const QString &name,
+void desktop_panel_controller_impl::createActionForController(const QString &name,
                                                    const QPointF &pos) {
   if (!viewport()) {
     return;
@@ -303,13 +303,13 @@ void DockControllerImpl::createActionForController(const QString &name,
   viewport()->controller(name)->configure(pos);
 }
 
-void DockControllerImpl::createActivityForController(const QString &name) {
+void desktop_panel_controller_impl::createActivityForController(const QString &name) {
   if (!viewport()) {
     return;
   }
 }
 
-desktop_dialog_ref DockControllerImpl::createActivity(
+desktop_dialog_ref desktop_panel_controller_impl::createActivity(
     const QString &controllerName, const QString &activity,
     const QString &title, const QPoint &pos, const QVariantMap &dataItem) {
   QPoint _activity_location = pos;
@@ -324,7 +324,7 @@ desktop_dialog_ref DockControllerImpl::createActivity(
   return _intent;
 }
 
-void DockControllerImpl::nextSpace() {
+void desktop_panel_controller_impl::nextSpace() {
   if (this->viewport() && this->viewport()->owner_workspace()) {
     cherry_kit::workspace *_workspace =
         qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
@@ -336,7 +336,7 @@ void DockControllerImpl::nextSpace() {
   }
 }
 
-void DockControllerImpl::toggleSeamless() {
+void desktop_panel_controller_impl::toggleSeamless() {
   if (!viewport()) {
     return;
   }
@@ -352,7 +352,7 @@ void DockControllerImpl::toggleSeamless() {
   controller->request_action("Seamless");
 }
 
-void DockControllerImpl::prepare_removal() {
+void desktop_panel_controller_impl::prepare_removal() {
   if (viewport() && viewport()->owner_workspace()) {
     QGraphicsView *_workspace =
         qobject_cast<QGraphicsView *>(viewport()->owner_workspace());
@@ -369,7 +369,7 @@ void DockControllerImpl::prepare_removal() {
   }
 }
 
-void DockControllerImpl::previousSpace() {
+void desktop_panel_controller_impl::previousSpace() {
   if (this->viewport() && this->viewport()->owner_workspace()) {
     cherry_kit::workspace *_workspace =
         qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
@@ -381,7 +381,7 @@ void DockControllerImpl::previousSpace() {
   }
 }
 
-void DockControllerImpl::toggleDesktopPanel() {
+void desktop_panel_controller_impl::toggleDesktopPanel() {
   if (this->viewport() && this->viewport()->owner_workspace()) {
     cherry_kit::workspace *_workspace =
         qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
@@ -402,7 +402,7 @@ void DockControllerImpl::toggleDesktopPanel() {
   }
 }
 
-void DockControllerImpl::loadControllerActions(const QString &name) {
+void desktop_panel_controller_impl::loadControllerActions(const QString &name) {
   if (o_view_controller->m_controller_name_list.contains(name) || !viewport()) {
     return;
   }
@@ -447,7 +447,7 @@ void DockControllerImpl::loadControllerActions(const QString &name) {
   o_view_controller->m_action_activity->update_attribute("data", _data);
 }
 
-void DockControllerImpl::onActivityAnimationFinished() {
+void desktop_panel_controller_impl::onActivityAnimationFinished() {
   if (!sender()) {
     return;
   }
@@ -474,7 +474,7 @@ void DockControllerImpl::onActivityAnimationFinished() {
   }
 }
 
-void DockControllerImpl::onActivityFinished() {
+void desktop_panel_controller_impl::onActivityFinished() {
   cherry_kit::desktop_dialog *_activity =
       qobject_cast<cherry_kit::desktop_dialog *>(sender());
 
@@ -493,7 +493,7 @@ void DockControllerImpl::onActivityFinished() {
                               QVariantMap());
 }
 
-void DockControllerImpl::removeSpace() {
+void desktop_panel_controller_impl::removeSpace() {
   if (this->viewport() && this->viewport()->owner_workspace()) {
     cherry_kit::workspace *_workspace =
         qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
@@ -503,7 +503,7 @@ void DockControllerImpl::removeSpace() {
   }
 }
 
-void DockControllerImpl::exec_dock_action(const QString &action) {
+void desktop_panel_controller_impl::exec_dock_action(const QString &action) {
   if (action == tr("Close")) {
     removeSpace();
     return;
@@ -545,7 +545,7 @@ void DockControllerImpl::exec_dock_action(const QString &action) {
   }
 }
 
-void DockControllerImpl::onAddSpaceButtonClicked() {
+void desktop_panel_controller_impl::onAddSpaceButtonClicked() {
   if (this->viewport() && this->viewport()->owner_workspace()) {
     cherry_kit::workspace *_workspace =
         qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
@@ -556,7 +556,7 @@ void DockControllerImpl::onAddSpaceButtonClicked() {
   }
 }
 
-QAction *DockControllerImpl::createAction(int id, const QString &action_name,
+QAction *desktop_panel_controller_impl::createAction(int id, const QString &action_name,
                                           const QString &icon_name) {
   QAction *_add_clock_action = new QAction(this);
   _add_clock_action->setText(action_name);
@@ -567,7 +567,7 @@ QAction *DockControllerImpl::createAction(int id, const QString &action_name,
   return _add_clock_action;
 }
 
-void DockControllerImpl::updatePreview() {
+void desktop_panel_controller_impl::updatePreview() {
   o_view_controller->m_preview_widget->clear();
 
   if (this->viewport() && this->viewport()->owner_workspace()) {

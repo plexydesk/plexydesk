@@ -26,13 +26,13 @@
 #include <widget.h>
 #include <QtNetwork>
 
-class DesktopNotesControllerImpl
+class desktop_task_controller_impl
     : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
-  DesktopNotesControllerImpl(QObject *object = 0);
-  virtual ~DesktopNotesControllerImpl();
+  desktop_task_controller_impl(QObject *object = 0);
+  virtual ~desktop_task_controller_impl();
 
   void init();
 

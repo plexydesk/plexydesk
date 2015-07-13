@@ -24,14 +24,14 @@
 #include <view_controller.h>
 #include <controllerplugininterface.h>
 
-class TemplateInterface : public QObject,
+class template_plugin_impl : public QObject,
                           public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.plexydesk.template")
 
 public:
-  virtual ~TemplateInterface() {}
+  virtual ~template_plugin_impl() {}
 
   /* this will return a valid data plugin pointer*/
   QSharedPointer<cherry_kit::desktop_controller_interface> controller();

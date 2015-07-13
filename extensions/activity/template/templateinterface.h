@@ -24,13 +24,13 @@
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class TemplateInterface : public QObject, public cherry_kit::dialog_plugin_interface {
+class template_plugin_impl : public QObject, public cherry_kit::dialog_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::dialog_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.template")
 
 public:
-  virtual ~TemplateInterface() {}
+  virtual ~template_plugin_impl() {}
 
   /* this will return a valid data plugin pointer*/
   QSharedPointer<cherry_kit::desktop_dialog> activity();

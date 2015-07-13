@@ -43,32 +43,32 @@
 #include <label.h>
 #include <viewbuilder.h>
 
-class Clock::PrivateClockController {
+class time_controller::PrivateClockController {
 public:
   PrivateClockController() {}
   ~PrivateClockController() {}
 
-  void setup_create_clock_ui(Clock *a_controller,
+  void setup_create_clock_ui(time_controller *a_controller,
                              cherry_kit::session_sync *a_session);
   cherry_kit::ImageButton *add_action_button(cherry_kit::fixed_layout *ui,
                                              int a_row, int a_col,
                                              const std::string &a_label,
                                              const std::string &a_icon);
   cherry_kit::ActionList m_supported_action_list;
-  void setup_create_timer_ui(Clock *a_controller,
+  void setup_create_timer_ui(time_controller *a_controller,
                              cherry_kit::session_sync *a_session);
 };
 
-Clock::Clock(QObject *parent)
+time_controller::time_controller(QObject *parent)
     : cherry_kit::desktop_controller_interface(parent),
       o_view_controller(new PrivateClockController) {}
 
-Clock::~Clock() {
+time_controller::~time_controller() {
   qDebug() << Q_FUNC_INFO << "Deleted";
   delete o_view_controller;
 }
 
-QAction *Clock::createAction(int id, const QString &action_name,
+QAction *time_controller::createAction(int id, const QString &action_name,
                              const QString &icon_name) {
   QAction *_add_clock_action = new QAction(this);
   _add_clock_action->setText(action_name);
@@ -79,7 +79,7 @@ QAction *Clock::createAction(int id, const QString &action_name,
   return _add_clock_action;
 }
 
-void Clock::init() {
+void time_controller::init() {
   o_view_controller->m_supported_action_list
       << createAction(1, tr("Clock"), "pd_clock_icon.png");
   o_view_controller->m_supported_action_list
@@ -88,41 +88,41 @@ void Clock::init() {
       << createAction(2, tr("Timer"), "pd_timer_icon.png");
 }
 
-void Clock::set_view_rect(const QRectF &rect) {}
+void time_controller::set_view_rect(const QRectF &rect) {}
 
-void Clock::session_data_available(const cherry::sync_object &a_session_root) {
+void time_controller::session_data_available(const cherry::sync_object &a_session_root) {
   revoke_previous_session(
       "Clock", [this](cherry_kit::desktop_controller_interface *a_controller,
                       cherry_kit::session_sync *a_session) {
-        o_view_controller->setup_create_clock_ui((Clock *)a_controller,
+        o_view_controller->setup_create_clock_ui((time_controller *)a_controller,
                                                  a_session);
       });
 
   revoke_previous_session(
       "Timer", [this](cherry_kit::desktop_controller_interface *a_controller,
                       cherry_kit::session_sync *a_session) {
-        o_view_controller->setup_create_timer_ui((Clock *)a_controller,
+        o_view_controller->setup_create_timer_ui((time_controller *)a_controller,
                                                  a_session);
       });
 }
 
-void Clock::submit_session_data(cherry::sync_object *a_obj) {
+void time_controller::submit_session_data(cherry::sync_object *a_obj) {
   write_session_data("Clock");
   write_session_data("Timer");
 }
 
-bool Clock::remove_widget(cherry_kit::widget *widget) {
+bool time_controller::remove_widget(cherry_kit::widget *widget) {
   disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
   int index = 0;
 
   return 1;
 }
 
-cherry_kit::ActionList Clock::actions() const {
+cherry_kit::ActionList time_controller::actions() const {
   return o_view_controller->m_supported_action_list;
 }
 
-void Clock::request_action(const QString &actionName, const QVariantMap &args) {
+void time_controller::request_action(const QString &actionName, const QVariantMap &args) {
   QPointF window_location;
 
   if (viewport()) {
@@ -142,7 +142,7 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
                   [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
       // d->_create_clock_ui((Clock *)a_controller, a_session);
-      o_view_controller->setup_create_clock_ui((Clock *)a_controller,
+      o_view_controller->setup_create_clock_ui((time_controller *)a_controller,
                                                a_session);
     });
     return;
@@ -160,18 +160,18 @@ void Clock::request_action(const QString &actionName, const QVariantMap &args) {
     start_session("Timer", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
-      o_view_controller->setup_create_timer_ui((Clock *)a_controller,
+      o_view_controller->setup_create_timer_ui((time_controller *)a_controller,
                                                a_session);
     });
     return;
   }
 }
 
-QString Clock::icon() const { return QString("pd_clock_frame_icon.png"); }
+QString time_controller::icon() const { return QString("pd_clock_frame_icon.png"); }
 
-void Clock::onDataUpdated(const QVariantMap &data) {}
+void time_controller::onDataUpdated(const QVariantMap &data) {}
 
-cherry_kit::ImageButton *Clock::PrivateClockController::add_action_button(
+cherry_kit::ImageButton *time_controller::PrivateClockController::add_action_button(
     cherry_kit::fixed_layout *ui, int a_row, int a_col,
     const std::string &a_label, const std::string &a_icon) {
   cherry_kit::ImageButton *ck_rv = 0;
@@ -183,8 +183,8 @@ cherry_kit::ImageButton *Clock::PrivateClockController::add_action_button(
   return ck_rv;
 }
 
-void Clock::PrivateClockController::setup_create_clock_ui(
-    Clock *a_controller, cherry_kit::session_sync *a_session) {
+void time_controller::PrivateClockController::setup_create_clock_ui(
+    time_controller *a_controller, cherry_kit::session_sync *a_session) {
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
 
@@ -265,8 +265,8 @@ void Clock::PrivateClockController::setup_create_clock_ui(
   });
 }
 
-void Clock::PrivateClockController::setup_create_timer_ui(
-    Clock *a_controller, cherry_kit::session_sync *a_session) {
+void time_controller::PrivateClockController::setup_create_timer_ui(
+    time_controller *a_controller, cherry_kit::session_sync *a_session) {
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
 

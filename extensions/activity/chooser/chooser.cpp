@@ -188,12 +188,6 @@ void icon_dialog::cleanup() {
   o_desktop_dialog->m_activity_window_ptr = 0;
 }
 
-void icon_dialog::onWidgetClosed(cherry_kit::widget *widget) {
-  discard_activity();
-}
-
-void icon_dialog::onDiscard() {}
-
 /// action class impl
 widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
                                  const QString &aControllerName) {

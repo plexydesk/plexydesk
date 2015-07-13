@@ -21,10 +21,10 @@
 
 #include <view_controller.h>
 
-class TemplateControllerImpl : public cherry_kit::desktop_controller_interface {
+class template_controller : public cherry_kit::desktop_controller_interface {
 public:
-  explicit TemplateControllerImpl(QObject *object = 0);
-  virtual ~TemplateControllerImpl();
+  explicit template_controller(QObject *object = 0);
+  virtual ~template_controller();
 
   void init();
 

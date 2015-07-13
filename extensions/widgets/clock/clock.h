@@ -26,12 +26,12 @@
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public cherry_kit::desktop_controller_interface {
+class time_controller : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
-  Clock(QObject *a_parent_ptr = 0);
-  virtual ~Clock();
+  time_controller(QObject *a_parent_ptr = 0);
+  virtual ~time_controller();
 
   void init();
 

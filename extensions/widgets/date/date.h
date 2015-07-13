@@ -22,10 +22,10 @@
 #include <view_controller.h>
 #include <viewbuilder.h>
 
-class DateControllerImpl : public cherry_kit::desktop_controller_interface {
+class date_controller : public cherry_kit::desktop_controller_interface {
 public:
-  explicit DateControllerImpl(QObject *object = 0);
-  virtual ~DateControllerImpl();
+  explicit date_controller(QObject *object = 0);
+  virtual ~date_controller();
 
   void init();
 

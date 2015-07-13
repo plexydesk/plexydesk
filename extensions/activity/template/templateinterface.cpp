@@ -21,7 +21,7 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<cherry_kit::desktop_dialog> TemplateInterface::activity() {
+QSharedPointer<cherry_kit::desktop_dialog> template_plugin_impl::activity() {
   QSharedPointer<cherry_kit::desktop_dialog> obj =
       QSharedPointer<cherry_kit::desktop_dialog>(new template_dialog(),
                                                  &QObject::deleteLater);

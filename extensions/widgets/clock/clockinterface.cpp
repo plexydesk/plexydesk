@@ -2,10 +2,10 @@
 #include "clock.h"
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
-ClockInterface::controller() {
+time_controller_impl::controller() {
   QSharedPointer<cherry_kit::desktop_controller_interface> obj =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new Clock(), &QObject::deleteLater);
+          new time_controller(), &QObject::deleteLater);
 
   return obj;
 }

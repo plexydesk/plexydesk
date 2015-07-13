@@ -29,15 +29,15 @@
 #include <QFileInfo>
 #include <QAction>
 
-PhotoFrameController::PhotoFrameController(QObject * /*object*/)
+photo_controller_impl::photo_controller_impl(QObject * /*object*/)
     : mFrameParentitem(0) {}
 
-PhotoFrameController::~PhotoFrameController() {
+photo_controller_impl::~photo_controller_impl() {
   mPhotoList.clear();
   qDeleteAll(mPhotoList);
 }
 
-void PhotoFrameController::init() {
+void photo_controller_impl::init() {
   QAction *_add_dir_action = new QAction(this);
   _add_dir_action->setText(tr("Photo"));
 
@@ -47,7 +47,7 @@ void PhotoFrameController::init() {
   m_supported_action_list << _add_dir_action;
 }
 
-void PhotoFrameController::revoke_session(const QVariantMap &args) {
+void photo_controller_impl::revoke_session(const QVariantMap &args) {
   QStringList photoList = args["photos"].toString().split(",");
 
   if (args["photos"].toString().isEmpty()) {
@@ -84,12 +84,12 @@ void PhotoFrameController::revoke_session(const QVariantMap &args) {
   }
 }
 
-void PhotoFrameController::session_data_available(
+void photo_controller_impl::session_data_available(
     const cherry::sync_object &a_session_root) {}
 
-void PhotoFrameController::submit_session_data(cherry::sync_object *a_obj) {}
+void photo_controller_impl::submit_session_data(cherry::sync_object *a_obj) {}
 
-void PhotoFrameController::handle_drop_event(cherry_kit::widget *widget,
+void photo_controller_impl::handle_drop_event(cherry_kit::widget *widget,
                                              QDropEvent *event) {
   if (event->mimeData()->urls().count() >= 0) {
     const QString droppedFile =
@@ -121,13 +121,13 @@ void PhotoFrameController::handle_drop_event(cherry_kit::widget *widget,
   }
 }
 
-void PhotoFrameController::set_view_rect(const QRectF &rect) {
+void photo_controller_impl::set_view_rect(const QRectF &rect) {
   if (mFrameParentitem) {
     mFrameParentitem->setPos(rect.x(), rect.y());
   }
 }
 
-bool PhotoFrameController::remove_widget(cherry_kit::widget *widget) {
+bool photo_controller_impl::remove_widget(cherry_kit::widget *widget) {
   if (!widget) {
     return 1;
   }
@@ -158,11 +158,11 @@ bool PhotoFrameController::remove_widget(cherry_kit::widget *widget) {
   return 1;
 }
 
-cherry_kit::ActionList PhotoFrameController::actions() const {
+cherry_kit::ActionList photo_controller_impl::actions() const {
   return m_supported_action_list;
 }
 
-void PhotoFrameController::request_action(const QString &actionName,
+void photo_controller_impl::request_action(const QString &actionName,
                                           const QVariantMap &args) {
   if (actionName == tr("Photo")) {
     cherry_kit::window *window = new cherry_kit::window();
@@ -179,10 +179,10 @@ void PhotoFrameController::request_action(const QString &actionName,
   }
 }
 
-QString PhotoFrameController::icon() const {
+QString photo_controller_impl::icon() const {
   return QString("pd_image_icon.png");
 }
 
-void PhotoFrameController::prepare_removal() {
+void photo_controller_impl::prepare_removal() {
   foreach(PhotoWidget * _widget, mPhotoList) { this->remove_widget(_widget); }
 }

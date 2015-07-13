@@ -18,36 +18,36 @@
 #include "template.h"
 #include <plexyconfig.h>
 
-class TemplateControllerImpl::PrivateTemplate {
+class template_controller::PrivateTemplate {
 public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
 };
 
-TemplateControllerImpl::TemplateControllerImpl(QObject *object)
+template_controller::template_controller(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_view_controller(new PrivateTemplate) {}
 
-TemplateControllerImpl::~TemplateControllerImpl() { delete o_view_controller; }
+template_controller::~template_controller() { delete o_view_controller; }
 
-void TemplateControllerImpl::init() {}
+void template_controller::init() {}
 
-void TemplateControllerImpl::session_data_available(
+void template_controller::session_data_available(
     const cherry::sync_object &a_session_root) {}
 
-void TemplateControllerImpl::submit_session_data(cherry::sync_object *a_obj) {}
+void template_controller::submit_session_data(cherry::sync_object *a_obj) {}
 
-void TemplateControllerImpl::set_view_rect(const QRectF &a_rect) {}
+void template_controller::set_view_rect(const QRectF &a_rect) {}
 
-bool TemplateControllerImpl::remove_widget(cherry_kit::widget *a_widget_ptr) {
+bool template_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
 
-cherry_kit::ActionList TemplateControllerImpl::actions() const {
+cherry_kit::ActionList template_controller::actions() const {
   return cherry_kit::ActionList();
 }
 
-void TemplateControllerImpl::request_action(const QString &a_name,
+void template_controller::request_action(const QString &a_name,
                                             const QVariantMap &a_args) {}
 
-QString TemplateControllerImpl::icon() const { return QString(); }
+QString template_controller::icon() const { return QString(); }
