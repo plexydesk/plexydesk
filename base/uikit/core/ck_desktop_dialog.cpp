@@ -67,8 +67,8 @@ QString desktop_dialog::error_message() const { return QString(); }
 void desktop_dialog::set_geometry(const QRectF &a_geometry) {
   o_desktop_dialog->m_geometry = a_geometry;
 
-  if (activity_window()) {
-    activity_window()->setGeometry(a_geometry);
+  if (dialog_window()) {
+    dialog_window()->setGeometry(a_geometry);
   }
 }
 
@@ -79,14 +79,14 @@ bool desktop_dialog::has_attribute(const QString &a_arg) {
 }
 
 void desktop_dialog::exec(const QPointF &a_pos) {
-  if (activity_window()) {
-    activity_window()->setPos(a_pos);
+  if (dialog_window()) {
+    dialog_window()->setPos(a_pos);
   }
 }
 
 void desktop_dialog::show_activity() {
-  if (activity_window()) {
-    activity_window()->show();
+  if (dialog_window()) {
+    dialog_window()->show();
   }
 }
 
@@ -100,14 +100,14 @@ void desktop_dialog::discard_activity() {
 
   hide();
 
-  if (activity_window()) {
+  if (dialog_window()) {
     cleanup();
   }
 }
 
 void desktop_dialog::hide() {
-  if (activity_window()) {
-    activity_window()->hide();
+  if (dialog_window()) {
+    dialog_window()->hide();
   }
 }
 
@@ -175,8 +175,8 @@ void desktop_dialog::notify_done() {
 
   o_desktop_dialog->m_async_notification_result =
       std::async(std::launch::async, [this]() {
-        if (activity_window())
-          activity_window()->close();
+        if (dialog_window())
+          dialog_window()->close();
       });
 }
 }

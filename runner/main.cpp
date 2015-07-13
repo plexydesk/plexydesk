@@ -214,7 +214,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
   }
   printf("Detected Platform %s\n", runtime_platform_name);
 #endif
-
   QApplication app(argc, argv);
   cherry_kit::extension_manager *loader = 0;
 
@@ -223,7 +222,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
                                QLatin1String("/share/plexy/ext/groups/")),
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/lib/plexyext/")));
-
 #ifndef Q_WS_QPA
   QString appIconPath =
       cherry_kit::config::instance()->prefix() + "/share/plexy/plexydesk.png";

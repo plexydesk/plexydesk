@@ -48,7 +48,7 @@ public:
   virtual void create_window(const QRectF &a_window_geometry,
                              const QString &a_window_title,
                              const QPointF &a_window_pos) = 0;
-  virtual window *activity_window() const = 0;
+  virtual window *dialog_window() const = 0;
 
   virtual void set_activity_attribute(const QString &a_name,
                                       const QVariant &a_data);
