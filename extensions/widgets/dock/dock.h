@@ -30,13 +30,13 @@
 
 using namespace cherry_kit;
 
-class DockControllerImpl : public cherry_kit::desktop_controller_interface {
+class desktop_panel_controller_impl : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
-  DockControllerImpl(QObject *object = 0);
+  desktop_panel_controller_impl(QObject *object = 0);
 
-  virtual ~DockControllerImpl();
+  virtual ~desktop_panel_controller_impl();
 
   void init();
 

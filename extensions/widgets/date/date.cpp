@@ -28,7 +28,7 @@
 #include <window.h>
 #include <viewbuilder.h>
 
-class DateControllerImpl::PrivateDate {
+class date_controller::PrivateDate {
 public:
   PrivateDate() {}
   ~PrivateDate() {}
@@ -36,13 +36,13 @@ public:
   cherry_kit::ActionList m_supported_action_list;
 };
 
-DateControllerImpl::DateControllerImpl(QObject *object)
+date_controller::date_controller(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_view_controller(new PrivateDate) {}
 
-DateControllerImpl::~DateControllerImpl() { delete o_view_controller; }
+date_controller::~date_controller() { delete o_view_controller; }
 
-void DateControllerImpl::init() {
+void date_controller::init() {
   QAction *_add_note_action = new QAction(this);
   _add_note_action->setText(tr("Calendar"));
 
@@ -52,7 +52,7 @@ void DateControllerImpl::init() {
   o_view_controller->m_supported_action_list << _add_note_action;
 }
 
-void DateControllerImpl::session_data_available(
+void date_controller::session_data_available(
     const cherry::sync_object &a_session_root) {
   revoke_previous_session(
       "Calendar", [this](cherry_kit::desktop_controller_interface *a_controller,
@@ -61,21 +61,21 @@ void DateControllerImpl::session_data_available(
       });
 }
 
-void DateControllerImpl::submit_session_data(cherry::sync_object *a_obj) {
+void date_controller::submit_session_data(cherry::sync_object *a_obj) {
   write_session_data("Calendar");
 }
 
-void DateControllerImpl::set_view_rect(const QRectF &a_rect) {}
+void date_controller::set_view_rect(const QRectF &a_rect) {}
 
-bool DateControllerImpl::remove_widget(cherry_kit::widget *a_widget_ptr) {
+bool date_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
 
-cherry_kit::ActionList DateControllerImpl::actions() const {
+cherry_kit::ActionList date_controller::actions() const {
   return o_view_controller->m_supported_action_list;
 }
 
-void DateControllerImpl::request_action(const QString &a_name,
+void date_controller::request_action(const QString &a_name,
                                         const QVariantMap &a_args) {
   QPointF window_location;
 
@@ -100,9 +100,9 @@ void DateControllerImpl::request_action(const QString &a_name,
   }
 }
 
-QString DateControllerImpl::icon() const { return QString(); }
+QString date_controller::icon() const { return QString(); }
 
-void DateControllerImpl::add_action_button(cherry_kit::fixed_layout *ui,
+void date_controller::add_action_button(cherry_kit::fixed_layout *ui,
                                            int a_row, int a_col,
                                            const std::string &a_label,
                                            const std::string &a_icon) {
@@ -113,7 +113,7 @@ void DateControllerImpl::add_action_button(cherry_kit::fixed_layout *ui,
 }
 
 void
-DateControllerImpl::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
+date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *ui = new cherry_kit::fixed_layout(window);
 

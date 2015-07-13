@@ -26,7 +26,7 @@
 #include <view_controller.h>
 #include <controllerplugininterface.h>
 
-class ClockInterface : public QObject,
+class time_controller_impl : public QObject,
                        public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
@@ -36,6 +36,6 @@ public:
   QSharedPointer<cherry_kit::desktop_controller_interface> controller();
 
 private:
-  Clock *mClock;
+  time_controller *mClock;
 };
 #endif

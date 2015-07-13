@@ -21,10 +21,10 @@
 #include <plexyconfig.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
-DateInterface::controller() {
+date_plugin_impl::controller() {
   QSharedPointer<cherry_kit::desktop_controller_interface> obj =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new DateControllerImpl(this), &QObject::deleteLater);
+          new date_controller(this), &QObject::deleteLater);
 
   return obj;
 }

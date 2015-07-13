@@ -22,10 +22,10 @@
 #include <plexyconfig.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
-DockInterface::controller() {
+panel_plugin_impl::controller() {
   QSharedPointer<cherry_kit::desktop_controller_interface> obj =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new DockControllerImpl(0), &QObject::deleteLater);
+          new desktop_panel_controller_impl(0), &QObject::deleteLater);
 
   return obj;
 }
