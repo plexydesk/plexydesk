@@ -93,5 +93,10 @@ void DesktopWindow::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
     return;
   }
 
+  a_ctx->save();
+  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform
+                        | QPainter::HighQualityAntialiasing
+                        | QPainter::Antialiasing);
   a_ctx->drawImage(a_rect, o_window->m_background_texture);
+  a_ctx->restore();
 }
