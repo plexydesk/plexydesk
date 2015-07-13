@@ -1,0 +1,7 @@
+add_subdirectory(text_input_dialog)                       
+add_subdirectory(icon_dialog)                               
+add_subdirectory(desktop_settings_dialog)                   
+add_subdirectory(progress_dialog)                           
+add_subdirectory(date_dialog)                               
+add_subdirectory(timezone_dialog)                           
+add_subdirectory(template_dialog)    
