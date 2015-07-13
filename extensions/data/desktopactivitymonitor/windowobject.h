@@ -4,7 +4,7 @@
 #include <QSharedDataPointer>
 #include <QTime>
 
-#include <syncobject.h>
+#include <ck_sync_object.h>
 
 class WindowObjectData;
 

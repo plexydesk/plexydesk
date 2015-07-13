@@ -1,10 +1,10 @@
 #include <QApplication>
 #include <QDebug>
-#include <image_io.h>
+#include <ck_image_io.h>
 
-#include <syncobject.h>
-#include <disksyncengine.h>
-#include <datasync.h>
+#include <ck_sync_object.h>
+#include <ck_disk_engine.h>
+#include <ck_data_sync.h>
 
 #include <QImage>
 #include <iostream>
@@ -22,15 +22,15 @@
     }                                                                          \
   } while (false)
 
-using namespace cherry;
+using namespace cherry_kit;
 
 void test_object_create() {
-  cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Clock");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  cherry::sync_object *obj = new cherry::sync_object();
+  cherry_kit::sync_object *obj = new cherry_kit::sync_object();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -42,15 +42,15 @@ void test_object_create() {
 }
 
 void test_object_update() {
-  cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Clock");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "", "");
 
   for (int i = 0; i < 10; i++) {
-    cherry::sync_object *obj = new cherry::sync_object();
+    cherry_kit::sync_object *obj = new cherry_kit::sync_object();
     obj->set_name("clock");
 
     obj->set_property("zone_id", "Asia/South");
@@ -61,7 +61,7 @@ void test_object_update() {
   }
 
   // test update
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     CK_ASSERT(a_found == 1, "Expected True");
     CK_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
@@ -75,12 +75,12 @@ void test_object_update() {
 }
 
 void test_object_find() {
-  cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Clock");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 1, "Expected True");
@@ -96,12 +96,12 @@ void test_object_find() {
 }
 
 void test_object_find_fail() {
-  cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Clock");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -113,14 +113,14 @@ void test_object_find_fail() {
 }
 
 void test_object_delete_matching() {
-  cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Clock");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "zone_id", "Asia/South");
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -132,14 +132,14 @@ void test_object_delete_matching() {
 }
 
 void test_object_delete() {
-  cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Clock");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
   sync->remove_object("clock", "", "");
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
@@ -151,12 +151,12 @@ void test_object_delete() {
 }
 
 void test_connected_objects() {
-  cherry::data_sync *sync = new cherry::data_sync("NoteList");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("NoteList");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  cherry::sync_object *obj = new cherry::sync_object();
+  cherry_kit::sync_object *obj = new cherry_kit::sync_object();
   obj->set_name("note");
 
   delete obj;
@@ -164,12 +164,12 @@ void test_connected_objects() {
 }
 
 void test_object_add_child() {
-  cherry::data_sync *sync = new cherry::data_sync("Clock");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Clock");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  cherry::sync_object *obj = new cherry::sync_object();
+  cherry_kit::sync_object *obj = new cherry_kit::sync_object();
   obj->set_name("clock");
 
   obj->set_property("zone_id", "America/North");
@@ -182,15 +182,15 @@ void test_object_add_child() {
 }
 
 void test_save_controller_to_session(const std::string &a_controller_name) {
-  cherry::data_sync *sync = new cherry::data_sync("test_default_space_0");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("test_default_space_0");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      cherry::sync_object obj;
+      cherry_kit::sync_object obj;
       obj.set_name("Controller");
       obj.set_property("name", a_controller_name);
 
@@ -205,12 +205,12 @@ void test_save_controller_to_session(const std::string &a_controller_name) {
 }
 
 void test_find_all() {
-  cherry::data_sync *sync = new cherry::data_sync("test_default_space_0");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("test_default_space_0");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     CK_ASSERT(a_found == 1, "All Items are Found");
   });
@@ -225,7 +225,7 @@ void test_stack_object_delete() {
 }
 
 void test_sync_object_delete() {
-  using namespace cherry;
+  using namespace cherry_kit;
 
   sync_object *object = new sync_object();
 
@@ -264,17 +264,17 @@ void test_session_list() {
 }
 
 void test_image_io_surface_null_surface() {
-  cherry::image_io ck_img(1024, 768);
-  cherry::io_surface *ck_img_surface_ref = ck_img.surface();
+  cherry_kit::image_io ck_img(1024, 768);
+  cherry_kit::io_surface *ck_img_surface_ref = ck_img.surface();
 
   CK_ASSERT(ck_img_surface_ref == nullptr, "Should return a Null Surface");
 }
 
 void test_image_io_surface_create_with_size() {
-  cherry::image_io ck_img(0, 0);
+  cherry_kit::image_io ck_img(0, 0);
   ck_img.create(800, 600);
 
-  cherry::io_surface *ck_img_surface_ref = ck_img.surface();
+  cherry_kit::io_surface *ck_img_surface_ref = ck_img.surface();
 
   CK_ASSERT(ck_img_surface_ref != nullptr, "Should return a Valid Surface");
   CK_ASSERT(ck_img_surface_ref->width == 800, "Expected to return 800");
@@ -282,8 +282,8 @@ void test_image_io_surface_create_with_size() {
 }
 
 void test_image_io_surface_create_from_file() {
-  cherry::image_io ck_img(0, 0);
-  cherry::io_surface *ck_img_surface_ref = nullptr;
+  cherry_kit::image_io ck_img(0, 0);
+  cherry_kit::io_surface *ck_img_surface_ref = nullptr;
 
   ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
                       image_io *a_img) {
@@ -308,8 +308,8 @@ void test_image_io_surface_create_from_file() {
 }
 
 void test_image_io_surface_invalid_create_from_file() {
-  cherry::image_io ck_img(0, 0);
-  cherry::io_surface *ck_img_surface_ref = nullptr;
+  cherry_kit::image_io ck_img(0, 0);
+  cherry_kit::io_surface *ck_img_surface_ref = nullptr;
 
   ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
                       image_io *a_img) {

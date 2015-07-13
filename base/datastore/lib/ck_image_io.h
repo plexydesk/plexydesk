@@ -25,7 +25,7 @@
 #include <cstring>
 #include <functional>
 
-namespace cherry {
+namespace cherry_kit {
 typedef unsigned char *image_data_ref;
 
 class io_surface {

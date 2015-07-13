@@ -3,8 +3,8 @@
 #include <QVariant>
 
 #include <datastore.h>
-#include <syncobject.h>
-#include <disksyncengine.h>
+#include <ck_sync_object.h>
+#include <ck_disk_engine.h>
 
 class WindowObjectData : public QSharedData {
 public:

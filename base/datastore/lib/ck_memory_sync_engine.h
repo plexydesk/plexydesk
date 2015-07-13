@@ -19,16 +19,16 @@
 #ifndef MEMORYSYNCENGINE_H
 #define MEMORYSYNCENGINE_H
 
-#include <syncengineinterface.h>
+#include <ck_sync_engine_interface.h>
 #include <QuetzalDataKitQt_export.h>
 
-namespace cherry {
+namespace cherry_kit {
 
-class QuetzalDataKitQt_EXPORT MemorySyncEngine : public sync_engine_interface {
+class QuetzalDataKitQt_EXPORT memory_sync_engine : public sync_engine_interface {
   Q_OBJECT
 
 public:
-  explicit MemorySyncEngine(QObject *a_parent_ptr = 0);
+  explicit memory_sync_engine(QObject *a_parent_ptr = 0);
 
   virtual QString data(const QString &storeName);
 

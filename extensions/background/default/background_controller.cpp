@@ -106,7 +106,7 @@ void BackgroundController::revoke_session(const QVariantMap &args) {
 }
 
 void BackgroundController::session_data_available(
-    const cherry::sync_object &a_session_root) {
+    const cherry_kit::sync_object &a_session_root) {
   if (!a_session_root.has_property("background") ||
       !a_session_root.has_property("mode"))
     return;
@@ -126,7 +126,7 @@ void BackgroundController::session_data_available(
   }
 }
 
-void BackgroundController::submit_session_data(cherry::sync_object *a_object) {
+void BackgroundController::submit_session_data(cherry_kit::sync_object *a_object) {
   a_object->set_property("background", o_ctr->m_background_texture);
   a_object->set_property("mode", "scale");
 }
