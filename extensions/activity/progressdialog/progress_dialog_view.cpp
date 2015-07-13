@@ -15,88 +15,83 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "progressdialog.h"
+#include "progress_dialog_view.h"
 #include <ck_widget.h>
 #include <ck_config.h>
 #include <QTimer>
 #include <ck_desktop_controller_interface.h>
 #include <ck_progress_bar.h>
 
-class progress_dialog::PrivateProgressDialog {
+class progress_dialog_view::PrivateProgressDialog {
 public:
   PrivateProgressDialog() {}
   ~PrivateProgressDialog() {}
 
-  cherry_kit::window *mFrame;
+  cherry_kit::window *m_window;
   cherry_kit::progress_bar *m_progress_bar_widget;
-  int mMax;
-  int mMin;
+  int m_max_value;
+  int m_min_value;
   bool m_task_completed;
 };
 
-progress_dialog::progress_dialog(QGraphicsObject *object)
+progress_dialog_view::progress_dialog_view(QGraphicsObject *object)
     : cherry_kit::desktop_dialog(object),
       o_desktop_dialog(new PrivateProgressDialog) {}
 
-progress_dialog::~progress_dialog() {
+progress_dialog_view::~progress_dialog_view() {
   qDebug() << Q_FUNC_INFO;
   delete o_desktop_dialog;
 }
 
-void progress_dialog::create_window(const QRectF &window_geometry,
+void progress_dialog_view::create_window(const QRectF &window_geometry,
                                            const QString &window_title,
                                            const QPointF &window_pos) {
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  o_desktop_dialog->mFrame = new cherry_kit::window();
+  o_desktop_dialog->m_window = new cherry_kit::window();
   set_geometry(window_geometry);
 
-  o_desktop_dialog->mFrame->set_widget_name("Progress Dialog");
-  o_desktop_dialog->mFrame->set_widget_flag(
-      cherry_kit::widget::kRenderBackground, true);
-  o_desktop_dialog->mFrame->set_widget_flag(
-      cherry_kit::widget::kConvertToWindowType, true);
-  o_desktop_dialog->mFrame->set_widget_flag(
-      cherry_kit::widget::kRenderDropShadow, true);
-
+  o_desktop_dialog->m_window->set_window_title(window_title);
   o_desktop_dialog->m_task_completed = 0;
 
-  connect(o_desktop_dialog->mFrame, SIGNAL(closed(cherry_kit::widget *)), this,
-          SLOT(onWidgetClosed(cherry_kit::widget *)));
+  //connect(o_desktop_dialog->m_window, SIGNAL(closed(cherry_kit::widget *)), this,
+   //       SLOT(onWidgetClosed(cherry_kit::widget *)));
 
-  o_desktop_dialog->mMax = 100.0;
-  o_desktop_dialog->mMin = 0.0;
+  o_desktop_dialog->m_max_value = 100.0;
+  o_desktop_dialog->m_min_value = 0.0;
 
   if (has_attribute("max")) {
-    o_desktop_dialog->mMax = attributes()["max"].toFloat();
+    o_desktop_dialog->m_max_value = attributes()["max"].toFloat();
   }
 
   if (has_attribute("min")) {
-    o_desktop_dialog->mMin = attributes()["min"].toFloat();
+    o_desktop_dialog->m_min_value = attributes()["min"].toFloat();
   }
 
   o_desktop_dialog->m_progress_bar_widget =
-      new cherry_kit::progress_bar(o_desktop_dialog->mFrame);
-  o_desktop_dialog->m_progress_bar_widget->set_range(o_desktop_dialog->mMin,
-                                                     o_desktop_dialog->mMax);
+      new cherry_kit::progress_bar(o_desktop_dialog->m_window);
+  o_desktop_dialog->m_progress_bar_widget->set_range(o_desktop_dialog->m_min_value,
+                                                     o_desktop_dialog->m_max_value);
   o_desktop_dialog->m_progress_bar_widget->set_size(
       QSize(window_geometry.width() - 10, 32));
   o_desktop_dialog->m_progress_bar_widget->set_value(0.0);
   o_desktop_dialog->m_progress_bar_widget->setPos(5.0, 64.0);
-  o_desktop_dialog->m_progress_bar_widget->show();
 
-  update_content_geometry(o_desktop_dialog->mFrame);
+  o_desktop_dialog->m_window->set_window_content(
+              o_desktop_dialog->m_progress_bar_widget);
+
+  update_content_geometry(o_desktop_dialog->m_window);
   exec(window_pos);
 
   show_activity();
 }
 
-QVariantMap progress_dialog::result() const { return QVariantMap(); }
+QVariantMap progress_dialog_view::result() const { return QVariantMap(); }
 
-void progress_dialog::update_attribute(const QString &name,
+void progress_dialog_view::update_attribute(const QString &name,
                                               const QVariant &data) {
-  if (!o_desktop_dialog->mFrame) {
+  if (!o_desktop_dialog->m_window) {
     return;
   }
 
@@ -110,26 +105,18 @@ void progress_dialog::update_attribute(const QString &name,
     o_desktop_dialog->m_progress_bar_widget->set_value(progress);
   }
 
-  if (o_desktop_dialog->mMax == progress) {
+  if (o_desktop_dialog->m_max_value == progress) {
     discard_activity();
   }
 }
 
-cherry_kit::window *progress_dialog::activity_window() const {
-  return o_desktop_dialog->mFrame;
+cherry_kit::window *progress_dialog_view::activity_window() const {
+  return o_desktop_dialog->m_window;
 }
 
-void progress_dialog::cleanup() {
-  if (o_desktop_dialog->mFrame) {
-    delete o_desktop_dialog->mFrame;
+void progress_dialog_view::cleanup() {
+  if (o_desktop_dialog->m_window) {
+    delete o_desktop_dialog->m_window;
   }
-  o_desktop_dialog->mFrame = 0;
-}
-
-void progress_dialog::onWidgetClosed(cherry_kit::widget *widget) {
-  discard_activity();
-}
-
-void progress_dialog::onHideAnimationFinished() {
-  o_desktop_dialog->m_task_completed = 1;
+  o_desktop_dialog->m_window = 0;
 }
