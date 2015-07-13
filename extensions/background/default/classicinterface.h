@@ -19,9 +19,9 @@
 #ifndef PLEXY_CLASSIC_BACKDROP_I
 #define PLEXY_CLASSIC_BACKDROP_I
 
-#include <extensionmanager.h>
+#include <ck_extension_manager.h>
 
-#include <controllerplugininterface.h>
+#include <ck_desktop_plugin_interface.h>
 
 class ClassicBackdrop : public QObject,
                         public cherry_kit::desktop_plugin_interface {

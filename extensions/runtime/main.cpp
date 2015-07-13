@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QCommandLineParser>
-#include <extensionmanager.h>
+#include <ck_extension_manager.h>
 
 int main(int argc, char *argv[]) {
   QApplication app(argc, argv);

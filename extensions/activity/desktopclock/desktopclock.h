@@ -21,10 +21,10 @@
 
 #include <QtCore>
 
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
-#include <desktopactivity.h>
-#include <window.h>
+#include <ck_desktop_dialog.h>
+#include <ck_window.h>
 
 class DesktopClockActivity : public cherry_kit::DesktopActivity {
   Q_OBJECT

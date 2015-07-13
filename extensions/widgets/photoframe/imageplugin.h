@@ -19,9 +19,9 @@
 #ifndef PLEXY_WIDGET_IMAGEPILE_H
 #define PLEXY_WIDGET_IMAGEPILE_H
 
-#include <view_controller.h>
+#include <ck_desktop_controller_interface.h>
 
-#include <resource_manager.h>
+#include <ck_resource_manager.h>
 #include "photowidget.h"
 
 class photo_controller_impl : public cherry_kit::desktop_controller_interface {

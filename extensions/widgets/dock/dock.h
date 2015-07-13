@@ -21,12 +21,12 @@
 
 #include <QtCore>
 
-#include <datasource.h>
-#include <view_controller.h>
-#include <widget.h>
+#include <ck_data_source.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_widget.h>
 #include <QtNetwork>
-#include <abstractcellcomponent.h>
-#include <viewbuilder.h>
+#include <ck_table_view_item.h>
+#include <ck_fixed_layout.h>
 
 using namespace cherry_kit;
 

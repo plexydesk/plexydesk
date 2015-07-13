@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
 
 class HttpServerData : public cherry_kit::data_source {

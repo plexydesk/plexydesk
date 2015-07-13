@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "photosearch.h"
 #include "photosearchinterface.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_dialog> PhotoSearchInterface::activity() {
   QSharedPointer<cherry_kit::desktop_dialog> obj =

@@ -2,16 +2,16 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QGraphicsPixmapItem>
-#include <style.h>
+#include <ck_style.h>
 #include <nativestyle.h>
 #include <abstractdesktopview.h>
-#include <button.h>
+#include <ck_button.h>
 #include "facebookcontactcardbutton.h"
 #include "facebookmessagedialog.h"
 #include <controllerinterface.h>
 #include <webkitwebview.h>
-#include <plexyconfig.h>
-#include <extensionmanager.h>
+#include <ck_config.h>
+#include <ck_extension_manager.h>
 
 //
 // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>

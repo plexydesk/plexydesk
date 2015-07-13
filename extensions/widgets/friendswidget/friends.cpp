@@ -37,7 +37,7 @@
 ***************************************************************************/
 
 #include "friends.h"
-#include "friendswidget.h"
+#include "friendsck_widget.h"
 
 #include <QtCore>
 #include <QtGui>

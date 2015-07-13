@@ -1,7 +1,7 @@
 #ifndef PLEXYNOW_WIDGET_H
 #define PLEXYNOW_WIDGET_H
 
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 #include <QGraphicsDropShadowEffect>
 
 class PlexyNowWidget : public PlexyDesk::DesktopWidget {

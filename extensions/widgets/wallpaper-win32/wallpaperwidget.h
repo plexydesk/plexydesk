@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QRectF>
 
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 #include <datainterface.h>
 
 #include "config.h"

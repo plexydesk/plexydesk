@@ -23,8 +23,8 @@
 #include <QNetworkReply>
 
 #include <controllerinterface.h>
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 #include <config.h>
 
 #include <json.h>

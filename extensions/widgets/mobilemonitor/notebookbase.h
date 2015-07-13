@@ -2,7 +2,7 @@
 #define NOTEBOOKBASE_H
 
 #include <QObject>
-#include <scrollwidget.h>
+#include <scrollck_widget.h>
 
 class NoteBookBase : public PlexyDesk::ScrollWidget {
   Q_OBJECT

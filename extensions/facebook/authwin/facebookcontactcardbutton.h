@@ -1,7 +1,7 @@
 #ifndef FACEBOOKCONTACTCARDBUTTON_H
 #define FACEBOOKCONTACTCARDBUTTON_H
 
-#include <button.h>
+#include <ck_button.h>
 
 class FacebookContactCardButton : public PlexyDesk::Button {
   Q_OBJECT

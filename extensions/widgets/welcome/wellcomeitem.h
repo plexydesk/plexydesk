@@ -5,7 +5,7 @@
 
 #include <config.h>
 
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 #include <QtGui>
 #include <QtCore>
 #include <qimageblitz.h>

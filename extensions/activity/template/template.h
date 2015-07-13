@@ -21,9 +21,9 @@
 
 #include <QObject>
 
-#include <datasource.h>
-#include <desktopactivity.h>
-#include <window.h>
+#include <ck_data_source.h>
+#include <ck_desktop_dialog.h>
+#include <ck_window.h>
 
 class template_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT

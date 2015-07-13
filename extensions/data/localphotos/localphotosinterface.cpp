@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "localphotos.h"
 #include "localphotosinterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 LPhotosInterface::LPhotosInterface(QObject *object) {}
 

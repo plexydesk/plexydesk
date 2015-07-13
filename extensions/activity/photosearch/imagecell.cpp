@@ -7,10 +7,10 @@
 #include <QDebug>
 #include <QStyleOptionGraphicsItem>
 
-#include <button.h>
-#include <imageview.h>
-#include <label.h>
-#include <resource_manager.h>
+#include <ck_button.h>
+#include <ck_image_view.h>
+#include <ck_label.h>
+#include <ck_resource_manager.h>
 
 class ImageCell::PrivateImageCell {
 
@@ -30,7 +30,7 @@ public:
 };
 
 ImageCell::ImageCell(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : cherry_kit::TableViewItem(rect, parent), d(new PrivateImageCell) {
+    : cherry_kit::table_view_item(rect, parent), d(new PrivateImageCell) {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mVisibility = true;

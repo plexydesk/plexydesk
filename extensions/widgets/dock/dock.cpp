@@ -21,22 +21,22 @@
 // Qt
 #include <QGraphicsLinearLayout>
 
-#include <toolbar.h>
-#include <imagebutton.h>
-#include <tableview.h>
+#include <ck_ToolBar.h>
+#include <ck_icon_button.h>
+#include <ck_TableView.h>
 
-#include <workspace.h>
+#include <ck_workspace.h>
 
 // models
-#include <default_table_model.h>
-#include <default_table_component.h>
-#include <item_view.h>
+#include <ck_DefaultTableModel.h>
+#include <ck_DefaultTableComponent.h>
+#include <ck_item_view.h>
 
 // core
-#include <plexyconfig.h>
-#include <extensionmanager.h>
-#include <imageview.h>
-#include <viewbuilder.h>
+#include <ck_config.h>
+#include <ck_extension_manager.h>
+#include <ck_image_view.h>
+#include <ck_fixed_layout.h>
 
 using namespace cherry_kit;
 
@@ -49,14 +49,14 @@ public:
   window *m_dock_window;
   window *m_preview_window;
 
-  cherry_kit::ItemView *m_preview_widget;
+  cherry_kit::item_view *m_preview_widget;
 
   QMap<QString, int> m_actions_map;
   QStringList m_controller_name_list;
   bool m_main_panel_is_hidden;
 
   cherry_kit::desktop_dialog_ref m_action_activity;
-  cherry_kit::ImageButton *m_add_new_workspace_button_ptr;
+  cherry_kit::icon_button *m_add_new_workspace_button_ptr;
   cherry_kit::ActionList m_supported_action_list;
 };
 
@@ -72,9 +72,9 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
   o_view_controller->m_main_panel_is_hidden = true;
 
   // menu
-  o_view_controller->m_preview_widget = new cherry_kit::ItemView();
+  o_view_controller->m_preview_widget = new cherry_kit::item_view();
   o_view_controller->m_preview_widget->on_item_removed([this](
-      cherry_kit::ModelViewItem *a_item) {
+      cherry_kit::model_view_item *a_item) {
     if (a_item) {
       delete a_item;
     }
@@ -581,16 +581,16 @@ void desktop_panel_controller_impl::updatePreview() {
       foreach(cherry_kit::space * _space, _workspace->current_spaces()) {
         QPixmap _preview = _workspace->thumbnail(_space);
 
-        cherry_kit::ImageView *p = new cherry_kit::ImageView();
+        cherry_kit::image_view *p = new cherry_kit::image_view();
 
         p->setMinimumSize(_preview.size());
         p->set_pixmap(_preview);
         lHeight += _preview.size().height();
         lWidth = _preview.size().width();
 
-        cherry_kit::ModelViewItem *model_item = new cherry_kit::ModelViewItem();
+        cherry_kit::model_view_item *model_item = new cherry_kit::model_view_item();
         model_item->set_view(p);
-        model_item->on_view_removed([=](cherry_kit::ModelViewItem *a_item) {
+        model_item->on_view_removed([=](cherry_kit::model_view_item *a_item) {
           if (a_item && a_item->view()) {
             cherry_kit::widget *view = a_item->view();
             if (view)

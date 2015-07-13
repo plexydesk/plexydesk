@@ -17,7 +17,7 @@ set(headerFiles
     contactlist.h
     contactlistitem.h
     facebookcontactcard.h
-    facebookauthenticationwidget.h
+    facebookauthenticationck_ck_widget.h
     facebookmessagedialog.h
     facebookcontactcardbutton.h
 )
@@ -29,7 +29,7 @@ set(QTMOC_SRCS
     contactlist.h
     contactlistitem.h
     facebookcontactcard.h
-    facebookauthenticationwidget.h
+    facebookauthenticationck_ck_widget.h
     facebookmessagedialog.h
     facebookcontactcardbutton.h
 )

@@ -23,7 +23,7 @@
 
 #include <widgetinterface.h>
 #include <widgetplugin.h>
-#include "welcomewidget.h"
+#include "welcomeck_widget.h"
 #include "frameitem.h"
 
 class Welcome : public PlexyDesk::WidgetPlugin {

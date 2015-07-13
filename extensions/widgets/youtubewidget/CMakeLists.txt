@@ -11,14 +11,14 @@ set(headerFiles
     videoentity.h
     youtube.h
     youtubeinterface.h
-    youtubewidget.h
+    youtubeck_ck_widget.h
     config.h
     )
 
 set(QTMOC_SRCS
     youtube.h
     youtubeinterface.h
-    youtubewidget.h
+    youtubeck_ck_widget.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})

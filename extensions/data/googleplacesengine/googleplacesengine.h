@@ -22,7 +22,7 @@
 #include <QtCore>
 
 #include <abstractplugininterface.h>
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
 
 class GooglePlacesEngineData : public PlexyDesk::DataSource {

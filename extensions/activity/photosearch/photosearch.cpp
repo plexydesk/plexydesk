@@ -16,27 +16,27 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "photosearch.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
 #include <QDir>
 #include <QFileInfo>
 #include <QFileSystemModel>
 
-#include <plexyconfig.h>
-#include <view_controller.h>
-#include <tableview.h>
-#include <default_table_component.h>
-#include <progressbar.h>
-#include <default_table_model.h>
+#include <ck_config.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_TableView.h>
+#include <ck_DefaultTableComponent.h>
+#include <ck_progress_bar.h>
+#include <ck_DefaultTableModel.h>
 #include "imagecell.h"
 #include "imagecelladaptor.h"
 #include <asyncimageloader.h>
 #include <asyncimagecreator.h>
-#include <viewbuilder.h>
-#include <button.h>
-#include <dialwidget.h>
-#include <item_view.h>
+#include <ck_fixed_layout.h>
+#include <ck_button.h>
+#include <ck_dial_view.h>
+#include <ck_item_view.h>
 #include <image_io.h>
 
 #include "localwallpapers.h"
@@ -47,10 +47,10 @@ public:
   ~PrivatePhotoSearch() {}
 
   cherry_kit::window *m_window;
-  cherry_kit::ProgressBar *mProgressBar;
+  cherry_kit::progress_bar *mProgressBar;
   cherry_kit::TableView *mTable;
 
-  cherry_kit::ItemView *m_image_view;
+  cherry_kit::item_view *m_image_view;
 
   ImageCellAdaptor *mFactory;
   QRectF mGeometry;
@@ -90,7 +90,7 @@ void wallpaper_dialog::create_window(const QRectF &aWindowGeometry,
 
   cherry_kit::widget *ck_icon_gird = ck_ui->add_widget(0, 0, "widget", ui_data);
   d->m_image_view =
-      new cherry_kit::ItemView(ck_icon_gird, cherry_kit::ItemView::kGridModel);
+      new cherry_kit::item_view(ck_icon_gird, cherry_kit::item_view::kGridModel);
 
   ck_icon_gird->on_geometry_changed([&](const QRectF &a_rect) {
     d->m_image_view->setGeometry(a_rect);
@@ -134,7 +134,7 @@ void wallpaper_dialog::onShowAnimationFinished() {
   this->load_from_system_path();
 }
 
-void wallpaper_dialog::onClicked(TableViewItem *item) {
+void wallpaper_dialog::onClicked(table_view_item *item) {
   if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;
   }

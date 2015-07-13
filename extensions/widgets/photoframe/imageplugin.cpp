@@ -18,9 +18,9 @@
 *******************************************************************************/
 
 #include "imageplugin.h"
-#include <extensionmanager.h>
-#include <widget.h>
-#include <space.h>
+#include <ck_extension_manager.h>
+#include <ck_widget.h>
+#include <ck_space.h>
 
 // qt
 #include <QGraphicsScene>

@@ -1,8 +1,8 @@
 #ifndef FOLDERSPROVIDER_H
 #define FOLDERSPROVIDER_H
 
-#include <tableviewcellinterface.h>
-#include <datasource.h>
+#include <ck_table_model.h>
+#include <ck_data_source.h>
 
 class FolderItem;
 

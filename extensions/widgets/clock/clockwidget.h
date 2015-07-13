@@ -21,7 +21,7 @@
 #ifndef CLOCK
 #define CLOCK
 
-#include <widget.h>
+#include <ck_widget.h>
 
 #include <QTimer>
 

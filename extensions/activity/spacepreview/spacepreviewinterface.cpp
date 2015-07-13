@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "spacepreview.h"
 #include "spacepreviewinterface.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_dialog> SpacePreviewInterface::activity() {
   QSharedPointer<cherry_kit::desktop_dialog> obj =

@@ -3,7 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsObject>
-#include <abstractcellcomponent.h>
+#include <ck_table_view_item.h>
 #include <QFileInfo>
 #include <QIcon>
 

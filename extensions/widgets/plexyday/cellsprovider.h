@@ -1,8 +1,8 @@
 #ifndef CELLSPROVIDER_H
 #define CELLSPROVIDER_H
 
-#include <tableviewcellinterface.h>
-#include <datasource.h>
+#include <ck_table_model.h>
+#include <ck_data_source.h>
 
 class CellsProvider : public PlexyDesk::DelegateInterface {
   Q_OBJECT

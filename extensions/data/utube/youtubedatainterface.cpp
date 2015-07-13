@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "utube.h"
 #include "youtubedatainterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 #include <QtPlugin>
 

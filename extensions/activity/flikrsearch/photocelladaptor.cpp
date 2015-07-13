@@ -2,14 +2,14 @@
 
 #include "photocelladaptor.h"
 #include "photocell.h"
-#include <resource_manager.h>
+#include <ck_resource_manager.h>
 #include <QHash>
 
 #include <webservice.h>
 #include <asyncdatadownloader.h>
 #include <asyncimagecreator.h>
 #include <asyncimageloader.h>
-#include <plexyconfig.h>
+#include <ck_config.h>
 
 class ResultCache {
 public:

@@ -2,12 +2,12 @@
 #define IMAGE_CELL_ADAPTOR_H
 
 #include <QString>
-#include <tableviewcellinterface.h>
+#include <ck_table_model.h>
 #include <webservice.h>
 
 using namespace cherry_kit;
 
-class ImageCellAdaptor : public TableModel {
+class ImageCellAdaptor : public table_model {
   Q_OBJECT
 
 public:

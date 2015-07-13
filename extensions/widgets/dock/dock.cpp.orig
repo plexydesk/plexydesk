@@ -21,21 +21,21 @@
 // Qt
 #include <QGraphicsLinearLayout>
 
-#include <toolbar.h>
-#include <imagebutton.h>
-#include <tableview.h>
+#include <ck_ToolBar.h>
+#include <ck_icon_button.h>
+#include <ck_TableView.h>
 
-#include <workspace.h>
+#include <ck_workspace.h>
 
 // models
-#include <default_table_model.h>
-#include <default_table_component.h>
+#include <ck_DefaultTableModel.h>
+#include <ck_DefaultTableComponent.h>
 #include <modelview.h>
 
 // core
-#include <plexyconfig.h>
-#include <extensionmanager.h>
-#include <imageview.h>
+#include <ck_config.h>
+#include <ck_extension_manager.h>
+#include <ck_image_view.h>
 
 using namespace UIKit;
 

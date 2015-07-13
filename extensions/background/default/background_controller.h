@@ -20,7 +20,7 @@
 #define PLEXY_BACKGROUND_CONTROLLER_H
 
 #include <config.h>
-#include <view_controller.h>
+#include <ck_desktop_controller_interface.h>
 #define QT_SHAREDPOINTER_TRACK_POINTERS 1
 #include <QSharedPointer>
 

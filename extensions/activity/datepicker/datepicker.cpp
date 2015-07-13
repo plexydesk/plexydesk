@@ -16,16 +16,16 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "datepicker.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
-#include <view_controller.h>
-#include <tableview.h>
-#include <default_table_model.h>
-#include <resource_manager.h>
-#include <imagebutton.h>
-#include <button.h>
-#include <calendarwidget.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_TableView.h>
+#include <ck_DefaultTableModel.h>
+#include <ck_resource_manager.h>
+#include <ck_icon_button.h>
+#include <ck_button.h>
+#include <ck_calendar_view.h>
 
 class date_dialog::PrivateDatePicker {
 public:
@@ -34,8 +34,8 @@ public:
 
   cherry_kit::window *m_activity_window;
   cherry_kit::widget *m_window_content;
-  cherry_kit::Button *m_done_button;
-  cherry_kit::CalendarView *mCalendarWidget;
+  cherry_kit::button *m_done_button;
+  cherry_kit::calendar_view *mCalendarWidget;
 
   QVariantMap m_result_data;
 };
@@ -58,12 +58,12 @@ void date_dialog::create_window(const QRectF &window_geometry,
   o_desktop_dialog->m_window_content->setGeometry(window_geometry);
 
   o_desktop_dialog->mCalendarWidget =
-      new cherry_kit::CalendarView(o_desktop_dialog->m_window_content);
+      new cherry_kit::calendar_view(o_desktop_dialog->m_window_content);
   o_desktop_dialog->mCalendarWidget->setGeometry(window_geometry);
   o_desktop_dialog->mCalendarWidget->setPos(0, 0);
 
   o_desktop_dialog->m_done_button =
-      new cherry_kit::Button(o_desktop_dialog->m_window_content);
+      new cherry_kit::button(o_desktop_dialog->m_window_content);
   o_desktop_dialog->m_done_button->set_label(tr("Done"));
   o_desktop_dialog->m_done_button->show();
 

@@ -12,29 +12,29 @@ include(GenerateExportHeader)
 set(LIB_CXX_FILES
                 widget.cpp
                 controller_action.cpp
-		view_controller.cpp
+		ck_desktop_controller_interface.cpp
                 datasource.cpp
-                desktopactivity.cpp
-                extensionmanager.cpp
+                ck_desktop_dialog.cpp
+                ck_extension_manager.cpp
                 style.cpp
                 desktop_viewport.cpp)
 
 set(LIBRARY_INTERFACE_FILES
-	        view_controller.h
+	        ck_desktop_controller_interface.h
                 controllerplugininterface.h
-                dataplugininterface.h
-                activity_interface.h
-                widgetstyleinterface.h)
+                ck_data_plugin_interface.h
+                ck_dialog_plugin_interface.h
+                ck_style_interface.h)
 
 set(LIBRARY_HEADER_FILES
                 plexy.h
                 style.h
-                widget.h
-                datasource.h
-                stylefeatures.h
-                desktopactivity.h
+                ck_widget.h
+                ck_data_source.h
+                ck_style_data.h
+                ck_desktop_dialog.h
                 desktop_viewport.h
-                extensionmanager.h
+                ck_extension_manager.h
                 controller_action.h)
 
 set(LIBRARY_LINK_TARGETS

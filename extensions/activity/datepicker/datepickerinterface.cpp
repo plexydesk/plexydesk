@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "datepicker.h"
 #include "datepickerinterface.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_dialog> DatePickerInterface::activity() {
   QSharedPointer<cherry_kit::desktop_dialog> obj =

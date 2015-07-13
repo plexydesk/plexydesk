@@ -3,7 +3,7 @@
 
 #include <controllerinterface.h>
 #include "facebookcontactui.h"
-#include "facebookauthenticationwidget.h"
+#include "facebookauthenticationck_widget.h"
 
 class AuthPlugin : public PlexyDesk::ControllerInterface {
   Q_OBJECT

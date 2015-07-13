@@ -4,7 +4,7 @@
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
 
-#include <style.h>
+#include <ck_style.h>
 
 class ContactListItem : public QGraphicsObject {
   Q_OBJECT

@@ -1,7 +1,7 @@
 #ifndef PLEXY_DAY_I
 #define PLEXY_DAY_I
 
-#include <controllerplugininterface.h>
+#include <ck_desktop_plugin_interface.h>
 
 class PlexyDayInterface : public QObject,
                           public PlexyDesk::ControllerPluginInterface {

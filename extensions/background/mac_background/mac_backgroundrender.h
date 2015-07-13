@@ -22,7 +22,7 @@
 
 #include <QImage>
 
-#include <abstractdesktopwidget.h>
+#include <abstractdesktopck_widget.h>
 
 class MacBackgroundRender : public PlexyDesk::AbstractDesktopWidget {
   Q_OBJECT

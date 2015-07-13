@@ -3,7 +3,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-#include <button.h>
+#include <ck_button.h>
 
 class ContactListItem::PrivateContactListItem {
 public:

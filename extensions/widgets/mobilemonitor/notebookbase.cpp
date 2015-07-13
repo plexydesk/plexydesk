@@ -1,7 +1,7 @@
 #include "notebookbase.h"
 #include "note.h"
 
-#include <button.h>
+#include <ck_button.h>
 
 class NoteBookBase::PrivateNoteBase {
 public:

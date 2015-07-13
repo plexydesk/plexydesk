@@ -18,30 +18,30 @@
 *******************************************************************************/
 // internal
 #include "clock.h"
-#include "clockwidget.h"
+#include "ck_clock_view.h"
 
 #include <QDebug>
 
 // uikit
-#include <view_controller.h>
-#include <extensionmanager.h>
-#include <session_sync.h>
-#include <rangewidget.h>
-#include <dialwidget.h>
-#include <toolbar.h>
-#include <space.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_extension_manager.h>
+#include <ck_session_sync.h>
+#include <ck_range_view.h>
+#include <ck_dial_view.h>
+#include <ck_ToolBar.h>
+#include <ck_space.h>
 
 // datakit
-#include <window.h>
-#include <clockwidget.h>
+#include <ck_window.h>
+#include <ck_clock_view.h>
 #include <datasync.h>
 #include <disksyncengine.h>
 
 // Qt
 #include <QAction>
-#include <imagebutton.h>
-#include <label.h>
-#include <viewbuilder.h>
+#include <ck_icon_button.h>
+#include <ck_label.h>
+#include <ck_fixed_layout.h>
 
 class time_controller::PrivateClockController {
 public:
@@ -50,7 +50,7 @@ public:
 
   void setup_create_clock_ui(time_controller *a_controller,
                              cherry_kit::session_sync *a_session);
-  cherry_kit::ImageButton *add_action_button(cherry_kit::fixed_layout *ui,
+  cherry_kit::icon_button *add_action_button(cherry_kit::fixed_layout *ui,
                                              int a_row, int a_col,
                                              const std::string &a_label,
                                              const std::string &a_icon);
@@ -171,14 +171,14 @@ QString time_controller::icon() const { return QString("pd_clock_frame_icon.png"
 
 void time_controller::onDataUpdated(const QVariantMap &data) {}
 
-cherry_kit::ImageButton *time_controller::PrivateClockController::add_action_button(
+cherry_kit::icon_button *time_controller::PrivateClockController::add_action_button(
     cherry_kit::fixed_layout *ui, int a_row, int a_col,
     const std::string &a_label, const std::string &a_icon) {
-  cherry_kit::ImageButton *ck_rv = 0;
+  cherry_kit::icon_button *ck_rv = 0;
   cherry_kit::widget_properties_t ck_ui_data;
   ck_ui_data["label"] = a_label;
   ck_ui_data["icon"] = "actions/" + a_icon + ".png";
-  ck_rv = dynamic_cast<cherry_kit::ImageButton *>(
+  ck_rv = dynamic_cast<cherry_kit::icon_button *>(
       ui->add_widget(a_row, a_col, "image_button", ck_ui_data));
   return ck_rv;
 }
@@ -188,8 +188,8 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
 
-  cherry_kit::ImageButton *ck_location_btn = 0;
-  cherry_kit::ClockWidget *ck_clock = 0;
+  cherry_kit::icon_button *ck_location_btn = 0;
+  cherry_kit::clock_view *ck_clock = 0;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
   ck_ui->set_geometry(0, 0, 240, 260);
@@ -207,7 +207,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::widget_properties_t ui_data;
   ui_data["text"] + "";
 
-  ck_clock = dynamic_cast<cherry_kit::ClockWidget *>(
+  ck_clock = dynamic_cast<cherry_kit::clock_view *>(
       ck_ui->add_widget(0, 0, "clock", ui_data));
 
   ck_location_btn = add_action_button(ck_ui, 1, 1, "Location", "pd_location");
@@ -270,8 +270,8 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
 
-  cherry_kit::ImageButton *ck_location_btn = 0;
-  cherry_kit::DialWidget *ck_clock = 0;
+  cherry_kit::icon_button *ck_location_btn = 0;
+  cherry_kit::dial_view *ck_clock = 0;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
   ck_ui->set_geometry(0, 0, 240, 260);

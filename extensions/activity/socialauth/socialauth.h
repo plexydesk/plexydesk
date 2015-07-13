@@ -21,10 +21,10 @@
 
 #include <QtCore>
 
-#include <window.h>
-#include <datasource.h>
+#include <ck_window.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
-#include <desktopactivity.h>
+#include <ck_desktop_dialog.h>
 
 class social_auth_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT

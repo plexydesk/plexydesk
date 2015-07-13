@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "ubuntu.h"
 #include "ubuntuinterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<PlexyDesk::Style> ubuntuInterface::style() {
   QSharedPointer<PlexyDesk::Style> obj = QSharedPointer<PlexyDesk::Style>(

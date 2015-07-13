@@ -23,7 +23,7 @@
 #include <QtGui>
 
 #include <datainterface.h>
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 namespace PlexyDesk {
 class VideoWidget : public DesktopWidget {

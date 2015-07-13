@@ -4,8 +4,8 @@
 #include <QFileSystemModel>
 #include <QPropertyAnimation>
 
-#include <tableview.h>
-#include <widget.h>
+#include <ck_TableView.h>
+#include <ck_widget.h>
 
 #include "folderitem.h"
 #include "folderprovider.h"

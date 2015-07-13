@@ -1,6 +1,6 @@
 #include "imagecelladaptor.h"
 #include "imagecell.h"
-#include <resource_manager.h>
+#include <ck_resource_manager.h>
 #include <QHash>
 
 #include <webservice.h>
@@ -10,7 +10,7 @@
 
 #include <QFileInfo>
 #include <QDir>
-#include <plexyconfig.h>
+#include <ck_config.h>
 
 class ResultCache {
 public:
@@ -37,7 +37,7 @@ public:
 };
 
 ImageCellAdaptor::ImageCellAdaptor(QGraphicsObject *parent)
-    : cherry_kit::TableModel(parent), d(new PrivateImageCellAdaptor) {
+    : cherry_kit::table_model(parent), d(new PrivateImageCellAdaptor) {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
 }
@@ -54,7 +54,7 @@ float ImageCellAdaptor::right_margin() const { return 0.0; }
 
 bool ImageCellAdaptor::init() { return true; }
 
-TableModel::TableRenderMode ImageCellAdaptor::render_type() const {
+table_model::TableRenderMode ImageCellAdaptor::render_type() const {
   return ImageCellAdaptor::kRenderAsGridView;
 }
 

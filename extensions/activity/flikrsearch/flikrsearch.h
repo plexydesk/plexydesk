@@ -21,12 +21,12 @@
 
 #include <QtCore>
 
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
-#include <desktopactivity.h>
+#include <ck_desktop_dialog.h>
 #include <webservice.h>
-#include <abstractcellcomponent.h>
-#include <window.h>
+#include <ck_table_view_item.h>
+#include <ck_window.h>
 
 using namespace cherry_kit;
 class FlickrSearchActivity : public cherry_kit::DesktopActivity {

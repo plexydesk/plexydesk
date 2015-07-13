@@ -1,7 +1,7 @@
 #ifndef FACEBOOKCONTACTUI_H
 #define FACEBOOKCONTACTUI_H
 
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 #include "facebookcontactcard.h"
 

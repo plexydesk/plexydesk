@@ -3,8 +3,8 @@
 
 #include <QFileSystemModel>
 
-#include <extensionmanager.h>
-#include <view_controller.h>
+#include <ck_extension_manager.h>
+#include <ck_desktop_controller_interface.h>
 
 #include "plexydesktopiconprovider.h"
 

@@ -16,11 +16,11 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "progressdialog.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
-#include <view_controller.h>
-#include <progressbar.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_progress_bar.h>
 
 class progress_dialog::PrivateProgressDialog {
 public:
@@ -28,7 +28,7 @@ public:
   ~PrivateProgressDialog() {}
 
   cherry_kit::window *mFrame;
-  cherry_kit::ProgressBar *m_progress_bar_widget;
+  cherry_kit::progress_bar *m_progress_bar_widget;
   int mMax;
   int mMin;
   bool m_task_completed;
@@ -77,7 +77,7 @@ void progress_dialog::create_window(const QRectF &window_geometry,
   }
 
   o_desktop_dialog->m_progress_bar_widget =
-      new cherry_kit::ProgressBar(o_desktop_dialog->mFrame);
+      new cherry_kit::progress_bar(o_desktop_dialog->mFrame);
   o_desktop_dialog->m_progress_bar_widget->set_range(o_desktop_dialog->mMin,
                                                      o_desktop_dialog->mMax);
   o_desktop_dialog->m_progress_bar_widget->set_size(

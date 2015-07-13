@@ -17,16 +17,16 @@
 *******************************************************************************/
 #include "date.h"
 #include <QGraphicsLinearLayout>
-#include <calendarwidget.h>
-#include <item_view.h>
-#include <toolbar.h>
-#include <label.h>
-#include <plexyconfig.h>
-#include <session_sync.h>
-#include <imagebutton.h>
-#include <resource_manager.h>
-#include <window.h>
-#include <viewbuilder.h>
+#include <ck_calendar_view.h>
+#include <ck_item_view.h>
+#include <ck_ToolBar.h>
+#include <ck_label.h>
+#include <ck_config.h>
+#include <ck_session_sync.h>
+#include <ck_icon_button.h>
+#include <ck_resource_manager.h>
+#include <ck_window.h>
+#include <ck_fixed_layout.h>
 
 class date_controller::PrivateDate {
 public:

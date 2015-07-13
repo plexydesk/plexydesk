@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include <widgetstyleinterface.h>
+#include <ck_style_interface.h>
 
 class TemplateInterface : public QObject,
                           public PlexyDesk::WidgetStyleInterface {

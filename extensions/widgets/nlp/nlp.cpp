@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "nlp.h"
-#include <plexyconfig.h>
+#include <ck_config.h>
 
 class NLPControllerImpl::PrivateNLP {
 public:

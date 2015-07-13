@@ -28,9 +28,9 @@
 
 // plexydesk
 
-#include <workspace.h>
-#include <plexyconfig.h>
-#include <extensionmanager.h>
+#include <ck_workspace.h>
+#include <ck_config.h>
+#include <ck_extension_manager.h>
 
 #if defined(Q_OS_LINUX)
 #include <stdio.h>

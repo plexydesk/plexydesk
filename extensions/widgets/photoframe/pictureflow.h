@@ -44,7 +44,7 @@
 #ifndef PICTUREFLOW_H
 #define PICTUREFLOW_H
 
-#include <qwidget.h>
+#include <qck_widget.h>
 
 class PictureFlowPrivate;
 

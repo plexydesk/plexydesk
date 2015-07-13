@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "webcam.h"
 #include "webcaminterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 WebCamInterface::WebCamInterface(QObject *object) {}
 

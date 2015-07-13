@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include <dataplugininterface.h>
+#include <ck_data_plugin_interface.h>
 #include <QtNetwork>
 
 class BBConnInterface : public QObject, public PlexyDesk::DataPluginInterface {

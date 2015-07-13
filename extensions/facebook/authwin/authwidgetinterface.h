@@ -3,7 +3,7 @@
 
 #include <abstractplugininterface.h>
 #include <controllerinterface.h>
-#include <controllerplugininterface.h>
+#include <ck_desktop_plugin_interface.h>
 
 class AuthInterface : public QObject,
                       public PlexyDesk::ControllerPluginInterface {

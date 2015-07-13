@@ -1,8 +1,8 @@
-#include "plexynowwidget.h"
+#include "plexynowck_widget.h"
 
 #include <svgprovider.h>
 
-#include <button.h>
+#include <ck_button.h>
 
 #include <QLineEdit>
 #include <QGraphicsProxyWidget>
