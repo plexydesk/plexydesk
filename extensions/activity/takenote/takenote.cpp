@@ -16,13 +16,13 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "takenote.h"
-#include <widget.h>
-#include <plexyconfig.h>
-#include <imagebutton.h>
+#include <ck_widget.h>
+#include <ck_config.h>
+#include <ck_icon_button.h>
 #include <QTimer>
-#include <view_controller.h>
+#include <ck_desktop_controller_interface.h>
 #include <QGraphicsLinearLayout>
-#include <resource_manager.h>
+#include <ck_resource_manager.h>
 #include <QGraphicsWidget>
 
 class note_dialog::PrivateTakeNote {
@@ -35,9 +35,9 @@ public:
   cherry_kit::widget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
 
-  cherry_kit::ImageButton *mAddNoteBtn;
-  cherry_kit::ImageButton *mAddTaskBtn;
-  cherry_kit::ImageButton *mAddReminderBtn;
+  cherry_kit::icon_button *mAddNoteBtn;
+  cherry_kit::icon_button *mAddTaskBtn;
+  cherry_kit::icon_button *mAddReminderBtn;
 
   QString mSelection;
 };
@@ -80,19 +80,19 @@ void note_dialog::create_window(const QRectF &window_geometry,
   o_desktop_dialog->mLayoutBase->moveBy(0.0, 64.0);
 
   o_desktop_dialog->mAddNoteBtn =
-      new cherry_kit::ImageButton(o_desktop_dialog->mLayoutBase);
+      new cherry_kit::icon_button(o_desktop_dialog->mLayoutBase);
   o_desktop_dialog->mAddNoteBtn->set_pixmap(
       cherry_kit::resource_manager::instance()->drawable(
           "pd_note_add_button_green.png", "hdpi"));
 
   o_desktop_dialog->mAddTaskBtn =
-      new cherry_kit::ImageButton(o_desktop_dialog->mLayoutBase);
+      new cherry_kit::icon_button(o_desktop_dialog->mLayoutBase);
   o_desktop_dialog->mAddTaskBtn->set_pixmap(
       cherry_kit::resource_manager::instance()->drawable(
           "pd_note_add_button_blue.png", "hdpi"));
 
   o_desktop_dialog->mAddReminderBtn =
-      new cherry_kit::ImageButton(o_desktop_dialog->mLayoutBase);
+      new cherry_kit::icon_button(o_desktop_dialog->mLayoutBase);
   o_desktop_dialog->mAddReminderBtn->set_pixmap(
       cherry_kit::resource_manager::instance()->drawable(
           "pd_note_add_button_orange.png", "hdpi"));
@@ -149,11 +149,11 @@ void note_dialog::onWidgetClosed(cherry_kit::widget *widget) {
 void note_dialog::onHideAnimationFinished() {}
 
 void note_dialog::onClicked() {
-  cherry_kit::ImageButton *button =
-      qobject_cast<cherry_kit::ImageButton *>(sender());
+  cherry_kit::icon_button *button =
+      qobject_cast<cherry_kit::icon_button *>(sender());
 
   if (button) {
-    o_desktop_dialog->mSelection = button->label();
+    o_desktop_dialog->mSelection = button->text();
     notify_done();
   }
 }

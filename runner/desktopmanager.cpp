@@ -21,8 +21,8 @@
 
 #include <QDebug>
 
-#include <space.h>
-#include <workspace.h>
+#include <ck_space.h>
+#include <ck_workspace.h>
 
 class DesktopManager::PrivateDesktopManager {
 public:

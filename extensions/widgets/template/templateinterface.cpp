@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "template.h"
 #include "templateinterface.h"
-#include <plexyconfig.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
 template_plugin_impl::controller() {

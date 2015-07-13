@@ -19,10 +19,10 @@
 #include "background_controller.h"
 
 // plexydesk
-#include <plexyconfig.h>
-#include <extensionmanager.h>
-#include <widget.h>
-#include <extensionmanager.h>
+#include <ck_config.h>
+#include <ck_extension_manager.h>
+#include <ck_widget.h>
+#include <ck_extension_manager.h>
 
 // social
 #include <webservice.h>
@@ -36,8 +36,8 @@
 #include <QAction>
 #include <QPainter>
 
-#include <space.h>
-#include <workspace.h>
+#include <ck_space.h>
+#include <ck_workspace.h>
 
 #include "desktopwindow.h"
 

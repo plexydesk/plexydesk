@@ -16,8 +16,8 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "inputdialogactivity.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsEffect>
@@ -30,11 +30,11 @@
 #include <QGraphicsProxyWidget>
 #include <QLineEdit>
 
-#include <view_controller.h>
-#include <style.h>
-#include <resource_manager.h>
-#include <button.h>
-#include <texteditor.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_style.h>
+#include <ck_resource_manager.h>
+#include <ck_button.h>
+#include <ck_text_editor.h>
 
 class input_dialog::PrivateInputDialogActivity {
 public:
@@ -45,8 +45,8 @@ public:
   QGraphicsBlurEffect *mBackgroundEffect;
 
   /*Widgets*/
-  cherry_kit::Button *mOkButton;
-  cherry_kit::Button *mCancelButton;
+  cherry_kit::button *mOkButton;
+  cherry_kit::button *mCancelButton;
 
   cherry_kit::widget *mLayoutBase;
   cherry_kit::widget *mHLayoutBase;
@@ -56,7 +56,7 @@ public:
 
   QLineEdit *mLineEdit;
   QGraphicsProxyWidget *mLineEditProxy;
-  cherry_kit::TextEditor *mEditor;
+  cherry_kit::text_editor *mEditor;
 
   QRectF mBoundingRect;
   QString mCurrentText;
@@ -113,16 +113,16 @@ void input_dialog::create_window(const QRectF &window_geometry,
       new cherry_kit::widget(o_desktop_dialog->mLayoutBase);
 
   o_desktop_dialog->mOkButton =
-      new cherry_kit::Button(o_desktop_dialog->mHLayoutBase);
+      new cherry_kit::button(o_desktop_dialog->mHLayoutBase);
   o_desktop_dialog->mCancelButton =
-      new cherry_kit::Button(o_desktop_dialog->mHLayoutBase);
+      new cherry_kit::button(o_desktop_dialog->mHLayoutBase);
 
   QRectF _editorRect(
       0.0, 0.0, geometry().width(),
       geometry().height() -
           (96 + o_desktop_dialog->mOkButton->boundingRect().height()));
   o_desktop_dialog->mEditor =
-      new cherry_kit::TextEditor(o_desktop_dialog->mLayoutBase);
+      new cherry_kit::text_editor(o_desktop_dialog->mLayoutBase);
   o_desktop_dialog->mVLayout->addItem(o_desktop_dialog->mEditor);
 
   o_desktop_dialog->mHLayout =

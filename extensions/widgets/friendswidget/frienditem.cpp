@@ -38,8 +38,8 @@
 
 #include "frienditem.h"
 
-#include <plexyconfig.h>
-#include <desktopwidget.h>
+#include <ck_config.h>
+#include <desktopck_widget.h>
 #include <config.h>
 #include <QPainter>
 #include <QPaintEvent>

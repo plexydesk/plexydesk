@@ -1,4 +1,4 @@
-/*#include "sociotwitterwidget.h"
+/*#include "sociotwitterck_ck_widget.h"
    #include ""
 
    SocioTwitter::SocioTwitter(QWidget *parent)
@@ -12,7 +12,7 @@
     delete ui;
    }*/
 
-#include "sociotwitterwidget.h"
+#include "sociotwitterck_ck_widget.h"
 #include "sociotwitterinterface.h"
 #include <math.h>
 

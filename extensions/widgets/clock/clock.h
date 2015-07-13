@@ -21,10 +21,10 @@
 
 #include <functional>
 
-#include <view_controller.h>
-#include <datasource.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_data_source.h>
 #include <QTimer>
-#include "clockwidget.h"
+#include "ck_clock_view.h"
 
 class time_controller : public cherry_kit::desktop_controller_interface {
   Q_OBJECT

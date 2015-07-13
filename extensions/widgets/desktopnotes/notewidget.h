@@ -4,11 +4,11 @@
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
 
-#include <style.h>
-#include <widget.h>
+#include <ck_style.h>
+#include <ck_widget.h>
 #include <webservice.h>
-#include <desktopactivity.h>
-#include <session_sync.h>
+#include <ck_desktop_dialog.h>
+#include <ck_session_sync.h>
 
 class NoteWidget : public cherry_kit::widget {
   Q_OBJECT

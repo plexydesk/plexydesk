@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "example.h"
 #include "exampleinterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 ExampleInterface::ExampleInterface(QObject *object) {}
 

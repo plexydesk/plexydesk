@@ -3,8 +3,8 @@
 
 #include <QImage>
 
-#include <widget.h>
-#include <window.h>
+#include <ck_widget.h>
+#include <ck_window.h>
 
 class ClassicBackgroundRender : public cherry_kit::window {
   Q_OBJECT

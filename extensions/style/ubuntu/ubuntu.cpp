@@ -16,8 +16,8 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "ubuntu.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
 #include <controllerinterface.h>
 

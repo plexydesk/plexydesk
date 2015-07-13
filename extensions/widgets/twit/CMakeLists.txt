@@ -11,13 +11,13 @@ set(headerFiles
     videoentity.h
     twit.h
     twitinterface.h
-    twitwidget.h
+    twitck_ck_widget.h
     )
 
 set(QTMOC_SRCS
     twit.h
     twitinterface.h
-    twitwidget.h
+    twitck_ck_widget.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})

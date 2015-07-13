@@ -19,9 +19,9 @@
 #ifndef PLEXY_MAC_BACKDROP_I
 #define PLEXY_MAC_BACKDROP_I
 
-#include <extensionmanager.h>
+#include <ck_extension_manager.h>
 #include <abstractplugininterface.h>
-#include <controllerplugininterface.h>
+#include <ck_desktop_plugin_interface.h>
 
 class MacBackgroundPlugin : public QObject,
                             public PlexyDesk::ControllerPluginInterface {

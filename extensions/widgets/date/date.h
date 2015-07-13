@@ -19,8 +19,8 @@
 #ifndef DATE_DATA_H
 #define DATE_DATA_H
 
-#include <view_controller.h>
-#include <viewbuilder.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_fixed_layout.h>
 
 class date_controller : public cherry_kit::desktop_controller_interface {
 public:

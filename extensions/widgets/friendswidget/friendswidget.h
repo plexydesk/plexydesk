@@ -40,7 +40,7 @@
 #define FRIENDS_WIDGET_H
 
 #include "frienditem.h"
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 #include <QImage>
 #include <QPaintDevice>

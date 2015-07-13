@@ -22,7 +22,7 @@
 #include <datainterface.h>
 #include <pluginloader.h>
 
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 #include <listview.h>
 
 class QTimer;

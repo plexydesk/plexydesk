@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "desktopactivitymonitor.h"
 #include "desktopactivitymonitorinterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<PlexyDesk::DataSource> DesktopActivityMonitorInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =

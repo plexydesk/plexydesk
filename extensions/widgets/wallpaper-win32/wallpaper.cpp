@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "wallpaper.h"
-#include "wallpaperwidget.h"
+#include "wallpaperck_widget.h"
 
 #include <QPushButton>
 #include <QSettings>

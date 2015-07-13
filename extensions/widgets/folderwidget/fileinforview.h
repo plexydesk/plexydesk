@@ -20,7 +20,7 @@
 #ifndef FILEINFORVIEW_H
 #define FILEINFORVIEW_H
 
-#include <widget.h>
+#include <ck_widget.h>
 
 #include <QIcon>
 #include <QFileInfo>

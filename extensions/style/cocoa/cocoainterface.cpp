@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "cocoa.h"
 #include "cocoainterface.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 
 static void destroyStyle(cherry_kit::style *style) { delete style; }
 

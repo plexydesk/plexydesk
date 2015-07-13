@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include <widgetstyleinterface.h>
+#include <ck_style_interface.h>
 
 class CocoaInterface : public QObject, public cherry_kit::style_interface {
   Q_OBJECT

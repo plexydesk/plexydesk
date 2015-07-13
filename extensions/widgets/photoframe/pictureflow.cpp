@@ -68,7 +68,7 @@
 #include <qpixmap.h>
 #include <qtimer.h>
 #include <qvaluevector.h>
-#include <qwidget.h>
+#include <qck_widget.h>
 
 #define qMax(x, y) ((x) > (y)) ? (x) : (y)
 #define qMin(x, y) ((x) < (y)) ? (x) : (y)

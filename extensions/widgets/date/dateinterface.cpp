@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "date.h"
 #include "dateinterface.h"
-#include <plexyconfig.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
 date_plugin_impl::controller() {

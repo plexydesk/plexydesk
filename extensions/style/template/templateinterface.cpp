@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "template.h"
 #include "templateinterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<PlexyDesk::Style> TemplateInterface::style() {
   QSharedPointer<PlexyDesk::Style> obj = QSharedPointer<PlexyDesk::Style>(

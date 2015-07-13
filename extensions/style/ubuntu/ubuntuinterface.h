@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include <widgetstyleinterface.h>
+#include <ck_style_interface.h>
 
 class ubuntuInterface : public QObject, public PlexyDesk::WidgetStyleInterface {
   Q_OBJECT

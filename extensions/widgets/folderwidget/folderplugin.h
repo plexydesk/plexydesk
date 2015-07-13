@@ -19,8 +19,8 @@
 #ifndef PLEXY_WIDGET_IMAGEPILE_H
 #define PLEXY_WIDGET_IMAGEPILE_H
 
-#include <view_controller.h>
-#include <resource_manager.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_resource_manager.h>
 #include "iconwidgetview.h"
 
 class QLineEdit;

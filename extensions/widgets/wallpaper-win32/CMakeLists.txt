@@ -6,7 +6,7 @@ set(sourceFiles
 
 set(headerFiles
     wallpaper.h
-    wallpaperwidget.h
+    wallpaperck_ck_widget.h
     wallpaperinterface.h
     )
 
@@ -27,7 +27,7 @@ set(sourceFiles
 
 set(QTMOC_SRCS
     wallpaper.h
-    wallpaperwidget.h
+    wallpaperck_ck_widget.h
     wallpaperinterface.h
     )
 

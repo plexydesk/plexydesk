@@ -1,9 +1,9 @@
 #ifndef CHOOSERITEM_H
 #define CHOOSERITEM_H
 
-#include <abstractcellcomponent.h>
+#include <ck_table_view_item.h>
 
-class GridIcon : public cherry_kit::TableViewItem {
+class GridIcon : public cherry_kit::table_view_item {
   Q_OBJECT
 public:
   typedef enum {

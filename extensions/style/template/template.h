@@ -22,9 +22,9 @@
 #include <QtCore>
 
 #include <abstractplugininterface.h>
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
-#include <style.h>
+#include <ck_style.h>
 
 using namespace PlexyDesk;
 

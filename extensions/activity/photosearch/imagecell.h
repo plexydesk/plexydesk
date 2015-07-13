@@ -1,9 +1,9 @@
 #ifndef IMAGE_CEL_H
 #define IMAGE_CEL_H
 
-#include <abstractcellcomponent.h>
+#include <ck_table_view_item.h>
 
-class ImageCell : public cherry_kit::TableViewItem {
+class ImageCell : public cherry_kit::table_view_item {
   Q_OBJECT
 public:
   typedef enum {

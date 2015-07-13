@@ -1,5 +1,5 @@
 #include "folderitem.h"
-#include <button.h>
+#include <ck_button.h>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsEffect>
 #include <QGraphicsDropShadowEffect>

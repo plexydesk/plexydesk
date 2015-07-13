@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "twit.h"
-#include "twitwidget.h"
+#include "twitck_widget.h"
 
 Twit::Twit(QObject *object) {}
 

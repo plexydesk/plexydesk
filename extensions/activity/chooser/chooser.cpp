@@ -17,17 +17,17 @@
 *******************************************************************************/
 
 #include "chooser.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
-#include <view_controller.h>
-#include <tableviewcellinterface.h>
-#include <tableview.h>
-#include <widget.h>
-#include <imageview.h>
-#include <resource_manager.h>
-#include <item_view.h>
-#include <label.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_table_model.h>
+#include <ck_TableView.h>
+#include <ck_widget.h>
+#include <ck_image_view.h>
+#include <ck_resource_manager.h>
+#include <ck_item_view.h>
+#include <ck_label.h>
 #include "chooseritem.h"
 #include "chooseractiondelegate.h"
 
@@ -62,7 +62,7 @@ public:
   ~PrivateIconGrid() { qDeleteAll(m_action_list); }
 
   cherry_kit::window *m_activity_window_ptr;
-  cherry_kit::ItemView *m_grid_view;
+  cherry_kit::item_view *m_grid_view;
 
   QString mSelection;
 
@@ -97,11 +97,11 @@ void icon_dialog::create_window(const QRectF &window_geometry,
   o_desktop_dialog->m_activity_window_ptr->setGeometry(window_geometry);
 
   o_desktop_dialog->m_grid_view =
-      new cherry_kit::ItemView(o_desktop_dialog->m_activity_window_ptr,
-                               cherry_kit::ItemView::kGridModel);
+      new cherry_kit::item_view(o_desktop_dialog->m_activity_window_ptr,
+                               cherry_kit::item_view::kGridModel);
   o_desktop_dialog->m_grid_view->set_view_geometry(window_geometry);
   o_desktop_dialog->m_grid_view->on_item_removed([](
-      cherry_kit::ModelViewItem *a_item) {
+      cherry_kit::model_view_item *a_item) {
     if (a_item)
       delete a_item;
   });
@@ -126,9 +126,9 @@ void icon_dialog::create_window(const QRectF &window_geometry,
           update_action();
         });
 
-        cherry_kit::ModelViewItem *grid_item = new cherry_kit::ModelViewItem();
+        cherry_kit::model_view_item *grid_item = new cherry_kit::model_view_item();
 
-        grid_item->on_view_removed([](cherry_kit::ModelViewItem *a_item) {
+        grid_item->on_view_removed([](cherry_kit::model_view_item *a_item) {
           if (a_item && a_item->view()) {
             cherry_kit::widget *view = a_item->view();
             if (view)
@@ -200,9 +200,9 @@ widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
 
   widget *l_rv = new widget();
 
-  cherry_kit::ImageView *l_image_view = new cherry_kit::ImageView(l_rv);
-  cherry_kit::Label *l_action_label = new cherry_kit::Label(l_rv);
-  l_action_label->set_label(aLabel);
+  cherry_kit::image_view *l_image_view = new cherry_kit::image_view(l_rv);
+  cherry_kit::label *l_action_label = new cherry_kit::label(l_rv);
+  l_action_label->set_text(aLabel);
   l_action_label->set_widget_name(aLabel);
 
   QPixmap l_view_pixmap(

@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include <dataplugininterface.h>
+#include <ck_data_plugin_interface.h>
 
 class GooglePlacesEngineInterface : public QObject,
                                     public PlexyDesk::DataPluginInterface {

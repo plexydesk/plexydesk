@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "httpserver.h"
 #include "httpserverinterface.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::data_source> HttpServerInterface::model() {
   QSharedPointer<cherry_kit::data_source> obj =

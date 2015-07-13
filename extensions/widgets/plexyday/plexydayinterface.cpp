@@ -1,6 +1,6 @@
 #include "plexydayinterface.h"
 #include "plexyday.h"
-#include <extensionmanager.h>
+#include <ck_extension_manager.h>
 
 #include <QtPlugin>
 

@@ -19,7 +19,7 @@
 #ifndef IMAGE_INTERFACEH
 #define IMAGE_INTERFACEH
 
-#include <controllerplugininterface.h>
+#include <ck_desktop_plugin_interface.h>
 
 class photo_plugin_impl : public QObject, public cherry_kit::desktop_plugin_interface {
   Q_OBJECT

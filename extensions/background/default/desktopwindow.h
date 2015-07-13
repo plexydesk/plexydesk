@@ -1,7 +1,7 @@
 #ifndef DESKTOPWINDOW_H
 #define DESKTOPWINDOW_H
 
-#include <window.h>
+#include <ck_window.h>
 
 class QPainter;
 

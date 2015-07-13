@@ -1,7 +1,7 @@
 #include "contactlist.h"
 #include "contactlistitem.h"
 
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 class ContactList::PrivateContactList {
 public:

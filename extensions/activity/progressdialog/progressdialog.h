@@ -21,10 +21,10 @@
 
 #include <QtCore>
 
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
-#include <window.h>
-#include <desktopactivity.h>
+#include <ck_window.h>
+#include <ck_desktop_dialog.h>
 
 class progress_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT

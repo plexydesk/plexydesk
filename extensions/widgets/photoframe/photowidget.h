@@ -1,7 +1,7 @@
 #ifndef PHOTOWIDGET_H
 #define PHOTOWIDGET_H
 
-#include <widget.h>
+#include <ck_widget.h>
 #include <QGraphicsDropShadowEffect>
 
 class PhotoWidget : public cherry_kit::widget {

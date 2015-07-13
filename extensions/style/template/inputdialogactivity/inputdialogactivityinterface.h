@@ -22,7 +22,7 @@
 #include <QtCore>
 
 #include <activityinterface.h>
-#include <desktopactivity.h>
+#include <ck_desktop_dialog.h>
 
 class InputDialogActivityInterface : public QObject,
                                      public PlexyDesk::ActivityInterface {

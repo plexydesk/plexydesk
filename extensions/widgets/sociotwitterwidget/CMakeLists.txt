@@ -9,13 +9,13 @@ set(sourceFiles
 set(headerFiles
     sociotwitter.h
     sociotwitterinterface.h
-    sociotwitterwidget.h
+    sociotwitterck_ck_widget.h
     )
 
 set(QTMOC_SRCS
     sociotwitter.h
     sociotwitterinterface.h
-    sociotwitterwidget.h
+    sociotwitterck_ck_widget.h
     )
 
 QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})

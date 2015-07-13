@@ -1,8 +1,8 @@
 #ifndef FACEBOOKCONTACTCARD_H
 #define FACEBOOKCONTACTCARD_H
 
-#include <desktopwidget.h>
-#include <datasource.h>
+#include <desktopck_widget.h>
+#include <ck_data_source.h>
 
 class FacebookContactCard : public PlexyDesk::DesktopWidget {
   Q_OBJECT

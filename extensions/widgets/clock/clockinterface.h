@@ -22,9 +22,9 @@
 #include <QtCore>
 
 #include "clock.h"
-#include "clockwidget.h"
-#include <view_controller.h>
-#include <controllerplugininterface.h>
+#include "ck_clock_view.h"
+#include <ck_desktop_controller_interface.h>
+#include <ck_desktop_plugin_interface.h>
 
 class time_controller_impl : public QObject,
                        public cherry_kit::desktop_plugin_interface {

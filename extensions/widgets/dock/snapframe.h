@@ -1,7 +1,7 @@
 #ifndef SNAPFRAME_H
 #define SNAPFRAME_H
 
-#include <widget.h>
+#include <ck_widget.h>
 
 class SnapFrame : public cherry_kit::widget {
   Q_OBJECT

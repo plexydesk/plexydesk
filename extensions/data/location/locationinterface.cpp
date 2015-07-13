@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "location.h"
 #include "locationinterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<PlexyDesk::DataSource> LocationDataInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =

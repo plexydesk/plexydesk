@@ -1,4 +1,4 @@
-#include "facebookauthenticationwidget.h"
+#include "facebookauthenticationck_widget.h"
 
 #include <QGraphicsWebView>
 #include <QUrl>

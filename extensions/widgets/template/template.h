@@ -19,7 +19,7 @@
 #ifndef TEMPLATE_DATA_H
 #define TEMPLATE_DATA_H
 
-#include <view_controller.h>
+#include <ck_desktop_controller_interface.h>
 
 class template_controller : public cherry_kit::desktop_controller_interface {
 public:

@@ -7,10 +7,10 @@
 #include <QDebug>
 #include <QStyleOptionGraphicsItem>
 
-#include <button.h>
-#include <imageview.h>
-#include <label.h>
-#include <resource_manager.h>
+#include <ck_button.h>
+#include <ck_image_view.h>
+#include <ck_label.h>
+#include <ck_resource_manager.h>
 
 class PhotoCell::PrivatePhotoCell {
 

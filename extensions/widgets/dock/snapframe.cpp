@@ -2,7 +2,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
-#include <toolbar.h>
+#include <ck_ToolBar.h>
 
 class SnapFrame::PrivateSnapFrame {
 public:

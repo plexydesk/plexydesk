@@ -1,7 +1,7 @@
 #ifndef PHOTO_CEL_H
 #define PHOTO_CEL_H
 
-#include <abstractcellcomponent.h>
+#include <ck_table_view_item.h>
 
 class PhotoCell : public cherry_kit::TableViewItem {
   Q_OBJECT

@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 #include <config.h>
-#include "cpuwidget.h"
+#include "cpuck_widget.h"
 #include <QtCore>
 #include <QtGui>
 

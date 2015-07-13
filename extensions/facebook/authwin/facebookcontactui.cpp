@@ -1,7 +1,7 @@
 #include "facebookcontactui.h"
-#include <scrollwidget.h>
-#include <button.h>
-#include <lineedit.h>
+#include <scrollck_widget.h>
+#include <ck_button.h>
+#include <ck_line_edit.h>
 #include "contactlist.h"
 
 class FacebookContactUI::PrivateFacebookContactUI {

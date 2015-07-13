@@ -7,7 +7,7 @@
 #include <QSvgRenderer>
 #include <config.h>
 
-#include <plexyconfig.h>
+#include <ck_config.h>
 
 class Frame : public QGraphicsRectItem {
 public:

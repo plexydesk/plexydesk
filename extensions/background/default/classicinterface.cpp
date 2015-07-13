@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "classicinterface.h"
 #include "background_controller.h"
-#include <widget.h>
+#include <ck_widget.h>
 
 #include <QtPlugin>
 
