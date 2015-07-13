@@ -18,9 +18,6 @@
 #include "dock.h"
 #include "snapframe.h"
 
-// Qt
-#include <QGraphicsLinearLayout>
-
 #include <ck_ToolBar.h>
 #include <ck_icon_button.h>
 #include <ck_TableView.h>
@@ -46,7 +43,7 @@ public:
   ~PrivateDock() { qDebug() << Q_FUNC_INFO; }
 
 public:
-  window *m_dock_window;
+  window *m_panel_window;
   window *m_preview_window;
 
   cherry_kit::item_view *m_preview_widget;
@@ -55,31 +52,31 @@ public:
   QStringList m_controller_name_list;
   bool m_main_panel_is_hidden;
 
-  cherry_kit::desktop_dialog_ref m_action_activity;
+  cherry_kit::desktop_dialog_ref m_desktop_menu;
   cherry_kit::icon_button *m_add_new_workspace_button_ptr;
   cherry_kit::ActionList m_supported_action_list;
 };
 
 desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
-      o_view_controller(new PrivateDock) {
-  o_view_controller->m_actions_map["ToggleDock"] = 1;
-  o_view_controller->m_actions_map["ShowDock"] = 2;
-  o_view_controller->m_actions_map["HideDock"] = 3;
-  o_view_controller->m_actions_map["HideDock"] = 4;
-  o_view_controller->m_actions_map["ShowMenu"] = 5;
+      o_panel(new PrivateDock) {
+  o_panel->m_actions_map["ToggleDock"] = 1;
+  o_panel->m_actions_map["ShowDock"] = 2;
+  o_panel->m_actions_map["HideDock"] = 3;
+  o_panel->m_actions_map["HideDock"] = 4;
+  o_panel->m_actions_map["ShowMenu"] = 5;
 
-  o_view_controller->m_main_panel_is_hidden = true;
+  o_panel->m_main_panel_is_hidden = true;
 
   // menu
-  o_view_controller->m_preview_widget = new cherry_kit::item_view();
-  o_view_controller->m_preview_widget->on_item_removed([this](
+  o_panel->m_preview_widget = new cherry_kit::item_view();
+  o_panel->m_preview_widget->on_item_removed([this](
       cherry_kit::model_view_item *a_item) {
     if (a_item) {
       delete a_item;
     }
   });
-  o_view_controller->m_preview_widget->on_activated([this](int index) {
+  o_panel->m_preview_widget->on_activated([this](int index) {
     if (this->viewport() && this->viewport()->owner_workspace()) {
       cherry_kit::workspace *_workspace =
           qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
@@ -93,7 +90,7 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
 
 desktop_panel_controller_impl::~desktop_panel_controller_impl() {
   qDebug() << Q_FUNC_INFO;
-  delete o_view_controller;
+  delete o_panel;
 }
 
 void desktop_panel_controller_impl::create_dock_action(
@@ -115,16 +112,16 @@ void desktop_panel_controller_impl::create_dock_action(
 }
 
 void desktop_panel_controller_impl::init() {
-  o_view_controller->m_supported_action_list
-      << createAction(1, tr("Menu"), "pd_menu_icon.png");
-  o_view_controller->m_supported_action_list
-      << createAction(2, tr("show-dock"), "pd_menu_icon.png");
-  o_view_controller->m_supported_action_list
-      << createAction(3, tr("hide-dock"), "pd_menu_icon.png");
-  o_view_controller->m_supported_action_list
-      << createAction(4, tr("show-expose"), "pd_menu_icon.png");
-  o_view_controller->m_supported_action_list
-      << createAction(5, tr("hide-expose"), "pd_menu_icon.png");
+  o_panel->m_supported_action_list << createAction(1, tr("Menu"),
+                                                   "pd_menu_icon.png");
+  o_panel->m_supported_action_list << createAction(2, tr("show-dock"),
+                                                   "pd_menu_icon.png");
+  o_panel->m_supported_action_list << createAction(3, tr("hide-dock"),
+                                                   "pd_menu_icon.png");
+  o_panel->m_supported_action_list << createAction(4, tr("show-expose"),
+                                                   "pd_menu_icon.png");
+  o_panel->m_supported_action_list << createAction(5, tr("hide-expose"),
+                                                   "pd_menu_icon.png");
 
   if (!viewport()) {
     return;
@@ -132,15 +129,13 @@ void desktop_panel_controller_impl::init() {
 
   cherry_kit::space *_space = viewport();
   if (_space) {
-    o_view_controller->m_action_activity = createActivity(
-        "", "icongrid", "PlexyDesk 1.0", QPoint(), QVariantMap());
+    o_panel->m_desktop_menu = createActivity("", "icon_dialog", "PlexyDesk 1.0",
+                                             QPoint(), QVariantMap());
 
-    if (o_view_controller->m_action_activity &&
-        o_view_controller->m_action_activity->activity_window()) {
-      o_view_controller->m_action_activity->activity_window()->set_window_type(
+    if (o_panel->m_desktop_menu && o_panel->m_desktop_menu->dialog_window()) {
+      o_panel->m_desktop_menu->dialog_window()->set_window_type(
           window::kPopupWindow);
-      o_view_controller->m_action_activity->activity_window()->setVisible(
-          false);
+      o_panel->m_desktop_menu->dialog_window()->setVisible(false);
     }
   }
 
@@ -158,17 +153,17 @@ void desktop_panel_controller_impl::init() {
     }
   });
 
-  o_view_controller->m_dock_window = new cherry_kit::window();
-  o_view_controller->m_dock_window->set_window_type(window::kPanelWindow);
+  o_panel->m_panel_window = new cherry_kit::window();
+  o_panel->m_panel_window->set_window_type(window::kPanelWindow);
 
-  o_view_controller->m_preview_window = new cherry_kit::window();
+  o_panel->m_preview_window = new cherry_kit::window();
 
-  o_view_controller->m_preview_window->set_window_type(window::kPopupWindow);
-  o_view_controller->m_preview_window->enable_window_background(false);
+  o_panel->m_preview_window->set_window_type(window::kPopupWindow);
+  o_panel->m_preview_window->enable_window_background(false);
 
   // navigation
   cherry_kit::fixed_layout *build =
-      new cherry_kit::fixed_layout(o_view_controller->m_dock_window);
+      new cherry_kit::fixed_layout(o_panel->m_panel_window);
   build->set_content_margin(6, 10, 10, 10);
   build->set_geometry(0, 0, 48 + 16, 48 * 7);
   build->add_rows(7);
@@ -204,79 +199,76 @@ void desktop_panel_controller_impl::init() {
                      [&]() { exec_dock_action("Down"); });
 
   // base->setGeometry(build->ui()->geometry());
-  o_view_controller->m_dock_window->set_window_content(build->viewport());
-  o_view_controller->m_preview_window->set_window_content(
-      o_view_controller->m_preview_widget);
+  o_panel->m_panel_window->set_window_content(build->viewport());
+  o_panel->m_preview_window->set_window_content(o_panel->m_preview_widget);
 
-  insert(o_view_controller->m_dock_window);
-  insert(o_view_controller->m_preview_window);
+  insert(o_panel->m_panel_window);
+  insert(o_panel->m_preview_window);
 
-  o_view_controller->m_preview_window->hide();
+  o_panel->m_preview_window->hide();
 }
 
 void desktop_panel_controller_impl::session_data_available(
     const cherry_kit::sync_object &a_sesion_root) {}
 
-void desktop_panel_controller_impl::submit_session_data(cherry_kit::sync_object *a_obj) {}
+void desktop_panel_controller_impl::submit_session_data(
+    cherry_kit::sync_object *a_obj) {}
 
 void desktop_panel_controller_impl::set_view_rect(const QRectF &rect) {
   if (!viewport()) {
     return;
   }
 
-  o_view_controller->m_dock_window->setPos(
-      viewport()->center(o_view_controller->m_dock_window->geometry(), QRectF(),
+  o_panel->m_panel_window->setPos(
+      viewport()->center(o_panel->m_panel_window->geometry(), QRectF(),
                          space::kCenterOnViewportLeft));
 
-  o_view_controller->m_preview_widget->set_view_geometry(
+  o_panel->m_preview_widget->set_view_geometry(
       QRectF(0.0, 0.0, 256, rect.height() - 24.0));
 
-  o_view_controller->m_preview_window->setGeometry(
-      QRectF(0.0, 0.0, 256, rect.height()));
+  o_panel->m_preview_window->setGeometry(QRectF(0.0, 0.0, 256, rect.height()));
 
-  o_view_controller->m_preview_window->setPos(
-      rect.x() + o_view_controller->m_dock_window->geometry().width() + 5,
+  o_panel->m_preview_window->setPos(
+      rect.x() + o_panel->m_panel_window->geometry().width() + 5,
       rect.y() + 24.0);
 
-  o_view_controller->m_preview_window->hide();
+  o_panel->m_preview_window->hide();
 
-  if (o_view_controller->m_action_activity) {
-    o_view_controller->m_action_activity->activity_window()->setPos(rect.x(),
-                                                                    rect.y());
+  if (o_panel->m_desktop_menu) {
+    o_panel->m_desktop_menu->dialog_window()->setPos(rect.x(), rect.y());
   }
 }
 
 ActionList desktop_panel_controller_impl::actions() const {
-  return o_view_controller->m_supported_action_list;
+  return o_panel->m_supported_action_list;
 }
 
 void desktop_panel_controller_impl::request_action(const QString &actionName,
-                                        const QVariantMap &args) {
+                                                   const QVariantMap &args) {
   if (actionName.toLower() == "menu") {
 
-    if (o_view_controller->m_action_activity &&
-        o_view_controller->m_action_activity->activity_window()) {
-      o_view_controller->m_action_activity->activity_window()->setPos(
+    if (o_panel->m_desktop_menu && o_panel->m_desktop_menu->dialog_window()) {
+      o_panel->m_desktop_menu->dialog_window()->setPos(
           args["menu_pos"].toPoint());
-      o_view_controller->m_action_activity->activity_window()->show();
+      o_panel->m_desktop_menu->dialog_window()->show();
     }
 
     return;
   } else if (actionName.toLower() == "show-dock") {
-    o_view_controller->m_dock_window->show();
+    o_panel->m_panel_window->show();
     return;
   } else if (actionName.toLower() == "hide-dock") {
-    o_view_controller->m_dock_window->hide();
+    o_panel->m_panel_window->hide();
     return;
   } else if (actionName.toLower() == "show-expose") {
-    if (o_view_controller->m_preview_window->isVisible()) {
-      o_view_controller->m_preview_window->hide();
+    if (o_panel->m_preview_window->isVisible()) {
+      o_panel->m_preview_window->hide();
     } else {
       updatePreview();
-      o_view_controller->m_preview_window->show();
+      o_panel->m_preview_window->show();
     }
   } else if (actionName.toLower() == "hide-expose") {
-    o_view_controller->m_preview_window->hide();
+    o_panel->m_preview_window->hide();
   }
 
   if (viewport() && viewport()->controller(args["controller"].toString())) {
@@ -294,8 +286,9 @@ QString desktop_panel_controller_impl::icon() const {
   return QString("pd_desktop_icon.png");
 }
 
-void desktop_panel_controller_impl::createActionForController(const QString &name,
-                                                   const QPointF &pos) {
+void
+desktop_panel_controller_impl::createActionForController(const QString &name,
+                                                         const QPointF &pos) {
   if (!viewport()) {
     return;
   }
@@ -303,7 +296,8 @@ void desktop_panel_controller_impl::createActionForController(const QString &nam
   viewport()->controller(name)->configure(pos);
 }
 
-void desktop_panel_controller_impl::createActivityForController(const QString &name) {
+void desktop_panel_controller_impl::createActivityForController(
+    const QString &name) {
   if (!viewport()) {
     return;
   }
@@ -314,7 +308,7 @@ desktop_dialog_ref desktop_panel_controller_impl::createActivity(
     const QString &title, const QPoint &pos, const QVariantMap &dataItem) {
   QPoint _activity_location = pos;
 
-  cherry_kit::desktop_dialog_ref _intent = viewport()->create_activity(
+  cherry_kit::desktop_dialog_ref _intent = viewport()->open_desktop_dialog(
       activity, title, _activity_location,
       QRectF(0, _activity_location.y(), 484, 420), dataItem);
   _intent->set_controller(cherry_kit::desktop_controller_ref(this));
@@ -358,10 +352,10 @@ void desktop_panel_controller_impl::prepare_removal() {
         qobject_cast<QGraphicsView *>(viewport()->owner_workspace());
 
     if (_workspace) {
-      o_view_controller->m_action_activity.clear();
+      o_panel->m_desktop_menu.clear();
     } else {
-      if (o_view_controller->m_action_activity) {
-        o_view_controller->m_action_activity.clear();
+      if (o_panel->m_desktop_menu) {
+        o_panel->m_desktop_menu.clear();
       }
     }
   } else {
@@ -389,13 +383,12 @@ void desktop_panel_controller_impl::toggleDesktopPanel() {
     if (_workspace) {
       QRectF _work_area = viewport()->geometry();
 
-      if (!o_view_controller->m_main_panel_is_hidden) {
+      if (!o_panel->m_main_panel_is_hidden) {
         _work_area.setX(331.0f);
         _work_area.setWidth(_work_area.width() + 330.0f);
       }
 
-      o_view_controller->m_main_panel_is_hidden =
-          !o_view_controller->m_main_panel_is_hidden;
+      o_panel->m_main_panel_is_hidden = !o_panel->m_main_panel_is_hidden;
 
       _workspace->expose_sub_region(_work_area);
     }
@@ -403,7 +396,7 @@ void desktop_panel_controller_impl::toggleDesktopPanel() {
 }
 
 void desktop_panel_controller_impl::loadControllerActions(const QString &name) {
-  if (o_view_controller->m_controller_name_list.contains(name) || !viewport()) {
+  if (o_panel->m_controller_name_list.contains(name) || !viewport()) {
     return;
   }
 
@@ -444,7 +437,7 @@ void desktop_panel_controller_impl::loadControllerActions(const QString &name) {
     return;
   }
 
-  o_view_controller->m_action_activity->update_attribute("data", _data);
+  o_panel->m_desktop_menu->update_attribute("data", _data);
 }
 
 void desktop_panel_controller_impl::onActivityAnimationFinished() {
@@ -460,7 +453,7 @@ void desktop_panel_controller_impl::onActivityAnimationFinished() {
   }
 
   cherry_kit::widget *_activity_widget =
-      qobject_cast<cherry_kit::widget *>(activity->activity_window());
+      qobject_cast<cherry_kit::widget *>(activity->dialog_window());
 
   if (_activity_widget) {
     _activity_widget->set_widget_flag(cherry_kit::widget::kRenderDropShadow,
@@ -514,13 +507,13 @@ void desktop_panel_controller_impl::exec_dock_action(const QString &action) {
   } else if (action == tr("Seamless")) {
     this->toggleSeamless();
   } else if (action == tr("Expose")) {
-    if (o_view_controller->m_preview_window->isVisible()) {
-      o_view_controller->m_preview_window->hide();
-      if (o_view_controller->m_preview_widget)
-        o_view_controller->m_preview_widget->clear();
+    if (o_panel->m_preview_window->isVisible()) {
+      o_panel->m_preview_window->hide();
+      if (o_panel->m_preview_widget)
+        o_panel->m_preview_widget->clear();
     } else {
       updatePreview();
-      o_view_controller->m_preview_window->show();
+      o_panel->m_preview_window->show();
     }
     return;
   } else if (action == tr("Menu")) {
@@ -529,15 +522,13 @@ void desktop_panel_controller_impl::exec_dock_action(const QString &action) {
     }
 
     QPointF _menu_pos = viewport()->center(
-        o_view_controller->m_action_activity->activity_window()->boundingRect(),
-        QRectF(), cherry_kit::space::kCenterOnViewportLeft);
-    _menu_pos.setX(o_view_controller->m_dock_window->geometry().width() + 5);
+        o_panel->m_desktop_menu->dialog_window()->boundingRect(), QRectF(),
+        cherry_kit::space::kCenterOnViewportLeft);
+    _menu_pos.setX(o_panel->m_panel_window->geometry().width() + 5);
 
-    if (o_view_controller->m_action_activity &&
-        o_view_controller->m_action_activity->activity_window()) {
-      o_view_controller->m_action_activity->activity_window()->setPos(
-          _menu_pos);
-      o_view_controller->m_action_activity->activity_window()->show();
+    if (o_panel->m_desktop_menu && o_panel->m_desktop_menu->dialog_window()) {
+      o_panel->m_desktop_menu->dialog_window()->setPos(_menu_pos);
+      o_panel->m_desktop_menu->dialog_window()->show();
     }
 
   } else if (action == tr("Add")) {
@@ -556,8 +547,9 @@ void desktop_panel_controller_impl::onAddSpaceButtonClicked() {
   }
 }
 
-QAction *desktop_panel_controller_impl::createAction(int id, const QString &action_name,
-                                          const QString &icon_name) {
+QAction *desktop_panel_controller_impl::createAction(int id,
+                                                     const QString &action_name,
+                                                     const QString &icon_name) {
   QAction *_add_clock_action = new QAction(this);
   _add_clock_action->setText(action_name);
   _add_clock_action->setProperty("id", QVariant(id));
@@ -568,7 +560,7 @@ QAction *desktop_panel_controller_impl::createAction(int id, const QString &acti
 }
 
 void desktop_panel_controller_impl::updatePreview() {
-  o_view_controller->m_preview_widget->clear();
+  o_panel->m_preview_widget->clear();
 
   if (this->viewport() && this->viewport()->owner_workspace()) {
     cherry_kit::workspace *_workspace =
@@ -588,7 +580,8 @@ void desktop_panel_controller_impl::updatePreview() {
         lHeight += _preview.size().height();
         lWidth = _preview.size().width();
 
-        cherry_kit::model_view_item *model_item = new cherry_kit::model_view_item();
+        cherry_kit::model_view_item *model_item =
+            new cherry_kit::model_view_item();
         model_item->set_view(p);
         model_item->on_view_removed([=](cherry_kit::model_view_item *a_item) {
           if (a_item && a_item->view()) {
@@ -598,16 +591,16 @@ void desktop_panel_controller_impl::updatePreview() {
           }
         });
 
-        o_view_controller->m_preview_widget->insert(model_item);
+        o_panel->m_preview_widget->insert(model_item);
       }
     }
 
     QPointF lMenuPos = viewport()->center(
-        o_view_controller->m_action_activity->activity_window()->boundingRect(),
-        QRectF(), cherry_kit::space::kCenterOnViewportLeft);
+        o_panel->m_desktop_menu->dialog_window()->boundingRect(), QRectF(),
+        cherry_kit::space::kCenterOnViewportLeft);
 
-    lMenuPos.setX(o_view_controller->m_dock_window->geometry().width() + 5.0);
-    o_view_controller->m_preview_window->setGeometry(
+    lMenuPos.setX(o_panel->m_panel_window->geometry().width() + 5.0);
+    o_panel->m_preview_window->setGeometry(
         QRectF(lMenuPos.x(), lMenuPos.y(), lWidth, lHeight + 24));
   }
 }

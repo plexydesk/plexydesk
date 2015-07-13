@@ -71,7 +71,7 @@ public:
                                     const QString &a_key,
                                     const QString &a_value);
 
-  cherry_kit::desktop_dialog_ref create_activity(const QString &a_activity,
+  cherry_kit::desktop_dialog_ref open_desktop_dialog(const QString &a_activity,
                                                  const QString &a_title,
                                                  const QPointF &a_pos,
                                                  const QRectF &a_rect,
