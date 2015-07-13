@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <scrollwidget.h>
+#include <scrollck_widget.h>
 #include "contactlistitem.h"
 
 class ContactList : public PlexyDesk::ScrollWidget {

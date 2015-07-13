@@ -16,20 +16,20 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "desktopclock.h"
-#include <widget.h>
-#include <plexyconfig.h>
-#include <view_controller.h>
-#include <toolbar.h>
+#include <ck_widget.h>
+#include <ck_config.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_ToolBar.h>
 
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
-#include <resource_manager.h>
-#include <label.h>
-#include <tableview.h>
-#include <space.h>
-#include <item_view.h>
+#include <ck_resource_manager.h>
+#include <ck_label.h>
+#include <ck_TableView.h>
+#include <ck_space.h>
+#include <ck_item_view.h>
 
-#include "clockwidget.h"
+#include "clockck_ck_widget.h"
 
 class DesktopClockActivity::PrivateDesktopClock {
 public:

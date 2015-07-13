@@ -27,11 +27,11 @@
 #include <QApplication>
 #include <QtCore>
 #include <QIcon>
-#include <extensionmanager.h>
+#include <ck_extension_manager.h>
 
-#include <workspace.h>
-#include <space.h>
-#include <plexyconfig.h>
+#include <ck_workspace.h>
+#include <ck_space.h>
+#include <ck_config.h>
 #include "desktopmanager.h"
 
 #include <objc/objc.h>

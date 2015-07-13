@@ -21,10 +21,10 @@
 
 #include <QtCore>
 
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
-#include <style.h>
-#include <resource_manager.h>
+#include <ck_style.h>
+#include <ck_resource_manager.h>
 
 using namespace cherry_kit;
 

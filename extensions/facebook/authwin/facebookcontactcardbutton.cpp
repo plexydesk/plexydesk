@@ -1,6 +1,6 @@
 #include "facebookcontactcardbutton.h"
 #include <QStyleOptionGraphicsItem>
-#include <style.h>
+#include <ck_style.h>
 
 FacebookContactCardButton::FacebookContactCardButton(QGraphicsObject *parent)
     : PlexyDesk::Button(parent) {}

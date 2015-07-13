@@ -16,8 +16,8 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "rest.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QNetworkAccessManager>
 
 #define POST 0

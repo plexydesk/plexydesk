@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "openweathermaps.h"
 #include "openweathermapsinterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<PlexyDesk::DataSource> openweathermapsInterface::model() {
   QSharedPointer<PlexyDesk::DataSource> obj =

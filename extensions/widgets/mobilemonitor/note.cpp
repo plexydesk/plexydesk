@@ -3,8 +3,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-#include <button.h>
-#include <texteditor.h>
+#include <ck_button.h>
+#include <ck_text_editor.h>
 
 class Note::PrivateNote {
 public:

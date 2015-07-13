@@ -36,9 +36,9 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
 ***************************************************************************/
 
-#include "friendswidget.h"
+#include "friendsck_widget.h"
 
-#include <plexyconfig.h>
+#include <ck_config.h>
 #include <QPixmap>
 #include <QBitmap>
 #include <QPaintEvent>

@@ -21,8 +21,8 @@
 
 #include <QtCore>
 
-#include <view_controller.h>
-#include <controllerplugininterface.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_desktop_plugin_interface.h>
 
 class date_plugin_impl : public QObject,
                       public cherry_kit::desktop_plugin_interface {

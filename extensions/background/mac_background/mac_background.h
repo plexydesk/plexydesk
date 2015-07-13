@@ -29,7 +29,7 @@
 #include <QPropertyAnimation>
 #include <QGraphicsBlurEffect>
 
-#include <abstractdesktopwidget.h>
+#include <abstractdesktopck_widget.h>
 #include <controllerinterface.h>
 
 #include "mac_backgroundrender.h"

@@ -23,7 +23,7 @@
 #include <controllerinterface.h>
 #include <themepackloader.h>
 
-#include "plexynowwidget.h"
+#include "plexynowck_widget.h"
 #include "notebookbase.h"
 
 class MobileMonController : public PlexyDesk::ControllerInterface {

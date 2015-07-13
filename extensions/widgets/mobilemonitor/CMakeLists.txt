@@ -16,7 +16,7 @@ set(sourceFiles
 set(headerFiles
     interface.h
     mobilemonplugin.h
-    plexynowwidget.h
+    plexynowck_ck_widget.h
     notebookbase.h
     note.h
     ${bbheaders}
@@ -25,7 +25,7 @@ set(headerFiles
 set(QTMOC_SRCS
     interface.h
     mobilemonplugin.h
-    plexynowwidget.h
+    plexynowck_ck_widget.h
     notebookbase.h
     note.h
     ${bbheaders}

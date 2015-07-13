@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "macbginterface.h"
 #include "mac_background.h"
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 #include <QtPlugin>
 

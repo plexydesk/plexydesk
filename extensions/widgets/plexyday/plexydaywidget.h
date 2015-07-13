@@ -22,17 +22,17 @@
 
 #include "videoentity.h"
 
-#include <extensionmanager.h>
+#include <ck_extension_manager.h>
 
-#include <desktopwidget.h>
-#include <scrollwidget.h>
+#include <desktopck_ck_widget.h>
+#include <scrollck_ck_widget.h>
 #include <QGraphicsTextItem>
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QGraphicsBlurEffect>
 
-#include <button.h>
-#include <lineedit.h>
-#include <tableview.h>
+#include <ck_button.h>
+#include <ck_line_edit.h>
+#include <ck_TableView.h>
 
 #include "cellsprovider.h"
 

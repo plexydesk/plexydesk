@@ -2,7 +2,7 @@
 #define PLEXY_DAY_CONTROLLER_H
 
 #include <controllerinterface.h>
-#include "plexydaywidget.h"
+#include "plexydayck_widget.h"
 
 class PlexyDayController : public PlexyDesk::ControllerInterface {
   Q_OBJECT

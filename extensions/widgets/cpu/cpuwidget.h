@@ -22,7 +22,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 class QTimer;
 

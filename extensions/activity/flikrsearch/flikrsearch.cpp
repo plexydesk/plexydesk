@@ -25,15 +25,15 @@
 #include <QGraphicsWidget>
 
 // Qt Includes
-#include <widget.h>
-#include <tableview.h>
-#include <button.h>
-#include <lineedit.h>
-#include <label.h>
-#include <progressbar.h>
-#include <toolbar.h>
+#include <ck_widget.h>
+#include <ck_TableView.h>
+#include <ck_button.h>
+#include <ck_line_edit.h>
+#include <ck_label.h>
+#include <ck_progress_bar.h>
+#include <ck_ToolBar.h>
 
-#include <resource_manager.h>
+#include <ck_resource_manager.h>
 
 class FlickrSearchActivity::PrivateFlikrSearch {
 public:

@@ -18,8 +18,8 @@
 *******************************************************************************/
 
 #include "folderplugin.h"
-#include <extensionmanager.h>
-#include <widget.h>
+#include <ck_extension_manager.h>
+#include <ck_widget.h>
 #include <QDir>
 #include <QDropEvent>
 #include <QMimeData>

@@ -1,8 +1,8 @@
 #include "extrunner.h"
 #include <QDebug>
 
-#include <datasource.h>
-#include <extensionmanager.h>
+#include <ck_data_source.h>
+#include <ck_extension_manager.h>
 
 class ExtLaoderTestRunner::PrivateExtLaoderTestRunner {
 public:

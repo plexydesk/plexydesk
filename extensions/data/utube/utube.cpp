@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "utube.h"
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 #include <QTimer>
 

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QtCore>
 
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <pendingjob.h>
 #include "facebookuserinfo.h"
 

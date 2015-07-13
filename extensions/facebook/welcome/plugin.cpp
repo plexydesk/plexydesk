@@ -21,7 +21,7 @@
 #include <config.h>
 #include <QtCore>
 #include <QtGui>
-#include "welcomewidget.h"
+#include "welcomeck_widget.h"
 #include "login.h"
 
 Welcome::Welcome(QObject *object) {}

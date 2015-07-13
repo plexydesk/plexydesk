@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "plexyday.h"
-#include "plexydaywidget.h"
+#include "plexydayck_widget.h"
 
 PlexyDayController::PlexyDayController(QObject *object) {
 #ifdef Q_WS_QPA

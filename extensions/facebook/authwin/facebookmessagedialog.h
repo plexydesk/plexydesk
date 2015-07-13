@@ -1,7 +1,7 @@
 #ifndef FACEBOOKMESSAGEDIALOG_H
 #define FACEBOOKMESSAGEDIALOG_H
 
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 
 class FacebookMessageDialog : public PlexyDesk::DesktopWidget {
   Q_OBJECT

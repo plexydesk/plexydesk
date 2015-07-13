@@ -7,13 +7,13 @@ set(plexycpusrc
 
 set(headerFiles
     cpu.h
-    cpuwidget.h
+    cpuck_ck_widget.h
     cpuinterface.h
     )
 
 set(QTMOC_SRCS
     cpu.h
-    cpuwidget.h
+    cpuck_ck_widget.h
     cpuinterface.h
     )
 

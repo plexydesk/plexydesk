@@ -21,8 +21,8 @@
 
 #include <QtCore>
 
-#include <activity_interface.h>
-#include <desktopactivity.h>
+#include <ck_dialog_plugin_interface.h>
+#include <ck_desktop_dialog.h>
 
 class TimePickerInterface : public QObject,
                             public cherry_kit::dialog_plugin_interface {

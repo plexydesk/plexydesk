@@ -21,8 +21,8 @@
 
 #include <QtCore>
 
-#include <datasource.h>
-#include <view_controller.h>
+#include <ck_data_source.h>
+#include <ck_desktop_controller_interface.h>
 #include <QtNetwork>
 
 class NLPControllerImpl : public cherry_kit::desktop_controller_interface {

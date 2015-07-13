@@ -8,21 +8,21 @@
 #include <QGraphicsWidget>
 #include <asyncdatadownloader.h>
 #include <asyncimagecreator.h>
-#include <button.h>
-#include <imageview.h>
-#include <texteditor.h>
-#include <label.h>
-#include <resource_manager.h>
+#include <ck_button.h>
+#include <ck_image_view.h>
+#include <ck_text_editor.h>
+#include <ck_label.h>
+#include <ck_resource_manager.h>
 #include <webservice.h>
 #include <memorysyncengine.h>
 #include <disksyncengine.h>
 #include <syncobject.h>
-#include <extensionmanager.h>
-#include <imagebutton.h>
+#include <ck_extension_manager.h>
+#include <ck_icon_button.h>
 
-#include <plexyconfig.h>
-#include <toolbar.h>
-#include <viewbuilder.h>
+#include <ck_config.h>
+#include <ck_ToolBar.h>
+#include <ck_fixed_layout.h>
 
 typedef std::function<void(const QString &)> on_title_callback_func;
 typedef std::function<void(const QString &, const QString &)>
@@ -45,9 +45,9 @@ public:
 
   QPixmap m_image_attachment;
 
-  cherry_kit::TextEditor *m_text_editor_widget;
-  cherry_kit::ImageButton *m_attachment_del_button;
-  cherry_kit::ImageView *m_image_attachment_view;
+  cherry_kit::text_editor *m_text_editor_widget;
+  cherry_kit::icon_button *m_attachment_del_button;
+  cherry_kit::image_view *m_image_attachment_view;
 
   QImage mBackgroundPixmap;
 
@@ -117,7 +117,7 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   cherry_kit::widget_properties_t text_editor_prop;
   text_editor_prop["text"] = "";
 
-  d->m_text_editor_widget = dynamic_cast<cherry_kit::TextEditor *>(
+  d->m_text_editor_widget = dynamic_cast<cherry_kit::text_editor *>(
       d->m_ui->add_widget(0, 0, "text_edit", text_editor_prop));
 
   cherry_kit::widget_properties_t button_props;

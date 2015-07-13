@@ -23,7 +23,7 @@
 
 #include <widgetinterface.h>
 #include "cpu.h"
-#include "cpuwidget.h"
+#include "cpuck_widget.h"
 
 class CpuInterface : public PlexyDesk::WidgetInterface {
   Q_OBJECT

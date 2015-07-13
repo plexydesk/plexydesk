@@ -16,12 +16,12 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "fbpostdialog.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
 #include <controllerinterface.h>
 #include <webkitwebview.h>
-#include <desktopwidget.h>
+#include <desktopck_ck_widget.h>
 #include <QGraphicsWebView>
 #include <QNetworkAccessManager>
 #include <QNetworkCookieJar>

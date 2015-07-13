@@ -18,10 +18,10 @@
 *******************************************************************************/
 
 #include "fileinforview.h"
-#include <button.h>
-#include <lineedit.h>
-#include <style.h>
-#include <windowbutton.h>
+#include <ck_button.h>
+#include <ck_line_edit.h>
+#include <ck_style.h>
+#include <ck_window_button.h>
 
 // Qt
 #include <QDir>

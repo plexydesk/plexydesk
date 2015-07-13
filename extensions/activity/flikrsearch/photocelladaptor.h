@@ -2,7 +2,7 @@
 #define PHOTO_CELL_ADAPTOR_H
 
 #include <QString>
-#include <tableviewcellinterface.h>
+#include <ck_table_model.h>
 #include <webservice.h>
 
 using namespace cherry_kit;

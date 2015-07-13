@@ -32,95 +32,95 @@ endif(UNIX AND NOT APPLE)
 
 #stage 1 : move core files
 set(CORE_LIB_CXX_FILES
-    core/widget.cpp
-    core/controller_action.cpp
-    core/view_controller.cpp
-    core/datasource.cpp
-    core/desktopactivity.cpp
-    core/extensionmanager.cpp
-    core/style.cpp)
+    core/ck_widget.cpp
+    core/ck_ui_action.cpp
+    core/ck_desktop_controller_interface.cpp
+    core/ck_data_source.cpp
+    core/ck_desktop_dialog.cpp
+    core/ck_extension_manager.cpp
+    core/ck_style.cpp)
 
 set(CORE_LIBRARY_INTERFACE_FILES
-    core/view_controller.h
-    core/controllerplugininterface.h
-    core/dataplugininterface.h
-    core/activity_interface.h
-    core/widgetstyleinterface.h)
+    core/ck_desktop_controller_interface.h
+    core/ck_desktop_plugin_interface.h
+    core/ck_data_plugin_interface.h
+    core/ck_dialog_plugin_interface.h
+    core/ck_style_interface.h)
 
 set(CORE_LIBRARY_HEADER_FILES
-    core/style.h
-    core/widget.h
-    core/datasource.h
-    core/stylefeatures.h
-    core/desktopactivity.h
-    core/extensionmanager.h
-    core/controller_action.h)
+    core/ck_style.h
+    core/ck_widget.h
+    core/ck_data_source.h
+    core/ck_style_data.h
+    core/ck_desktop_dialog.h
+    core/ck_extension_manager.h
+    core/ck_ui_action.h)
 
 #
 set(LIBRARY_WIDGET_SOURCE_CXX_FILES
-    widgets/button.cpp
-    widgets/scrollwidget.cpp
-    widgets/imageview.cpp
-    widgets/label.cpp
-    widgets/progressbar.cpp
-    widgets/imagebutton.cpp
-    widgets/button.cpp
-    widgets/lineedit.cpp
-    widgets/texteditor.cpp
-    widgets/windowbutton.cpp
-    widgets/tableviewcellinterface.cpp
-    widgets/abstractcellcomponent.cpp
-    widgets/item_view.cpp
-    components/dialwidget.cpp
-    components/clockwidget.cpp
-    components/rangewidget.cpp
-    components/model_view_item.cpp
-    components/calendarwidget.cpp
-    viewbuilder.cpp
+    widgets/ck_button.cpp
+    widgets/ck_scroll_widget.cpp
+    widgets/ck_image_view.cpp
+    widgets/ck_label.cpp
+    widgets/ck_progress_bar.cpp
+    widgets/ck_icon_button.cpp
+    widgets/ck_button.cpp
+    widgets/ck_line_edit.cpp
+    widgets/ck_text_editor.cpp
+    widgets/ck_window_button.cpp
+    widgets/ck_table_model.cpp
+    widgets/ck_table_view_item.cpp
+    widgets/ck_item_view.cpp
+    components/ck_dial_view.cpp
+    components/ck_clock_view.cpp
+    components/ck_range_view.cpp
+    components/ck_model_view_item.cpp
+    components/ck_calendar_view.cpp
+    ck_fixed_layout.cpp
     )
 
 set(LIBRARY_SOURCE_FILES
     netwm.cpp
-    viewbuilder.cpp
-		resource_manager.cpp
-    plexyconfig.cpp
-    window.cpp
-    workspace.cpp
-    session_sync.cpp
-    space.cpp
+    ck_fixed_layout.cpp
+		ck_resource_manager.cpp
+    ck_config.cpp
+    ck_window.cpp
+    ck_workspace.cpp
+    ck_session_sync.cpp
+    ck_space.cpp
     ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
     ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
 
 set(LIBRARY_HEADER_FILES
-    viewbuilder.h
-    workspace.h
+    ck_fixed_layout.h
+    ck_workspace.h
     netwm.h
     netwm_def.h
     netwm_p.h
-    resource_manager.h
-    window.h
-    plexyconfig.h
-    widgets/button.h
-    widgets/lineedit.h
-    widgets/texteditor.h
-    widgets/windowbutton.h
-    widgets/scrollwidget.h
-    widgets/imageview.h
-    widgets/label.h
-    widgets/progressbar.h
-    widgets/imagebutton.h
-    widgets/tableviewcellinterface.h
-    widgets/abstractcellcomponent.h
-    widgets/item_view.h
-    components/dialwidget.h
-    components/clockwidget.h
-    components/rangewidget.h
-    components/model_view_item.h
-    components/calendarwidget.h
-    viewbuilder.h
-    workspace.h
-    session_sync.h
-    space.h
+    ck_resource_manager.h
+    ck_window.h
+    ck_config.h
+    widgets/ck_button.h
+    widgets/ck_line_edit.h
+    widgets/ck_text_editor.h
+    widgets/ck_window_button.h
+    widgets/ck_scroll_widget.h
+    widgets/ck_image_view.h
+    widgets/ck_label.h
+    widgets/ck_progress_bar.h
+    widgets/ck_icon_button.h
+    widgets/ck_table_model.h
+    widgets/ck_table_view_item.h
+    widgets/ck_item_view.h
+    components/ck_dial_view.h
+    components/ck_clock_view.h
+    components/ck_range_view.h
+    components/ck_model_view_item.h
+    components/ck_calendar_view.h
+    ck_fixed_layout.h
+    ck_workspace.h
+    ck_session_sync.h
+    ck_space.h
     ${CORE_LIBRARY_HEADER_FILES}
     ${CORE_LIBRARY_INTERFACE_FILES}
     ${LIBRARY_PLATFORM_HEADERS}

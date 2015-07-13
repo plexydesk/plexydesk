@@ -4,8 +4,8 @@
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
 
-#include <style.h>
-#include <desktopwidget.h>
+#include <ck_style.h>
+#include <desktopck_widget.h>
 
 class Note : public PlexyDesk::DesktopWidget {
   Q_OBJECT

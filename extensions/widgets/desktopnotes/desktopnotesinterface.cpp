@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "desktopnotes.h"
 #include "desktopnotesinterface.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
 task_plugin_impl::controller() {

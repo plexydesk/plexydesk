@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include "twitwidget.h"
+#include "twitck_widget.h"
 #include <math.h>
 
 #include <QMatrix>

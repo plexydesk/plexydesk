@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "flikrsearch.h"
 #include "flikrsearchinterface.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::DesktopActivity> FlikrSearchInterface::activity() {
   QSharedPointer<cherry_kit::DesktopActivity> obj =

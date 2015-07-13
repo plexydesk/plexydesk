@@ -20,8 +20,8 @@
 #ifndef DESKTOPMANAGER_H
 #define DESKTOPMANAGER_H
 
-#include <workspace.h>
-#include <view_controller.h>
+#include <ck_workspace.h>
+#include <ck_desktop_controller_interface.h>
 
 using namespace cherry_kit;
 

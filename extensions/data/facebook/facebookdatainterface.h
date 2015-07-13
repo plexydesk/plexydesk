@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-#include <dataplugininterface.h>
+#include <ck_data_plugin_interface.h>
 #include <QtNetwork>
 
 class FacebookDataInterface : public QObject,

@@ -19,7 +19,7 @@
 
 #include "authplugin.h"
 #include "facebookcontactcard.h"
-#include "facebookauthenticationwidget.h"
+#include "facebookauthenticationck_widget.h"
 #include <abstractdesktopview.h>
 
 AuthPlugin::AuthPlugin(QObject *object)

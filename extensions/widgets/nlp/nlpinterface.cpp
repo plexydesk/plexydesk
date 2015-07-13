@@ -18,7 +18,7 @@
 *******************************************************************************/
 #include "nlp.h"
 #include "nlpinterface.h"
-#include <plexyconfig.h>
+#include <ck_config.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
 NLPInterface::controller() {

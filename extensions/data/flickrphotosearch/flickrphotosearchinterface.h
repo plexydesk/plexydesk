@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include <dataplugininterface.h>
+#include <ck_data_plugin_interface.h>
 
 class FlickrPhotoSearchInterface : public QObject,
                                    public cherry_kit::data_plugin_interface {

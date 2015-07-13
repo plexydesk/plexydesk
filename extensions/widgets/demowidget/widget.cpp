@@ -16,7 +16,7 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "widget.h"
+#include "ck_widget.h"
 #include "widgetitem.h"
 //#include <QtWebKit>
 

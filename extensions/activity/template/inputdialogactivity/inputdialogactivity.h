@@ -22,9 +22,9 @@
 #include <QtCore>
 
 #include <abstractplugininterface.h>
-#include <datasource.h>
+#include <ck_data_source.h>
 #include <QtNetwork>
-#include <desktopactivity.h>
+#include <ck_desktop_dialog.h>
 
 class InputDialogActivityData : public PlexyDesk::DesktopActivity {
   Q_OBJECT

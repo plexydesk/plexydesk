@@ -16,14 +16,14 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "cocoa.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
-#include <view_controller.h>
-#include <stylefeatures.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_style_data.h>
 
 #include <cmath>
-#include <resource_manager.h>
+#include <ck_resource_manager.h>
 
 #include <px_bench.h>
 

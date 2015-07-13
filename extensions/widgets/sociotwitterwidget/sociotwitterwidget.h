@@ -3,7 +3,7 @@
 
 #include <QtGui/QWidget>
 #include <pluginloader.h>
-#include <desktopwidget.h>
+#include <desktopck_widget.h>
 #include "sociotwitterinterface.h"
 
 namespace PlexyDesk {

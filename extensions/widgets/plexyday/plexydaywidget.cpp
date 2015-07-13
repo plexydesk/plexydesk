@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include "plexydaywidget.h"
+#include "plexydayck_ck_widget.h"
 
 #include <QMatrix>
 #include <QPixmap>
@@ -27,8 +27,8 @@
 #include <QGraphicsSceneWheelEvent>
 #include <QStyleOptionGraphicsItem>
 
-#include <button.h>
-#include <tableview.h>
+#include <ck_button.h>
+#include <ck_TableView.h>
 #include <nativestyle.h>
 
 #include "cellsprovider.h"
@@ -63,7 +63,7 @@ PlexyDayWidget::PlexyDayWidget(const QRectF &rect)
 #ifdef Q_WS_QPA
   headerHight = (64.0 * 2) + 20;
 #endif
-  // Leave a margin of 74px for the widget header. and a 5px left margin
+  // Leave a margin of 74px for the ck_ck_widget.header. and a 5px left margin
   mTableView->setPos(cellFactory->leftMargin(), headerHight);
 }
 

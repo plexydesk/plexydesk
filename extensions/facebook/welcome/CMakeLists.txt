@@ -18,7 +18,7 @@ set(sourceFiles
 
 set(headerFiles
     login.h
-    welcomewidget.h
+    welcomeck_ck_widget.h
     frameitem.h
     plugin.h
     welcomeinterface.h
@@ -26,7 +26,7 @@ set(headerFiles
     )
 
 set(QTMOC_SRCS login.h
-    welcomewidget.h
+    welcomeck_ck_widget.h
     frameitem.h
     plugin.h
     welcomeinterface.h

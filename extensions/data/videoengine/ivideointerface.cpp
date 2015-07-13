@@ -21,8 +21,8 @@
 
 #include "video.h"
 #include "ivideointerface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 IVideoInterface::IVideoInterface(QObject *object) {}
 

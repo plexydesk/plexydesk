@@ -18,8 +18,8 @@
 *******************************************************************************/
 
 #include "mobilemonplugin.h"
-#include <extensionmanager.h>
-#include <desktopwidget.h>
+#include <ck_extension_manager.h>
+#include <desktopck_widget.h>
 #include <QDeclarativeContext>
 #include <QMimeData>
 #include <QFileInfo>

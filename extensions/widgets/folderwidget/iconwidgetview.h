@@ -1,7 +1,7 @@
 #ifndef ICONWIDGETVIEW_H
 #define ICONWIDGETVIEW_H
 
-#include <scrollwidget.h>
+#include <scrollck_widget.h>
 #include "folderitem.h"
 
 class IconWidgetView : public cherry_kit::Widget {

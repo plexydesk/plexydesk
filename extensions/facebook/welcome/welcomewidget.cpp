@@ -16,7 +16,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include "welcomewidget.h"
+#include "welcomeck_widget.h"
 #include <math.h>
 
 #include <QMatrix>

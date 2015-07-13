@@ -1,5 +1,5 @@
 #include "sociotwitter.h"
-#include "sociotwitterwidget.h"
+#include "sociotwitterck_widget.h"
 #include "sociotwitterinterface.h"
 
 SocioTwitter::SocioTwitter(QObject *object) {}

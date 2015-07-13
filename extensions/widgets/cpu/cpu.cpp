@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "cpu.h"
-#include "cpuwidget.h"
+#include "cpuck_widget.h"
 #include <QtCore>
 #include <QtGui>
 

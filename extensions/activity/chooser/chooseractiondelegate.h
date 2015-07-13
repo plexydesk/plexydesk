@@ -1,11 +1,11 @@
 #ifndef CHOOSERCELLFACTORY_H
 #define CHOOSERCELLFACTORY_H
 
-#include <tableviewcellinterface.h>
+#include <ck_table_model.h>
 
 using namespace cherry_kit;
 
-class ChooserActionDelegate : public TableModel {
+class ChooserActionDelegate : public table_model {
   Q_OBJECT
 
 public:

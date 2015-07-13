@@ -1,7 +1,7 @@
 #include "facebookmessagedialog.h"
-#include <button.h>
-#include <lineedit.h>
-#include <texteditor.h>
+#include <ck_button.h>
+#include <ck_line_edit.h>
+#include <ck_text_editor.h>
 
 class FacebookMessageDialog::PrivateFacebookMessageDialog {
 public:

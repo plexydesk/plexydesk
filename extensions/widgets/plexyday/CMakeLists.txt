@@ -11,7 +11,7 @@ set(sourceFiles
 set(headerFiles
     plexyday.h
     plexydayinterface.h
-    plexydaywidget.h
+    plexydayck_ck_widget.h
     cellsprovider.h
     cellitem.h
     )
@@ -19,7 +19,7 @@ set(headerFiles
 set(QTMOC_SRCS
     plexyday.h
     plexydayinterface.h
-    plexydaywidget.h
+    plexydayck_ck_widget.h
     cellsprovider.h
     cellitem.h
     )

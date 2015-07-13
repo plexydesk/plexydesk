@@ -3,7 +3,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QGraphicsDropShadowEffect>
-#include <resource_manager.h>
+#include <ck_resource_manager.h>
 #include <QPixmapCache>
 
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,

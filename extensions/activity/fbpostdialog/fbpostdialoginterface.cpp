@@ -18,8 +18,8 @@
 *******************************************************************************/
 #include "fbpostdialog.h"
 #include "fbpostdialoginterface.h"
-#include <desktopwidget.h>
-#include <plexyconfig.h>
+#include <desktopck_widget.h>
+#include <ck_config.h>
 
 QSharedPointer<PlexyDesk::DesktopActivity> FBPostDialogInterface::activity() {
   QSharedPointer<PlexyDesk::DesktopActivity> obj =

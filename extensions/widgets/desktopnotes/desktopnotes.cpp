@@ -16,19 +16,19 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "desktopnotes.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
-#include <view_controller.h>
-#include <widget.h>
+#include <ck_desktop_controller_interface.h>
+#include <ck_widget.h>
 #include <QAction>
-#include <session_sync.h>
+#include <ck_session_sync.h>
 
-#include <viewbuilder.h>
+#include <ck_fixed_layout.h>
 
-#include <button.h>
-#include <imagebutton.h>
-#include <texteditor.h>
+#include <ck_button.h>
+#include <ck_icon_button.h>
+#include <ck_text_editor.h>
 
 #include "notewidget.h"
 
@@ -267,8 +267,8 @@ void desktop_task_controller_impl::createReminderUI(
     accept_button_prop["label"] = "Resume";
     accept_button_prop["icon"] = "actions/pd_resume.png";
 
-    cherry_kit::TextEditor *editor =
-        dynamic_cast<cherry_kit::TextEditor *>(view->at(0, 0));
+    cherry_kit::text_editor *editor =
+        dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
     if (editor) {
       editor->style("border: 0; background: #29CDA8; color: #ffffff");
     }
@@ -293,8 +293,8 @@ void desktop_task_controller_impl::createReminderUI(
   a_session->bind_to_window(window);
   insert(window);
 
-  cherry_kit::ImageButton *delete_btn =
-      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 3));
+  cherry_kit::icon_button *delete_btn =
+      dynamic_cast<cherry_kit::icon_button *>(view->at(1, 3));
 
   if (delete_btn) {
     cherry_kit::widget::InputCallback func = [=](
@@ -309,16 +309,16 @@ void desktop_task_controller_impl::createReminderUI(
     delete_btn->on_input_event(func);
   }
 
-  cherry_kit::ImageButton *save_btn =
-      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 2));
+  cherry_kit::icon_button *save_btn =
+      dynamic_cast<cherry_kit::icon_button *>(view->at(1, 2));
 
   if (save_btn) {
     cherry_kit::widget::InputCallback func = [=](
         cherry_kit::widget::InputEvent a_event,
         const cherry_kit::widget *a_widget) {
       if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-        cherry_kit::TextEditor *editor =
-            dynamic_cast<cherry_kit::TextEditor *>(view->at(0, 0));
+        cherry_kit::text_editor *editor =
+            dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
         if (editor) {
           a_session->save_session_attribute(
               session_database_name("reminders"), "Reminders", "reminders_id",
@@ -331,16 +331,16 @@ void desktop_task_controller_impl::createReminderUI(
     save_btn->on_input_event(func);
   }
 
-  cherry_kit::ImageButton *done_btn =
-      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 1));
+  cherry_kit::icon_button *done_btn =
+      dynamic_cast<cherry_kit::icon_button *>(view->at(1, 1));
 
   if (done_btn) {
     cherry_kit::widget::InputCallback func = [=](
         cherry_kit::widget::InputEvent a_event,
         const cherry_kit::widget *a_widget) {
       if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-        cherry_kit::TextEditor *editor =
-            dynamic_cast<cherry_kit::TextEditor *>(view->at(0, 0));
+        cherry_kit::text_editor *editor =
+            dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
         bool is_complete = 0;
 
         if (a_session->session_keys().contains("state")) {
@@ -381,8 +381,8 @@ void desktop_task_controller_impl::createReminderUI(
     done_btn->on_input_event(func);
   }
 
-  cherry_kit::ImageButton *set_btn =
-      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 0));
+  cherry_kit::icon_button *set_btn =
+      dynamic_cast<cherry_kit::icon_button *>(view->at(1, 0));
 
   if (set_btn) {
     cherry_kit::widget::InputCallback func = [=](

@@ -2,7 +2,7 @@
 
 #include "cellitem.h"
 
-#include <extensionmanager.h>
+#include <ck_extension_manager.h>
 #include <controllerinterface.h>
 
 class CellsProvider::CellsProviderPrivate {

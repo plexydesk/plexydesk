@@ -16,10 +16,10 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "socialauth.h"
-#include <widget.h>
-#include <plexyconfig.h>
+#include <ck_widget.h>
+#include <ck_config.h>
 #include <QTimer>
-#include <view_controller.h>
+#include <ck_desktop_controller_interface.h>
 
 class social_auth_dialog::PrivateSocialAuth {
 public:
