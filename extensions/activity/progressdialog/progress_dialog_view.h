@@ -26,13 +26,13 @@
 #include <ck_window.h>
 #include <ck_desktop_dialog.h>
 
-class progress_dialog : public cherry_kit::desktop_dialog {
+class progress_dialog_view : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  progress_dialog(QGraphicsObject *object = 0);
+  progress_dialog_view(QGraphicsObject *object = 0);
 
-  virtual ~progress_dialog();
+  virtual ~progress_dialog_view();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
@@ -43,12 +43,6 @@ public:
 
   cherry_kit::window *activity_window() const;
   void cleanup();
-
-private
-Q_SLOTS:
-  void onWidgetClosed(cherry_kit::widget *widget);
-
-  void onHideAnimationFinished();
 
 private:
   class PrivateProgressDialog;
