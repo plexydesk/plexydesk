@@ -41,7 +41,7 @@
 
 #include "localwallpapers.h"
 
-class wallpaper_dialog::PrivatePhotoSearch {
+class desktop_settings_dialog::PrivatePhotoSearch {
 public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
@@ -57,15 +57,15 @@ public:
   QVariantMap mResult;
 };
 
-wallpaper_dialog::wallpaper_dialog(QGraphicsObject *object)
+desktop_settings_dialog::desktop_settings_dialog(QGraphicsObject *object)
     : cherry_kit::desktop_dialog(object), d(new PrivatePhotoSearch) {}
 
-wallpaper_dialog::~wallpaper_dialog() {
+desktop_settings_dialog::~desktop_settings_dialog() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-void wallpaper_dialog::create_window(const QRectF &aWindowGeometry,
+void desktop_settings_dialog::create_window(const QRectF &aWindowGeometry,
                                         const QString &aWindowTitle,
                                         const QPointF &window_pos) {
   d->mGeometry = aWindowGeometry;
@@ -105,36 +105,28 @@ void wallpaper_dialog::create_window(const QRectF &aWindowGeometry,
   d->m_window->set_window_content(ck_ui->viewport());
 
   QTimer::singleShot(500, this, SLOT(load_from_system_path()));
-
-  /*
-  connect(d->mTable, SIGNAL(activated(TableViewItem *)), this,
-          SLOT(onClicked(TableViewItem *)));
-  connect(d->mFactory, SIGNAL(completed(int)), this,
-          SLOT(onProgressValue(int)));
-
-  */
   exec(window_pos);
 }
 
-QRectF wallpaper_dialog::geometry() const { return d->mGeometry; }
+QRectF desktop_settings_dialog::geometry() const { return d->mGeometry; }
 
-QVariantMap wallpaper_dialog::result() const { return d->mResult; }
+QVariantMap desktop_settings_dialog::result() const { return d->mResult; }
 
-window *wallpaper_dialog::activity_window() const { return d->m_window; }
+window *desktop_settings_dialog::activity_window() const { return d->m_window; }
 
-void wallpaper_dialog::cleanup() {
+void desktop_settings_dialog::cleanup() {
   if (d->m_window) {
     delete d->m_window;
   }
 
   d->m_window = 0;
 }
-
-void wallpaper_dialog::onShowAnimationFinished() {
+/*
+void desktop_settings_dialog::onShowAnimationFinished() {
   this->load_from_system_path();
 }
 
-void wallpaper_dialog::onClicked(table_view_item *item) {
+void desktop_settings_dialog::onClicked(table_view_item *item) {
   if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;
   }
@@ -147,7 +139,7 @@ void wallpaper_dialog::onClicked(table_view_item *item) {
   }
 }
 
-void wallpaper_dialog::onProgressValue(int value) {
+void desktop_settings_dialog::onProgressValue(int value) {
   if (value == 100) {
     if (d->m_window) {
       if (has_attribute("title")) {
@@ -155,8 +147,9 @@ void wallpaper_dialog::onProgressValue(int value) {
     }
   }
 }
+*/
 
-void wallpaper_dialog::load_from_system_path() const {
+void desktop_settings_dialog::load_from_system_path() const {
   std::vector<std::string> image_path_list;
 
 #ifdef Q_OS_LINUX

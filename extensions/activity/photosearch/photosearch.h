@@ -28,13 +28,12 @@
 #include <ck_table_view_item.h>
 
 using namespace cherry_kit;
-class wallpaper_dialog : public cherry_kit::desktop_dialog {
+class desktop_settings_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  wallpaper_dialog(QGraphicsObject *object = 0);
-
-  virtual ~wallpaper_dialog();
+  desktop_settings_dialog(QGraphicsObject *object = 0);
+  virtual ~desktop_settings_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &aWindowTitle,
                      const QPointF &window_pos);
@@ -48,17 +47,6 @@ public:
 
 private
 Q_SLOTS:
-
-  void onShowAnimationFinished();
-  void onClicked(table_view_item *item);
-  void onProgressValue(int value);
-
-  // void onDirectoryReady();
-
-  // void onPictureAvailable(const QString &key);
-
-  // void onImageSaved();
-
   void load_from_system_path() const;
 
 private:

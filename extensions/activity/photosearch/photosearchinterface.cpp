@@ -21,9 +21,9 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_dialog> PhotoSearchInterface::activity() {
+QSharedPointer<cherry_kit::desktop_dialog> desktop_settings_plugin_impl::activity() {
   QSharedPointer<cherry_kit::desktop_dialog> obj =
-      QSharedPointer<cherry_kit::desktop_dialog>(new wallpaper_dialog(),
+      QSharedPointer<cherry_kit::desktop_dialog>(new desktop_settings_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;
