@@ -95,8 +95,8 @@ void space::add_controller(const QString &a_name) {
 
 cherry_kit::desktop_dialog_ref
 space::open_desktop_dialog(const QString &a_activity, const QString &a_title,
-                       const QPointF &a_pos, const QRectF &a_rect,
-                       const QVariantMap &a_data_map) {
+                           const QPointF &a_pos, const QRectF &a_rect,
+                           const QVariantMap &a_data_map) {
   cherry_kit::desktop_dialog_ref intent =
       cherry_kit::extension_manager::instance()->activity(a_activity);
 
@@ -204,7 +204,7 @@ void space::insert_window_to_view(window *a_window) {
   o_space->m_window_list.push_back(a_window);
 
   a_window->on_update([this](const widget *window) {
-    qDebug() << Q_FUNC_INFO << "Got Update Request";
+    // qDebug() << Q_FUNC_INFO << "Got Update Request";
   });
 
   a_window->on_window_closed([this](window *window) {
@@ -578,13 +578,17 @@ QPointF space::center(const QRectF &a_view_geometry,
                   (a_view_geometry.height() / 2) + a_window_geometry.y();
     _x_location = (a_window_geometry.width() / 2) -
                   (a_view_geometry.width() / 2) + a_window_geometry.x();
+    _rv.setX(_x_location);
+    _rv.setY(_y_location);
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Error : Unknown Viewprot Location Type:";
   }
 
-  _rv.setY(geometry().y() + _y_location);
-  _rv.setX(_x_location);
+  if (a_location != kCenterOnWindow) {
+    _rv.setY(geometry().y() + _y_location);
+    _rv.setX(_x_location);
+  }
 
   return _rv;
 }
