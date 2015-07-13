@@ -126,7 +126,8 @@ void BackgroundController::session_data_available(
   }
 }
 
-void BackgroundController::submit_session_data(cherry_kit::sync_object *a_object) {
+void
+BackgroundController::submit_session_data(cherry_kit::sync_object *a_object) {
   a_object->set_property("background", o_ctr->m_background_texture);
   a_object->set_property("mode", "scale");
 }
@@ -176,7 +177,8 @@ void BackgroundController::request_action(const QString &actionName,
     QRectF dialog_window_geometry(0, 0, 640, 640);
     QPointF qt_activity_window_location = viewport()->center(
         dialog_window_geometry,
-        QRectF(0, 0, o_ctr->m_background_window->geometry().width(),
+        QRectF(o_ctr->m_background_window->x(), o_ctr->m_background_window->y(),
+               o_ctr->m_background_window->geometry().width(),
                o_ctr->m_background_window->geometry().height()),
         cherry_kit::space::kCenterOnWindow);
 
