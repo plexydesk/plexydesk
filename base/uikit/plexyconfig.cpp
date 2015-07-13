@@ -31,28 +31,28 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class Config::Private {
+class config::Private {
 public:
   Private() {}
   ~Private() {}
 };
 
-Config *Config::config = 0;
+config *config::g_config = 0;
 
-Config *Config::instance() {
-  if (config == 0) {
-    config = new Config();
-    return config;
+config *config::instance() {
+  if (g_config == 0) {
+    g_config = new config();
+    return g_config;
   } else {
-    return config;
+    return g_config;
   }
 }
 
-Config::~Config() { delete d; }
+config::~config() { delete d; }
 
-QString Config::prefix() {
+QString config::prefix() {
 #ifndef Q_OS_LINUX
   QDir binaryPath(QCoreApplication::applicationDirPath());
   if (binaryPath.cdUp()) {
@@ -83,12 +83,12 @@ QString Config::prefix() {
   return QString();
 }
 
-QString Config::cache_dir(const QString &a_folder) {
+QString config::cache_dir(const QString &a_folder) {
   QString rv = QDir::toNativeSeparators(QDir::homePath() + "/" +
                                         ".plexydesk/cache/" + a_folder);
   QDir(QDir::homePath()).mkpath(rv);
   return rv;
 }
 
-Config::Config() : d(new Private) {}
+config::config() : d(new Private) {}
 }

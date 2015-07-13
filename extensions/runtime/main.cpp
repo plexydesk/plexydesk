@@ -34,16 +34,18 @@ int main(int argc, char *argv[]) {
   qDebug() << "Checking environment variable PLUGIN_HOME" << pathPtr;
 
 #ifdef Q_OS_MAC
-  CherryKit::ExtensionManager *loader = CherryKit::ExtensionManager::instance(
+  cherry_kit::ExtensionManager *loader = cherry_kit::ExtensionManager::instance(
       QDir::toNativeSeparators(
           (pathPtr) + QLatin1String("/Contents/share/plexy/ext/groups/")),
       QDir::toNativeSeparators((pathPtr) +
                                QLatin1String("/Contents/lib/plexyext/")));
 #else
-  CherryKit::ExtensionManager *loader = CherryKit::ExtensionManager::instance(
-      QDir::toNativeSeparators((pathPtr) +
-                               QLatin1String("/share/plexy/ext/groups/")),
-      QDir::toNativeSeparators((pathPtr) + QLatin1String("/lib/plexyext/")));
+  cherry_kit::extension_manager *loader =
+      cherry_kit::extension_manager::instance(
+          QDir::toNativeSeparators((pathPtr) +
+                                   QLatin1String("/share/plexy/ext/groups/")),
+          QDir::toNativeSeparators((pathPtr) +
+                                   QLatin1String("/lib/plexyext/")));
 #endif
 
   ExtLaoderTestRunner runner;

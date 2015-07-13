@@ -31,7 +31,7 @@ public:
 };
 
 DesktopManager::DesktopManager(QWidget *parent)
-    : CherryKit::WorkSpace(new QGraphicsScene, parent),
+    : cherry_kit::workspace(new QGraphicsScene, parent),
       p_workspace(new PrivateDesktopManager) {}
 
 DesktopManager::~DesktopManager() { delete p_workspace; }
@@ -39,7 +39,7 @@ DesktopManager::~DesktopManager() { delete p_workspace; }
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
   if (event->button() == Qt::RightButton) {
     if (current_active_space()) {
-      ViewControllerPtr dock_controller =
+      desktop_controller_ref dock_controller =
           current_active_space()->controller("dockwidget");
       if (dock_controller) {
         QVariantMap menu_argument;
@@ -50,5 +50,5 @@ void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
     }
   }
 
-  CherryKit::WorkSpace::mouseReleaseEvent(event);
+  cherry_kit::workspace::mouseReleaseEvent(event);
 }

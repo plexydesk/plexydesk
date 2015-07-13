@@ -24,7 +24,6 @@
 
 #include <QObject>
 
-#include <plexy.h>
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

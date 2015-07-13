@@ -20,7 +20,6 @@
 #define CHOOSER_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
@@ -28,30 +27,30 @@
 #include <widget.h>
 #include <window.h>
 
-using namespace CherryKit;
+using namespace cherry_kit;
 
-class IconGridActivity : public CherryKit::DesktopActivity {
+class icon_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  IconGridActivity(QGraphicsObject *object = 0);
+  icon_dialog(QGraphicsObject *object = 0);
 
-  virtual ~IconGridActivity();
+  virtual ~icon_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
   QVariantMap result() const;
-  Window *window() const;
+  window *activity_window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(CherryKit::Widget *widget);
+  void onWidgetClosed(cherry_kit::widget *widget);
   void onDiscard();
 
 private:
   class PrivateIconGrid;
-  PrivateIconGrid *const o_desktop_activity;
+  PrivateIconGrid *const o_desktop_dialog;
 };
 
 #endif

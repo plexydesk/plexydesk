@@ -286,15 +286,14 @@ void test_image_io_surface_create_from_file() {
   cherry::io_surface *ck_img_surface_ref = nullptr;
 
   ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
-                  image_io *a_img) {
+                      image_io *a_img) {
     ck_img_surface_ref = ck_img.surface();
 
     CK_ASSERT(a_status == image_io::kSuccess, "Should return a Success");
     CK_ASSERT(ck_img_surface_ref != nullptr, "Should return a Valid Surface");
     CK_ASSERT(ck_img_surface_ref->width == 1680, "Expected to return 800");
     CK_ASSERT(ck_img_surface_ref->height == 1050, "Expected to return 600");
-    QImage test_img(ck_img_surface_ref->buffer,
-                    ck_img_surface_ref->width,
+    QImage test_img(ck_img_surface_ref->buffer, ck_img_surface_ref->width,
                     ck_img_surface_ref->height,
                     QImage::Format_ARGB32_Premultiplied);
 
@@ -304,7 +303,7 @@ void test_image_io_surface_create_from_file() {
   ck_img.create("/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
-  std::this_thread::sleep_for (std::chrono::seconds(4));
+  std::this_thread::sleep_for(std::chrono::seconds(4));
   qDebug() << Q_FUNC_INFO << "Main thread wakeup";
 }
 
@@ -313,18 +312,17 @@ void test_image_io_surface_invalid_create_from_file() {
   cherry::io_surface *ck_img_surface_ref = nullptr;
 
   ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
-                  image_io *a_img) {
+                      image_io *a_img) {
     ck_img_surface_ref = ck_img.surface();
     CK_ASSERT(a_status != image_io::kSuccess, "Should return a Valid Surface");
 
     CK_ASSERT(ck_img_surface_ref == nullptr, "Should return a Valid Surface");
-
   });
 
   ck_img.create("/root/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
-  std::this_thread::sleep_for (std::chrono::seconds(4));
+  std::this_thread::sleep_for(std::chrono::seconds(4));
   qDebug() << Q_FUNC_INFO << "Main thread wakeup";
 }
 
@@ -349,7 +347,7 @@ int main(int argc, char *argv[]) {
   test_image_io_surface_invalid_create_from_file();
   test_image_io_surface_create_from_file();
 
-  //app.quit();
+  // app.quit();
 
-  //return app.exec();
+  // return app.exec();
 }

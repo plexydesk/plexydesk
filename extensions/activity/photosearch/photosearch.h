@@ -20,7 +20,6 @@
 #define PHOTOSEARCH_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <window.h>
 #include <datasource.h>
@@ -28,14 +27,14 @@
 #include <desktopactivity.h>
 #include <abstractcellcomponent.h>
 
-using namespace CherryKit;
-class PhotoSearchActivity : public CherryKit::DesktopActivity {
+using namespace cherry_kit;
+class wallpaper_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  PhotoSearchActivity(QGraphicsObject *object = 0);
+  wallpaper_dialog(QGraphicsObject *object = 0);
 
-  virtual ~PhotoSearchActivity();
+  virtual ~wallpaper_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &aWindowTitle,
                      const QPointF &window_pos);
@@ -44,7 +43,7 @@ public:
 
   QVariantMap result() const;
 
-  Window *window() const;
+  window *activity_window() const;
   void cleanup();
 
 private

@@ -20,7 +20,7 @@
 #define TEMPLATE_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <widgetstyleinterface.h>
 
 class TemplateInterface : public QObject,

@@ -1,6 +1,5 @@
 #ifndef FACEBOOKUSERINFO_H
 #define FACEBOOKUSERINFO_H
-#include <plexy.h>
 
 #include <pendingjob.h>
 

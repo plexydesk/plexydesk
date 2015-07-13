@@ -38,11 +38,11 @@ public:
   ~PrivateDesktopNotes() {}
 
   QMap<QString, int> mNoteActions;
-  CherryKit::ActionList m_supported_action_list;
+  cherry_kit::ActionList m_supported_action_list;
 };
 
 DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
-    : CherryKit::ViewController(object),
+    : cherry_kit::desktop_controller_interface(object),
       o_view_controller(new PrivateDesktopNotes) {
   o_view_controller->mNoteActions["Note"] = 1;
   o_view_controller->mNoteActions["Task"] = 2;
@@ -81,14 +81,15 @@ void DesktopNotesControllerImpl::session_data_available(
     const cherry::sync_object &a_sesion_root) {
   revoke_previous_session(
       "Notes",
-      [this](CherryKit::ViewController *a_controller,
-             CherryKit::SessionSync *a_session) { createNoteUI(a_session); });
+      [this](cherry_kit::desktop_controller_interface *a_controller,
+             cherry_kit::session_sync *a_session) { createNoteUI(a_session); });
 
-  revoke_previous_session("Reminders",
-                          [this](CherryKit::ViewController *a_controller,
-                                 CherryKit::SessionSync *a_session) {
-    createReminderUI(a_session);
-  });
+  revoke_previous_session(
+      "Reminders",
+      [this](cherry_kit::desktop_controller_interface *a_controller,
+             cherry_kit::session_sync *a_session) {
+        createReminderUI(a_session);
+      });
 }
 
 void
@@ -99,7 +100,7 @@ DesktopNotesControllerImpl::submit_session_data(cherry::sync_object *a_obj) {
 
 void DesktopNotesControllerImpl::set_view_rect(const QRectF &rect) {}
 
-CherryKit::ActionList DesktopNotesControllerImpl::actions() const {
+cherry_kit::ActionList DesktopNotesControllerImpl::actions() const {
   return o_view_controller->m_supported_action_list;
 }
 
@@ -121,10 +122,11 @@ void DesktopNotesControllerImpl::request_action(const QString &actionName,
     session_args["database_name"] =
         QString::fromStdString(session_database_name("Notes"));
 
-    start_session(
-        "Notes", session_args, false,
-        [this](CherryKit::ViewController *a_controller,
-               CherryKit::SessionSync *a_session) { createNoteUI(a_session); });
+    start_session("Notes", session_args, false,
+                  [this](cherry_kit::desktop_controller_interface *a_controller,
+                         cherry_kit::session_sync *a_session) {
+      createNoteUI(a_session);
+    });
     break;
   case 2:
     break;
@@ -136,8 +138,8 @@ void DesktopNotesControllerImpl::request_action(const QString &actionName,
         QString::fromStdString(session_database_name("reminders"));
 
     start_session("Reminders", session_args, false,
-                  [this](CherryKit::ViewController *a_controller,
-                         CherryKit::SessionSync *a_session) {
+                  [this](cherry_kit::desktop_controller_interface *a_controller,
+                         cherry_kit::session_sync *a_session) {
       createReminderUI(a_session);
     });
     break;
@@ -146,7 +148,7 @@ void DesktopNotesControllerImpl::request_action(const QString &actionName,
   }
 }
 
-void DesktopNotesControllerImpl::handle_drop_event(CherryKit::Widget *widget,
+void DesktopNotesControllerImpl::handle_drop_event(cherry_kit::widget *widget,
                                                    QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
@@ -167,8 +169,8 @@ QString DesktopNotesControllerImpl::icon() const {
 void DesktopNotesControllerImpl::onDataUpdated(const QVariantMap &data) {}
 
 void
-DesktopNotesControllerImpl::createNoteUI(CherryKit::SessionSync *a_session) {
-  CherryKit::Window *window = new CherryKit::Window();
+DesktopNotesControllerImpl::createNoteUI(cherry_kit::session_sync *a_session) {
+  cherry_kit::window *window = new cherry_kit::window();
   window->setGeometry(QRectF(0, 0, 320, 240));
 
   NoteWidget *note = new NoteWidget(a_session, window);
@@ -213,7 +215,7 @@ DesktopNotesControllerImpl::createNoteUI(CherryKit::SessionSync *a_session) {
         a_value.toStdString());
   });
 
-  window->on_window_discarded([this](CherryKit::Window *aWindow) {
+  window->on_window_discarded([this](cherry_kit::window *aWindow) {
     delete aWindow;
   });
 
@@ -227,9 +229,9 @@ DesktopNotesControllerImpl::createNoteUI(CherryKit::SessionSync *a_session) {
 }
 
 void DesktopNotesControllerImpl::createReminderUI(
-    CherryKit::SessionSync *a_session) {
-  CherryKit::Window *window = new CherryKit::Window();
-  CherryKit::HybridLayout *view = new CherryKit::HybridLayout(window);
+    cherry_kit::session_sync *a_session) {
+  cherry_kit::window *window = new cherry_kit::window();
+  cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);
 
   view->set_content_margin(10, 10, 10, 10);
   view->set_geometry(0, 0, 320, 200);
@@ -241,10 +243,10 @@ void DesktopNotesControllerImpl::createReminderUI(
   view->set_row_height(0, "85%");
   view->set_row_height(1, "15%");
 
-  CherryKit::WidgetProperties top_label_prop;
+  cherry_kit::widget_properties_t top_label_prop;
   top_label_prop["label"] = "reminder";
 
-  CherryKit::WidgetProperties text_editor_prop;
+  cherry_kit::widget_properties_t text_editor_prop;
   text_editor_prop["text"] = "";
 
   if (a_session->session_keys().contains("text")) {
@@ -252,7 +254,7 @@ void DesktopNotesControllerImpl::createReminderUI(
         std::string(a_session->session_data("text").toByteArray());
   }
 
-  CherryKit::WidgetProperties accept_button_prop;
+  cherry_kit::widget_properties_t accept_button_prop;
 
   view->add_widget(0, 0, "text_edit", text_editor_prop);
 
@@ -265,8 +267,8 @@ void DesktopNotesControllerImpl::createReminderUI(
     accept_button_prop["label"] = "Resume";
     accept_button_prop["icon"] = "actions/pd_resume.png";
 
-    CherryKit::TextEditor *editor =
-        dynamic_cast<CherryKit::TextEditor *>(view->at(0, 0));
+    cherry_kit::TextEditor *editor =
+        dynamic_cast<cherry_kit::TextEditor *>(view->at(0, 0));
     if (editor) {
       editor->style("border: 0; background: #29CDA8; color: #ffffff");
     }
@@ -291,14 +293,14 @@ void DesktopNotesControllerImpl::createReminderUI(
   a_session->bind_to_window(window);
   insert(window);
 
-  CherryKit::ImageButton *delete_btn =
-      dynamic_cast<CherryKit::ImageButton *>(view->at(1, 3));
+  cherry_kit::ImageButton *delete_btn =
+      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 3));
 
   if (delete_btn) {
-    CherryKit::Widget::InputCallback func = [=](
-        CherryKit::Widget::InputEvent a_event,
-        const CherryKit::Widget *a_widget) {
-      if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
+    cherry_kit::widget::InputCallback func = [=](
+        cherry_kit::widget::InputEvent a_event,
+        const cherry_kit::widget *a_widget) {
+      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
         a_session->unbind_window(window);
         window->close();
       }
@@ -307,16 +309,16 @@ void DesktopNotesControllerImpl::createReminderUI(
     delete_btn->on_input_event(func);
   }
 
-  CherryKit::ImageButton *save_btn =
-      dynamic_cast<CherryKit::ImageButton *>(view->at(1, 2));
+  cherry_kit::ImageButton *save_btn =
+      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 2));
 
   if (save_btn) {
-    CherryKit::Widget::InputCallback func = [=](
-        CherryKit::Widget::InputEvent a_event,
-        const CherryKit::Widget *a_widget) {
-      if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
-        CherryKit::TextEditor *editor =
-            dynamic_cast<CherryKit::TextEditor *>(view->at(0, 0));
+    cherry_kit::widget::InputCallback func = [=](
+        cherry_kit::widget::InputEvent a_event,
+        const cherry_kit::widget *a_widget) {
+      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
+        cherry_kit::TextEditor *editor =
+            dynamic_cast<cherry_kit::TextEditor *>(view->at(0, 0));
         if (editor) {
           a_session->save_session_attribute(
               session_database_name("reminders"), "Reminders", "reminders_id",
@@ -329,16 +331,16 @@ void DesktopNotesControllerImpl::createReminderUI(
     save_btn->on_input_event(func);
   }
 
-  CherryKit::ImageButton *done_btn =
-      dynamic_cast<CherryKit::ImageButton *>(view->at(1, 1));
+  cherry_kit::ImageButton *done_btn =
+      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 1));
 
   if (done_btn) {
-    CherryKit::Widget::InputCallback func = [=](
-        CherryKit::Widget::InputEvent a_event,
-        const CherryKit::Widget *a_widget) {
-      if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
-        CherryKit::TextEditor *editor =
-            dynamic_cast<CherryKit::TextEditor *>(view->at(0, 0));
+    cherry_kit::widget::InputCallback func = [=](
+        cherry_kit::widget::InputEvent a_event,
+        const cherry_kit::widget *a_widget) {
+      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
+        cherry_kit::TextEditor *editor =
+            dynamic_cast<cherry_kit::TextEditor *>(view->at(0, 0));
         bool is_complete = 0;
 
         if (a_session->session_keys().contains("state")) {
@@ -358,7 +360,7 @@ void DesktopNotesControllerImpl::createReminderUI(
             editor->style("border: 0; background: #29CDA8; color: #ffffff");
         }
 
-        CherryKit::WidgetProperties update_prop;
+        cherry_kit::widget_properties_t update_prop;
         if (is_complete) {
           update_prop["label"] = "Done";
           update_prop["icon"] = "actions/pd_done.png";
@@ -379,14 +381,14 @@ void DesktopNotesControllerImpl::createReminderUI(
     done_btn->on_input_event(func);
   }
 
-  CherryKit::ImageButton *set_btn =
-      dynamic_cast<CherryKit::ImageButton *>(view->at(1, 0));
+  cherry_kit::ImageButton *set_btn =
+      dynamic_cast<cherry_kit::ImageButton *>(view->at(1, 0));
 
   if (set_btn) {
-    CherryKit::Widget::InputCallback func = [=](
-        CherryKit::Widget::InputEvent a_event,
-        const CherryKit::Widget *a_widget) {
-      if (a_event == CherryKit::Widget::kMouseReleaseEvent) {
+    cherry_kit::widget::InputCallback func = [=](
+        cherry_kit::widget::InputEvent a_event,
+        const cherry_kit::widget *a_widget) {
+      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
         // todo : invoke the calendar.
         if (!viewport())
           return;
@@ -395,9 +397,9 @@ void DesktopNotesControllerImpl::createReminderUI(
             QRectF(0, 0, 240, 320),
             QRectF(window->x(), window->y(), window->geometry().width(),
                    window->geometry().height()),
-            CherryKit::Space::kCenterOnWindow);
+            cherry_kit::space::kCenterOnWindow);
 
-        CherryKit::DesktopActivityPtr activity = viewport()->create_activity(
+        cherry_kit::desktop_dialog_ref activity = viewport()->create_activity(
             "date_dialog", "Date", _activity_window_location,
             QRectF(0, 0, 340, 320.0), QVariantMap());
       }
@@ -406,7 +408,7 @@ void DesktopNotesControllerImpl::createReminderUI(
     set_btn->on_input_event(func);
   }
 
-  window->on_window_discarded([this](CherryKit::Window *aWindow) {
+  window->on_window_discarded([this](cherry_kit::window *aWindow) {
     delete aWindow;
   });
 

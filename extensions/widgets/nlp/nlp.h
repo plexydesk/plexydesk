@@ -20,12 +20,12 @@
 #define NLP_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <datasource.h>
 #include <view_controller.h>
 #include <QtNetwork>
 
-class NLPControllerImpl : public CherryKit::ViewController {
+class NLPControllerImpl : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
@@ -39,9 +39,9 @@ public:
 
   void set_view_rect(const QRectF &rect);
 
-  bool remove_widget(CherryKit::Widget *widget);
+  bool remove_widget(cherry_kit::widget *widget);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;

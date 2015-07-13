@@ -25,23 +25,23 @@
 #include <QPainter>
 #include <QObject>
 
-namespace CherryKit {
-class Widget;
+namespace cherry_kit {
+class widget;
 
-class DECL_UI_KIT_EXPORT Style {
+class DECL_UI_KIT_EXPORT style {
 public:
-  Style();
+  style();
 
-  virtual ~Style();
+  virtual ~style();
 
   virtual QVariant attribute(const QString &a_type,
                              const QString &a_name) const;
 
   virtual QString color(const QString &a_element) const;
 
-  virtual void draw(const QString &a_type, const StyleFeatures &a_options,
+  virtual void draw(const QString &a_type, const style_data &a_options,
                     QPainter *a_painter_ptr,
-                    const Widget *a_widget_ptr = 0) = 0;
+                    const widget *a_widget_ptr = 0) = 0;
 
   static float scale_factor();
 
@@ -51,5 +51,5 @@ protected:
 };
 }
 
-typedef QSharedPointer<CherryKit::Style> StylePtr;
+typedef QSharedPointer<cherry_kit::style> StylePtr;
 #endif // STYLE_H

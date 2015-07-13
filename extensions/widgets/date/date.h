@@ -22,7 +22,7 @@
 #include <view_controller.h>
 #include <viewbuilder.h>
 
-class DateControllerImpl : public CherryKit::ViewController {
+class DateControllerImpl : public cherry_kit::desktop_controller_interface {
 public:
   explicit DateControllerImpl(QObject *object = 0);
   virtual ~DateControllerImpl();
@@ -34,17 +34,17 @@ public:
 
   void set_view_rect(const QRectF &a_rect);
 
-  bool remove_widget(CherryKit::Widget *a_widget_ptr);
+  bool remove_widget(cherry_kit::widget *a_widget_ptr);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
   void request_action(const QString &a_name, const QVariantMap &a_args);
 
   QString icon() const;
-  void add_action_button(CherryKit::HybridLayout *ui, int a_row, int a_col,
+  void add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
                          const std::string &a_label, const std::string &a_icon);
 
 private:
-  void create_ui_calendar_ui(CherryKit::SessionSync *a_session);
+  void create_ui_calendar_ui(cherry_kit::session_sync *a_session);
 
   class PrivateDate;
   PrivateDate *const o_view_controller;

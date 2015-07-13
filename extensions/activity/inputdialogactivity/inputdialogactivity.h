@@ -20,7 +20,6 @@
 #define INPUTDIALOGACTIVITY_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
@@ -28,13 +27,12 @@
 #include <widget.h>
 #include <window.h>
 
-class InputDialogActivityData : public CherryKit::DesktopActivity {
+class input_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  InputDialogActivityData(QGraphicsObject *object = 0);
-
-  virtual ~InputDialogActivityData();
+  input_dialog(QGraphicsObject *object = 0);
+  virtual ~input_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
@@ -42,20 +40,18 @@ public:
   virtual QString error_message() const;
 
   virtual QVariantMap activityResult() const;
-
-  /* impl */
   virtual QRectF geometry() const;
 
   void containsArg();
 
   QVariantMap result() const;
 
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(CherryKit::Widget *widget);
+  void onWidgetClosed(cherry_kit::widget *widget);
   void onMotionAnimFinished();
   void onOkButtonPressed();
 
@@ -64,7 +60,7 @@ private:
                      QWidget *widget = 0);
 
   class PrivateInputDialogActivity;
-  PrivateInputDialogActivity *const o_desktop_activity;
+  PrivateInputDialogActivity *const o_desktop_dialog;
 };
 
 #endif

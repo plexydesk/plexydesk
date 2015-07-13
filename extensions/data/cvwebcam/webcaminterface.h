@@ -20,7 +20,7 @@
 #define FLICKER_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <QtNetwork>

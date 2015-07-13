@@ -49,8 +49,7 @@ void WindowObject::updateDuration(int duration) {
   data->duration += duration;
 
   data->mStore = new cherry::DataStore("DesktopActivity");
-  cherry::disk_engine *engine =
-      new cherry::disk_engine(data->mStore);
+  cherry::disk_engine *engine = new cherry::disk_engine(data->mStore);
   data->mStore->setSyncEngine(engine);
 
   cherry::sync_object *rootObject = data->mStore->begin("WindowList");

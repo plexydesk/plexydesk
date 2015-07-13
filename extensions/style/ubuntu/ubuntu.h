@@ -20,7 +20,7 @@
 #define UBUNTU_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <abstractplugininterface.h>
 #include <datasource.h>
 #include <QtNetwork>

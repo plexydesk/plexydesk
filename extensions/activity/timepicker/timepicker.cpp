@@ -21,31 +21,28 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class TimePickerActivity::PrivateTimePicker {
+class time_dialog::PrivateTimePicker {
 public:
   PrivateTimePicker() {}
   ~PrivateTimePicker() {}
 };
 
-TimePickerActivity::TimePickerActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateTimePicker) {}
+time_dialog::time_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object),
+      o_desktop_dialog(new PrivateTimePicker) {}
 
-TimePickerActivity::~TimePickerActivity() { delete o_desktop_activity; }
+time_dialog::~time_dialog() { delete o_desktop_dialog; }
 
-void TimePickerActivity::create_window(const QRectF &window_geometry,
+void time_dialog::create_window(const QRectF &window_geometry,
                                        const QString &window_title,
                                        const QPointF &window_pos) {
   // todo: invoke UI
 }
 
-QRectF TimePickerActivity::geometry() const { return QRectF(); }
+QRectF time_dialog::geometry() const { return QRectF(); }
 
-QVariantMap TimePickerActivity::result() const { return QVariantMap(); }
+QVariantMap time_dialog::result() const { return QVariantMap(); }
 
-CherryKit::Window *TimePickerActivity::window() const { return 0; }
+cherry_kit::window *time_dialog::activity_window() const { return 0; }
 
-void TimePickerActivity::cleanup() {}
-
-void TimePickerActivity::onWidgetClosed(CherryKit::Widget *widget) {}
-
-void TimePickerActivity::onHideAnimationFinished() {}
+void time_dialog::cleanup() {}

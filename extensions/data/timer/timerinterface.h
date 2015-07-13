@@ -20,20 +20,21 @@
 #define TIMER_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <dataplugininterface.h>
 #include <QtNetwork>
 
-class TimerInterface : public QObject, public CherryKit::DataPluginInterface {
+class TimerInterface : public QObject,
+                       public cherry_kit::data_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::DataPluginInterface)
+  Q_INTERFACES(cherry_kit::data_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.timerengine")
 
 public:
   virtual ~TimerInterface() { qDebug() << Q_FUNC_INFO; }
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<CherryKit::DataSource> model();
+  QSharedPointer<cherry_kit::data_source> model();
 };
 
 #endif

@@ -20,7 +20,7 @@
 #define FBPOSTDIALOG_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <activity_interface.h>
 #include <desktopactivity.h>
 

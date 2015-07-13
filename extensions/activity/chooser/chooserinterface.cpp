@@ -21,9 +21,9 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> IconGridInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new IconGridActivity(),
+QSharedPointer<cherry_kit::desktop_dialog> IconGridInterface::activity() {
+  QSharedPointer<cherry_kit::desktop_dialog> obj =
+      QSharedPointer<cherry_kit::desktop_dialog>(new icon_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;

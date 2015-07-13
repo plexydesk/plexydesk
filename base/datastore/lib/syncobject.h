@@ -28,8 +28,8 @@ namespace cherry {
 
 class sync_object;
 
-typedef std::vector<std::string> CkStringList;
-typedef std::vector<sync_object *> CkObjectList;
+typedef std::vector<std::string> ck_string_list;
+typedef std::vector<sync_object *> sync_object_list;
 
 class data_sync;
 /**
@@ -95,14 +95,14 @@ public:
 
   void set_property(const std::string &name, const std::string &property);
   std::string property(const std::string &name) const;
-  CkStringList property_list() const;
+  ck_string_list property_list() const;
   bool has_property(const std::string &a_property) const;
 
   bool has_children() const;
   uint child_count() const;
   void add_child(sync_object *object);
 
-  CkObjectList child_objects() const;
+  sync_object_list child_objects() const;
   sync_object *childObject(uint key);
   sync_object *childObject(const std::string &name);
   void linksToObject(const std::string &dataStoreName,

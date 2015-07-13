@@ -19,16 +19,15 @@
 #ifndef DIAL_WIDGET_H
 #define DIAL_WIDGET_H
 
-#include <plexy.h>
 #include <widget.h>
 #include <QGraphicsSceneMouseEvent>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT DialWidget : public CherryKit::Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT DialWidget : public cherry_kit::widget {
   Q_OBJECT
 public:
-  DialWidget(Widget *a_parent_ptr = 0);
+  DialWidget(widget *a_parent_ptr = 0);
 
   virtual ~DialWidget();
 

@@ -20,7 +20,7 @@
 #define PLEXY_CPU_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <widgetinterface.h>
 #include "cpu.h"
 #include "cpuwidget.h"

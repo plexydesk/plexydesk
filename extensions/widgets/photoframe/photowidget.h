@@ -1,15 +1,14 @@
 #ifndef PHOTOWIDGET_H
 #define PHOTOWIDGET_H
 
-#include <plexy.h>
 #include <widget.h>
 #include <QGraphicsDropShadowEffect>
 
-class PhotoWidget : public CherryKit::Widget {
+class PhotoWidget : public cherry_kit::widget {
   Q_OBJECT
 
 public:
-  PhotoWidget(Widget *a_parent_ptr = 0);
+  PhotoWidget(widget *a_parent_ptr = 0);
 
   virtual ~PhotoWidget();
 

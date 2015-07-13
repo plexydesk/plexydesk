@@ -15,7 +15,7 @@
 #include <widget.h>
 #include <resource_manager.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class TextEditor::PrivateTextEditor {
 public:
@@ -29,16 +29,17 @@ public:
   qreal mTextScaleFactor;
 };
 
-TextEditor::TextEditor(Widget *parent)
-    : CherryKit::Widget(parent), o_text_editor(new PrivateTextEditor) {
+TextEditor::TextEditor(widget *parent)
+    : cherry_kit::widget(parent), o_text_editor(new PrivateTextEditor) {
   o_text_editor->mProxyWidget = new QGraphicsProxyWidget(this);
   o_text_editor->mEditor = new QTextBrowser(0);
-  o_text_editor->mEditor->setFontPointSize(16 * ResourceManager::style()->scale_factor());
+  o_text_editor->mEditor->setFontPointSize(
+      16 * resource_manager::style()->scale_factor());
   o_text_editor->mEditor->setReadOnly(false);
   o_text_editor->mEditor->setAcceptRichText(true);
   o_text_editor->mEditor->setAutoFormatting(QTextEdit::AutoAll);
   o_text_editor->mEditor->setStyleSheet("background-color: #ffffff;"
-                            "border : 0");
+                                        "border : 0");
   o_text_editor->mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   o_text_editor->mEditor->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -49,13 +50,14 @@ TextEditor::TextEditor(Widget *parent)
   o_text_editor->mProxyWidget->setPos(0.0, 0.0);
 
   o_text_editor->mTextScaleFactor = 1.0;
-  set_widget_flag(CherryKit::Widget::kRenderDropShadow, false);
-  set_widget_flag(CherryKit::Widget::kRenderBackground, false);
+  set_widget_flag(cherry_kit::widget::kRenderDropShadow, false);
+  set_widget_flag(cherry_kit::widget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
-  connect(o_text_editor->mEditor, SIGNAL(textChanged()), this, SLOT(on_text_updated()));
-  connect(o_text_editor->mEditor->document(), SIGNAL(blockCountChanged(int)), this,
-          SLOT(on_block_count_changed(int)));
+  connect(o_text_editor->mEditor, SIGNAL(textChanged()), this,
+          SLOT(on_text_updated()));
+  connect(o_text_editor->mEditor->document(), SIGNAL(blockCountChanged(int)),
+          this, SLOT(on_block_count_changed(int)));
 }
 
 TextEditor::~TextEditor() { delete o_text_editor; }
@@ -101,7 +103,7 @@ void TextEditor::setGeometry(const QRectF &a_rect) {
   o_text_editor->mEditor->resize(a_rect.width() - 10, a_rect.height());
   o_text_editor->mEditor->move(0.0, 0.0);
 
-  Widget::setGeometry(a_rect);
+  widget::setGeometry(a_rect);
 }
 
 void TextEditor::update_text_scale() {
@@ -201,7 +203,9 @@ void TextEditor::set_text_scale_factor(qreal a_scale_factor) {
   update_text_scale();
 }
 
-qreal TextEditor::text_scale_factor() const { return o_text_editor->mTextScaleFactor; }
+qreal TextEditor::text_scale_factor() const {
+  return o_text_editor->mTextScaleFactor;
+}
 
 QString
 TextEditor::PrivateTextEditor::extractHeader(const QString &headerText) {

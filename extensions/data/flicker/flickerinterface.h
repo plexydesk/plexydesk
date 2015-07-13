@@ -19,7 +19,6 @@
 #ifndef FLICKER_DATA_I
 #define FLICKER_DATA_I
 
-#include <plexy.h>
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

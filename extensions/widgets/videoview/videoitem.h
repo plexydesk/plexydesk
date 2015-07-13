@@ -21,7 +21,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <plexy.h>
+
 #include <datainterface.h>
 #include <desktopwidget.h>
 

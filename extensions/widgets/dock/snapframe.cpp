@@ -10,8 +10,8 @@ public:
   ~PrivateSnapFrame() {}
 };
 
-SnapFrame::SnapFrame(Widget *parent)
-    : CherryKit::Widget(parent), d(new PrivateSnapFrame) {
+SnapFrame::SnapFrame(widget *parent)
+    : cherry_kit::widget(parent), d(new PrivateSnapFrame) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
 

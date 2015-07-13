@@ -20,20 +20,21 @@
 #define TIMEZONE_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
-class TimeZoneInterface : public QObject, public CherryKit::ActivityInterface {
+class TimeZoneInterface : public QObject,
+                          public cherry_kit::dialog_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::ActivityInterface)
+  Q_INTERFACES(cherry_kit::dialog_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.timezone")
 
 public:
   virtual ~TimeZoneInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<CherryKit::DesktopActivity> activity();
+  QSharedPointer<cherry_kit::desktop_dialog> activity();
 };
 
 #endif

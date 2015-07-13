@@ -9,14 +9,14 @@
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT Label : public Widget {
+class DECL_UI_KIT_EXPORT Label : public widget {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)
 
 public:
-  explicit Label(Widget *a_parent_ptr = 0);
+  explicit Label(widget *a_parent_ptr = 0);
   virtual ~Label();
 
   virtual void set_label(const QString &a_txt);

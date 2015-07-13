@@ -20,38 +20,37 @@
 #define SOCIALAUTH_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <window.h>
 #include <datasource.h>
 #include <QtNetwork>
 #include <desktopactivity.h>
 
-class SocialAuthActivity : public CherryKit::DesktopActivity {
+class social_auth_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  SocialAuthActivity(QGraphicsObject *object = 0);
+  social_auth_dialog(QGraphicsObject *object = 0);
 
-  virtual ~SocialAuthActivity();
+  virtual ~social_auth_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
 
   QVariantMap result() const;
 
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(CherryKit::Widget *widget);
+  void onWidgetClosed(cherry_kit::widget *widget);
 
   void onHideAnimationFinished();
 
 private:
   class PrivateSocialAuth;
-  PrivateSocialAuth *const o_desktop_activity;
+  PrivateSocialAuth *const o_desktop_dialog;
 };
 
 #endif

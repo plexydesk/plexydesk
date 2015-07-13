@@ -20,21 +20,21 @@
 #define DOCK_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <view_controller.h>
 #include <controllerplugininterface.h>
 
 class DockInterface : public QObject,
-                      public CherryKit::ControllerPluginInterface {
+                      public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::ControllerPluginInterface)
+  Q_INTERFACES(cherry_kit::desktop_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.dock")
 
 public:
   virtual ~DockInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<CherryKit::ViewController> controller();
+  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
 };
 
 #endif

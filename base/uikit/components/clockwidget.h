@@ -27,15 +27,15 @@
 // Qt
 #include <QTimeZone>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT ClockWidget : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT ClockWidget : public widget {
 public:
   typedef enum {
     kRunForwards,
     kRunBackwards
   } Direction;
 
-  explicit ClockWidget(Widget *a_parent_ptr = 0);
+  explicit ClockWidget(widget *a_parent_ptr = 0);
   virtual ~ClockWidget();
 
   void set_timezone_id(const QByteArray &a_timezone_id);

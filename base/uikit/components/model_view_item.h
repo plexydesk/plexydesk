@@ -23,15 +23,15 @@
 
 #include <widget.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 class DECL_UI_KIT_EXPORT ModelViewItem {
 public:
   explicit ModelViewItem();
   virtual ~ModelViewItem();
 
-  virtual void set_view(Widget *a_widget);
+  virtual void set_view(widget *a_widget);
   virtual void remove_view();
-  virtual Widget *view() const;
+  virtual widget *view() const;
 
   virtual void set_data(const QString &a_key, const QVariant &a_value);
   virtual QVariant data(const QString &a_key) const;
@@ -44,7 +44,7 @@ public:
   virtual void on_activated(std::function<void(ModelViewItem *)> a_handler);
   virtual void on_view_removed(std::function<void(ModelViewItem *)> a_handler);
   virtual void
-  on_filter(std::function<bool(const Widget *, const QString &)> a_handler);
+  on_filter(std::function<bool(const widget *, const QString &)> a_handler);
 
 private:
   class PrivateModelViewItem;

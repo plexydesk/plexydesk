@@ -19,7 +19,6 @@
 #ifndef PD_CORE_WIDGET_H
 #define PD_CORE_WIDGET_H
 
-#include <plexy.h>
 #include <style.h>
 #include <plexydesk_ui_exports.h>
 
@@ -28,16 +27,16 @@
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 
-namespace CherryKit {
+namespace cherry_kit {
 /*
  * @brief The Base Class for All types of Desktop Widgets.
  */
-class ViewController;
+class desktop_controller_interface;
 typedef unsigned char *GraphicsSurface;
-typedef std::function<void(const Widget *)> UpdateCallback;
-typedef std::vector<Widget *> WidgetList;
+typedef std::function<void(const widget *)> UpdateCallback;
+typedef std::vector<widget *> WidgetList;
 
-class DECL_UI_KIT_EXPORT Widget : public QGraphicsObject,
+class DECL_UI_KIT_EXPORT widget : public QGraphicsObject,
                                   public QGraphicsLayoutItem {
   Q_OBJECT
   Q_INTERFACES(QGraphicsLayoutItem)
@@ -64,16 +63,17 @@ public:
     kRenderAtForgroundLevel
   } RenderLevel;
 
-  typedef std::function<void(InputEvent, const Widget *)> InputCallback;
+  typedef std::function<void(InputEvent, const widget *)> InputCallback;
 
-  Widget(Widget *a_parent_ptr = 0);
-  virtual ~Widget();
+  widget(widget *a_parent_ptr = 0);
+  virtual ~widget();
 
   virtual void setGeometry(const QRectF &a_rect);
   virtual QRectF boundingRect() const;
 
-  virtual void set_controller(ViewController *a_view_controller_ptr);
-  virtual ViewController *controller() const;
+  virtual void
+  set_controller(desktop_controller_interface *a_view_controller_ptr);
+  virtual desktop_controller_interface *controller() const;
 
   virtual void set_widget_name(const QString &a_name);
   virtual QString label() const;
@@ -89,7 +89,7 @@ public:
   virtual void set_widget_flag(int a_flags, bool a_enable = true);
 
   virtual void on_input_event(std::function<
-      void(InputEvent a_type, const Widget *a_widget_ptr)> a_callback);
+      void(InputEvent a_type, const widget *a_widget_ptr)> a_callback);
 
   virtual void
   on_geometry_changed(std::function<void(const QRectF &)> a_callback);

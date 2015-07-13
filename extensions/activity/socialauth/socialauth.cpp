@@ -21,50 +21,56 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class SocialAuthActivity::PrivateSocialAuth {
+class social_auth_dialog::PrivateSocialAuth {
 public:
   PrivateSocialAuth() {}
   ~PrivateSocialAuth() {}
 
-  CherryKit::Window *mFrame;
+  cherry_kit::window *mFrame;
 };
 
-SocialAuthActivity::SocialAuthActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateSocialAuth) {}
+social_auth_dialog::social_auth_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object),
+      o_desktop_dialog(new PrivateSocialAuth) {}
 
-SocialAuthActivity::~SocialAuthActivity() { delete o_desktop_activity; }
+social_auth_dialog::~social_auth_dialog() { delete o_desktop_dialog; }
 
-void SocialAuthActivity::create_window(const QRectF &window_geometry,
+void social_auth_dialog::create_window(const QRectF &window_geometry,
                                        const QString &window_title,
                                        const QPointF &window_pos) {
   set_geometry(window_geometry);
 
-  o_desktop_activity->mFrame = new CherryKit::Window();
-  o_desktop_activity->mFrame->setGeometry(geometry());
-  o_desktop_activity->mFrame->setVisible(true);
-  o_desktop_activity->mFrame->set_widget_name("Message Dialog");
+  o_desktop_dialog->mFrame = new cherry_kit::window();
+  o_desktop_dialog->mFrame->setGeometry(geometry());
+  o_desktop_dialog->mFrame->setVisible(true);
+  o_desktop_dialog->mFrame->set_widget_name("Message Dialog");
 
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderBackground);
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kConvertToWindowType);
-  o_desktop_activity->mFrame->set_widget_flag(CherryKit::Widget::kRenderDropShadow);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kRenderBackground);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kConvertToWindowType);
+  o_desktop_dialog->mFrame->set_widget_flag(
+      cherry_kit::widget::kRenderDropShadow);
 
-  update_content_geometry(o_desktop_activity->mFrame);
+  update_content_geometry(o_desktop_dialog->mFrame);
   exec();
 
   show_activity();
 }
 
-QVariantMap SocialAuthActivity::result() const { return QVariantMap(); }
+QVariantMap social_auth_dialog::result() const { return QVariantMap(); }
 
-CherryKit::Window *SocialAuthActivity::window() const { return o_desktop_activity->mFrame; }
-
-void SocialAuthActivity::cleanup() {
-  if (o_desktop_activity->mFrame) {
-    delete o_desktop_activity->mFrame;
-  }
-  o_desktop_activity->mFrame = 0;
+cherry_kit::window *social_auth_dialog::activity_window() const {
+  return o_desktop_dialog->mFrame;
 }
 
-void SocialAuthActivity::onWidgetClosed(CherryKit::Widget *widget) {}
+void social_auth_dialog::cleanup() {
+  if (o_desktop_dialog->mFrame) {
+    delete o_desktop_dialog->mFrame;
+  }
+  o_desktop_dialog->mFrame = 0;
+}
 
-void SocialAuthActivity::onHideAnimationFinished() {}
+void social_auth_dialog::onWidgetClosed(cherry_kit::widget *widget) {}
+
+void social_auth_dialog::onHideAnimationFinished() {}

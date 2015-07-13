@@ -20,7 +20,7 @@
 #define DESKTOPACTIVITYMONITOR_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <abstractplugininterface.h>
 #include <datasource.h>
 #include <QtNetwork>

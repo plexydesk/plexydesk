@@ -27,7 +27,7 @@
 #include <QDesktopWidget>
 
 // plexydesk
-#include <plexy.h>
+
 #include <workspace.h>
 #include <plexyconfig.h>
 #include <extensionmanager.h>
@@ -216,17 +216,17 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 #endif
 
   QApplication app(argc, argv);
-  CherryKit::ExtensionManager *loader = 0;
+  cherry_kit::extension_manager *loader = 0;
 
-  loader = CherryKit::ExtensionManager::instance(
-      QDir::toNativeSeparators(CherryKit::Config::instance()->prefix() +
+  loader = cherry_kit::extension_manager::instance(
+      QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/share/plexy/ext/groups/")),
-      QDir::toNativeSeparators(CherryKit::Config::instance()->prefix() +
+      QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/lib/plexyext/")));
 
 #ifndef Q_WS_QPA
   QString appIconPath =
-      CherryKit::Config::instance()->prefix() + "/share/plexy/plexydesk.png";
+      cherry_kit::config::instance()->prefix() + "/share/plexy/plexydesk.png";
   QIcon appIcon = QIcon(QDir::toNativeSeparators(appIconPath));
   app.setWindowIcon(appIcon);
   app.setApplicationName(QString(PLEXYNAME));

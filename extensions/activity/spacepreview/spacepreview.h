@@ -20,20 +20,19 @@
 #define SPACEPREVIEW_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 #include <desktopactivity.h>
 #include <window.h>
 
-class SpacePreviewActivity : public CherryKit::DesktopActivity {
+class expose_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  SpacePreviewActivity(QGraphicsObject *object = 0);
+  expose_dialog(QGraphicsObject *object = 0);
 
-  virtual ~SpacePreviewActivity();
+  virtual ~expose_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
@@ -42,12 +41,12 @@ public:
 
   virtual void update_attribute(const QString &name, const QVariant &data);
 
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
 
 private:
   class PrivateSpacePreview;
-  PrivateSpacePreview *const o_desktop_activity;
+  PrivateSpacePreview *const o_desktop_dialog;
 };
 
 #endif

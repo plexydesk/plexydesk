@@ -54,7 +54,7 @@ DEALINGS IN THE SOFTWARE.
 #endif
 
 #ifdef Q_WS_X11
-#include <plexy.h>
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>

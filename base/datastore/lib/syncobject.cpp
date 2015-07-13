@@ -59,11 +59,11 @@ void sync_object::update_time_stamp() {
 }
 
 void sync_object::remove_object(uint key) {
-  std::map<uint, sync_object*>::iterator ck_it =
-          p_object->m_child_map.find(key);
+  std::map<uint, sync_object *>::iterator ck_it =
+      p_object->m_child_map.find(key);
 
   if (ck_it == p_object->m_child_map.end())
-      return;
+    return;
 
   delete p_object->m_child_map.at(key);
 
@@ -71,7 +71,8 @@ void sync_object::remove_object(uint key) {
   p_object->m_child_count -= 1;
 }
 
-sync_object::sync_object(sync_object *parent) : p_object(new Privatesync_object) {
+sync_object::sync_object(sync_object *parent)
+    : p_object(new Privatesync_object) {
   update_time_stamp();
   p_object->m_object_key = -1;
   p_object->m_child_count = -1;
@@ -81,9 +82,7 @@ sync_object::sync_object(sync_object *parent) : p_object(new Privatesync_object)
     parent->add_child(this);
 }
 
-sync_object::~sync_object() {
-  delete p_object;
-}
+sync_object::~sync_object() { delete p_object; }
 
 uint sync_object::time_stamp() const { return p_object->m_time_stamp; }
 
@@ -105,10 +104,12 @@ uint sync_object::key() const { return p_object->m_object_key; }
 
 sync_object *sync_object::parent() const { return p_object->m_parent; }
 
-void sync_object::set_parent(sync_object *parent) { p_object->m_parent = parent; }
+void sync_object::set_parent(sync_object *parent) {
+  p_object->m_parent = parent;
+}
 
 void sync_object::set_property(const std::string &name,
-                              const std::string &value) {
+                               const std::string &value) {
   p_object->m_property_dict[name] = value;
   update_time_stamp();
 }
@@ -127,8 +128,8 @@ void sync_object::sync() {
   }
 }
 
-CkStringList sync_object::property_list() const {
-  CkStringList rv;
+ck_string_list sync_object::property_list() const {
+  ck_string_list rv;
   for (auto handle : p_object->m_property_dict) {
     rv.push_back(handle.first);
   }
@@ -136,7 +137,8 @@ CkStringList sync_object::property_list() const {
 }
 
 bool sync_object::has_property(const std::string &a_property) const {
-  if (p_object->m_property_dict.find(a_property) == p_object->m_property_dict.end())
+  if (p_object->m_property_dict.find(a_property) ==
+      p_object->m_property_dict.end())
     return 0;
 
   return 1;
@@ -149,8 +151,8 @@ std::string sync_object::property(const std::string &name) const {
   return p_object->m_property_dict.at(name);
 }
 
-CkObjectList sync_object::child_objects() const {
-  CkObjectList rv;
+sync_object_list sync_object::child_objects() const {
+  sync_object_list rv;
   for (auto handle : p_object->m_child_map) {
     rv.push_back(handle.second);
   }
@@ -208,7 +210,7 @@ bool sync_object::is_similar(sync_object *object) {
   }
 
   // check properties
-  CkStringList ck_prop_list = object->property_list();
+  ck_string_list ck_prop_list = object->property_list();
 
   for (int p = 0; p < ck_prop_list.size(); p++) {
     std::string prop = ck_prop_list.at(p);
@@ -254,7 +256,7 @@ sync_object *sync_object::childObject(const std::string &name) {
 }
 
 void sync_object::linksToObject(const std::string &dataStoreName,
-                               const std::string &objectName) {}
+                                const std::string &objectName) {}
 
 bool sync_object::has_children() const {
   if (child_count() > 0) {

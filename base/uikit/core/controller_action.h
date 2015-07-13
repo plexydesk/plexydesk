@@ -22,33 +22,28 @@
 #include <cstring>
 #include <string>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class ControllerAction {
+class ui_action {
 public:
-  ControllerAction();
-
-  ~ControllerAction();
+  ui_action();
+  ~ui_action();
 
   virtual std::string name() const;
-
-  virtual void setName(const std::string &a_name);
+  virtual void set_name(const std::string &a_name);
 
   virtual unsigned int id() const;
+  virtual void set_id(unsigned int a_id);
 
-  virtual void setId(unsigned int a_id);
+  virtual void set_visible(bool a_visibility = true);
+  virtual bool is_visibile() const;
 
-  virtual void setVisibility(bool a_visibility = true);
-
-  virtual bool isVisibile() const;
-
-  virtual void setIcon(const std::string a_icon);
-
+  virtual void set_icon(const std::string a_icon);
   virtual std::string icon() const;
 
 private:
   class PrivateControllerAction;
-  PrivateControllerAction *const o_controller_action;
+  PrivateControllerAction *const o_ui_action;
 };
 }
 

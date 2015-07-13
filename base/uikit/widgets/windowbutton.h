@@ -20,14 +20,13 @@
 #ifndef WINDOWBUTTON_H
 #define WINDOWBUTTON_H
 
-#include <plexy.h>
 #include <button.h>
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT WindowButton : public CherryKit::Button {
+class DECL_UI_KIT_EXPORT WindowButton : public cherry_kit::Button {
   Q_OBJECT
 public:
   typedef enum {
@@ -36,7 +35,7 @@ public:
     MINIMIZE
   } WindowButtonType;
 
-  explicit WindowButton(Widget *a_parent_ptr = 0);
+  explicit WindowButton(widget *a_parent_ptr = 0);
   ~WindowButton();
 
   void set_button_type(WindowButtonType a_type);

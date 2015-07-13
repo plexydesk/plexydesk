@@ -6,7 +6,7 @@
 
 class FolderItem;
 
-class FolderProvider : public CherryKit::TableModel {
+class FolderProvider : public cherry_kit::TableModel {
   Q_OBJECT
 public:
   FolderProvider(const QRectF &rect, QGraphicsObject *a_parent_ptr = 0);
@@ -14,7 +14,7 @@ public:
 
   virtual bool init();
 
-  QList<CherryKit::TableViewItem *> componentList();
+  QList<cherry_kit::TableViewItem *> componentList();
 
   float margin() const;
 
@@ -24,12 +24,12 @@ public:
 
   virtual float right_margin() const;
 
-  CherryKit::Widget *
+  cherry_kit::Widget *
   loadWidgetControlllerByName(const QString &controllerName) const;
 
-  CherryKit::DataSourcePtr loadDataSourceEngine(const QString &engine);
+  cherry_kit::DataSourcePtr loadDataSourceEngine(const QString &engine);
 
-  CherryKit::TableModel::TableRenderMode render_type() const;
+  cherry_kit::TableModel::TableRenderMode render_type() const;
 
   void setDirectoryPath(const QString &path);
 
@@ -43,7 +43,7 @@ Q_SLOTS:
   void onLocationSourceUpdated(const QVariantMap &data);
 
 private:
-  QList<CherryKit::TableViewItem *> mFolderList;
+  QList<cherry_kit::TableViewItem *> mFolderList;
 
   class FolderProviderPrivate;
   FolderProviderPrivate *const d;

@@ -19,8 +19,6 @@
 #ifndef PLEXY_WIDGET_IMAGEPILE_H
 #define PLEXY_WIDGET_IMAGEPILE_H
 
-#include <plexy.h>
-
 #include <abstractplugininterface.h>
 #include <controllerinterface.h>
 #include <themepackloader.h>

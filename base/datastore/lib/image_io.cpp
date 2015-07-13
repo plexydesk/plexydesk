@@ -77,7 +77,7 @@ void image_io::create(const std::string &a_file_name) {
 io_surface *image_io::surface() const { return o_image->m_surface; }
 
 io_surface image_io::add_task(image_io::image_operation_t a_method,
-                            const image_io::scale_options &arg) {}
+                              const image_io::scale_options &arg) {}
 
 void image_io::set_filter(const std::string &a_filter_name, int a_flag) {}
 

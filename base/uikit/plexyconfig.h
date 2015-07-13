@@ -20,30 +20,29 @@
 #ifndef PLEXY_CONIFG_LINUX_QT_H
 #define PLEXY_CONIFG_LINUX_QT_H
 
-#include <plexy.h>
 #include <QString>
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT Config {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT config {
 public:
-  static Config *instance();
-  virtual ~Config();
+  static config *instance();
+  virtual ~config();
 
   QString prefix();
 
   static QString cache_dir(const QString &a_folder = QString());
 
 private:
-  Config();
-  Config(Config &config);
-  static Config *config;
+  config();
+  config(config &a_config);
+  static config *g_config;
 
   class Private;
   Private *const d;
 
-  Config &operator=(const Config &);
+  config &operator=(const config &);
 };
 } // namespace PlexyDesk
 #endif

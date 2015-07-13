@@ -1,7 +1,3 @@
 #include "graphicsio.h"
 
-GraphicsIO::GraphicsIO()
-{
-
-}
-
+GraphicsIO::GraphicsIO() {}

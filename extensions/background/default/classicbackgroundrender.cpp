@@ -6,18 +6,17 @@
 #include <resource_manager.h>
 #include <QPixmapCache>
 
-
 ClassicBackgroundRender::ClassicBackgroundRender(const QRectF &rect,
-                                                 Widget *parent,
+                                                 widget *parent,
                                                  const QImage &background_image)
-    : CherryKit::Window(parent) {
+    : cherry_kit::window(parent) {
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsFocusable, true);
 
   mBackgroundImage = background_image;
   mScalingMode = None;
   mSeamLessMode = false;
-  set_window_type(CherryKit::Window::kFramelessWindow);
+  set_window_type(cherry_kit::window::kFramelessWindow);
   enable_window_background(false);
 }
 
@@ -71,7 +70,7 @@ void ClassicBackgroundRender::setBackgroundMode(
 }
 
 StylePtr ClassicBackgroundRender::style() const {
-  return CherryKit::ResourceManager::style();
+  return cherry_kit::resource_manager::style();
 }
 
 void ClassicBackgroundRender::drawBackroundFrame(QPainter *painter,

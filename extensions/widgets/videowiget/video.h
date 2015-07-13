@@ -20,7 +20,7 @@
 #define PLEXY_WIDGET_VIDEO_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <widgetinterface.h>
 
 class VISIBLE_SYM VideoWidget : public PlexyDesk::WidgetInterface {

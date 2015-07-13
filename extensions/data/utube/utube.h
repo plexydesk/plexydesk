@@ -19,7 +19,6 @@
 #ifndef UTUBE_DATA_H
 #define UTUBE_DATA_H
 
-#include <plexy.h>
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <QXmlStreamReader>

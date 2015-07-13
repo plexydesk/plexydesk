@@ -19,17 +19,16 @@
 #ifndef RANGE_WIDGET_H
 #define RANGE_WIDGET_H
 
-#include <plexy.h>
 #include <widget.h>
 #include <QGraphicsSceneMouseEvent>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT RangeWidget : public CherryKit::Widget {
+class DECL_UI_KIT_EXPORT RangeWidget : public cherry_kit::widget {
   Q_OBJECT
 public:
-  RangeWidget(Widget *a_parent_ptr = 0);
+  RangeWidget(widget *a_parent_ptr = 0);
 
   virtual ~RangeWidget();
 

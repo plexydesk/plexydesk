@@ -48,7 +48,6 @@ set(CORE_LIBRARY_INTERFACE_FILES
     core/widgetstyleinterface.h)
 
 set(CORE_LIBRARY_HEADER_FILES
-    core/plexy.h
     core/style.h
     core/widget.h
     core/datasource.h

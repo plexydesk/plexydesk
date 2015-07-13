@@ -29,7 +29,7 @@ public:
 };
 
 HttpServerData::HttpServerData(QObject *object)
-    : CherryKit::DataSource(object), o_data_soure(new PrivateHttpServer) {
+    : cherry_kit::data_source(object), o_data_soure(new PrivateHttpServer) {
   startTimer(1000);
 }
 

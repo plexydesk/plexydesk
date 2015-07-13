@@ -35,7 +35,7 @@ public:
 };
 
 PhotoCellAdaptor::PhotoCellAdaptor(QObject *parent)
-    : CherryKit::TableModel(parent), d(new PrivatePhotoCellAdaptor) {
+    : cherry_kit::TableModel(parent), d(new PrivatePhotoCellAdaptor) {
   d->mCompleted = 0;
   setCellSize(QSize(96, 96));
 }
@@ -252,7 +252,7 @@ void PhotoCellAdaptor::onImageReady() {
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
     imageSave->setMetaData(downloader->metaData());
-    imageSave->setData(downloader->data(), CherryKit::Config::cache_dir(),
+    imageSave->setData(downloader->data(), cherry_kit::Config::cache_dir(),
                        false);
     imageSave->start();
     downloader->deleteLater();

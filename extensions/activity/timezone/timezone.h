@@ -20,23 +20,21 @@
 #define TIMEZONE_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
-#include <QtNetwork>
 #include <desktopactivity.h>
 #include <window.h>
 
-class TimeZoneActivity : public CherryKit::DesktopActivity {
+class timezone_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  TimeZoneActivity(QGraphicsObject *aParent = 0);
-  virtual ~TimeZoneActivity();
+  timezone_dialog(QGraphicsObject *aParent = 0);
+  virtual ~timezone_dialog();
 
   void create_window(const QRectF &aWindowGeometry, const QString &aWindowTitle,
                      const QPointF &aWindowPos);
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
 
   QVariantMap result() const;

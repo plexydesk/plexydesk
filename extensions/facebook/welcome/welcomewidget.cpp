@@ -16,7 +16,6 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include <plexy.h>
 #include "welcomewidget.h"
 #include <math.h>
 

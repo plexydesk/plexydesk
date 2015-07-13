@@ -7,7 +7,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <resource_manager.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 class ImageView::PrivateImageView {
 public:
   PrivateImageView() {}
@@ -18,7 +18,8 @@ public:
   QPixmap mPixmap;
 };
 
-ImageView::ImageView(Widget *parent) : Widget(parent), o_image_view(new PrivateImageView) {
+ImageView::ImageView(widget *parent)
+    : widget(parent), o_image_view(new PrivateImageView) {
   setFlag(QGraphicsItem::ItemIsMovable, true);
 }
 
@@ -33,9 +34,11 @@ void ImageView::set_size(const QSizeF &size) {
   setGeometry(QRectF(0, 0, size.width(), size.height()));
 }
 
-void ImageView::set_pixmap(const QPixmap &a_pixmap) { o_image_view->mPixmap = a_pixmap; }
+void ImageView::set_pixmap(const QPixmap &a_pixmap) {
+  o_image_view->mPixmap = a_pixmap;
+}
 
-StylePtr ImageView::style() const { return ResourceManager::style(); }
+StylePtr ImageView::style() const { return resource_manager::style(); }
 
 void ImageView::mouseMoveEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   Q_EMIT mouseOver();

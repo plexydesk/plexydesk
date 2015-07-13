@@ -24,7 +24,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class WindowButton::PrivateWindowButton {
 public:
@@ -34,7 +34,7 @@ public:
   WindowButtonType mType;
 };
 
-WindowButton::WindowButton(Widget *parent)
+WindowButton::WindowButton(widget *parent)
     : Button(parent), o_button(new PrivateWindowButton) {
   setGeometry(boundingRect());
   o_button->mType = CLOSE;
@@ -47,51 +47,51 @@ void WindowButton::set_button_type(WindowButton::WindowButtonType a_type) {
 }
 
 QRectF WindowButton::boundingRect() const {
-  if (!ResourceManager::style()) {
+  if (!resource_manager::style()) {
     return QRectF();
   }
 
-  return QRectF(0.0, 0.0, ResourceManager::style()
+  return QRectF(0.0, 0.0, resource_manager::style()
                               ->attribute("frame", "window_close_button_width")
                               .toFloat(),
-                ResourceManager::style()
+                resource_manager::style()
                     ->attribute("frame", "window_close_button_height")
                     .toFloat());
 }
 
 void WindowButton::paint_normal_button(QPainter *a_painter_ptr,
                                        const QRectF &a_rect) {
-  StyleFeatures feature;
+  style_data feature;
   feature.geometry = a_rect;
-  feature.render_state = StyleFeatures::kRenderElement;
+  feature.render_state = style_data::kRenderElement;
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("window_button", feature,
-                                              a_painter_ptr);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw("window_button", feature,
+                                                a_painter_ptr);
   }
 }
 
 void WindowButton::paint_sunken_button(QPainter *a_painter_ptr,
                                        const QRectF &a_rect) {
-  StyleFeatures feature;
+  style_data feature;
   feature.geometry = a_rect;
-  feature.render_state = StyleFeatures::kRenderRaised;
+  feature.render_state = style_data::kRenderRaised;
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("window_button", feature,
-                                              a_painter_ptr);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw("window_button", feature,
+                                                a_painter_ptr);
   }
 }
 
 void WindowButton::paint_hover_button(QPainter *a_painter,
                                       const QRectF &a_rect) {
-  StyleFeatures feature;
+  style_data feature;
   feature.geometry = a_rect;
-  feature.render_state = StyleFeatures::kRenderRaised;
+  feature.render_state = style_data::kRenderRaised;
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("window_button", feature,
-                                              a_painter);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw("window_button", feature,
+                                                a_painter);
   }
 }
 }

@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef PLEXYDESK_SCROLL_WIDGET_H
 #define PLEXYDESK_SCROLL_WIDGET_H
-#include <plexy.h>
+
 #include <config.h>
 #include <widget.h>
 
@@ -26,12 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtWidgets/QGraphicsObject>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT ScrollWidget : public Widget {
+class DECL_UI_KIT_EXPORT ScrollWidget : public widget {
   Q_OBJECT
 public:
-  ScrollWidget(const QRectF &a_rect, Widget *a_parent_ptr = 0);
+  ScrollWidget(const QRectF &a_rect, widget *a_parent_ptr = 0);
   virtual ~ScrollWidget();
 
   void set_viewport(QGraphicsObject *a_widget_ptr);

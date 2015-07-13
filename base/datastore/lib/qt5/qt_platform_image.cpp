@@ -28,7 +28,7 @@ void image_io::platform_image::load_from_file(const std::string &a_file_name) {
       return;
     }
 
-    QImage ck_qt_image (o->m_file_url.c_str());
+    QImage ck_qt_image(o->m_file_url.c_str());
     io_surface *ck_surface = nullptr;
 
     if (ck_qt_image.isNull()) {
@@ -40,8 +40,8 @@ void image_io::platform_image::load_from_file(const std::string &a_file_name) {
     ck_surface->width = ck_qt_image.width();
     ck_surface->height = ck_qt_image.height();
     const unsigned char *bits = ck_qt_image.constBits();
-    ck_surface->buffer = (unsigned char *)malloc(
-        (ck_qt_image.width() * ck_qt_image.height()));
+    ck_surface->buffer =
+        (unsigned char *)malloc((ck_qt_image.width() * ck_qt_image.height()));
     memcpy(ck_surface->buffer, bits,
            (ck_qt_image.width() * ck_qt_image.height()));
 

@@ -20,7 +20,7 @@
 #define PLEXY_WIDGET_DEMO_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <widgetinterface.h>
 
 class VISIBLE_SYM WidgetDemo : public PlexyDesk::WidgetInterface {

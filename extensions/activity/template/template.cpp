@@ -21,50 +21,50 @@
 #include <QTimer>
 #include <view_controller.h>
 
-class TemplateActivity::PrivateTemplate {
+class template_dialog::PrivateTemplate {
 public:
   PrivateTemplate() {}
   ~PrivateTemplate() {}
 
-  CherryKit::Window *m_main_window;
+  cherry_kit::window *m_main_window;
 };
 
-TemplateActivity::TemplateActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), o_desktop_activity(new PrivateTemplate) {}
+template_dialog::template_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object),
+      o_desktop_dialog(new PrivateTemplate) {}
 
-TemplateActivity::~TemplateActivity() { delete o_desktop_activity; }
+template_dialog::~template_dialog() { delete o_desktop_dialog; }
 
-void TemplateActivity::create_window(const QRectF &window_geometry,
+void template_dialog::create_window(const QRectF &window_geometry,
                                      const QString &window_title,
                                      const QPointF &window_pos) {
-  o_desktop_activity->m_main_window = new CherryKit::Window();
+  o_desktop_dialog->m_main_window = new cherry_kit::window();
 
-  o_desktop_activity->m_main_window->set_widget_flag(CherryKit::Widget::kRenderBackground);
-  o_desktop_activity->m_main_window->set_widget_flag(CherryKit::Widget::kConvertToWindowType);
-  o_desktop_activity->m_main_window->set_widget_flag(CherryKit::Widget::kRenderDropShadow);
+  o_desktop_dialog->m_main_window->set_widget_flag(
+      cherry_kit::widget::kRenderBackground);
+  o_desktop_dialog->m_main_window->set_widget_flag(
+      cherry_kit::widget::kConvertToWindowType);
+  o_desktop_dialog->m_main_window->set_widget_flag(
+      cherry_kit::widget::kRenderDropShadow);
 
   set_geometry(window_geometry);
-  update_content_geometry(o_desktop_activity->m_main_window);
+  update_content_geometry(o_desktop_dialog->m_main_window);
 
   exec(window_pos);
 }
 
-QVariantMap TemplateActivity::result() const { return QVariantMap(); }
+QVariantMap template_dialog::result() const { return QVariantMap(); }
 
-void TemplateActivity::update_attribute(const QString &name,
+void template_dialog::update_attribute(const QString &name,
                                         const QVariant &data) {}
 
-CherryKit::Window *TemplateActivity::window() const { return o_desktop_activity->m_main_window; }
+cherry_kit::window *template_dialog::activity_window() const {
+  return o_desktop_dialog->m_main_window;
+}
 
-void TemplateActivity::cleanup() {
-  if (o_desktop_activity->m_main_window) {
-    delete o_desktop_activity->m_main_window;
+void template_dialog::cleanup() {
+  if (o_desktop_dialog->m_main_window) {
+    delete o_desktop_dialog->m_main_window;
   }
-  o_desktop_activity->m_main_window = 0;
+  o_desktop_dialog->m_main_window = 0;
 }
-
-void TemplateActivity::onWidgetClosed(CherryKit::Widget *widget) {
-  discard_activity();
-}
-
-void TemplateActivity::onHideAnimationFinished() {}

@@ -1,7 +1,6 @@
 #ifndef FACEBOOKAUTHENTICATIONWIDGET_H
 #define FACEBOOKAUTHENTICATIONWIDGET_H
 
-#include <plexy.h>
 #include <desktopwidget.h>
 
 class FacebookAuthenticationWidget : public PlexyDesk::DesktopWidget {

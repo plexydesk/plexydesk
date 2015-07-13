@@ -1,7 +1,6 @@
 #ifndef BLACKBERRYPLUGIN_H
 #define BLACKBERRYPLUGIN_H
 
-#include <plexy.h>
 #include <controllerinterface.h>
 
 class BlackBerryPlugin : public PlexyDesk::ControllerInterface {

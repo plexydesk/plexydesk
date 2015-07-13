@@ -38,7 +38,6 @@
 
 #include "frienditem.h"
 
-#include <plexy.h>
 #include <plexyconfig.h>
 #include <desktopwidget.h>
 #include <config.h>

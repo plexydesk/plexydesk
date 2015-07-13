@@ -17,7 +17,6 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include <plexy.h>
 #include "clockwidget.h"
 #include <qmatrix.h>
 // Added by qt3to4:
@@ -32,7 +31,7 @@
 #include <QDir>
 #include <plexyconfig.h>
 
-ClockWidget::ClockWidget(Widget *parent) : CherryKit::Widget(parent) {
+ClockWidget::ClockWidget(Widget *parent) : cherry_kit::Widget(parent) {
   set_widget_name("Clock");
 }
 

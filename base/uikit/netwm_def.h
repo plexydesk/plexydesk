@@ -44,8 +44,6 @@ DEALINGS IN THE SOFTWARE.
 #ifndef __netwm_def_h
 #define __netwm_def_h
 
-#include <plexy.h>
-
 #include "plexydeskuicore_global.h"
 #include <plexydesk_ui_exports.h>
 

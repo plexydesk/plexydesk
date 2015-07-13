@@ -20,13 +20,12 @@
 #define FLICKRPHOTOSEARCH_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 #include <webservice.h>
 
-class FlickrPhotoSearchData : public CherryKit::DataSource {
+class FlickrPhotoSearchData : public cherry_kit::data_source {
   Q_OBJECT
 
 public:

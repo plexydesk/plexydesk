@@ -21,9 +21,9 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> TimePickerInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new TimePickerActivity(),
+QSharedPointer<cherry_kit::desktop_dialog> TimePickerInterface::activity() {
+  QSharedPointer<cherry_kit::desktop_dialog> obj =
+      QSharedPointer<cherry_kit::desktop_dialog>(new time_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;

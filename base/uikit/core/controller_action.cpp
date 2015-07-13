@@ -1,8 +1,8 @@
 #include "controller_action.h"
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class ControllerAction::PrivateControllerAction {
+class ui_action::PrivateControllerAction {
 public:
   PrivateControllerAction() : m_action_visibility(true), m_action_id(0) {}
 
@@ -14,31 +14,31 @@ public:
   bool m_action_visibility;
 };
 
-ControllerAction::ControllerAction() : o_controller_action(new PrivateControllerAction) {}
+ui_action::ui_action() : o_ui_action(new PrivateControllerAction) {}
 
-CherryKit::ControllerAction::~ControllerAction() { delete o_controller_action; }
+cherry_kit::ui_action::~ui_action() { delete o_ui_action; }
 
-std::string ControllerAction::name() const { return o_controller_action->m_action_name; }
+std::string ui_action::name() const { return o_ui_action->m_action_name; }
 
-void ControllerAction::setName(const std::string &a_name) {
-  o_controller_action->m_action_name.clear();
-  o_controller_action->m_action_name = a_name;
+void ui_action::set_name(const std::string &a_name) {
+  o_ui_action->m_action_name.clear();
+  o_ui_action->m_action_name = a_name;
 }
 
-unsigned int ControllerAction::id() const { return o_controller_action->m_action_id; }
+unsigned int ui_action::id() const { return o_ui_action->m_action_id; }
 
-void ControllerAction::setId(unsigned int a_id) { o_controller_action->m_action_id = a_id; }
+void ui_action::set_id(unsigned int a_id) { o_ui_action->m_action_id = a_id; }
 
-void ControllerAction::setVisibility(bool a_visibility) {
-  o_controller_action->m_action_visibility = a_visibility;
+void ui_action::set_visible(bool a_visibility) {
+  o_ui_action->m_action_visibility = a_visibility;
 }
 
-bool ControllerAction::isVisibile() const { return o_controller_action->m_action_visibility; }
+bool ui_action::is_visibile() const { return o_ui_action->m_action_visibility; }
 
-void ControllerAction::setIcon(const std::string a_icon) {
-  o_controller_action->m_action_icon.clear();
-  o_controller_action->m_action_icon = a_icon;
+void ui_action::set_icon(const std::string a_icon) {
+  o_ui_action->m_action_icon.clear();
+  o_ui_action->m_action_icon = a_icon;
 }
 
-std::string ControllerAction::icon() const { return o_controller_action->m_action_icon; }
+std::string ui_action::icon() const { return o_ui_action->m_action_icon; }
 }

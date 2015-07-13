@@ -1,18 +1,18 @@
 #include "datasource.h"
 #include <QVariantHash>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DataSource::PrivateDataSource {
+class data_source::PrivateDataSource {
 public:
   PrivateDataSource() {}
   ~PrivateDataSource() {}
 };
 
-DataSource::DataSource(QObject *a_object_ptr)
+data_source::data_source(QObject *a_object_ptr)
     : QObject(a_object_ptr), o_data_soure(new PrivateDataSource) {}
 
-DataSource::~DataSource() { delete o_data_soure; }
+data_source::~data_source() { delete o_data_soure; }
 
-void DataSource::request_data(QVariant a_args) { set_arguments(a_args); }
+void data_source::request_data(QVariant a_args) { set_arguments(a_args); }
 }

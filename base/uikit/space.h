@@ -19,21 +19,18 @@
 #ifndef PD_SPACE_H
 #define PD_SPACE_H
 
-#include <QGraphicsItem>
-#include <QObject>
-
 #include <view_controller.h>
 #include <plexydesk_ui_exports.h>
 #include <widget.h>
 #include <syncobject.h>
 
-namespace CherryKit {
-class WorkSpace;
+namespace cherry_kit {
+class workspace;
 
-class DECL_UI_KIT_EXPORT Space {
+class DECL_UI_KIT_EXPORT space {
 
-  friend class ViewController;
-  friend class WorkSpace;
+  friend class desktop_controller_interface;
+  friend class workspace;
 
 public:
   typedef enum {
@@ -54,15 +51,15 @@ public:
     kObjectDroppedNotification
   } ViewportNotificationType;
 
-  explicit Space();
-  virtual ~Space();
+  explicit space();
+  virtual ~space();
 
   virtual void add_controller(const QString &a_name);
-  virtual ViewControllerPtr controller(const QString &a_name);
+  virtual desktop_controller_ref controller(const QString &a_name);
   virtual QStringList current_controller_list() const;
 
-  virtual WorkSpace *workspace();
-  virtual void set_workspace(WorkSpace *a_workspace_ptr);
+  virtual workspace *owner_workspace();
+  virtual void set_workspace(workspace *a_workspace_ptr);
 
   virtual void setGeometry(const QRectF &a_geometry);
   virtual QRectF geometry() const;
@@ -74,11 +71,11 @@ public:
                                     const QString &a_key,
                                     const QString &a_value);
 
-  CherryKit::DesktopActivityPtr create_activity(const QString &a_activity,
-                                                const QString &a_title,
-                                                const QPointF &a_pos,
-                                                const QRectF &a_rect,
-                                                const QVariantMap &a_data_map);
+  cherry_kit::desktop_dialog_ref create_activity(const QString &a_activity,
+                                                 const QString &a_title,
+                                                 const QPointF &a_pos,
+                                                 const QRectF &a_rect,
+                                                 const QVariantMap &a_data_map);
 
   virtual QPointF cursor_pos() const;
   virtual QPointF
@@ -88,15 +85,15 @@ public:
 
   virtual void on_viewport_event_notify(
       std::function<void(ViewportNotificationType, const QVariant &,
-                         const Space *)> a_notify_handler);
-  virtual void on_activity_finished(const DesktopActivity *a_activity);
+                         const space *)> a_notify_handler);
+  virtual void on_activity_finished(const desktop_dialog *a_activity);
 
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
 
-  virtual void remove_window_from_view(Window *a_window);
-  virtual void insert_window_to_view(Window *a_window);
+  virtual void remove_window_from_view(window *a_window);
+  virtual void insert_window_to_view(window *a_window);
 
   virtual void drop_event_handler(QDropEvent *event, const QPointF &event_pos);
 
@@ -118,7 +115,7 @@ protected:
   virtual GraphicsSurface *surface();
 
 private:
-  void add_activity(CherryKit::DesktopActivityPtr a_activity_ptr);
+  void add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr);
 
   class PrivateSpace;
   PrivateSpace *const o_space;

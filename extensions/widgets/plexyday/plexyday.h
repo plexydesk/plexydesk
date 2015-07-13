@@ -1,7 +1,6 @@
 #ifndef PLEXY_DAY_CONTROLLER_H
 #define PLEXY_DAY_CONTROLLER_H
 
-#include <plexy.h>
 #include <controllerinterface.h>
 #include "plexydaywidget.h"
 

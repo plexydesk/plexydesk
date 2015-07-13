@@ -20,20 +20,20 @@
 #define PLEXY_CLOCK_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include "clock.h"
 #include "clockwidget.h"
 #include <view_controller.h>
 #include <controllerplugininterface.h>
 
 class ClockInterface : public QObject,
-                       public CherryKit::ControllerPluginInterface {
+                       public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::ControllerPluginInterface)
+  Q_INTERFACES(cherry_kit::desktop_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.clock")
 
 public:
-  QSharedPointer<CherryKit::ViewController> controller();
+  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
 
 private:
   Clock *mClock;
