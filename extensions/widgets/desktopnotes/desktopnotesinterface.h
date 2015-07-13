@@ -24,14 +24,14 @@
 #include <view_controller.h>
 #include <controllerplugininterface.h>
 
-class DesktopNotesInterface : public QObject,
+class task_plugin_impl : public QObject,
                               public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.desktopnotes")
 
 public:
-  virtual ~DesktopNotesInterface() {}
+  virtual ~task_plugin_impl() {}
 
   /* this will return a valid data plugin pointer*/
   QSharedPointer<cherry_kit::desktop_controller_interface> controller();

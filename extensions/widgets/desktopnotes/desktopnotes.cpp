@@ -32,7 +32,7 @@
 
 #include "notewidget.h"
 
-class DesktopNotesControllerImpl::PrivateDesktopNotes {
+class desktop_task_controller_impl::PrivateDesktopNotes {
 public:
   PrivateDesktopNotes() {}
   ~PrivateDesktopNotes() {}
@@ -41,7 +41,7 @@ public:
   cherry_kit::ActionList m_supported_action_list;
 };
 
-DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
+desktop_task_controller_impl::desktop_task_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_view_controller(new PrivateDesktopNotes) {
   o_view_controller->mNoteActions["Note"] = 1;
@@ -49,11 +49,11 @@ DesktopNotesControllerImpl::DesktopNotesControllerImpl(QObject *object)
   o_view_controller->mNoteActions["Reminder"] = 3;
 }
 
-DesktopNotesControllerImpl::~DesktopNotesControllerImpl() {
+desktop_task_controller_impl::~desktop_task_controller_impl() {
   delete o_view_controller;
 }
 
-void DesktopNotesControllerImpl::init() {
+void desktop_task_controller_impl::init() {
   QAction *_add_note_action = new QAction(this);
   _add_note_action->setText(tr("Note"));
 
@@ -77,7 +77,7 @@ void DesktopNotesControllerImpl::init() {
   o_view_controller->m_supported_action_list << _add_reminder_action;
 }
 
-void DesktopNotesControllerImpl::session_data_available(
+void desktop_task_controller_impl::session_data_available(
     const cherry::sync_object &a_sesion_root) {
   revoke_previous_session(
       "Notes",
@@ -93,18 +93,18 @@ void DesktopNotesControllerImpl::session_data_available(
 }
 
 void
-DesktopNotesControllerImpl::submit_session_data(cherry::sync_object *a_obj) {
+desktop_task_controller_impl::submit_session_data(cherry::sync_object *a_obj) {
   write_session_data("Notes");
   write_session_data("Reminders");
 }
 
-void DesktopNotesControllerImpl::set_view_rect(const QRectF &rect) {}
+void desktop_task_controller_impl::set_view_rect(const QRectF &rect) {}
 
-cherry_kit::ActionList DesktopNotesControllerImpl::actions() const {
+cherry_kit::ActionList desktop_task_controller_impl::actions() const {
   return o_view_controller->m_supported_action_list;
 }
 
-void DesktopNotesControllerImpl::request_action(const QString &actionName,
+void desktop_task_controller_impl::request_action(const QString &actionName,
                                                 const QVariantMap &args) {
   QPointF window_location;
 
@@ -148,7 +148,7 @@ void DesktopNotesControllerImpl::request_action(const QString &actionName,
   }
 }
 
-void DesktopNotesControllerImpl::handle_drop_event(cherry_kit::widget *widget,
+void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
                                                    QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
@@ -162,14 +162,14 @@ void DesktopNotesControllerImpl::handle_drop_event(cherry_kit::widget *widget,
   }
 }
 
-QString DesktopNotesControllerImpl::icon() const {
+QString desktop_task_controller_impl::icon() const {
   return QString("pd_add_note_frame_icon.png");
 }
 
-void DesktopNotesControllerImpl::onDataUpdated(const QVariantMap &data) {}
+void desktop_task_controller_impl::onDataUpdated(const QVariantMap &data) {}
 
 void
-DesktopNotesControllerImpl::createNoteUI(cherry_kit::session_sync *a_session) {
+desktop_task_controller_impl::createNoteUI(cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
   window->setGeometry(QRectF(0, 0, 320, 240));
 
@@ -228,7 +228,7 @@ DesktopNotesControllerImpl::createNoteUI(cherry_kit::session_sync *a_session) {
   }
 }
 
-void DesktopNotesControllerImpl::createReminderUI(
+void desktop_task_controller_impl::createReminderUI(
     cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);

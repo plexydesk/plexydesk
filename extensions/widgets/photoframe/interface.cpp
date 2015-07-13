@@ -24,10 +24,10 @@
 #include "imageplugin.h"
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
-Interface::controller() {
+photo_plugin_impl::controller() {
   QSharedPointer<cherry_kit::desktop_controller_interface> obj =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new PhotoFrameController(this), &QObject::deleteLater);
+          new photo_controller_impl(this), &QObject::deleteLater);
 
   return obj;
 }

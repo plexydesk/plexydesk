@@ -21,10 +21,10 @@
 #include <plexyconfig.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
-TemplateInterface::controller() {
+template_plugin_impl::controller() {
   QSharedPointer<cherry_kit::desktop_controller_interface> obj =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new TemplateControllerImpl(this), &QObject::deleteLater);
+          new template_controller(this), &QObject::deleteLater);
 
   return obj;
 }

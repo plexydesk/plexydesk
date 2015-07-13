@@ -21,7 +21,7 @@
 
 #include <controllerplugininterface.h>
 
-class Interface : public QObject, public cherry_kit::desktop_plugin_interface {
+class photo_plugin_impl : public QObject, public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.foo")

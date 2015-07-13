@@ -24,12 +24,12 @@
 #include <resource_manager.h>
 #include "photowidget.h"
 
-class PhotoFrameController : public cherry_kit::desktop_controller_interface {
+class photo_controller_impl : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
-  PhotoFrameController(QObject *object = 0);
-  virtual ~PhotoFrameController();
+  photo_controller_impl(QObject *object = 0);
+  virtual ~photo_controller_impl();
 
   void init();
 

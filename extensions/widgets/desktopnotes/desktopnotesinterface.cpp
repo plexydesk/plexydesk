@@ -22,10 +22,10 @@
 #include <plexyconfig.h>
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
-DesktopNotesInterface::controller() {
+task_plugin_impl::controller() {
   QSharedPointer<cherry_kit::desktop_controller_interface> obj =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new DesktopNotesControllerImpl(this), &QObject::deleteLater);
+          new desktop_task_controller_impl(this), &QObject::deleteLater);
 
   return obj;
 }

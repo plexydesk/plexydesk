@@ -43,11 +43,6 @@ public:
   window *activity_window() const;
   void cleanup();
 
-private
-Q_SLOTS:
-  void onWidgetClosed(cherry_kit::widget *widget);
-  void onDiscard();
-
 private:
   class PrivateIconGrid;
   PrivateIconGrid *const o_desktop_dialog;
