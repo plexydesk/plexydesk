@@ -19,7 +19,6 @@
 #ifndef IRC_DATA_H
 #define IRC_DATA_H
 
-#include <plexy.h>
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

@@ -29,7 +29,7 @@
 #include <button.h>
 #include <lineedit.h>
 
-class TimeZoneActivity::PrivateTimeZone {
+class timezone_dialog::PrivateTimeZone {
 public:
   PrivateTimeZone() {}
   ~PrivateTimeZone() {
@@ -44,37 +44,37 @@ public:
     qDebug() << Q_FUNC_INFO << "Delete TimeZone Activity";
   }
 
-  CherryKit::Window *m_window_ptr;
-  CherryKit::Widget *m_content_widget_ptr;
-  CherryKit::ItemView *m_timezone_browser_ptr;
-  CherryKit::LineEdit *m_filter_widget_ptr;
+  cherry_kit::window *m_window_ptr;
+  cherry_kit::widget *m_content_widget_ptr;
+  cherry_kit::ItemView *m_timezone_browser_ptr;
+  cherry_kit::LineEdit *m_filter_widget_ptr;
 
   QVariantMap m_result_data;
 };
 
-TimeZoneActivity::TimeZoneActivity(QGraphicsObject *aParent)
-    : CherryKit::DesktopActivity(aParent), m_priv_ptr(new PrivateTimeZone) {}
+timezone_dialog::timezone_dialog(QGraphicsObject *aParent)
+    : cherry_kit::desktop_dialog(aParent), m_priv_ptr(new PrivateTimeZone) {}
 
-TimeZoneActivity::~TimeZoneActivity() { delete m_priv_ptr; }
+timezone_dialog::~timezone_dialog() { delete m_priv_ptr; }
 
-void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
+void timezone_dialog::create_window(const QRectF &aWindowGeometry,
                                      const QString &aWindowTitle,
                                      const QPointF &aWindowPos) {
-  m_priv_ptr->m_window_ptr = new CherryKit::Window();
+  m_priv_ptr->m_window_ptr = new cherry_kit::window();
   m_priv_ptr->m_window_ptr->set_window_title(aWindowTitle);
 
   m_priv_ptr->m_content_widget_ptr =
-      new CherryKit::Widget(m_priv_ptr->m_window_ptr);
+      new cherry_kit::widget(m_priv_ptr->m_window_ptr);
   m_priv_ptr->m_content_widget_ptr->setGeometry(aWindowGeometry);
 
   m_priv_ptr->m_filter_widget_ptr =
-      new CherryKit::LineEdit(m_priv_ptr->m_content_widget_ptr);
+      new cherry_kit::LineEdit(m_priv_ptr->m_content_widget_ptr);
   m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width() - 16,
                                                   32);
   m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(8, 0, 0, 0));
 
   m_priv_ptr->m_timezone_browser_ptr =
-      new CherryKit::ItemView(m_priv_ptr->m_content_widget_ptr);
+      new cherry_kit::ItemView(m_priv_ptr->m_content_widget_ptr);
   /*
   m_priv_ptr->m_timezone_browser_ptr->setGeometry(
         QRectF(0, 0, aWindowGeometry.width(),
@@ -103,7 +103,7 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
   });
 
   m_priv_ptr->m_window_ptr->on_window_closed([this](
-      CherryKit::Window *aWindow) {
+      cherry_kit::window *aWindow) {
     if (m_priv_ptr->m_timezone_browser_ptr) {
       m_priv_ptr->m_timezone_browser_ptr->clear();
       delete m_priv_ptr->m_timezone_browser_ptr;
@@ -112,7 +112,7 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
   });
 
   m_priv_ptr->m_timezone_browser_ptr->on_item_removed([](
-      CherryKit::ModelViewItem *a_item) {
+      cherry_kit::ModelViewItem *a_item) {
     if (a_item)
       delete a_item;
   });
@@ -120,18 +120,18 @@ void TimeZoneActivity::create_window(const QRectF &aWindowGeometry,
   loadTimeZones();
 }
 
-QVariantMap TimeZoneActivity::result() const {
+QVariantMap timezone_dialog::result() const {
   return m_priv_ptr->m_result_data;
 }
 
-void TimeZoneActivity::update_attribute(const QString &aName,
+void timezone_dialog::update_attribute(const QString &aName,
                                         const QVariant &aVariantData) {}
 
-CherryKit::Window *TimeZoneActivity::window() const {
+cherry_kit::window *timezone_dialog::activity_window() const {
   return m_priv_ptr->m_window_ptr;
 }
 
-void TimeZoneActivity::cleanup() {
+void timezone_dialog::cleanup() {
   if (m_priv_ptr->m_timezone_browser_ptr)
     m_priv_ptr->m_timezone_browser_ptr->clear();
 
@@ -141,8 +141,8 @@ void TimeZoneActivity::cleanup() {
   m_priv_ptr->m_window_ptr = 0;
 }
 
-void TimeZoneActivity::loadTimeZones() {
-  std::vector<CherryKit::ModelViewItem *> _item_list;
+void timezone_dialog::loadTimeZones() {
+  std::vector<cherry_kit::ModelViewItem *> _item_list;
 
   foreach(const QByteArray id, QTimeZone::availableTimeZoneIds()) {
     QString l_time_zone_lable_str = QString(id);
@@ -150,13 +150,13 @@ void TimeZoneActivity::loadTimeZones() {
         " " + QTimeZone(id).displayName(QDateTime::currentDateTime(),
                                         QTimeZone::OffsetName);
 
-    CherryKit::Label *lTimeZoneLabelPtr =
-        new CherryKit::Label(m_priv_ptr->m_timezone_browser_ptr);
-    CherryKit::ModelViewItem *l_item = new CherryKit::ModelViewItem();
+    cherry_kit::Label *lTimeZoneLabelPtr =
+        new cherry_kit::Label(m_priv_ptr->m_timezone_browser_ptr);
+    cherry_kit::ModelViewItem *l_item = new cherry_kit::ModelViewItem();
 
     l_item->set_data("label", l_time_zone_lable_str);
     l_item->set_data("zone_id", id);
-    l_item->on_activated([&](CherryKit::ModelViewItem *a_item) {
+    l_item->on_activated([&](cherry_kit::ModelViewItem *a_item) {
       if (a_item) {
         m_priv_ptr->m_result_data["timezone"] =
             a_item->data("label").toString();
@@ -167,17 +167,17 @@ void TimeZoneActivity::loadTimeZones() {
     });
 
     l_item->set_view(lTimeZoneLabelPtr);
-    l_item->on_view_removed([&](CherryKit::ModelViewItem *a_item) {
+    l_item->on_view_removed([&](cherry_kit::ModelViewItem *a_item) {
       if (a_item && a_item->view()) {
-        CherryKit::Widget *view = a_item->view();
+        cherry_kit::widget *view = a_item->view();
         if (view)
           delete view;
       }
     });
-    l_item->on_filter([&](const CherryKit::Widget *a_view,
+    l_item->on_filter([&](const cherry_kit::widget *a_view,
                           const QString &a_keyword) {
-      const CherryKit::Label *_lbl_widget =
-          dynamic_cast<const CherryKit::Label *>(a_view);
+      const cherry_kit::Label *_lbl_widget =
+          dynamic_cast<const cherry_kit::Label *>(a_view);
 
       if (_lbl_widget) {
         if (_lbl_widget->label().toLower().contains(a_keyword.toLower())) {
@@ -199,12 +199,12 @@ void TimeZoneActivity::loadTimeZones() {
   }
 
   std::sort(_item_list.begin(), _item_list.end(),
-            [](CherryKit::ModelViewItem *a_a, CherryKit::ModelViewItem *a_b) {
+            [](cherry_kit::ModelViewItem *a_a, cherry_kit::ModelViewItem *a_b) {
     return a_a->data("label").toString() < a_b->data("label").toString();
   });
 
   std::for_each(_item_list.begin(), _item_list.end(),
-                [this](CherryKit::ModelViewItem *a) {
+                [this](cherry_kit::ModelViewItem *a) {
     if (a) {
       m_priv_ptr->m_timezone_browser_ptr->insert(a);
     }

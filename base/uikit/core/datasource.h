@@ -20,7 +20,6 @@
 #ifndef PLEXY_DATA_PLUGIN_H
 #define PLEXY_DATA_PLUGIN_H
 
-#include <plexy.h>
 #include <plexydesk_ui_exports.h>
 #include <QVariant>
 #include <QObject>
@@ -88,14 +87,14 @@ operation.
 \param args The argument to be passed to the data source, The data source should
 define the protocol to be used.
 **/
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT DataSource : public QObject {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT data_source : public QObject {
   Q_OBJECT
 
 public:
-  DataSource(QObject *a_object_ptr = 0);
+  data_source(QObject *a_object_ptr = 0);
 
-  virtual ~DataSource();
+  virtual ~data_source();
 
   virtual QVariantMap readAll() = 0;
 
@@ -114,6 +113,6 @@ private:
   PrivateDataSource *const o_data_soure;
 };
 
-typedef QSharedPointer<DataSource> DataSourcePtr;
+typedef QSharedPointer<data_source> DataSourcePtr;
 }
 #endif

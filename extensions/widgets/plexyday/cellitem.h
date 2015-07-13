@@ -1,8 +1,6 @@
 #ifndef CELLITEM_H
 #define CELLITEM_H
 
-#include <plexy.h>
-
 #include <QGraphicsItem>
 #include <QGraphicsObject>
 #include <abstractcellcomponent.h>

@@ -36,11 +36,11 @@
 
 #include "resource_manager.h"
 
-namespace CherryKit {
+namespace cherry_kit {
 
-ResourceManager *ResourceManager::s_theme_instance = 0;
+resource_manager *resource_manager::s_theme_instance = 0;
 
-class ResourceManager::ThemepackLoaderPrivate {
+class resource_manager::ThemepackLoaderPrivate {
 public:
   ThemepackLoaderPrivate() {}
   ~ThemepackLoaderPrivate() {
@@ -69,10 +69,10 @@ public:
   std::map<ColorName, std::string> m_color_map;
 };
 
-ResourceManager::ResourceManager(const QString &a_theme_name)
+resource_manager::resource_manager(const QString &a_theme_name)
     : o_resource_manager(new ThemepackLoaderPrivate) {
   o_resource_manager->mThemePackPath = QDir::toNativeSeparators(
-      QString("%1/%2").arg(CherryKit::Config::instance()->prefix()).arg(
+      QString("%1/%2").arg(cherry_kit::config::instance()->prefix()).arg(
           "/share/plexy/themepack"));
 
   o_resource_manager->mThemeName = a_theme_name;
@@ -98,10 +98,10 @@ ResourceManager::ResourceManager(const QString &a_theme_name)
 
   set_color_scheme("default");
   o_resource_manager->mStyle =
-      CherryKit::ExtensionManager::instance()->style("cocoastyle");
+      cherry_kit::extension_manager::instance()->style("cocoastyle");
 }
 
-ResourceManager::~ResourceManager() {
+resource_manager::~resource_manager() {
 
   /*
   if (staticLoader) {
@@ -113,34 +113,34 @@ ResourceManager::~ResourceManager() {
   delete o_resource_manager;
 }
 
-StylePtr ResourceManager::default_desktop_style() {
+StylePtr resource_manager::default_desktop_style() {
   return o_resource_manager->mStyle;
 }
 
-StylePtr ResourceManager::style() {
+StylePtr resource_manager::style() {
   return instance()->default_desktop_style();
 }
 
-ResourceManager *ResourceManager::instance() {
+resource_manager *resource_manager::instance() {
   if (!s_theme_instance) {
-    s_theme_instance = new ResourceManager("default");
+    s_theme_instance = new resource_manager("default");
     return s_theme_instance;
   } else {
     return s_theme_instance;
   }
 }
 
-const char *ResourceManager::color(ResourceManager::ColorName a_name) {
+const char *resource_manager::color(resource_manager::ColorName a_name) {
   return instance()->color_code(a_name);
 }
 
-QPixmap ResourceManager::icon(const QString &a_name,
-                              const QString &a_resolution) {
+QPixmap resource_manager::icon(const QString &a_name,
+                               const QString &a_resolution) {
   return instance()->drawable(a_name, a_resolution);
 }
 
-QPixmap ResourceManager::drawable(const QString &a_fileName,
-                                  const QString &a_dpi) {
+QPixmap resource_manager::drawable(const QString &a_fileName,
+                                   const QString &a_dpi) {
   QPixmap rv;
 
   QString iconThemePath =
@@ -165,7 +165,7 @@ QPixmap ResourceManager::drawable(const QString &a_fileName,
   return rv;
 }
 
-void ResourceManager::load_default_color_values() {
+void resource_manager::load_default_color_values() {
   o_resource_manager->m_color_map[kDarkPrimaryColor] = "#1976D2";
   o_resource_manager->m_color_map[kPrimaryColor] = "#2196F3";
   o_resource_manager->m_color_map[kLightPrimaryColor] = "#FFFFFF";
@@ -176,7 +176,7 @@ void ResourceManager::load_default_color_values() {
   o_resource_manager->m_color_map[kDividerColor] = "#B6B6B6";
 }
 
-void ResourceManager::set_color_scheme(const std::string &a_name) {
+void resource_manager::set_color_scheme(const std::string &a_name) {
   cherry::data_sync *sync = new cherry::data_sync("Palette");
   cherry::disk_engine *engine = new cherry::disk_engine();
 
@@ -212,9 +212,9 @@ void ResourceManager::set_color_scheme(const std::string &a_name) {
   delete sync;
 }
 
-std::string ResourceManager::color_scheme() const { return std::string(); }
+std::string resource_manager::color_scheme() const { return std::string(); }
 
-const char *ResourceManager::color_code(ResourceManager::ColorName a_name) {
+const char *resource_manager::color_code(resource_manager::ColorName a_name) {
   std::string error_rv = "#000000";
   const char *rv;
 
@@ -229,7 +229,7 @@ const char *ResourceManager::color_code(ResourceManager::ColorName a_name) {
   return rv;
 }
 
-void ResourceManager::set_theme_name(const QString &a_name) {
+void resource_manager::set_theme_name(const QString &a_name) {
   Q_UNUSED(a_name);
 }
 

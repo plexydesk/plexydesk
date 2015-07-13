@@ -20,14 +20,13 @@
 #define DESKTOPCLOCK_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 #include <desktopactivity.h>
 #include <window.h>
 
-class DesktopClockActivity : public CherryKit::DesktopActivity {
+class DesktopClockActivity : public cherry_kit::DesktopActivity {
   Q_OBJECT
 
 public:
@@ -40,7 +39,7 @@ public:
 
   QVariantMap result() const;
 
-  CherryKit::Window *window() const;
+  cherry_kit::Window *window() const;
   void cleanup();
 
 private

@@ -12,7 +12,6 @@
     delete ui;
    }*/
 
-#include <plexy.h>
 #include "sociotwitterwidget.h"
 #include "sociotwitterinterface.h"
 #include <math.h>

@@ -24,12 +24,12 @@
 #include <QGraphicsObject>
 #include <widget.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DECL_UI_KIT_EXPORT ImageButton : public Widget {
+class DECL_UI_KIT_EXPORT ImageButton : public widget {
   Q_OBJECT
 public:
-  explicit ImageButton(Widget *a_parent_ptr = 0);
+  explicit ImageButton(widget *a_parent_ptr = 0);
   virtual ~ImageButton();
 
   virtual void set_size(const QSize &a_size);

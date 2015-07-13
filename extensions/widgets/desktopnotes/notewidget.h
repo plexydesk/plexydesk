@@ -3,18 +3,18 @@
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
-#include <plexy.h>
+
 #include <style.h>
 #include <widget.h>
 #include <webservice.h>
 #include <desktopactivity.h>
 #include <session_sync.h>
 
-class NoteWidget : public CherryKit::Widget {
+class NoteWidget : public cherry_kit::widget {
   Q_OBJECT
 public:
-  explicit NoteWidget(CherryKit::SessionSync *a_session,
-                      CherryKit::Widget *a_parent_ptr = 0);
+  explicit NoteWidget(cherry_kit::session_sync *a_session,
+                      cherry_kit::widget *a_parent_ptr = 0);
   virtual ~NoteWidget();
 
   void setTitle(const QString &title);
@@ -37,7 +37,7 @@ public:
   void resize(const QSizeF &size);
   void createToolBar();
 
-  void setViewport(CherryKit::Space *space);
+  void setViewport(cherry_kit::space *space);
 
   void on_text_data_changed(std::function<void(const QString &)> a_callback);
   void on_note_config_changed(

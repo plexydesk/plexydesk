@@ -20,21 +20,21 @@
 #define DATEPICKER_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <activity_interface.h>
 #include <desktopactivity.h>
 
 class DatePickerInterface : public QObject,
-                            public CherryKit::ActivityInterface {
+                            public cherry_kit::dialog_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::ActivityInterface)
+  Q_INTERFACES(cherry_kit::dialog_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.datepicker")
 
 public:
   virtual ~DatePickerInterface() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<CherryKit::DesktopActivity> activity();
+  QSharedPointer<cherry_kit::desktop_dialog> activity();
 };
 
 #endif

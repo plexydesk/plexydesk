@@ -3,7 +3,7 @@
 
 #include <abstractcellcomponent.h>
 
-class PhotoCell : public CherryKit::TableViewItem {
+class PhotoCell : public cherry_kit::TableViewItem {
   Q_OBJECT
 public:
   typedef enum {

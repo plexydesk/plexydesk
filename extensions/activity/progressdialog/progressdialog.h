@@ -20,20 +20,19 @@
 #define PROGRESSDIALOG_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 #include <window.h>
 #include <desktopactivity.h>
 
-class ProgressDialogActivity : public CherryKit::DesktopActivity {
+class progress_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  ProgressDialogActivity(QGraphicsObject *object = 0);
+  progress_dialog(QGraphicsObject *object = 0);
 
-  virtual ~ProgressDialogActivity();
+  virtual ~progress_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
@@ -42,18 +41,18 @@ public:
 
   virtual void update_attribute(const QString &name, const QVariant &data);
 
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(CherryKit::Widget *widget);
+  void onWidgetClosed(cherry_kit::widget *widget);
 
   void onHideAnimationFinished();
 
 private:
   class PrivateProgressDialog;
-  PrivateProgressDialog *const o_desktop_activity;
+  PrivateProgressDialog *const o_desktop_dialog;
 };
 
 #endif

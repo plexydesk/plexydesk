@@ -5,7 +5,7 @@
 #include <tableviewcellinterface.h>
 #include <webservice.h>
 
-using namespace CherryKit;
+using namespace cherry_kit;
 
 class PhotoCellAdaptor : public TableModel {
   Q_OBJECT
@@ -14,7 +14,7 @@ public:
   PhotoCellAdaptor(QObject *a_parent_ptr = 0);
   virtual ~PhotoCellAdaptor();
 
-  QList<CherryKit::TableViewItem *> componentList();
+  QList<cherry_kit::TableViewItem *> componentList();
 
   float margin() const;
 

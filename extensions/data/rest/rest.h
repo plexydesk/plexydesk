@@ -20,12 +20,11 @@
 #define REST_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 
-class RestData : public CherryKit::DataSource {
+class RestData : public cherry_kit::data_source {
   Q_OBJECT
 
 public:

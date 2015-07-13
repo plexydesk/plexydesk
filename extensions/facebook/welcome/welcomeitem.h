@@ -4,7 +4,7 @@
 #define WELLCOME_ITEM_H
 
 #include <config.h>
-#include <plexy.h>
+
 #include <desktopwidget.h>
 #include <QtGui>
 #include <QtCore>

@@ -20,7 +20,7 @@
 #define DESKTOPACTIVITYMONITOR_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <dataplugininterface.h>
 
 class DesktopActivityMonitorInterface : public QObject,

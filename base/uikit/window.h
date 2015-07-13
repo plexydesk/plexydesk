@@ -28,9 +28,9 @@ class QRectF;
 class QPointF;
 class QSizeF;
 
-namespace CherryKit {
-class Space;
-class DECL_UI_KIT_EXPORT Window : public Widget {
+namespace cherry_kit {
+class space;
+class DECL_UI_KIT_EXPORT window : public widget {
 public:
   typedef enum {
     kFramelessWindow = 1,
@@ -42,13 +42,13 @@ public:
     kPopupWindow = 7
   } WindowType;
 
-  typedef std::function<void(Window *, int, int)> ResizeCallback;
+  typedef std::function<void(window *, int, int)> ResizeCallback;
 
-  Window(Widget *a_parent_ptr = 0);
-  virtual ~Window();
+  window(widget *a_parent_ptr = 0);
+  virtual ~window();
 
-  virtual void set_window_content(Widget *a_widget_ptr);
-  virtual void set_window_viewport(Space *a_space);
+  virtual void set_window_content(widget *a_widget_ptr);
+  virtual void set_window_viewport(space *a_space);
 
   virtual void set_window_title(const QString &a_window_title);
   virtual QString window_title() const;
@@ -59,9 +59,9 @@ public:
   virtual void on_window_resized(ResizeCallback a_handler);
   virtual void
   on_window_moved(std::function<void(const QPointF &pos)> a_handler);
-  virtual void on_window_closed(std::function<void(Window *)> a_handler);
-  virtual void on_window_discarded(std::function<void(Window *)> a_handler);
-  virtual void on_window_focused(std::function<void(Window *)> a_handler);
+  virtual void on_window_closed(std::function<void(window *)> a_handler);
+  virtual void on_window_discarded(std::function<void(window *)> a_handler);
+  virtual void on_window_focused(std::function<void(window *)> a_handler);
 
   virtual void raise();
   virtual void close();

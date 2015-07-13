@@ -20,7 +20,7 @@
 #define PLEXY_WELCOME_H
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <widgetinterface.h>
 #include <widgetplugin.h>
 #include "welcomewidget.h"

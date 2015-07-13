@@ -2,7 +2,7 @@
 #define CONTACTLIST_H
 
 #include <QObject>
-#include <plexy.h>
+
 #include <scrollwidget.h>
 #include "contactlistitem.h"
 

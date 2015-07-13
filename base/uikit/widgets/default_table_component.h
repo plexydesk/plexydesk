@@ -5,7 +5,7 @@
 #include <plexydesk_ui_exports.h>
 
 class DECL_UI_KIT_EXPORT DefaultTableComponent
-    : public CherryKit::TableViewItem {
+    : public cherry_kit::TableViewItem {
   Q_OBJECT
 public:
   typedef enum {

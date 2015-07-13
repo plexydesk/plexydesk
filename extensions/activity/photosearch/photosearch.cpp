@@ -41,40 +41,40 @@
 
 #include "localwallpapers.h"
 
-class PhotoSearchActivity::PrivatePhotoSearch {
+class wallpaper_dialog::PrivatePhotoSearch {
 public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  CherryKit::Window *m_window;
-  CherryKit::ProgressBar *mProgressBar;
-  CherryKit::TableView *mTable;
+  cherry_kit::window *m_window;
+  cherry_kit::ProgressBar *mProgressBar;
+  cherry_kit::TableView *mTable;
 
-  CherryKit::ItemView *m_image_view;
+  cherry_kit::ItemView *m_image_view;
 
   ImageCellAdaptor *mFactory;
   QRectF mGeometry;
   QVariantMap mResult;
 };
 
-PhotoSearchActivity::PhotoSearchActivity(QGraphicsObject *object)
-    : CherryKit::DesktopActivity(object), d(new PrivatePhotoSearch) {}
+wallpaper_dialog::wallpaper_dialog(QGraphicsObject *object)
+    : cherry_kit::desktop_dialog(object), d(new PrivatePhotoSearch) {}
 
-PhotoSearchActivity::~PhotoSearchActivity() {
+wallpaper_dialog::~wallpaper_dialog() {
   qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
-void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
+void wallpaper_dialog::create_window(const QRectF &aWindowGeometry,
                                         const QString &aWindowTitle,
                                         const QPointF &window_pos) {
   d->mGeometry = aWindowGeometry;
 
-  d->m_window = new CherryKit::Window();
+  d->m_window = new cherry_kit::window();
   d->m_window->setGeometry(aWindowGeometry);
   d->m_window->set_window_title(aWindowTitle);
 
-  CherryKit::HybridLayout *ck_ui = new CherryKit::HybridLayout(d->m_window);
+  cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(d->m_window);
 
   ck_ui->set_content_margin(10, 10, 10, 10);
   ck_ui->set_geometry(0, 0, aWindowGeometry.width(), aWindowGeometry.height());
@@ -86,11 +86,11 @@ void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
   ck_ui->set_row_height(0, "95%");
   ck_ui->set_row_height(1, "5%");
 
-  CherryKit::WidgetProperties ui_data;
+  cherry_kit::widget_properties_t ui_data;
 
-  CherryKit::Widget *ck_icon_gird = ck_ui->add_widget(0, 0, "widget", ui_data);
+  cherry_kit::widget *ck_icon_gird = ck_ui->add_widget(0, 0, "widget", ui_data);
   d->m_image_view =
-      new CherryKit::ItemView(ck_icon_gird, CherryKit::ItemView::kGridModel);
+      new cherry_kit::ItemView(ck_icon_gird, cherry_kit::ItemView::kGridModel);
 
   ck_icon_gird->on_geometry_changed([&](const QRectF &a_rect) {
     d->m_image_view->setGeometry(a_rect);
@@ -116,13 +116,13 @@ void PhotoSearchActivity::create_window(const QRectF &aWindowGeometry,
   exec(window_pos);
 }
 
-QRectF PhotoSearchActivity::geometry() const { return d->mGeometry; }
+QRectF wallpaper_dialog::geometry() const { return d->mGeometry; }
 
-QVariantMap PhotoSearchActivity::result() const { return d->mResult; }
+QVariantMap wallpaper_dialog::result() const { return d->mResult; }
 
-Window *PhotoSearchActivity::window() const { return d->m_window; }
+window *wallpaper_dialog::activity_window() const { return d->m_window; }
 
-void PhotoSearchActivity::cleanup() {
+void wallpaper_dialog::cleanup() {
   if (d->m_window) {
     delete d->m_window;
   }
@@ -130,11 +130,11 @@ void PhotoSearchActivity::cleanup() {
   d->m_window = 0;
 }
 
-void PhotoSearchActivity::onShowAnimationFinished() {
+void wallpaper_dialog::onShowAnimationFinished() {
   this->load_from_system_path();
 }
 
-void PhotoSearchActivity::onClicked(TableViewItem *item) {
+void wallpaper_dialog::onClicked(TableViewItem *item) {
   if (d->mFactory && d->mFactory->hasRunningThreads()) {
     return;
   }
@@ -147,7 +147,7 @@ void PhotoSearchActivity::onClicked(TableViewItem *item) {
   }
 }
 
-void PhotoSearchActivity::onProgressValue(int value) {
+void wallpaper_dialog::onProgressValue(int value) {
   if (value == 100) {
     if (d->m_window) {
       if (has_attribute("title")) {
@@ -156,7 +156,7 @@ void PhotoSearchActivity::onProgressValue(int value) {
   }
 }
 
-void PhotoSearchActivity::load_from_system_path() const {
+void wallpaper_dialog::load_from_system_path() const {
   std::vector<std::string> image_path_list;
 
 #ifdef Q_OS_LINUX
@@ -171,7 +171,7 @@ void PhotoSearchActivity::load_from_system_path() const {
 #endif
 
   image_path_list.push_back(
-      CherryKit::Config::cache_dir("wallpaper").toStdString());
+      cherry_kit::config::cache_dir("wallpaper").toStdString());
 
   std::for_each(std::begin(image_path_list), std::end(image_path_list),
                 [&](const std::string &a_path) {

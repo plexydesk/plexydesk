@@ -20,7 +20,6 @@
 #define FLIKRSEARCH_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
@@ -29,8 +28,8 @@
 #include <abstractcellcomponent.h>
 #include <window.h>
 
-using namespace CherryKit;
-class FlickrSearchActivity : public CherryKit::DesktopActivity {
+using namespace cherry_kit;
+class FlickrSearchActivity : public cherry_kit::DesktopActivity {
   Q_OBJECT
 public:
   FlickrSearchActivity(QGraphicsObject *object = 0);
@@ -48,7 +47,7 @@ Q_SLOTS:
 
 private
 Q_SLOTS:
-  void onWidgetClosed(CherryKit::Widget *widget);
+  void onWidgetClosed(cherry_kit::Widget *widget);
   void onButtonClicked();
   void onNextButtonClicked();
   void onPreviousButtonClicked();

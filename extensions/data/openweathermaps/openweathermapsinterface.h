@@ -20,7 +20,7 @@
 #define OPENWEATHERMAPS_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <dataplugininterface.h>
 
 class openweathermapsInterface : public QObject,

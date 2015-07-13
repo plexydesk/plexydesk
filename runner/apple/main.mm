@@ -28,7 +28,7 @@
 #include <QtCore>
 #include <QIcon>
 #include <extensionmanager.h>
-#include <plexy.h>
+
 #include <workspace.h>
 #include <space.h>
 #include <plexyconfig.h>

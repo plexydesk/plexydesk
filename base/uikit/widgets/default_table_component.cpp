@@ -18,9 +18,9 @@ public:
   ~PrivateTableComponent() {}
 
 public:
-  CherryKit::Button *m_option_button;
-  CherryKit::Label *m_label_widget;
-  CherryKit::ImageView *m_image_view_widget;
+  cherry_kit::Button *m_option_button;
+  cherry_kit::Label *m_label_widget;
+  cherry_kit::ImageView *m_image_view_widget;
 
   QGraphicsWidget *m_layout_base;
   QGraphicsLinearLayout *m_linear_layout;
@@ -38,7 +38,7 @@ public:
 DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
                                              LayoutType type,
                                              QGraphicsItem *parent)
-    : CherryKit::TableViewItem(a_rect, parent),
+    : cherry_kit::TableViewItem(a_rect, parent),
       m_priv_ptr(new PrivateTableComponent) {
   m_priv_ptr->m_current_geometry = a_rect;
   m_priv_ptr->m_current_item_selection = false;
@@ -52,15 +52,15 @@ DefaultTableComponent::DefaultTableComponent(const QRectF &a_rect,
       new QGraphicsLinearLayout(m_priv_ptr->m_layout_base);
 
   m_priv_ptr->m_image_view_widget =
-      new CherryKit::ImageView(m_priv_ptr->m_layout_base);
+      new cherry_kit::ImageView(m_priv_ptr->m_layout_base);
   m_priv_ptr->m_image_view_widget->set_pixmap(
-      CherryKit::ResourceManager::instance()->drawable("setup-wizard.png",
-                                                       "hdpi"));
+      cherry_kit::ResourceManager::instance()->drawable("setup-wizard.png",
+                                                        "hdpi"));
 
-  m_priv_ptr->m_label_widget = new CherryKit::Label(m_priv_ptr->m_layout_base);
+  m_priv_ptr->m_label_widget = new cherry_kit::Label(m_priv_ptr->m_layout_base);
 
   m_priv_ptr->m_option_button =
-      new CherryKit::Button(m_priv_ptr->m_layout_base);
+      new cherry_kit::Button(m_priv_ptr->m_layout_base);
 
   connect(m_priv_ptr->m_image_view_widget, SIGNAL(clicked()), this,
           SLOT(onClicked()));
@@ -171,9 +171,9 @@ void DefaultTableComponent::paint(QPainter *painter,
   if (m_priv_ptr->m_current_layout_type == kListLayout ||
       m_priv_ptr->m_current_item_selection) {
 
-    CherryKit::StyleFeatures features;
+    cherry_kit::StyleFeatures features;
 
-    features.render_state = CherryKit::StyleFeatures::kRenderElement;
+    features.render_state = cherry_kit::StyleFeatures::kRenderElement;
     features.geometry = boundingRect();
     features.text_data = m_priv_ptr->m_current_label_str;
 
@@ -181,9 +181,9 @@ void DefaultTableComponent::paint(QPainter *painter,
     painter->setRenderHint(QPainter::TextAntialiasing, true);
     painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
-    if (CherryKit::ResourceManager::style()) {
-      CherryKit::ResourceManager::style()->draw("vertical_list_item", features,
-                                                painter);
+    if (cherry_kit::ResourceManager::style()) {
+      cherry_kit::ResourceManager::style()->draw("vertical_list_item", features,
+                                                 painter);
     }
 
     /*

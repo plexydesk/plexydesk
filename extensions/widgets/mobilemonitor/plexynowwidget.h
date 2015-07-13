@@ -1,7 +1,6 @@
 #ifndef PLEXYNOW_WIDGET_H
 #define PLEXYNOW_WIDGET_H
 
-#include <plexy.h>
 #include <desktopwidget.h>
 #include <QGraphicsDropShadowEffect>
 

@@ -26,7 +26,7 @@
 #include <QTextOption>
 #include <resource_manager.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class Label::PrivateLabel {
 public:
@@ -42,7 +42,7 @@ public:
   bool m_mode;
 };
 
-Label::Label(Widget *parent) : Widget(parent), o_label(new PrivateLabel) {
+Label::Label(widget *parent) : widget(parent), o_label(new PrivateLabel) {
   o_label->m_font_size = 14;
   o_label->m_alignment = Qt::AlignCenter;
   o_label->m_mode = false;
@@ -60,7 +60,8 @@ void Label::set_label(const QString &a_txt) {
 QString Label::label() const { return o_label->m_label_string; }
 
 QRectF Label::boundingRect() const {
-  return QRectF(0.0, 0.0, o_label->m_label_size.width(), o_label->m_label_size.height());
+  return QRectF(0.0, 0.0, o_label->m_label_size.width(),
+                o_label->m_label_size.height());
 }
 
 void Label::set_size(const QSizeF &_asize) { o_label->m_label_size = _asize; }
@@ -77,7 +78,7 @@ void Label::setGeometry(const QRectF &a_rect) {
   o_label->m_label_size = a_rect.size();
 
   update();
-  Widget::setGeometry(a_rect);
+  widget::setGeometry(a_rect);
 }
 
 QRectF Label::contents_bounding_rect() const {
@@ -109,22 +110,23 @@ void Label::set_alignment(int a_alignment) {
 }
 
 void Label::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
-  StyleFeatures feature;
+  style_data feature;
 
   feature.text_data = o_label->m_label_string;
   feature.geometry = a_rect;
   if (!o_label->m_mode)
-    feature.render_state = StyleFeatures::kRenderElement;
+    feature.render_state = style_data::kRenderElement;
   else
-    feature.render_state = StyleFeatures::kRenderRaised;
+    feature.render_state = style_data::kRenderRaised;
 
   QTextOption text_option;
   text_option.setAlignment(o_label->m_alignment);
   feature.text_options = text_option;
   feature.attributes["font_size"] = o_label->m_font_size;
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("label", feature, a_painter_ptr);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw("label", feature,
+                                                a_painter_ptr);
   }
 }
 

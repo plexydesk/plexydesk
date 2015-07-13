@@ -22,16 +22,16 @@
 #include <iostream>
 #include <widget.h>
 
-namespace CherryKit {
-class Window;
+namespace cherry_kit {
+class window;
 class Label;
 class Button;
 class ImageButton;
 class LineEdit;
 
-typedef std::map<std::string, std::string> WidgetProperties;
+typedef std::map<std::string, std::string> widget_properties_t;
 
-class DECL_UI_KIT_EXPORT HybridLayout {
+class DECL_UI_KIT_EXPORT fixed_layout {
   typedef enum {
     kAlignNone = 0,
     kAlignLeft = 1,
@@ -55,8 +55,8 @@ class DECL_UI_KIT_EXPORT HybridLayout {
   } ViewIdentifier;
 
 public:
-  explicit HybridLayout(Widget *a_window);
-  virtual ~HybridLayout();
+  explicit fixed_layout(widget *a_window);
+  virtual ~fixed_layout();
 
   virtual void set_geometry(float a_x, float a_y, float a_width,
                             float a_height);
@@ -71,30 +71,30 @@ public:
 
   virtual void add_segments(int a_index, int a_count);
   virtual void set_segment_width(int a_row, int a_column,
-                                const std::string &a_width);
+                                 const std::string &a_width);
 
-  virtual Widget *viewport() const;
-  virtual Widget *at(int a_row, int a_column);
+  virtual widget *viewport() const;
+  virtual widget *at(int a_row, int a_column);
 
-  virtual Widget *add_widget(int a_row, int a_column,
+  virtual widget *add_widget(int a_row, int a_column,
                              const std::string &a_widget,
-                             const WidgetProperties &a_properties);
+                             const widget_properties_t &a_properties);
   virtual void update_property(int a_row, int a_column,
-                               const WidgetProperties &a_properties);
+                               const widget_properties_t &a_properties);
 
 protected:
-  Widget *add_new_widget_at(int a_col, int a_row,
-                            const WidgetProperties &a_props);
-  Widget *add_new_button_at(int a_row, int a_col,
-                            const WidgetProperties &a_props);
-  Widget *add_new_label_at(int a_col, int a_row,
-                           const WidgetProperties &a_props);
+  widget *add_new_widget_at(int a_col, int a_row,
+                            const widget_properties_t &a_props);
+  widget *add_new_button_at(int a_row, int a_col,
+                            const widget_properties_t &a_props);
+  widget *add_new_label_at(int a_col, int a_row,
+                           const widget_properties_t &a_props);
 
   void layout();
 
 private:
   class PrivateViewBuilder;
-  PrivateViewBuilder *const o_view_builder;
+  PrivateViewBuilder *const o_fixed_layout;
 };
 }
 #endif // VIEWBUILDER_H

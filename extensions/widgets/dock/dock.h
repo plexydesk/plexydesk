@@ -20,7 +20,6 @@
 #define DOCK_DATA_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <view_controller.h>
@@ -29,9 +28,9 @@
 #include <abstractcellcomponent.h>
 #include <viewbuilder.h>
 
-using namespace CherryKit;
+using namespace cherry_kit;
 
-class DockControllerImpl : public CherryKit::ViewController {
+class DockControllerImpl : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
@@ -46,7 +45,7 @@ public:
 
   void set_view_rect(const QRectF &rect);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
 
   void request_action(const QString &actionName, const QVariantMap &args);
 
@@ -64,7 +63,7 @@ public:
 
   void prepare_removal();
 
-  void create_dock_action(CherryKit::HybridLayout *build, int row, int column,
+  void create_dock_action(cherry_kit::fixed_layout *build, int row, int column,
                           const std::string &icon,
                           std::function<void()> a_button_action_func);
 public
@@ -91,11 +90,11 @@ private:
   class PrivateDock;
   PrivateDock *const o_view_controller;
 
-  CherryKit::DesktopActivityPtr createActivity(const QString &controller_name,
-                                               const QString &activity,
-                                               const QString &title,
-                                               const QPoint &pos,
-                                               const QVariantMap &dataItem);
+  cherry_kit::desktop_dialog_ref createActivity(const QString &controller_name,
+                                                const QString &activity,
+                                                const QString &title,
+                                                const QPoint &pos,
+                                                const QVariantMap &dataItem);
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
 };

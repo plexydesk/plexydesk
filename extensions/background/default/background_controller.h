@@ -19,7 +19,6 @@
 #ifndef PLEXY_BACKGROUND_CONTROLLER_H
 #define PLEXY_BACKGROUND_CONTROLLER_H
 
-#include <plexy.h>
 #include <config.h>
 #include <view_controller.h>
 #define QT_SHAREDPOINTER_TRACK_POINTERS 1
@@ -29,7 +28,7 @@
 #include "classicbackgroundrender.h"
 #include "desktopwindow.h"
 
-class BackgroundController : public CherryKit::ViewController {
+class BackgroundController : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 public:
   BackgroundController(QObject *object = 0);
@@ -40,7 +39,7 @@ public:
   void session_data_available(const cherry::sync_object &a_session_root);
   void submit_session_data(cherry::sync_object *a_object);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &data);
 
   void set_view_rect(const QRectF &rect);
@@ -56,7 +55,7 @@ Q_SLOTS:
   void on_image_data_available();
 
 protected:
-  void handle_drop_event(CherryKit::Widget *widget, QDropEvent *event);
+  void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
   void expose_platform_desktop();
 
 private:
@@ -64,10 +63,10 @@ private:
   void revoke_session(const QVariantMap &args);
 
   void sync_image_data_to_disk(const QByteArray &data, const QString &source,
-                        bool a_local_file = false);
+                               bool a_local_file = false);
 
   void sync_image_data_to_disk(const QImage &data, const QString &source,
-                        bool saveLocally = false);
+                               bool saveLocally = false);
 
   void set_desktop_scale_type(DesktopWindow::DesktopScalingMode a_desktop_mode);
   void set_desktop_scale_type(const QString &a_action);

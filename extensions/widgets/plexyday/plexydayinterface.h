@@ -1,8 +1,6 @@
 #ifndef PLEXY_DAY_I
 #define PLEXY_DAY_I
 
-#include <plexy.h>
-
 #include <controllerplugininterface.h>
 
 class PlexyDayInterface : public QObject,

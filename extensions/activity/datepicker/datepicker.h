@@ -20,27 +20,26 @@
 #define DATEPICKER_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 #include <desktopactivity.h>
 #include <window.h>
 
-class DatePickerActivity : public CherryKit::DesktopActivity {
+class date_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  DatePickerActivity(QGraphicsObject *object = 0);
+  date_dialog(QGraphicsObject *object = 0);
 
-  virtual ~DatePickerActivity();
+  virtual ~date_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
 
   QVariantMap result() const;
 
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
 
 private:
@@ -49,7 +48,7 @@ private:
 
 private:
   class PrivateDatePicker;
-  PrivateDatePicker *const o_desktop_activity;
+  PrivateDatePicker *const o_desktop_dialog;
 };
 
 #endif

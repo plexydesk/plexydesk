@@ -19,8 +19,6 @@
 #ifndef EXTENSION_MANAGER_H
 #define EXTENSION_MANAGER_H
 
-#include <plexy.h>
-
 #include <QHash>
 #include <QSharedPointer>
 
@@ -31,14 +29,14 @@
 #include <desktopactivity.h>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 /**
     * @brief PlexyDesk Plugin Manager Class
     *
     * Supports loading and handling various plexydesk
     * extensions supported by the sytem
     */
-class DECL_UI_KIT_EXPORT ExtensionManager : public QObject {
+class DECL_UI_KIT_EXPORT extension_manager : public QObject {
   Q_OBJECT
 public:
   /**
@@ -46,12 +44,12 @@ public:
       *
       * @param parent
       */
-  ExtensionManager(QObject *a_parent_ptr = 0);
+  extension_manager(QObject *a_parent_ptr = 0);
   /**
       * @brief
       *
       */
-  virtual ~ExtensionManager();
+  virtual ~extension_manager();
   /**
       * @brief
       *
@@ -59,18 +57,18 @@ public:
       * @param libPrefix
       * @return ExtensionManager
       */
-  static ExtensionManager *instance(const QString &a_desktopPrefix,
-                                    const QString &a_prefix);
+  static extension_manager *instance(const QString &a_desktopPrefix,
+                                     const QString &a_prefix);
 
-  static ExtensionManager *init(const QString &a_desktopPrefix,
-                                const QString &a_prefix);
+  static extension_manager *init(const QString &a_desktopPrefix,
+                                 const QString &a_prefix);
 
   /**
       * @brief
       *
       * @return ExtensionManager
       */
-  static ExtensionManager *instance();
+  static extension_manager *instance();
 
   static void destroy_instance();
   /**
@@ -93,14 +91,14 @@ public:
       * @param name
       * @return ControllerPtr
       */
-  ViewControllerPtr controller(const QString &a_name);
+  desktop_controller_ref controller(const QString &a_name);
   /**
       * @brief
       *
       * @param name
       * @return DesktopActivityPtr
       */
-  CherryKit::DesktopActivityPtr activity(const QString &a_name);
+  cherry_kit::desktop_dialog_ref activity(const QString &a_name);
   /**
       * @brief
       *
@@ -166,7 +164,7 @@ private:
 #ifdef Q_OS_WIN
   static ExtensionManager *mInstance;
 #else
-  static DECL_UI_KIT_EXPORT ExtensionManager *mInstance; /**< TODO */
+  static DECL_UI_KIT_EXPORT extension_manager *mInstance; /**< TODO */
 #endif
 };
 } // namespace PlexDesk

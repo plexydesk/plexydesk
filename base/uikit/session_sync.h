@@ -23,12 +23,12 @@
 #include <QVariant>
 #include <view_controller.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT SessionSync {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT session_sync {
 public:
-  SessionSync(const std::string &a_session_name,
-              const QVariantMap &a_data = QVariantMap());
-  virtual ~SessionSync() {}
+  session_sync(const std::string &a_session_name,
+               const QVariantMap &a_data = QVariantMap());
+  virtual ~session_sync() {}
 
   virtual void session_init();
 
@@ -45,8 +45,8 @@ public:
 
   virtual void update_session();
 
-  virtual void bind_to_window(CherryKit::Window *a_window);
-  virtual void unbind_window(const Window *a_window);
+  virtual void bind_to_window(cherry_kit::window *a_window);
+  virtual void unbind_window(const window *a_window);
 
   virtual void delete_session_data(const std::string &a_session_name,
                                    const std::string &a_object_name,

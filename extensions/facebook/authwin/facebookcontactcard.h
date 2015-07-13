@@ -1,7 +1,6 @@
 #ifndef FACEBOOKCONTACTCARD_H
 #define FACEBOOKCONTACTCARD_H
 
-#include <plexy.h>
 #include <desktopwidget.h>
 #include <datasource.h>
 

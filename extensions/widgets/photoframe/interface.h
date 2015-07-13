@@ -19,17 +19,15 @@
 #ifndef IMAGE_INTERFACEH
 #define IMAGE_INTERFACEH
 
-#include <plexy.h>
-
 #include <controllerplugininterface.h>
 
-class Interface : public QObject, public CherryKit::ControllerPluginInterface {
+class Interface : public QObject, public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
-  Q_INTERFACES(CherryKit::ControllerPluginInterface)
+  Q_INTERFACES(cherry_kit::desktop_plugin_interface)
   Q_PLUGIN_METADATA(IID "org.qt-project.foo")
 
 public:
-  QSharedPointer<CherryKit::ViewController> controller();
+  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
 };
 
 #endif

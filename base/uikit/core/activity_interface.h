@@ -21,18 +21,18 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-class DesktopActivity;
+class desktop_dialog;
 
-class DECL_UI_KIT_EXPORT ActivityInterface {
+class DECL_UI_KIT_EXPORT dialog_plugin_interface {
 public:
-  explicit ActivityInterface() {}
+  explicit dialog_plugin_interface() {}
 
-  virtual QSharedPointer<CherryKit::DesktopActivity> activity() = 0;
+  virtual QSharedPointer<cherry_kit::desktop_dialog> activity() = 0;
 };
 } // namespace PlexyDesk
 
-Q_DECLARE_INTERFACE(CherryKit::ActivityInterface,
+Q_DECLARE_INTERFACE(cherry_kit::dialog_plugin_interface,
                     "org.plexydesk.ActivityInterface")
 #endif // ACTIVITY_INTERFACE_H

@@ -17,7 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 #include "plugin.h"
-#include <plexy.h>
+
 #include <config.h>
 #include <QtCore>
 #include <QtGui>

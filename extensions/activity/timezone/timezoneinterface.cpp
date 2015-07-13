@@ -21,9 +21,9 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> TimeZoneInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new TimeZoneActivity(),
+QSharedPointer<cherry_kit::desktop_dialog> TimeZoneInterface::activity() {
+  QSharedPointer<cherry_kit::desktop_dialog> obj =
+      QSharedPointer<cherry_kit::desktop_dialog>(new timezone_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;

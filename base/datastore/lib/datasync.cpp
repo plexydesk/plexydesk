@@ -35,7 +35,8 @@ public:
   std::string m_app_name;
 
   std::vector<FoundFunc> m_on_object_found_handler_list;
-  std::vector<std::function<void(const sync_object &)> > m_on_saved_handler_list;
+  std::vector<std::function<void(const sync_object &)> >
+  m_on_saved_handler_list;
 };
 
 data_sync::data_sync(const std::string &a_app_name)
@@ -55,7 +56,8 @@ void data_sync::set_sync_engine(sync_engine_interface *a_iface) {
 
 void data_sync::add_object(const sync_object &a_obj) {
   if (m_priv->m_engine) {
-    m_priv->m_engine->on_insert_complete([this](const sync_object &a_saved_obj) {
+    m_priv->m_engine->on_insert_complete([this](
+        const sync_object &a_saved_obj) {
       std::for_each(m_priv->m_on_saved_handler_list.begin(),
                     m_priv->m_on_saved_handler_list.end(),
                     [&](std::function<void(const sync_object &)> a_func) {
@@ -74,15 +76,15 @@ void data_sync::save_object(const sync_object &a_obj) {
 }
 
 void data_sync::remove_object(const std::string &a_object_name,
-                             const std::string &a_key,
-                             const std::string &a_value) {
+                              const std::string &a_key,
+                              const std::string &a_value) {
   if (m_priv->m_engine) {
     m_priv->m_engine->delete_request(a_object_name, a_key, a_value);
   }
 }
 
 void data_sync::find(const std::string &a_object_name,
-                    const std::string &a_attrib, const std::string &a_value) {
+                     const std::string &a_attrib, const std::string &a_value) {
   if (m_priv->m_engine) {
 
     m_priv->m_engine->on_search_complete([this](cherry::sync_object &a_obj,

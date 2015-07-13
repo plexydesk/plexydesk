@@ -20,20 +20,19 @@
 #define TAKENOTE_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 #include <desktopactivity.h>
 #include <window.h>
 
-class TakeNoteActivity : public CherryKit::DesktopActivity {
+class note_dialog : public cherry_kit::desktop_dialog {
   Q_OBJECT
 
 public:
-  TakeNoteActivity(QGraphicsObject *object = 0);
+  note_dialog(QGraphicsObject *object = 0);
 
-  virtual ~TakeNoteActivity();
+  virtual ~note_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
@@ -42,12 +41,12 @@ public:
 
   QVariantMap result() const;
 
-  CherryKit::Window *window() const;
+  cherry_kit::window *activity_window() const;
   void cleanup();
 
 private
 Q_SLOTS:
-  void onWidgetClosed(CherryKit::Widget *widget);
+  void onWidgetClosed(cherry_kit::widget *widget);
 
   void onHideAnimationFinished();
 
@@ -55,7 +54,7 @@ Q_SLOTS:
 
 private:
   class PrivateTakeNote;
-  PrivateTakeNote *const o_desktop_activity;
+  PrivateTakeNote *const o_desktop_dialog;
 };
 
 #endif

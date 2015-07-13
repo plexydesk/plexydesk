@@ -28,7 +28,7 @@ public:
 };
 
 TimerData::TimerData(QObject *object)
-    : CherryKit::DataSource(object), o_data_soure(new Private) {
+    : cherry_kit::data_source(object), o_data_soure(new Private) {
   startTimer(1000);
 }
 

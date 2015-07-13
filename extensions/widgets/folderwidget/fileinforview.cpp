@@ -48,31 +48,31 @@ public:
   QGraphicsGridLayout *mGridLayout;
 
   // action buttons.
-  CherryKit::Widget *mLayoutBase;
-  CherryKit::Button *mDeleteButton;
-  CherryKit::Button *mRenameButton;
-  CherryKit::WindowButton *mWindowButton;
+  cherry_kit::Widget *mLayoutBase;
+  cherry_kit::Button *mDeleteButton;
+  cherry_kit::Button *mRenameButton;
+  cherry_kit::WindowButton *mWindowButton;
   // UI::LineEdit *mRnameField;
   QLineEdit *mLineEdit;
   QGraphicsProxyWidget *mLineEditProxy;
-  CherryKit::Style *mStyle;
+  cherry_kit::Style *mStyle;
 };
 
 FileInforView::FileInforView(Widget *parent)
-    : CherryKit::Widget(parent), d(new PrivateFileInforView) {
+    : cherry_kit::Widget(parent), d(new PrivateFileInforView) {
   this->setFlag(QGraphicsItem::ItemIsMovable, false);
-  this->set_widget_flag(CherryKit::Widget::kRenderDropShadow, false);
+  this->set_widget_flag(cherry_kit::Widget::kRenderDropShadow, false);
 
   d->mSlideAnimation = new QPropertyAnimation(this, "pos");
   d->mSlideAnimation->setDuration(500);
   d->mSlideAnimation->setEndValue(QPointF(0.0, 0.0));
   d->mSlideAnimation->setEasingCurve(QEasingCurve::InCirc);
 
-  d->mLayoutBase = new CherryKit::Widget(this);
+  d->mLayoutBase = new cherry_kit::Widget(this);
   d->mGridLayout = new QGraphicsGridLayout(d->mLayoutBase);
 
   /* Window button */
-  d->mWindowButton = new CherryKit::WindowButton(this);
+  d->mWindowButton = new cherry_kit::WindowButton(this);
   // d->mWindowButton->setPos(rect.width() -
   // (d->mWindowButton->boundingRect().width() + 10.0), 10.0);
   d->mWindowButton->show();
@@ -80,13 +80,13 @@ FileInforView::FileInforView(Widget *parent)
           SLOT(onCloseButtonClicked()));
 
   /* Delete Button */
-  d->mDeleteButton = new CherryKit::Button(d->mLayoutBase);
+  d->mDeleteButton = new cherry_kit::Button(d->mLayoutBase);
   d->mDeleteButton->set_label(tr("Trash"));
   d->mDeleteButton->set_size(QSizeF(100, 25));
   d->mGridLayout->addItem(d->mDeleteButton, 0, 0);
 
   /* Rename Button */
-  d->mRenameButton = new CherryKit::Button(d->mLayoutBase);
+  d->mRenameButton = new cherry_kit::Button(d->mLayoutBase);
   d->mRenameButton->set_label(tr("Rename"));
   d->mRenameButton->set_size(QSizeF(100, 25));
   d->mGridLayout->addItem(d->mRenameButton, 0, 1);
@@ -153,7 +153,7 @@ void FileInforView::onCloseButtonClicked() { push(); }
 void FileInforView::paint_view(QPainter *painter, const QRectF &rect) {
   painter->fillRect(rect, QColor(236, 236, 236));
 
-  CherryKit::StyleFeatures feature;
+  cherry_kit::StyleFeatures feature;
   feature.geometry = QRectF(rect.topRight().x(), rect.topRight().y(),
                             rect.topLeft().x(), rect.topLeft().y());
 

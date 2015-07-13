@@ -24,11 +24,11 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT ProgressBar : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT ProgressBar : public widget {
   Q_OBJECT
 public:
-  explicit ProgressBar(Widget *a_parent_ptr = 0);
+  explicit ProgressBar(widget *a_parent_ptr = 0);
   virtual ~ProgressBar();
 
   virtual void set_label(const QString &a_txt);

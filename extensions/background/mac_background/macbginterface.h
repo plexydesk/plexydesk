@@ -19,7 +19,6 @@
 #ifndef PLEXY_MAC_BACKDROP_I
 #define PLEXY_MAC_BACKDROP_I
 
-#include <plexy.h>
 #include <extensionmanager.h>
 #include <abstractplugininterface.h>
 #include <controllerplugininterface.h>

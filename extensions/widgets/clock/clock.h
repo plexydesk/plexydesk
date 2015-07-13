@@ -19,8 +19,6 @@
 #ifndef PLEXY_WIDGET_CLOCK_H
 #define PLEXY_WIDGET_CLOCK_H
 
-#include <plexy.h>
-
 #include <functional>
 
 #include <view_controller.h>
@@ -28,7 +26,7 @@
 #include <QTimer>
 #include "clockwidget.h"
 
-class Clock : public CherryKit::ViewController {
+class Clock : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
@@ -41,9 +39,9 @@ public:
   void session_data_available(const cherry::sync_object &a_session_root);
   virtual void submit_session_data(cherry::sync_object *a_obj);
 
-  bool remove_widget(CherryKit::Widget *widget);
+  bool remove_widget(cherry_kit::widget *widget);
 
-  CherryKit::ActionList actions() const;
+  cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;

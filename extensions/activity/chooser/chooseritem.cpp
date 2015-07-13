@@ -20,7 +20,7 @@ public:
   ~PrivateChooserItem() {}
 
   // UI::Button *mOptButton;
-  CherryKit::Widget *mLayoutBase;
+  cherry_kit::Widget *mLayoutBase;
   QGraphicsLinearLayout *mLayout;
   QGraphicsGridLayout *mGridLayout;
   QRectF mBoundingRect;
@@ -29,8 +29,8 @@ public:
   // QPixmap mIconImage;
   bool mIsSelected;
 
-  CherryKit::Label *mLabelView;
-  CherryKit::ImageView *mImageView;
+  cherry_kit::Label *mLabelView;
+  cherry_kit::ImageView *mImageView;
 
   ItemLayout mType;
 
@@ -38,19 +38,19 @@ public:
 };
 
 GridIcon::GridIcon(const QRectF &rect, ItemLayout type, QGraphicsItem *parent)
-    : CherryKit::TableViewItem(rect, parent), d(new PrivateChooserItem) {
+    : cherry_kit::TableViewItem(rect, parent), d(new PrivateChooserItem) {
   d->mBoundingRect = rect;
   d->mIsSelected = false;
   d->mType = type;
   // this->setCacheMode(DeviceCoordinateCache);
 
-  d->mLayoutBase = new CherryKit::Widget();
+  d->mLayoutBase = new cherry_kit::Widget();
   d->mLayout = new QGraphicsLinearLayout(d->mLayoutBase);
 
-  d->mImageView = new CherryKit::ImageView(d->mLayoutBase);
-  d->mImageView->set_pixmap(CherryKit::ResourceManager::instance()->drawable(
+  d->mImageView = new cherry_kit::ImageView(d->mLayoutBase);
+  d->mImageView->set_pixmap(cherry_kit::ResourceManager::instance()->drawable(
       "setup-wizard.png", "hdpi"));
-  d->mLabelView = new CherryKit::Label(d->mLayoutBase);
+  d->mLabelView = new cherry_kit::Label(d->mLayoutBase);
   connect(d->mImageView, SIGNAL(clicked()), this, SLOT(onClicked()));
   connect(d->mLabelView, SIGNAL(clicked()), this, SLOT(onClicked()));
 

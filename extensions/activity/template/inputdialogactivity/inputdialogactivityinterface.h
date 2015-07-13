@@ -20,7 +20,7 @@
 #define INPUTDIALOGACTIVITY_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <activityinterface.h>
 #include <desktopactivity.h>
 

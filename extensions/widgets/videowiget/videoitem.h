@@ -21,7 +21,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <plexy.h>
+
 #include <desktopwidget.h>
 #include "vplayer.h"
 

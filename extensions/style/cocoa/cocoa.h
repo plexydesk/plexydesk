@@ -20,23 +20,22 @@
 #define COCOA_ACTIVITY_H
 
 #include <QtCore>
-#include <plexy.h>
 
 #include <datasource.h>
 #include <QtNetwork>
 #include <style.h>
 #include <resource_manager.h>
 
-using namespace CherryKit;
+using namespace cherry_kit;
 
-class CocoaStyle : public CherryKit::Style {
+class CocoaStyle : public cherry_kit::style {
 public:
   CocoaStyle();
 
   virtual ~CocoaStyle();
 
-  virtual void draw(const QString &type, const StyleFeatures &options,
-                    QPainter *painter, const CherryKit::Widget *aWidget = 0);
+  virtual void draw(const QString &type, const style_data &options,
+                    QPainter *painter, const cherry_kit::widget *aWidget = 0);
   void load_default_widget_style_properties();
 
   void draw_timer_marker(QRectF rect, QTransform _xform_hour, QPainter *p,
@@ -56,27 +55,27 @@ protected:
 private:
   class PrivateCocoa;
   PrivateCocoa *const d;
-  void draw_push_button(const StyleFeatures &features, QPainter *painter);
-  void draw_window_button(const StyleFeatures &features, QPainter *painter);
-  void draw_window_frame(const StyleFeatures &features, QPainter *a_ctx);
+  void draw_push_button(const style_data &features, QPainter *painter);
+  void draw_window_button(const style_data &features, QPainter *painter);
+  void draw_window_frame(const style_data &features, QPainter *a_ctx);
   void
   draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor, float angle,
-                   CherryKit::ResourceManager::ColorName a_clock_hand_color,
+                   cherry_kit::resource_manager::ColorName a_clock_hand_color,
                    int a_thikness);
-  void draw_clock_surface(const StyleFeatures &features, QPainter *painter);
-  void draw_clock_surface_to_buffer(const StyleFeatures &features,
+  void draw_clock_surface(const style_data &features, QPainter *painter);
+  void draw_clock_surface_to_buffer(const style_data &features,
                                     QPainter *a_ctx);
 
-  void draw_knob(const StyleFeatures &features, QPainter *a_ctx);
-  void draw_line_edit(const StyleFeatures &features, QPainter *painter);
-  void draw_text_editor(const StyleFeatures &features, const QString &text,
+  void draw_knob(const style_data &features, QPainter *a_ctx);
+  void draw_line_edit(const style_data &features, QPainter *painter);
+  void draw_text_editor(const style_data &features, const QString &text,
                         QPainter *a_ctx);
-  void drawSeperatorLine(const StyleFeatures &features, QPainter *a_ctx);
-  void draw_progress_bar(const StyleFeatures &features, QPainter *a_ctx);
-  void drawVListItem(const StyleFeatures &features, QPainter *painter);
-  void draw_image_button(const StyleFeatures &features, QPainter *a_ctx);
+  void drawSeperatorLine(const style_data &features, QPainter *a_ctx);
+  void draw_progress_bar(const style_data &features, QPainter *a_ctx);
+  void drawVListItem(const style_data &features, QPainter *painter);
+  void draw_image_button(const style_data &features, QPainter *a_ctx);
 
-  void draw_label(const StyleFeatures &a_features, QPainter *a_ctx);
+  void draw_label(const style_data &a_features, QPainter *a_ctx);
 };
 
 #endif

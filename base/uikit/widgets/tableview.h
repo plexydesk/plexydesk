@@ -21,8 +21,6 @@
 #ifndef PLEXYDESKTABLEVIEW_H
 #define PLEXYDESKTABLEVIEW_H
 
-#include <plexy.h>
-
 #include <QObject>
 
 #include <widget.h>
@@ -30,10 +28,10 @@
 
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 class TableModel;
 
-class DECL_UI_KIT_EXPORT TableView : public Widget {
+class DECL_UI_KIT_EXPORT TableView : public widget {
   Q_OBJECT
 public:
   TableView(QGraphicsObject *a_parent_ptr = 0);
@@ -58,7 +56,7 @@ public:
 private
 Q_SLOTS:
   virtual void on_item_click(TableViewItem *a_component_ptr);
-  virtual void on_add_viewItem(CherryKit::TableViewItem *a_item_ptr);
+  virtual void on_add_viewItem(cherry_kit::TableViewItem *a_item_ptr);
   virtual void on_clear();
 Q_SIGNALS:
   void activated(TableViewItem *a_component_ptr);

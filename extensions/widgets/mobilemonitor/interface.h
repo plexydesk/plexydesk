@@ -19,8 +19,6 @@
 #ifndef IMAGE_INTERFACEH
 #define IMAGE_INTERFACEH
 
-#include <plexy.h>
-
 #include <controllerplugininterface.h>
 
 class MobileMonInterface : public QObject,

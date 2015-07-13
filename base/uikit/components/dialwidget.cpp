@@ -26,7 +26,7 @@
 
 #define PI 3.14159258
 
-namespace CherryKit {
+namespace cherry_kit {
 typedef std::function<void(int)> on_dial_callback_func;
 
 class DialWidget::PrivateDialWidget {
@@ -51,11 +51,11 @@ public:
   std::vector<on_dial_callback_func> m_on_dial_callback_list;
 };
 
-DialWidget::DialWidget(Widget *parent)
-    : CherryKit::Widget(parent), o_dial_widget(new PrivateDialWidget) {
-  set_widget_flag(CherryKit::Widget::kRenderBackground, false);
-  set_widget_flag(CherryKit::Widget::kConvertToWindowType, false);
-  set_widget_flag(CherryKit::Widget::kRenderDropShadow, false);
+DialWidget::DialWidget(widget *parent)
+    : cherry_kit::widget(parent), o_dial_widget(new PrivateDialWidget) {
+  set_widget_flag(cherry_kit::widget::kRenderBackground, false);
+  set_widget_flag(cherry_kit::widget::kConvertToWindowType, false);
+  set_widget_flag(cherry_kit::widget::kRenderDropShadow, false);
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -73,9 +73,13 @@ void DialWidget::set_maximum_dial_value(float maxValue) {
   o_dial_widget->mMaxValue = maxValue;
 }
 
-float DialWidget::maximum_dial_value() const { return o_dial_widget->mMaxValue; }
+float DialWidget::maximum_dial_value() const {
+  return o_dial_widget->mMaxValue;
+}
 
-float DialWidget::current_dial_value() const { return o_dial_widget->mProgressValue; }
+float DialWidget::current_dial_value() const {
+  return o_dial_widget->mProgressValue;
+}
 
 void DialWidget::reset() {
   o_dial_widget->mAngle = 0;
@@ -202,21 +206,21 @@ void DialWidget::paint_view(QPainter *painter, const QRectF &rect) {
   if (o_dial_widget->m_is_set)
     o_dial_widget->mProgressValue = angle_percent * o_dial_widget->mMaxValue;
 
-  StyleFeatures feature;
+  style_data feature;
 
   feature.geometry = r;
-  feature.render_state = StyleFeatures::kRenderElement;
+  feature.render_state = style_data::kRenderElement;
   if (o_dial_widget->m_is_set)
-    feature.render_state = StyleFeatures::kRenderRaised;
+    feature.render_state = style_data::kRenderRaised;
   if (o_dial_widget->m_is_pressed)
-    feature.render_state = StyleFeatures::kRenderPressed;
+    feature.render_state = style_data::kRenderPressed;
 
   feature.attributes["angle"] = angle_percent;
   feature.attributes["max_value"] = o_dial_widget->mMaxValue;
   feature.text_data = QString("%1").arg(o_dial_widget->mProgressValue);
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("knob", feature, painter);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw("knob", feature, painter);
   }
 }
 }

@@ -23,7 +23,6 @@
 #include <QPainter>
 #include <QPixmap>
 
-#include <plexy.h>
 #include <backdropinterface.h>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

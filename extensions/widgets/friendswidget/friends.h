@@ -39,8 +39,6 @@
 #ifndef PLEXY_WIDGET_FRIENDS_H
 #define PLEXY_WIDGET_FRIENDS_H
 
-#include <plexy.h>
-
 #include <QtCore>
 #include <abstractplugininterface.h>
 

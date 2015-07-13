@@ -3,7 +3,7 @@
 
 #include <tableviewcellinterface.h>
 
-using namespace CherryKit;
+using namespace cherry_kit;
 
 class ChooserActionDelegate : public TableModel {
   Q_OBJECT

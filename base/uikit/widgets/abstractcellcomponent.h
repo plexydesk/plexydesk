@@ -24,7 +24,7 @@
 #include <QGraphicsItem>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class DECL_UI_KIT_EXPORT TableViewItem : public QGraphicsObject,
                                          public QGraphicsLayoutItem {

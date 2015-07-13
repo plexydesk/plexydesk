@@ -33,11 +33,12 @@ public:
   PrivateDate() {}
   ~PrivateDate() {}
 
-  CherryKit::ActionList m_supported_action_list;
+  cherry_kit::ActionList m_supported_action_list;
 };
 
 DateControllerImpl::DateControllerImpl(QObject *object)
-    : CherryKit::ViewController(object), o_view_controller(new PrivateDate) {}
+    : cherry_kit::desktop_controller_interface(object),
+      o_view_controller(new PrivateDate) {}
 
 DateControllerImpl::~DateControllerImpl() { delete o_view_controller; }
 
@@ -53,11 +54,11 @@ void DateControllerImpl::init() {
 
 void DateControllerImpl::session_data_available(
     const cherry::sync_object &a_session_root) {
-  revoke_previous_session("Calendar",
-                          [this](CherryKit::ViewController *a_controller,
-                                 CherryKit::SessionSync *a_session) {
-    create_ui_calendar_ui(a_session);
-  });
+  revoke_previous_session(
+      "Calendar", [this](cherry_kit::desktop_controller_interface *a_controller,
+                         cherry_kit::session_sync *a_session) {
+        create_ui_calendar_ui(a_session);
+      });
 }
 
 void DateControllerImpl::submit_session_data(cherry::sync_object *a_obj) {
@@ -66,11 +67,11 @@ void DateControllerImpl::submit_session_data(cherry::sync_object *a_obj) {
 
 void DateControllerImpl::set_view_rect(const QRectF &a_rect) {}
 
-bool DateControllerImpl::remove_widget(CherryKit::Widget *a_widget_ptr) {
+bool DateControllerImpl::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
 
-CherryKit::ActionList DateControllerImpl::actions() const {
+cherry_kit::ActionList DateControllerImpl::actions() const {
   return o_view_controller->m_supported_action_list;
 }
 
@@ -92,8 +93,8 @@ void DateControllerImpl::request_action(const QString &a_name,
         QString::fromStdString(session_database_name("calendar"));
 
     start_session("Calendar", session_args, false,
-                  [this](CherryKit::ViewController *a_controller,
-                         CherryKit::SessionSync *a_session) {
+                  [this](cherry_kit::desktop_controller_interface *a_controller,
+                         cherry_kit::session_sync *a_session) {
       create_ui_calendar_ui(a_session);
     });
   }
@@ -101,20 +102,20 @@ void DateControllerImpl::request_action(const QString &a_name,
 
 QString DateControllerImpl::icon() const { return QString(); }
 
-void DateControllerImpl::add_action_button(CherryKit::HybridLayout *ui,
+void DateControllerImpl::add_action_button(cherry_kit::fixed_layout *ui,
                                            int a_row, int a_col,
                                            const std::string &a_label,
                                            const std::string &a_icon) {
-  CherryKit::WidgetProperties ui_data;
+  cherry_kit::widget_properties_t ui_data;
   ui_data["label"] = a_label;
   ui_data["icon"] = "actions/" + a_icon + ".png";
   ui->add_widget(a_row, a_col, "image_button", ui_data);
 }
 
 void
-DateControllerImpl::create_ui_calendar_ui(CherryKit::SessionSync *a_session) {
-  CherryKit::Window *window = new CherryKit::Window();
-  CherryKit::HybridLayout *ui = new CherryKit::HybridLayout(window);
+DateControllerImpl::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
+  cherry_kit::window *window = new cherry_kit::window();
+  cherry_kit::fixed_layout *ui = new cherry_kit::fixed_layout(window);
 
   ui->set_content_margin(10, 10, 10, 10);
   ui->set_geometry(0, 0, 360, 340);
@@ -124,7 +125,7 @@ DateControllerImpl::create_ui_calendar_ui(CherryKit::SessionSync *a_session) {
   ui->set_row_height(0, "95%");
   ui->set_row_height(1, "5%");
 
-  CherryKit::WidgetProperties ui_data;
+  cherry_kit::widget_properties_t ui_data;
   ui_data["text"] + "";
 
   ui->add_widget(0, 0, "calendar", ui_data);
@@ -137,7 +138,7 @@ DateControllerImpl::create_ui_calendar_ui(CherryKit::SessionSync *a_session) {
 
   a_session->bind_to_window(window);
 
-  window->on_window_discarded([this](CherryKit::Window *aWindow) {
+  window->on_window_discarded([this](cherry_kit::window *aWindow) {
     delete aWindow;
   });
 

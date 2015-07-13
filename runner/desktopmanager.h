@@ -20,13 +20,12 @@
 #ifndef DESKTOPMANAGER_H
 #define DESKTOPMANAGER_H
 
-#include <plexy.h>
 #include <workspace.h>
 #include <view_controller.h>
 
-using namespace CherryKit;
+using namespace cherry_kit;
 
-class DesktopManager : public CherryKit::WorkSpace {
+class DesktopManager : public cherry_kit::workspace {
 public:
   explicit DesktopManager(QWidget *a_parent_ptr = 0);
   virtual ~DesktopManager();

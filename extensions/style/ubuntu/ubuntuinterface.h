@@ -20,7 +20,7 @@
 #define UBUNTU_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <widgetstyleinterface.h>
 
 class ubuntuInterface : public QObject, public PlexyDesk::WidgetStyleInterface {

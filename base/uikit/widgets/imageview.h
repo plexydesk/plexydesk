@@ -25,11 +25,11 @@
 #include <QGraphicsLayoutItem>
 #include <plexydesk_ui_exports.h>
 
-namespace CherryKit {
-class DECL_UI_KIT_EXPORT ImageView : public Widget {
+namespace cherry_kit {
+class DECL_UI_KIT_EXPORT ImageView : public widget {
   Q_OBJECT
 public:
-  explicit ImageView(Widget *a_parent_ptr = 0);
+  explicit ImageView(widget *a_parent_ptr = 0);
   virtual ~ImageView();
 
   virtual void set_size(const QSizeF &a_size);

@@ -4,7 +4,7 @@
 #include <scrollwidget.h>
 #include "folderitem.h"
 
-class IconWidgetView : public CherryKit::Widget {
+class IconWidgetView : public cherry_kit::Widget {
   Q_OBJECT
 public:
   explicit IconWidgetView(Widget *a_parent_ptr = 0);

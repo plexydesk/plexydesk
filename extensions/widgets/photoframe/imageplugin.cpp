@@ -60,7 +60,7 @@ void PhotoFrameController::revoke_session(const QVariantMap &args) {
   }
 
   foreach(const QString & str, photoList) {
-    CherryKit::Window *window = new CherryKit::Window();
+    cherry_kit::window *window = new cherry_kit::window();
     PhotoWidget *photoWidget = new PhotoWidget();
     window->set_window_content(photoWidget);
 
@@ -89,7 +89,7 @@ void PhotoFrameController::session_data_available(
 
 void PhotoFrameController::submit_session_data(cherry::sync_object *a_obj) {}
 
-void PhotoFrameController::handle_drop_event(CherryKit::Widget *widget,
+void PhotoFrameController::handle_drop_event(cherry_kit::widget *widget,
                                              QDropEvent *event) {
   if (event->mimeData()->urls().count() >= 0) {
     const QString droppedFile =
@@ -109,7 +109,7 @@ void PhotoFrameController::handle_drop_event(CherryKit::Widget *widget,
       }
 
       if (viewport()) {
-        CherryKit::Space *view = viewport();
+        cherry_kit::space *view = viewport();
         if (view) {
           view->update_session_value(controller_name(), "photos",
                                      m_current_url_list.join(","));
@@ -127,7 +127,7 @@ void PhotoFrameController::set_view_rect(const QRectF &rect) {
   }
 }
 
-bool PhotoFrameController::remove_widget(CherryKit::Widget *widget) {
+bool PhotoFrameController::remove_widget(cherry_kit::widget *widget) {
   if (!widget) {
     return 1;
   }
@@ -158,14 +158,14 @@ bool PhotoFrameController::remove_widget(CherryKit::Widget *widget) {
   return 1;
 }
 
-CherryKit::ActionList PhotoFrameController::actions() const {
+cherry_kit::ActionList PhotoFrameController::actions() const {
   return m_supported_action_list;
 }
 
 void PhotoFrameController::request_action(const QString &actionName,
                                           const QVariantMap &args) {
   if (actionName == tr("Photo")) {
-    CherryKit::Window *window = new CherryKit::Window();
+    cherry_kit::window *window = new cherry_kit::window();
     PhotoWidget *photoWidget = new PhotoWidget();
 
     window->set_window_content(photoWidget);

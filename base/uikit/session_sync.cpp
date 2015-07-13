@@ -24,8 +24,8 @@
 
 #include <QDebug>
 
-namespace CherryKit {
-class SessionSync::PrivSessionSync {
+namespace cherry_kit {
+class session_sync::PrivSessionSync {
 public:
   PrivSessionSync() : m_purged(0) {}
   ~PrivSessionSync() {}
@@ -40,8 +40,8 @@ public:
   std::function<void()> m_on_session_end_func;
 };
 
-SessionSync::SessionSync(const std::string &a_session_name,
-                         const QVariantMap &a_data)
+session_sync::session_sync(const std::string &a_session_name,
+                           const QVariantMap &a_data)
     : d(new PrivSessionSync) {
 
   d->m_session_id = -1;
@@ -49,56 +49,56 @@ SessionSync::SessionSync(const std::string &a_session_name,
   d->m_session_group_name = a_session_name;
 }
 
-void SessionSync::session_init() {
+void session_sync::session_init() {
   if (d->m_on_session_init_func)
     d->m_on_session_init_func();
 }
 
-void SessionSync::set_session_data(const QString &a_key,
-                                   const QVariant &a_data) {
+void session_sync::set_session_data(const QString &a_key,
+                                    const QVariant &a_data) {
   d->m_session_data[a_key] = a_data;
 }
 
-QVariant SessionSync::session_data(const QString &a_key) const {
+QVariant session_sync::session_data(const QString &a_key) const {
   if (!d->m_session_data.contains(a_key)) {
     return QVariant("");
   }
   return d->m_session_data[a_key];
 }
 
-QList<QString> SessionSync::session_keys() const {
+QList<QString> session_sync::session_keys() const {
   return d->m_session_data.keys();
 }
 
-void SessionSync::purge() { d->m_purged = true; }
+void session_sync::purge() { d->m_purged = true; }
 
-bool SessionSync::is_purged() { return d->m_purged; }
+bool session_sync::is_purged() { return d->m_purged; }
 
-void SessionSync::set_session_id(int a_id) { d->m_session_id = a_id; }
+void session_sync::set_session_id(int a_id) { d->m_session_id = a_id; }
 
-int SessionSync::session_id() { return d->m_session_id; }
+int session_sync::session_id() { return d->m_session_id; }
 
-std::string SessionSync::session_id_to_string() const {
+std::string session_sync::session_id_to_string() const {
   return QString("%1").arg(d->m_session_id).toStdString();
 }
 
-void SessionSync::update_session() {
+void session_sync::update_session() {
   if (d->m_on_session_update_func)
     d->m_on_session_update_func();
 }
 
-std::string SessionSync::session_group_key() const {
+std::string session_sync::session_group_key() const {
   std::string key_name = d->m_session_group_name;
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
   return key_name + "_id";
 }
 
-void SessionSync::bind_to_window(CherryKit::Window *a_window) {
+void session_sync::bind_to_window(cherry_kit::window *a_window) {
   if (!a_window)
     return;
 
   /*
-  a_window->on_window_closed([this](const CherryKit::Window *a_window) {
+  a_window->on_window_closed([this](const cherry_kit::Window *a_window) {
       unbind_window(a_window);
   });
   */
@@ -121,7 +121,7 @@ void SessionSync::bind_to_window(CherryKit::Window *a_window) {
   });
 }
 
-void SessionSync::unbind_window(const Window *a_windows) {
+void session_sync::unbind_window(const window *a_windows) {
   std::string db_name(session_data("database_name").toByteArray().data());
 
   purge();
@@ -135,10 +135,10 @@ void SessionSync::unbind_window(const Window *a_windows) {
                       session_id_to_string());
 }
 
-void SessionSync::delete_session_data(const std::string &a_session_name,
-                                      const std::string &a_object_name,
-                                      const std::string &a_object_key,
-                                      const std::string &a_object_value) {
+void session_sync::delete_session_data(const std::string &a_session_name,
+                                       const std::string &a_object_name,
+                                       const std::string &a_object_key,
+                                       const std::string &a_object_value) {
   cherry::data_sync *sync = new cherry::data_sync(a_session_name);
 
   cherry::disk_engine *engine = new cherry::disk_engine();
@@ -149,12 +149,12 @@ void SessionSync::delete_session_data(const std::string &a_session_name,
   delete sync;
 }
 
-void SessionSync::save_session_attribute(const std::string &a_session_name,
-                                         const std::string &a_object_name,
-                                         const std::string &a_object_key,
-                                         const std::string &a_object_value,
-                                         const std::string &a_key,
-                                         const std::string &a_value) {
+void session_sync::save_session_attribute(const std::string &a_session_name,
+                                          const std::string &a_object_name,
+                                          const std::string &a_object_key,
+                                          const std::string &a_object_value,
+                                          const std::string &a_key,
+                                          const std::string &a_value) {
   cherry::data_sync *sync = new cherry::data_sync(a_session_name);
   cherry::disk_engine *engine = new cherry::disk_engine();
   sync->set_sync_engine(engine);
@@ -181,15 +181,15 @@ void SessionSync::save_session_attribute(const std::string &a_session_name,
   delete sync;
 }
 
-void SessionSync::on_session_init(std::function<void()> a_handler) {
+void session_sync::on_session_init(std::function<void()> a_handler) {
   d->m_on_session_init_func = a_handler;
 }
 
-void SessionSync::on_session_update(std::function<void()> a_handler) {
+void session_sync::on_session_update(std::function<void()> a_handler) {
   d->m_on_session_update_func = a_handler;
 }
 
-void SessionSync::on_session_end(std::function<void()> a_handler) {
+void session_sync::on_session_end(std::function<void()> a_handler) {
   d->m_on_session_end_func = a_handler;
 }
 }

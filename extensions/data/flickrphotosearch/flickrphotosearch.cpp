@@ -32,7 +32,8 @@ public:
 };
 
 FlickrPhotoSearchData::FlickrPhotoSearchData(QObject *object)
-    : CherryKit::DataSource(object), o_data_soure(new PrivateFlickrPhotoSearch) {}
+    : cherry_kit::data_source(object),
+      o_data_soure(new PrivateFlickrPhotoSearch) {}
 
 void FlickrPhotoSearchData::init() {}
 

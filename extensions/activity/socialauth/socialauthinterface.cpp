@@ -21,9 +21,9 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::DesktopActivity> SocialAuthInterface::activity() {
-  QSharedPointer<CherryKit::DesktopActivity> obj =
-      QSharedPointer<CherryKit::DesktopActivity>(new SocialAuthActivity(),
+QSharedPointer<cherry_kit::desktop_dialog> SocialAuthInterface::activity() {
+  QSharedPointer<cherry_kit::desktop_dialog> obj =
+      QSharedPointer<cherry_kit::desktop_dialog>(new social_auth_dialog(),
                                                  &QObject::deleteLater);
 
   return obj;

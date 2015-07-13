@@ -9,7 +9,7 @@
 #include <QVariantAnimation>
 #include <resource_manager.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
 class ProgressBar::PrivateProgressBar {
 public:
@@ -26,8 +26,8 @@ public:
   QVariantAnimation *mProgressAnimation;
 };
 
-ProgressBar::ProgressBar(Widget *parent)
-    : Widget(parent), o_progress_bar(new PrivateProgressBar) {
+ProgressBar::ProgressBar(widget *parent)
+    : widget(parent), o_progress_bar(new PrivateProgressBar) {
   o_progress_bar->mMaxValue = 100.0;
   o_progress_bar->mMinValue = 1.0;
   o_progress_bar->mValue = (float)0.01;
@@ -38,13 +38,13 @@ ProgressBar::ProgressBar(Widget *parent)
   o_progress_bar->mProgressAnimation->setEndValue(o_progress_bar->mMaxValue);
 
   set_size(QSize(
-      ResourceManager::style()->attribute("widget", "line_edit_width").toInt(),
-      ResourceManager::style()
+      resource_manager::style()->attribute("widget", "line_edit_width").toInt(),
+      resource_manager::style()
           ->attribute("widget", "line_edit_height")
           .toInt()));
 
-  connect(o_progress_bar->mProgressAnimation, SIGNAL(valueChanged(QVariant)), this,
-          SLOT(valueChanged(QVariant)));
+  connect(o_progress_bar->mProgressAnimation, SIGNAL(valueChanged(QVariant)),
+          this, SLOT(valueChanged(QVariant)));
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
 }
@@ -117,34 +117,34 @@ void ProgressBar::on_value_changed(const QVariant &a_value) {
 }
 
 void ProgressBar::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  Widget::mouseReleaseEvent(a_event_ptr);
+  widget::mouseReleaseEvent(a_event_ptr);
 }
 
 void ProgressBar::paint(QPainter *a_painter_ptr,
                         const QStyleOptionGraphicsItem *a_option_ptr,
                         QWidget *a_widget_ptr) {
   a_painter_ptr->save();
-  StyleFeatures features;
-  features.render_state = StyleFeatures::kRenderBackground;
+  style_data features;
+  features.render_state = style_data::kRenderBackground;
   features.geometry = a_option_ptr->exposedRect;
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("linear_progress_bar", features,
-                                              a_painter_ptr);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw("linear_progress_bar", features,
+                                                a_painter_ptr);
   }
 
   float percentage = (o_progress_bar->mValue / o_progress_bar->mMaxValue) * 100;
   float progressLevel = (a_option_ptr->exposedRect.width() / 100) * percentage;
 
-  StyleFeatures progressFeatures;
+  style_data progressFeatures;
   progressFeatures.geometry =
       QRectF(0.0, 0.0, progressLevel, a_option_ptr->exposedRect.height());
 
-  progressFeatures.render_state = StyleFeatures::kRenderForground;
+  progressFeatures.render_state = style_data::kRenderForground;
 
-  if (CherryKit::ResourceManager::style()) {
-    CherryKit::ResourceManager::style()->draw("linear_progress_bar",
-                                              progressFeatures, a_painter_ptr);
+  if (cherry_kit::resource_manager::style()) {
+    cherry_kit::resource_manager::style()->draw(
+        "linear_progress_bar", progressFeatures, a_painter_ptr);
   }
 
   a_painter_ptr->restore();

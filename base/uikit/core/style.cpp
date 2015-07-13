@@ -20,19 +20,19 @@
 #include <QVariant>
 #include <style.h>
 
-namespace CherryKit {
+namespace cherry_kit {
 
-Style::Style() {}
+style::style() {}
 
-Style::~Style() {}
+style::~style() {}
 
-QVariant Style::attribute(const QString &a_type, const QString &a_name) const {
+QVariant style::attribute(const QString &a_type, const QString &a_name) const {
   return attribute_map(a_type)[a_name];
 }
 
-QString Style::color(const QString &a_element) const {
+QString style::color(const QString &a_element) const {
   return color_scheme_map()[a_element].toString();
 }
 
-float Style::scale_factor() { return 1.0f; }
+float style::scale_factor() { return 1.0f; }
 }

@@ -1,7 +1,6 @@
 #ifndef PLEXY_YOUTUBE_H
 #define PLEXY_YOUTUBE_H
 
-#include <plexy.h>
 #include <controllerinterface.h>
 #include "facebookcontactui.h"
 #include "facebookauthenticationwidget.h"

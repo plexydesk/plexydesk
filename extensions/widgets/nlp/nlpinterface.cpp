@@ -20,10 +20,11 @@
 #include "nlpinterface.h"
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::ViewController> NLPInterface::controller() {
-  QSharedPointer<CherryKit::ViewController> obj =
-      QSharedPointer<CherryKit::ViewController>(new NLPControllerImpl(this),
-                                                &QObject::deleteLater);
+QSharedPointer<cherry_kit::desktop_controller_interface>
+NLPInterface::controller() {
+  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
+      QSharedPointer<cherry_kit::desktop_controller_interface>(
+          new NLPControllerImpl(this), &QObject::deleteLater);
 
   return obj;
 }

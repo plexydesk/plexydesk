@@ -19,8 +19,6 @@
 #ifndef VIDEO_INTERFACEH
 #define VIDEO_INTERFACEH
 
-#include <plexy.h>
-
 #include <QtCore>
 #include <abstractplugininterface.h>
 #include <datainterface.h>

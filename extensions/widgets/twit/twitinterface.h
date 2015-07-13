@@ -1,8 +1,6 @@
 #ifndef PLEXY_YOUTUBE_I
 #define PLEXY_YOUTUBE_I
 
-#include <plexy.h>
-
 #include <abstractplugininterface.h>
 #include <datainterface.h>
 #include <widgetinterface.h>

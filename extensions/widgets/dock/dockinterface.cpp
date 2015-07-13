@@ -21,10 +21,11 @@
 #include <widget.h>
 #include <plexyconfig.h>
 
-QSharedPointer<CherryKit::ViewController> DockInterface::controller() {
-  QSharedPointer<CherryKit::ViewController> obj =
-      QSharedPointer<CherryKit::ViewController>(new DockControllerImpl(0),
-                                                &QObject::deleteLater);
+QSharedPointer<cherry_kit::desktop_controller_interface>
+DockInterface::controller() {
+  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
+      QSharedPointer<cherry_kit::desktop_controller_interface>(
+          new DockControllerImpl(0), &QObject::deleteLater);
 
   return obj;
 }

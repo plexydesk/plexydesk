@@ -20,7 +20,7 @@
 #define TIMER_DATA_I
 
 #include <QtCore>
-#include <plexy.h>
+
 #include <dataplugininterface.h>
 #include <QtNetwork>
 
