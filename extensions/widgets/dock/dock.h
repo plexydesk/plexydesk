@@ -30,7 +30,8 @@
 
 using namespace cherry_kit;
 
-class desktop_panel_controller_impl : public cherry_kit::desktop_controller_interface {
+class desktop_panel_controller_impl
+    : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 
 public:
@@ -88,7 +89,7 @@ protected:
 
 private:
   class PrivateDock;
-  PrivateDock *const o_view_controller;
+  PrivateDock *const o_panel;
 
   cherry_kit::desktop_dialog_ref createActivity(const QString &controller_name,
                                                 const QString &activity,

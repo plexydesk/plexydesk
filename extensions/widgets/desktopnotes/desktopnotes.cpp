@@ -399,7 +399,7 @@ void desktop_task_controller_impl::createReminderUI(
                    window->geometry().height()),
             cherry_kit::space::kCenterOnWindow);
 
-        cherry_kit::desktop_dialog_ref activity = viewport()->create_activity(
+        cherry_kit::desktop_dialog_ref activity = viewport()->open_desktop_dialog(
             "date_dialog", "Date", _activity_window_location,
             QRectF(0, 0, 340, 320.0), QVariantMap());
       }

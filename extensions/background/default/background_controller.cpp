@@ -180,8 +180,8 @@ void BackgroundController::request_action(const QString &actionName,
                o_ctr->m_background_window->geometry().height()),
         cherry_kit::space::kCenterOnWindow);
 
-    cherry_kit::desktop_dialog_ref activity = viewport()->create_activity(
-        "system_wallpapers", "Desktop", qt_activity_window_location,
+    cherry_kit::desktop_dialog_ref activity = viewport()->open_desktop_dialog(
+        "desktop_settings_dialog", "Desktop", qt_activity_window_location,
         dialog_window_geometry, QVariantMap());
 
     activity->on_action_completed([=](const QVariantMap &a_data) {});

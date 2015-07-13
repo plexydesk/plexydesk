@@ -94,7 +94,7 @@ void space::add_controller(const QString &a_name) {
 }
 
 cherry_kit::desktop_dialog_ref
-space::create_activity(const QString &a_activity, const QString &a_title,
+space::open_desktop_dialog(const QString &a_activity, const QString &a_title,
                        const QPointF &a_pos, const QRectF &a_rect,
                        const QVariantMap &a_data_map) {
   cherry_kit::desktop_dialog_ref intent =
@@ -109,10 +109,10 @@ space::create_activity(const QString &a_activity, const QString &a_title,
 
   intent->create_window(a_rect, a_title, QPointF(a_pos.x(), a_pos.y()));
 
-  if (intent->activity_window()) {
-    intent->activity_window()->set_window_title(a_title);
-    intent->activity_window()->set_window_viewport(this);
-    intent->activity_window()->setPos(a_pos);
+  if (intent->dialog_window()) {
+    intent->dialog_window()->set_window_title(a_title);
+    intent->dialog_window()->set_window_viewport(this);
+    intent->dialog_window()->setPos(a_pos);
   }
 
   add_activity(intent);
@@ -149,7 +149,7 @@ void space::update_session_value(const QString &a_controller_name,
 }
 
 void space::add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr) {
-  if (!a_activity_ptr || !a_activity_ptr->activity_window()) {
+  if (!a_activity_ptr || !a_activity_ptr->dialog_window()) {
     return;
   }
 
@@ -157,11 +157,11 @@ void space::add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr) {
     on_activity_finished(a_activity);
   });
 
-  a_activity_ptr->activity_window()->on_window_discarded([=](window *a_window) {
+  a_activity_ptr->dialog_window()->on_window_discarded([=](window *a_window) {
     a_activity_ptr->discard_activity();
   });
 
-  if (a_activity_ptr->activity_window() && o_space->m_native_scene) {
+  if (a_activity_ptr->dialog_window() && o_space->m_native_scene) {
     if (o_space->m_activity_list.contains(a_activity_ptr)) {
       qWarning() << Q_FUNC_INFO << "Space already contains the activity";
       return;
@@ -171,7 +171,7 @@ void space::add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr) {
 
     a_activity_ptr->set_viewport(this);
 
-    insert_window_to_view(a_activity_ptr->activity_window());
+    insert_window_to_view(a_activity_ptr->dialog_window());
   }
 }
 
@@ -622,12 +622,12 @@ void space::setGeometry(const QRectF &a_geometry) {
   }
 
   foreach(desktop_dialog_ref _activity, o_space->m_activity_list) {
-    if (_activity && _activity->activity_window()) {
-      QPointF _activity_pos = _activity->activity_window()->pos();
+    if (_activity && _activity->dialog_window()) {
+      QPointF _activity_pos = _activity->dialog_window()->pos();
 
       if (_activity_pos.y() > a_geometry.height()) {
         _activity_pos.setY(_activity_pos.y() - a_geometry.height());
-        _activity->activity_window()->setPos(_activity_pos);
+        _activity->dialog_window()->setPos(_activity_pos);
       }
     }
   }

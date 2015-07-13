@@ -392,7 +392,7 @@ void NoteWidget::onToolBarAction(const QString &action) {
 
       QRectF window_geometry(window_pos.x(), window_pos.y(), 300, 348);
 
-      d->m_viewport->create_activity(
+      d->m_viewport->open_desktop_dialog(
           "datepickeractivity", tr("Calendar"),
           d->m_viewport->center(window_geometry, window_geometry,
                                 cherry_kit::space::kCenterOnWindow),
