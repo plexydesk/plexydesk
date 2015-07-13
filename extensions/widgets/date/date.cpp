@@ -53,7 +53,7 @@ void date_controller::init() {
 }
 
 void date_controller::session_data_available(
-    const cherry::sync_object &a_session_root) {
+    const cherry_kit::sync_object &a_session_root) {
   revoke_previous_session(
       "Calendar", [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
@@ -61,7 +61,7 @@ void date_controller::session_data_available(
       });
 }
 
-void date_controller::submit_session_data(cherry::sync_object *a_obj) {
+void date_controller::submit_session_data(cherry_kit::sync_object *a_obj) {
   write_session_data("Calendar");
 }
 

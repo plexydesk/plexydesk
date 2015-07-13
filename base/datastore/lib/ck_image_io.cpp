@@ -16,7 +16,7 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "image_io.h"
+#include "ck_image_io.h"
 
 #include <config.h>
 
@@ -28,7 +28,7 @@
 #error "toolkit not set"
 #endif
 
-namespace cherry {
+namespace cherry_kit {
 
 class image_io::private_io_image_impl {
 public:

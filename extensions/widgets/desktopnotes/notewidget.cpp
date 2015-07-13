@@ -14,9 +14,9 @@
 #include <ck_label.h>
 #include <ck_resource_manager.h>
 #include <webservice.h>
-#include <memorysyncengine.h>
-#include <disksyncengine.h>
-#include <syncobject.h>
+#include <ck_memory_sync_engine.h>
+#include <ck_disk_engine.h>
+#include <ck_sync_object.h>
 #include <ck_extension_manager.h>
 #include <ck_icon_button.h>
 

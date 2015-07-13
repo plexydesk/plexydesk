@@ -37,7 +37,7 @@
 #include <ck_button.h>
 #include <ck_dial_view.h>
 #include <ck_item_view.h>
-#include <image_io.h>
+#include <ck_image_io.h>
 
 #include "localwallpapers.h"
 
@@ -195,14 +195,14 @@ void wallpaper_dialog::load_from_system_path() const {
         QString image_full_path = QDir::toNativeSeparators(
             qt_path.absolutePath() + "/" + image_file_name);
 
-        cherry::image_io *ck_image_service = new cherry::image_io(0, 0);
+        cherry_kit::image_io *ck_image_service = new cherry_kit::image_io(0, 0);
 
         ck_image_service->on_ready([&](
-            cherry::image_io::buffer_load_status_t a_status,
-            cherry::image_io *a_image_io) {
-          cherry::io_surface *ck_img_surface_ref = a_image_io->surface();
+            cherry_kit::image_io::buffer_load_status_t a_status,
+            cherry_kit::image_io *a_image_io) {
+          cherry_kit::io_surface *ck_img_surface_ref = a_image_io->surface();
 
-          if (a_status != cherry::image_io::kSuccess || !ck_img_surface_ref) {
+          if (a_status != cherry_kit::image_io::kSuccess || !ck_img_surface_ref) {
             delete a_image_io;
             return;
           }

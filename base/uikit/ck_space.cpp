@@ -4,13 +4,13 @@
 #include <QDebug>
 #include <QDropEvent>
 #include <QGraphicsItem>
-#include <disksyncengine.h>
+#include <ck_disk_engine.h>
 #include <ck_extension_manager.h>
-#include <syncobject.h>
+#include <ck_sync_object.h>
 #include <QGraphicsScene>
 #include <QWeakPointer>
 #include <ck_widget.h>
-#include <datasync.h>
+#include <ck_data_sync.h>
 
 #include "ck_window.h"
 #include "ck_workspace.h"
@@ -122,16 +122,16 @@ space::create_activity(const QString &a_activity, const QString &a_title,
 
 void space::update_session_value(const QString &a_controller_name,
                                  const QString &a_key, const QString &a_value) {
-  cherry::data_sync *sync = new cherry::data_sync(
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      cherry::sync_object obj;
+      cherry_kit::sync_object obj;
       obj.set_name("AppSession");
       obj.set_property("name", o_space->session_controller_name(
                                             a_controller_name).toStdString());
@@ -380,16 +380,16 @@ void space::draw() {
 GraphicsSurface *space::surface() { return &o_space->m_surface; }
 
 void space::save_controller_to_session(const QString &a_controller_name) {
-  cherry::data_sync *sync =
-      new cherry::data_sync(o_space->session_name_of_space().toStdString());
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync =
+      new cherry_kit::data_sync(o_space->session_name_of_space().toStdString());
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
-      cherry::sync_object obj;
+      cherry_kit::sync_object obj;
       obj.set_name("Controller");
       obj.set_property("name", a_controller_name.toStdString());
 
@@ -404,13 +404,13 @@ void space::save_controller_to_session(const QString &a_controller_name) {
 
 void
 space::revoke_controller_session_attributes(const QString &a_controller_name) {
-  cherry::data_sync *sync = new cherry::data_sync(
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
              << a_controller_name;
@@ -447,12 +447,12 @@ void space::PrivateSpace::controller_action_list(const space *space,
 }
 
 void space::PrivateSpace::init_session_registry(space *space) {
-  cherry::data_sync *sync =
-      new cherry::data_sync(session_name_of_space().toStdString());
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync =
+      new cherry_kit::data_sync(session_name_of_space().toStdString());
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       QString _current_controller_name = a_object.property("name").c_str();

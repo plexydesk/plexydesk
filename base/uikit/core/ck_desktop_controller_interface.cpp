@@ -2,8 +2,8 @@
 #include <ck_extension_manager.h>
 #include <QDebug>
 
-#include <datasync.h>
-#include <disksyncengine.h>
+#include <ck_data_sync.h>
+#include <ck_disk_engine.h>
 #include <ck_session_sync.h>
 
 namespace cherry_kit {
@@ -29,17 +29,17 @@ void desktop_controller_interface::revoke_previous_session(
     const std::string &a_session_object_name,
     std::function<void(desktop_controller_interface *, session_sync *)>
         a_callback) {
-  cherry::data_sync *sync =
-      new cherry::data_sync(session_database_name(a_session_object_name));
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync =
+      new cherry_kit::data_sync(session_database_name(a_session_object_name));
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       QVariantMap session_data;
 
-      cherry::ck_string_list prop_list = a_object.property_list();
+      cherry_kit::ck_string_list prop_list = a_object.property_list();
 
       std::for_each(std::begin(prop_list), std::end(prop_list),
                     [&](const std::string &a_prop) {
@@ -74,12 +74,12 @@ void desktop_controller_interface::write_session_data(
     if (session_ref->session_group_key().compare(key_name) != 0)
       return;
 
-    cherry::data_sync *sync = new cherry::data_sync(session_name);
-    cherry::disk_engine *engine = new cherry::disk_engine();
+    cherry_kit::data_sync *sync = new cherry_kit::data_sync(session_name);
+    cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
     sync->set_sync_engine(engine);
 
     session_ref->update_session();
-    cherry::sync_object clock_session_obj;
+    cherry_kit::sync_object clock_session_obj;
 
     clock_session_obj.set_name(a_session_name);
     Q_FOREACH(const QString & a_key, session_ref->session_keys()) {
@@ -88,7 +88,7 @@ void desktop_controller_interface::write_session_data(
           std::string(session_ref->session_data(a_key).toByteArray()));
     }
 
-    sync->on_object_found([&](cherry::sync_object &a_object,
+    sync->on_object_found([&](cherry_kit::sync_object &a_object,
                               const std::string &a_app_name, bool a_found) {
       if (!a_found) {
         sync->add_object(clock_session_obj);

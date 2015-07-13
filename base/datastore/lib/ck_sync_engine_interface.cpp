@@ -16,11 +16,11 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "syncengineinterface.h"
+#include "ck_sync_engine_interface.h"
 
 #include <QDebug>
 
-namespace cherry {
+namespace cherry_kit {
 
 class sync_engine_interface::PrivateSyncEngineIface {
 public:

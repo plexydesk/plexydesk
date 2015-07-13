@@ -56,22 +56,22 @@ ADD_DEFINITIONS(-DPLEXYPREFIX="${CMAKE_INSTALL_PREFIX}"
                )
 
 set(sourceFiles
-    image_io.cpp
-    datasync.cpp
-    syncobject.cpp
-    syncengineinterface.cpp
-    memorysyncengine.cpp
-    disksyncengine.cpp
+    ck_image_io.cpp
+    ck_data_sync.cpp
+    ck_sync_object.cpp
+    ck_sync_engine_interface.cpp
+    ck_memory_sync_engine.cpp
+    ck_disk_engine.cpp
     px_bench_impl.cpp
    )
 
 set(headerFiles
-    image_io.h
-    datasync.h
-    syncobject.h
-    memorysyncengine.h
-    syncengineinterface.h
-    disksyncengine.h
+    ck_image_io.h
+    ck_data_sync.h
+    ck_sync_object.h
+    ck_memory_sync_engine.h
+    ck_sync_engine_interface.h
+    ck_disk_engine.h
     px_bench.h
    )
 

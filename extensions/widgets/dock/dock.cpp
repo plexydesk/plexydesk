@@ -215,9 +215,9 @@ void desktop_panel_controller_impl::init() {
 }
 
 void desktop_panel_controller_impl::session_data_available(
-    const cherry::sync_object &a_sesion_root) {}
+    const cherry_kit::sync_object &a_sesion_root) {}
 
-void desktop_panel_controller_impl::submit_session_data(cherry::sync_object *a_obj) {}
+void desktop_panel_controller_impl::submit_session_data(cherry_kit::sync_object *a_obj) {}
 
 void desktop_panel_controller_impl::set_view_rect(const QRectF &rect) {
   if (!viewport()) {

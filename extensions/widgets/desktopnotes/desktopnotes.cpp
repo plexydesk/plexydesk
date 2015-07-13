@@ -78,7 +78,7 @@ void desktop_task_controller_impl::init() {
 }
 
 void desktop_task_controller_impl::session_data_available(
-    const cherry::sync_object &a_sesion_root) {
+    const cherry_kit::sync_object &a_sesion_root) {
   revoke_previous_session(
       "Notes",
       [this](cherry_kit::desktop_controller_interface *a_controller,
@@ -93,7 +93,7 @@ void desktop_task_controller_impl::session_data_available(
 }
 
 void
-desktop_task_controller_impl::submit_session_data(cherry::sync_object *a_obj) {
+desktop_task_controller_impl::submit_session_data(cherry_kit::sync_object *a_obj) {
   write_session_data("Notes");
   write_session_data("Reminders");
 }

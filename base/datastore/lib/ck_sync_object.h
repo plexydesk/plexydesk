@@ -24,7 +24,7 @@
 #include <string>
 #include <algorithm>
 
-namespace cherry {
+namespace cherry_kit {
 
 class sync_object;
 

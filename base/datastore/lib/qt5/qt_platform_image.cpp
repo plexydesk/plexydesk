@@ -3,7 +3,7 @@
 #include <QImage>
 #include <thread>
 
-namespace cherry {
+namespace cherry_kit {
 
 class image_io::platform_image::private_platform_image {
 public:

@@ -16,19 +16,19 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "memorysyncengine.h"
+#include "ck_memory_sync_engine.h"
 
-namespace cherry {
+namespace cherry_kit {
 
-MemorySyncEngine::MemorySyncEngine(QObject *parent) {}
+memory_sync_engine::memory_sync_engine(QObject *parent) {}
 
-QString MemorySyncEngine::data(const QString &storeName) { return mData; }
+QString memory_sync_engine::data(const QString &storeName) { return mData; }
 
-void MemorySyncEngine::sync(const QString &datastoreName, const QString &data) {
+void memory_sync_engine::sync(const QString &datastoreName, const QString &data) {
   mData = data;
 }
 
-bool MemorySyncEngine::hasLock() {
+bool memory_sync_engine::hasLock() {
   // TODO!
   return false;
 }

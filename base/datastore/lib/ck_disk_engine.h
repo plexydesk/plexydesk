@@ -19,10 +19,10 @@
 #ifndef DISKSYNCENGINE_H
 #define DISKSYNCENGINE_H
 
-#include <syncengineinterface.h>
+#include <ck_sync_engine_interface.h>
 #include <QuetzalDataKitQt_export.h>
 
-namespace cherry {
+namespace cherry_kit {
 
 class QuetzalDataKitQt_EXPORT disk_engine : public sync_engine_interface {
   Q_OBJECT

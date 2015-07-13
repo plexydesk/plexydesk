@@ -16,11 +16,11 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "datasync.h"
+#include "ck_data_sync.h"
 
 #include <QDebug>
 
-namespace cherry {
+namespace cherry_kit {
 typedef std::function<void(sync_object &, const std::string &, bool)> FoundFunc;
 
 class data_sync::Privatedata_sync {
@@ -87,7 +87,7 @@ void data_sync::find(const std::string &a_object_name,
                      const std::string &a_attrib, const std::string &a_value) {
   if (m_priv->m_engine) {
 
-    m_priv->m_engine->on_search_complete([this](cherry::sync_object &a_obj,
+    m_priv->m_engine->on_search_complete([this](cherry_kit::sync_object &a_obj,
                                                 const std::string &a_app_name,
                                                 bool a_found) {
       a_obj.set_data_sync(this);

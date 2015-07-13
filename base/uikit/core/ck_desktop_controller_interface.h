@@ -10,7 +10,7 @@
 #include <ck_space.h>
 #include <plexydesk_ui_exports.h>
 #include <QAction>
-#include <syncobject.h>
+#include <ck_sync_object.h>
 
 class QGraphicsItem;
 class QDropEvent;
@@ -97,8 +97,8 @@ public:
       * @param args
       */
   virtual void
-  session_data_available(const cherry::sync_object &a_root_obj) = 0;
-  virtual void submit_session_data(cherry::sync_object *a_root_obj) = 0;
+  session_data_available(const cherry_kit::sync_object &a_root_obj) = 0;
+  virtual void submit_session_data(cherry_kit::sync_object *a_root_obj) = 0;
 
   void start_session(const std::string &a_session_name,
                      const QVariantMap &a_data, bool a_restore,

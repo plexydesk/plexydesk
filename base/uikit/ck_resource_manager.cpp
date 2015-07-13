@@ -30,8 +30,8 @@
 #include <ck_extension_manager.h>
 #include <ck_config.h>
 
-#include <datasync.h>
-#include <disksyncengine.h>
+#include <ck_data_sync.h>
+#include <ck_disk_engine.h>
 #include <webservice.h>
 
 #include "ck_resource_manager.h"
@@ -177,12 +177,12 @@ void resource_manager::load_default_color_values() {
 }
 
 void resource_manager::set_color_scheme(const std::string &a_name) {
-  cherry::data_sync *sync = new cherry::data_sync("Palette");
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Palette");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       load_default_color_values();

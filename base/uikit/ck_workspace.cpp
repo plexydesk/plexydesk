@@ -9,11 +9,11 @@
 #include <QImage>
 #include <QPainter>
 #include <QGLWidget>
-#include <datasync.h>
+#include <ck_data_sync.h>
 
-#include <disksyncengine.h>
+#include <ck_disk_engine.h>
 #include <ck_icon_button.h>
-#include <syncobject.h>
+#include <ck_sync_object.h>
 
 namespace cherry_kit {
 class workspace::PrivateWorkSpace {
@@ -407,8 +407,8 @@ std::string workspace::workspace_instance_name() {
 }
 
 void workspace::save_space_removal_session_data(const QString &a_space_name) {
-  cherry::data_sync *sync = new cherry::data_sync(workspace_instance_name());
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync(workspace_instance_name());
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
   sync->remove_object("Space", "ref", a_space_name.toStdString());
@@ -531,11 +531,11 @@ void workspace::add_default_space() {
   this->expose_sub_region(_space_geometry);
   p_workspace->m_current_activty_space_id = _space->id();
 
-  cherry::data_sync *sync = new cherry::data_sync(workspace_instance_name());
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync(workspace_instance_name());
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
-  cherry::sync_object obj;
+  cherry_kit::sync_object obj;
   obj.set_name("Space");
   obj.set_property("ref", _space->session_name().toStdString());
   obj.set_property("name", _space->name().toStdString());
@@ -547,12 +547,12 @@ void workspace::add_default_space() {
 }
 
 void workspace::restore_session() {
-  cherry::data_sync *sync = new cherry::data_sync(workspace_instance_name());
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync(workspace_instance_name());
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([&](cherry::sync_object &a_object,
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       qDebug() << Q_FUNC_INFO << "Adding Space ";

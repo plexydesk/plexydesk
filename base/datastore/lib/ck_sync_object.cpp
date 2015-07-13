@@ -16,15 +16,15 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "syncobject.h"
+#include "ck_sync_object.h"
 
 #include <QDebug>
 
-#include <datasync.h>
+#include <ck_data_sync.h>
 
 #include <chrono>
 
-namespace cherry {
+namespace cherry_kit {
 
 class sync_object::Privatesync_object {
 public:

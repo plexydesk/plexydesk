@@ -33,9 +33,9 @@ template_controller::~template_controller() { delete o_view_controller; }
 void template_controller::init() {}
 
 void template_controller::session_data_available(
-    const cherry::sync_object &a_session_root) {}
+    const cherry_kit::sync_object &a_session_root) {}
 
-void template_controller::submit_session_data(cherry::sync_object *a_obj) {}
+void template_controller::submit_session_data(cherry_kit::sync_object *a_obj) {}
 
 void template_controller::set_view_rect(const QRectF &a_rect) {}
 

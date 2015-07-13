@@ -22,11 +22,11 @@
 #include <functional>
 
 #include <QObject>
-#include <syncobject.h>
+#include <ck_sync_object.h>
 #include <QStringList>
 #include <QuetzalDataKitQt_export.h>
 
-namespace cherry {
+namespace cherry_kit {
 
 class QuetzalDataKitQt_EXPORT sync_engine_interface : public QObject {
   Q_OBJECT
