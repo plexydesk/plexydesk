@@ -19,8 +19,8 @@
 
 #include "ck_session_sync.h"
 
-#include <datasync.h>
-#include <disksyncengine.h>
+#include <ck_data_sync.h>
+#include <ck_disk_engine.h>
 
 #include <QDebug>
 
@@ -139,9 +139,9 @@ void session_sync::delete_session_data(const std::string &a_session_name,
                                        const std::string &a_object_name,
                                        const std::string &a_object_key,
                                        const std::string &a_object_value) {
-  cherry::data_sync *sync = new cherry::data_sync(a_session_name);
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync(a_session_name);
 
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
   sync->remove_object(a_object_name, a_object_key, a_object_value);
@@ -155,11 +155,11 @@ void session_sync::save_session_attribute(const std::string &a_session_name,
                                           const std::string &a_object_value,
                                           const std::string &a_key,
                                           const std::string &a_value) {
-  cherry::data_sync *sync = new cherry::data_sync(a_session_name);
-  cherry::disk_engine *engine = new cherry::disk_engine();
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync(a_session_name);
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
-  sync->on_object_found([=](cherry::sync_object &a_object,
+  sync->on_object_found([=](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
     if (a_found) {
       a_object.set_property(a_key, a_value);

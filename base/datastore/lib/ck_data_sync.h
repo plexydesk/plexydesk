@@ -19,11 +19,11 @@
 #ifndef DATASYNC_H
 #define DATASYNC_H
 
-#include <syncengineinterface.h>
-#include <syncobject.h>
+#include <ck_sync_engine_interface.h>
+#include <ck_sync_object.h>
 #include <string>
 
-namespace cherry {
+namespace cherry_kit {
 class QuetzalDataKitQt_EXPORT data_sync {
 public:
   data_sync(const std::string &a_app_name);

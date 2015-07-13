@@ -16,14 +16,14 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "disksyncengine.h"
+#include "ck_disk_engine.h"
 
 #include <QDomDocument>
 #include <QFileSystemWatcher>
 #include <QDebug>
 #include <QDir>
 
-namespace cherry {
+namespace cherry_kit {
 
 class disk_engine::Privatedisk_engine {
 public:
@@ -565,7 +565,7 @@ void disk_engine::find(const std::string &a_object_name,
         QDomElement child_element = child_node.toElement();
 
         if (QString::fromStdString(a_object_name) == child_element.tagName()) {
-          cherry::sync_object obj;
+          cherry_kit::sync_object obj;
           obj.set_name(a_object_name);
 
           QDomNamedNodeMap attrMap = child_node.attributes();

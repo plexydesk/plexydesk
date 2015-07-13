@@ -34,8 +34,8 @@
 // datakit
 #include <ck_window.h>
 #include <ck_clock_view.h>
-#include <datasync.h>
-#include <disksyncengine.h>
+#include <ck_data_sync.h>
+#include <ck_disk_engine.h>
 
 // Qt
 #include <QAction>
@@ -90,7 +90,7 @@ void time_controller::init() {
 
 void time_controller::set_view_rect(const QRectF &rect) {}
 
-void time_controller::session_data_available(const cherry::sync_object &a_session_root) {
+void time_controller::session_data_available(const cherry_kit::sync_object &a_session_root) {
   revoke_previous_session(
       "Clock", [this](cherry_kit::desktop_controller_interface *a_controller,
                       cherry_kit::session_sync *a_session) {
@@ -106,7 +106,7 @@ void time_controller::session_data_available(const cherry::sync_object &a_sessio
       });
 }
 
-void time_controller::submit_session_data(cherry::sync_object *a_obj) {
+void time_controller::submit_session_data(cherry_kit::sync_object *a_obj) {
   write_session_data("Clock");
   write_session_data("Timer");
 }

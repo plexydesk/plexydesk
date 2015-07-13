@@ -1,10 +1,10 @@
 #ifndef QT_PLATFORM_IMAGE_H
 #define QT_PLATFORM_IMAGE_H
 
-#include <image_io.h>
+#include <ck_image_io.h>
 #include <functional>
 
-namespace cherry {
+namespace cherry_kit {
 class image_io::platform_image {
 public:
   platform_image();

@@ -22,7 +22,7 @@
 #include <ck_desktop_controller_interface.h>
 #include <plexydesk_ui_exports.h>
 #include <ck_widget.h>
-#include <syncobject.h>
+#include <ck_sync_object.h>
 
 namespace cherry_kit {
 class workspace;

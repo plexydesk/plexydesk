@@ -36,8 +36,8 @@ public:
   void init();
 
   void set_view_rect(const QRectF &rect);
-  void session_data_available(const cherry::sync_object &a_session_root);
-  virtual void submit_session_data(cherry::sync_object *a_obj);
+  void session_data_available(const cherry_kit::sync_object &a_session_root);
+  virtual void submit_session_data(cherry_kit::sync_object *a_obj);
 
   bool remove_widget(cherry_kit::widget *widget);
 

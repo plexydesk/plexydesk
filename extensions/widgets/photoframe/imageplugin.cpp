@@ -85,9 +85,9 @@ void photo_controller_impl::revoke_session(const QVariantMap &args) {
 }
 
 void photo_controller_impl::session_data_available(
-    const cherry::sync_object &a_session_root) {}
+    const cherry_kit::sync_object &a_session_root) {}
 
-void photo_controller_impl::submit_session_data(cherry::sync_object *a_obj) {}
+void photo_controller_impl::submit_session_data(cherry_kit::sync_object *a_obj) {}
 
 void photo_controller_impl::handle_drop_event(cherry_kit::widget *widget,
                                              QDropEvent *event) {
