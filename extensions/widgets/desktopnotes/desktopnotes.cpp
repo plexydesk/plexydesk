@@ -92,8 +92,8 @@ void desktop_task_controller_impl::session_data_available(
       });
 }
 
-void
-desktop_task_controller_impl::submit_session_data(cherry_kit::sync_object *a_obj) {
+void desktop_task_controller_impl::submit_session_data(
+    cherry_kit::sync_object *a_obj) {
   write_session_data("Notes");
   write_session_data("Reminders");
 }
@@ -105,7 +105,7 @@ cherry_kit::ActionList desktop_task_controller_impl::actions() const {
 }
 
 void desktop_task_controller_impl::request_action(const QString &actionName,
-                                                const QVariantMap &args) {
+                                                  const QVariantMap &args) {
   QPointF window_location;
 
   if (viewport()) {
@@ -149,7 +149,7 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
 }
 
 void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
-                                                   QDropEvent *event) {
+                                                     QDropEvent *event) {
   const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(droppedFile);
 
@@ -168,8 +168,8 @@ QString desktop_task_controller_impl::icon() const {
 
 void desktop_task_controller_impl::onDataUpdated(const QVariantMap &data) {}
 
-void
-desktop_task_controller_impl::createNoteUI(cherry_kit::session_sync *a_session) {
+void desktop_task_controller_impl::createNoteUI(
+    cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
   window->setGeometry(QRectF(0, 0, 320, 240));
 
@@ -393,15 +393,18 @@ void desktop_task_controller_impl::createReminderUI(
         if (!viewport())
           return;
 
-        QPointF _activity_window_location = viewport()->center(
-            QRectF(0, 0, 240, 320),
-            QRectF(window->x(), window->y(), window->geometry().width(),
-                   window->geometry().height()),
-            cherry_kit::space::kCenterOnWindow);
+        QRectF parent_rect(window->x(), window->y(), window->geometry().width(),
+                           window->geometry().height());
 
-        cherry_kit::desktop_dialog_ref activity = viewport()->open_desktop_dialog(
-            "date_dialog", "Date", _activity_window_location,
-            QRectF(0, 0, 340, 320.0), QVariantMap());
+        QRectF dialog_rect(0, 0, 340, 360);
+
+        QPointF dialog_pos = viewport()->center(
+            dialog_rect, parent_rect, cherry_kit::space::kCenterOnWindow);
+
+        cherry_kit::desktop_dialog_ref ck_date_dialog =
+            viewport()->open_desktop_dialog("date_dialog", "Date", dialog_pos,
+                                            dialog_rect, QVariantMap());
+        //todo handle dialog close.
       }
     };
 

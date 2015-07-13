@@ -69,7 +69,7 @@ time_controller::~time_controller() {
 }
 
 QAction *time_controller::createAction(int id, const QString &action_name,
-                             const QString &icon_name) {
+                                       const QString &icon_name) {
   QAction *_add_clock_action = new QAction(this);
   _add_clock_action->setText(action_name);
   _add_clock_action->setProperty("id", QVariant(id));
@@ -90,19 +90,20 @@ void time_controller::init() {
 
 void time_controller::set_view_rect(const QRectF &rect) {}
 
-void time_controller::session_data_available(const cherry_kit::sync_object &a_session_root) {
+void time_controller::session_data_available(
+    const cherry_kit::sync_object &a_session_root) {
   revoke_previous_session(
       "Clock", [this](cherry_kit::desktop_controller_interface *a_controller,
                       cherry_kit::session_sync *a_session) {
-        o_view_controller->setup_create_clock_ui((time_controller *)a_controller,
-                                                 a_session);
+        o_view_controller->setup_create_clock_ui(
+            (time_controller *)a_controller, a_session);
       });
 
   revoke_previous_session(
       "Timer", [this](cherry_kit::desktop_controller_interface *a_controller,
                       cherry_kit::session_sync *a_session) {
-        o_view_controller->setup_create_timer_ui((time_controller *)a_controller,
-                                                 a_session);
+        o_view_controller->setup_create_timer_ui(
+            (time_controller *)a_controller, a_session);
       });
 }
 
@@ -122,7 +123,8 @@ cherry_kit::ActionList time_controller::actions() const {
   return o_view_controller->m_supported_action_list;
 }
 
-void time_controller::request_action(const QString &actionName, const QVariantMap &args) {
+void time_controller::request_action(const QString &actionName,
+                                     const QVariantMap &args) {
   QPointF window_location;
 
   if (viewport()) {
@@ -167,11 +169,14 @@ void time_controller::request_action(const QString &actionName, const QVariantMa
   }
 }
 
-QString time_controller::icon() const { return QString("pd_clock_frame_icon.png"); }
+QString time_controller::icon() const {
+  return QString("pd_clock_frame_icon.png");
+}
 
 void time_controller::onDataUpdated(const QVariantMap &data) {}
 
-cherry_kit::icon_button *time_controller::PrivateClockController::add_action_button(
+cherry_kit::icon_button *
+time_controller::PrivateClockController::add_action_button(
     cherry_kit::fixed_layout *ui, int a_row, int a_col,
     const std::string &a_label, const std::string &a_icon) {
   cherry_kit::icon_button *ck_rv = 0;
