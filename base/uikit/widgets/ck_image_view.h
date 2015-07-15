@@ -37,6 +37,7 @@ public:
                           const QSizeF &a_constraint = QSizeF()) const;
 
   virtual void set_pixmap(const QPixmap &a_pixmap);
+  virtual void set_image(const QImage &a_image);
   virtual StylePtr style() const;
 Q_SIGNALS:
   void mouseOver();

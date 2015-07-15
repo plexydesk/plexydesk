@@ -307,6 +307,35 @@ void test_image_io_surface_create_from_file() {
   qDebug() << Q_FUNC_INFO << "Main thread wakeup";
 }
 
+void test_image_io_surface_preview_from_file() {
+  cherry_kit::image_io ck_img(0, 0);
+  cherry_kit::io_surface *ck_img_surface_ref = nullptr;
+
+  ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
+                      image_io *a_img) {
+    ck_img_surface_ref = ck_img.surface();
+
+    CK_ASSERT(a_status == image_io::kSuccess, "Should return a Success");
+    CK_ASSERT(ck_img_surface_ref != nullptr, "Should return a Valid Surface");
+    CK_ASSERT(ck_img_surface_ref->width == 204,
+              "Expected 204" << " Got :" << ck_img_surface_ref->width);
+    CK_ASSERT(ck_img_surface_ref->height == 128,
+              "Expected 128" << " Got : " << ck_img_surface_ref->height);
+    QImage test_img(ck_img_surface_ref->buffer, ck_img_surface_ref->width,
+                    ck_img_surface_ref->height,
+                    QImage::Format_ARGB32_Premultiplied);
+
+    CK_ASSERT(test_img.isNull() == 0, "Expected non null qimage");
+  });
+
+  ck_img.preview_image("/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
+
+  qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
+  std::this_thread::sleep_for(std::chrono::seconds(4));
+  qDebug() << Q_FUNC_INFO << "Main thread wakeup";
+}
+
+
 void test_image_io_surface_invalid_create_from_file() {
   cherry_kit::image_io ck_img(0, 0);
   cherry_kit::io_surface *ck_img_surface_ref = nullptr;
@@ -345,6 +374,7 @@ int main(int argc, char *argv[]) {
   // test_image_io_surface_null_surface();
   // test_image_io_surface_create_with_size();
   test_image_io_surface_invalid_create_from_file();
+  test_image_io_surface_preview_from_file();
   test_image_io_surface_create_from_file();
 
   // app.quit();

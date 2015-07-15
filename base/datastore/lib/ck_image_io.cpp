@@ -74,6 +74,29 @@ void image_io::create(const std::string &a_file_name) {
   o_surface_proxy->load_from_file(a_file_name);
 }
 
+void image_io::preview_image(const std::string &a_file_name) {
+  o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
+                                           buffer_load_status_t a_status) {
+    if (a_status != kSuccess) {
+      if (o_image->m_call_on_ready)
+        o_image->m_call_on_ready(a_status, this);
+      return;
+    }
+
+    if (o_image->m_surface) {
+      delete o_image->m_surface;
+      o_image->m_surface = nullptr;
+    }
+
+    o_image->m_surface = a_surface;
+
+    if (o_image->m_call_on_ready)
+      o_image->m_call_on_ready(kSuccess, this);
+  });
+
+  o_surface_proxy->load_image_preview(a_file_name);
+}
+
 io_surface *image_io::surface() const { return o_image->m_surface; }
 
 io_surface image_io::add_task(image_io::image_operation_t a_method,

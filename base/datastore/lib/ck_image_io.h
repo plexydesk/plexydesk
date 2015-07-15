@@ -70,6 +70,8 @@ public:
   virtual void create(image_data_ref a_buffer, int a_width, int a_height);
   virtual void create(const std::string &a_file_name);
 
+  virtual void preview_image(const std::string &a_file_name);
+
   virtual io_surface *surface() const;
 
   virtual io_surface add_task(image_operation_t a_method,
