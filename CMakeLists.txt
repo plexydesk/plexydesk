@@ -61,9 +61,6 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Network REQUIRED)
 
-find_package(OpenGL REQUIRED)
-#find_package(MITIE REQUIRED)
-
 #plugins
 if (APPLE)
     set (CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX "plexydesk.app/Contents/PlugIns/plexydesk/")

@@ -34,7 +34,7 @@ endif(MINGW)
 TARGET_LINK_LIBRARIES(plexyclock
     ${libs}
     )
-QT5_USE_MODULES(plexyclock Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(plexyclock Widgets Xml  Core  )
 
 if (NOT APPLE)
 INSTALL(TARGETS plexyclock DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

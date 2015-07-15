@@ -174,7 +174,7 @@ void BackgroundController::request_action(const QString &actionName,
     if (!viewport())
       return;
 
-    QRectF dialog_window_geometry(0, 0, 605, 640);
+    QRectF dialog_window_geometry(0, 0, 600, 640);
     QPointF qt_activity_window_location = viewport()->center(
         dialog_window_geometry,
         QRectF(o_ctr->m_background_window->x(), o_ctr->m_background_window->y(),

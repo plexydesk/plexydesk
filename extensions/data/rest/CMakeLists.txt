@@ -34,7 +34,7 @@ TARGET_LINK_LIBRARIES(restengine
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
-QT5_USE_MODULES(restengine Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(restengine Widgets Xml  Core  )
 
 if (NOT APPLE)
   INSTALL(TARGETS restengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

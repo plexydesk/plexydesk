@@ -34,7 +34,7 @@ TARGET_LINK_LIBRARIES(timerengine
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
-QT5_USE_MODULES(timerengine Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(timerengine Widgets Xml  Core  )
 
 if (NOT APPLE)
 INSTALL(TARGETS timerengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

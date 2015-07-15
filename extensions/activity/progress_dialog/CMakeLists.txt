@@ -40,7 +40,7 @@ TARGET_LINK_LIBRARIES(progress_dialog
     ${libs}
     )
 
-QT5_USE_MODULES(progress_dialog Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(progress_dialog Widgets Xml  Core  )
 
 if (NOT APPLE)
 INSTALL(TARGETS progress_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
