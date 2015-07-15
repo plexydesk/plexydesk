@@ -57,6 +57,9 @@ public:
   virtual void
   on_item_removed(std::function<void(model_view_item *item)> a_handler);
 
+  void set_content_margin(int a_left, int a_right, int a_top, int a_bottom);
+  void set_content_spacing(int a_distance);
+
 protected:
   virtual void insert(widget *a_widget_ptr);
   virtual void remove(widget *a_widget_ptr);
