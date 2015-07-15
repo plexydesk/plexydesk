@@ -8,7 +8,8 @@ class DesktopWindow::PrivateDesktopWindow {
 public:
   PrivateDesktopWindow()
       : m_background_buffer(0), m_background_width(0), m_background_height(0),
-        m_seamless(0), m_desktop_mode(kNone) {}
+        m_seamless(0), m_desktop_mode(kNone),
+        m_image_service(new cherry_kit::image_io(0, 0)) {}
   ~PrivateDesktopWindow() {
     if (m_background_buffer)
       free(m_background_buffer);
@@ -19,6 +20,7 @@ public:
   int m_background_width;
   int m_background_height;
   bool m_seamless;
+  cherry_kit::image_io *m_image_service;
   DesktopScalingMode m_desktop_mode;
 };
 
@@ -47,6 +49,22 @@ DesktopWindow::DesktopWindow()
     : cherry_kit::window(0), o_window(new PrivateDesktopWindow) {
   set_window_type(cherry_kit::window::kFramelessWindow);
 
+  o_window->m_image_service->on_ready([this](
+      cherry_kit::image_io::buffer_load_status_t a_load_state,
+      cherry_kit::image_io *a_image_service) {
+
+    if (a_load_state == cherry_kit::image_io::kSuccess) {
+      cherry_kit::io_surface *ck_image_surface_ref = a_image_service->surface();
+
+      o_window->m_background_texture = QImage(
+          ck_image_surface_ref->buffer, ck_image_surface_ref->width,
+          ck_image_surface_ref->height, QImage::Format_ARGB32_Premultiplied);
+      update();
+    } else {
+      qWarning() << Q_FUNC_INFO << "Failed loading image!";
+    }
+  });
+
   on_window_resized([this](window *a_window, int a_width, int a_height) {
     if (o_window->m_background_buffer) {
       /*
@@ -72,33 +90,15 @@ void DesktopWindow::set_background(const QString &a_image_name) {
   p_window->m_background_buffer = background.bits();
   */
 
-  //if (!o_window->m_background_texture.load(a_image_name))
-   // qDebug() << Q_FUNC_INFO << "Failed to load image";
+  // if (!o_window->m_background_texture.load(a_image_name))
+  // qDebug() << Q_FUNC_INFO << "Failed to load image";
 
-  //update();
-    cherry_kit::image_io *ck_image_service = new cherry_kit::image_io(0, 0);
+  // update();
 
-    ck_image_service->on_ready([this] (cherry_kit::image_io::buffer_load_status_t a_load_state,
-                              cherry_kit::image_io *a_image_service) {
-        qDebug() << Q_FUNC_INFO << "Loading background --->";
-        if (a_load_state == cherry_kit::image_io::kSuccess) {
-            cherry_kit::io_surface *ck_image_surface_ref =
-                    a_image_service->surface();
+  if (!o_window->m_image_service)
+    return;
 
-            o_window->m_background_texture = QImage(
-                        ck_image_surface_ref->buffer,
-                        ck_image_surface_ref->width,
-                        ck_image_surface_ref->height,
-                        QImage::Format_ARGB32_Premultiplied);
-
-            qDebug() << Q_FUNC_INFO << o_window->m_background_texture.isNull()
-                     << "SAize " << o_window->m_background_texture.rect();
-            update();
-        } else {
-            qWarning() << Q_FUNC_INFO << "Failed loading image!";
-        }
-    });
-    ck_image_service->create(a_image_name.toStdString());
+  o_window->m_image_service->create(a_image_name.toStdString());
 }
 
 void DesktopWindow::set_background(const QImage &a_image_name) {
@@ -118,9 +118,9 @@ void DesktopWindow::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   }
 
   a_ctx->save();
-  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform
-                        | QPainter::HighQualityAntialiasing
-                        | QPainter::Antialiasing);
+  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform |
+                        QPainter::HighQualityAntialiasing |
+                        QPainter::Antialiasing);
   a_ctx->drawImage(a_rect, o_window->m_background_texture);
   a_ctx->restore();
 }

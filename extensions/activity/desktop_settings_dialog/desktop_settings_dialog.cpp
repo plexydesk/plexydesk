@@ -209,6 +209,7 @@ void desktop_settings_dialog::load_images() const {
 
 void desktop_settings_dialog::invoke_image_loader() const {
   std::vector<std::string> current_file_list = priv->locate_system_images();
+
   std::for_each(std::begin(current_file_list), std::end(current_file_list),
                 [=](const std::string &a_file) {
     cherry_kit::image_io *ck_image_service = new cherry_kit::image_io(0, 0);

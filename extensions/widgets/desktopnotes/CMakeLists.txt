@@ -43,7 +43,7 @@ TARGET_LINK_LIBRARIES(desktopnoteswidget
     ${libs}
     )
 
-QT5_USE_MODULES(desktopnoteswidget Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(desktopnoteswidget Widgets Xml  Core  )
 
 if (NOT APPLE)
     INSTALL(TARGETS desktopnoteswidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

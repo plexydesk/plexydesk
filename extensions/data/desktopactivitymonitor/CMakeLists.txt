@@ -38,7 +38,7 @@ if (APPLE)
     FIND_LIBRARY(IOKIT_LIBRARY IOKit)
     FIND_LIBRARY(GLUT_LIBRARY GLUT)
     FIND_LIBRARY(QUARTZ_CORE_LIBRARY QuartzCore)
-    FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
+    FIND_LIBRARY(OpenGL_LIBRARY )
 
     MARK_AS_ADVANCED (COCOA_LIBRARY
                       GLUT_LIBRARY
@@ -68,7 +68,7 @@ TARGET_LINK_LIBRARIES(desktopactivitymonitorengine
     ${libs}
     )
 
-QT5_USE_MODULES(desktopactivitymonitorengine Widgets Xml OpenGL Core   )
+QT5_USE_MODULES(desktopactivitymonitorengine Widgets Xml  Core   )
 
 if (NOT APPLE)
 INSTALL(TARGETS desktopactivitymonitorengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

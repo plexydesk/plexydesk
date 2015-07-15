@@ -27,7 +27,7 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ########### prepare files ###############
 ADD_EXECUTABLE(social_runtime ${WIN_APPLICATION} ${sourceFiles})
 SET_PROPERTY(TARGET social_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
-QT5_USE_MODULES(social_runtime Widgets Xml OpenGL Core)
+QT5_USE_MODULES(social_runtime Widgets Xml  Core)
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(social_runtime)

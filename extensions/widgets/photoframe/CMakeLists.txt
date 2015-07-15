@@ -21,7 +21,7 @@ set(sourceFiles
 
 ADD_LIBRARY(photoframe SHARED ${sourceFiles})
 
-QT5_USE_MODULES(photoframe Widgets Xml OpenGL Core )
+QT5_USE_MODULES(photoframe Widgets Xml  Core )
 
 TARGET_LINK_LIBRARIES(photoframe
     ${QT_QTCORE_LIBRARY}

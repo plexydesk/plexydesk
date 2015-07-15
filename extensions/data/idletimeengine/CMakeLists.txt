@@ -37,7 +37,7 @@ if (APPLE)
     FIND_LIBRARY(GLUT_LIBRARY GLUT)
     FIND_LIBRARY(QUARTZ_CORE_LIBRARY QuartzCore)
 
-    FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
+    FIND_LIBRARY(OpenGL_LIBRARY )
     MARK_AS_ADVANCED (COCOA_LIBRARY
                       GLUT_LIBRARY
                       QUARTZ_CORE_LIBRARY
@@ -64,7 +64,7 @@ TARGET_LINK_LIBRARIES(idletimeengineengine
     ${MAC_LIBS}
     )
 
-QT5_USE_MODULES(idletimeengineengine Widgets Xml OpenGL Core   )
+QT5_USE_MODULES(idletimeengineengine Widgets Xml  Core   )
 
 if (NOT APPLE)
 INSTALL(TARGETS idletimeengineengine DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
