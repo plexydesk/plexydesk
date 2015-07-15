@@ -45,7 +45,10 @@ public:
   window *dialog_window() const;
   void cleanup();
 
+  void insert_image_to_grid(const QImage &ck_preview_pixmap) const;
+
 private Q_SLOTS:
+  void load_images() const;
   void load_from_system_path() const;
 
 private:

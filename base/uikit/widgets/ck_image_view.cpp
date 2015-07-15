@@ -16,6 +16,7 @@ public:
     // qDebug() << Q_FUNC_INFO;
   }
   QPixmap mPixmap;
+  QImage m_image;
 };
 
 image_view::image_view(widget *parent)
@@ -27,7 +28,8 @@ image_view::~image_view() { delete o_image_view; }
 
 QSizeF image_view::sizeHint(Qt::SizeHint which,
                            const QSizeF &a_constraint) const {
-  return o_image_view->mPixmap.size();
+  //return o_image_view->mPixmap.size();
+  return geometry().size();
 }
 
 void image_view::set_size(const QSizeF &size) {
@@ -35,7 +37,12 @@ void image_view::set_size(const QSizeF &size) {
 }
 
 void image_view::set_pixmap(const QPixmap &a_pixmap) {
-  o_image_view->mPixmap = a_pixmap;
+    o_image_view->mPixmap = a_pixmap;
+}
+
+void image_view::set_image(const QImage &a_image) {
+    o_image_view->m_image = a_image;
+    update();
 }
 
 StylePtr image_view::style() const { return resource_manager::style(); }
@@ -68,9 +75,13 @@ void image_view::paint_view(QPainter *a_painter_ptr,
              o_image_view->mPixmap.height());
 
   a_painter_ptr->save();
-  a_painter_ptr->setRenderHint(QPainter::SmoothPixmapTransform, false);
-  a_painter_ptr->setRenderHint(QPainter::HighQualityAntialiasing, false);
-  a_painter_ptr->drawPixmap(rect, o_image_view->mPixmap);
+  if (!o_image_view->mPixmap.isNull())
+    a_painter_ptr->drawPixmap(rect, o_image_view->mPixmap);
+
+  if (!o_image_view->m_image.isNull()) {
+    a_painter_ptr->drawImage(a_exposeRect, o_image_view->m_image,
+                             a_exposeRect);
+  }
   a_painter_ptr->restore();
 }
 }

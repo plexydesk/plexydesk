@@ -11,6 +11,8 @@ public:
   ~platform_image();
 
   void load_from_file(const std::string &a_file_name);
+  void load_image_preview(const std::string &a_file_name);
+
   void on_surface_ready(std::function<
       void(io_surface *, image_io::buffer_load_status_t)> a_callback);
 

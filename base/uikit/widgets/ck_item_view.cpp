@@ -27,6 +27,19 @@ public:
   std::function<void(model_view_item *)> m_item_remove_handler;
 };
 
+void item_view::set_content_margin(int a_left, int a_right, int a_top,
+                                   int a_bottom) {
+  if (d->m_grid_layout && d->m_model_view_type == kGridModel) {
+    d->m_grid_layout->setContentsMargins(a_left, a_right, a_top, a_bottom);
+  }
+}
+
+void item_view::set_content_spacing(int a_distance) {
+  if (d->m_grid_layout && d->m_model_view_type == kGridModel) {
+    d->m_grid_layout->setSpacing(a_distance);
+  }
+}
+
 item_view::item_view(widget *parent, ModelType a_model_type)
     : widget(parent), d(new PrivateModelView) {
   d->m_model_view_type = a_model_type;
@@ -40,7 +53,7 @@ item_view::item_view(widget *parent, ModelType a_model_type)
 
   if (d->m_model_view_type == kGridModel) {
     d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
-    d->m_grid_layout->setContentsMargins(4, 4, 4, 4);
+    set_content_margin(4, 4, 4, 4);
   }
 
   d->m_viewport_geometry = QRectF();
@@ -81,12 +94,12 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
   }
 
   a_widget_ptr->set_widget_id(d->m_grid_layout->count());
-  int l_item_per_row = (d->m_viewport_geometry.width() - 4) /
-                       a_widget_ptr->boundingRect().width();
+  int l_item_per_row =
+      (d->m_viewport_geometry.width()) / a_widget_ptr->minimumWidth();
 
   d->m_grid_layout->addItem(a_widget_ptr,
-                            d->m_grid_layout->count() / (l_item_per_row - 1),
-                            d->m_grid_layout->count() % (l_item_per_row - 1));
+                            d->m_grid_layout->count() / (l_item_per_row),
+                            d->m_grid_layout->count() % (l_item_per_row));
 
   d->m_grid_layout->activate();
   d->m_grid_layout->updateGeometry();
@@ -222,7 +235,7 @@ QRectF item_view::boundingRect() const {
 void item_view::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
 
 QSizeF item_view::sizeHint(Qt::SizeHint which,
-                          const QSizeF &a_constraint) const {
+                           const QSizeF &a_constraint) const {
   return d->m_list_layout->contentsRect().size();
 }
 
@@ -230,7 +243,8 @@ void item_view::on_activated(std::function<void(int)> a_callback) {
   d->m_activation_handler = a_callback;
 }
 
-void item_view::on_item_removed(std::function<void(model_view_item *)> a_handler) {
+void
+item_view::on_item_removed(std::function<void(model_view_item *)> a_handler) {
   // please note that the item can be set only once, and can't be over-ridden
   // once set. without destruction of the class.
   if (d->m_item_remove_handler)
