@@ -49,11 +49,11 @@ public:
 
 private Q_SLOTS:
   void load_images() const;
-  void load_from_system_path() const;
+  void invoke_image_loader() const;
 
 private:
   class PrivatePhotoSearch;
-  PrivatePhotoSearch *const d;
+  PrivatePhotoSearch *const priv;
 };
 
 #endif

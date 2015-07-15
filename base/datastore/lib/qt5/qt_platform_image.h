@@ -16,9 +16,16 @@ public:
   void on_surface_ready(std::function<
       void(io_surface *, image_io::buffer_load_status_t)> a_callback);
 
+protected:
+  void release();
+  void emit_complete();
+  io_surface *image_decoder();
+  io_surface *image_preview_decoder();
+  void wait_for_signal(image_io::platform_image *instance);
+
 private:
   class private_platform_image;
-  private_platform_image *const o;
+  private_platform_image *const priv;
 };
 }
 #endif // QT_PLATFORM_IMAGE_H
