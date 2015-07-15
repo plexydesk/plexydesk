@@ -53,7 +53,7 @@ set(sourceFiles
 
 #ADD_LIBRARY(plexyauth SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-#QT5_USE_MODULES(plexyauth Widgets Xml OpenGL Core   )
+#QT5_USE_MODULES(plexyauth Widgets Xml  Core   )
 
 #TARGET_LINK_LIBRARIES(plexyauth
 #    ${PLEXY_UI_CORE_LIBRARY}
@@ -74,7 +74,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core)
 add_library(plexyauth SHARED ${sourceFiles})
-qt5_use_modules(plexyauth Widgets Xml OpenGL Core   )
+qt5_use_modules(plexyauth Widgets Xml  Core   )
 target_link_libraries(plexyauth ${PLEXY_UI_CORE_LIBRARY})
 
 add_subdirectory(data)

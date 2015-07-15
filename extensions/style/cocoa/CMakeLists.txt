@@ -38,7 +38,7 @@ TARGET_LINK_LIBRARIES(cocoastyle
     ${libs}
     )
 
-QT5_USE_MODULES(cocoastyle Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(cocoastyle Widgets Xml  Core  )
 
 if (NOT APPLE)
 INSTALL(TARGETS cocoastyle DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

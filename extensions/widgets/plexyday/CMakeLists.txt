@@ -54,7 +54,7 @@ TARGET_LINK_LIBRARIES(plexyday
     ${libs}
     )
 
-QT5_USE_MODULES(plexyday Widgets Xml OpenGL Core )
+QT5_USE_MODULES(plexyday Widgets Xml  Core )
 
 if (NOT APPLE)
 INSTALL(TARGETS plexyday DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

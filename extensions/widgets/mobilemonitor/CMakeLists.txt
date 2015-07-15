@@ -52,7 +52,7 @@ TARGET_LINK_LIBRARIES(mobilemon
     ${libs}
     )
 
-QT5_USE_MODULES(mobilemon Widgets Xml OpenGL Core   )
+QT5_USE_MODULES(mobilemon Widgets Xml  Core   )
 
 if (NOT APPLE)
 INSTALL(TARGETS mobilemon DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

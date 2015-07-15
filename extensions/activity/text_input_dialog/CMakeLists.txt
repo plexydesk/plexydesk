@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(text_input_dialog
     ${libs}
     )
 
-QT5_USE_MODULES(text_input_dialog Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(text_input_dialog Widgets Xml  Core  )
 
 if (NOT APPLE)
 INSTALL(TARGETS text_input_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

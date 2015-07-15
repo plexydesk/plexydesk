@@ -34,7 +34,7 @@ if(APPLE)
 endif()
 
 #SET_PROPERTY(TARGET datasync_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
-#QT5_USE_MODULES(datasync_runtime Widgets Xml OpenGL Core)
+#QT5_USE_MODULES(datasync_runtime Widgets Xml  Core)
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(datasync_runtime)

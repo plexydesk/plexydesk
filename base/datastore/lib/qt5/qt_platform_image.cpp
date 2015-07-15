@@ -85,7 +85,7 @@ io_surface *image_io::platform_image::image_decoder() {
   ck_surface->height = ck_qt_image.height();
 
   ck_surface->buffer =
-      (unsigned char *)malloc(4 * ck_qt_image.height() * ck_qt_image.width());
+      (unsigned char *)malloc(4 * ck_qt_image.height() * ck_qt_image.width() * sizeof (unsigned char));
 
   for (int x = 0; x < ck_qt_image.height(); ++x) {
     QRgb *row_data = (QRgb *)ck_qt_image.scanLine(x);
@@ -181,7 +181,7 @@ io_surface *image_io::platform_image::image_preview_decoder() {
   ck_surface->height = ck_qt_image.height();
 
   ck_surface->buffer =
-      (unsigned char *)malloc(4 * ck_qt_image.height() * ck_qt_image.width());
+      (unsigned char *)malloc(4 * ck_qt_image.height() * ck_qt_image.width() * sizeof (unsigned char));
 
   for (int x = 0; x < ck_qt_image.height(); ++x) {
     QRgb *row_data = (QRgb *)ck_qt_image.scanLine(x);

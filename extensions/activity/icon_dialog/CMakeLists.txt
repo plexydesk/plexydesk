@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(icon_dialog
     ${libs}
     )
 
-QT5_USE_MODULES(icon_dialog Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(icon_dialog Widgets Xml  Core  )
 
 if (NOT APPLE)
 INSTALL(TARGETS icon_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

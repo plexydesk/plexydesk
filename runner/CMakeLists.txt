@@ -91,7 +91,7 @@ TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LI
 	${MAC_LIBS}
 	)
 
-QT5_USE_MODULES(${APPLICATION_EXE_NAME} Widgets Xml OpenGL Core  )
+QT5_USE_MODULES(${APPLICATION_EXE_NAME} Widgets Xml  Core  )
 
 ########### Install files ###############
 install(TARGETS plexydesk DESTINATION bin)

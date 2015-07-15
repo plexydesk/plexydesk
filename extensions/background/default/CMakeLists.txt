@@ -27,7 +27,7 @@ set(sourceFiles
 
 ADD_LIBRARY(classicbackdrop SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
-QT5_USE_MODULES(classicbackdrop Widgets Xml OpenGL Core )
+QT5_USE_MODULES(classicbackdrop Widgets Xml  Core )
 
 if (MINGW)
     SET_TARGET_PROPERTIES(classicbackdrop PROPERTIES
