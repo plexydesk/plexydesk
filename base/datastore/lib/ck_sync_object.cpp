@@ -84,9 +84,9 @@ sync_object::sync_object(sync_object *parent)
 
 sync_object::~sync_object() { delete p_object; }
 
-uint sync_object::time_stamp() const { return p_object->m_time_stamp; }
+unsigned int sync_object::time_stamp() const { return p_object->m_time_stamp; }
 
-void sync_object::set_time_stamp(uint timestamp) {
+void sync_object::set_time_stamp(unsigned int timestamp) {
   p_object->m_time_stamp = timestamp;
 }
 
@@ -98,7 +98,7 @@ void sync_object::set_name(const std::string &name) {
 
 std::string sync_object::name() const { return p_object->m_object_name; }
 
-void sync_object::set_key(uint key) { p_object->m_object_key = key; }
+void sync_object::set_key(unsigned int key) { p_object->m_object_key = key; }
 
 uint sync_object::key() const { return p_object->m_object_key; }
 
@@ -160,7 +160,7 @@ sync_object_list sync_object::child_objects() const {
   return rv;
 }
 
-sync_object *sync_object::childObject(uint key) {
+sync_object *sync_object::childObject(unsigned int key) {
   if (p_object->m_child_map.find(key) != p_object->m_child_map.end()) {
     return p_object->m_child_map[key];
   }
@@ -265,7 +265,7 @@ bool sync_object::has_children() const {
   return false;
 }
 
-uint sync_object::child_count() const {
+unsigned int sync_object::child_count() const {
   unsigned int count = 0;
 
   for (std::map<uint, sync_object *>::iterator it =

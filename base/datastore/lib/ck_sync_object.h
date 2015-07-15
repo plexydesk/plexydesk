@@ -57,14 +57,14 @@ public:
       *
       * @return uint
       */
-  virtual uint time_stamp() const;
+  virtual unsigned int time_stamp() const;
 
   /**
       * @brief
       *
       * @param timestamp
       */
-  virtual void set_time_stamp(uint timestamp);
+  virtual void set_time_stamp(unsigned int timestamp);
 
   /**
       * @brief Time stamp data of the object.
@@ -87,8 +87,8 @@ public:
       */
   std::string name() const;
 
-  void set_key(uint key);
-  uint key() const;
+  void set_key(unsigned int key);
+  unsigned int key() const;
 
   sync_object *parent() const;
   void set_parent(sync_object *a_parent_ptr);
@@ -99,18 +99,18 @@ public:
   bool has_property(const std::string &a_property) const;
 
   bool has_children() const;
-  uint child_count() const;
+  unsigned int child_count() const;
   void add_child(sync_object *object);
 
   sync_object_list child_objects() const;
-  sync_object *childObject(uint key);
+  sync_object *childObject(unsigned int key);
   sync_object *childObject(const std::string &name);
   void linksToObject(const std::string &dataStoreName,
                      const std::string &objectName);
 
   void update_time_stamp();
 
-  void remove_object(uint key);
+  void remove_object(unsigned int key);
 
   void set_data_sync(data_sync *a_sync);
   virtual void sync();
