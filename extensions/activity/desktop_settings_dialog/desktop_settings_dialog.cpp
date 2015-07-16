@@ -52,7 +52,10 @@ public:
   std::vector<std::string> locate_system_images();
 
   cherry_kit::window *m_window;
-  cherry_kit::progress_bar *m_progress_bar_widget;
+
+  cherry_kit::window *m_progress_window;
+  cherry_kit::progress_bar *m_progress_widget;
+
   cherry_kit::item_view *m_image_view;
   cherry_kit::fixed_layout *m_ck_layout;
 
@@ -122,14 +125,33 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_image_view->set_view_geometry(ck_icon_gird->geometry());
   priv->m_image_view->setPos(QPointF());
 
-  QTimer::singleShot(500, this, SLOT(invoke_image_loader()));
-  // load_from_system_path();
+  priv->m_progress_window = new cherry_kit::window(priv->m_window);
+  priv->m_progress_window->setGeometry(QRectF(0, 0, 320, 240));
+  priv->m_progress_widget =
+      new cherry_kit::progress_bar(priv->m_progress_window);
+  priv->m_progress_widget->set_range(1, 100);
+  priv->m_progress_widget->set_size(QSizeF(240, 48));
+  priv->m_progress_window->set_window_content(priv->m_progress_widget);
+  priv->m_progress_window->raise();
+  priv->m_progress_widget->set_value(0);
+  priv->m_progress_window->setPos((a_window_geometry.width() / 2) - 120,
+                                  (a_window_geometry.height() / 2) - 24);
+
+  // todo: to check if this is the first time.
+  // Fix this with true asynchronis signaling across threads.
+  if (!QFileInfo(QDir::homePath() + "/" + ".cherry_io/cache/").exists())
+    QTimer::singleShot(0, this, SLOT(invoke_image_loader()));
+  else
+    invoke_image_loader();
+
   exec(window_pos);
 }
 
 QRectF desktop_settings_dialog::geometry() const { return priv->m_geometry; }
 
-QVariantMap desktop_settings_dialog::result() const { return priv->m_activity_result; }
+QVariantMap desktop_settings_dialog::result() const {
+  return priv->m_activity_result;
+}
 
 window *desktop_settings_dialog::dialog_window() const {
   return priv->m_window;
@@ -197,7 +219,6 @@ void desktop_settings_dialog::insert_image_to_grid(
   ck_image_preview->setMinimumSize(width, height);
 
   ck_preview_item->set_view(ck_image_preview);
-
   priv->m_image_view->insert(ck_preview_item);
 }
 
@@ -210,15 +231,21 @@ void desktop_settings_dialog::load_images() const {
 void desktop_settings_dialog::invoke_image_loader() const {
   std::vector<std::string> current_file_list = priv->locate_system_images();
 
+  int load_progress = 0;
+
+  if (priv->m_progress_widget)
+    priv->m_progress_widget->set_range(0, current_file_list.size());
+
   std::for_each(std::begin(current_file_list), std::end(current_file_list),
-                [=](const std::string &a_file) {
+                [&](const std::string &a_file) {
     cherry_kit::image_io *ck_image_service = new cherry_kit::image_io(0, 0);
     priv->m_service_list.push_back(ck_image_service);
 
-    ck_image_service->on_ready([=](
+    ck_image_service->on_ready([&](
         cherry_kit::image_io::buffer_load_status_t a_status,
         cherry_kit::image_io *a_image_io) {
 
+      load_progress++;
       if (a_status != cherry_kit::image_io::kSuccess) {
         return;
       }
@@ -227,12 +254,22 @@ void desktop_settings_dialog::invoke_image_loader() const {
       QImage image_buffer(ck_surface_ref->buffer, ck_surface_ref->width,
                           ck_surface_ref->height, QImage::Format_ARGB32);
       insert_image_to_grid(image_buffer);
+      if (priv->m_progress_widget && priv->m_progress_window) {
+        priv->m_progress_widget->set_value(load_progress);
+        priv->m_progress_window->set_window_title(QString(
+            "Optimizing Images : %1%").arg(priv->m_progress_widget->value()));
+      }
     });
 
     ck_image_service->preview_image(a_file);
   });
 
   current_file_list.erase(std::end(current_file_list));
+
+  if (priv->m_progress_window) {
+    priv->m_progress_window->hide();
+    priv->m_progress_window->discard();
+  }
 }
 
 std::vector<std::string>
