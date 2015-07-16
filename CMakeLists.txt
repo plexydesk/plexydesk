@@ -13,11 +13,17 @@ CMAKE_POLICY(SET CMP0043 NEW)
 
 #handle platform options
 option(BUILD_WITH_QT "Enable Qt ToolKit to Build PlexyDesk" ON)
+option(BUILD_OPTIMIZED "Enable Compiler Optimizations" OFF)
 
 if(BUILD_WITH_QT)
 	add_definitions(-DBUILD_WITH_QT=1)
 endif()
 
+if(BUILD_OPTIMIZED)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native")
+	endif()
+endif()
 #check if the compiler support c++11
 include(CheckCXXCompilerFlag)
 
@@ -136,11 +142,9 @@ endif (NOT WIN32)
 
 if (APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gdwarf-2")
-endif (APPLE)
-    
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -O1")
-endif()
+endif (APPLE) 
+
+
 
 # Global variable CMAKE_BUILD_TYPE handling
 # None (CMAKE_C_FLAGS or CMAKE_CXX_FLAGS used)
@@ -162,6 +166,11 @@ endif (NOT CMAKE_BUILD_TYPE)
 # example: ADD_EXECUTABLE(exe_target ${WIN_APPLICATION} ${sourceFiles})
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
     MESSAGE(STATUS "Setting Debug flags ...")
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -O1")
+    endif()
+		
     set(WIN_APPLICATION "")
 ELSE(CMAKE_BUILD_TYPE MATCHES "Debug")
     # Note: the WIN32 is ignored on other platforms than Windows
