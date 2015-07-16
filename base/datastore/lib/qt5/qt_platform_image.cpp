@@ -35,7 +35,7 @@ public:
 image_io::platform_image::platform_image() : priv(new private_platform_image) {}
 
 image_io::platform_image::~platform_image() {
-  //release();
+  // release();
   delete priv;
 }
 
@@ -84,9 +84,14 @@ io_surface *image_io::platform_image::image_decoder() {
   ck_surface->width = ck_qt_image.width();
   ck_surface->height = ck_qt_image.height();
 
-  ck_surface->buffer =
-      (unsigned char *)malloc(4 * ck_qt_image.height() * ck_qt_image.width() * sizeof (unsigned char));
 
+  ck_surface->buffer = (unsigned char *)malloc(
+      4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
+
+  memcpy(ck_surface->buffer, ck_qt_image.constBits(),
+      4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
+
+  /*
   for (int x = 0; x < ck_qt_image.height(); ++x) {
     QRgb *row_data = (QRgb *)ck_qt_image.scanLine(x);
     for (int y = 0; y < ck_qt_image.width(); ++y) {
@@ -104,6 +109,7 @@ io_surface *image_io::platform_image::image_decoder() {
       ck_surface->buffer[((x * width + y) * 4) + 3] = alpha;
     }
   }
+  */
 
   priv->m_async_notification_promis.set_value(ck_surface);
   release();
@@ -180,9 +186,13 @@ io_surface *image_io::platform_image::image_preview_decoder() {
   ck_surface->width = ck_qt_image.width();
   ck_surface->height = ck_qt_image.height();
 
-  ck_surface->buffer =
-      (unsigned char *)malloc(4 * ck_qt_image.height() * ck_qt_image.width() * sizeof (unsigned char));
+  ck_surface->buffer = (unsigned char *)malloc(
+      4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
 
+  memcpy(ck_surface->buffer, ck_qt_image.constBits(),
+      4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
+
+  /*
   for (int x = 0; x < ck_qt_image.height(); ++x) {
     QRgb *row_data = (QRgb *)ck_qt_image.scanLine(x);
     for (int y = 0; y < ck_qt_image.width(); ++y) {
@@ -200,6 +210,7 @@ io_surface *image_io::platform_image::image_preview_decoder() {
       ck_surface->buffer[((x * width + y) * 4) + 3] = alpha;
     }
   }
+  */
 
   priv->m_async_notification_promis.set_value(ck_surface);
   release();
@@ -216,7 +227,8 @@ void image_io::platform_image::emit_complete() {
   priv->m_on_ready_call(result, status);
 }
 
-void image_io::platform_image::wait_for_signal(image_io::platform_image *instance) {
+void
+image_io::platform_image::wait_for_signal(image_io::platform_image *instance) {
   std::unique_lock<std::mutex> notify_lock(priv->m_notify_lock_mutex);
   priv->m_notify_condition_variable.wait(
       notify_lock, [this] { return priv->m_shared_lock_value == 1; });
