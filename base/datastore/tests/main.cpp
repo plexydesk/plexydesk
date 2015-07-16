@@ -10,6 +10,8 @@
 #include <iostream>
 #include <thread>
 
+#include "px_bench.h"
+
 #define CK_ASSERT(condition, message)                                          \
   do {                                                                         \
     if (!(condition)) {                                                        \
@@ -182,7 +184,8 @@ void test_object_add_child() {
 }
 
 void test_save_controller_to_session(const std::string &a_controller_name) {
-  cherry_kit::data_sync *sync = new cherry_kit::data_sync("test_default_space_0");
+  cherry_kit::data_sync *sync =
+      new cherry_kit::data_sync("test_default_space_0");
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
@@ -205,7 +208,8 @@ void test_save_controller_to_session(const std::string &a_controller_name) {
 }
 
 void test_find_all() {
-  cherry_kit::data_sync *sync = new cherry_kit::data_sync("test_default_space_0");
+  cherry_kit::data_sync *sync =
+      new cherry_kit::data_sync("test_default_space_0");
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
@@ -285,6 +289,9 @@ void test_image_io_surface_create_from_file() {
   cherry_kit::image_io ck_img(0, 0);
   cherry_kit::io_surface *ck_img_surface_ref = nullptr;
 
+  PxBenchData data;
+  px_bench_run(&data);
+
   ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
                       image_io *a_img) {
     ck_img_surface_ref = ck_img.surface();
@@ -298,6 +305,9 @@ void test_image_io_surface_create_from_file() {
                     QImage::Format_ARGB32_Premultiplied);
 
     CK_ASSERT(test_img.isNull() == 0, "Expected non null qimage");
+
+    px_bench_stop(&data);
+    px_bench_print(&data, Q_FUNC_INFO);
   });
 
   ck_img.create("/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
@@ -311,34 +321,47 @@ void test_image_io_surface_preview_from_file() {
   cherry_kit::image_io ck_img(0, 0);
   cherry_kit::io_surface *ck_img_surface_ref = nullptr;
 
+  PxBenchData data;
+  px_bench_run(&data);
+
   ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
                       image_io *a_img) {
     ck_img_surface_ref = ck_img.surface();
 
     CK_ASSERT(a_status == image_io::kSuccess, "Should return a Success");
     CK_ASSERT(ck_img_surface_ref != nullptr, "Should return a Valid Surface");
-    CK_ASSERT(ck_img_surface_ref->width == 204,
-              "Expected 204" << " Got :" << ck_img_surface_ref->width);
-    CK_ASSERT(ck_img_surface_ref->height == 128,
-              "Expected 128" << " Got : " << ck_img_surface_ref->height);
+    CK_ASSERT(
+        ck_img_surface_ref->width == 204, "Expected 204"
+                                              << " Got :"
+                                              << ck_img_surface_ref->width);
+    CK_ASSERT(
+        ck_img_surface_ref->height == 128, "Expected 128"
+                                               << " Got : "
+                                               << ck_img_surface_ref->height);
     QImage test_img(ck_img_surface_ref->buffer, ck_img_surface_ref->width,
                     ck_img_surface_ref->height,
                     QImage::Format_ARGB32_Premultiplied);
 
     CK_ASSERT(test_img.isNull() == 0, "Expected non null qimage");
+
+    px_bench_stop(&data);
+    px_bench_print(&data, Q_FUNC_INFO);
   });
 
-  ck_img.preview_image("/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
+  ck_img.preview_image(
+      "/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
   std::this_thread::sleep_for(std::chrono::seconds(4));
   qDebug() << Q_FUNC_INFO << "Main thread wakeup";
 }
 
-
 void test_image_io_surface_invalid_create_from_file() {
   cherry_kit::image_io ck_img(0, 0);
   cherry_kit::io_surface *ck_img_surface_ref = nullptr;
+
+  PxBenchData data;
+  px_bench_run(&data);
 
   ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
                       image_io *a_img) {
@@ -346,12 +369,16 @@ void test_image_io_surface_invalid_create_from_file() {
     CK_ASSERT(a_status != image_io::kSuccess, "Should return a Valid Surface");
 
     CK_ASSERT(ck_img_surface_ref == nullptr, "Should return a Valid Surface");
+
+    px_bench_stop(&data);
+    px_bench_print(&data, Q_FUNC_INFO);
   });
 
   ck_img.create("/root/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
   std::this_thread::sleep_for(std::chrono::seconds(4));
+
   qDebug() << Q_FUNC_INFO << "Main thread wakeup";
 }
 
