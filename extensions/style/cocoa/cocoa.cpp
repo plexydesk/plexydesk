@@ -803,6 +803,7 @@ void CocoaStyle::drawSeperatorLine(const style_data &features,
 
 void CocoaStyle::draw_progress_bar(const style_data &features,
                                    QPainter *a_ctx) {
+    qDebug() << Q_FUNC_INFO;
   a_ctx->save();
 
   set_default_painter_hints(a_ctx);

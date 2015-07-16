@@ -36,14 +36,18 @@ public:
 
   virtual void set_size(const QSizeF &a_size);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
+  virtual QRectF boundingRect() const;
 
   virtual int max_range();
   virtual int min_range();
-public
-Q_SLOTS:
+
   void set_range(int a_min, int a_max);
-  void set_value(int a_value);
+
+  virtual void set_value(int a_value);
+  virtual int value() const;
+
   void on_value_changed(const QVariant &a_value);
+
 Q_SIGNALS:
   void contentBoundingRectChaned();
 
