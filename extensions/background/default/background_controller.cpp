@@ -41,13 +41,13 @@
 
 #include "desktopwindow.h"
 
-class BackgroundController::PrivateBackgroundController {
+class desktop_controller_impl::PrivateBackgroundController {
 public:
   PrivateBackgroundController() {}
 
   ~PrivateBackgroundController() {}
 
-  QAction *add_action(BackgroundController *controller, const QString &name,
+  QAction *add_action(desktop_controller_impl *controller, const QString &name,
                       const QString &icon, int id);
   void save_session(const QString &a_key, const QString &a_value);
 
@@ -56,23 +56,23 @@ public:
   cherry_kit::ActionList m_supported_actions;
 
   std::string m_background_texture;
-  DesktopWindow *m_background_window;
+  desktop_window *m_background_window;
 };
 
-BackgroundController::BackgroundController(QObject *object)
+desktop_controller_impl::desktop_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_ctr(new PrivateBackgroundController) {}
 
-BackgroundController::~BackgroundController() { delete o_ctr; }
+desktop_controller_impl::~desktop_controller_impl() { delete o_ctr; }
 
-void BackgroundController::init() {
+void desktop_controller_impl::init() {
   // todo : port toNativeSeperator to our datakit
   QString default_wallpaper_file = QDir::toNativeSeparators(
       cherry_kit::config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
 
   o_ctr->m_background_texture = default_wallpaper_file.toStdString();
-  o_ctr->m_background_window = new DesktopWindow();
+  o_ctr->m_background_window = new desktop_window();
   o_ctr->m_background_window->set_controller(this);
   o_ctr->m_background_window->set_background(default_wallpaper_file);
 
@@ -87,7 +87,7 @@ void BackgroundController::init() {
   insert(o_ctr->m_background_window);
 }
 
-void BackgroundController::revoke_session(const QVariantMap &args) {
+void desktop_controller_impl::revoke_session(const QVariantMap &args) {
   if (o_ctr->m_background_window)
     return;
 
@@ -105,7 +105,7 @@ void BackgroundController::revoke_session(const QVariantMap &args) {
   }
 }
 
-void BackgroundController::session_data_available(
+void desktop_controller_impl::session_data_available(
     const cherry_kit::sync_object &a_session_root) {
   if (!a_session_root.has_property("background") ||
       !a_session_root.has_property("mode"))
@@ -127,16 +127,16 @@ void BackgroundController::session_data_available(
 }
 
 void
-BackgroundController::submit_session_data(cherry_kit::sync_object *a_object) {
+desktop_controller_impl::submit_session_data(cherry_kit::sync_object *a_object) {
   a_object->set_property("background", o_ctr->m_background_texture);
   a_object->set_property("mode", "scale");
 }
 
-cherry_kit::ActionList BackgroundController::actions() const {
+cherry_kit::ActionList desktop_controller_impl::actions() const {
   return o_ctr->m_supported_actions;
 }
 
-void BackgroundController::expose_platform_desktop() {
+void desktop_controller_impl::expose_platform_desktop() {
   bool _is_seamless_set = false;
 
   if (o_ctr->m_background_window) {
@@ -168,7 +168,7 @@ void BackgroundController::expose_platform_desktop() {
         !o_ctr->m_background_window->is_seamless());
 }
 
-void BackgroundController::request_action(const QString &actionName,
+void desktop_controller_impl::request_action(const QString &actionName,
                                           const QVariantMap &data) {
   if (actionName == "Desktop") {
     if (!viewport())
@@ -196,7 +196,7 @@ void BackgroundController::request_action(const QString &actionName,
   }
 }
 
-void BackgroundController::download_image_from_url(QUrl fileUrl) {
+void desktop_controller_impl::download_image_from_url(QUrl fileUrl) {
   QuetzalSocialKit::AsyncDataDownloader *downloader =
       new QuetzalSocialKit::AsyncDataDownloader(this);
 
@@ -211,10 +211,10 @@ void BackgroundController::download_image_from_url(QUrl fileUrl) {
   downloader->setUrl(fileUrl);
 }
 
-void BackgroundController::set_desktop_scale_type(
-    DesktopWindow::DesktopScalingMode a_desktop_mode) {}
+void desktop_controller_impl::set_desktop_scale_type(
+    desktop_window::DesktopScalingMode a_desktop_mode) {}
 
-void BackgroundController::handle_drop_event(cherry_kit::widget * /*widget*/,
+void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
                                              QDropEvent *event) {
   if (event->mimeData()->hasImage()) {
     QImage qt_image_data =
@@ -248,14 +248,14 @@ void BackgroundController::handle_drop_event(cherry_kit::widget * /*widget*/,
   }
 }
 
-void BackgroundController::set_view_rect(const QRectF &rect) {
+void desktop_controller_impl::set_view_rect(const QRectF &rect) {
   if (o_ctr->m_background_window) {
     o_ctr->m_background_window->resize(rect.width(), rect.height());
     o_ctr->m_background_window->setPos(rect.x(), rect.y());
   }
 }
 
-void BackgroundController::sync_image_data_to_disk(const QByteArray &data,
+void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
                                                    const QString &source,
                                                    bool a_local_file) {
   QuetzalSocialKit::AsyncImageCreator *ck_image_service =
@@ -272,7 +272,7 @@ void BackgroundController::sync_image_data_to_disk(const QByteArray &data,
   ck_image_service->start();
 }
 
-void BackgroundController::sync_image_data_to_disk(const QImage &data,
+void desktop_controller_impl::sync_image_data_to_disk(const QImage &data,
                                                    const QString &source,
                                                    bool saveLocally) {
   QuetzalSocialKit::AsyncImageCreator *ck_async_image_service =
@@ -289,7 +289,7 @@ void BackgroundController::sync_image_data_to_disk(const QImage &data,
   ck_async_image_service->start();
 }
 
-void BackgroundController::image_locally_available() {
+void desktop_controller_impl::image_locally_available() {
   QuetzalSocialKit::AsyncDataDownloader *downloader =
       qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
 
@@ -300,7 +300,7 @@ void BackgroundController::image_locally_available() {
   }
 }
 
-void BackgroundController::on_image_data_available() {
+void desktop_controller_impl::on_image_data_available() {
   QuetzalSocialKit::AsyncImageCreator *ck_image_service =
       qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
 
@@ -335,17 +335,17 @@ void BackgroundController::on_image_data_available() {
   }
 }
 
-void BackgroundController::set_desktop_scale_type(const QString &a_action) {}
+void desktop_controller_impl::set_desktop_scale_type(const QString &a_action) {}
 
-QString BackgroundController::icon() const {
+QString desktop_controller_impl::icon() const {
   return QString("pd_home_sym_icon.png");
 }
 
-QString BackgroundController::label() const { return QString(tr("Desktop")); }
+QString desktop_controller_impl::label() const { return QString(tr("Desktop")); }
 
-void BackgroundController::prepare_removal() {}
+void desktop_controller_impl::prepare_removal() {}
 
-void BackgroundController::sync_session_data(const QString &key,
+void desktop_controller_impl::sync_session_data(const QString &key,
                                              const QVariant &value) {
   if (!viewport())
     return;
@@ -353,8 +353,8 @@ void BackgroundController::sync_session_data(const QString &key,
   viewport()->update_session_value(controller_name(), "", "");
 }
 
-QAction *BackgroundController::PrivateBackgroundController::add_action(
-    BackgroundController *controller, const QString &name, const QString &icon,
+QAction *desktop_controller_impl::PrivateBackgroundController::add_action(
+    desktop_controller_impl *controller, const QString &name, const QString &icon,
     int id) {
   QAction *qt_action = new QAction(controller);
   qt_action->setText(name);
@@ -366,8 +366,8 @@ QAction *BackgroundController::PrivateBackgroundController::add_action(
   return qt_action;
 }
 
-void BackgroundController::PrivateBackgroundController::save_session(
+void desktop_controller_impl::PrivateBackgroundController::save_session(
     const QString &a_key, const QString &a_value) {}
 
-void BackgroundController::PrivateBackgroundController::updateProgress(
+void desktop_controller_impl::PrivateBackgroundController::updateProgress(
     float progress) {}

@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <ck_image_io.h>
 
-class DesktopWindow::PrivateDesktopWindow {
+class desktop_window::PrivateDesktopWindow {
 public:
   PrivateDesktopWindow()
       : m_background_buffer(0), m_background_width(0), m_background_height(0),
@@ -24,28 +24,28 @@ public:
   DesktopScalingMode m_desktop_mode;
 };
 
-void DesktopWindow::reset_window_background() {
+void desktop_window::reset_window_background() {
   memset(o_window->m_background_buffer, 0,
          (4 * o_window->m_background_height * o_window->m_background_width));
 }
 
-bool DesktopWindow::is_seamless() { return o_window->m_seamless; }
+bool desktop_window::is_seamless() { return o_window->m_seamless; }
 
-void DesktopWindow::set_seamless(bool mode) {
+void desktop_window::set_seamless(bool mode) {
   o_window->m_seamless = mode;
   update();
 }
 
-void DesktopWindow::set_desktop_scale_mode(
-    DesktopWindow::DesktopScalingMode a_desktop_mode) {
+void desktop_window::set_desktop_scale_mode(
+    desktop_window::DesktopScalingMode a_desktop_mode) {
   o_window->m_desktop_mode = a_desktop_mode;
 }
 
-DesktopWindow::DesktopScalingMode DesktopWindow::desktop_scale_mode() const {
+desktop_window::DesktopScalingMode desktop_window::desktop_scale_mode() const {
   return o_window->m_desktop_mode;
 }
 
-DesktopWindow::DesktopWindow()
+desktop_window::desktop_window()
     : cherry_kit::window(0), o_window(new PrivateDesktopWindow) {
   set_window_type(cherry_kit::window::kFramelessWindow);
 
@@ -79,9 +79,9 @@ DesktopWindow::DesktopWindow()
   });
 }
 
-DesktopWindow::~DesktopWindow() { delete o_window; }
+desktop_window::~desktop_window() { delete o_window; }
 
-void DesktopWindow::set_background(const QString &a_image_name) {
+void desktop_window::set_background(const QString &a_image_name) {
   /*
   QImage background(a_image_name);
   p_window->m_background_width = background.width();
@@ -101,12 +101,12 @@ void DesktopWindow::set_background(const QString &a_image_name) {
   o_window->m_image_service->create(a_image_name.toStdString());
 }
 
-void DesktopWindow::set_background(const QImage &a_image_name) {
+void desktop_window::set_background(const QImage &a_image_name) {
   o_window->m_background_texture = a_image_name;
   update();
 }
 
-void DesktopWindow::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
+void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   if (o_window->m_seamless) {
     a_ctx->setBackgroundMode(Qt::TransparentMode);
     a_ctx->setCompositionMode(QPainter::CompositionMode_Source);
