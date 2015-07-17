@@ -78,8 +78,8 @@ public:
     CFRelease(appUrlRef);
     CFRelease(macPath);
 
-    CherryKit::ExtensionManager *loader =
-            CherryKit::ExtensionManager::init(
+    cherry_kit::extension_manager *loader =
+            cherry_kit::extension_manager::init(
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +
                                          QLatin1String(
                                              "/Contents/PlugIns/plexydesk/data/"
