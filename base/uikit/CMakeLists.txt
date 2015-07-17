@@ -132,7 +132,7 @@ if(APPLE)
 
     find_library(COCOA_LIBRARY Cocoa)
     find_library(GLUT_LIBRARY GLUT)
-    find_library(OpenGL_LIBRARY )
+    find_library(OpenGL_LIBRARY OpenGL)
 
     mark_as_advanced(COCOA_LIBRARY
         GLUT_LIBRARY

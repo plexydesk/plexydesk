@@ -266,7 +266,7 @@ void desktop_settings_dialog::invoke_image_loader() const {
     ck_image_service->preview_image(a_file);
   });
 
-  current_file_list.erase(std::end(current_file_list));
+  //current_file_list.erase(std::end(current_file_list));
 
   if (priv->m_progress_window) {
     priv->m_progress_window->hide();
@@ -318,7 +318,8 @@ desktop_settings_dialog::PrivatePhotoSearch::locate_system_images() {
     }
   });
 
-  image_path_list.erase(std::end(image_path_list));
+  //if (image_path_list.size() > 0)
+   // image_path_list.erase(std::end(image_path_list));
 
   return rv_list;
 }
