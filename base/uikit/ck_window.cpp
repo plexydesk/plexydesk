@@ -119,7 +119,11 @@ void window::set_window_content(widget *a_widget_ptr) {
   if (o_window->m_window_type == kApplicationWindow) {
     o_window->m_window_content->setPos(0.0, sWindowTitleHeight);
     setGeometry(content_geometry);
-  } else {
+  } else if(o_window->m_window_type == kNotificationWindow) {
+    o_window->m_window_content->setPos(0.0, sWindowTitleHeight);
+    o_window->m_window_close_button->hide();
+    setGeometry(content_geometry);
+  }else {
     o_window->m_window_close_button->hide();
     setGeometry(o_window->m_window_content->geometry());
     o_window->m_window_content->setPos(0, 0);
