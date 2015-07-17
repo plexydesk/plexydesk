@@ -126,6 +126,8 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_image_view->setPos(QPointF());
 
   priv->m_progress_window = new cherry_kit::window(priv->m_window);
+  priv->m_progress_window->set_window_type(
+              cherry_kit::window::kNotificationWindow);
   priv->m_progress_window->setGeometry(QRectF(0, 0, 320, 240));
   priv->m_progress_widget =
       new cherry_kit::progress_bar(priv->m_progress_window);
