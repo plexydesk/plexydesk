@@ -5,7 +5,7 @@
 
 class QPainter;
 
-class DesktopWindow : public cherry_kit::window {
+class desktop_window : public cherry_kit::window {
 public:
   typedef enum {
     kNone,
@@ -17,8 +17,8 @@ public:
     kFitHeightBackground
   } DesktopScalingMode;
 
-  DesktopWindow();
-  virtual ~DesktopWindow();
+  desktop_window();
+  virtual ~desktop_window();
 
   void set_background(const QString &a_image_name);
   void set_background(const QImage &a_image_name);

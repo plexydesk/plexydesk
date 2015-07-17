@@ -31,7 +31,7 @@ QSharedPointer<cherry_kit::desktop_controller_interface>
 ClassicBackdrop::controller() {
   QSharedPointer<cherry_kit::desktop_controller_interface> obj =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new BackgroundController(), &QObject::deleteLater);
+          new desktop_controller_impl(), &QObject::deleteLater);
 
   return obj;
 }
