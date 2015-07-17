@@ -253,7 +253,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
                                            ck_window->geometry().height()),
             cherry_kit::space::kCenterOnWindow);
         cherry_kit::desktop_dialog_ref activity = ck_space->open_desktop_dialog(
-            "timezone", "TimeZone", _activity_window_location,
+            "timezone_dialog", "TimeZone", _activity_window_location,
             QRectF(0, 0, 240, 320.0), QVariantMap());
 
         activity->on_action_completed([=](const QVariantMap &a_data) {

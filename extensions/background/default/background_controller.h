@@ -28,11 +28,12 @@
 #include "classicbackgroundrender.h"
 #include "desktopwindow.h"
 
-class BackgroundController : public cherry_kit::desktop_controller_interface {
+class desktop_controller_impl
+    : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
 public:
-  BackgroundController(QObject *object = 0);
-  virtual ~BackgroundController();
+  desktop_controller_impl(QObject *object = 0);
+  virtual ~desktop_controller_impl();
 
   void init();
 
@@ -49,8 +50,7 @@ public:
 
   void prepare_removal();
 
-private
-Q_SLOTS:
+private Q_SLOTS:
   void image_locally_available();
   void on_image_data_available();
 
@@ -68,7 +68,8 @@ private:
   void sync_image_data_to_disk(const QImage &data, const QString &source,
                                bool saveLocally = false);
 
-  void set_desktop_scale_type(DesktopWindow::DesktopScalingMode a_desktop_mode);
+  void
+  set_desktop_scale_type(desktop_window::DesktopScalingMode a_desktop_mode);
   void set_desktop_scale_type(const QString &a_action);
 
   void sync_session_data(const QString &key, const QVariant &value);
