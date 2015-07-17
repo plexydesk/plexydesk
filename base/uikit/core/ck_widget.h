@@ -68,6 +68,7 @@ public:
   widget(widget *a_parent_ptr = 0);
   virtual ~widget();
 
+  virtual QRectF contents_geometry() const;
   virtual void setGeometry(const QRectF &a_rect);
   virtual QRectF boundingRect() const;
 

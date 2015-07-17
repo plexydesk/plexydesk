@@ -85,8 +85,13 @@ widget::~widget() {
   delete p_widget;
 }
 
-QRectF widget::boundingRect() const {
+QRectF widget::contents_geometry() const
+{
   return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
+}
+
+QRectF widget::boundingRect() const {
+    return contents_geometry();
 }
 
 void widget::set_widget_flag(int a_flags, bool a_enable) {}
