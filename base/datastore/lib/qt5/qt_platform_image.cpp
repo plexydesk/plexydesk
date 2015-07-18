@@ -25,8 +25,6 @@ public:
 
   std::future<io_surface *> m_async_task_result;
 
-  std::promise<io_surface *> m_async_notification_promis;
-
   std::condition_variable m_notify_condition_variable;
   std::mutex m_notify_lock_mutex;
   int m_shared_lock_value;
@@ -35,7 +33,6 @@ public:
 image_io::platform_image::platform_image() : priv(new private_platform_image) {}
 
 image_io::platform_image::~platform_image() {
-  // release();
   delete priv;
 }
 
@@ -45,7 +42,15 @@ void image_io::platform_image::load_from_file(const std::string &a_file_name) {
       std::launch::async, &image_io::platform_image::image_decoder, this);
 
   QCoreApplication::processEvents();
-  wait_for_signal(this);
+
+  io_surface *result = priv->m_async_task_result.get();
+  image_io::buffer_load_status_t status = image_io::kSuccess;
+
+  if (!result)
+    status = image_io::kDataError;
+
+  priv->m_on_ready_call(result, status);
+
 }
 
 void
@@ -55,7 +60,13 @@ image_io::platform_image::load_image_preview(const std::string &a_file_name) {
       std::async(std::launch::async,
                  &image_io::platform_image::image_preview_decoder, this);
   QCoreApplication::processEvents();
-  wait_for_signal(this);
+   io_surface *result = priv->m_async_task_result.get();
+  image_io::buffer_load_status_t status = image_io::kSuccess;
+
+  if (!result)
+    status = image_io::kDataError;
+
+  priv->m_on_ready_call(result, status);
 }
 
 void image_io::platform_image::on_surface_ready(
@@ -75,8 +86,7 @@ io_surface *image_io::platform_image::image_decoder() {
   io_surface *ck_surface = nullptr;
 
   if (ck_qt_image.isNull()) {
-    priv->m_async_notification_promis.set_value(ck_surface);
-    release();
+    qDebug() << Q_FUNC_INFO << "Error Loading image";
     return ck_surface;
   }
 
@@ -111,16 +121,12 @@ io_surface *image_io::platform_image::image_decoder() {
   }
   */
 
-  priv->m_async_notification_promis.set_value(ck_surface);
-  release();
   return ck_surface;
 }
 
 io_surface *image_io::platform_image::image_preview_decoder() {
   if (!priv->m_on_ready_call) {
     qWarning() << Q_FUNC_INFO << "Error : NO callback";
-    priv->m_async_notification_promis.set_value(nullptr);
-    release();
     return nullptr;
   }
 
@@ -149,8 +155,6 @@ io_surface *image_io::platform_image::image_preview_decoder() {
 
     if (!cache_dir.exists()) {
       if (!QDir::home().mkdir(cache_path)) {
-        priv->m_async_notification_promis.set_value(nullptr);
-        release();
         return nullptr;
       }
     }
@@ -158,8 +162,6 @@ io_surface *image_io::platform_image::image_preview_decoder() {
     if (!thumbnail_dir.exists()) {
       if (!QDir::home().mkdir(thumbnail_path)) {
         qDebug() << Q_FUNC_INFO << "Failed to Create :" << thumbnail_path;
-        priv->m_async_notification_promis.set_value(nullptr);
-        release();
         return nullptr;
       }
     }
@@ -170,15 +172,11 @@ io_surface *image_io::platform_image::image_preview_decoder() {
              QDir::toNativeSeparators(thumbnail_path + "/" + cache_file_name) +
              ".png")) {
       qWarning() << Q_FUNC_INFO << "Failed to Create :" << cache_file_name;
-      priv->m_async_notification_promis.set_value(nullptr);
-      release();
       return nullptr;
     }
   }
 
   if (ck_qt_image.isNull()) {
-    priv->m_async_notification_promis.set_value(nullptr);
-    release();
     return nullptr;
   }
 
@@ -212,13 +210,11 @@ io_surface *image_io::platform_image::image_preview_decoder() {
   }
   */
 
-  priv->m_async_notification_promis.set_value(ck_surface);
-  release();
   return ck_surface;
 }
 
 void image_io::platform_image::emit_complete() {
-  io_surface *result = priv->m_async_notification_promis.get_future().get();
+  io_surface *result = priv->m_async_task_result.get();
   image_io::buffer_load_status_t status = image_io::kSuccess;
 
   if (!result)
