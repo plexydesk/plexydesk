@@ -45,7 +45,7 @@ public:
 
 private:
   class PrivateIconGrid;
-  PrivateIconGrid *const o_desktop_dialog;
+  PrivateIconGrid *const priv;
 };
 
 #endif

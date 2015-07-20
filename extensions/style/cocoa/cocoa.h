@@ -74,6 +74,8 @@ private:
   void draw_progress_bar(const style_data &features, QPainter *a_ctx);
   void drawVListItem(const style_data &features, QPainter *painter);
   void draw_image_button(const style_data &features, QPainter *a_ctx);
+  void draw_scrollbar(const style_data &features, QPainter *a_ctx);
+  void draw_scrollbar_slider(const style_data &features, QPainter *a_ctx);
 
   void draw_label(const style_data &a_features, QPainter *a_ctx);
 };

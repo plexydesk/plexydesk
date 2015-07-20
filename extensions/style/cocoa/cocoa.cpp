@@ -92,7 +92,9 @@ void CocoaStyle::load_default_widget_style_properties() {
   d->m_type_map["window_frame"] = 21;
   d->m_type_map["window_title"] = 22;
   d->m_type_map["window_resize_handle"] = 23;
-  d->m_type_map["image_button"] = 23;
+  d->m_type_map["image_button"] = 24;
+  d->m_type_map["scrollbar"] = 25;
+  d->m_type_map["scrollbar_slider"] = 26;
 
   // style attributes. this could be read from a xml file or a stylesheet.
   QVariantMap _frame_attributes;
@@ -169,8 +171,14 @@ void CocoaStyle::draw(const QString &type, const style_data &options,
   case 21:
     draw_window_frame(options, painter);
     break;
-  case 23:
+  case 24:
     draw_image_button(options, painter);
+    break;
+  case 25:
+    draw_scrollbar(options, painter);
+    break;
+  case 26:
+    draw_scrollbar_slider(options, painter);
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Unknown Element:" << type;
@@ -803,7 +811,6 @@ void CocoaStyle::drawSeperatorLine(const style_data &features,
 
 void CocoaStyle::draw_progress_bar(const style_data &features,
                                    QPainter *a_ctx) {
-    qDebug() << Q_FUNC_INFO;
   a_ctx->save();
 
   set_default_painter_hints(a_ctx);
@@ -922,6 +929,35 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
   d->set_default_font_size(a_ctx, 11);
   a_ctx->drawText(text_rect, a_features.text_data,
                   Qt::AlignLeft | Qt::AlignVCenter);
+  a_ctx->restore();
+}
+
+void CocoaStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) {
+  QRectF rect = a_data.geometry;
+
+  a_ctx->save();
+  a_ctx->setOpacity(0.9);
+  a_ctx->setRenderHints(
+      QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
+  QPainterPath path;
+  path.addRoundedRect(rect, 0, 0);
+  a_ctx->fillPath(path,
+                  d->color(cherry_kit::resource_manager::kLightPrimaryColor));
+  a_ctx->restore();
+}
+
+void CocoaStyle::draw_scrollbar_slider(const style_data &a_data,
+                                       QPainter *a_ctx) {
+  QRectF rect(2, a_data.geometry.y(), a_data.geometry.width() - 8,
+              a_data.geometry.height());
+  a_ctx->save();
+  a_ctx->setOpacity(0.5);
+  a_ctx->setRenderHints(
+      QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
+  QPainterPath path;
+  path.addRoundedRect(rect, 3, 3);
+  a_ctx->fillPath(path,
+                  d->color(cherry_kit::resource_manager::kTextBackground));
   a_ctx->restore();
 }
 

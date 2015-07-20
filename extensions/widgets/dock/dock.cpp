@@ -310,7 +310,7 @@ desktop_dialog_ref desktop_panel_controller_impl::createActivity(
 
   cherry_kit::desktop_dialog_ref _intent = viewport()->open_desktop_dialog(
       activity, title, _activity_location,
-      QRectF(0, _activity_location.y(), 484, 420), dataItem);
+      QRectF(0, _activity_location.y(), 320, 320), dataItem);
   _intent->set_controller(cherry_kit::desktop_controller_ref(this));
   _intent->set_activity_attribute("data", QVariant(dataItem));
   _intent->set_activity_attribute("auto_scale", QVariant(1));
