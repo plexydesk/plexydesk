@@ -60,12 +60,14 @@ public:
   void set_content_margin(int a_left, int a_right, int a_top, int a_bottom);
   void set_content_spacing(int a_distance);
 
+  void set_enable_scrollbars(bool a_state);
+
+  void adjust_scrollbar(const QRectF &a_rect);
 protected:
   virtual void insert(widget *a_widget_ptr);
   virtual void remove(widget *a_widget_ptr);
 
-  bool sceneEvent(QEvent *e);
-  bool event(QEvent *e);
+  void check_needs_scrolling();
 
   void insert_to_list_view(widget *a_widget_ptr);
   void remove_from_list_view(widget *a_widget_ptr);
