@@ -45,10 +45,12 @@ void progress_bar::set_size(const QSizeF &size) {
   update();
 }
 
+/*
 QSizeF progress_bar::sizeHint(Qt::SizeHint which,
                               const QSizeF &a_constraint) const {
   return QSizeF(priv->m_width, priv->m_height);
 }
+*/
 
 QRectF progress_bar::contents_geometry() const {
   return QRectF(0, 0, priv->m_width, priv->m_height);

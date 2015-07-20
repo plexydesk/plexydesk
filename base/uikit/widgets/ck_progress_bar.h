@@ -26,14 +26,11 @@
 
 namespace cherry_kit {
 class DECL_UI_KIT_EXPORT progress_bar : public widget {
-  Q_OBJECT
 public:
   explicit progress_bar(widget *a_parent_ptr = 0);
   virtual ~progress_bar();
 
   virtual void set_size(const QSizeF &a_size);
-
-  virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
   virtual QRectF contents_geometry() const;
 
   virtual int max_range();

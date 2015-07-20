@@ -58,10 +58,10 @@ private:
 
 class icon_dialog::PrivateIconGrid {
 public:
-  PrivateIconGrid() : m_activity_window_ptr(0) {}
+  PrivateIconGrid() : window_ref(0) {}
   ~PrivateIconGrid() { qDeleteAll(m_action_list); }
 
-  cherry_kit::window *m_activity_window_ptr;
+  cherry_kit::window *window_ref;
   cherry_kit::item_view *m_grid_view;
 
   QString mSelection;
@@ -75,39 +75,36 @@ public:
 };
 
 icon_dialog::icon_dialog(QGraphicsObject *object)
-    : cherry_kit::desktop_dialog(object),
-      o_desktop_dialog(new PrivateIconGrid) {}
+    : cherry_kit::desktop_dialog(object), priv(new PrivateIconGrid) {}
 
 icon_dialog::~icon_dialog() {
   qDebug() << Q_FUNC_INFO;
-  delete o_desktop_dialog;
+  delete priv;
 }
 
 void icon_dialog::create_window(const QRectF &window_geometry,
-                                     const QString &window_title,
-                                     const QPointF &window_pos) {
-  if (o_desktop_dialog->m_activity_window_ptr) {
+                                const QString &window_title,
+                                const QPointF &window_pos) {
+  if (priv->window_ref) {
     return;
   }
 
-  o_desktop_dialog->m_auto_scale_frame = false;
+  priv->m_auto_scale_frame = false;
 
-  o_desktop_dialog->m_activity_window_ptr = new cherry_kit::window();
-  o_desktop_dialog->m_activity_window_ptr->set_window_title(window_title);
-  o_desktop_dialog->m_activity_window_ptr->setGeometry(window_geometry);
+  priv->window_ref = new cherry_kit::window();
+  priv->window_ref->set_window_title(window_title);
+  priv->window_ref->setGeometry(window_geometry);
 
-  o_desktop_dialog->m_grid_view =
-      new cherry_kit::item_view(o_desktop_dialog->m_activity_window_ptr,
-                               cherry_kit::item_view::kGridModel);
-  o_desktop_dialog->m_grid_view->set_view_geometry(window_geometry);
-  o_desktop_dialog->m_grid_view->on_item_removed([](
-      cherry_kit::model_view_item *a_item) {
+  priv->m_grid_view = new cherry_kit::item_view(
+      priv->window_ref, cherry_kit::item_view::kGridModel);
+  priv->m_grid_view->set_view_geometry(window_geometry);
+
+  priv->m_grid_view->on_item_removed([](cherry_kit::model_view_item *a_item) {
     if (a_item)
       delete a_item;
   });
 
-  o_desktop_dialog->m_activity_window_ptr->set_window_content(
-      o_desktop_dialog->m_grid_view);
+  priv->window_ref->set_window_content(priv->m_grid_view);
 
   on_arguments_updated([this]() {
     if (has_attribute("data")) {
@@ -116,17 +113,17 @@ void icon_dialog::create_window(const QRectF &window_geometry,
       foreach(const QVariant & var, data.values()) {
         QVariantMap _item = var.toMap();
         Action *l_action_item = new Action;
-        o_desktop_dialog->m_action_list.append(l_action_item);
+        priv->m_action_list.append(l_action_item);
         l_action_item->onActionActivated([this](const Action *aAction) {
-          o_desktop_dialog->m_activity_result.clear();
-          o_desktop_dialog->m_activity_result["controller"] =
-              aAction->controller_name();
-          o_desktop_dialog->m_activity_result["action"] = aAction->label();
-          o_desktop_dialog->mSelection = aAction->label();
+          priv->m_activity_result.clear();
+          priv->m_activity_result["controller"] = aAction->controller_name();
+          priv->m_activity_result["action"] = aAction->label();
+          priv->mSelection = aAction->label();
           update_action();
         });
 
-        cherry_kit::model_view_item *grid_item = new cherry_kit::model_view_item();
+        cherry_kit::model_view_item *grid_item =
+            new cherry_kit::model_view_item();
 
         grid_item->on_view_removed([](cherry_kit::model_view_item *a_item) {
           if (a_item && a_item->view()) {
@@ -140,28 +137,27 @@ void icon_dialog::create_window(const QRectF &window_geometry,
             _item["icon"].toString(), _item["label"].toString(),
             _item["controller"].toString()));
 
-        o_desktop_dialog->m_grid_view->insert(grid_item);
-        o_desktop_dialog->m_grid_view->updateGeometry();
-
-        QRectF _content_rect = o_desktop_dialog->m_grid_view->boundingRect();
+        priv->m_grid_view->insert(grid_item);
+        QRectF _content_rect = priv->m_grid_view->boundingRect();
 
         set_geometry(_content_rect);
 
-        o_desktop_dialog->m_activity_window_ptr->setGeometry(_content_rect);
+        priv->window_ref->setGeometry(_content_rect);
       }
     }
 
     if (has_attribute("auto_scale")) {
-      o_desktop_dialog->m_auto_scale_frame =
-          attributes()["auto_scale"].toBool();
+      priv->m_auto_scale_frame = attributes()["auto_scale"].toBool();
     }
 
-    if (o_desktop_dialog->m_auto_scale_frame) {
-      QRectF _content_rect = o_desktop_dialog->m_grid_view->boundingRect();
+    if (priv->m_auto_scale_frame) {
+      QRectF _content_rect = priv->m_grid_view->boundingRect();
       _content_rect.setWidth(_content_rect.width() + 8);
       _content_rect.setHeight(_content_rect.height() + 8);
-      o_desktop_dialog->m_activity_window_ptr->resize(_content_rect.width(),
-                                                      _content_rect.height());
+
+      priv->m_grid_view->set_view_geometry(_content_rect);
+      priv->m_grid_view->setGeometry(_content_rect);
+      priv->window_ref->resize(_content_rect.width(), _content_rect.height());
     }
   });
 
@@ -169,23 +165,21 @@ void icon_dialog::create_window(const QRectF &window_geometry,
 }
 
 QVariantMap icon_dialog::result() const {
-  o_desktop_dialog->m_activity_result["action"] = o_desktop_dialog->mSelection;
-  return o_desktop_dialog->m_activity_result;
+  priv->m_activity_result["action"] = priv->mSelection;
+  return priv->m_activity_result;
 }
 
-window *icon_dialog::dialog_window() const {
-  return o_desktop_dialog->m_activity_window_ptr;
-}
+window *icon_dialog::dialog_window() const { return priv->window_ref; }
 
 void icon_dialog::cleanup() {
-  if (o_desktop_dialog->m_grid_view)
-    o_desktop_dialog->m_grid_view->clear();
+  if (priv->m_grid_view)
+    priv->m_grid_view->clear();
 
-  if (o_desktop_dialog->m_activity_window_ptr) {
-    delete o_desktop_dialog->m_activity_window_ptr;
+  if (priv->window_ref) {
+    delete priv->window_ref;
   }
 
-  o_desktop_dialog->m_activity_window_ptr = 0;
+  priv->window_ref = 0;
 }
 
 /// action class impl

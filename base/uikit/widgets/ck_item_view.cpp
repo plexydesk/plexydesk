@@ -6,16 +6,19 @@
 #include <QGraphicsGridLayout>
 
 #include <QScroller>
+#include <ck_scrollbar.h>
 
 namespace cherry_kit {
 
 class item_view::PrivateModelView {
 public:
-  PrivateModelView() {}
+  PrivateModelView() : m_needs_scrollbars(0) {}
   ~PrivateModelView() {}
 
   ModelType m_model_view_type;
   QGraphicsWidget *m_scroll_frame;
+  cherry_kit::scrollbar *m_verticle_scrollbar;
+  bool m_needs_scrollbars;
 
   QGraphicsLinearLayout *m_list_layout;
   QGraphicsGridLayout *m_grid_layout;
@@ -40,10 +43,27 @@ void item_view::set_content_spacing(int a_distance) {
   }
 }
 
+void item_view::set_enable_scrollbars(bool a_state) {
+  d->m_needs_scrollbars = a_state;
+
+  if (a_state)
+    d->m_verticle_scrollbar->show();
+  else
+    d->m_verticle_scrollbar->hide();
+}
+
 item_view::item_view(widget *parent, ModelType a_model_type)
     : widget(parent), d(new PrivateModelView) {
   d->m_model_view_type = a_model_type;
   d->m_scroll_frame = new QGraphicsWidget(this);
+
+  d->m_verticle_scrollbar = new scrollbar(this);
+  d->m_verticle_scrollbar->setZValue(d->m_scroll_frame->zValue() + 1000);
+  d->m_verticle_scrollbar->hide();
+
+  d->m_verticle_scrollbar->on_value_changed([this](int value) {
+    d->m_scroll_frame->setPos(d->m_scroll_frame->x(), value);
+  });
 
   if (d->m_model_view_type == kListModel) {
     d->m_list_layout = new QGraphicsLinearLayout(d->m_scroll_frame);
@@ -64,11 +84,11 @@ item_view::item_view(widget *parent, ModelType a_model_type)
   setFlag(QGraphicsItem::ItemIsFocusable, true);
   setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
 
-  QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
+  // QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
 }
 
 item_view::~item_view() {
-  QScroller::ungrabGesture(this);
+  // QScroller::ungrabGesture(this);
   delete d;
 }
 
@@ -80,12 +100,20 @@ void item_view::insert_to_list_view(widget *a_widget_ptr) {
   d->m_list_layout->activate();
 
   d->m_scroll_frame->setGeometry(d->m_list_layout->geometry());
+
+  d->m_verticle_scrollbar->set_maximum_value(
+      d->m_list_layout->contentsRect().height());
 }
 
 void item_view::remove_from_list_view(widget *a_widget_ptr) {
   if (!d->m_list_layout)
     return;
   d->m_list_layout->removeItem(a_widget_ptr);
+  d->m_list_layout->updateGeometry();
+  d->m_list_layout->activate();
+
+  d->m_verticle_scrollbar->set_maximum_value(
+      d->m_list_layout->contentsRect().height());
 }
 
 void item_view::insert_to_grid_view(widget *a_widget_ptr) {
@@ -103,8 +131,12 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
 
   d->m_grid_layout->activate();
   d->m_grid_layout->updateGeometry();
-
   d->m_scroll_frame->setGeometry(d->m_grid_layout->geometry());
+
+  d->m_verticle_scrollbar->set_maximum_value(
+      d->m_grid_layout->geometry().height());
+
+  check_needs_scrolling();
 }
 
 void item_view::insert_to_table_view(widget *a_widget_ptr) {}
@@ -133,6 +165,7 @@ void item_view::insert(widget *a_widget_ptr) {
     break;
   }
 
+  check_needs_scrolling();
   update();
 }
 
@@ -221,18 +254,52 @@ void item_view::clear() {
 
 void item_view::set_view_geometry(const QRectF &a_rect) {
   d->m_viewport_geometry = a_rect;
-  if (d->m_model_view_type == kGridModel)
-    d->m_grid_layout->setGeometry(a_rect);
+  // if (d->m_model_view_type == kGridModel)
+
+  d->m_scroll_frame->setGeometry(a_rect);
+  d->m_verticle_scrollbar->set_size(QSizeF(16, a_rect.height()));
+
+  int page_step = a_rect.height();
+
+  if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
+    d->m_verticle_scrollbar->set_maximum_value(
+        d->m_grid_layout->contentsRect().height());
+  }
+
+  d->m_verticle_scrollbar->set_page_step(20);
+
+  adjust_scrollbar(a_rect);
+  check_needs_scrolling();
 }
 
-QRectF item_view::boundingRect() const {
-  if (d->m_model_view_type == kGridModel)
-    return d->m_grid_layout->contentsRect();
+QRectF item_view::boundingRect() const { return d->m_viewport_geometry; }
 
-  return d->m_viewport_geometry;
+void item_view::check_needs_scrolling() {
+  if (!d->m_needs_scrollbars)
+    return;
+
+  if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
+    int viewport_hight = d->m_viewport_geometry.height();
+    int content_height = d->m_grid_layout->geometry().height();
+
+    if (viewport_hight < content_height)
+      d->m_needs_scrollbars = false;
+    else
+      d->m_needs_scrollbars = true;
+  }
 }
 
-void item_view::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
+void item_view::adjust_scrollbar(const QRectF &a_rect) {
+  QPointF scrollbar_pos = QPointF(a_rect.width() - 16, a_rect.y());
+  d->m_verticle_scrollbar->setPos(scrollbar_pos);
+}
+
+void item_view::setGeometry(const QRectF &a_rect) {
+  setPos(a_rect.topLeft());
+
+  adjust_scrollbar(a_rect);
+  check_needs_scrolling();
+}
 
 QSizeF item_view::sizeHint(Qt::SizeHint which,
                            const QSizeF &a_constraint) const {
@@ -252,7 +319,7 @@ item_view::on_item_removed(std::function<void(model_view_item *)> a_handler) {
 
   d->m_item_remove_handler = a_handler;
 }
-
+/*
 bool item_view::event(QEvent *e) {
   switch (e->type()) {
   case QEvent::GraphicsSceneMouseDoubleClick: {
@@ -307,6 +374,7 @@ bool item_view::sceneEvent(QEvent *e) {
   }
   return QGraphicsObject::sceneEvent(e);
 }
+*/
 }
 /*
   example:
