@@ -1,0 +1,298 @@
+<html>
+<head>
+	<meta name="p:domain_verify" content="0a1508a6f57332f7238dfebe8c27f7d9"/>
+	<meta name="google-site-verification" content="eLBt2BbeFzprDJXteBorZLCixQWeFsl4aIyV-6x9-Wo" />
+	<title>PlexyDesk Software Development Kit</title>
+	<meta charset='utf-8'>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta name="keywords" content="Mac OS X, Linux, Windows, FreeBSD, Timekeeping, Modern, Desktop Manager, Desktop Wallpaper, Wallpaper, Task, Management, Task Management">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href='http://fonts.googleapis.com/css?family=Pacifico|Josefin+Sans:600,600italic,700italic,700,400italic|Shojumaru|PT+Sans' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Montez' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,900,700,600,500,300,200' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="/static/stylesheets/pygment_trac.css" media="screen" />
+
+	<link rel="stylesheet" type="text/css" href="/static/ui/apple/apple-slide.css">
+
+
+	<link rel="stylesheet" type="text/css" class="ui" href="/static/semantic/dist/semantic.min.css">
+
+	<script src="/static/js/jquery.js"></script>
+	<script src="/static/ui/packaged/javascript/semantic.min.js"></script>
+
+</head>
+
+<body class="body">
+	<!-- Top Menu -->
+	
+
+	
+	
+
+	<div class="ui blue three item inverted menu">
+		<!-- <a class="item" onClick="$('.ui.sidebar').sidebar('toggle')"> </a>-->
+		<a href="/" class="item">
+			<i class="home icon"></i>
+			PlexyDesk 
+		</a>
+
+		<a class="item" href="/discover/">
+			<i class="lightning icon"></i>
+			Discover
+		</a>
+
+		<a class="item" href="/download/">
+			<i class="download icon"></i>
+			Download
+		</a>
+
+		<a class="item" href="/help" >
+			<i class="magic icon"></i>
+			Goodies
+		</a>
+
+		<a class="item" href="/develop" >
+			<i class="github icon"></i>
+			Develop
+		</a>
+
+		<a class="item" href="/team/">
+			<i class="doctor icon"></i>
+			Team 
+		</a>
+
+		<div class="right menu">
+			
+			<!--
+		 <a class="item" href="/u/TGCjiOJMujeIuep-rlKb/">
+		 <i class="lock icon"></i>
+		 Login
+		 </a>
+		 
+		 <a class="item" onClick="$('.ui.sidebar').sidebar('toggle')">
+		 <i class="grid layout icon"></i>
+		 </a>
+			-->
+		</div>
+	</div>
+
+	<div class="ui stackable grid">
+		<div class="two wide column">
+			<div class="ui basic segment"></div>
+		</div>
+
+		<div class="ten wide column">
+			<div class="">
+				<div class="ui basic segment">
+					
+
+<div class="ui breadcrumb"> <i class="home icon divider"></i> <a href="/" class="section">Home</a> <i class="right arrow icon divider"></i>develop</div><p><img style="margin-left:180px" src="/static/images/1362564079_apple-appstore.png"></img></p>
+
+<h1>Getting PlexyDesk source files:</h1>
+
+<p>You can get PlexyDesk sources via two methods:</p>
+
+<h2>METHOD 1:</h2>
+<hr />
+<ol><li>Go to a folder of your choice where you will build PlexyDesk.
+For example /tmp/plexy</li>
+<li>git clone git@github.com:plexydesk/plexydesk.git</li>
+<li>cd plexydesk
+<h2>METHOD 2:</h2>
+<hr /></li>
+<li>Go to a folder of your choice where you will build PlexyDesk.
+For example /tmp/plexy</li>
+<li>Get the source tarball from our download page - http://www.plexyplanet.org/download#source</li>
+<li>tar xjvf plexydesk-X.X.X.tar.bz2
+where X.X.X is the version number of PlexyDesk</li>
+<li>cd plexydesk-X.X.X
+where X.X.X is the version number of PlexyDesk</li></ul>
+
+<p>Both methods will lead you in the sources root folder.
+Next continue with building depending on what you are after.</p>
+
+<p>NOTE: Keep in mind that the best way to install PlexyDesk is by using your distribution
+<pre><code>  native package system. PlexyDesk now supports building packages for these
+  distributions (see how to do it below):
+  - Mandriva
+  - openSuSE
+  - Fedora
+  - PCLinuxOS*
+  - Ubuntu
+  - Debian and its derivatives</code></pre>
+
+PCLinuxOS support for building its native packages is dropped now (though the code
+that supports the rpm build will remain intact). At present PlexyDesk is known to
+build and work on the 2011.6 version of pclos.
+To find more info on the possible solutions you have, please visit our homepage:
+http://www.plexyplanet.org/pclos</p>
+
+<h1>Building On Linux (debug mode):</h1>
+
+<p>This is valid for all distributions.
+From sources root folder do:</p>
+
+<p>mkdir build
+cd build
+cmake ../ -DCMAKE<em>INSTALL</em>PREFIX:STRING=/usr -DCMAKE<em>BUILD</em>TYPE:STRING=Debug -DCMAKE<em>VERBOSE</em>MAKEFILE:BOOL=true -DCMAKE<em>CXX</em>FLAGS_DEBUG:STRING="-g -O0"
+make
+sudo make install</p>
+
+<h1>Building On Linux (release mode):</h1>
+
+<p>This is valid for all distributions.
+From sources root folder do:</p>
+
+<p>mkdir build
+cd build
+cmake ../ -DCMAKE<em>INSTALL</em>PREFIX=/usr -DCMAKE<em>BUILD</em>TYPE=Release
+make
+sudo make install</p>
+
+
+
+<h1>Building a Debian/Ubuntu package on Linux:</h1>
+
+<p>This can be done if your distribution is a Debian derivative.
+From sources root folder do:</p>
+
+<p>dist/make<em>dist</em>deb.sh</p>
+
+<p>and follow the instructions.
+When the plexydesk<em>X.X.X</em>YYYY.deb is ready you may install it using the deb standard
+command:</p>
+
+<p>dpkg -i INSTALLERS/deb/plexydesk<em>X.X.X</em>YYYY.deb</p>
+
+<p>NOTE: If some of the dependencies are not satisfied, use your package manager to install
+them first and then do the "dpkg -i plexydesk<em>X.X.X</em>YYYY.deb" again.</p>
+
+
+
+<h1>Building an RPM package on Linux:</h1>
+
+<p>This can be done if your distribution is an RPM distribution. Currently PlexyDesk
+supports building RPMs for these distributions:
+<ul><li><p>Mandriva</p></li>
+<li><p>openSuSE</p></li>
+<li><p>Fedora</p></li>
+<li><p>Ubuntu</p></li>
+<li><p>Debian and its derivatives</p></li></ul>
+
+If you know for sure that your distribution is an RPM one, but it is not in the above
+list, please try this method first and it may work due to the included support
+even of unknown RPM distros.</p>
+
+<p>First be sure you have already installed the rpm-build package.
+Next from sources root folder do:</p>
+
+<p>dist/make<em>dist</em>rpm.sh</p>
+
+<p>and follow the instructions.
+When the plexydesk-X.X.X-YYYYYYY.rpm is ready you may install it using the rpm standard
+command:</p>
+
+<p>rpm -ivp INSTALLERS/rpm/plexydesk-X.X.X-YYYYYYY.rpm</p>
+
+<p>NOTE: If some of the dependencies are not satisfied, use your package manager to install
+them first and then do the "rpm -ivp plexydesk-X.X.X-YYYYYYY.rpm" again.</p>
+
+
+
+<h1>Building On Windows:</h1>
+
+<p>Please follow the instructions on http://www.plexyplanet.org/win_build</p>
+
+
+<h1>Building On Blackberry 10 SDK:</h1>
+
+
+<p>You need to download the blackberry 10 NDK from the blackberry developer portal. (currently this is free).
+after insalling the SDK excute the following commands to compile plexydesk for blackberry 10.</p>
+
+<ul><li><p>source ~/bbndk/bbndk-env.sh</p></li>
+<li><p>cmake -DCMAKE<em>TOOLCHAIN</em>FILE=../tools/Toolchain-QNX-6.4.1.cmake -DCMAKE<em>INSALL</em>PREFIX=~/bbroot/plexydesk</p></li>
+<li><p>make -j 8</p></li>
+<li><p>make install : when the install finishes you will find the compiled binaries in ~/bbroot/plexydesk</p></li>
+<li><p>now you can create a bar file and upload it to your devce.</p></li></ul>
+
+
+<h1>Debugging of PlexyDesk</h1>
+
+<p>If you need a debug output from PlexyDesk, you have two methods:</p>
+
+<h2>METHOD 1:</h2>
+<hr />
+PlexyDesk if built in Debugging Mode, will create a log file in your temp folder
+(depending on your platform) that will be named plexydesk<em>log</em>DATE-TIME.txt
+You can see the output in this file.
+
+<h2>METHOD 2:</h2>
+<hr />
+You may debug PlexyDesk (only if built in Debugging Mode) by starting it in console
+(any platform) and using the environment variable: PLEXYDESK<em>CONSOLE</em>DEBUG.
+Set it to "enable", "true" or 1 (all are case insensitive). For Windows for example
+do it by issuing this command on the command line of your Command prompt:
+SET PLEXYDESK<em>CONSOLE</em>DEBUG=true
+
+
+				</div>
+			</div>
+		</div>
+
+		<div class="three wide column"> 
+			<h5 class="ui center aligned top attached header">
+				Download PlexyDesk
+			</h5>
+			<div class="ui attached center aligned basic segment">
+				<a href="https://gumroad.com/l/zbCqI" class="ui blue button">Download</a>
+			</div>
+			<div class="ui center aligned bottom attached segment">
+				<p class="ui center aligned small label">
+				powered by <img width="100%" src="/static/images/Gumroad_Wordmark_FullBlack.png"</img>
+				</p>
+			</div>
+			
+			
+
+		</div>
+
+	</div>
+
+	<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65249095-1', 'auto');
+ga('send', 'pageview');
+
+	</script>
+
+	<!--
+
+			<div class="ui medium rectangle test ad" data-text="Advertise here">
+
+				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+				<!-- plexydesksidebar -->
+				<ins class="adsbygoogle"
+					     style="display:inline-block;width:300px;height:250px"
+							      data-ad-client="ca-pub-5516193370379161"
+										     data-ad-slot="8878433350"></ins>
+				<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+
+			</div>
+			//-->
+
+</body>
+</html>
+
