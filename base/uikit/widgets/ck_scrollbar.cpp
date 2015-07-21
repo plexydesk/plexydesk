@@ -77,6 +77,7 @@ void scrollbar::update_slider_geometry() {
 void scrollbar::set_maximum_value(int a_value) {
   priv->m_max_value = a_value;
 
+  priv->m_current_pos.setY(0);
   update_slider_geometry();
 }
 
