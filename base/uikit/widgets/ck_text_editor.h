@@ -50,7 +50,8 @@ public:
   virtual void end_list();
 
   virtual void convert_to_link();
-public
+  void update_scrollbars();
+  public
 Q_SLOTS:
   void on_text_updated();
   void on_block_count_changed(int a_count);
@@ -60,7 +61,7 @@ Q_SIGNALS:
 
 private:
   class PrivateTextEditor;
-  PrivateTextEditor *const o_text_editor;
+  PrivateTextEditor *const priv;
 };
 }
 
