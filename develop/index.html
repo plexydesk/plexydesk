@@ -24,7 +24,7 @@
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/semantic/dist/semantic.min.css">
 
 	<script src="/static/js/jquery.js"></script>
-	<script src="/static/ui/packaged/javascript/semantic.min.js"></script>
+	<script src="/static//semantic/dist/semantic.min.js"></script>
 
 </head>
 
@@ -92,156 +92,90 @@
 				<div class="ui basic segment">
 					
 
-<div class="ui breadcrumb"> <i class="home icon divider"></i> <a href="/" class="section">Home</a> <i class="right arrow icon divider"></i>develop</div><p><img style="margin-left:180px" src="/static/images/1362564079_apple-appstore.png"></img></p>
+<script>
 
-<h1>Getting PlexyDesk source files:</h1>
+$(document).ready(function(){$('.demo.menu .item').tab();});
 
-<p>You can get PlexyDesk sources via two methods:</p>
+function run() {
+	console.log("hello world");
+}
+	</script>
 
-<h2>METHOD 1:</h2>
-<hr />
-<ol><li>Go to a folder of your choice where you will build PlexyDesk.
-For example /tmp/plexy</li>
-<li>git clone git@github.com:plexydesk/plexydesk.git</li>
-<li>cd plexydesk
-<h2>METHOD 2:</h2>
-<hr /></li>
-<li>Go to a folder of your choice where you will build PlexyDesk.
-For example /tmp/plexy</li>
-<li>Get the source tarball from our download page - http://www.plexyplanet.org/download#source</li>
-<li>tar xjvf plexydesk-X.X.X.tar.bz2
-where X.X.X is the version number of PlexyDesk</li>
-<li>cd plexydesk-X.X.X
-where X.X.X is the version number of PlexyDesk</li></ul>
+	<div class="ui pointing secondary demo menu">
+		<a class="active red item" data-tab="system" onClick="run();">Prepare</a>
+		<a class="red item" data-tab="first" onClick="run();">Get the Code</a>
+		<a class="blue item" data-tab="second" noClick="run();">Compile</a>
+		<a class="green item" data-tab="third">Run</a>
+	</div>
 
-<p>Both methods will lead you in the sources root folder.
-Next continue with building depending on what you are after.</p>
+	<div class="ui active tab segment" data-tab="system">
+		<div>
+			<div class="ui relaxed divided list">
+				<div class="item">
+					<i class="large download middle aligned icon"></i>
+					<div class="content">
+						<a href="http://www.cmake.org/download" class="header">CMake 3.x and Above</a>
+						<div class="description">Download the latest cmake if you don't have it already</div>
+					</div>
+				</div>
+				<div class="item">
+					<i class="large windows middle aligned icon"></i>
+					<div class="content">
+						<a class="header">Vistual studio 2013 Community Version or Above</a>
+						<div class="description">Make sure it supports C++11 standards</div>
+					</div>
+				</div>
 
-<p>NOTE: Keep in mind that the best way to install PlexyDesk is by using your distribution
-<pre><code>  native package system. PlexyDesk now supports building packages for these
-  distributions (see how to do it below):
-  - Mandriva
-  - openSuSE
-  - Fedora
-  - PCLinuxOS*
-  - Ubuntu
-  - Debian and its derivatives</code></pre>
+				<div class="item">
+					<i class="large apple middle aligned icon"></i>
+					<div class="content">
+						<a class="header">XCode with Commandline tools</a>
+						<div class="description">Or GCC with C++11</div>
+					</div>
+				</div>
 
-PCLinuxOS support for building its native packages is dropped now (though the code
-that supports the rpm build will remain intact). At present PlexyDesk is known to
-build and work on the 2011.6 version of pclos.
-To find more info on the possible solutions you have, please visit our homepage:
-http://www.plexyplanet.org/pclos</p>
-
-<h1>Building On Linux (debug mode):</h1>
-
-<p>This is valid for all distributions.
-From sources root folder do:</p>
-
-<p>mkdir build
-cd build
-cmake ../ -DCMAKE<em>INSTALL</em>PREFIX:STRING=/usr -DCMAKE<em>BUILD</em>TYPE:STRING=Debug -DCMAKE<em>VERBOSE</em>MAKEFILE:BOOL=true -DCMAKE<em>CXX</em>FLAGS_DEBUG:STRING="-g -O0"
-make
-sudo make install</p>
-
-<h1>Building On Linux (release mode):</h1>
-
-<p>This is valid for all distributions.
-From sources root folder do:</p>
-
-<p>mkdir build
-cd build
-cmake ../ -DCMAKE<em>INSTALL</em>PREFIX=/usr -DCMAKE<em>BUILD</em>TYPE=Release
-make
-sudo make install</p>
+				<div class="item">
+					<i class="large linux middle aligned icon"></i>
+					<div class="content">
+						<a class="header">GCC 4.7 and Above or LLVM/Clang</a>
+						<div class="description">Same applies for FreeBSD</div>
+					</div>
+				</div>
 
 
+				<div class="item">
+					<i class="large download middle aligned icon"></i>
+					<div class="content">
+						<a href="https://www.qt.io/download-open-source/" 
+				 class="header">Qt Libraries 5.1 or Above</a>
+						<div class="description">Download open source Qt</div>
+					</div>
+				</div>
 
-<h1>Building a Debian/Ubuntu package on Linux:</h1>
+			</div>
+		</div>
+	</div>
+	<div class="ui tab segment" data-tab="first">
+		<div class="ui basic segment">
+			<h4>Getting PlexyDesk source files:</h4>
+			<p>
+			You can easily access plexydesk source code from Github Git repository
+			</p>
 
-<p>This can be done if your distribution is a Debian derivative.
-From sources root folder do:</p>
+			<div class="ui label">git clone https://github.com/plexydesk/plexydesk.git</div>
 
-<p>dist/make<em>dist</em>deb.sh</p>
+			<div class ="ui horizontal divider"> OR </div>
 
-<p>and follow the instructions.
-When the plexydesk<em>X.X.X</em>YYYY.deb is ready you may install it using the deb standard
-command:</p>
+			<div>Get the source tarball from our 
+				<a href="/download/" class="ui green small label">download</a> page
+			</div>
+		</div>
 
-<p>dpkg -i INSTALLERS/deb/plexydesk<em>X.X.X</em>YYYY.deb</p>
+	</div>
+	<div class="ui tab segment" data-tab="second">Second</div>
+	<div class="ui tab segment" data-tab="third">Third</div>	
 
-<p>NOTE: If some of the dependencies are not satisfied, use your package manager to install
-them first and then do the "dpkg -i plexydesk<em>X.X.X</em>YYYY.deb" again.</p>
-
-
-
-<h1>Building an RPM package on Linux:</h1>
-
-<p>This can be done if your distribution is an RPM distribution. Currently PlexyDesk
-supports building RPMs for these distributions:
-<ul><li><p>Mandriva</p></li>
-<li><p>openSuSE</p></li>
-<li><p>Fedora</p></li>
-<li><p>Ubuntu</p></li>
-<li><p>Debian and its derivatives</p></li></ul>
-
-If you know for sure that your distribution is an RPM one, but it is not in the above
-list, please try this method first and it may work due to the included support
-even of unknown RPM distros.</p>
-
-<p>First be sure you have already installed the rpm-build package.
-Next from sources root folder do:</p>
-
-<p>dist/make<em>dist</em>rpm.sh</p>
-
-<p>and follow the instructions.
-When the plexydesk-X.X.X-YYYYYYY.rpm is ready you may install it using the rpm standard
-command:</p>
-
-<p>rpm -ivp INSTALLERS/rpm/plexydesk-X.X.X-YYYYYYY.rpm</p>
-
-<p>NOTE: If some of the dependencies are not satisfied, use your package manager to install
-them first and then do the "rpm -ivp plexydesk-X.X.X-YYYYYYY.rpm" again.</p>
-
-
-
-<h1>Building On Windows:</h1>
-
-<p>Please follow the instructions on http://www.plexyplanet.org/win_build</p>
-
-
-<h1>Building On Blackberry 10 SDK:</h1>
-
-
-<p>You need to download the blackberry 10 NDK from the blackberry developer portal. (currently this is free).
-after insalling the SDK excute the following commands to compile plexydesk for blackberry 10.</p>
-
-<ul><li><p>source ~/bbndk/bbndk-env.sh</p></li>
-<li><p>cmake -DCMAKE<em>TOOLCHAIN</em>FILE=../tools/Toolchain-QNX-6.4.1.cmake -DCMAKE<em>INSALL</em>PREFIX=~/bbroot/plexydesk</p></li>
-<li><p>make -j 8</p></li>
-<li><p>make install : when the install finishes you will find the compiled binaries in ~/bbroot/plexydesk</p></li>
-<li><p>now you can create a bar file and upload it to your devce.</p></li></ul>
-
-
-<h1>Debugging of PlexyDesk</h1>
-
-<p>If you need a debug output from PlexyDesk, you have two methods:</p>
-
-<h2>METHOD 1:</h2>
-<hr />
-PlexyDesk if built in Debugging Mode, will create a log file in your temp folder
-(depending on your platform) that will be named plexydesk<em>log</em>DATE-TIME.txt
-You can see the output in this file.
-
-<h2>METHOD 2:</h2>
-<hr />
-You may debug PlexyDesk (only if built in Debugging Mode) by starting it in console
-(any platform) and using the environment variable: PLEXYDESK<em>CONSOLE</em>DEBUG.
-Set it to "enable", "true" or 1 (all are case insensitive). For Windows for example
-do it by issuing this command on the command line of your Command prompt:
-SET PLEXYDESK<em>CONSOLE</em>DEBUG=true
-
-
+	
 				</div>
 			</div>
 		</div>
@@ -281,7 +215,6 @@ ga('send', 'pageview');
 			<div class="ui medium rectangle test ad" data-text="Advertise here">
 
 				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-				<!-- plexydesksidebar -->
 				<ins class="adsbygoogle"
 					     style="display:inline-block;width:300px;height:250px"
 							      data-ad-client="ca-pub-5516193370379161"
@@ -291,7 +224,7 @@ ga('send', 'pageview');
 				</script>
 
 			</div>
-			//-->
+	//-->
 
 </body>
 </html>
