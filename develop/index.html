@@ -42,10 +42,16 @@
 			PlexyDesk 
 		</a>
 
-		<a class="item" href="/discover/">
+		<a class="item" href="/roadmap/">
 			<i class="lightning icon"></i>
+			Features
+		</a>
+
+		<a class="item" href="/discover/">
+			<i class="gift icon"></i>
 			Discover
 		</a>
+
 
 		<a class="item" href="/download/">
 			<i class="download icon"></i>
@@ -94,14 +100,14 @@
 
 <script>
 
-$(document).ready(function(){$('.demo.menu .item').tab();});
+$(document).ready(function(){$('.tabbar.menu .item').tab();});
 
 function run() {
 	console.log("hello world");
 }
 	</script>
 
-	<div class="ui pointing secondary demo menu">
+	<div class="ui pointing secondary tabbar menu">
 		<a class="active red item" data-tab="system" onClick="run();">Prepare</a>
 		<a class="red item" data-tab="first" onClick="run();">Download</a>
 		<a class="blue item" data-tab="second" noClick="run();">Compile</a>
