@@ -1,5 +1,4 @@
 set(sourceFiles
-    snapframe.cpp
     dock.cpp
     dockinterface.cpp
     )
@@ -7,13 +6,11 @@ set(sourceFiles
 set(headerFiles
     dock.h
     dockinterface.h
-    snapframe.h
     )
 
 set(QTMOC_SRCS
     dock.h
     dockinterface.h
-    snapframe.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
