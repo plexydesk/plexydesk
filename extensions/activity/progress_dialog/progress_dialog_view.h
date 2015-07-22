@@ -46,7 +46,7 @@ public:
 
 private:
   class PrivateProgressDialog;
-  PrivateProgressDialog *const o_desktop_dialog;
+  PrivateProgressDialog *const priv;
 };
 
 #endif

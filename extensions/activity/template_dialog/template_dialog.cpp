@@ -31,24 +31,24 @@ public:
 
 template_dialog::template_dialog(QGraphicsObject *object)
     : cherry_kit::desktop_dialog(object),
-      o_desktop_dialog(new PrivateTemplate) {}
+      priv(new PrivateTemplate) {}
 
-template_dialog::~template_dialog() { delete o_desktop_dialog; }
+template_dialog::~template_dialog() { delete priv; }
 
 void template_dialog::create_window(const QRectF &window_geometry,
                                      const QString &window_title,
                                      const QPointF &window_pos) {
-  o_desktop_dialog->m_main_window = new cherry_kit::window();
+  priv->m_main_window = new cherry_kit::window();
 
-  o_desktop_dialog->m_main_window->set_widget_flag(
+  priv->m_main_window->set_widget_flag(
       cherry_kit::widget::kRenderBackground);
-  o_desktop_dialog->m_main_window->set_widget_flag(
+  priv->m_main_window->set_widget_flag(
       cherry_kit::widget::kConvertToWindowType);
-  o_desktop_dialog->m_main_window->set_widget_flag(
+  priv->m_main_window->set_widget_flag(
       cherry_kit::widget::kRenderDropShadow);
 
   set_geometry(window_geometry);
-  update_content_geometry(o_desktop_dialog->m_main_window);
+  update_content_geometry(priv->m_main_window);
 
   exec(window_pos);
 }
@@ -59,12 +59,12 @@ void template_dialog::update_attribute(const QString &name,
                                         const QVariant &data) {}
 
 cherry_kit::window *template_dialog::dialog_window() const {
-  return o_desktop_dialog->m_main_window;
+  return priv->m_main_window;
 }
 
 void template_dialog::cleanup() {
-  if (o_desktop_dialog->m_main_window) {
-    delete o_desktop_dialog->m_main_window;
+  if (priv->m_main_window) {
+    delete priv->m_main_window;
   }
-  o_desktop_dialog->m_main_window = 0;
+  priv->m_main_window = 0;
 }

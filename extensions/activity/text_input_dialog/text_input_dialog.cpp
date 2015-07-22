@@ -64,86 +64,86 @@ public:
 
 text_input_dialog::text_input_dialog(QGraphicsObject *object)
     : cherry_kit::desktop_dialog(object),
-      o_desktop_dialog(new PrivateInputDialogActivity) {
-  o_desktop_dialog->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
+      priv(new PrivateInputDialogActivity) {
+  priv->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
 }
 
-text_input_dialog::~text_input_dialog() { delete o_desktop_dialog; }
+text_input_dialog::~text_input_dialog() { delete priv; }
 
 void text_input_dialog::create_window(const QRectF &window_geometry,
                                             const QString &window_title,
                                             const QPointF &window_pos) {
   if (has_attribute("geometry")) {
-    o_desktop_dialog->mBoundingRect = attributes()["geometry"].toRect();
+    priv->mBoundingRect = attributes()["geometry"].toRect();
   } else {
-    o_desktop_dialog->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
+    priv->mBoundingRect = QRectF(0.0, 0.0, 320.0, 240.0);
   }
 
   // todo: invoke UI
-  o_desktop_dialog->mFrame = new cherry_kit::window();
-  o_desktop_dialog->mFrame->setGeometry(geometry());
-  o_desktop_dialog->mFrame->setVisible(true);
-  o_desktop_dialog->mFrame->set_widget_name("Message Dialog");
+  priv->mFrame = new cherry_kit::window();
+  priv->mFrame->setGeometry(geometry());
+  priv->mFrame->setVisible(true);
+  priv->mFrame->set_widget_name("Message Dialog");
 
-  o_desktop_dialog->mFrame->set_widget_flag(
+  priv->mFrame->set_widget_flag(
       cherry_kit::widget::kRenderBackground);
-  o_desktop_dialog->mFrame->set_widget_flag(
+  priv->mFrame->set_widget_flag(
       cherry_kit::widget::kConvertToWindowType);
-  o_desktop_dialog->mFrame->set_widget_flag(
+  priv->mFrame->set_widget_flag(
       cherry_kit::widget::kRenderDropShadow);
 
-  o_desktop_dialog->mBackgroundEffect = new QGraphicsBlurEffect(this);
-  o_desktop_dialog->mBackgroundEffect->setBlurHints(
+  priv->mBackgroundEffect = new QGraphicsBlurEffect(this);
+  priv->mBackgroundEffect->setBlurHints(
       QGraphicsBlurEffect::PerformanceHint);
-  o_desktop_dialog->mBackgroundEffect->setBlurRadius(0.0);
-  o_desktop_dialog->mBackgroundEffect->setEnabled(true);
+  priv->mBackgroundEffect->setBlurRadius(0.0);
+  priv->mBackgroundEffect->setEnabled(true);
 
-  o_desktop_dialog->mLayoutBase =
-      new cherry_kit::widget(o_desktop_dialog->mFrame);
-  o_desktop_dialog->mLayoutBase->setPos(0.0, 72.0);
-  o_desktop_dialog->mVLayout =
-      new QGraphicsLinearLayout(o_desktop_dialog->mLayoutBase);
-  o_desktop_dialog->mVLayout->setOrientation(Qt::Vertical);
+  priv->mLayoutBase =
+      new cherry_kit::widget(priv->mFrame);
+  priv->mLayoutBase->setPos(0.0, 72.0);
+  priv->mVLayout =
+      new QGraphicsLinearLayout(priv->mLayoutBase);
+  priv->mVLayout->setOrientation(Qt::Vertical);
 
   QRectF _layoutRect(0.0, 0.0, geometry().width(), geometry().height() - 64.0);
-  o_desktop_dialog->mVLayout->setGeometry(_layoutRect);
-  o_desktop_dialog->mVLayout->setMaximumHeight(_layoutRect.height());
+  priv->mVLayout->setGeometry(_layoutRect);
+  priv->mVLayout->setMaximumHeight(_layoutRect.height());
 
-  o_desktop_dialog->mHLayoutBase =
-      new cherry_kit::widget(o_desktop_dialog->mLayoutBase);
+  priv->mHLayoutBase =
+      new cherry_kit::widget(priv->mLayoutBase);
 
-  o_desktop_dialog->mOkButton =
-      new cherry_kit::button(o_desktop_dialog->mHLayoutBase);
-  o_desktop_dialog->mCancelButton =
-      new cherry_kit::button(o_desktop_dialog->mHLayoutBase);
+  priv->mOkButton =
+      new cherry_kit::button(priv->mHLayoutBase);
+  priv->mCancelButton =
+      new cherry_kit::button(priv->mHLayoutBase);
 
   QRectF _editorRect(
       0.0, 0.0, geometry().width(),
       geometry().height() -
-          (96 + o_desktop_dialog->mOkButton->boundingRect().height()));
-  o_desktop_dialog->mEditor =
-      new cherry_kit::text_editor(o_desktop_dialog->mLayoutBase);
-  o_desktop_dialog->mVLayout->addItem(o_desktop_dialog->mEditor);
+          (96 + priv->mOkButton->boundingRect().height()));
+  priv->mEditor =
+      new cherry_kit::text_editor(priv->mLayoutBase);
+  priv->mVLayout->addItem(priv->mEditor);
 
-  o_desktop_dialog->mHLayout =
-      new QGraphicsLinearLayout(o_desktop_dialog->mHLayoutBase);
-  o_desktop_dialog->mHLayout->setOrientation(Qt::Horizontal);
+  priv->mHLayout =
+      new QGraphicsLinearLayout(priv->mHLayoutBase);
+  priv->mHLayout->setOrientation(Qt::Horizontal);
 
-  o_desktop_dialog->mOkButton->set_label(tr("Post"));
-  o_desktop_dialog->mCancelButton->set_label(tr("Cancel"));
+  priv->mOkButton->set_label(tr("Post"));
+  priv->mCancelButton->set_label(tr("Cancel"));
 
-  o_desktop_dialog->mHLayout->setContentsMargins(25.0, 0.0, 25.0, 25.0);
-  o_desktop_dialog->mVLayout->setContentsMargins(10.0, 10.0, 10.0, 10.0);
-  o_desktop_dialog->mVLayout->addItem(o_desktop_dialog->mHLayoutBase);
-  o_desktop_dialog->mHLayout->addStretch(1);
-  o_desktop_dialog->mHLayout->addItem(o_desktop_dialog->mCancelButton);
-  o_desktop_dialog->mHLayout->addItem(o_desktop_dialog->mOkButton);
+  priv->mHLayout->setContentsMargins(25.0, 0.0, 25.0, 25.0);
+  priv->mVLayout->setContentsMargins(10.0, 10.0, 10.0, 10.0);
+  priv->mVLayout->addItem(priv->mHLayoutBase);
+  priv->mHLayout->addStretch(1);
+  priv->mHLayout->addItem(priv->mCancelButton);
+  priv->mHLayout->addItem(priv->mOkButton);
 
-  o_desktop_dialog->mEditor->setFocus();
+  priv->mEditor->setFocus();
 
-  connect(o_desktop_dialog->mCancelButton, SIGNAL(clicked()), this,
+  connect(priv->mCancelButton, SIGNAL(clicked()), this,
           SIGNAL(canceled()));
-  connect(o_desktop_dialog->mOkButton, SIGNAL(clicked()), this,
+  connect(priv->mOkButton, SIGNAL(clicked()), this,
           SLOT(onOkButtonPressed()));
 
   this->exec();
@@ -154,26 +154,26 @@ QString text_input_dialog::error_message() const { return QString(); }
 
 QVariantMap text_input_dialog::activityResult() const {
   QVariantMap rv;
-  rv["text"] = QVariant(o_desktop_dialog->mCurrentText);
+  rv["text"] = QVariant(priv->mCurrentText);
   return rv;
 }
 
 QRectF text_input_dialog::geometry() const {
-  return o_desktop_dialog->mBoundingRect;
+  return priv->mBoundingRect;
 }
 
 QVariantMap text_input_dialog::result() const { return QVariantMap(); }
 
 cherry_kit::window *text_input_dialog::dialog_window() const {
-  return o_desktop_dialog->mFrame;
+  return priv->mFrame;
 }
 
 void text_input_dialog::cleanup() {
-  if (o_desktop_dialog->mFrame) {
-    delete o_desktop_dialog->mFrame;
+  if (priv->mFrame) {
+    delete priv->mFrame;
   }
 
-  o_desktop_dialog->mFrame = 0;
+  priv->mFrame = 0;
 }
 
 void text_input_dialog::onWidgetClosed(cherry_kit::widget *widget) {
@@ -183,7 +183,7 @@ void text_input_dialog::onWidgetClosed(cherry_kit::widget *widget) {
 void text_input_dialog::onMotionAnimFinished() {}
 
 void text_input_dialog::onOkButtonPressed() {
-  o_desktop_dialog->mCurrentText = o_desktop_dialog->mEditor->text();
+  priv->mCurrentText = priv->mEditor->text();
   discard_activity();
 }
 
