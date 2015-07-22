@@ -36,11 +36,11 @@ public:
 
 progress_dialog_view::progress_dialog_view(QGraphicsObject *object)
     : cherry_kit::desktop_dialog(object),
-      o_desktop_dialog(new PrivateProgressDialog) {}
+      priv(new PrivateProgressDialog) {}
 
 progress_dialog_view::~progress_dialog_view() {
   qDebug() << Q_FUNC_INFO;
-  delete o_desktop_dialog;
+  delete priv;
 }
 
 void progress_dialog_view::create_window(const QRectF &window_geometry,
@@ -49,39 +49,39 @@ void progress_dialog_view::create_window(const QRectF &window_geometry,
   qDebug() << Q_FUNC_INFO << window_geometry;
   qDebug() << Q_FUNC_INFO << window_pos;
 
-  o_desktop_dialog->m_window = new cherry_kit::window();
+  priv->m_window = new cherry_kit::window();
   set_geometry(window_geometry);
 
-  o_desktop_dialog->m_window->set_window_title(window_title);
-  o_desktop_dialog->m_task_completed = 0;
+  priv->m_window->set_window_title(window_title);
+  priv->m_task_completed = 0;
 
   //connect(o_desktop_dialog->m_window, SIGNAL(closed(cherry_kit::widget *)), this,
    //       SLOT(onWidgetClosed(cherry_kit::widget *)));
 
-  o_desktop_dialog->m_max_value = 100.0;
-  o_desktop_dialog->m_min_value = 0.0;
+  priv->m_max_value = 100.0;
+  priv->m_min_value = 0.0;
 
   if (has_attribute("max")) {
-    o_desktop_dialog->m_max_value = attributes()["max"].toFloat();
+    priv->m_max_value = attributes()["max"].toFloat();
   }
 
   if (has_attribute("min")) {
-    o_desktop_dialog->m_min_value = attributes()["min"].toFloat();
+    priv->m_min_value = attributes()["min"].toFloat();
   }
 
-  o_desktop_dialog->m_progress_bar_widget =
-      new cherry_kit::progress_bar(o_desktop_dialog->m_window);
-  o_desktop_dialog->m_progress_bar_widget->set_range(o_desktop_dialog->m_min_value,
-                                                     o_desktop_dialog->m_max_value);
-  o_desktop_dialog->m_progress_bar_widget->set_size(
+  priv->m_progress_bar_widget =
+      new cherry_kit::progress_bar(priv->m_window);
+  priv->m_progress_bar_widget->set_range(priv->m_min_value,
+                                                     priv->m_max_value);
+  priv->m_progress_bar_widget->set_size(
       QSize(window_geometry.width() - 10, 32));
-  o_desktop_dialog->m_progress_bar_widget->set_value(0.0);
-  o_desktop_dialog->m_progress_bar_widget->setPos(5.0, 64.0);
+  priv->m_progress_bar_widget->set_value(0.0);
+  priv->m_progress_bar_widget->setPos(5.0, 64.0);
 
-  o_desktop_dialog->m_window->set_window_content(
-              o_desktop_dialog->m_progress_bar_widget);
+  priv->m_window->set_window_content(
+              priv->m_progress_bar_widget);
 
-  update_content_geometry(o_desktop_dialog->m_window);
+  update_content_geometry(priv->m_window);
   exec(window_pos);
 
   show_activity();
@@ -91,32 +91,32 @@ QVariantMap progress_dialog_view::result() const { return QVariantMap(); }
 
 void progress_dialog_view::update_attribute(const QString &name,
                                               const QVariant &data) {
-  if (!o_desktop_dialog->m_window) {
+  if (!priv->m_window) {
     return;
   }
 
-  if (o_desktop_dialog->m_task_completed) {
+  if (priv->m_task_completed) {
     return;
   }
 
   float progress = data.toFloat();
 
-  if (o_desktop_dialog->m_progress_bar_widget) {
-    o_desktop_dialog->m_progress_bar_widget->set_value(progress);
+  if (priv->m_progress_bar_widget) {
+    priv->m_progress_bar_widget->set_value(progress);
   }
 
-  if (o_desktop_dialog->m_max_value == progress) {
+  if (priv->m_max_value == progress) {
     discard_activity();
   }
 }
 
 cherry_kit::window *progress_dialog_view::dialog_window() const {
-  return o_desktop_dialog->m_window;
+  return priv->m_window;
 }
 
 void progress_dialog_view::cleanup() {
-  if (o_desktop_dialog->m_window) {
-    delete o_desktop_dialog->m_window;
+  if (priv->m_window) {
+    delete priv->m_window;
   }
-  o_desktop_dialog->m_window = 0;
+  priv->m_window = 0;
 }

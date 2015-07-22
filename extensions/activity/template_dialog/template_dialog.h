@@ -45,7 +45,7 @@ public:
 
 private:
   class PrivateTemplate;
-  PrivateTemplate *const o_desktop_dialog;
+  PrivateTemplate *const priv;
 };
 
 #endif
