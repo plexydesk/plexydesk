@@ -81,7 +81,7 @@ desktop_window::desktop_window()
 
 desktop_window::~desktop_window() { delete o_window; }
 
-void desktop_window::set_background(const QString &a_image_name) {
+void desktop_window::set_background(const std::string &a_image_name) {
   /*
   QImage background(a_image_name);
   p_window->m_background_width = background.width();
@@ -98,7 +98,7 @@ void desktop_window::set_background(const QString &a_image_name) {
   if (!o_window->m_image_service)
     return;
 
-  o_window->m_image_service->create(a_image_name.toStdString());
+  o_window->m_image_service->create(a_image_name);
 }
 
 void desktop_window::set_background(const QImage &a_image_name) {
