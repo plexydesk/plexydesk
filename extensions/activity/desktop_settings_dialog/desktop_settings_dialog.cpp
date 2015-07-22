@@ -193,7 +193,7 @@ void desktop_settings_dialog::cleanup() {
 }
 
 void desktop_settings_dialog::insert_image_to_grid(
-    const QImage &ck_preview_pixmap) const {
+    const QImage &ck_preview_pixmap, const std::string &a_file_url) const {
 
   if (ck_preview_pixmap.isNull()) {
     qWarning() << Q_FUNC_INFO << "Null image in list";
@@ -203,10 +203,18 @@ void desktop_settings_dialog::insert_image_to_grid(
   cherry_kit::image_view *ck_image_preview =
       new cherry_kit::image_view(priv->m_image_view);
 
+  ck_image_preview->on_input_event([=](cherry_kit::widget::InputEvent event,
+                              const cherry_kit::widget *widget) {
+
+      if (event == cherry_kit::widget::kMouseReleaseEvent) {
+          notify_message("url", a_file_url);
+      }
+  });
+
   ck_image_preview->set_image(ck_preview_pixmap);
 
-  int width = 72;
-  int height = width;
+  int width = 128;
+  int height = 128;
 
   ck_image_preview->set_size(QSizeF(width, height));
 
@@ -228,11 +236,7 @@ void desktop_settings_dialog::insert_image_to_grid(
   priv->m_image_view->insert(ck_preview_item);
 }
 
-void desktop_settings_dialog::load_images() const {
-  std::for_each(
-      std::begin(priv->m_io_surface_list), std::end(priv->m_io_surface_list),
-      [this](const QImage &a_image) { insert_image_to_grid(a_image); });
-}
+void desktop_settings_dialog::load_images() const {}
 
 void desktop_settings_dialog::invoke_image_loader() const {
   std::vector<std::string> current_file_list = priv->locate_system_images();
@@ -259,7 +263,7 @@ void desktop_settings_dialog::invoke_image_loader() const {
       cherry_kit::io_surface *ck_surface_ref = a_image_io->surface();
       QImage image_buffer(ck_surface_ref->buffer, ck_surface_ref->width,
                           ck_surface_ref->height, QImage::Format_ARGB32);
-      insert_image_to_grid(image_buffer);
+      insert_image_to_grid(image_buffer, a_image_io->url());
       if (priv->m_progress_widget && priv->m_progress_window) {
         priv->m_progress_widget->set_value(load_progress);
         priv->m_progress_window->set_window_title(QString(
