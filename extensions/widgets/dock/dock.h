@@ -36,10 +36,10 @@ class desktop_panel_controller_impl
 
 public:
   desktop_panel_controller_impl(QObject *object = 0);
+  void init();
 
   virtual ~desktop_panel_controller_impl();
-
-  void init();
+  void prepare_removal();
 
   void session_data_available(const cherry_kit::sync_object &a_sesion_root);
   virtual void submit_session_data(cherry_kit::sync_object *a_obj);
@@ -47,49 +47,33 @@ public:
   void set_view_rect(const QRectF &rect);
 
   cherry_kit::ActionList actions() const;
-
   void request_action(const QString &actionName, const QVariantMap &args);
 
   QString icon() const;
 
-  void createActionForController(const QString &name, const QPointF &pos);
-
-  void createActivityForController(const QString &name);
-
-  void previousSpace();
-
-  void nextSpace();
-
-  void toggleSeamless();
-
-  void prepare_removal();
+  void switch_to_previous_space();
+  void switch_to_next_space();
+  void toggle_seamless();
 
   void create_dock_action(cherry_kit::fixed_layout *build, int row, int column,
                           const std::string &icon,
                           std::function<void()> a_button_action_func);
-public
-Q_SLOTS:
 
-  void toggleDesktopPanel();
+  void toggle_panel();
 
-  void loadControllerActions(const QString &name);
+  void discover_actions_from_controller(const QString &name);
 
-  void onActivityAnimationFinished();
+  void remove_space_request();
+  void add_new_space();
 
-  void onActivityFinished();
-
-  void removeSpace();
-
-  void exec_dock_action(const QString &action);
-
-  void onAddSpaceButtonClicked();
+  void exec_action(const QString &action);
 
 protected:
-  void updatePreview();
+  void udpate_desktop_preview();
 
 private:
   class PrivateDock;
-  PrivateDock *const o_panel;
+  PrivateDock *const priv;
 
   cherry_kit::desktop_dialog_ref createActivity(const QString &controller_name,
                                                 const QString &activity,
