@@ -92,7 +92,7 @@ protected:
   virtual void update_content_geometry(widget *a_widget_ptr);
   virtual void notify_done();
   virtual void notify_message(const std::string &a_key,
-                              const std::string &a_value);
+                              const std::string &a_value) const;
 
 Q_SIGNALS:
   void canceled();
