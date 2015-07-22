@@ -165,10 +165,10 @@ void desktop_panel_controller_impl::init() {
   cherry_kit::fixed_layout *build =
       new cherry_kit::fixed_layout(priv->m_panel_window);
   build->set_content_margin(6, 10, 10, 10);
-  build->set_geometry(0, 0, 48 + 16, 48 * 7);
+  build->set_geometry(0, 0, 32 + 16, 32 * 7);
   build->add_rows(7);
 
-  std::string default_height = std::to_string((48.0 / (48.0 * 7)) * 100) + "%";
+  std::string default_height = std::to_string((32.0 / (32.0 * 7)) * 100) + "%";
 
   for (int i = 0; i < 7; i++) {
     build->add_segments(i, 1);
