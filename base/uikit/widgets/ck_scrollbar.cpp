@@ -4,6 +4,8 @@
 #include <ck_style.h>
 #include <ck_resource_manager.h>
 
+#include <cstdlib>
+
 namespace cherry_kit {
 class scrollbar::private_scrollbar {
 public:
@@ -14,10 +16,10 @@ public:
 
   int get_current_top();
 
-  float m_width;
-  float m_height;
-  float m_page_step;
-  float m_max_value;
+  double m_width;
+  double m_height;
+  double m_page_step;
+  double m_max_value;
 
   QRectF m_handler_rect;
   QPointF m_current_pos;
