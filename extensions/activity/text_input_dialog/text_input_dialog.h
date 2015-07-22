@@ -60,7 +60,7 @@ private:
                      QWidget *widget = 0);
 
   class PrivateInputDialogActivity;
-  PrivateInputDialogActivity *const o_desktop_dialog;
+  PrivateInputDialogActivity *const priv;
 };
 
 #endif
