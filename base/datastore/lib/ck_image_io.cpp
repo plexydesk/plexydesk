@@ -37,13 +37,14 @@ public:
 
   io_surface *m_surface;
   std::function<void(buffer_load_status_t, image_io *)> m_call_on_ready;
+  std::string m_url;
 };
 
 image_io::image_io(int a_width, int a_height)
-    : o_surface_proxy(new platform_image), o_image(new private_io_image_impl) {}
+    : o_surface_proxy(new platform_image), priv(new private_io_image_impl) {}
 
 image_io::~image_io() {
-  delete o_image;
+  delete priv;
   delete o_surface_proxy;
 }
 
@@ -52,52 +53,56 @@ void image_io::create(int a_width, int a_height) {}
 void image_io::create(image_data_ref a_buffer, int a_width, int a_height) {}
 
 void image_io::create(const std::string &a_file_name) {
+  priv->m_url = a_file_name;
   o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
                                            buffer_load_status_t a_status) {
 
     if (a_status != kSuccess) {
-      if (o_image->m_call_on_ready)
-        o_image->m_call_on_ready(a_status, this);
+      if (priv->m_call_on_ready)
+        priv->m_call_on_ready(a_status, this);
       return;
     }
 
-    if (o_image->m_surface) {
-      delete o_image->m_surface;
-      o_image->m_surface = nullptr;
+    if (priv->m_surface) {
+      delete priv->m_surface;
+      priv->m_surface = nullptr;
     }
 
-    o_image->m_surface = a_surface;
+    priv->m_surface = a_surface;
 
-    if (o_image->m_call_on_ready)
-      o_image->m_call_on_ready(kSuccess, this);
+    if (priv->m_call_on_ready)
+      priv->m_call_on_ready(kSuccess, this);
   });
   o_surface_proxy->load_from_file(a_file_name);
 }
 
+std::string image_io::url() const { return priv->m_url; }
+
 void image_io::preview_image(const std::string &a_file_name) {
+  priv->m_url = a_file_name;
   o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
                                            buffer_load_status_t a_status) {
     if (a_status != kSuccess) {
-      if (o_image->m_call_on_ready)
-        o_image->m_call_on_ready(a_status, this);
+      if (priv->m_call_on_ready)
+        priv->m_call_on_ready(a_status, this);
       return;
     }
 
-    if (o_image->m_surface) {
-      delete o_image->m_surface;
-      o_image->m_surface = nullptr;
+    if (priv->m_surface) {
+      delete priv->m_surface;
+      priv->m_surface = nullptr;
     }
 
-    o_image->m_surface = a_surface;
+    priv->m_surface = a_surface;
 
-    if (o_image->m_call_on_ready)
-      o_image->m_call_on_ready(kSuccess, this);
+    if (priv->m_call_on_ready)
+      priv->m_call_on_ready(kSuccess, this);
   });
 
   o_surface_proxy->load_image_preview(a_file_name);
 }
 
-io_surface *image_io::surface() const { return o_image->m_surface; }
+io_surface *image_io::surface() const { return priv->m_surface; }
 
 io_surface image_io::add_task(image_io::image_operation_t a_method,
                               const image_io::scale_options &arg) {}
@@ -106,7 +111,7 @@ void image_io::set_filter(const std::string &a_filter_name, int a_flag) {}
 
 void image_io::on_ready(
     std::function<void(buffer_load_status_t, image_io *)> a_callback) {
-  o_image->m_call_on_ready = a_callback;
+  priv->m_call_on_ready = a_callback;
 }
 
 io_surface::io_surface() : width(0), height(0), buffer(nullptr) {}
