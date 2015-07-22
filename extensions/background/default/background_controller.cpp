@@ -74,7 +74,8 @@ void desktop_controller_impl::init() {
   o_ctr->m_background_texture = default_wallpaper_file.toStdString();
   o_ctr->m_background_window = new desktop_window();
   o_ctr->m_background_window->set_controller(this);
-  o_ctr->m_background_window->set_background(default_wallpaper_file);
+  o_ctr->m_background_window->set_background(
+              default_wallpaper_file.toStdString());
 
   o_ctr->m_background_window->on_window_discarded([this](
       cherry_kit::window *a_window) {
@@ -98,7 +99,8 @@ void desktop_controller_impl::revoke_session(const QVariantMap &args) {
     return;
 
   if (qt_image_url.isLocalFile()) {
-    o_ctr->m_background_window->set_background(qt_image_url.toLocalFile());
+    o_ctr->m_background_window->set_background
+            (qt_image_url.toLocalFile().toStdString());
     o_ctr->m_background_texture = qt_image_url.toString().toStdString();
   } else {
     download_image_from_url(qt_image_url);
@@ -119,15 +121,16 @@ void desktop_controller_impl::session_data_available(
     return;
 
   if (qt_background_url.isLocalFile()) {
-    o_ctr->m_background_window->set_background(qt_background_url.toLocalFile());
+    o_ctr->m_background_window->set_background(
+                qt_background_url.toLocalFile().toStdString());
     o_ctr->m_background_texture = background_url_str;
   } else {
     download_image_from_url(qt_background_url);
   }
 }
 
-void
-desktop_controller_impl::submit_session_data(cherry_kit::sync_object *a_object) {
+void desktop_controller_impl::submit_session_data(
+    cherry_kit::sync_object *a_object) {
   a_object->set_property("background", o_ctr->m_background_texture);
   a_object->set_property("mode", "scale");
 }
@@ -169,7 +172,7 @@ void desktop_controller_impl::expose_platform_desktop() {
 }
 
 void desktop_controller_impl::request_action(const QString &actionName,
-                                          const QVariantMap &data) {
+                                             const QVariantMap &data) {
   if (actionName == "Desktop") {
     if (!viewport())
       return;
@@ -182,11 +185,17 @@ void desktop_controller_impl::request_action(const QString &actionName,
                o_ctr->m_background_window->geometry().height()),
         cherry_kit::space::kCenterOnWindow);
 
-    cherry_kit::desktop_dialog_ref activity = viewport()->open_desktop_dialog(
-        "desktop_settings_dialog", "Desktop", qt_activity_window_location,
-        dialog_window_geometry, QVariantMap());
+    cherry_kit::desktop_dialog_ref ck_activity =
+        viewport()->open_desktop_dialog("desktop_settings_dialog", "Desktop",
+                                        qt_activity_window_location,
+                                        dialog_window_geometry, QVariantMap());
 
-    activity->on_action_completed([=](const QVariantMap &a_data) {});
+    ck_activity->on_notify([&](const std::string &key,
+                               const std::string &value) {
+      qDebug() << Q_FUNC_INFO << key.c_str() << " = " << value.c_str();
+      o_ctr->m_background_window->set_background(value);
+    });
+
     return;
   }
 
@@ -215,7 +224,7 @@ void desktop_controller_impl::set_desktop_scale_type(
     desktop_window::DesktopScalingMode a_desktop_mode) {}
 
 void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
-                                             QDropEvent *event) {
+                                                QDropEvent *event) {
   if (event->mimeData()->hasImage()) {
     QImage qt_image_data =
         qvariant_cast<QImage>(event->mimeData()->imageData());
@@ -240,7 +249,8 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
 
     if (!qt_dropped_file_info.isDir()) {
       if (o_ctr->m_background_window) {
-        o_ctr->m_background_window->set_background(qt_dropped_file_name_string);
+        o_ctr->m_background_window->set_background(
+                    qt_dropped_file_name_string.toStdString());
         o_ctr->m_background_texture = qt_dropped_file_name_string.toStdString();
         sync_session_data("background", qt_dropped_file_name_string);
       }
@@ -256,8 +266,8 @@ void desktop_controller_impl::set_view_rect(const QRectF &rect) {
 }
 
 void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
-                                                   const QString &source,
-                                                   bool a_local_file) {
+                                                      const QString &source,
+                                                      bool a_local_file) {
   QuetzalSocialKit::AsyncImageCreator *ck_image_service =
       new QuetzalSocialKit::AsyncImageCreator(this);
 
@@ -273,8 +283,8 @@ void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
 }
 
 void desktop_controller_impl::sync_image_data_to_disk(const QImage &data,
-                                                   const QString &source,
-                                                   bool saveLocally) {
+                                                      const QString &source,
+                                                      bool saveLocally) {
   QuetzalSocialKit::AsyncImageCreator *ck_async_image_service =
       new QuetzalSocialKit::AsyncImageCreator(this);
 
@@ -341,12 +351,14 @@ QString desktop_controller_impl::icon() const {
   return QString("pd_home_sym_icon.png");
 }
 
-QString desktop_controller_impl::label() const { return QString(tr("Desktop")); }
+QString desktop_controller_impl::label() const {
+  return QString(tr("Desktop"));
+}
 
 void desktop_controller_impl::prepare_removal() {}
 
 void desktop_controller_impl::sync_session_data(const QString &key,
-                                             const QVariant &value) {
+                                                const QVariant &value) {
   if (!viewport())
     return;
 
@@ -354,8 +366,8 @@ void desktop_controller_impl::sync_session_data(const QString &key,
 }
 
 QAction *desktop_controller_impl::PrivateBackgroundController::add_action(
-    desktop_controller_impl *controller, const QString &name, const QString &icon,
-    int id) {
+    desktop_controller_impl *controller, const QString &name,
+    const QString &icon, int id) {
   QAction *qt_action = new QAction(controller);
   qt_action->setText(name);
   qt_action->setProperty("id", QVariant(id));
