@@ -42,37 +42,37 @@ public:
 
 date_dialog::date_dialog(QGraphicsObject *object)
     : cherry_kit::desktop_dialog(object),
-      o_desktop_dialog(new PrivateDatePicker) {}
+      priv(new PrivateDatePicker) {}
 
-date_dialog::~date_dialog() { delete o_desktop_dialog; }
+date_dialog::~date_dialog() { delete priv; }
 
 void date_dialog::create_window(const QRectF &window_geometry,
                                        const QString &window_title,
                                        const QPointF &window_pos) {
-  o_desktop_dialog->m_activity_window = new cherry_kit::window();
-  o_desktop_dialog->m_activity_window->setGeometry(window_geometry);
-  o_desktop_dialog->m_activity_window->set_window_title(window_title);
+  priv->m_activity_window = new cherry_kit::window();
+  priv->m_activity_window->setGeometry(window_geometry);
+  priv->m_activity_window->set_window_title(window_title);
 
-  o_desktop_dialog->m_window_content =
-      new cherry_kit::widget(o_desktop_dialog->m_activity_window);
-  o_desktop_dialog->m_window_content->setGeometry(window_geometry);
+  priv->m_window_content =
+      new cherry_kit::widget(priv->m_activity_window);
+  priv->m_window_content->setGeometry(window_geometry);
 
-  o_desktop_dialog->mCalendarWidget =
-      new cherry_kit::calendar_view(o_desktop_dialog->m_window_content);
-  o_desktop_dialog->mCalendarWidget->setGeometry(window_geometry);
-  o_desktop_dialog->mCalendarWidget->setPos(0, 0);
+  priv->mCalendarWidget =
+      new cherry_kit::calendar_view(priv->m_window_content);
+  priv->mCalendarWidget->setGeometry(window_geometry);
+  priv->mCalendarWidget->setPos(0, 0);
 
-  o_desktop_dialog->m_done_button =
-      new cherry_kit::button(o_desktop_dialog->m_window_content);
-  o_desktop_dialog->m_done_button->set_label(tr("Done"));
-  o_desktop_dialog->m_done_button->show();
+  priv->m_done_button =
+      new cherry_kit::button(priv->m_window_content);
+  priv->m_done_button->set_label(tr("Done"));
+  priv->m_done_button->show();
 
-  o_desktop_dialog->m_done_button->setPos(
-      o_desktop_dialog->mCalendarWidget->geometry().width() / 2 -
-          (o_desktop_dialog->m_done_button->boundingRect().width() + 10) / 2,
+  priv->m_done_button->setPos(
+      priv->mCalendarWidget->geometry().width() / 2 -
+          (priv->m_done_button->boundingRect().width() + 10) / 2,
       310);
 
-  o_desktop_dialog->m_done_button->on_input_event([this](
+  priv->m_done_button->on_input_event([this](
       cherry_kit::widget::InputEvent a_event,
       const cherry_kit::widget *a_widget) {
     if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
@@ -82,8 +82,8 @@ void date_dialog::create_window(const QRectF &window_geometry,
     }
   });
 
-  o_desktop_dialog->m_activity_window->set_window_content(
-      o_desktop_dialog->m_window_content);
+  priv->m_activity_window->set_window_content(
+      priv->m_window_content);
 
   QRectF view_geometry = window_geometry;
   view_geometry.setHeight(window_geometry.height() + 64);
@@ -94,29 +94,29 @@ void date_dialog::create_window(const QRectF &window_geometry,
 }
 
 QVariantMap date_dialog::result() const {
-  return o_desktop_dialog->m_result_data;
+  return priv->m_result_data;
 }
 
 cherry_kit::window *date_dialog::dialog_window() const {
-  return o_desktop_dialog->m_activity_window;
+  return priv->m_activity_window;
 }
 
 void date_dialog::cleanup() {
-  if (o_desktop_dialog->m_activity_window) {
-    delete o_desktop_dialog->m_activity_window;
+  if (priv->m_activity_window) {
+    delete priv->m_activity_window;
   }
 
-  o_desktop_dialog->m_activity_window = 0;
+  priv->m_activity_window = 0;
 }
 
 void date_dialog::onImageReady(const QImage &img) {}
 
 void date_dialog::end_calendar() {
-  if (!o_desktop_dialog->mCalendarWidget) {
-    o_desktop_dialog->m_result_data["date"] =
+  if (!priv->mCalendarWidget) {
+    priv->m_result_data["date"] =
         QVariant(QDate::currentDate().toString());
   } else {
-    o_desktop_dialog->m_result_data["date"] =
-        QVariant(o_desktop_dialog->mCalendarWidget->a_date());
+    priv->m_result_data["date"] =
+        QVariant(priv->mCalendarWidget->a_date());
   }
 }
