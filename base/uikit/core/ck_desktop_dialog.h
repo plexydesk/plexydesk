@@ -33,6 +33,8 @@ class desktop_controller_interface;
 class space;
 class widget;
 typedef QSharedPointer<desktop_controller_interface> desktop_controller_ref;
+typedef std::function<void(const std::string &, const std::string &)>
+dialog_message_t;
 
 class DECL_UI_KIT_EXPORT desktop_dialog : public QObject {
   Q_OBJECT
@@ -79,6 +81,8 @@ public:
   virtual void
   on_discarded(std::function<void(const desktop_dialog *)> a_handler);
 
+  virtual void on_notify(dialog_message_t callback);
+
   virtual void discard_activity();
 
 protected:
@@ -87,6 +91,8 @@ protected:
   virtual void set_geometry(const QRectF &a_geometry);
   virtual void update_content_geometry(widget *a_widget_ptr);
   virtual void notify_done();
+  virtual void notify_message(const std::string &a_key,
+                              const std::string &a_value);
 
 Q_SIGNALS:
   void canceled();
@@ -95,7 +101,7 @@ Q_SIGNALS:
 
 private:
   class PrivateDesktopActivity;
-  PrivateDesktopActivity *const o_desktop_dialog;
+  PrivateDesktopActivity *const priv;
 };
 
 typedef QSharedPointer<desktop_dialog> desktop_dialog_ref;
