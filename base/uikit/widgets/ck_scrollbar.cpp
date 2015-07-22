@@ -72,6 +72,11 @@ void scrollbar::update_slider_geometry() {
   priv->m_handler_rect.setY(priv->m_current_pos.y());
   priv->m_handler_rect.setWidth(priv->m_width - 2);
   priv->m_handler_rect.setHeight(priv->m_height / scale_factor());
+
+  if (priv->m_handler_rect.height() >= priv->m_max_value)
+      hide();
+  else
+      show();
 }
 
 void scrollbar::set_maximum_value(int a_value) {
