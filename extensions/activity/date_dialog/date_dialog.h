@@ -48,7 +48,7 @@ private:
 
 private:
   class PrivateDatePicker;
-  PrivateDatePicker *const o_desktop_dialog;
+  PrivateDatePicker *const priv;
 };
 
 #endif
