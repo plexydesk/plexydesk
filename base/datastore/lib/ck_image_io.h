@@ -68,7 +68,9 @@ public:
 
   virtual void create(int a_width, int a_height);
   virtual void create(image_data_ref a_buffer, int a_width, int a_height);
+
   virtual void create(const std::string &a_file_name);
+  virtual std::string url() const;
 
   virtual void preview_image(const std::string &a_file_name);
 
@@ -86,7 +88,7 @@ private:
   class platform_image;
   class private_io_image_impl;
 
-  private_io_image_impl *const o_image;
+  private_io_image_impl *const priv;
   platform_image *const o_surface_proxy;
 };
 }
