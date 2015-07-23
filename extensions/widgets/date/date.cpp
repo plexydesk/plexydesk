@@ -76,7 +76,7 @@ cherry_kit::ActionList date_controller::actions() const {
 }
 
 void date_controller::request_action(const QString &a_name,
-                                        const QVariantMap &a_args) {
+                                     const QVariantMap &a_args) {
   QPointF window_location;
 
   if (viewport()) {
@@ -102,10 +102,9 @@ void date_controller::request_action(const QString &a_name,
 
 QString date_controller::icon() const { return QString(); }
 
-void date_controller::add_action_button(cherry_kit::fixed_layout *ui,
-                                           int a_row, int a_col,
-                                           const std::string &a_label,
-                                           const std::string &a_icon) {
+void date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
+                                        int a_col, const std::string &a_label,
+                                        const std::string &a_icon) {
   cherry_kit::widget_properties_t ui_data;
   ui_data["label"] = a_label;
   ui_data["icon"] = "actions/" + a_icon + ".png";
@@ -134,6 +133,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   add_action_button(ui, 1, 1, "Zoom Out", "pd_zoom_out");
   add_action_button(ui, 1, 2, "Tasks", "pd_view_list");
 
+  window->set_window_title("Calendar");
   window->set_window_content(ui->viewport());
 
   a_session->bind_to_window(window);
