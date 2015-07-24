@@ -44,77 +44,34 @@ class resource_manager::ThemepackLoaderPrivate {
 public:
   ThemepackLoaderPrivate() {}
   ~ThemepackLoaderPrivate() {
-    if (mXmlRawFile) {
-      delete mXmlRawFile;
-    }
-
-    if (mStyle) {
-      mStyle.clear();
+    if (m_current_style_ref) {
+      m_current_style_ref.clear();
     }
   }
 
-  QString mThemeName;
-  QString mThemePackPath;
-  QRectF mScreenRect;
+  QString m_resource_name;
+  QString m_resource_group;
 
-  QString mXmlConfigFile;
-  QDomDocument mXmlDocumentRoot;
-  QFile *mXmlRawFile;
-
-  QHash<QString, QPixmap> mImageCache;
-
-  // style
-  StylePtr mStyle;
-
+  QHash<QString, QPixmap> m_image_cache;
   std::map<ColorName, std::string> m_color_map;
+
+  StylePtr m_current_style_ref;
 };
 
 resource_manager::resource_manager(const QString &a_theme_name)
     : o_resource_manager(new ThemepackLoaderPrivate) {
-  o_resource_manager->mThemePackPath = QDir::toNativeSeparators(
-      QString("%1/%2").arg(cherry_kit::config::instance()->prefix()).arg(
-          "/share/plexy/themepack"));
-
-  o_resource_manager->mThemeName = a_theme_name;
-  QDir mainConfig(QDir::toNativeSeparators(
-      QString("%1/%2/").arg(o_resource_manager->mThemePackPath).arg(
-          a_theme_name)));
-
-  o_resource_manager->mXmlConfigFile =
-      mainConfig.absoluteFilePath("layout.xml");
-  o_resource_manager->mXmlRawFile =
-      new QFile(o_resource_manager->mXmlConfigFile);
-
-  if (!o_resource_manager->mXmlRawFile->open(QIODevice::ReadOnly |
-                                             QIODevice::Text)) {
-    qWarning() << Q_FUNC_INFO << "Failed to open "
-               << o_resource_manager->mXmlConfigFile;
-  } else {
-    if (!o_resource_manager->mXmlDocumentRoot.setContent(
-             o_resource_manager->mXmlRawFile)) {
-      qWarning() << Q_FUNC_INFO << "Failed to load the xml file";
-    }
-  }
 
   set_color_scheme("default");
-  o_resource_manager->mStyle =
+  o_resource_manager->m_current_style_ref =
       cherry_kit::extension_manager::instance()->style("cocoastyle");
 }
 
 resource_manager::~resource_manager() {
-
-  /*
-  if (staticLoader) {
-      delete staticLoader;
-      staticLoader = 0;
-  }
-  */
-
   delete o_resource_manager;
 }
 
 StylePtr resource_manager::default_desktop_style() {
-  return o_resource_manager->mStyle;
+  return o_resource_manager->m_current_style_ref;
 }
 
 StylePtr resource_manager::style() {
@@ -144,14 +101,14 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
   QPixmap rv;
 
   QString iconThemePath =
-      QDir::toNativeSeparators(o_resource_manager->mThemePackPath + "/" +
-                               o_resource_manager->mThemeName + "/resources/" +
+      QDir::toNativeSeparators(o_resource_manager->m_resource_group + "/" +
+                               o_resource_manager->m_resource_name + "/resources/" +
                                a_dpi + "/" + a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
 
-  if (o_resource_manager->mImageCache.keys().contains(iconThemePath)) {
-    return o_resource_manager->mImageCache[iconThemePath];
+  if (o_resource_manager->m_image_cache.keys().contains(iconThemePath)) {
+    return o_resource_manager->m_image_cache[iconThemePath];
   }
 
   if (!fileInfo.exists()) {
@@ -160,7 +117,7 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
   }
 
   rv = QPixmap(iconThemePath);
-  o_resource_manager->mImageCache[iconThemePath] = rv;
+  o_resource_manager->m_image_cache[iconThemePath] = rv;
 
   return rv;
 }
