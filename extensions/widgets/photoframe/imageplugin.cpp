@@ -39,10 +39,10 @@ photo_controller_impl::~photo_controller_impl() {
 
 void photo_controller_impl::init() {
   QAction *_add_dir_action = new QAction(this);
-  _add_dir_action->setText(tr("Photo"));
+  _add_dir_action->setText(tr("Share"));
 
   _add_dir_action->setProperty("id", QVariant(1));
-  _add_dir_action->setProperty("icon_name", "pd_photo_icon.png");
+  _add_dir_action->setProperty("icon_name", "pd_flickr_photo_icon.png");
 
   m_supported_action_list << _add_dir_action;
 }
@@ -164,7 +164,7 @@ cherry_kit::ActionList photo_controller_impl::actions() const {
 
 void photo_controller_impl::request_action(const QString &actionName,
                                           const QVariantMap &args) {
-  if (actionName == tr("Photo")) {
+  if (actionName == tr("Share")) {
     cherry_kit::window *window = new cherry_kit::window();
     PhotoWidget *photoWidget = new PhotoWidget();
 

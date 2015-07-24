@@ -44,9 +44,9 @@ public:
 desktop_task_controller_impl::desktop_task_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_view_controller(new PrivateDesktopNotes) {
-  o_view_controller->mNoteActions["Note"] = 1;
-  o_view_controller->mNoteActions["Task"] = 2;
-  o_view_controller->mNoteActions["Reminder"] = 3;
+  //o_view_controller->mNoteActions["Keep"] = 1;
+  o_view_controller->mNoteActions["Remember"] = 1;
+  o_view_controller->mNoteActions["Do"] = 2;
 }
 
 desktop_task_controller_impl::~desktop_task_controller_impl() {
@@ -55,26 +55,25 @@ desktop_task_controller_impl::~desktop_task_controller_impl() {
 
 void desktop_task_controller_impl::init() {
   QAction *_add_note_action = new QAction(this);
-  _add_note_action->setText(tr("Note"));
-
+  _add_note_action->setText(tr("Remember"));
   _add_note_action->setProperty("id", QVariant(1));
   _add_note_action->setProperty("icon_name", "pd_note_icon.png");
 
   QAction *_add_task_action = new QAction(this);
-  _add_task_action->setText(tr("Task"));
-
+  _add_task_action->setText(tr("Do"));
   _add_task_action->setProperty("id", QVariant(2));
   _add_task_action->setProperty("icon_name", "pd_todo_list_icon.png");
 
-  QAction *_add_reminder_action = new QAction(this);
+  /*QAction *_add_reminder_action = new QAction(this);
   _add_reminder_action->setText(tr("Reminder"));
 
   _add_reminder_action->setProperty("id", QVariant(2));
   _add_reminder_action->setProperty("icon_name", "pd_reminder_icon.png");
+	*/
 
   o_view_controller->m_supported_action_list << _add_note_action;
   o_view_controller->m_supported_action_list << _add_task_action;
-  o_view_controller->m_supported_action_list << _add_reminder_action;
+  //o_view_controller->m_supported_action_list << _add_reminder_action;
 }
 
 void desktop_task_controller_impl::session_data_available(
@@ -129,8 +128,6 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
     });
     break;
   case 2:
-    break;
-  case 3:
     session_args["x"] = window_location.x();
     session_args["y"] = window_location.y();
     session_args["reminders_id"] = session_count();
@@ -288,7 +285,7 @@ void desktop_task_controller_impl::createReminderUI(
   view->add_widget(1, 3, "image_button", accept_button_prop);
 
   window->set_window_content(view->viewport());
-  window->set_window_title("Reminder");
+  window->set_window_title("Task");
 
   a_session->bind_to_window(window);
   insert(window);
