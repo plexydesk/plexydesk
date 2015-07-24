@@ -81,11 +81,11 @@ QAction *time_controller::createAction(int id, const QString &action_name,
 
 void time_controller::init() {
   o_view_controller->m_supported_action_list
-      << createAction(1, tr("Clock"), "pd_clock_icon.png");
-  o_view_controller->m_supported_action_list
-      << createAction(3, tr("Alarm"), "pd_alarm_icon.png");
+      << createAction(1, tr("Track"), "pd_alarm_icon.png");
+	/*
   o_view_controller->m_supported_action_list
       << createAction(2, tr("Timer"), "pd_timer_icon.png");
+			*/
 }
 
 void time_controller::set_view_rect(const QRectF &rect) {}
@@ -131,7 +131,7 @@ void time_controller::request_action(const QString &actionName,
     window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
   }
 
-  if (actionName == tr("Clock")) {
+  if (actionName == tr("Track")) {
     QVariantMap session_args;
 
     session_args["x"] = window_location.x();
@@ -220,7 +220,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   // add_action_button(ck_ui, 1, 2, "Timer", "pd_history");
 
   ck_window->set_window_content(ck_ui->viewport());
-  ck_window->set_window_title("Clock");
+  ck_window->set_window_title("Time");
 
   a_session->bind_to_window(ck_window);
   ck_window->on_window_discarded([=](cherry_kit::window *aWindow) {

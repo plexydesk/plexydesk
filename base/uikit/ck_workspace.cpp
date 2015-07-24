@@ -37,7 +37,7 @@ void workspace::set_workspace_geometry(int a_screen_id) {
 
 #ifdef Q_OS_LINUX
   _current_desktop_geometry =
-      QApplication::desktop()->availableGeometry(a_screen_id);
+      QApplication::desktop()->screenGeometry(a_screen_id);
 #endif
 
 #ifdef Q_OS_MAC
