@@ -44,7 +44,7 @@ date_controller::~date_controller() { delete o_view_controller; }
 
 void date_controller::init() {
   QAction *_add_note_action = new QAction(this);
-  _add_note_action->setText(tr("Calendar"));
+  _add_note_action->setText(tr("Meet"));
 
   _add_note_action->setProperty("id", QVariant(1));
   _add_note_action->setProperty("icon_name", "pd_calendar_icon.png");
@@ -85,7 +85,7 @@ void date_controller::request_action(const QString &a_name,
 
   QVariantMap session_args;
 
-  if (a_name == tr("Calendar")) {
+  if (a_name == tr("Meet")) {
     session_args["x"] = window_location.x();
     session_args["y"] = window_location.y();
     session_args["calendar_id"] = session_count();
@@ -133,7 +133,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   add_action_button(ui, 1, 1, "Zoom Out", "pd_zoom_out");
   add_action_button(ui, 1, 2, "Tasks", "pd_view_list");
 
-  window->set_window_title("Calendar");
+  window->set_window_title("People");
   window->set_window_content(ui->viewport());
 
   a_session->bind_to_window(window);

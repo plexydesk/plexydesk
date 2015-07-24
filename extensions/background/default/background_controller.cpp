@@ -83,7 +83,7 @@ void desktop_controller_impl::init() {
       delete o_ctr->m_background_window;
   });
 
-  o_ctr->add_action(this, tr("Desktop"), "pd_background_frame_icon.png", 1);
+  o_ctr->add_action(this, tr("Configure"), "pd_settings_icon.png", 1);
 
   insert(o_ctr->m_background_window);
 }
@@ -173,7 +173,9 @@ void desktop_controller_impl::expose_platform_desktop() {
 
 void desktop_controller_impl::request_action(const QString &actionName,
                                              const QVariantMap &data) {
-  if (actionName == "Desktop") {
+	//todo : 
+	// replace this kind of comparisons with new actions.
+  if (actionName == tr("Configure")) {
     if (!viewport())
       return;
 
