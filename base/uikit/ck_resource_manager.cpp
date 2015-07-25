@@ -49,6 +49,9 @@ public:
     }
   }
 
+  std::string get_dpi() const;
+
+
   QString m_resource_name;
   QString m_resource_group;
 
@@ -59,19 +62,26 @@ public:
 };
 
 resource_manager::resource_manager(const QString &a_theme_name)
-    : o_resource_manager(new ThemepackLoaderPrivate) {
-
+    : priv(new ThemepackLoaderPrivate) {
   set_color_scheme("default");
-  o_resource_manager->m_current_style_ref =
+
+  QString theme_prefix = config::instance()->prefix();
+  QString theme_base_path = "/share/plexy/themepack/";
+  QString theme_pack_path = theme_prefix + "/" + theme_base_path;
+
+  priv->m_resource_group = QDir::toNativeSeparators(theme_pack_path);
+  priv->m_resource_name = a_theme_name;
+
+  priv->m_current_style_ref =
       cherry_kit::extension_manager::instance()->style("cocoastyle");
 }
 
 resource_manager::~resource_manager() {
-  delete o_resource_manager;
+  delete priv;
 }
 
 StylePtr resource_manager::default_desktop_style() {
-  return o_resource_manager->m_current_style_ref;
+  return priv->m_current_style_ref;
 }
 
 StylePtr resource_manager::style() {
@@ -91,24 +101,19 @@ const char *resource_manager::color(resource_manager::ColorName a_name) {
   return instance()->color_code(a_name);
 }
 
-QPixmap resource_manager::icon(const QString &a_name,
-                               const QString &a_resolution) {
-  return instance()->drawable(a_name, a_resolution);
-}
-
 QPixmap resource_manager::drawable(const QString &a_fileName,
                                    const QString &a_dpi) {
   QPixmap rv;
 
   QString iconThemePath =
-      QDir::toNativeSeparators(o_resource_manager->m_resource_group + "/" +
-                               o_resource_manager->m_resource_name + "/resources/" +
+      QDir::toNativeSeparators(priv->m_resource_group + "/" +
+                               priv->m_resource_name + "/resources/" +
                                a_dpi + "/" + a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
 
-  if (o_resource_manager->m_image_cache.keys().contains(iconThemePath)) {
-    return o_resource_manager->m_image_cache[iconThemePath];
+  if (priv->m_image_cache.keys().contains(iconThemePath)) {
+    return priv->m_image_cache[iconThemePath];
   }
 
   if (!fileInfo.exists()) {
@@ -117,20 +122,20 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
   }
 
   rv = QPixmap(iconThemePath);
-  o_resource_manager->m_image_cache[iconThemePath] = rv;
+  priv->m_image_cache[iconThemePath] = rv;
 
   return rv;
 }
 
 void resource_manager::load_default_color_values() {
-  o_resource_manager->m_color_map[kDarkPrimaryColor] = "#1976D2";
-  o_resource_manager->m_color_map[kPrimaryColor] = "#2196F3";
-  o_resource_manager->m_color_map[kLightPrimaryColor] = "#FFFFFF";
-  o_resource_manager->m_color_map[kTextBackground] = "#212121";
-  o_resource_manager->m_color_map[kAccentColor] = "#FF4081";
-  o_resource_manager->m_color_map[kTextColor] = "#646464";
-  o_resource_manager->m_color_map[kSecondryTextColor] = "#FFFFFF";
-  o_resource_manager->m_color_map[kDividerColor] = "#B6B6B6";
+  priv->m_color_map[kDarkPrimaryColor] = "#1976D2";
+  priv->m_color_map[kPrimaryColor] = "#2196F3";
+  priv->m_color_map[kLightPrimaryColor] = "#FFFFFF";
+  priv->m_color_map[kTextBackground] = "#212121";
+  priv->m_color_map[kAccentColor] = "#FF4081";
+  priv->m_color_map[kTextColor] = "#646464";
+  priv->m_color_map[kSecondryTextColor] = "#FFFFFF";
+  priv->m_color_map[kDividerColor] = "#B6B6B6";
 }
 
 void resource_manager::set_color_scheme(const std::string &a_name) {
@@ -146,21 +151,21 @@ void resource_manager::set_color_scheme(const std::string &a_name) {
       return;
     }
 
-    o_resource_manager->m_color_map[kDarkPrimaryColor] =
+    priv->m_color_map[kDarkPrimaryColor] =
         a_object.property("dark_primary_color");
-    o_resource_manager->m_color_map[kPrimaryColor] =
+    priv->m_color_map[kPrimaryColor] =
         std::string(a_object.property("primary_color"));
-    o_resource_manager->m_color_map[kLightPrimaryColor] =
+    priv->m_color_map[kLightPrimaryColor] =
         a_object.property("light_primary_color");
-    o_resource_manager->m_color_map[kTextBackground] =
+    priv->m_color_map[kTextBackground] =
         a_object.property("text_background_color");
-    o_resource_manager->m_color_map[kAccentColor] =
+    priv->m_color_map[kAccentColor] =
         a_object.property("accent_color");
-    o_resource_manager->m_color_map[kTextColor] =
+    priv->m_color_map[kTextColor] =
         a_object.property("text_color");
-    o_resource_manager->m_color_map[kSecondryTextColor] =
+    priv->m_color_map[kSecondryTextColor] =
         a_object.property("secondry_text_color");
-    o_resource_manager->m_color_map[kDividerColor] =
+    priv->m_color_map[kDividerColor] =
         a_object.property("divider_color");
   });
 
@@ -175,19 +180,36 @@ const char *resource_manager::color_code(resource_manager::ColorName a_name) {
   std::string error_rv = "#000000";
   const char *rv;
 
-  if (o_resource_manager->m_color_map.find(a_name) ==
-      o_resource_manager->m_color_map.end()) {
+  if (priv->m_color_map.find(a_name) ==
+      priv->m_color_map.end()) {
     rv = error_rv.c_str();
     return rv;
   }
 
-  rv = o_resource_manager->m_color_map.at(a_name).c_str();
+  rv = priv->m_color_map.at(a_name).c_str();
 
   return rv;
 }
 
 void resource_manager::set_theme_name(const QString &a_name) {
   Q_UNUSED(a_name);
+}
+
+std::string resource_manager::ThemepackLoaderPrivate::get_dpi() const {
+   std::string rv = "mdpi";
+   int base_dpi = 160;
+
+   if (base_dpi <= 120) {
+     rv = "ldpi";
+   } else if (base_dpi <= 160) {
+     rv = "mdpi";
+   } else if (base_dpi <= 240) {
+     rv = "hdpi";
+   } else if (base_dpi <= 320) {
+     rv = "xhdpi";
+   }
+
+   return rv;
 }
 
 } // namespace plexydesk
