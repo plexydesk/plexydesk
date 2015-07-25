@@ -35,7 +35,6 @@ public:
 
   static StylePtr style();
 
-  static QPixmap icon(const QString &a_name, const QString &a_resolution);
   virtual QPixmap drawable(const QString &a_fileName, const QString &a_dpi);
 
   typedef enum {
@@ -60,7 +59,7 @@ private:
   void load_default_color_values();
 
   class ThemepackLoaderPrivate;
-  ThemepackLoaderPrivate *const o_resource_manager;
+  ThemepackLoaderPrivate *const priv;
 
   static resource_manager *s_theme_instance;
 };
