@@ -152,8 +152,8 @@ void icon_dialog::create_window(const QRectF &window_geometry,
 
     if (priv->m_auto_scale_frame) {
       QRectF _content_rect = priv->m_grid_view->boundingRect();
-      _content_rect.setWidth(_content_rect.width() + 8);
-      _content_rect.setHeight(_content_rect.height() + 8);
+      _content_rect.setWidth(_content_rect.width() + 2);
+      _content_rect.setHeight(_content_rect.height() + 2);
 
       priv->m_grid_view->set_view_geometry(_content_rect);
       priv->m_grid_view->setGeometry(_content_rect);
@@ -189,8 +189,8 @@ widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   m_label = aLabel;
   m_icon = aIcon;
 
-  QSizeF item_icon_size(96, 64);
-  QSizeF item_label_size(96, 32);
+  QSizeF item_icon_size(48, 48);
+  QSizeF item_label_size(48, 16);
 
   widget *l_rv = new widget();
 

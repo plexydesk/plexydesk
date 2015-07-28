@@ -102,25 +102,25 @@ void CocoaStyle::load_default_widget_style_properties() {
   QVariantMap _size_attributes;
   QVariantMap _button_attributes;
 
-  _frame_attributes["window_title_height"] = 64.0;
+  _frame_attributes["window_title_height"] = 32.0;
   _frame_attributes["window_minimized_height"] = 128.0;
   _frame_attributes["window_minimized_width"] = 96.0;
-  _frame_attributes["window_blur_radius"] = 24.0;
-  _frame_attributes["window_close_button_width"] = 16.0;
-  _frame_attributes["window_close_button_height"] = 16.0;
+  _frame_attributes["window_blur_radius"] = 12.0;
+  _frame_attributes["window_close_button_width"] = 10.0;
+  _frame_attributes["window_close_button_height"] = 10.0;
   _frame_attributes["window_shadow_color"] = QString("#323232");
-  _frame_attributes["padding"] = 5.0;
+  _frame_attributes["padding"] = 2.0;
 
-  _widget_attributes["line_edit_width"] = 256.0;
-  _widget_attributes["line_edit_height"] = 32.0;
+  _widget_attributes["line_edit_width"] = 128.0;
+  _widget_attributes["line_edit_height"] = 16.0;
 
   _size_attributes["small"] = 0.5;
   _size_attributes["original"] = 1.0;
   _size_attributes["large"] = 2.0;
   _size_attributes["huge"] = 4.0;
 
-  _button_attributes["width"] = 128.0;
-  _button_attributes["height"] = 32.0;
+  _button_attributes["width"] = 64.0;
+  _button_attributes["height"] = 16.0;
 
   d->m_attribute_map["frame"] = _frame_attributes;
   d->m_attribute_map["widget"] = _widget_attributes;
@@ -132,7 +132,10 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
   load_default_widget_style_properties();
 }
 
-CocoaStyle::~CocoaStyle() { delete d; }
+CocoaStyle::~CocoaStyle() {
+  qDebug() << Q_FUNC_INFO;
+  delete d;
+}
 
 QVariantMap CocoaStyle::attribute_map(const QString &type) const {
   return d->m_attribute_map[type].toMap();
@@ -242,7 +245,7 @@ void CocoaStyle::draw_window_button(const style_data &features,
   set_default_painter_hints(painter);
 
   QPainterPath background;
-  background.addRoundedRect(rect, 4.0, 4.0);
+  background.addRoundedRect(rect, 2.0, 2.0);
 
   if (features.render_state == style_data::kRenderElement) {
     painter->fillPath(background, d->color(resource_manager::kAccentColor));
@@ -252,8 +255,8 @@ void CocoaStyle::draw_window_button(const style_data &features,
 
   painter->save();
 
-  d->set_pen_color(painter, resource_manager::kSecondryTextColor, 2);
-  QRectF cross_rect(6.0, 6.0, rect.width() - 12, rect.height() - 12);
+  d->set_pen_color(painter, resource_manager::kSecondryTextColor, 1);
+  QRectF cross_rect(3.0, 3.0, rect.width() - 6, rect.height() - 6);
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
   painter->drawLine(cross_rect.topRight(), cross_rect.bottomLeft());
@@ -274,14 +277,14 @@ void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
 
 void CocoaStyle::draw_window_frame(const style_data &features,
                                    QPainter *a_ctx) {
-  QRectF rect = features.geometry.adjusted(4, 4, -4, -4);
+  QRectF rect = features.geometry.adjusted(1, 1, -1, -1);
 
   a_ctx->save();
   set_default_painter_hints(a_ctx);
 
   /* draw shadow */
   QPainterPath drop_shadow;
-  drop_shadow.addRoundRect(features.geometry, 4.0, 4.0);
+  drop_shadow.addRoundRect(features.geometry, 2.0, 2.0);
 
   /* draw a border around the window */
   // todo : do this only when drop shadows are disabled
@@ -294,13 +297,13 @@ void CocoaStyle::draw_window_frame(const style_data &features,
 
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
-  window_background_path.addRoundedRect(rect, 4.0, 4.0);
+  window_background_path.addRoundedRect(rect, 2.0, 2.0);
   a_ctx->fillPath(window_background_path,
                   d->color(resource_manager::kLightPrimaryColor));
 
   /* draw seperator */
   if (!features.text_data.isNull() || !features.text_data.isEmpty()) {
-    QRectF window_title_rect(8, 4, rect.width() - 8, 54.0);
+    QRectF window_title_rect(4, 2, rect.width() - 8, 28.0);
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
@@ -314,7 +317,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
     // draw frame text;
     a_ctx->save();
 
-    d->set_default_font_size(a_ctx, 18, true);
+    d->set_default_font_size(a_ctx, 12, true);
     d->set_pen_color(a_ctx, resource_manager::kTextColor);
     a_ctx->drawText(window_title_rect, features.text_data,
                     QTextOption(Qt::AlignCenter));
@@ -343,7 +346,7 @@ void CocoaStyle::draw_clock_hands(
                           rect.width() - (_adjustment * 2),
                           rect.height() - (_adjustment * 2));
 
-  QTransform _xform_hour;
+  QTransform _xform_hour = a_ctx->transform();
   QPointF _transPos = _clock_hour_rect.center();
   _xform_hour.translate(_transPos.x(), _transPos.y());
   _xform_hour.rotate(45 + angle);
@@ -427,7 +430,7 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
 void CocoaStyle::draw_clock_surface(const style_data &features,
                                     QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
-  float border_len = features.geometry.width() - 16;
+  float border_len = features.geometry.width() - 8;
 
   QRectF rect = QRectF(
       features.geometry.x() + ((features.geometry.width() - border_len) / 2),
@@ -444,7 +447,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
 
   set_default_painter_hints(a_ctx);
 
-  d->set_pen_color(a_ctx, resource_manager::kTextColor, 10);
+  d->set_pen_color(a_ctx, resource_manager::kTextColor, 5);
 
   QPainterPath _clock_background;
   _clock_background.addEllipse(rect);
@@ -466,7 +469,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 4);
+    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 2);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -475,14 +478,15 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 8);
+    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 4);
     a_ctx->drawPoint(marker_location);
   }
 
   // draw marker
   double current_percent = (mark_hour) / 24.0;
 
-  QTransform _xform_hour;
+  const QTransform current_transform = a_ctx->transform();
+  QTransform _xform_hour = current_transform;
   QPointF _transPos = rect.center();
   _xform_hour.translate(_transPos.x(), _transPos.y());
   _xform_hour.rotate(-90);
@@ -499,6 +503,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
       _clock_background.pointAtPercent(current_percent_min);
 
   // experiment
+  a_ctx->save();
   draw_timer_marker(rect, _xform_hour, a_ctx, mark_minutes, mark_hour,
                     current_marker_location, _transPos,
                     current_marker_location_for_min);
@@ -512,6 +517,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
     double current_percent_min = (mark_end) / 60.0;
 
     _xform_hour.reset();
+    _xform_hour = current_transform;
     _transPos = rect.center();
     _xform_hour.translate(_transPos.x(), _transPos.y());
     _xform_hour.rotate(-90);
@@ -527,16 +533,17 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
                       current_marker_location_for_min);
   }
 
+  a_ctx->restore();
   /* Draw Hour Hand */
-  draw_clock_hands(a_ctx, rect, 3, hour_value,
-                   resource_manager::kSecondryTextColor, 6);
-  draw_clock_hands(a_ctx, rect, 4, minutes_value,
+  draw_clock_hands(a_ctx, features.geometry, 3, hour_value,
                    resource_manager::kSecondryTextColor, 3);
+  draw_clock_hands(a_ctx, rect, 4, minutes_value,
+                   resource_manager::kSecondryTextColor, 2);
 
-  QRectF _clock_wheel_rect(rect.center().x() - 8, rect.center().y() - 8, 16,
-                           16);
-  QRectF _clock_wheel_inner_rect(rect.center().x() - 4, rect.center().y() - 4,
-                                 8, 8);
+  QRectF _clock_wheel_rect(rect.center().x() - 4, rect.center().y() - 4, 8, 8);
+
+  QRectF _clock_wheel_inner_rect(rect.center().x() - 2, rect.center().y() - 2,
+                                 4, 4);
 
   QPainterPath _clock_wheel_path;
   QPainterPath _clock_wheel_inner_path;
@@ -554,7 +561,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
                   d->color(resource_manager::kAccentColor));
 
   draw_clock_hands(a_ctx, rect, 5, second_value, resource_manager::kAccentColor,
-                   2);
+                   1);
 }
 
 void CocoaStyle::draw_clock_surface_to_buffer(const style_data &features,
@@ -926,7 +933,7 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
   text_rect.setX(icon_rect.width() + 5);
 
   a_ctx->drawPixmap(icon_rect, a_features.image_data);
-  d->set_default_font_size(a_ctx, 11);
+  d->set_default_font_size(a_ctx, 8);
   a_ctx->drawText(text_rect, a_features.text_data,
                   Qt::AlignLeft | Qt::AlignVCenter);
   a_ctx->restore();
@@ -948,14 +955,14 @@ void CocoaStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) {
 
 void CocoaStyle::draw_scrollbar_slider(const style_data &a_data,
                                        QPainter *a_ctx) {
-  QRectF rect(2, a_data.geometry.y(), a_data.geometry.width() - 8,
+  QRectF rect(2, a_data.geometry.y(), a_data.geometry.width() - 4,
               a_data.geometry.height());
   a_ctx->save();
   a_ctx->setOpacity(0.5);
   a_ctx->setRenderHints(
       QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
-  path.addRoundedRect(rect, 3, 3);
+  path.addRoundedRect(rect, 2, 2);
   a_ctx->fillPath(path,
                   d->color(cherry_kit::resource_manager::kTextBackground));
   a_ctx->restore();
@@ -973,7 +980,7 @@ void CocoaStyle::draw_label(const style_data &aFeatures, QPainter *a_ctx) {
     _font.setPixelSize(aFeatures.attributes["font_size"].toInt() *
                        scale_factor());
   else
-    _font.setPixelSize(14 * scale_factor());
+    _font.setPixelSize(8 * scale_factor());
 
   a_ctx->setFont(_font);
 
