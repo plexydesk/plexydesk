@@ -305,7 +305,9 @@ if (APPLE)
     ADD_SUBDIRECTORY(runner/apple)
 endif()
 
+#todo build only on debug
 add_subdirectory(extensions/runtime)
+add_subdirectory(extensions/mock_desk)
 
 add_subdirectory(base/social/data)
 add_subdirectory(base/datastore/lib)

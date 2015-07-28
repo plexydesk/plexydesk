@@ -26,15 +26,21 @@
 
 class DesktopManager::PrivateDesktopManager {
 public:
-  PrivateDesktopManager() {}
+  PrivateDesktopManager() : m_scene(0) {}
   ~PrivateDesktopManager() {}
+
+  QGraphicsScene *m_scene;
 };
 
 DesktopManager::DesktopManager(QWidget *parent)
-    : cherry_kit::workspace(new QGraphicsScene, parent),
-      p_workspace(new PrivateDesktopManager) {}
+    : cherry_kit::workspace(0, parent),
+      priv(new PrivateDesktopManager) {
+    priv->m_scene = new QGraphicsScene(this);
 
-DesktopManager::~DesktopManager() { delete p_workspace; }
+    setScene(priv->m_scene);
+}
+
+DesktopManager::~DesktopManager() { delete priv; }
 
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
   if (event->button() == Qt::RightButton) {

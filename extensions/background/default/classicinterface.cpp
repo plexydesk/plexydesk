@@ -25,13 +25,21 @@
 ClassicBackdrop::ClassicBackdrop(QObject * /*parent*/)
     : cherry_kit::desktop_plugin_interface() {}
 
-ClassicBackdrop::~ClassicBackdrop() {}
+ClassicBackdrop::~ClassicBackdrop() {
+	qDebug() << Q_FUNC_INFO;
+    m_instance_ref.clear();
+}
+
+static void remove_obj(cherry_kit::desktop_controller_interface *obj) {
+	delete obj;
+	qDebug() << Q_FUNC_INFO;
+}
 
 QSharedPointer<cherry_kit::desktop_controller_interface>
 ClassicBackdrop::controller() {
-  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
+  m_instance_ref =
       QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new desktop_controller_impl(), &QObject::deleteLater);
+          new desktop_controller_impl(), remove_obj);
 
-  return obj;
+  return m_instance_ref;
 }
