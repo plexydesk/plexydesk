@@ -77,6 +77,7 @@ resource_manager::resource_manager(const QString &a_theme_name)
 }
 
 resource_manager::~resource_manager() {
+  qDebug() << Q_FUNC_INFO;
   delete priv;
 }
 

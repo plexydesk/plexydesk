@@ -1,6 +1,7 @@
 #include "mock_desk_runtime.h"
 
 #include <ck_extension_manager.h>
+#include <ck_resource_manager.h>
 
 Runtime::Runtime(QObject *parent) : QObject(parent) {}
 
@@ -32,6 +33,11 @@ void Runtime::end()
 {
     delete m_manager;
     m_manager = 0;
+
+    cherry_kit::resource_manager *rm = cherry_kit::resource_manager::instance();
+
+    delete rm;
+
     cherry_kit::extension_manager::instance()->destroy_instance();
     qApp->quit();
 }

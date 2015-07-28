@@ -31,6 +31,7 @@
 #include <ck_workspace.h>
 #include <ck_config.h>
 #include <ck_extension_manager.h>
+#include <ck_resource_manager.h>
 
 #if defined(Q_OS_LINUX)
 #include <stdio.h>
@@ -190,6 +191,10 @@ public:
                   [&](DesktopManager *a_manager) { delete a_manager; });
 
     m_workspace_list.clear();
+
+    cherry_kit::resource_manager *rm = cherry_kit::resource_manager::instance();
+    delete rm;
+    cherry_kit::extension_manager::instance()->destroy_instance();
   }
 
 private:

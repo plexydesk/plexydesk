@@ -97,8 +97,7 @@ extension_manager *extension_manager::instance() {
 
 void extension_manager::destroy_instance() {
   if (mInstance) {
-    //mInstance->deleteLater();
-		delete mInstance;
+     delete mInstance;
   }
 
   mInstance = 0;
