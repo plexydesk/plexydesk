@@ -196,8 +196,8 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::icon_button *ck_location_btn = 0;
   cherry_kit::clock_view *ck_clock = 0;
 
-  ck_ui->set_content_margin(10, 10, 10, 10);
-  ck_ui->set_geometry(0, 0, 240, 260);
+  ck_ui->set_content_margin(1, 1, 10, 1);
+  ck_ui->set_geometry(0, 0, 148, 164);
 
   ck_ui->add_rows(2);
   ck_ui->add_segments(0, 1);

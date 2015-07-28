@@ -68,6 +68,11 @@ public:
 
   void exec_action(const QString &action);
 
+  widget *create_task_action(const QString &aIcon, const QString &aLabel, const QString &aControllerName);
+  void insert_action(const QString &a_name,
+                     const QString &a_icon,
+                     const QString &a_ctr);
+
 protected:
   void udpate_desktop_preview();
 

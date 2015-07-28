@@ -59,9 +59,12 @@ extension_manager::extension_manager(QObject *parent)
     : QObject(parent), o_extension_manager(new PrivateExtManager) {}
 
 extension_manager::~extension_manager() {
+  o_extension_manager->mStyles.clear();
+
   foreach(QPluginLoader * _loader, o_extension_manager->m_plugin_loader_list) {
     _loader->unload();
     delete _loader;
+		qDebug() << Q_FUNC_INFO << "Deleted plugin";
   }
 
   o_extension_manager->m_plugin_loader_list.clear();
@@ -94,7 +97,8 @@ extension_manager *extension_manager::instance() {
 
 void extension_manager::destroy_instance() {
   if (mInstance) {
-    mInstance->deleteLater();
+    //mInstance->deleteLater();
+		delete mInstance;
   }
 
   mInstance = 0;

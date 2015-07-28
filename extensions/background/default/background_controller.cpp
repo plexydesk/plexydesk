@@ -63,7 +63,10 @@ desktop_controller_impl::desktop_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_ctr(new PrivateBackgroundController) {}
 
-desktop_controller_impl::~desktop_controller_impl() { delete o_ctr; }
+desktop_controller_impl::~desktop_controller_impl() { 
+	delete o_ctr;
+	qDebug() << Q_FUNC_INFO;
+}
 
 void desktop_controller_impl::init() {
   // todo : port toNativeSeperator to our datakit
@@ -179,7 +182,7 @@ void desktop_controller_impl::request_action(const QString &actionName,
     if (!viewport())
       return;
 
-    QRectF dialog_window_geometry(0, 0, 512 + 28, 480);
+    QRectF dialog_window_geometry(0, 0, 272 + 64, 320);
     QPointF qt_activity_window_location = viewport()->center(
         dialog_window_geometry,
         QRectF(o_ctr->m_background_window->x(), o_ctr->m_background_window->y(),
@@ -261,9 +264,9 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
 }
 
 void desktop_controller_impl::set_view_rect(const QRectF &rect) {
+    qDebug() << Q_FUNC_INFO << rect;
   if (o_ctr->m_background_window) {
-    o_ctr->m_background_window->resize(rect.width(), rect.height());
-    o_ctr->m_background_window->setPos(rect.x(), rect.y());
+    o_ctr->m_background_window->setGeometry(rect);
   }
 }
 
