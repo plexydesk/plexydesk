@@ -35,7 +35,7 @@ protected:
 
 private:
   class PrivateDesktopManager;
-  PrivateDesktopManager *const p_workspace;
+  PrivateDesktopManager *const priv;
 };
 
 #endif // DESKTOPMANAGER_H

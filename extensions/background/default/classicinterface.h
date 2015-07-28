@@ -34,6 +34,10 @@ public:
   virtual ~ClassicBackdrop();
 
   QSharedPointer<cherry_kit::desktop_controller_interface> controller();
+
+private:
+  QSharedPointer<cherry_kit::desktop_controller_interface> m_instance_ref;
+
 };
 
 #endif
