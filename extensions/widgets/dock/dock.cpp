@@ -52,7 +52,7 @@ public:
 
   item_view *m_task_grid;
 
-	cherry_kit::fixed_layout *m_fixed_panel_layout;
+  cherry_kit::fixed_layout *m_fixed_panel_layout;
   cherry_kit::item_view *m_preview_widget;
 
   QMap<QString, int> m_actions_map;
@@ -130,7 +130,8 @@ void desktop_panel_controller_impl::create_dock_action(
   cherry_kit::widget *ck_widget;
   prop["label"] = "";
   prop["icon"] = icon;
-  ck_widget = m_fixed_panel_layout->add_widget(row, column, "image_button", prop);
+  ck_widget =
+      m_fixed_panel_layout->add_widget(row, column, "image_button", prop);
 
   ck_widget->on_input_event([=](cherry_kit::widget::InputEvent a_event,
                                 const cherry_kit::widget *a_widget) {
@@ -173,14 +174,12 @@ widget *desktop_panel_controller_impl::create_task_action(
 
   l_rv->setMinimumSize(l_action_item_size);
 
-  l_image_view->on_input_event([this](cherry_kit::widget::InputEvent aEvent,
+  l_image_view->on_input_event([=](cherry_kit::widget::InputEvent aEvent,
                                       const widget *aWidget) {
     if (aEvent == cherry_kit::widget::kMouseReleaseEvent) {
-      /*
-    if (m_action_handler) {
-      m_action_handler(this);
-    }
-    */
+        qDebug() << Q_FUNC_INFO << "Menu pressed" << aControllerName;
+        if (viewport() && viewport()->controller(aControllerName))
+          viewport()->controller(aControllerName)->request_action(aLabel);
     }
   });
 
@@ -261,11 +260,11 @@ void desktop_panel_controller_impl::init() {
   priv->m_preview_window = new cherry_kit::window();
 
   priv->m_preview_window->on_window_discarded([=](cherry_kit::window *aWindow) {
-		if (priv->m_preview_widget) {
-		  priv->m_preview_widget->clear();
-			delete priv->m_preview_widget;
-		}
-		  
+    if (priv->m_preview_widget) {
+      priv->m_preview_widget->clear();
+      delete priv->m_preview_widget;
+    }
+
     delete aWindow;
   });
 
@@ -279,10 +278,10 @@ void desktop_panel_controller_impl::init() {
   priv->m_fixed_panel_layout->set_geometry(0, 0, 24 + 8, 24 * 7);
   priv->m_fixed_panel_layout->add_rows(7);
 
-  priv->m_panel_window->on_window_discarded([this](cherry_kit::window *aWindow) {
-    qDebug() << Q_FUNC_INFO;
-		if (priv->m_fixed_panel_layout)
-	    delete priv->m_fixed_panel_layout;
+  priv->m_panel_window->on_window_discarded([this](
+      cherry_kit::window *aWindow) {
+    if (priv->m_fixed_panel_layout)
+      delete priv->m_fixed_panel_layout;
     delete aWindow;
   });
 
@@ -299,7 +298,8 @@ void desktop_panel_controller_impl::init() {
   create_dock_action(priv->m_fixed_panel_layout, 1, 0, "pd_space_icon.png",
                      [&]() { exec_action("Expose"); });
 
-  create_dock_action(priv->m_fixed_panel_layout, 2, 0, "pd_note_add_button_green.png",
+  create_dock_action(priv->m_fixed_panel_layout, 2, 0,
+                     "pd_note_add_button_green.png",
                      [&]() { exec_action("Add"); });
 
   create_dock_action(priv->m_fixed_panel_layout, 3, 0, "pd_menu_icon.png",
@@ -315,7 +315,8 @@ void desktop_panel_controller_impl::init() {
                      [&]() { exec_action("Down"); });
 
   // base->setGeometry(m_fixed_panel_layout->ui()->geometry());
-  priv->m_panel_window->set_window_content(priv->m_fixed_panel_layout->viewport());
+  priv->m_panel_window->set_window_content(
+      priv->m_fixed_panel_layout->viewport());
   priv->m_preview_window->set_window_content(priv->m_preview_widget);
 
   insert(priv->m_task_window);
@@ -551,7 +552,7 @@ void desktop_panel_controller_impl::exec_action(const QString &action) {
     QPointF _menu_pos =
         viewport()->center(priv->m_task_window->geometry(), QRectF(),
                            cherry_kit::space::kCenterOnViewportLeft);
-    _menu_pos.setX(priv->m_task_window->geometry().width() + 5);
+    _menu_pos.setX(priv->m_panel_window->geometry().width() + 5);
 
     if (priv->m_task_window) {
       priv->m_task_window->setPos(_menu_pos);

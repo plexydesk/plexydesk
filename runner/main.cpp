@@ -27,7 +27,6 @@
 #include <QDesktopWidget>
 
 // plexydesk
-
 #include <ck_workspace.h>
 #include <ck_config.h>
 #include <ck_extension_manager.h>
