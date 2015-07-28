@@ -43,6 +43,7 @@ public:
   virtual void remove(model_view_item *a_item_ptr);
 
   virtual model_view_item *at(int index);
+  virtual int count() const;
 
   virtual void set_filter(const QString &a_keyword);
   virtual void clear();

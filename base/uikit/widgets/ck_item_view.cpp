@@ -196,6 +196,15 @@ model_view_item *item_view::at(int index) {
   return d->m_model_item_list.at(index);
 }
 
+int item_view::count() const {
+  if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
+    return d->m_grid_layout->count();
+  } else if (d->m_model_view_type == kListModel && d->m_list_layout) {
+    return d->m_list_layout->count();
+  }
+  return 0;
+}
+
 void item_view::set_filter(const QString &a_keyword) {
   foreach(model_view_item * _item, d->m_model_item_list) {
     if (!_item)
@@ -215,6 +224,7 @@ void item_view::set_filter(const QString &a_keyword) {
 }
 
 void item_view::clear() {
+    qDebug() << Q_FUNC_INFO << "cleaering";
   if (d->m_model_item_list.count() <= 0)
     return;
 
@@ -257,7 +267,7 @@ void item_view::set_view_geometry(const QRectF &a_rect) {
   // if (d->m_model_view_type == kGridModel)
 
   d->m_scroll_frame->setGeometry(a_rect);
-  d->m_verticle_scrollbar->set_size(QSizeF(16, a_rect.height()));
+  d->m_verticle_scrollbar->set_size(QSizeF(8, a_rect.height()));
 
   int page_step = a_rect.height();
 
@@ -290,7 +300,7 @@ void item_view::check_needs_scrolling() {
 }
 
 void item_view::adjust_scrollbar(const QRectF &a_rect) {
-  QPointF scrollbar_pos = QPointF(a_rect.width() - 16, a_rect.y());
+  QPointF scrollbar_pos = QPointF(a_rect.width() - 8, a_rect.y());
   d->m_verticle_scrollbar->setPos(scrollbar_pos);
 }
 

@@ -90,7 +90,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
 
   priv->m_ck_layout = ck_ui;
 
-  ck_ui->set_content_margin(10, 10, 10, 10);
+  ck_ui->set_content_margin(2, 2, 2, 2);
   ck_ui->set_geometry(0, 0, a_window_geometry.width(),
                       a_window_geometry.height());
 
@@ -193,7 +193,7 @@ void desktop_settings_dialog::cleanup() {
 }
 
 void desktop_settings_dialog::insert_image_to_grid(
-    const QImage &ck_preview_pixmap, const std::string &a_file_url) const {
+    const QImage &ck_preview_pixmap, const std::string &a_file_url) {
 
   if (ck_preview_pixmap.isNull()) {
     qWarning() << Q_FUNC_INFO << "Null image in list";
@@ -213,8 +213,8 @@ void desktop_settings_dialog::insert_image_to_grid(
 
   ck_image_preview->set_image(ck_preview_pixmap);
 
-  int width = 128;
-  int height = 128;
+  int width = 64;
+  int height = 64;
 
   ck_image_preview->set_size(QSizeF(width, height));
 
@@ -236,9 +236,9 @@ void desktop_settings_dialog::insert_image_to_grid(
   priv->m_image_view->insert(ck_preview_item);
 }
 
-void desktop_settings_dialog::load_images() const {}
+void desktop_settings_dialog::load_images() {}
 
-void desktop_settings_dialog::invoke_image_loader() const {
+void desktop_settings_dialog::invoke_image_loader() {
   std::vector<std::string> current_file_list = priv->locate_system_images();
 
   int load_progress = 0;

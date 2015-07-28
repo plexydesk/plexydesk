@@ -66,7 +66,8 @@ public:
   virtual bool is_accelerated_rendering_on() const;
 
   std::string workspace_instance_name();
-
+  float desktop_verticle_scale_factor();
+  float desktop_horizontal_scale_factor();
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);
@@ -76,7 +77,7 @@ protected:
 
 private:
   class PrivateWorkSpace;
-  PrivateWorkSpace *const p_workspace;
+  PrivateWorkSpace *const priv;
 
   void update_space_geometry(space *a_space_ptr, QRectF a_deleted_geometry);
   void set_workspace_geometry(int a_screen_id);
