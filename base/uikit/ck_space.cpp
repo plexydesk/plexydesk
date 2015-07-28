@@ -471,7 +471,12 @@ void space::PrivateSpace::init_session_registry(space *space) {
   delete sync;
 }
 
-space::PrivateSpace::~PrivateSpace() { m_current_controller_list.clear(); }
+space::PrivateSpace::~PrivateSpace() {
+    if (m_surface)
+        free(m_surface);
+
+    m_current_controller_list.clear();
+}
 
 QString space::PrivateSpace::session_name_of_space() {
   return QString("%1_%2_Space_%3")
