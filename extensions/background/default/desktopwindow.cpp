@@ -13,6 +13,11 @@ public:
   ~PrivateDesktopWindow() {
     if (m_background_buffer)
       free(m_background_buffer);
+
+		if (m_image_service)
+			delete m_image_service;
+
+    qDebug() << Q_FUNC_INFO;
   }
 
   QImage m_background_texture;
@@ -123,4 +128,6 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
                         QPainter::Antialiasing);
   a_ctx->drawImage(a_rect, o_window->m_background_texture);
   a_ctx->restore();
+
+  qDebug() << Q_FUNC_INFO << a_rect;
 }

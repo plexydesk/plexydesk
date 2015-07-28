@@ -29,10 +29,16 @@ class CocoaInterface : public QObject, public cherry_kit::style_interface {
   Q_PLUGIN_METADATA(IID "org.qt-project.cocoa")
 
 public:
-  virtual ~CocoaInterface() {}
+  virtual ~CocoaInterface() {
+        qDebug() << Q_FUNC_INFO;
+        m_instence_ref.clear();
+    }
 
   /* this will return a valid data plugin pointer*/
   QSharedPointer<cherry_kit::style> style();
+
+private:
+  QSharedPointer<cherry_kit::style> m_instence_ref;
 };
 
 #endif
