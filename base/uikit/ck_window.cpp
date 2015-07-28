@@ -69,8 +69,10 @@ window::window(widget *parent) : widget(parent), o_window(new PrivateWindow) {
   o_window->m_window_type = kApplicationWindow;
 
   o_window->m_window_close_button = new window_button(this);
-  o_window->m_window_close_button->setPos(5, 5);
+  o_window->m_window_close_button->setPos(2, 2);
   o_window->m_window_close_button->show();
+  //todo:
+  //set the correct z-order
   o_window->m_window_close_button->setZValue(10000);
 
   setFocus(Qt::MouseFocusReason);
@@ -123,12 +125,16 @@ void window::set_window_content(widget *a_widget_ptr) {
     o_window->m_window_content->setPos(0.0, sWindowTitleHeight);
     o_window->m_window_close_button->hide();
     setGeometry(content_geometry);
-  }else {
+  }else if (o_window->m_window_type == kPanelWindow){
     o_window->m_window_close_button->hide();
     setGeometry(o_window->m_window_content->geometry());
     o_window->m_window_content->setPos(0, 0);
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
+  } else {
+    o_window->m_window_close_button->hide();
+    setGeometry(content_geometry);
+    o_window->m_window_content->setPos(0, sWindowTitleHeight);
   }
 
   if (o_window->m_window_type != kFramelessWindow) {
