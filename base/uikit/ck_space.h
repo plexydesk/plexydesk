@@ -88,6 +88,7 @@ public:
                          const space *)> a_notify_handler);
   virtual void on_activity_finished(const desktop_dialog *a_activity);
 
+  virtual int id() const;
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
@@ -101,7 +102,6 @@ protected:
   virtual QString name() const;
 
   virtual void set_id(int a_id);
-  virtual int id() const;
 
   virtual void restore_session();
 
