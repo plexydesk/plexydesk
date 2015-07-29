@@ -146,9 +146,19 @@ int main(int argc, char *argv[])
 
   Runtime runtime;
 
-  qtApp.setStyleSheet(
-        QString("QScrollBar:vertical{ border: 2px solid grey;"
-                        " background: #32CC99; height: 15px; margin: 0px 20px"
-                        " 0 20px; }"));
+#if 0
+  NSScreen *screen = [NSScreen mainScreen];
+  NSDictionary *description = [screen deviceDescription];
+  NSSize displayPixelSize = [[description objectForKey:NSDeviceSize] sizeValue];
+  CGSize displayPhysicalSize = CGDisplayScreenSize(
+              [[description objectForKey:@"NSScreenNumber"] unsignedIntValue]);
+
+  NSLog(@"DPI is %0.2f",
+           (displayPixelSize.width / displayPhysicalSize.width) * 25.4f);
+
+  NSLog(@"DPI is %0.2f",
+           (displayPixelSize.height / displayPhysicalSize.height) * 25.4f);
+#endif
+
   return qtApp.exec();
 }
