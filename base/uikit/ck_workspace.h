@@ -83,6 +83,9 @@ private:
   void set_workspace_geometry(int a_screen_id);
 
   void save_space_removal_session_data(const QString &a_space_name);
+
+  float get_base_height();
+  float get_base_width();
 };
 }
 #endif // WORKSPACE_H
