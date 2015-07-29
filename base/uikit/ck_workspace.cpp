@@ -23,7 +23,7 @@ public:
 
   SpacesList m_desktop_space_list;
   QRectF m_workspace_geometry;
-  QRect m_render_box;
+  QRectF m_render_box;
   int m_space_count;
   int m_current_activty_space_id;
   float m_workspace_left_margine;
@@ -42,8 +42,8 @@ void workspace::set_workspace_geometry(int a_screen_id) {
 #endif
 
 #ifdef Q_OS_MAC
-  _current_desktop_geometry.setY(
-      QApplication::desktop()->availableGeometry(a_screen_id).topLeft().y());
+//_current_desktop_geometry.setY(
+//     QApplication::desktop()->availableGeometry(a_screen_id).topLeft().y());
 #endif
 
 #ifdef Q_OS_WIN
@@ -60,7 +60,6 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
       priv(new PrivateWorkSpace) {
   priv->m_opengl_on = false;
   priv->m_screen_id = -1;
-  priv->m_render_box = QRect(0, 0, 960, 540);
 
   setAttribute(Qt::WA_AcceptTouchEvents);
   setAttribute(Qt::WA_TranslucentBackground);
@@ -85,10 +84,22 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
   set_workspace_geometry(priv->m_screen_id);
 
+  priv->m_render_box = QRectF(0, 0, get_base_width(), get_base_height());
+
   float height_factor = desktop_verticle_scale_factor();
   float width_factor = desktop_horizontal_scale_factor();
 
-  scale(height_factor, width_factor);
+#if 0
+  qDebug() << Q_FUNC_INFO << "geometry " << geometry();
+  qDebug() << Q_FUNC_INFO << " base width " << get_base_width();
+  qDebug() << Q_FUNC_INFO << "base height " << get_base_height();
+  qDebug() << Q_FUNC_INFO << "scale factor width " << width_factor;
+  qDebug() << Q_FUNC_INFO << "scale factor height " << height_factor;
+  qDebug() << Q_FUNC_INFO << "Final W" << (width_factor * get_base_width());
+  qDebug() << Q_FUNC_INFO << "Final H" << (height_factor * get_base_height());
+#endif
+
+  scale(width_factor, height_factor);
 
   setAcceptDrops(true);
 }
@@ -262,20 +273,22 @@ void workspace::wheelEvent(QWheelEvent *a_event_ptr) {
   a_event_ptr->accept();
 }
 
-float workspace::desktop_verticle_scale_factor()
-{
-    QRectF _current_desktop_geometry = geometry();
-    float height_factor = (_current_desktop_geometry.height() / 540);
-    return height_factor;
+float workspace::desktop_verticle_scale_factor() {
+  QRectF _current_desktop_geometry(0, 0, geometry().width(), geometry().height());
+
+  float height_factor =
+      (_current_desktop_geometry.height() / get_base_height());
+
+  return height_factor;
 }
 
-float workspace::desktop_horizontal_scale_factor()
-{
-    QRectF _current_desktop_geometry = geometry();
-    float width_factor =
-            (_current_desktop_geometry.width() / 960.0) ;
+float workspace::desktop_horizontal_scale_factor() {
+  QRectF _current_desktop_geometry(0, 0, geometry().width(), geometry().height());
 
-    return width_factor;
+  float width_factor =
+            (_current_desktop_geometry.width() / get_base_width()) ;
+
+  return width_factor;
 }
 
 void workspace::revoke_space(const QString &a_name, int a_id) {
@@ -405,7 +418,7 @@ void workspace::update_space_geometry(space *a_space_ptr,
     }
   }
 
-  foreach(space * _space, priv->m_desktop_space_list) {
+  foreach (space *_space, priv->m_desktop_space_list) {
     if (!_space) {
       continue;
     }
@@ -582,5 +595,32 @@ void workspace::restore_session() {
   sync->find("Space", "", "");
 
   delete sync;
+}
+
+float workspace::get_base_width() {
+  float rv = 1920.0f;
+
+  QRectF display_rect(0, 0, geometry().width(), geometry().height());
+
+  float source_ratio = 1920.0f / 1080.0f;
+  float view_aspect_ratio = display_rect.width() / display_rect.height();
+
+  rv =  1920.0f / view_aspect_ratio;
+
+  return rv;
+}
+
+float workspace::get_base_height() {
+  float rv = 1080.0f;
+
+  float source_ratio = 1920.0 / 1080.0;
+  QRectF display_rect(0, 0, geometry().width(), geometry().height());
+
+  float view_aspect_ratio = display_rect.width() / display_rect.height();
+
+  float scaled_height = display_rect.height() / display_rect.width() * 1920.0;
+  rv = scaled_height / view_aspect_ratio;
+
+  return rv;
 }
 }
