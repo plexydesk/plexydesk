@@ -41,6 +41,11 @@
 
 #include "desktopwindow.h"
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#include <tchar.h>
+#endif
+
 class desktop_controller_impl::PrivateBackgroundController {
 public:
   PrivateBackgroundController() {}
