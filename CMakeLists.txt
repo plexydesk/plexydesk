@@ -172,10 +172,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     endif()
 		
     set(WIN_APPLICATION "")
-ELSE(CMAKE_BUILD_TYPE MATCHES "Debug")
+else(CMAKE_BUILD_TYPE MATCHES "Release")
     # Note: the WIN32 is ignored on other platforms than Windows
+    message(STATUS "Setting Release flags ...")
     set(WIN_APPLICATION "WIN32")
-endif(CMAKE_BUILD_TYPE MATCHES "Debug")
+endif()
 
 INCLUDE(PkgConfigGetVar)
 INCLUDE(GNUInstallDirs)
@@ -184,7 +185,6 @@ set(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
 
 # On Windows we use a predefined QT_IMPORTS_INSTALL_DIR
 if (NOT WIN32)
-
     # Workaround for platforms that do not provide it (Ubuntu)
     IF(NOT QT_IMPORTS_DIR)
         MESSAGE("QT_IMPORTS_DIR not present...\nUsing a built in one: ${CMAKE_INSTALL_FULL_LIBDIR}/qt4/imports")
@@ -194,7 +194,6 @@ if (NOT WIN32)
         STRING(REGEX REPLACE "^/usr/" "" QT_IMPORTS_INSTALL_DIR "${QT_IMPORTS_DIR}")
         MESSAGE(STATUS "Relative QT Imports path set to: ${QT_IMPORTS_INSTALL_DIR}")
     endif(NOT QT_IMPORTS_DIR)
-
 endif(NOT WIN32)
 
 INCLUDE_DIRECTORIES (
