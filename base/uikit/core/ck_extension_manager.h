@@ -162,7 +162,7 @@ private:
   PrivateExtManager *const o_extension_manager; /**< TODO */
 
 #ifdef Q_OS_WIN
-  static ExtensionManager *mInstance;
+  static extension_manager *mInstance;
 #else
   static DECL_UI_KIT_EXPORT extension_manager *mInstance; /**< TODO */
 #endif

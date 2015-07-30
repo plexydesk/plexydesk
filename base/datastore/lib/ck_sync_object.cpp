@@ -90,7 +90,7 @@ void sync_object::set_time_stamp(unsigned int timestamp) {
   p_object->m_time_stamp = timestamp;
 }
 
-unsigned int sync_object::update_time_stamp() const {}
+unsigned int sync_object::update_time_stamp() const { return 0;}
 
 void sync_object::set_name(const std::string &name) {
   p_object->m_object_name = name;

@@ -125,3 +125,8 @@ if (APPLE)
                     FRAMEWORK DESTINATION plexydesk.app/Contents/Frameworks)
    SET_TARGET_PROPERTIES(${QUETZAL_SOCIAL_KIT_LIBRARY} PROPERTIES SKIP_BUILD_RPATH 1)
 endif(APPLE)
+
+if(WIN32)
+    # installs to the same path as the binary
+    install(TARGETS ${QUETZAL_SOCIAL_KIT_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX})
+endif()
