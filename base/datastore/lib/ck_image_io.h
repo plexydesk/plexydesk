@@ -25,10 +25,12 @@
 #include <cstring>
 #include <functional>
 
+#include <QuetzalDataKitQt_export.h>
+
 namespace cherry_kit {
 typedef unsigned char *image_data_ref;
 
-class io_surface {
+class QuetzalDataKitQt_EXPORT io_surface {
 public:
   io_surface();
   // io_surface(const io_surface &copy);
@@ -39,7 +41,7 @@ public:
   image_data_ref buffer;
 };
 
-class image_io {
+class QuetzalDataKitQt_EXPORT image_io {
 public:
   typedef enum {
     kImageScaleToWidth,
@@ -76,7 +78,7 @@ public:
 
   virtual io_surface *surface() const;
 
-  virtual io_surface add_task(image_operation_t a_method,
+  virtual io_surface *add_task(image_operation_t a_method,
                               const scale_options &arg);
 
   virtual void set_filter(const std::string &a_filter_name, int a_flag);
