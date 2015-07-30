@@ -53,11 +53,9 @@ config *config::instance() {
 config::~config() { delete d; }
 
 QString config::prefix() {
-#ifndef Q_OS_LINUX
+#ifdef Q_OS_WIN32
   QDir binaryPath(QCoreApplication::applicationDirPath());
-  if (binaryPath.cdUp()) {
-    return QDir::toNativeSeparators(binaryPath.canonicalPath());
-  }
+  return QDir::toNativeSeparators(binaryPath.canonicalPath());
 #endif
 
 #ifdef Q_OS_LINUX
