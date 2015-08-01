@@ -60,7 +60,7 @@ public:
   QColor color(resource_manager::ColorName a_name);
   void set_pen_color(QPainter *painter, resource_manager::ColorName a_name,
                      int a_thikness = 0);
-  void set_default_font_size(QPainter *painter, int a_size = 11,
+  void set_default_font_size(QPainter *painter, int a_size = 8,
                              bool a_highlight = false);
 
   QHash<QString, int> m_type_map;
@@ -211,7 +211,7 @@ void CocoaStyle::draw_push_button(const style_data &features,
   set_default_painter_hints(painter);
 
   QPainterPath button_background_path;
-  button_background_path.addRoundedRect(rect, 4.0, 4.0);
+  button_background_path.addRoundedRect(rect, 2.0, 2.0);
 
   if (features.render_state == style_data::kRenderPressed) {
     painter->fillPath(button_background_path,
@@ -223,7 +223,7 @@ void CocoaStyle::draw_push_button(const style_data &features,
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kDarkPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter, 11, true);
+    d->set_default_font_size(painter, 8, true);
     painter->drawPath(button_background_path);
   } else {
     painter->fillPath(button_background_path,
