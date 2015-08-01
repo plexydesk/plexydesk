@@ -168,7 +168,7 @@ cherry_kit::window *text_input_dialog::dialog_window() const {
   return priv->mFrame;
 }
 
-void text_input_dialog::cleanup() {
+void text_input_dialog::purge() {
   if (priv->mFrame) {
     delete priv->mFrame;
   }

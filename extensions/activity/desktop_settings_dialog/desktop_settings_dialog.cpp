@@ -163,7 +163,7 @@ window *desktop_settings_dialog::dialog_window() const {
   return priv->m_window;
 }
 
-void desktop_settings_dialog::cleanup() {
+void desktop_settings_dialog::purge() {
   if (priv->m_image_view)
     priv->m_image_view->clear();
 

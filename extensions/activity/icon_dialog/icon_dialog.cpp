@@ -171,7 +171,7 @@ QVariantMap icon_dialog::result() const {
 
 window *icon_dialog::dialog_window() const { return priv->window_ref; }
 
-void icon_dialog::cleanup() {
+void icon_dialog::purge() {
   if (priv->m_grid_view)
     priv->m_grid_view->clear();
 
