@@ -19,31 +19,21 @@
 #ifndef DATEPICKER_ACTIVITY_H
 #define DATEPICKER_ACTIVITY_H
 
-#include <QtCore>
-
-#include <ck_data_source.h>
-#include <QtNetwork>
 #include <ck_desktop_dialog.h>
 #include <ck_window.h>
 
 class date_dialog : public cherry_kit::desktop_dialog {
-  Q_OBJECT
-
 public:
-  date_dialog(QGraphicsObject *object = 0);
-
+  date_dialog(QObject *object = 0);
   virtual ~date_dialog();
 
   void create_window(const QRectF &window_geometry, const QString &window_title,
                      const QPointF &window_pos);
-
-  QVariantMap result() const;
-
   cherry_kit::window *dialog_window() const;
+
   void cleanup();
 
 private:
-  void onImageReady(const QImage &img);
   void end_calendar();
 
 private:

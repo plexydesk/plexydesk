@@ -19,7 +19,6 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-
 #include <ck_desktop_controller_interface.h>
 #include <ck_TableView.h>
 #include <ck_DefaultTableModel.h>
@@ -38,11 +37,9 @@ public:
   cherry_kit::widget *m_window_content;
   cherry_kit::button *m_done_btn;
   cherry_kit::calendar_view *m_cal_widget;
-
-  QVariantMap m_result_data;
 };
 
-date_dialog::date_dialog(QGraphicsObject *object)
+date_dialog::date_dialog(QObject *object)
     : cherry_kit::desktop_dialog(object), priv(new PrivateDatePicker) {}
 
 date_dialog::~date_dialog() { delete priv; }
@@ -88,8 +85,6 @@ void date_dialog::create_window(const QRectF &window_geometry,
   });
 }
 
-QVariantMap date_dialog::result() const { return priv->m_result_data; }
-
 cherry_kit::window *date_dialog::dialog_window() const {
   return priv->m_activity_window;
 }
@@ -101,8 +96,6 @@ void date_dialog::cleanup() {
 
   priv->m_activity_window = 0;
 }
-
-void date_dialog::onImageReady(const QImage &img) {}
 
 void date_dialog::end_calendar() {
   notify_message("date",
