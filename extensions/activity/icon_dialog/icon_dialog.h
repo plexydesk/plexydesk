@@ -41,7 +41,7 @@ public:
                      const QPointF &window_pos);
   QVariantMap result() const;
   window *dialog_window() const;
-  void cleanup();
+  void purge();
 
 private:
   class PrivateIconGrid;
