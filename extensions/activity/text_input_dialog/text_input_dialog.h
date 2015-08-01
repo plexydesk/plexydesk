@@ -47,7 +47,7 @@ public:
   QVariantMap result() const;
 
   cherry_kit::window *dialog_window() const;
-  void cleanup();
+  void purge();
 
 private
 Q_SLOTS:

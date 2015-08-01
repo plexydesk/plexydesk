@@ -114,7 +114,7 @@ cherry_kit::window *progress_dialog_view::dialog_window() const {
   return priv->m_window;
 }
 
-void progress_dialog_view::cleanup() {
+void progress_dialog_view::purge() {
   if (priv->m_window) {
     delete priv->m_window;
   }

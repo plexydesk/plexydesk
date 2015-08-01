@@ -131,7 +131,7 @@ cherry_kit::window *timezone_dialog::dialog_window() const {
   return m_priv_ptr->m_window_ptr;
 }
 
-void timezone_dialog::cleanup() {
+void timezone_dialog::purge() {
   if (m_priv_ptr->m_timezone_browser_ptr)
     m_priv_ptr->m_timezone_browser_ptr->clear();
 
