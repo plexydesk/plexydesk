@@ -31,10 +31,10 @@ public:
                      const QPointF &window_pos);
   cherry_kit::window *dialog_window() const;
 
-  void cleanup();
+  void purge();
 
 private:
-  void end_calendar();
+  void notify_calendar_value();
 
 private:
   class PrivateDatePicker;

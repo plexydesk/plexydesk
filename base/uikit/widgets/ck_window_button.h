@@ -51,7 +51,7 @@ protected:
 
 private:
   class PrivateWindowButton;
-  PrivateWindowButton *const o_button;
+  PrivateWindowButton *const priv;
 };
 } // PlexyDesk
 #endif // WINDOWBUTTON_H

@@ -71,7 +71,7 @@ public:
   virtual void set_viewport(space *a_viewport_ptr);
   virtual space *viewport() const;
 
-  virtual void cleanup() = 0;
+  virtual void purge() = 0;
 
   virtual void on_arguments_updated(std::function<void()> a_handler);
 

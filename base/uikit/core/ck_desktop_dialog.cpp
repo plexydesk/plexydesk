@@ -100,7 +100,7 @@ void desktop_dialog::discard_activity() {
   hide();
 
   if (dialog_window()) {
-    cleanup();
+    purge();
   }
 }
 

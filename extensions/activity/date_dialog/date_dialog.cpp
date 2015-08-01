@@ -75,13 +75,9 @@ void date_dialog::create_window(const QRectF &window_geometry,
 
   priv->m_activity_window->set_window_content(view->viewport());
 
-  priv->m_done_btn->on_input_event([this](
-      cherry_kit::widget::InputEvent a_event,
-      const cherry_kit::widget *a_widget) {
-    if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-      end_calendar();
-      notify_done();
-    }
+  priv->m_done_btn->on_click([this]() {
+    notify_calendar_value();
+    notify_done();
   });
 }
 
@@ -89,7 +85,7 @@ cherry_kit::window *date_dialog::dialog_window() const {
   return priv->m_activity_window;
 }
 
-void date_dialog::cleanup() {
+void date_dialog::purge() {
   if (priv->m_activity_window) {
     delete priv->m_activity_window;
   }
@@ -97,7 +93,7 @@ void date_dialog::cleanup() {
   priv->m_activity_window = 0;
 }
 
-void date_dialog::end_calendar() {
+void date_dialog::notify_calendar_value() {
   notify_message("date",
                  priv->m_cal_widget->selected_date().toString().toStdString());
 }

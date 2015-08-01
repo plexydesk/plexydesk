@@ -35,15 +35,15 @@ public:
 };
 
 window_button::window_button(widget *parent)
-    : button(parent), o_button(new PrivateWindowButton) {
+    : button(parent), priv(new PrivateWindowButton) {
   setGeometry(boundingRect());
-  o_button->mType = CLOSE;
+  priv->mType = CLOSE;
 }
 
-window_button::~window_button() { delete o_button; }
+window_button::~window_button() { delete priv; }
 
 void window_button::set_button_type(window_button::WindowButtonType a_type) {
-  o_button->mType = a_type;
+  priv->mType = a_type;
 }
 
 QRectF window_button::boundingRect() const {
