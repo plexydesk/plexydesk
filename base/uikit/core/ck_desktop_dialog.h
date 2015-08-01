@@ -44,7 +44,7 @@ public:
     mActivityCanceled
   };
 
-  explicit desktop_dialog(QGraphicsObject *a_parent_ptr = 0);
+  explicit desktop_dialog(QObject *a_parent_ptr = 0);
   virtual ~desktop_dialog();
 
   virtual void create_window(const QRectF &a_window_geometry,
@@ -59,7 +59,7 @@ public:
   virtual QVariantMap attributes() const;
 
   virtual QString error_message() const;
-  virtual QVariantMap result() const = 0;
+  virtual QVariantMap result() const {}
 
   virtual void exec(const QPointF &a_pos = QCursor::pos());
   virtual void show_activity();
