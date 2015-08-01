@@ -18,7 +18,8 @@
 #include "date_dialog.h"
 #include <ck_widget.h>
 #include <ck_config.h>
-#include <QTimer>
+
+
 #include <ck_desktop_controller_interface.h>
 #include <ck_TableView.h>
 #include <ck_DefaultTableModel.h>
@@ -26,6 +27,7 @@
 #include <ck_icon_button.h>
 #include <ck_button.h>
 #include <ck_calendar_view.h>
+#include <ck_fixed_layout.h>
 
 class date_dialog::PrivateDatePicker {
 public:
@@ -34,68 +36,59 @@ public:
 
   cherry_kit::window *m_activity_window;
   cherry_kit::widget *m_window_content;
-  cherry_kit::button *m_done_button;
-  cherry_kit::calendar_view *mCalendarWidget;
+  cherry_kit::button *m_done_btn;
+  cherry_kit::calendar_view *m_cal_widget;
 
   QVariantMap m_result_data;
 };
 
 date_dialog::date_dialog(QGraphicsObject *object)
-    : cherry_kit::desktop_dialog(object),
-      priv(new PrivateDatePicker) {}
+    : cherry_kit::desktop_dialog(object), priv(new PrivateDatePicker) {}
 
 date_dialog::~date_dialog() { delete priv; }
 
 void date_dialog::create_window(const QRectF &window_geometry,
-                                       const QString &window_title,
-                                       const QPointF &window_pos) {
+                                const QString &window_title,
+                                const QPointF &window_pos) {
   priv->m_activity_window = new cherry_kit::window();
   priv->m_activity_window->setGeometry(window_geometry);
   priv->m_activity_window->set_window_title(window_title);
 
-  priv->m_window_content =
-      new cherry_kit::widget(priv->m_activity_window);
-  priv->m_window_content->setGeometry(window_geometry);
+  cherry_kit::fixed_layout *view =
+      new cherry_kit::fixed_layout(priv->m_activity_window);
 
-  priv->mCalendarWidget =
-      new cherry_kit::calendar_view(priv->m_window_content);
-  priv->mCalendarWidget->setGeometry(window_geometry);
-  priv->mCalendarWidget->setPos(0, 0);
+  view->set_content_margin(5, 5, 5, 5);
+  view->set_geometry(0, 0, window_geometry.width(), window_geometry.height());
 
-  priv->m_done_button =
-      new cherry_kit::button(priv->m_window_content);
-  priv->m_done_button->set_label(tr("Done"));
-  priv->m_done_button->show();
+  view->add_rows(2);
+  view->add_segments(0, 1);
+  view->add_segments(1, 3);
 
-  priv->m_done_button->setPos(
-      priv->mCalendarWidget->geometry().width() / 2 -
-          (priv->m_done_button->boundingRect().width() + 10) / 2,
-      310);
+  view->set_row_height(0, "90%");
+  view->set_row_height(1, "10%");
 
-  priv->m_done_button->on_input_event([this](
+  cherry_kit::widget_properties_t prop;
+  prop["label"] = "Apply";
+
+  priv->m_cal_widget = dynamic_cast<cherry_kit::calendar_view *>(
+      view->add_widget(0, 0, "calendar", prop));
+
+  priv->m_done_btn = dynamic_cast<cherry_kit::button *>(
+      view->add_widget(1, 1, "button", prop));
+
+  priv->m_activity_window->set_window_content(view->viewport());
+
+  priv->m_done_btn->on_input_event([this](
       cherry_kit::widget::InputEvent a_event,
       const cherry_kit::widget *a_widget) {
     if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-      qDebug() << Q_FUNC_INFO << "Activity complete";
       end_calendar();
       notify_done();
     }
   });
-
-  priv->m_activity_window->set_window_content(
-      priv->m_window_content);
-
-  QRectF view_geometry = window_geometry;
-  view_geometry.setHeight(window_geometry.height() + 64);
-
-  set_geometry(view_geometry);
-
-  exec(window_pos);
 }
 
-QVariantMap date_dialog::result() const {
-  return priv->m_result_data;
-}
+QVariantMap date_dialog::result() const { return priv->m_result_data; }
 
 cherry_kit::window *date_dialog::dialog_window() const {
   return priv->m_activity_window;
@@ -112,11 +105,6 @@ void date_dialog::cleanup() {
 void date_dialog::onImageReady(const QImage &img) {}
 
 void date_dialog::end_calendar() {
-  if (!priv->mCalendarWidget) {
-    priv->m_result_data["date"] =
-        QVariant(QDate::currentDate().toString());
-  } else {
-    priv->m_result_data["date"] =
-        QVariant(priv->mCalendarWidget->a_date());
-  }
+  notify_message("date",
+                 priv->m_cal_widget->selected_date().toString().toStdString());
 }

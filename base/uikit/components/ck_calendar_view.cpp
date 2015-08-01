@@ -41,8 +41,8 @@ calendar_view::calendar_view(widget *parent)
     : cherry_kit::widget(parent), o_calendar_widget(new PrivateCalendarWidget) {
 
   o_calendar_widget->m_ui = new fixed_layout(this);
-  o_calendar_widget->m_ui->set_content_margin(10, 10, 10, 10);
-  o_calendar_widget->m_ui->set_geometry(0, 0, 320, 400);
+  o_calendar_widget->m_ui->set_content_margin(5, 5, 5, 5);
+  o_calendar_widget->m_ui->set_geometry(0, 0, 160, 200);
 
   o_calendar_widget->m_ui->add_rows(10);
 
@@ -134,7 +134,7 @@ void calendar_view::reset() {
   }
 }
 
-QDate calendar_view::a_date() const { return o_calendar_widget->m_current_date; }
+QDate calendar_view::selected_date() const { return o_calendar_widget->m_current_date; }
 
 void calendar_view::set_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
