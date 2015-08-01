@@ -230,8 +230,8 @@ void desktop_task_controller_impl::createReminderUI(
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);
 
-  view->set_content_margin(10, 10, 10, 10);
-  view->set_geometry(0, 0, 320, 200);
+  view->set_content_margin(5, 5, 5, 5);
+  view->set_geometry(0, 0, 248, 160);
 
   view->add_rows(2);
   view->add_segments(0, 1);
@@ -393,7 +393,7 @@ void desktop_task_controller_impl::createReminderUI(
         QRectF parent_rect(window->x(), window->y(), window->geometry().width(),
                            window->geometry().height());
 
-        QRectF dialog_rect(0, 0, 340, 360);
+        QRectF dialog_rect(0, 0, 180, 180);
 
         QPointF dialog_pos = viewport()->center(
             dialog_rect, parent_rect, cherry_kit::space::kCenterOnWindow);
