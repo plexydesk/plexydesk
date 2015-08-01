@@ -35,7 +35,7 @@ public:
   std::vector<dialog_message_t> m_notify_chain;
 };
 
-desktop_dialog::desktop_dialog(QGraphicsObject *parent)
+desktop_dialog::desktop_dialog(QObject *parent)
     : QObject(parent), priv(new PrivateDesktopActivity) {
   priv->m_current_viewport = 0;
 }
