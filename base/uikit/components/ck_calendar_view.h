@@ -29,8 +29,8 @@ public:
   explicit calendar_view(widget *a_parent_ptr = 0);
   virtual ~calendar_view();
 
-  virtual void set_date(const QDate &a_date);
-  virtual QDate a_date() const;
+  virtual void set_date(const QDate &selected_date);
+  virtual QDate selected_date() const;
 
   virtual void set_geometry(float a_x, float a_y, float a_width,
                             float a_height);
