@@ -230,15 +230,15 @@ void desktop_task_controller_impl::createReminderUI(
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);
 
-  view->set_content_margin(5, 5, 5, 5);
-  view->set_geometry(0, 0, 248, 160);
+  view->set_content_margin(10, 2, 5, 5);
+  view->set_geometry(0, 0, 232, 80);
 
   view->add_rows(2);
   view->add_segments(0, 1);
   view->add_segments(1, 4);
 
-  view->set_row_height(0, "85%");
-  view->set_row_height(1, "15%");
+  view->set_row_height(0, "80%");
+  view->set_row_height(1, "20%");
 
   cherry_kit::widget_properties_t top_label_prop;
   top_label_prop["label"] = "reminder";
