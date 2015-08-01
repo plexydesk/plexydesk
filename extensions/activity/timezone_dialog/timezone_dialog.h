@@ -35,7 +35,7 @@ public:
   void create_window(const QRectF &aWindowGeometry, const QString &aWindowTitle,
                      const QPointF &aWindowPos);
   cherry_kit::window *dialog_window() const;
-  void cleanup();
+  void purge();
 
   QVariantMap result() const;
   virtual void update_attribute(const QString &aName,

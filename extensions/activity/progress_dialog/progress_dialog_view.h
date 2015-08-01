@@ -42,7 +42,7 @@ public:
   virtual void update_attribute(const QString &name, const QVariant &data);
 
   cherry_kit::window *dialog_window() const;
-  void cleanup();
+  void purge();
 
 private:
   class PrivateProgressDialog;

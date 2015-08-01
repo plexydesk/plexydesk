@@ -62,7 +62,7 @@ cherry_kit::window *template_dialog::dialog_window() const {
   return priv->m_main_window;
 }
 
-void template_dialog::cleanup() {
+void template_dialog::purge() {
   if (priv->m_main_window) {
     delete priv->m_main_window;
   }

@@ -43,7 +43,7 @@ public:
   QVariantMap result() const;
 
   window *dialog_window() const;
-  void cleanup();
+  void purge();
 
   void insert_image_to_grid(const QImage &ck_preview_pixmap,
                             const std::string &a_file_url);
