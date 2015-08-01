@@ -50,7 +50,7 @@ public:
   void set_action_data(const QVariant &a_data);
   QVariant action_data() const;
 
-  virtual void on_button_pressed(std::function<void()> a_handler);
+  virtual void on_click(std::function<void()> a_callback);
 
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
@@ -66,7 +66,7 @@ protected:
 
 private:
   class PrivateButton;
-  PrivateButton *const o_button;
+  PrivateButton *const priv;
 };
 }
 #endif // UI_BUTTON_H
