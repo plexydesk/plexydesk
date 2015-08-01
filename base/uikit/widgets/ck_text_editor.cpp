@@ -61,7 +61,7 @@ text_editor::text_editor(widget *parent)
   priv->m_proxy_widget = new QGraphicsProxyWidget(this);
   priv->m_text_editor = new PrivateTextBrowser(0);
   priv->m_text_editor->setFontPointSize(
-      16 * resource_manager::style()->scale_factor());
+      8 * resource_manager::style()->scale_factor());
   priv->m_text_editor->setReadOnly(false);
   priv->m_text_editor->setAcceptRichText(true);
   priv->m_text_editor->setAutoFormatting(QTextEdit::AutoAll);
