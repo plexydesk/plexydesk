@@ -35,22 +35,6 @@ public:
 void workspace::set_workspace_geometry(int a_screen_id) {
   QRect _current_desktop_geometry =
       QApplication::desktop()->screenGeometry(a_screen_id);
-
-#ifdef Q_OS_LINUX
-  _current_desktop_geometry =
-      QApplication::desktop()->screenGeometry(a_screen_id);
-#endif
-
-#ifdef Q_OS_MAC
-//_current_desktop_geometry.setY(
-//     QApplication::desktop()->availableGeometry(a_screen_id).topLeft().y());
-#endif
-
-#ifdef Q_OS_WIN32
-  _current_desktop_geometry =
-      QApplication::desktop()->screenGeometry(a_screen_id);
-#endif
-
   setGeometry(_current_desktop_geometry);
 }
 
@@ -68,18 +52,24 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 
-#ifndef Q_OS_WIN32
+  setFrameStyle(QFrame::NoFrame);
+
+#ifdef Q_OS_WIN
   setWindowFlags(Qt::CustomizeWindowHint
                  | Qt::FramelessWindowHint
                  | Qt::WindowStaysOnBottomHint
-                 | Qt::SubWindow
-                 | Qt::Desktop
                  | Qt::NoDropShadowWindowHint
-                 | Qt::MSWindowsOwnDC);
+                 | Qt::MSWindowsOwnDC
+                 );
+  viewport()->setWindowFlags(Qt::CustomizeWindowHint
+                 | Qt::FramelessWindowHint
+                 | Qt::WindowStaysOnBottomHint
+                 | Qt::NoDropShadowWindowHint
+                 | Qt::MSWindowsOwnDC
+                 );
 #endif
 
   setInteractive(true);
-  setFrameStyle(QFrame::NoFrame);
 
   setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
