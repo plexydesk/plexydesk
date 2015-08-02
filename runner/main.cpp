@@ -174,13 +174,13 @@ public:
       HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
 
       SetParent((HWND)workspace->winId(), folderView);
- SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE
- |
- SWP_NOSIZE | SWP_NOACTIVATE);
- SetWindowPos((HWND) workspace->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE |
- SWP_NOSIZE | SWP_NOACTIVATE);
- wpOrigEditProc = (WNDPROC) SetWindowLong((HWND) workspace->winId(),
- GWL_WNDPROC, (LONG) EditSubclassProc);
+// SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE
+// |
+// SWP_NOSIZE | SWP_NOACTIVATE);
+// SetWindowPos((HWND) workspace->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE |
+// SWP_NOSIZE | SWP_NOACTIVATE);
+// wpOrigEditProc = (WNDPROC) SetWindowLong((HWND) workspace->winId(),
+// GWL_WNDPROC, (LONG) EditSubclassProc);
 #endif
     }
   }
