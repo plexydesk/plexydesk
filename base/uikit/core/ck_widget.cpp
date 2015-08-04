@@ -256,7 +256,7 @@ void widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
 }
 
 void widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  qDebug() << Q_FUNC_INFO << metaObject()->className();
+  //qDebug() << Q_FUNC_INFO << metaObject()->className();
 
   p_widget->_exec_func(kMouseReleaseEvent, this);
 
