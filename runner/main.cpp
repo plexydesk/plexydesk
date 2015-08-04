@@ -173,14 +173,32 @@ public:
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
       HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
 
+      /*
+      //following code creates redraw and resize problems
+      //investigate
+           LONG lExStyle = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
+      lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+      SetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE, lExStyle);
+
+      SetWindowPos((HWND) workspace->winId(), NULL, 0,0,0,0,
+                   SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+
+      LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
+      lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
+      SetWindowLong((HWND) workspace->winId(), GWL_STYLE, lStyle);
+
+      */
       SetParent((HWND)workspace->winId(), folderView);
-// SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE
-// |
-// SWP_NOSIZE | SWP_NOACTIVATE);
-// SetWindowPos((HWND) workspace->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE |
-// SWP_NOSIZE | SWP_NOACTIVATE);
-// wpOrigEditProc = (WNDPROC) SetWindowLong((HWND) workspace->winId(),
-// GWL_WNDPROC, (LONG) EditSubclassProc);
+
+      SetWindowPos((HWND) workspace->winId(), NULL, 0,0,0,0,
+                   SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+      // SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE
+      // |
+      // SWP_NOSIZE | SWP_NOACTIVATE);
+      // SetWindowPos((HWND) workspace->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE |
+      // SWP_NOSIZE | SWP_NOACTIVATE);
+      // wpOrigEditProc = (WNDPROC) SetWindowLong((HWND) workspace->winId(),
+      // GWL_WNDPROC, (LONG) EditSubclassProc);
 #endif
     }
   }
