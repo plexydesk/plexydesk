@@ -52,24 +52,17 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 
-  setFrameStyle(QFrame::NoFrame);
 
-#ifdef Q_OS_WIN
+#ifndef Q_OS_WIN
   setWindowFlags(Qt::CustomizeWindowHint
                  | Qt::FramelessWindowHint
                  | Qt::WindowStaysOnBottomHint
                  | Qt::NoDropShadowWindowHint
-                 | Qt::MSWindowsOwnDC
-                 );
-  viewport()->setWindowFlags(Qt::CustomizeWindowHint
-                 | Qt::FramelessWindowHint
-                 | Qt::WindowStaysOnBottomHint
-                 | Qt::NoDropShadowWindowHint
-                 | Qt::MSWindowsOwnDC
                  );
 #endif
 
   setInteractive(true);
+  setFrameStyle(QFrame::NoFrame);
 
   setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
@@ -608,7 +601,7 @@ float workspace::get_base_width() {
 float workspace::get_base_height() {
   float rv = 1080.0f;
 
-  float source_ratio = 1920.0 / 1080.0;
+  float source_ratio = 1920.0f / 1080.0f;
   QRectF display_rect(0, 0, geometry().width(), geometry().height());
 
   float view_aspect_ratio = display_rect.width() / display_rect.height();
