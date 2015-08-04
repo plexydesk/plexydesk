@@ -174,10 +174,13 @@ void desktop_dialog::notify_done() {
     }
   }
 
+  dialog_window()->close();
+  /*
   priv->m_async_notification_result = std::async(std::launch::async, [this]() {
     if (dialog_window())
       dialog_window()->close();
   });
+  */
 }
 
 void desktop_dialog::notify_message(const std::string &a_key,
