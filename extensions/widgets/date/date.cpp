@@ -116,29 +116,30 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *ui = new cherry_kit::fixed_layout(window);
 
-  ui->set_content_margin(10, 10, 10, 10);
-  ui->set_geometry(0, 0, 360, 340);
+  ui->set_content_margin(5, 5, 5, 5);
+  ui->set_geometry(0, 0, 180, 180);
   ui->add_rows(2);
   ui->add_segments(0, 1);
   ui->add_segments(1, 3);
-  ui->set_row_height(0, "95%");
-  ui->set_row_height(1, "5%");
+  ui->set_row_height(0, "90%");
+  ui->set_row_height(1, "10%");
 
   cherry_kit::widget_properties_t ui_data;
   ui_data["text"] + "";
 
   ui->add_widget(0, 0, "calendar", ui_data);
 
-  add_action_button(ui, 1, 0, "Zoom In", "pd_zoom_in");
-  add_action_button(ui, 1, 1, "Zoom Out", "pd_zoom_out");
-  add_action_button(ui, 1, 2, "Tasks", "pd_view_list");
+  add_action_button(ui, 1, 0, "Meet", "pd_zoom_in");
+  add_action_button(ui, 1, 1, "Date", "pd_zoom_out");
+  add_action_button(ui, 1, 2, "Time", "pd_view_list");
 
   window->set_window_title("People");
   window->set_window_content(ui->viewport());
 
   a_session->bind_to_window(window);
 
-  window->on_window_discarded([this](cherry_kit::window *aWindow) {
+  window->on_window_discarded([=](cherry_kit::window *aWindow) {
+    a_session->unbind_window(aWindow);
     delete aWindow;
   });
 
