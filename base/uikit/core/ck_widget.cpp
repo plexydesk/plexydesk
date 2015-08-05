@@ -17,12 +17,7 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include <QCryptographicHash>
-#include <QDir>
-#include <QStyleOptionGraphicsItem>
 #include <QGraphicsObject>
-#include <QGraphicsScene>
-#include <QGraphicsSceneMouseEvent>
 #include <QPaintEvent>
 #include <QPainter>
 
@@ -256,11 +251,8 @@ void widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
 }
 
 void widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  //qDebug() << Q_FUNC_INFO << metaObject()->className();
 
   p_widget->_exec_func(kMouseReleaseEvent, this);
-
-  // QGraphicsObject::mouseReleaseEvent(event);
 }
 
 void widget::focusOutEvent(QFocusEvent *event) {
