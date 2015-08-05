@@ -73,6 +73,7 @@ public:
 
   virtual void enable_window_background(bool a_visibility = true);
 
+  virtual float window_title_height();
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
