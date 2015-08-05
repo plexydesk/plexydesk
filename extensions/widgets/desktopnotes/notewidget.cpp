@@ -2,27 +2,24 @@
 #include <config.h>
 
 #include "notewidget.h"
-#include <QDebug>
-#include <QGraphicsLinearLayout>
-#include <QDateTime>
-#include <QGraphicsWidget>
-#include <asyncdatadownloader.h>
+
+#include <webservice.h>
 #include <asyncimagecreator.h>
+#include <asyncdatadownloader.h>
+
+#include <ck_label.h>
+#include <ck_config.h>
 #include <ck_button.h>
 #include <ck_image_view.h>
 #include <ck_text_editor.h>
-#include <ck_label.h>
-#include <ck_resource_manager.h>
-#include <webservice.h>
-#include <ck_memory_sync_engine.h>
 #include <ck_disk_engine.h>
 #include <ck_sync_object.h>
-#include <ck_extension_manager.h>
 #include <ck_icon_button.h>
-
-#include <ck_config.h>
-#include <ck_ToolBar.h>
 #include <ck_fixed_layout.h>
+#include <ck_resource_manager.h>
+#include <ck_extension_manager.h>
+#include <ck_memory_sync_engine.h>
+
 
 typedef std::function<void(const QString &)> on_title_callback_func;
 typedef std::function<void(const QString &, const QString &)>
@@ -36,7 +33,7 @@ public:
   void initDataStore();
 
   QString getContentText(const QString &data) const;
-  void nofity_config_change(const QString &a_key, const QString &a_value);
+  void notify_config_change(const QString &a_key, const QString &a_value);
 
   QString m_note_id;
 
@@ -104,7 +101,7 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
     return;
 
   d->m_ui = new cherry_kit::fixed_layout(this);
-  d->m_ui->set_content_margin(10, 10, 10, 20);
+  d->m_ui->set_content_margin(5, 5, 5, 10);
   d->m_ui->set_geometry(parent->geometry().x(), parent->geometry().y(),
                         parent->geometry().width(),
                         parent->geometry().height());
@@ -161,62 +158,17 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
 
   setAcceptDrops(true);
   setGeometry(parent->geometry());
-  /*
-d->mLayoutBase = new cherry_kit::Widget(this);
-d->mSubLayoutBase = new cherry_kit::Widget(d->mLayoutBase);
 
-d->mMainVerticleLayout = new QGraphicsLinearLayout(d->mLayoutBase);
-d->mMainVerticleLayout->setOrientation(Qt::Horizontal);
-d->mMainVerticleLayout->setContentsMargins(0.0, 0.0, 0.0, 0.0);
+  d->m_image_attachment_view = new cherry_kit::image_view(this);
+  d->m_image_attachment_view->setMinimumSize(0, 0);
 
-d->mSubLayout = new QGraphicsLinearLayout(d->mSubLayoutBase);
-d->mSubLayout->setOrientation(Qt::Vertical);
-d->mSubLayout->setContentsMargins(5.0, 5.0, 5.0, 5.0);
-
-d->mSubLayout->setSpacing(0);
-
-createToolBar();
-
-d->m_note_toolbar_widget->on_item_activated([this](const QString &a_action) {
-  onToolBarAction(a_action);
-});
-
-d->m_image_attachment_view = new cherry_kit::ImageView(d->mSubLayoutBase);
-d->m_image_attachment_view->setMinimumSize(0, 0);
-d->m_text_editor_widget = new cherry_kit::TextEditor(d->mSubLayoutBase);
-d->m_text_editor_widget->style(
-    "border: 0; background: rgba(255,255,255,255); color: #4E4945");
-
-d->mSubLayout->addItem(d->m_image_attachment_view);
-d->mSubLayout->addItem(d->m_text_editor_widget);
-d->mSubLayout->addItem(d->m_note_toolbar_widget);
-
-d->m_text_editor_widget->set_placeholder_text("Title :");
-d->mMainVerticleLayout->addItem(d->mSubLayoutBase);
-
-d->m_attachment_del_button = new cherry_kit::ImageButton(this);
-d->m_attachment_del_button->set_pixmap(
-    cherry_kit::ResourceManager::instance()->drawable("pd_trash_icon.png",
-                                                 "mdpi"));
-d->m_attachment_del_button->set_size(QSize(16, 16));
-d->m_attachment_del_button->hide();
-d->m_attachment_del_button->set_background_color(Qt::white);
-
-connect(d->m_text_editor_widget, SIGNAL(documentTitleAvailable(QString)),
-        this, SLOT(onDocuemntTitleAvailable(QString)));
-
-connect(d->m_text_editor_widget, SIGNAL(text_updated(QString)), this,
-        SLOT(onTextUpdated(QString)));
-
-this->setAcceptDrops(true);
-*/
 }
 
 NoteWidget::~NoteWidget() { delete d; }
 
 void NoteWidget::setTitle(const QString &name) {
   d->m_note_title = name;
-  d->nofity_config_change("title", name);
+  d->notify_config_change("title", name);
   update();
 }
 
@@ -246,39 +198,41 @@ QString NoteWidget::id() { return d->m_note_id; }
 
 QString NoteWidget::noteContent() const { return d->mStatusMessage; }
 
-void NoteWidget::setPixmap(const QPixmap &pixmap) {
+void NoteWidget::attach_image(const std::string &a_url) {
+
+  QPixmap pixmap(a_url.c_str());
 
   prepareGeometryChange();
-  /*
-  setGeometry(QRectF(geometry().x(), geometry().y(),
-                           this->boundingRect().width(), 600));
-
-  if (d->m_image_attachment.isNull()) {
-    d->m_text_editor_widget->setPos(d->m_text_editor_widget->pos().x(),
-                         d->m_text_editor_widget->pos().y() + 300);
-    d->m_note_toolbar_widget->setPos(d->m_note_toolbar_widget->pos().x(),
-  d->m_note_toolbar_widget->pos().y() + 300);
-    qDebug() << Q_FUNC_INFO << pixmap.isNull();
-  }
-  d->m_image_attachment = pixmap;
-  d->m_attachment_del_button->show();
-  update();
-  */
 
   if (d->m_image_attachment_view) {
-    float image_width_ratio = 320.0 / pixmap.width();
+    float image_width_ratio = 220.0 / pixmap.width();
 
     float image_height = pixmap.height() * image_width_ratio;
     float image_width = pixmap.width() * image_width_ratio;
 
     d->m_image_attachment_view->setMinimumSize(image_width, image_height);
+
     d->m_image_attachment_view->set_pixmap(
         pixmap.scaled(image_width, image_height));
 
+    d->m_image_attachment_view->setGeometry(QRectF(0, 0, image_width, image_height));
+    d->m_image_attachment_view->set_size(QSizeF(image_width, image_height));
+    d->m_image_attachment_view->setPos(10, 0);
+    d->m_image_attachment_view->update();
+    d->m_image_attachment_view->updateGeometry();
+    d->m_image_attachment_view->show();
+
     if (d->m_text_editor_widget) {
       d->m_text_editor_widget->setMinimumWidth(image_width);
+      d->m_ui->viewport()->setPos(10, image_height);
     }
+
+    setGeometry(QRectF(5, 0, image_width + 20, image_height +
+                       d->m_ui->viewport()->geometry().height()));
+
+    d->notify_config_change("image", a_url.c_str());
   }
+
 }
 
 void NoteWidget::resize(const QSizeF &size) {
@@ -406,28 +360,28 @@ void NoteWidget::onToolBarAction(const QString &action) {
   } else if (action == tr("red")) {
     d->m_text_editor_widget->style(
         "border: 0; background: #D55521; color: #ffffff");
-    d->nofity_config_change("background", "#D55521");
-    d->nofity_config_change("forground", "#ffffff");
+    d->notify_config_change("background", "#D55521");
+    d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("yellow")) {
     d->m_text_editor_widget->style(
         "border: 0; background: #E6DA42; color: #000000");
-    d->nofity_config_change("background", "#e6da42");
-    d->nofity_config_change("forground", "#000000");
+    d->notify_config_change("background", "#e6da42");
+    d->notify_config_change("forground", "#000000");
   } else if (action == tr("green")) {
     d->m_text_editor_widget->style(
         "border: 0; background: #29CDA8; color: #ffffff");
-    d->nofity_config_change("background", "#29cda8");
-    d->nofity_config_change("forground", "#ffffff");
+    d->notify_config_change("background", "#29cda8");
+    d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("blue")) {
     d->m_text_editor_widget->style(
         "border: 0; background: #0AACF0; color: #ffffff");
-    d->nofity_config_change("background", "#0AACF0");
-    d->nofity_config_change("forground", "#ffffff");
+    d->notify_config_change("background", "#0AACF0");
+    d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("black")) {
     d->m_text_editor_widget->style(
         "border: 0; background: #4A4A4A; color: #ffffff");
-    d->nofity_config_change("background", "#4A4A4A");
-    d->nofity_config_change("forground", "#ffffff");
+    d->notify_config_change("background", "#4A4A4A");
+    d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("delete")) {
     this->hide();
   }
@@ -512,7 +466,7 @@ void NoteWidget::onImageReadyJson(const QString &fileName) {
 }
 
 void NoteWidget::deleteImageAttachment() {
-  /*
+ /*
 d->m_image_attachment = QPixmap();
 
 this->prepareGeometryChange();
@@ -544,7 +498,7 @@ NoteWidget::PrivateNoteWidget::getContentText(const QString &data) const {
 }
 
 void
-NoteWidget::PrivateNoteWidget::nofity_config_change(const QString &a_key,
+NoteWidget::PrivateNoteWidget::notify_config_change(const QString &a_key,
                                                     const QString &a_value) {
   std::for_each(std::begin(m_on_config_callback_func_list),
                 std::end(m_on_config_callback_func_list),
