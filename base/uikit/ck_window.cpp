@@ -99,6 +99,17 @@ window::~window() {
   delete o_window;
 }
 
+float window::window_title_height()
+{
+    if (cherry_kit::resource_manager::style()) {
+      return cherry_kit::resource_manager::style()
+                               ->attribute("frame", "window_title_height")
+                               .toFloat();
+    }
+
+    return 32;
+}
+
 void window::set_window_content(widget *a_widget_ptr) {
   if (o_window->m_window_content) {
     return;
@@ -107,22 +118,16 @@ void window::set_window_content(widget *a_widget_ptr) {
   o_window->m_window_content = a_widget_ptr;
   o_window->m_window_content->setParentItem(this);
 
-  float sWindowTitleHeight = 0;
-
-  if (cherry_kit::resource_manager::style()) {
-    sWindowTitleHeight = cherry_kit::resource_manager::style()
-                             ->attribute("frame", "window_title_height")
-                             .toFloat();
-  }
+  float window_bordr_height = window_title_height();
 
   QRectF content_geometry(a_widget_ptr->boundingRect());
-  content_geometry.setHeight(content_geometry.height() + sWindowTitleHeight);
+  content_geometry.setHeight(content_geometry.height() + window_bordr_height);
 
   if (o_window->m_window_type == kApplicationWindow) {
-    o_window->m_window_content->setPos(0.0, sWindowTitleHeight);
+    o_window->m_window_content->setPos(0.0, window_bordr_height);
     setGeometry(content_geometry);
   } else if(o_window->m_window_type == kNotificationWindow) {
-    o_window->m_window_content->setPos(0.0, sWindowTitleHeight);
+    o_window->m_window_content->setPos(0.0, window_bordr_height);
     o_window->m_window_close_button->hide();
     setGeometry(content_geometry);
   }else if (o_window->m_window_type == kPanelWindow){
@@ -134,7 +139,7 @@ void window::set_window_content(widget *a_widget_ptr) {
   } else {
     o_window->m_window_close_button->hide();
     setGeometry(content_geometry);
-    o_window->m_window_content->setPos(0, sWindowTitleHeight);
+    o_window->m_window_content->setPos(0, window_bordr_height);
   }
 
   if (o_window->m_window_type != kFramelessWindow) {
@@ -173,7 +178,7 @@ void window::set_window_type(window::WindowType a_window_type) {
   o_window->m_window_type = a_window_type;
 
   if (a_window_type == kApplicationWindow && o_window->m_window_content) {
-    o_window->m_window_content->setPos(0.0, 72.0);
+    o_window->m_window_content->setPos(0.0, window_title_height());
   } else {
     o_window->m_window_close_button->hide();
   }
@@ -248,12 +253,12 @@ void window::discard() {
 }
 
 void window::resize(float a_width, float a_height) {
-  setGeometry(QRectF(x(), y(), a_width, a_height + 72.0));
+  setGeometry(QRectF(x(), y(), a_width, a_height + window_title_height()));
 
   if (o_window->m_window_content) {
     if (o_window->m_window_type == kApplicationWindow ||
         o_window->m_window_type == kPopupWindow) {
-      o_window->m_window_content->setPos(0.0, 72.0);
+      o_window->m_window_content->setPos(0.0, window_title_height());
     }
   }
 
