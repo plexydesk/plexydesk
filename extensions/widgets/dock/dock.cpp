@@ -18,10 +18,7 @@
 #include "dock.h"
 #include "snapframe.h"
 
-#include <ck_ToolBar.h>
 #include <ck_icon_button.h>
-#include <ck_TableView.h>
-
 #include <ck_workspace.h>
 
 // models
@@ -175,11 +172,11 @@ widget *desktop_panel_controller_impl::create_task_action(
   l_rv->setMinimumSize(l_action_item_size);
 
   l_image_view->on_input_event([=](cherry_kit::widget::InputEvent aEvent,
-                                      const widget *aWidget) {
+                                   const widget *aWidget) {
     if (aEvent == cherry_kit::widget::kMouseReleaseEvent) {
-        qDebug() << Q_FUNC_INFO << "Menu pressed" << aControllerName;
-        if (viewport() && viewport()->controller(aControllerName))
-          viewport()->controller(aControllerName)->request_action(aLabel);
+      qDebug() << Q_FUNC_INFO << "Menu pressed" << aControllerName;
+      if (viewport() && viewport()->controller(aControllerName))
+        viewport()->controller(aControllerName)->request_action(aLabel);
     }
   });
 
@@ -207,7 +204,8 @@ void desktop_panel_controller_impl::insert_action(const QString &a_name,
     priv->m_task_grid->insert(grid_item);
 
   float window_width = (64 * 3) + 10;
-  float window_height = (42 * (priv->m_task_grid->count() / 3)) + 10;
+  float window_height = (42 * (priv->m_task_grid->count() / 3)) +
+          priv->m_task_window->window_title_height() + 16;
 
   if (priv->m_task_window)
     priv->m_task_window->resize(window_width, window_height);
