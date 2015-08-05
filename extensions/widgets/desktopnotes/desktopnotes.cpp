@@ -147,14 +147,14 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
 
 void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
                                                      QDropEvent *event) {
-  const QString droppedFile = event->mimeData()->urls().value(0).toLocalFile();
-  QFileInfo fileInfo(droppedFile);
+  const QString drop_file_name = event->mimeData()->urls().value(0).toLocalFile();
+  QFileInfo fileInfo(drop_file_name);
 
   if (fileInfo.isFile()) {
-    QPixmap image(droppedFile);
+    QPixmap image(drop_file_name);
     NoteWidget *note = qobject_cast<NoteWidget *>(widget);
     if (note) {
-      note->setPixmap(image);
+      note->attach_image(drop_file_name.toStdString());
     }
   }
 }
@@ -168,7 +168,7 @@ void desktop_task_controller_impl::onDataUpdated(const QVariantMap &data) {}
 void desktop_task_controller_impl::createNoteUI(
     cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
-  window->setGeometry(QRectF(0, 0, 320, 240));
+  window->setGeometry(QRectF(0, 0, 240, 180));
 
   NoteWidget *note = new NoteWidget(a_session, window);
   note->set_controller(this);
@@ -204,6 +204,11 @@ void desktop_task_controller_impl::createNoteUI(
     }
   });
 
+  if (a_session->session_keys().contains("image")) {
+    note->attach_image(
+                a_session->session_data("image").toString().toStdString());
+  }
+
   note->on_note_config_changed([=](const QString &a_key,
                                    const QString &a_value) {
     a_session->save_session_attribute(
@@ -231,7 +236,7 @@ void desktop_task_controller_impl::createReminderUI(
   cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);
 
   view->set_content_margin(10, 2, 5, 5);
-  view->set_geometry(0, 0, 232, 80);
+  view->set_geometry(0, 0, 240, 80);
 
   view->add_rows(2);
   view->add_segments(0, 1);

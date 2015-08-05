@@ -32,7 +32,7 @@ public:
   QString id();
   QString noteContent() const;
 
-  void setPixmap(const QPixmap &pixmap);
+  void attach_image(const std::string &a_pixmap);
 
   void resize(const QSizeF &size);
   void createToolBar();
