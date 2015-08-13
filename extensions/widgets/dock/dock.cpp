@@ -206,10 +206,16 @@ void desktop_panel_controller_impl::discover_actions_from_controller(
   }
 
   ui_action root_action = controller->task();
+  qDebug() << Q_FUNC_INFO << "Loading from :" << name
+           << "Root Task : " << root_action.name().c_str();
   insert_action(root_action);
 }
 
 void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
+
+  if (!a_task.is_visibile())
+      return;
+
   cherry_kit::model_view_item *grid_item = new cherry_kit::model_view_item();
   grid_item->set_view(create_task_action(a_task));
 
@@ -226,7 +232,7 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
 
   float window_width = (64 * 3) + 10;
   float window_height = (42 * (priv->m_task_grid->count() / 3)) +
-                        priv->m_task_window->window_title_height() + 16;
+                        priv->m_task_window->window_title_height() + 54;
 
   if (priv->m_task_window)
     priv->m_task_window->resize(window_width, window_height);

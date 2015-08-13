@@ -44,7 +44,7 @@ public:
   cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
 
-  cherry_kit::ui_action task();
+  cherry_kit::ui_action task() const;
 
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);

@@ -169,9 +169,14 @@ void time_controller::request_action(const QString &actionName,
   }
 }
 
-cherry_kit::ui_action time_controller::task()
+cherry_kit::ui_action time_controller::task() const
 {
-    return cherry_kit::ui_action();
+    cherry_kit::ui_action task;
+    task.set_name("Track");
+    task.set_visible(1);
+    task.set_controller(controller_name().toStdString());
+    task.set_icon("pd_clock_icon.png");
+    return task;
 }
 
 void time_controller::onDataUpdated(const QVariantMap &data) {}

@@ -5,7 +5,7 @@ namespace cherry_kit {
 
 class ui_action::PrivateControllerAction {
 public:
-  PrivateControllerAction() : m_action_visibility(true), m_action_id(0) {}
+  PrivateControllerAction() : m_action_visibility(0), m_action_id(0) {}
   ~PrivateControllerAction() {}
 
   unsigned int m_action_id;

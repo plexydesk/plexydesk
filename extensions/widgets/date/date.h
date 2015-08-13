@@ -39,6 +39,9 @@ public:
   cherry_kit::ActionList actions() const;
   void request_action(const QString &a_name, const QVariantMap &a_args);
 
+
+  cherry_kit::ui_action task() const;
+
   void add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
                          const std::string &a_label, const std::string &a_icon);
 
