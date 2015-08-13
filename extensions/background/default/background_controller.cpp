@@ -149,6 +149,7 @@ void desktop_controller_impl::submit_session_data(
 void desktop_controller_impl::create_task_group() const {
     o_ctr->m_supported_action.set_name("Configure");
     o_ctr->m_supported_action.set_icon("pd_settings_icon.png");
+    o_ctr->m_supported_action.set_visible(1);
     o_ctr->m_supported_action.set_controller(controller_name().toStdString());
 
     cherry_kit::ui_action bg_task;
