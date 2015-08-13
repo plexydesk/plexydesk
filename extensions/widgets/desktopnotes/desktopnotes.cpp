@@ -43,14 +43,14 @@ public:
 
 desktop_task_controller_impl::desktop_task_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
-      o_view_controller(new PrivateDesktopNotes) {
+      priv(new PrivateDesktopNotes) {
   //o_view_controller->mNoteActions["Keep"] = 1;
-  o_view_controller->mNoteActions["Remember"] = 1;
-  o_view_controller->mNoteActions["Do"] = 2;
+  priv->mNoteActions["Remember"] = 1;
+  priv->mNoteActions["Do"] = 2;
 }
 
 desktop_task_controller_impl::~desktop_task_controller_impl() {
-  delete o_view_controller;
+  delete priv;
 }
 
 void desktop_task_controller_impl::init() {
@@ -71,12 +71,12 @@ void desktop_task_controller_impl::init() {
   _add_reminder_action->setProperty("icon_name", "pd_reminder_icon.png");
 	*/
 
-  o_view_controller->m_supported_action_list << _add_note_action;
-  o_view_controller->m_supported_action_list << _add_task_action;
+  priv->m_supported_action_list << _add_note_action;
+  priv->m_supported_action_list << _add_task_action;
   //o_view_controller->m_supported_action_list << _add_reminder_action;
 }
 
-void desktop_task_controller_impl::session_data_available(
+void desktop_task_controller_impl::session_data_ready(
     const cherry_kit::sync_object &a_sesion_root) {
   revoke_previous_session(
       "Notes",
@@ -100,7 +100,7 @@ void desktop_task_controller_impl::submit_session_data(
 void desktop_task_controller_impl::set_view_rect(const QRectF &rect) {}
 
 cherry_kit::ActionList desktop_task_controller_impl::actions() const {
-  return o_view_controller->m_supported_action_list;
+  return priv->m_supported_action_list;
 }
 
 void desktop_task_controller_impl::request_action(const QString &actionName,
@@ -113,13 +113,13 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
 
   QVariantMap session_args;
 
-  switch (o_view_controller->mNoteActions[actionName]) {
+  switch (priv->mNoteActions[actionName]) {
   case 1:
     session_args["x"] = window_location.x();
     session_args["y"] = window_location.y();
     session_args["notes_id"] = session_count();
     session_args["database_name"] =
-        QString::fromStdString(session_database_name("Notes"));
+        QString::fromStdString(session_store_name("Notes"));
 
     start_session("Notes", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
@@ -132,7 +132,7 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
     session_args["y"] = window_location.y();
     session_args["reminders_id"] = session_count();
     session_args["database_name"] =
-        QString::fromStdString(session_database_name("reminders"));
+        QString::fromStdString(session_store_name("reminders"));
 
     start_session("Reminders", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
@@ -157,10 +157,6 @@ void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
       note->attach_image(drop_file_name.toStdString());
     }
   }
-}
-
-QString desktop_task_controller_impl::icon() const {
-  return QString("pd_add_note_frame_icon.png");
 }
 
 void desktop_task_controller_impl::onDataUpdated(const QVariantMap &data) {}
@@ -194,7 +190,7 @@ void desktop_task_controller_impl::createNoteUI(
 
   note->on_text_data_changed([=](const QString &a_text) {
     a_session->save_session_attribute(
-        session_database_name("notes"), "Notes", "notes_id",
+        session_store_name("notes"), "Notes", "notes_id",
         a_session->session_id_to_string(), "text", a_text.toStdString());
   });
 
@@ -212,7 +208,7 @@ void desktop_task_controller_impl::createNoteUI(
   note->on_note_config_changed([=](const QString &a_key,
                                    const QString &a_value) {
     a_session->save_session_attribute(
-        session_database_name("notes"), "Notes", "notes_id",
+        session_store_name("notes"), "Notes", "notes_id",
         a_session->session_id_to_string(), a_key.toStdString(),
         a_value.toStdString());
   });
@@ -323,7 +319,7 @@ void desktop_task_controller_impl::createReminderUI(
             dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
         if (editor) {
           a_session->save_session_attribute(
-              session_database_name("reminders"), "Reminders", "reminders_id",
+              session_store_name("reminders"), "Reminders", "reminders_id",
               a_session->session_id_to_string(), "text",
               editor->text().toStdString());
         }
@@ -374,7 +370,7 @@ void desktop_task_controller_impl::createReminderUI(
         view->update_property(1, 1, update_prop);
 
         a_session->save_session_attribute(
-            session_database_name("reminders"), "Reminders", "reminders_id",
+            session_store_name("reminders"), "Reminders", "reminders_id",
             a_session->session_id_to_string(), "state",
             (is_complete == 1) ? "wip" : "done");
       }

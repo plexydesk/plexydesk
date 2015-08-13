@@ -28,6 +28,8 @@
 #include "classicbackgroundrender.h"
 #include "desktopwindow.h"
 
+#include <ck_ui_action.h>
+
 class desktop_controller_impl
     : public cherry_kit::desktop_controller_interface {
   Q_OBJECT
@@ -37,19 +39,17 @@ public:
 
   void init();
 
-  void session_data_available(const cherry_kit::sync_object &a_session_root);
+  void session_data_ready(const cherry_kit::sync_object &a_session_root);
   void submit_session_data(cherry_kit::sync_object *a_object);
 
-  cherry_kit::ActionList actions() const;
+  cherry_kit::ui_action task() const;
   void request_action(const QString &actionName, const QVariantMap &data);
 
   void set_view_rect(const QRectF &rect);
 
-  QString icon() const;
-  QString label() const;
-
   void prepare_removal();
 
+  void create_task_group() const;
 private Q_SLOTS:
   void image_locally_available();
   void on_image_data_available();

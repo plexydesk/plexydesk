@@ -21,8 +21,8 @@ public:
 };
 
 desktop_controller_interface::desktop_controller_interface(QObject *parent)
-    : QObject(parent), o_view_controller(new PrivateViewControllerPlugin) {
-  o_view_controller->m_viewport = 0;
+    : QObject(parent), priv(new PrivateViewControllerPlugin) {
+  priv->m_viewport = 0;
 }
 
 void desktop_controller_interface::revoke_previous_session(
@@ -30,7 +30,7 @@ void desktop_controller_interface::revoke_previous_session(
     std::function<void(desktop_controller_interface *, session_sync *)>
         a_callback) {
   cherry_kit::data_sync *sync =
-      new cherry_kit::data_sync(session_database_name(a_session_object_name));
+      new cherry_kit::data_sync(session_store_name(a_session_object_name));
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
@@ -60,13 +60,13 @@ void desktop_controller_interface::revoke_previous_session(
 
 void desktop_controller_interface::write_session_data(
     const std::string &a_session_name) {
-  std::string session_name = session_database_name(a_session_name);
+  std::string session_name = session_store_name(a_session_name);
   std::string key_name = a_session_name;
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
   key_name += "_id";
 
-  std::for_each(std::begin(o_view_controller->m_session_list),
-                std::end(o_view_controller->m_session_list),
+  std::for_each(std::begin(priv->m_session_list),
+                std::end(priv->m_session_list),
                 [&](cherry_kit::session_sync *session_ref) {
     if (session_ref->is_purged())
       return;
@@ -103,19 +103,19 @@ void desktop_controller_interface::write_session_data(
 }
 
 int desktop_controller_interface::session_count() {
-  return o_view_controller->m_session_list.size();
+  return priv->m_session_list.size();
 }
 
 desktop_controller_interface::~desktop_controller_interface() {
-  delete o_view_controller;
+  delete priv;
 }
 
 void desktop_controller_interface::set_viewport(space *a_view_ptr) {
-  o_view_controller->m_viewport = a_view_ptr;
+  priv->m_viewport = a_view_ptr;
 }
 
 space *desktop_controller_interface::viewport() const {
-  return o_view_controller->m_viewport;
+  return priv->m_viewport;
 }
 
 void desktop_controller_interface::start_session(
@@ -127,7 +127,7 @@ void desktop_controller_interface::start_session(
   session_ref->set_session_id(
       a_data[QString::fromStdString(a_session_name).toLower() + "_id"].toInt());
 
-  o_view_controller->m_session_list.push_back(session_ref);
+  priv->m_session_list.push_back(session_ref);
 
   std::function<void()> on_session_callback =
       std::bind(a_callback, this, session_ref);
@@ -140,13 +140,13 @@ void desktop_controller_interface::start_session(
   }
 }
 
-std::string desktop_controller_interface::session_database_name(
-    const std::string &a_session_name) const {
-  std::string key_name = a_session_name;
+std::string desktop_controller_interface::session_store_name(
+    const std::string &a_name) const {
+  std::string key_name = a_name;
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
   std::string session_db_name =
-      o_view_controller->m_viewport->session_name_for_controller(
+      priv->m_viewport->session_name_for_controller(
                                          controller_name()).toStdString() +
       "_org." + key_name + ".data";
   return session_db_name;
@@ -164,58 +164,30 @@ void desktop_controller_interface::handle_drop_event(widget * /*widget*/,
                                                      QDropEvent * /*event*/) {}
 
 data_source *desktop_controller_interface::dataSource() {
-  return o_view_controller->m_data_source.data();
+  return priv->m_data_source.data();
 }
 
 void desktop_controller_interface::set_controller_name(const QString &a_name) {
-  o_view_controller->m_name = a_name;
+  priv->m_name = a_name;
 }
 
 QString desktop_controller_interface::controller_name() const {
-  return o_view_controller->m_name;
-}
-
-QString desktop_controller_interface::label() const { return QString(); }
-
-void desktop_controller_interface::configure(const QPointF &a_pos) {
-  Q_UNUSED(a_pos)
+  return priv->m_name;
 }
 
 void desktop_controller_interface::prepare_removal() {
-  o_view_controller->m_data_source.clear();
-}
-
-bool
-desktop_controller_interface::connect_to_data_source(const QString &a_source) {
-  o_view_controller->m_data_source =
-      extension_manager::instance()->data_engine(a_source);
-
-  if (!o_view_controller->m_data_source.data()) {
-    return 0;
-  }
-
-  connect(o_view_controller->m_data_source.data(), SIGNAL(ready()), this,
-          SLOT(on_ready()));
-
-  return true;
+  priv->m_data_source.clear();
 }
 
 bool desktop_controller_interface::remove_widget(widget *a_widget_ptr) {
-  // disconnect(d->mDataSource.data(), SIGNAL(sourceUpdated(QVariantMap)));
   return false;
 }
 
 void desktop_controller_interface::insert(window *a_window_ptr) {
-  if (!o_view_controller->m_viewport) {
+  if (!priv->m_viewport) {
     return;
   }
 
-  o_view_controller->m_viewport->insert_window_to_view(a_window_ptr);
-}
-
-void desktop_controller_interface::on_ready() {
-  if (o_view_controller->m_data_source) {
-    Q_EMIT data(o_view_controller->m_data_source.data());
-  }
+  priv->m_viewport->insert_window_to_view(a_window_ptr);
 }
 }

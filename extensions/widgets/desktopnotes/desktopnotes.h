@@ -36,7 +36,7 @@ public:
 
   void init();
 
-  void session_data_available(const cherry_kit::sync_object &a_sesion_root);
+  void session_data_ready(const cherry_kit::sync_object &a_sesion_root);
   virtual void submit_session_data(cherry_kit::sync_object *a_obj);
 
   virtual void set_view_rect(const QRectF &rect);
@@ -45,8 +45,6 @@ public:
   virtual void request_action(const QString &actionName,
                               const QVariantMap &args);
   virtual void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
-
-  QString icon() const;
 
 public
 Q_SLOTS:
@@ -57,7 +55,7 @@ private:
   void createReminderUI(cherry_kit::session_sync *a_session);
 
   class PrivateDesktopNotes;
-  PrivateDesktopNotes *const o_view_controller;
+  PrivateDesktopNotes *const priv;
 };
 
 #endif

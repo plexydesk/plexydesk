@@ -123,9 +123,10 @@ protected:
   virtual float scale_factor_for_height() const;
   virtual void set_child_widet_visibility(bool a_visibility);
 
+  virtual void exec_func(InputEvent a_type, const widget *a_widget_ptr);
 private:
   class PrivateWidget;
-  PrivateWidget *const p_widget;
+  PrivateWidget *const priv;
 };
 } //
 

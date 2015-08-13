@@ -229,8 +229,12 @@ void space::insert_window_to_view(window *a_window) {
 
       if (a_win->window_type() == window::kPopupWindow) {
         a_win->setZValue(kMaximumZOrder + 1);
-        if (a_win != a_window)
+        if (a_win != a_window) {
           a_win->hide();
+          a_win->removeFocus();
+          //if window gets deleted we shoudln't proceed further.
+          return;
+        }
       }
 
       if (a_win->window_type() == window::kApplicationWindow) {
@@ -424,7 +428,7 @@ space::revoke_controller_session_attributes(const QString &a_controller_name) {
     }
 
     if (controller(a_controller_name)) {
-      controller(a_controller_name)->session_data_available(a_object);
+      controller(a_controller_name)->session_data_ready(a_object);
     }
   });
 
@@ -439,12 +443,7 @@ void space::register_controller(const QString &a_controller_name) {
 }
 
 void space::PrivateSpace::controller_action_list(const space *space,
-                                                 desktop_controller_ref ptr) {
-  Q_FOREACH(const QAction * action, ptr->actions()) {
-    // qDebug() << action->text();
-    // qDebug() << action->icon();
-  }
-}
+                                                 desktop_controller_ref ptr) {}
 
 void space::PrivateSpace::init_session_registry(space *space) {
   cherry_kit::data_sync *sync =

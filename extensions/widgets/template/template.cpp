@@ -26,13 +26,13 @@ public:
 
 template_controller::template_controller(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
-      o_view_controller(new PrivateTemplate) {}
+      priv(new PrivateTemplate) {}
 
-template_controller::~template_controller() { delete o_view_controller; }
+template_controller::~template_controller() { delete priv; }
 
 void template_controller::init() {}
 
-void template_controller::session_data_available(
+void template_controller::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {}
 
 void template_controller::submit_session_data(cherry_kit::sync_object *a_obj) {}
@@ -49,5 +49,3 @@ cherry_kit::ActionList template_controller::actions() const {
 
 void template_controller::request_action(const QString &a_name,
                                             const QVariantMap &a_args) {}
-
-QString template_controller::icon() const { return QString(); }

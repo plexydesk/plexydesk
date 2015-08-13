@@ -36,7 +36,7 @@ public:
   void init();
 
   void set_view_rect(const QRectF &rect);
-  void session_data_available(const cherry_kit::sync_object &a_session_root);
+  void session_data_ready(const cherry_kit::sync_object &a_session_root);
   virtual void submit_session_data(cherry_kit::sync_object *a_obj);
 
   bool remove_widget(cherry_kit::widget *widget);
@@ -44,7 +44,7 @@ public:
   cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
 
-  QString icon() const;
+  cherry_kit::ui_action task();
 
   QAction *createAction(int id, const QString &action_name,
                         const QString &icon_name);
@@ -54,7 +54,7 @@ Q_SLOTS:
 
 private:
   class PrivateClockController;
-  PrivateClockController *const o_view_controller;
+  PrivateClockController *const priv;
 };
 
 #endif
