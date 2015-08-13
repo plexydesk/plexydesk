@@ -34,7 +34,7 @@ public:
 
   void init();
 
-  void session_data_available(const cherry_kit::sync_object &a_session_root);
+  void session_data_ready(const cherry_kit::sync_object &a_session_root);
   virtual void submit_session_data(cherry_kit::sync_object *a_obj);
 
   void set_view_rect(const QRectF &rect);
@@ -44,11 +44,9 @@ public:
   cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
 
-  QString icon() const;
-
 private:
   class PrivateNLP;
-  PrivateNLP *const o_view_controller;
+  PrivateNLP *const priv;
 };
 
 #endif

@@ -22,8 +22,6 @@
 #include <ck_workspace.h>
 
 // models
-#include <ck_DefaultTableModel.h>
-#include <ck_DefaultTableComponent.h>
 #include <ck_item_view.h>
 
 // core
@@ -58,6 +56,8 @@ public:
 
   cherry_kit::icon_button *m_add_new_workspace_button_ptr;
   cherry_kit::ActionList m_supported_action_list;
+
+  cherry_kit::ui_action_list m_task_list;
 };
 
 desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
@@ -140,8 +140,8 @@ void desktop_panel_controller_impl::create_dock_action(
 }
 
 widget *desktop_panel_controller_impl::create_task_action(
-    const QString &aIcon, const QString &aLabel,
-    const QString &aControllerName) {
+    cherry_kit::ui_action &a_task) {
+
   QSizeF item_icon_size(32, 32);
   QSizeF item_label_size(64, 10);
 
@@ -149,11 +149,11 @@ widget *desktop_panel_controller_impl::create_task_action(
 
   cherry_kit::image_view *l_image_view = new cherry_kit::image_view(l_rv);
   cherry_kit::label *l_action_label = new cherry_kit::label(l_rv);
-  l_action_label->set_text(aLabel);
-  l_action_label->set_widget_name(aLabel);
+  l_action_label->set_text(a_task.name().c_str());
+  l_action_label->set_widget_name(a_task.name().c_str());
 
-  QPixmap l_view_pixmap(
-      cherry_kit::resource_manager::instance()->drawable(aIcon, "mdpi"));
+  QPixmap l_view_pixmap(cherry_kit::resource_manager::instance()->drawable(
+      a_task.icon().c_str(), "mdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size);
@@ -171,24 +171,47 @@ widget *desktop_panel_controller_impl::create_task_action(
 
   l_rv->setMinimumSize(l_action_item_size);
 
+  a_task.set_task([this](const cherry_kit::ui_action *a_action_ref) {
+    ui_action_list child_actions = a_action_ref->sub_actions();
+
+    if (child_actions.size() > 0) {
+      qDebug() << Q_FUNC_INFO << "insert Sub Tasks";
+      ui_action copy(*a_action_ref);
+      insert_sub_action(copy);
+    }
+  });
+
   l_image_view->on_input_event([=](cherry_kit::widget::InputEvent aEvent,
                                    const widget *aWidget) {
+
     if (aEvent == cherry_kit::widget::kMouseReleaseEvent) {
-      qDebug() << Q_FUNC_INFO << "Menu pressed" << aControllerName;
-      if (viewport() && viewport()->controller(aControllerName))
-        viewport()->controller(aControllerName)->request_action(aLabel);
+      a_task.execute();
     }
   });
 
   return l_rv;
 }
 
-void desktop_panel_controller_impl::insert_action(const QString &a_name,
-                                                  const QString &a_icon,
-                                                  const QString &a_ctr) {
+void desktop_panel_controller_impl::discover_actions_from_controller(
+    const QString &name) {
 
+  if (priv->m_controller_name_list.contains(name) || !viewport()) {
+    return;
+  }
+
+  cherry_kit::desktop_controller_ref controller = viewport()->controller(name);
+
+  if (!controller) {
+    return;
+  }
+
+  ui_action root_action = controller->task();
+  insert_action(root_action);
+}
+
+void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
   cherry_kit::model_view_item *grid_item = new cherry_kit::model_view_item();
-  grid_item->set_view(create_task_action(a_icon, a_name, a_ctr));
+  grid_item->set_view(create_task_action(a_task));
 
   grid_item->on_view_removed([](cherry_kit::model_view_item *a_item) {
     if (a_item && a_item->view()) {
@@ -196,8 +219,6 @@ void desktop_panel_controller_impl::insert_action(const QString &a_name,
       if (view)
         delete view;
     }
-
-    qDebug() << Q_FUNC_INFO << "delete view";
   });
 
   if (priv->m_task_grid)
@@ -205,7 +226,7 @@ void desktop_panel_controller_impl::insert_action(const QString &a_name,
 
   float window_width = (64 * 3) + 10;
   float window_height = (42 * (priv->m_task_grid->count() / 3)) +
-          priv->m_task_window->window_title_height() + 16;
+                        priv->m_task_window->window_title_height() + 16;
 
   if (priv->m_task_window)
     priv->m_task_window->resize(window_width, window_height);
@@ -216,6 +237,78 @@ void desktop_panel_controller_impl::insert_action(const QString &a_name,
 
   priv->m_task_grid->set_view_geometry(view_geometry);
   priv->m_task_grid->setPos(0, 32);
+}
+
+void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
+  ui_action_list child_actions = a_task.sub_actions();
+
+  cherry_kit::window *sub_menu = new cherry_kit::window(0);
+  sub_menu->set_window_title(a_task.name().c_str());
+  sub_menu->setGeometry(QRectF(0, 0, 200, 200));
+
+  cherry_kit::item_view *sub_task_grid = new cherry_kit::item_view(sub_menu);
+
+  sub_menu->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
+    if (!a_visible) {
+      a_window_ref->close();
+      //delete a_window_ref;
+      delete sub_task_grid;
+       delete sub_menu;
+    }
+  });
+
+
+  if (child_actions.size() > 0) {
+    std::for_each(std::begin(child_actions), std::end(child_actions),
+                  [&](ui_action &a_action) {
+      if (!a_action.is_visibile())
+        return;
+
+      a_action.set_task([=](const ui_action *a_task_ref) {
+        sub_menu->close();
+      });
+
+      cherry_kit::model_view_item *grid_item =
+          new cherry_kit::model_view_item();
+
+      grid_item->set_view(create_task_action(a_action));
+
+      grid_item->on_view_removed([](cherry_kit::model_view_item *a_item) {
+        if (a_item && a_item->view()) {
+          cherry_kit::widget *view = a_item->view();
+          if (view)
+            delete view;
+        }
+      });
+
+      sub_task_grid->insert(grid_item);
+    });
+  }
+
+  float window_width = (64 * 3) + 10;
+  float window_height = (42 * (sub_task_grid->count() / 3)) +
+                        sub_menu->window_title_height() + 16;
+
+  sub_menu->resize(window_width, window_height);
+
+  QRectF view_geometry = QRectF();
+  view_geometry.setWidth(sub_menu->geometry().width());
+  view_geometry.setHeight(sub_menu->geometry().height());
+
+  sub_task_grid->set_view_geometry(view_geometry);
+
+  sub_menu->set_window_content(sub_task_grid);
+
+  insert(sub_menu);
+  // window pos
+  QPointF _menu_pos =
+      viewport()->center(priv->m_task_window->geometry(), sub_menu->geometry(),
+                         cherry_kit::space::kCenterOnViewport);
+  sub_menu->setPos(_menu_pos);
+
+  sub_menu->set_window_type(cherry_kit::window::kPopupWindow);
+
+  sub_menu->raise();
 }
 
 void desktop_panel_controller_impl::init() {
@@ -324,7 +417,7 @@ void desktop_panel_controller_impl::init() {
   priv->m_preview_window->hide();
 }
 
-void desktop_panel_controller_impl::session_data_available(
+void desktop_panel_controller_impl::session_data_ready(
     const cherry_kit::sync_object &a_sesion_root) {}
 
 void desktop_panel_controller_impl::submit_session_data(
@@ -394,10 +487,6 @@ void desktop_panel_controller_impl::request_action(const QString &actionName,
   } else {
     qWarning() << Q_FUNC_INFO << "Unknown Action";
   }
-}
-
-QString desktop_panel_controller_impl::icon() const {
-  return QString("pd_desktop_icon.png");
 }
 
 desktop_dialog_ref desktop_panel_controller_impl::createActivity(
@@ -478,37 +567,6 @@ void desktop_panel_controller_impl::toggle_panel() {
 
       _workspace->expose_sub_region(_work_area);
     }
-  }
-}
-
-void desktop_panel_controller_impl::discover_actions_from_controller(
-    const QString &name) {
-  if (priv->m_controller_name_list.contains(name) || !viewport()) {
-    return;
-  }
-
-  cherry_kit::desktop_controller_ref controller = viewport()->controller(name);
-
-  if (!controller) {
-    return;
-  }
-
-  if (controller->actions().count() <= 0) {
-    return;
-  }
-
-  Q_FOREACH(QAction * action, controller->actions()) {
-    if (!action) {
-      continue;
-    }
-
-    bool _is_hidden = action->property("hidden").toBool();
-    if (_is_hidden) {
-      continue;
-    }
-
-    insert_action(action->text(), action->property("icon_name").toString(),
-                  name);
   }
 }
 

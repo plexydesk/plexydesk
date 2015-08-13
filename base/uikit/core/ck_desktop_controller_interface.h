@@ -4,177 +4,53 @@
 #define QT_SHAREDPOINTER_TRACK_POINTERS 1
 
 #include <QSharedPointer>
+#include <QAction>
 
 #include <ck_data_source.h>
 #include <ck_desktop_dialog.h>
 #include <ck_space.h>
 #include <plexydesk_ui_exports.h>
-#include <QAction>
+
 #include <ck_sync_object.h>
-
-class QGraphicsItem;
-class QDropEvent;
-
-/*!
-\class UI::ViewController
-
-\brief Base class for implementing viewport controllers for PlexyDesk.
-
-\fn UI::ViewControllerPlugin::actions
-
-\brief Actions supported by the plugin
-
-\paragraph Widget Plugins can optionaly provide actions which
-it can perform on the view and the data source. So ViewControllerPlugins
-mostly act as a controller which knows about the data and the view
-and provides suitable actions which the user can perform.
-
-\paragraph If your plugin doesn't provide any actions which the user can
-execute, for instance a dash board widget plugin which displays read-only
-data source doesn't need to provide any user actions. In such cases plugin
-authors should not worry about overiding this method in their plugin class.
-
-\paragraph But if you plugin needs user actions such as adding a clock with a
-different
-Time Zone, then you can return the actions you want to perform by overiding
-UI::ViewControllerPlugin::visibleActions method and returning the string
-lables for your action.
-once you complete the user action remember to emit
-UI::ViewControllerPlugin::actionCompleted signal
-so that the action requester can notify the user about what happened to the
-action.
-
-\returns A list of action label supported by the widget  plugin
-*/
+#include <ck_ui_action.h>
+#include <ck_session_sync.h>
 
 namespace cherry_kit {
+
 class widget;
 class session_sync;
+
 typedef QList<QAction *> ActionList;
 
 class DECL_UI_KIT_EXPORT desktop_controller_interface : public QObject {
   Q_OBJECT
+
+  friend class space;
 public:
-  /**
-      * @brief
-      *
-      */
-  virtual ~desktop_controller_interface();
-  /**
-    * @brief once the controller is loaded this method will be called by the
-    * loader. initilisization of the controller has to be done here. by
-    * inheriting
-    * this class.
-    *
-    */
   virtual void init() = 0;
-  /**
-      * @brief
-      *
-      * @param rect
-      */
+  virtual ~desktop_controller_interface();
+
   virtual void set_view_rect(const QRectF &a_rect) = 0;
 
-  /**
-      * @brief
-      *
-      * @param view
-      */
   void set_viewport(space *a_view_ptr);
-
-  /**
-      * @brief This method returns the current viewport of the controller. this
-      * will be set
-      * when the controller is loaded by the loader or the desktopview.
-      *
-      * @return UI::AbstractDesktopView return the current viewport of
-      *  the controller
-      */
   virtual space *viewport() const;
-  /**
-      * @brief
-      *
-      * @param args
-      */
-  virtual void
-  session_data_available(const cherry_kit::sync_object &a_root_obj) = 0;
-  virtual void submit_session_data(cherry_kit::sync_object *a_root_obj) = 0;
 
-  void start_session(const std::string &a_session_name,
-                     const QVariantMap &a_data, bool a_restore,
-                     std::function<void(desktop_controller_interface *,
-                                        session_sync *)> a_callback);
-  virtual std::string
-  session_database_name(const std::string &a_session_name) const;
-  /**
-      * @brief
-      *
-      * @return QStringList
-      */
   virtual ActionList actions() const;
+  virtual ui_action task() const {
+      return ui_action();
+  }
 
-  /**
-      * @brief
-      *
-      * @param actionName
-      * @param args
-      */
   virtual void request_action(const QString &a_actionName,
                               const QVariantMap &a_args = QVariantMap());
 
-  /**
-      * @brief
-      *
-      * @param widget
-      * @param event
-      */
-  virtual void handle_drop_event(widget *a_widget_ptr, QDropEvent *a_event_ptr);
-
-  /**
-      * @brief
-      *
-      * @return DataSource
-      */
   virtual data_source *dataSource();
-
-  /**
-      * @brief
-      *
-      * @param widget
-      * @return bool
-      */
-  virtual bool remove_widget(widget *a_widget_ptr);
 
   virtual void insert(window *a_window_ptr);
 
-  /**
-      * @brief
-      *
-      * @param name
-      */
   virtual void set_controller_name(const QString &a_name);
-
-  /**
-      * @brief
-      *
-      * @return QString
-      */
   virtual QString controller_name() const;
 
-  virtual QString icon() const = 0;
-
-  virtual QString label() const;
-
-  virtual void configure(const QPointF &a_pos);
-
-  virtual void prepare_removal();
-
 protected:
-  /**
-      * @brief
-      *
-      * @param parent
-      */
   explicit desktop_controller_interface(QObject *a_parent_ptr = 0);
   virtual void
   revoke_previous_session(const std::string &a_session_object_name,
@@ -183,40 +59,24 @@ protected:
   virtual void write_session_data(const std::string &a_session_name);
   virtual int session_count();
 
-  /**
-      * @brief
-      *
-      * @param source
-      * @return bool
-      */
-  virtual bool connect_to_data_source(const QString &a_source);
+  virtual void session_data_ready(const cherry_kit::sync_object &a_root) = 0;
+  virtual void submit_session_data(cherry_kit::sync_object *a_root_obj) = 0;
+  virtual void start_session(const std::string &a_session_name,
+                             const QVariantMap &a_data, bool a_restore,
+                             std::function<void(desktop_controller_interface *,
+                                                session_sync *)> a_callback);
+  virtual std::string session_store_name(const std::string &a_name) const;
 
-Q_SIGNALS:
-  /**
-      * @brief
-      *
-      * @param source Emits the DataSource when the controller is ready
-      * \sa onReady()
-      */
-  void data(const data_source *a_source_ptr);
+  virtual void handle_drop_event(widget *a_widget_ptr, QDropEvent *a_event_ptr);
 
-private
-Q_SLOTS:
-  /**
-      * @brief
-      *
-      */
-  virtual void on_ready();
+  virtual void prepare_removal();
+  virtual bool remove_widget(widget *a_widget_ptr);
 
 private:
   class PrivateViewControllerPlugin;
-  PrivateViewControllerPlugin *const o_view_controller;
+  PrivateViewControllerPlugin *const priv;
 };
 
-/**
-    * @brief
-    *
-    */
 typedef QSharedPointer<desktop_controller_interface> desktop_controller_ref;
 }
 #endif

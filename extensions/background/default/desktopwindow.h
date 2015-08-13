@@ -35,7 +35,7 @@ protected:
 
 private:
   class PrivateDesktopWindow;
-  PrivateDesktopWindow *o_window;
+  PrivateDesktopWindow *priv;
 };
 
 #endif // DESKTOPWINDOW_H

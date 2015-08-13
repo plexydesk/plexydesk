@@ -26,13 +26,13 @@ public:
 
 NLPControllerImpl::NLPControllerImpl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
-      o_view_controller(new PrivateNLP) {}
+      priv(new PrivateNLP) {}
 
-NLPControllerImpl::~NLPControllerImpl() { delete o_view_controller; }
+NLPControllerImpl::~NLPControllerImpl() { delete priv; }
 
 void NLPControllerImpl::init() {}
 
-void NLPControllerImpl::session_data_available(
+void NLPControllerImpl::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {}
 
 void NLPControllerImpl::submit_session_data(cherry_kit::sync_object *a_obj) {}
@@ -49,5 +49,3 @@ cherry_kit::ActionList NLPControllerImpl::actions() const {
 
 void NLPControllerImpl::request_action(const QString &actionName,
                                        const QVariantMap &args) {}
-
-QString NLPControllerImpl::icon() const { return QString(); }

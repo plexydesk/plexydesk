@@ -68,6 +68,7 @@ public:
   std::string workspace_instance_name();
   float desktop_verticle_scale_factor();
   float desktop_horizontal_scale_factor();
+
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);
