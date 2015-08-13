@@ -29,7 +29,7 @@ public:
 
   void init();
 
-  void session_data_available(const cherry_kit::sync_object &a_session_root);
+  void session_data_ready(const cherry_kit::sync_object &a_session_root);
   void submit_session_data(cherry_kit::sync_object *a_obj);
 
   void set_view_rect(const QRectF &a_rect);
@@ -39,7 +39,6 @@ public:
   cherry_kit::ActionList actions() const;
   void request_action(const QString &a_name, const QVariantMap &a_args);
 
-  QString icon() const;
   void add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
                          const std::string &a_label, const std::string &a_icon);
 
@@ -47,6 +46,6 @@ private:
   void create_ui_calendar_ui(cherry_kit::session_sync *a_session);
 
   class PrivateDate;
-  PrivateDate *const o_view_controller;
+  PrivateDate *const priv;
 };
 #endif

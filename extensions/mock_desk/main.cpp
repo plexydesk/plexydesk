@@ -111,6 +111,18 @@ static CHAR *          //   return error message
 
 static void start_test_runtime() {}
 
+
+cherry_kit::ui_action get_action() {
+    cherry_kit::ui_action action;
+    action.set_name("test_task");
+
+    return action;
+}
+
+cherry_kit::ui_action load_action() {
+    return get_action();
+}
+
 void init_plugin_loader() {
   cherry_kit::extension_manager *loader = 0;
 
@@ -125,12 +137,18 @@ int main(int argc, char *argv[]) {
 
   QApplication app(argc, argv);
 
-  init_plugin_loader();
+  //init_plugin_loader();
+  //Runtime runtime;
+  //QTimer::singleShot(100, &runtime, SLOT(init()));
+  //QTimer::singleShot(2000, &runtime, SLOT(run_remove_space_test()));
+  //QTimer::singleShot(5000, &runtime, SLOT(end()));
 
-  Runtime runtime;
-  QTimer::singleShot(100, &runtime, SLOT(init()));
-  QTimer::singleShot(2000, &runtime, SLOT(run_remove_space_test()));
-  QTimer::singleShot(5000, &runtime, SLOT(end()));
+  qDebug() << Q_FUNC_INFO;
+
+  cherry_kit::ui_action copy = load_action();
+  cherry_kit::ui_action_list list = copy.sub_actions();
+  qDebug() << Q_FUNC_INFO << copy.name().c_str();
+  qDebug() << Q_FUNC_INFO << list.size();
 
   return app.exec();
 }

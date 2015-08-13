@@ -61,11 +61,11 @@ public:
 
 time_controller::time_controller(QObject *parent)
     : cherry_kit::desktop_controller_interface(parent),
-      o_view_controller(new PrivateClockController) {}
+      priv(new PrivateClockController) {}
 
 time_controller::~time_controller() {
   qDebug() << Q_FUNC_INFO << "Deleted";
-  delete o_view_controller;
+  delete priv;
 }
 
 QAction *time_controller::createAction(int id, const QString &action_name,
@@ -80,7 +80,7 @@ QAction *time_controller::createAction(int id, const QString &action_name,
 }
 
 void time_controller::init() {
-  o_view_controller->m_supported_action_list
+  priv->m_supported_action_list
       << createAction(1, tr("Track"), "pd_alarm_icon.png");
 	/*
   o_view_controller->m_supported_action_list
@@ -90,19 +90,19 @@ void time_controller::init() {
 
 void time_controller::set_view_rect(const QRectF &rect) {}
 
-void time_controller::session_data_available(
+void time_controller::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {
   revoke_previous_session(
       "Clock", [this](cherry_kit::desktop_controller_interface *a_controller,
                       cherry_kit::session_sync *a_session) {
-        o_view_controller->setup_create_clock_ui(
+        priv->setup_create_clock_ui(
             (time_controller *)a_controller, a_session);
       });
 
   revoke_previous_session(
       "Timer", [this](cherry_kit::desktop_controller_interface *a_controller,
                       cherry_kit::session_sync *a_session) {
-        o_view_controller->setup_create_timer_ui(
+        priv->setup_create_timer_ui(
             (time_controller *)a_controller, a_session);
       });
 }
@@ -120,7 +120,7 @@ bool time_controller::remove_widget(cherry_kit::widget *widget) {
 }
 
 cherry_kit::ActionList time_controller::actions() const {
-  return o_view_controller->m_supported_action_list;
+  return priv->m_supported_action_list;
 }
 
 void time_controller::request_action(const QString &actionName,
@@ -138,13 +138,13 @@ void time_controller::request_action(const QString &actionName,
     session_args["y"] = window_location.y();
     session_args["clock_id"] = session_count();
     session_args["database_name"] =
-        QString::fromStdString(session_database_name("clock"));
+        QString::fromStdString(session_store_name("clock"));
 
     start_session("Clock", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
       // d->_create_clock_ui((Clock *)a_controller, a_session);
-      o_view_controller->setup_create_clock_ui((time_controller *)a_controller,
+      priv->setup_create_clock_ui((time_controller *)a_controller,
                                                a_session);
     });
     return;
@@ -157,20 +157,21 @@ void time_controller::request_action(const QString &actionName,
     session_args["y"] = window_location.y();
     session_args["timer_id"] = session_count();
     session_args["database_name"] =
-        QString::fromStdString(session_database_name("timer"));
+        QString::fromStdString(session_store_name("timer"));
 
     start_session("Timer", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
-      o_view_controller->setup_create_timer_ui((time_controller *)a_controller,
+      priv->setup_create_timer_ui((time_controller *)a_controller,
                                                a_session);
     });
     return;
   }
 }
 
-QString time_controller::icon() const {
-  return QString("pd_clock_frame_icon.png");
+cherry_kit::ui_action time_controller::task()
+{
+    return cherry_kit::ui_action();
 }
 
 void time_controller::onDataUpdated(const QVariantMap &data) {}
@@ -263,7 +264,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
           std::string zone_id(a_data["zone_id"].toByteArray().data());
 
           a_session->save_session_attribute(
-              a_controller->session_database_name("clock"), "Clock", "clock_id",
+              a_controller->session_store_name("clock"), "Clock", "clock_id",
               a_session->session_id_to_string(), "zone_id", zone_id);
         });
       }
@@ -351,7 +352,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
           std::string zone_id(a_data["zone_id"].toByteArray().data());
 
           a_session->save_session_attribute(
-              a_controller->session_database_name("clock"), "Clock", "clock_id",
+              a_controller->session_store_name("clock"), "Clock", "clock_id",
               a_session->session_id_to_string(), "zone_id", zone_id);
         });
       }

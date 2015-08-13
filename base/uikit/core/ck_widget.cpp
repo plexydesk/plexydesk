@@ -20,6 +20,7 @@
 #include <QGraphicsObject>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QWidget>
 
 #include "ck_resource_manager.h"
 #include <ck_desktop_controller_interface.h>
@@ -37,7 +38,6 @@ public:
       free(m_surface);
   }
 
-  void _exec_func(widget::InputEvent a_type, const widget *a_widget_ptr);
   void _inoke_geometry_func(const QRectF &a_rect);
 
   QVariantMap mStyleAttributeMap;
@@ -59,9 +59,9 @@ public:
 
 widget::widget(widget *parent)
     : QGraphicsObject(parent), QGraphicsLayoutItem(0),
-      p_widget(new PrivateWidget) {
-  p_widget->m_name = QLatin1String("Widget");
-  p_widget->m_current_layer_type = kRenderAtForgroundLevel;
+      priv(new PrivateWidget) {
+  priv->m_name = QLatin1String("Widget");
+  priv->m_current_layer_type = kRenderAtForgroundLevel;
 
   setCacheMode(DeviceCoordinateCache);
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -77,7 +77,7 @@ widget::widget(widget *parent)
 
 widget::~widget() {
   qDebug() << Q_FUNC_INFO;
-  delete p_widget;
+  delete priv;
 }
 
 QRectF widget::contents_geometry() const
@@ -93,32 +93,30 @@ void widget::set_widget_flag(int a_flags, bool a_enable) {}
 
 void widget::on_input_event(
     std::function<void(InputEvent, const widget *)> a_callback) {
-  p_widget->m_handler_list.push_back(a_callback);
+  priv->m_handler_list.push_back(a_callback);
 }
 
 void
 widget::on_geometry_changed(std::function<void(const QRectF &)> a_callback) {
-  p_widget->m_on_geometry_func_list.push_back(a_callback);
+  priv->m_on_geometry_func_list.push_back(a_callback);
 }
 
 void widget::set_style_attribute(const QString &a_key, QVariant a_data) {
-  p_widget->mStyleAttributeMap[a_key] = a_data;
+  priv->mStyleAttributeMap[a_key] = a_data;
 }
 
 QVariant widget::style_attribute(const QString &aKey) {
-  return p_widget->mStyleAttributeMap[aKey];
+  return priv->mStyleAttributeMap[aKey];
 }
 
 void widget::draw() {
-  if (!p_widget->m_surface)
+  if (!priv->m_surface)
     return;
 
-  render(&p_widget->m_surface);
+  render(&priv->m_surface);
 }
 
 void widget::render(unsigned char **a_ctx) {
-  qDebug() << Q_FUNC_INFO << "Rendering start";
-
   if (!(*a_ctx))
     return;
 
@@ -129,14 +127,13 @@ void widget::render(unsigned char **a_ctx) {
   painter.fillRect(geometry(), Qt::transparent);
   paint_view(&painter, geometry());
   painter.end();
-  qDebug() << Q_FUNC_INFO << "End";
 }
 
-GraphicsSurface *widget::surface() { return &p_widget->m_surface; }
+GraphicsSurface *widget::surface() { return &priv->m_surface; }
 
 void widget::request_update() {
-  std::for_each(std::begin(p_widget->m_update_monitor_list),
-                std::end(p_widget->m_update_monitor_list),
+  std::for_each(std::begin(priv->m_update_monitor_list),
+                std::end(priv->m_update_monitor_list),
                 [this](UpdateCallback a_func) {
     if (a_func)
       a_func(this);
@@ -144,30 +141,30 @@ void widget::request_update() {
 }
 
 void widget::on_update(UpdateCallback a_callback) {
-  p_widget->m_update_monitor_list.push_back(a_callback);
+  priv->m_update_monitor_list.push_back(a_callback);
 }
 
-WidgetList widget::children() { return p_widget->m_child_list; }
+WidgetList widget::children() { return priv->m_child_list; }
 
 void widget::set_widget_name(const QString &a_name) {
-  p_widget->m_name = a_name;
+  priv->m_name = a_name;
   request_update();
 }
 
-QString widget::text() const { return p_widget->m_name; }
+QString widget::text() const { return priv->m_name; }
 
-void widget::set_widget_id(unsigned int a_id) { p_widget->m_identifier = a_id; }
+void widget::set_widget_id(unsigned int a_id) { priv->m_identifier = a_id; }
 
-unsigned widget::widget_id() const { return p_widget->m_identifier; }
+unsigned widget::widget_id() const { return priv->m_identifier; }
 
 StylePtr widget::style() const { return resource_manager::style(); }
 
 widget::RenderLevel widget::layer_type() const {
-  return p_widget->m_current_layer_type;
+  return priv->m_current_layer_type;
 }
 
 void widget::set_layer_type(RenderLevel a_level) {
-  p_widget->m_current_layer_type = a_level;
+  priv->m_current_layer_type = a_level;
   request_update();
 }
 
@@ -187,14 +184,14 @@ void widget::paint(QPainter *a_painter_ptr,
 
 void widget::setGeometry(const QRectF &a_rect) {
 
-  if (!p_widget->m_surface) {
-    p_widget->m_surface =
+  if (!priv->m_surface) {
+    priv->m_surface =
         (unsigned char *)malloc(4 * a_rect.width() * a_rect.height());
-    memset(p_widget->m_surface, 0, 4 * a_rect.width() * a_rect.height());
+    memset(priv->m_surface, 0, 4 * a_rect.width() * a_rect.height());
   } else {
-    p_widget->m_surface = (unsigned char *)realloc(
-        p_widget->m_surface, 4 * a_rect.width() * a_rect.height());
-    memset(p_widget->m_surface, 0, 4 * a_rect.width() * a_rect.height());
+    priv->m_surface = (unsigned char *)realloc(
+        priv->m_surface, 4 * a_rect.width() * a_rect.height());
+    memset(priv->m_surface, 0, 4 * a_rect.width() * a_rect.height());
   }
 
   // d->m_content_geometry = rect;
@@ -202,7 +199,7 @@ void widget::setGeometry(const QRectF &a_rect) {
   QGraphicsLayoutItem::setGeometry(a_rect);
   setPos(a_rect.topLeft());
 
-  p_widget->_inoke_geometry_func(a_rect);
+  priv->_inoke_geometry_func(a_rect);
 
   request_update();
 }
@@ -244,22 +241,20 @@ void widget::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
 void widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   // todo : check why mouse release events are not called.
   // https://github.com/plexydesk/plexydesk/issues/7
-  p_widget->_exec_func(kMousePressedEvent, this);
+  exec_func(kMousePressedEvent, this);
 
   setFocus(Qt::MouseFocusReason);
   // QGraphicsObject::mousePressEvent(event);
 }
 
 void widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-
-  p_widget->_exec_func(kMouseReleaseEvent, this);
+  exec_func(kMouseReleaseEvent, this);
 }
 
 void widget::focusOutEvent(QFocusEvent *event) {
   event->accept();
 
-  p_widget->_exec_func(kFocusOutEvent, this);
-
+  exec_func(kFocusOutEvent, this);
   QGraphicsObject::focusOutEvent(event);
 }
 
@@ -279,16 +274,17 @@ void widget::set_child_widet_visibility(bool a_visibility) {
 
 void
 widget::set_controller(desktop_controller_interface *a_view_controller_ptr) {
-  p_widget->m_widget_controller = a_view_controller_ptr;
+  priv->m_widget_controller = a_view_controller_ptr;
 }
 
 desktop_controller_interface *widget::controller() const {
-  return p_widget->m_widget_controller;
+  return priv->m_widget_controller;
 }
 
-void widget::PrivateWidget::_exec_func(InputEvent a_type,
+void widget::exec_func(InputEvent a_type,
                                        const widget *a_widget_ptr) {
-  std::for_each(std::begin(m_handler_list), std::end(m_handler_list),
+  std::for_each(std::begin(priv->m_handler_list),
+                std::end(priv->m_handler_list),
                 [&](EventCallbackFunc a_func) {
     if (a_func)
       a_func(a_type, a_widget_ptr);

@@ -51,7 +51,6 @@ void text_editor::update_scrollbars() {
       QSizeF(16, priv->m_proxy_widget->geometry().height()));
   priv->m_v_scrollbar->setPos(priv->m_proxy_widget->geometry().width() - 16, 0);
 
-  qDebug() << Q_FUNC_INFO << priv->m_text_editor->document()->size().height();
   priv->m_v_scrollbar->set_maximum_value(
       priv->m_text_editor->document()->size().height());
 }

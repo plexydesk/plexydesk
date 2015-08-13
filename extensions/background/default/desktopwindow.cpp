@@ -30,38 +30,38 @@ public:
 };
 
 void desktop_window::reset_window_background() {
-  memset(o_window->m_background_buffer, 0,
-         (4 * o_window->m_background_height * o_window->m_background_width));
+  memset(priv->m_background_buffer, 0,
+         (4 * priv->m_background_height * priv->m_background_width));
 }
 
-bool desktop_window::is_seamless() { return o_window->m_seamless; }
+bool desktop_window::is_seamless() { return priv->m_seamless; }
 
 void desktop_window::set_seamless(bool mode) {
-  o_window->m_seamless = mode;
+  priv->m_seamless = mode;
   update();
 }
 
 void desktop_window::set_desktop_scale_mode(
     desktop_window::DesktopScalingMode a_desktop_mode) {
-  o_window->m_desktop_mode = a_desktop_mode;
+  priv->m_desktop_mode = a_desktop_mode;
 }
 
 desktop_window::DesktopScalingMode desktop_window::desktop_scale_mode() const {
-  return o_window->m_desktop_mode;
+  return priv->m_desktop_mode;
 }
 
 desktop_window::desktop_window()
-    : cherry_kit::window(0), o_window(new PrivateDesktopWindow) {
+    : cherry_kit::window(0), priv(new PrivateDesktopWindow) {
   set_window_type(cherry_kit::window::kFramelessWindow);
 
-  o_window->m_image_service->on_ready([this](
+  priv->m_image_service->on_ready([this](
       cherry_kit::image_io::buffer_load_status_t a_load_state,
       cherry_kit::image_io *a_image_service) {
 
     if (a_load_state == cherry_kit::image_io::kSuccess) {
       cherry_kit::io_surface *ck_image_surface_ref = a_image_service->surface();
 
-      o_window->m_background_texture = QImage(
+      priv->m_background_texture = QImage(
           ck_image_surface_ref->buffer, ck_image_surface_ref->width,
           ck_image_surface_ref->height, QImage::Format_ARGB32_Premultiplied);
       update();
@@ -71,7 +71,7 @@ desktop_window::desktop_window()
   });
 
   on_window_resized([this](window *a_window, int a_width, int a_height) {
-    if (o_window->m_background_buffer) {
+    if (priv->m_background_buffer) {
       /*
     //reset_window_background();
     p_window->m_background_width = a_width;
@@ -84,7 +84,7 @@ desktop_window::desktop_window()
   });
 }
 
-desktop_window::~desktop_window() { delete o_window; }
+desktop_window::~desktop_window() { delete priv; }
 
 void desktop_window::set_background(const std::string &a_image_name) {
   /*
@@ -100,19 +100,19 @@ void desktop_window::set_background(const std::string &a_image_name) {
 
   // update();
 
-  if (!o_window->m_image_service)
+  if (!priv->m_image_service)
     return;
 
-  o_window->m_image_service->create(a_image_name);
+  priv->m_image_service->create(a_image_name);
 }
 
 void desktop_window::set_background(const QImage &a_image_name) {
-  o_window->m_background_texture = a_image_name;
+  priv->m_background_texture = a_image_name;
   update();
 }
 
 void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
-  if (o_window->m_seamless) {
+  if (priv->m_seamless) {
     a_ctx->setBackgroundMode(Qt::TransparentMode);
     a_ctx->setCompositionMode(QPainter::CompositionMode_Source);
     a_ctx->fillRect(a_rect, Qt::transparent);
@@ -126,8 +126,6 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   a_ctx->setRenderHints(QPainter::SmoothPixmapTransform |
                         QPainter::HighQualityAntialiasing |
                         QPainter::Antialiasing);
-  a_ctx->drawImage(a_rect, o_window->m_background_texture);
+  a_ctx->drawImage(a_rect, priv->m_background_texture);
   a_ctx->restore();
-
-  qDebug() << Q_FUNC_INFO << a_rect;
 }

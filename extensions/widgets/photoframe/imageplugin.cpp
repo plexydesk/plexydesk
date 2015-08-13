@@ -84,7 +84,7 @@ void photo_controller_impl::revoke_session(const QVariantMap &args) {
   }
 }
 
-void photo_controller_impl::session_data_available(
+void photo_controller_impl::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {}
 
 void photo_controller_impl::submit_session_data(cherry_kit::sync_object *a_obj) {}
@@ -177,10 +177,6 @@ void photo_controller_impl::request_action(const QString &actionName,
 
     insert(window);
   }
-}
-
-QString photo_controller_impl::icon() const {
-  return QString("pd_image_icon.png");
 }
 
 void photo_controller_impl::prepare_removal() {
