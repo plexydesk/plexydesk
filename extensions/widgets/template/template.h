@@ -28,7 +28,7 @@ public:
 
   void init();
 
-  void session_data_available(const cherry_kit::sync_object &a_session_root);
+  void session_data_ready(const cherry_kit::sync_object &a_session_root);
   void submit_session_data(cherry_kit::sync_object *a_obj);
 
   void set_view_rect(const QRectF &a_rect);
@@ -38,10 +38,8 @@ public:
   cherry_kit::ActionList actions() const;
   void request_action(const QString &a_name, const QVariantMap &a_args);
 
-  QString icon() const;
-
 private:
   class PrivateTemplate;
-  PrivateTemplate *const o_view_controller;
+  PrivateTemplate *const priv;
 };
 #endif

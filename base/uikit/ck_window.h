@@ -62,6 +62,8 @@ public:
   virtual void on_window_closed(std::function<void(window *)> a_handler);
   virtual void on_window_discarded(std::function<void(window *)> a_handler);
   virtual void on_window_focused(std::function<void(window *)> a_handler);
+  virtual void
+  on_visibility_changed(std::function<void(window *, bool)> a_handler);
 
   virtual void raise();
   virtual void close();
@@ -74,6 +76,9 @@ public:
   virtual void enable_window_background(bool a_visibility = true);
 
   virtual float window_title_height();
+
+  virtual void removeFocus();
+
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
@@ -84,9 +89,10 @@ protected:
   void invoke_window_closed_action();
   void invoke_window_moved_action();
 
+  void invoke_window_visibility_action(bool a_visibility);
 private:
   class PrivateWindow;
-  PrivateWindow *const o_window;
+  PrivateWindow *const priv;
 };
 }
 #endif // WINDOW_H

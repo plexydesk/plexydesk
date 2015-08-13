@@ -41,15 +41,13 @@ public:
   virtual ~desktop_panel_controller_impl();
   void prepare_removal();
 
-  void session_data_available(const cherry_kit::sync_object &a_sesion_root);
+  void session_data_ready(const cherry_kit::sync_object &a_sesion_root);
   virtual void submit_session_data(cherry_kit::sync_object *a_obj);
 
   void set_view_rect(const QRectF &rect);
 
   cherry_kit::ActionList actions() const;
   void request_action(const QString &actionName, const QVariantMap &args);
-
-  QString icon() const;
 
   void switch_to_previous_space();
   void switch_to_next_space();
@@ -68,10 +66,9 @@ public:
 
   void exec_action(const QString &action);
 
-  widget *create_task_action(const QString &aIcon, const QString &aLabel, const QString &aControllerName);
-  void insert_action(const QString &a_name,
-                     const QString &a_icon,
-                     const QString &a_ctr);
+  widget *create_task_action(ui_action &a_task);
+  void insert_action(ui_action &a_task);
+  void insert_sub_action(ui_action &a_task);
 
 protected:
   void udpate_desktop_preview();

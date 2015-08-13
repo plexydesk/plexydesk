@@ -38,9 +38,9 @@ public:
 
 date_controller::date_controller(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
-      o_view_controller(new PrivateDate) {}
+      priv(new PrivateDate) {}
 
-date_controller::~date_controller() { delete o_view_controller; }
+date_controller::~date_controller() { delete priv; }
 
 void date_controller::init() {
   QAction *_add_note_action = new QAction(this);
@@ -49,10 +49,10 @@ void date_controller::init() {
   _add_note_action->setProperty("id", QVariant(1));
   _add_note_action->setProperty("icon_name", "pd_calendar_icon.png");
 
-  o_view_controller->m_supported_action_list << _add_note_action;
+  priv->m_supported_action_list << _add_note_action;
 }
 
-void date_controller::session_data_available(
+void date_controller::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {
   revoke_previous_session(
       "Calendar", [this](cherry_kit::desktop_controller_interface *a_controller,
@@ -72,7 +72,7 @@ bool date_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
 }
 
 cherry_kit::ActionList date_controller::actions() const {
-  return o_view_controller->m_supported_action_list;
+  return priv->m_supported_action_list;
 }
 
 void date_controller::request_action(const QString &a_name,
@@ -90,7 +90,7 @@ void date_controller::request_action(const QString &a_name,
     session_args["y"] = window_location.y();
     session_args["calendar_id"] = session_count();
     session_args["database_name"] =
-        QString::fromStdString(session_database_name("calendar"));
+        QString::fromStdString(session_store_name("calendar"));
 
     start_session("Calendar", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
@@ -99,8 +99,6 @@ void date_controller::request_action(const QString &a_name,
     });
   }
 }
-
-QString date_controller::icon() const { return QString(); }
 
 void date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
                                         int a_col, const std::string &a_label,

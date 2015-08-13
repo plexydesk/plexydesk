@@ -62,6 +62,8 @@ public:
 
   std::string m_background_texture;
   desktop_window *m_background_window;
+
+  cherry_kit::ui_action m_supported_action;
 };
 
 desktop_controller_impl::desktop_controller_impl(QObject *object)
@@ -74,7 +76,8 @@ desktop_controller_impl::~desktop_controller_impl() {
 }
 
 void desktop_controller_impl::init() {
-  // todo : port toNativeSeperator to our datakit
+  create_task_group();
+
   QString default_wallpaper_file = QDir::toNativeSeparators(
       cherry_kit::config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
@@ -115,7 +118,7 @@ void desktop_controller_impl::revoke_session(const QVariantMap &args) {
   }
 }
 
-void desktop_controller_impl::session_data_available(
+void desktop_controller_impl::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {
   if (!a_session_root.has_property("background") ||
       !a_session_root.has_property("mode"))
@@ -143,8 +146,24 @@ void desktop_controller_impl::submit_session_data(
   a_object->set_property("mode", "scale");
 }
 
-cherry_kit::ActionList desktop_controller_impl::actions() const {
-  return o_ctr->m_supported_actions;
+void desktop_controller_impl::create_task_group() const {
+    o_ctr->m_supported_action.set_name("Configure");
+    o_ctr->m_supported_action.set_icon("pd_settings_icon.png");
+    o_ctr->m_supported_action.set_controller(controller_name().toStdString());
+
+    cherry_kit::ui_action bg_task;
+    bg_task.set_name("Background");
+    bg_task.set_icon("pd_settings_icon.png");
+    bg_task.set_visible(true);
+    bg_task.set_task([this](const cherry_kit::ui_action *a_action_ref) {
+        qDebug() << Q_FUNC_INFO;
+    });
+
+    o_ctr->m_supported_action.add_action(bg_task);
+}
+
+cherry_kit::ui_action desktop_controller_impl::task() const {
+  return o_ctr->m_supported_action;
 }
 
 void desktop_controller_impl::expose_platform_desktop() {
@@ -356,14 +375,6 @@ void desktop_controller_impl::on_image_data_available() {
 }
 
 void desktop_controller_impl::set_desktop_scale_type(const QString &a_action) {}
-
-QString desktop_controller_impl::icon() const {
-  return QString("pd_home_sym_icon.png");
-}
-
-QString desktop_controller_impl::label() const {
-  return QString(tr("Desktop"));
-}
 
 void desktop_controller_impl::prepare_removal() {}
 
