@@ -145,6 +145,17 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
   }
 }
 
+cherry_kit::ui_action desktop_task_controller_impl::task() const
+{
+    cherry_kit::ui_action task;
+    task.set_name("Do");
+    task.set_visible(1);
+    task.set_controller(controller_name().toStdString());
+    task.set_icon("pd_alarm_icon.png");
+
+    return task;
+}
+
 void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
                                                      QDropEvent *event) {
   const QString drop_file_name = event->mimeData()->urls().value(0).toLocalFile();
