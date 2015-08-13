@@ -100,6 +100,17 @@ void date_controller::request_action(const QString &a_name,
   }
 }
 
+cherry_kit::ui_action date_controller::task() const
+{
+    cherry_kit::ui_action task;
+    task.set_name("Organize");
+    task.set_visible(1);
+    task.set_controller(controller_name().toStdString());
+    task.set_icon("pd_calendar_icon.png");
+
+    return task;
+}
+
 void date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
                                         int a_col, const std::string &a_label,
                                         const std::string &a_icon) {
