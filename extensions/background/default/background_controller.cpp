@@ -199,6 +199,7 @@ void desktop_controller_impl::expose_platform_desktop() {
         !o_ctr->m_background_window->is_seamless());
 }
 
+/*
 void desktop_controller_impl::request_action(const QString &actionName,
                                              const QVariantMap &data) {
 	//todo : 
@@ -234,6 +235,7 @@ void desktop_controller_impl::request_action(const QString &actionName,
     return;
   }
 }
+*/
 
 void desktop_controller_impl::download_image_from_url(QUrl fileUrl) {
   QuetzalSocialKit::AsyncDataDownloader *downloader =

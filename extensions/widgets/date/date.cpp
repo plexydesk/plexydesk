@@ -71,6 +71,7 @@ bool date_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
 
+/*
 cherry_kit::ActionList date_controller::actions() const {
   return priv->m_supported_action_list;
 }
@@ -99,6 +100,7 @@ void date_controller::request_action(const QString &a_name,
     });
   }
 }
+*/
 
 cherry_kit::ui_action date_controller::task() const
 {

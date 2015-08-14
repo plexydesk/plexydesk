@@ -35,15 +35,10 @@ public:
   void set_viewport(space *a_view_ptr);
   virtual space *viewport() const;
 
-  virtual ActionList actions() const;
+
   virtual ui_action task() const {
       return ui_action();
   }
-
-  virtual void request_action(const QString &a_actionName,
-                              const QVariantMap &a_args = QVariantMap());
-
-  virtual data_source *dataSource();
 
   virtual void insert(window *a_window_ptr);
 
