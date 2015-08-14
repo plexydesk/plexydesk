@@ -99,6 +99,7 @@ void desktop_task_controller_impl::submit_session_data(
 
 void desktop_task_controller_impl::set_view_rect(const QRectF &rect) {}
 
+/*
 cherry_kit::ActionList desktop_task_controller_impl::actions() const {
   return priv->m_supported_action_list;
 }
@@ -144,6 +145,7 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
     qWarning() << Q_FUNC_INFO << "Unknown Action";
   }
 }
+*/
 
 cherry_kit::ui_action desktop_task_controller_impl::task() const
 {

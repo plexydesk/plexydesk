@@ -46,8 +46,8 @@ public:
 
   void set_view_rect(const QRectF &rect);
 
-  cherry_kit::ActionList actions() const;
-  void request_action(const QString &actionName, const QVariantMap &args);
+  //cherry_kit::ActionList actions() const;
+  //void request_action(const QString &actionName, const QVariantMap &args);
 
   void switch_to_previous_space();
   void switch_to_next_space();

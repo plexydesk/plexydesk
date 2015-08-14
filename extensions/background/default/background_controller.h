@@ -43,13 +43,13 @@ public:
   void submit_session_data(cherry_kit::sync_object *a_object);
 
   cherry_kit::ui_action task() const;
-  void request_action(const QString &actionName, const QVariantMap &data);
 
   void set_view_rect(const QRectF &rect);
 
   void prepare_removal();
 
   void create_task_group() const;
+
 private Q_SLOTS:
   void image_locally_available();
   void on_image_data_available();

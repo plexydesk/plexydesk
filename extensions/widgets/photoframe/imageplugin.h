@@ -42,10 +42,6 @@ public:
 
   bool remove_widget(cherry_kit::widget *widget);
 
-  cherry_kit::ActionList actions() const;
-
-  void request_action(const QString &actionName, const QVariantMap &args);
-
   void prepare_removal();
 
 private:

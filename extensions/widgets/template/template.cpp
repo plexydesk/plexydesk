@@ -42,10 +42,3 @@ void template_controller::set_view_rect(const QRectF &a_rect) {}
 bool template_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
-
-cherry_kit::ActionList template_controller::actions() const {
-  return cherry_kit::ActionList();
-}
-
-void template_controller::request_action(const QString &a_name,
-                                            const QVariantMap &a_args) {}

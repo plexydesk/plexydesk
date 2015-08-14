@@ -453,6 +453,7 @@ void desktop_panel_controller_impl::set_view_rect(const QRectF &rect) {
   }
 }
 
+/*
 ActionList desktop_panel_controller_impl::actions() const {
   return priv->m_supported_action_list;
 }
@@ -494,6 +495,7 @@ void desktop_panel_controller_impl::request_action(const QString &actionName,
     qWarning() << Q_FUNC_INFO << "Unknown Action";
   }
 }
+*/
 
 desktop_dialog_ref desktop_panel_controller_impl::createActivity(
     const QString &controllerName, const QString &activity,
@@ -535,7 +537,7 @@ void desktop_panel_controller_impl::toggle_seamless() {
     return;
   }
 
-  controller->request_action("Seamless");
+  //controller->request_action("Seamless");
 }
 
 void desktop_panel_controller_impl::prepare_removal() {
