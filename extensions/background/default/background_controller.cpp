@@ -48,7 +48,6 @@
 class desktop_controller_impl::PrivateBackgroundController {
 public:
   PrivateBackgroundController() {}
-
   ~PrivateBackgroundController() {}
 
   void save_session(const QString &a_key, const QString &a_value);
@@ -65,9 +64,9 @@ desktop_controller_impl::desktop_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       o_ctr(new PrivateBackgroundController) {}
 
-desktop_controller_impl::~desktop_controller_impl() { 
-	delete o_ctr;
-	qDebug() << Q_FUNC_INFO;
+desktop_controller_impl::~desktop_controller_impl() {
+  delete o_ctr;
+  qDebug() << Q_FUNC_INFO;
 }
 
 void desktop_controller_impl::init() {
@@ -81,7 +80,7 @@ void desktop_controller_impl::init() {
   o_ctr->m_background_window = new desktop_window();
   o_ctr->m_background_window->set_controller(this);
   o_ctr->m_background_window->set_background(
-              default_wallpaper_file.toStdString());
+      default_wallpaper_file.toStdString());
 
   o_ctr->m_background_window->on_window_discarded([this](
       cherry_kit::window *a_window) {
@@ -103,8 +102,8 @@ void desktop_controller_impl::revoke_session(const QVariantMap &args) {
     return;
 
   if (qt_image_url.isLocalFile()) {
-    o_ctr->m_background_window->set_background
-            (qt_image_url.toLocalFile().toStdString());
+    o_ctr->m_background_window->set_background(
+        qt_image_url.toLocalFile().toStdString());
     o_ctr->m_background_texture = qt_image_url.toString().toStdString();
   } else {
     download_image_from_url(qt_image_url);
@@ -126,7 +125,7 @@ void desktop_controller_impl::session_data_ready(
 
   if (qt_background_url.isLocalFile()) {
     o_ctr->m_background_window->set_background(
-                qt_background_url.toLocalFile().toStdString());
+        qt_background_url.toLocalFile().toStdString());
     o_ctr->m_background_texture = background_url_str;
   } else {
     download_image_from_url(qt_background_url);
@@ -140,20 +139,21 @@ void desktop_controller_impl::submit_session_data(
 }
 
 void desktop_controller_impl::create_task_group() const {
-    o_ctr->m_supported_action.set_name("Configure");
-    o_ctr->m_supported_action.set_icon("pd_settings_icon.png");
-    o_ctr->m_supported_action.set_visible(1);
-    o_ctr->m_supported_action.set_controller(controller_name().toStdString());
+  o_ctr->m_supported_action.set_name("Configure");
+  o_ctr->m_supported_action.set_icon("pd_settings_icon.png");
+  o_ctr->m_supported_action.set_visible(1);
+  o_ctr->m_supported_action.set_controller(controller_name().toStdString());
 
-    cherry_kit::ui_action bg_task;
-    bg_task.set_name("Background");
-    bg_task.set_icon("pd_settings_icon.png");
-    bg_task.set_visible(true);
-    bg_task.set_task([this](const cherry_kit::ui_action *a_action_ref) {
-        qDebug() << Q_FUNC_INFO;
-    });
+  cherry_kit::ui_action bg_task;
+  bg_task.set_name("Background");
+  bg_task.set_icon("pd_settings_icon.png");
+  bg_task.set_visible(true);
+  bg_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
+                          const cherry_kit::ui_task_data_t &a_data) {
+    qDebug() << Q_FUNC_INFO;
+  });
 
-    o_ctr->m_supported_action.add_action(bg_task);
+  o_ctr->m_supported_action.add_action(bg_task);
 }
 
 cherry_kit::ui_action desktop_controller_impl::task() const {
@@ -195,8 +195,8 @@ void desktop_controller_impl::expose_platform_desktop() {
 /*
 void desktop_controller_impl::request_action(const QString &actionName,
                                              const QVariantMap &data) {
-	//todo : 
-	// replace this kind of comparisons with new actions.
+        //todo :
+        // replace this kind of comparisons with new actions.
   if (actionName == tr("Configure")) {
     if (!viewport())
       return;
@@ -275,7 +275,7 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
     if (!qt_dropped_file_info.isDir()) {
       if (o_ctr->m_background_window) {
         o_ctr->m_background_window->set_background(
-                    qt_dropped_file_name_string.toStdString());
+            qt_dropped_file_name_string.toStdString());
         o_ctr->m_background_texture = qt_dropped_file_name_string.toStdString();
         sync_session_data("background", qt_dropped_file_name_string);
       }
@@ -284,7 +284,6 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
 }
 
 void desktop_controller_impl::set_view_rect(const QRectF &rect) {
-    qDebug() << Q_FUNC_INFO << rect;
   if (o_ctr->m_background_window) {
     o_ctr->m_background_window->setGeometry(rect);
   }

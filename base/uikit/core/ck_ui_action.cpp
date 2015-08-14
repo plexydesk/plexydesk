@@ -33,13 +33,13 @@ ui_action::ui_action(const ui_action &copy)
   std::for_each(std::begin(copy.priv->m_child_action_list),
                 std::end(copy.priv->m_child_action_list),
                 [this](ui_action action) {
-     priv->m_child_action_list.push_back(action);
+    priv->m_child_action_list.push_back(action);
   });
 
   std::for_each(std::begin(copy.priv->m_callback_list),
                 std::end(copy.priv->m_callback_list),
-                [&] (ui_task_callback_t a_func) {
-      priv->m_callback_list.push_back(a_func);
+                [&](ui_task_callback_t a_func) {
+    priv->m_callback_list.push_back(a_func);
   });
 }
 
@@ -87,13 +87,26 @@ void ui_action::set_task(ui_task_callback_t callback) {
   priv->m_callback_list.push_back(callback);
 }
 
-void ui_action::execute() const {
+void ui_action::execute(const ui_task_data_t &a_data) const {
   std::for_each(std::begin(priv->m_callback_list),
                 std::end(priv->m_callback_list),
-                [&] (ui_task_callback_t a_func) {
+                [&](ui_task_callback_t a_func) {
 
-      if (a_func)
-          a_func(this);
+    if (a_func)
+      a_func(this, a_data);
+  });
+}
+
+void ui_action::execute(const std::string &a_task_name,
+                        const ui_task_data_t &a_data) {
+  if (priv->m_action_name.compare(a_task_name) == 0) {
+    execute(a_data);
+    return;
+  }
+
+  std::for_each(std::begin(priv->m_child_action_list),
+                std::end(priv->m_child_action_list), [&](ui_action &a_action) {
+    a_action.execute(a_task_name, a_data);
   });
 }
 }
