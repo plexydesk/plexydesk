@@ -47,7 +47,6 @@ public:
   void set_view_rect(const QRectF &rect);
 
   void prepare_removal();
-
   void create_task_group() const;
 
 private Q_SLOTS:
