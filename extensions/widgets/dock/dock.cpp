@@ -165,7 +165,8 @@ widget *desktop_panel_controller_impl::create_task_action(
 
   l_rv->setMinimumSize(l_action_item_size);
 
-  a_task.set_task([this](const cherry_kit::ui_action *a_action_ref) {
+  a_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
+                         const cherry_kit::ui_task_data_t &a_data) {
     ui_action_list child_actions = a_action_ref->sub_actions();
 
     if (child_actions.size() > 0) {
@@ -263,7 +264,8 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
       if (!a_action.is_visibile())
         return;
 
-      a_action.set_task([=](const ui_action *a_task_ref) {
+      a_action.set_task([=](const ui_action *a_task_ref,
+                            const ui_task_data_t &a_data) {
         sub_menu->close();
       });
 
@@ -315,6 +317,30 @@ ui_action desktop_panel_controller_impl::task() const {
   task.set_visible(0);
   task.set_name("Desktop");
   task.set_icon("ck_desktop_icon.png");
+  task.set_controller(controller_name().toStdString());
+
+  ui_action menu_task;
+  menu_task.set_name("menu");
+  menu_task.set_id(0);
+  menu_task.set_icon("ck_menu_icon.png");
+  menu_task.set_task([this](const ui_action *a_action_ref,
+                            const ui_task_data_t &a_data) {
+    if (priv->m_task_window) {
+
+      QPointF menu_pos;
+      if (a_data.find("x") != a_data.end() &&
+          a_data.find("y") != a_data.end()) {
+          menu_pos.setX(std::stod(a_data.at("x")));
+          menu_pos.setY(std::stod(a_data.at("y")));
+      }
+
+      priv->m_task_window->setPos(menu_pos);
+      priv->m_task_window->show();
+    }
+  });
+  menu_task.set_controller(controller_name().toStdString());
+
+  task.add_action(menu_task);
 
   return task;
 }
