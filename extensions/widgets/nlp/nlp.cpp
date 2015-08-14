@@ -42,10 +42,3 @@ void NLPControllerImpl::set_view_rect(const QRectF &rect) {}
 bool NLPControllerImpl::remove_widget(cherry_kit::widget *widget) {
   return false;
 }
-
-cherry_kit::ActionList NLPControllerImpl::actions() const {
-  return cherry_kit::ActionList();
-}
-
-void NLPControllerImpl::request_action(const QString &actionName,
-                                       const QVariantMap &args) {}

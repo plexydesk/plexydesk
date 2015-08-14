@@ -41,9 +41,11 @@ public:
 
   virtual void set_view_rect(const QRectF &rect);
 
+  /*
   cherry_kit::ActionList actions() const;
   virtual void request_action(const QString &actionName,
                               const QVariantMap &args);
+                              */
 
   cherry_kit::ui_action task() const;
 
