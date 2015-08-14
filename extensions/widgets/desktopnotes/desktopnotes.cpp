@@ -21,7 +21,6 @@
 #include <QTimer>
 #include <ck_desktop_controller_interface.h>
 #include <ck_widget.h>
-#include <QAction>
 #include <ck_session_sync.h>
 
 #include <ck_fixed_layout.h>
@@ -36,45 +35,18 @@ class desktop_task_controller_impl::PrivateDesktopNotes {
 public:
   PrivateDesktopNotes() {}
   ~PrivateDesktopNotes() {}
-
-  QMap<QString, int> mNoteActions;
-  cherry_kit::ActionList m_supported_action_list;
 };
 
 desktop_task_controller_impl::desktop_task_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
       priv(new PrivateDesktopNotes) {
-  //o_view_controller->mNoteActions["Keep"] = 1;
-  priv->mNoteActions["Remember"] = 1;
-  priv->mNoteActions["Do"] = 2;
 }
 
 desktop_task_controller_impl::~desktop_task_controller_impl() {
   delete priv;
 }
 
-void desktop_task_controller_impl::init() {
-  QAction *_add_note_action = new QAction(this);
-  _add_note_action->setText(tr("Remember"));
-  _add_note_action->setProperty("id", QVariant(1));
-  _add_note_action->setProperty("icon_name", "pd_note_icon.png");
-
-  QAction *_add_task_action = new QAction(this);
-  _add_task_action->setText(tr("Do"));
-  _add_task_action->setProperty("id", QVariant(2));
-  _add_task_action->setProperty("icon_name", "pd_todo_list_icon.png");
-
-  /*QAction *_add_reminder_action = new QAction(this);
-  _add_reminder_action->setText(tr("Reminder"));
-
-  _add_reminder_action->setProperty("id", QVariant(2));
-  _add_reminder_action->setProperty("icon_name", "pd_reminder_icon.png");
-	*/
-
-  priv->m_supported_action_list << _add_note_action;
-  priv->m_supported_action_list << _add_task_action;
-  //o_view_controller->m_supported_action_list << _add_reminder_action;
-}
+void desktop_task_controller_impl::init() {}
 
 void desktop_task_controller_impl::session_data_ready(
     const cherry_kit::sync_object &a_sesion_root) {

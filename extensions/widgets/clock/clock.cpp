@@ -38,7 +38,6 @@
 #include <ck_disk_engine.h>
 
 // Qt
-#include <QAction>
 #include <ck_icon_button.h>
 #include <ck_label.h>
 #include <ck_fixed_layout.h>
@@ -54,7 +53,6 @@ public:
                                              int a_row, int a_col,
                                              const std::string &a_label,
                                              const std::string &a_icon);
-  cherry_kit::ActionList m_supported_action_list;
   void setup_create_timer_ui(time_controller *a_controller,
                              cherry_kit::session_sync *a_session);
 };
@@ -66,17 +64,6 @@ time_controller::time_controller(QObject *parent)
 time_controller::~time_controller() {
   qDebug() << Q_FUNC_INFO << "Deleted";
   delete priv;
-}
-
-QAction *time_controller::createAction(int id, const QString &action_name,
-                                       const QString &icon_name) {
-  QAction *_add_clock_action = new QAction(this);
-  _add_clock_action->setText(action_name);
-  _add_clock_action->setProperty("id", QVariant(id));
-  _add_clock_action->setProperty("icon_name", icon_name);
-  _add_clock_action->setProperty("hidden", 0);
-
-  return _add_clock_action;
 }
 
 void time_controller::init() {

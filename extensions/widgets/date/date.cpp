@@ -33,7 +33,6 @@ public:
   PrivateDate() {}
   ~PrivateDate() {}
 
-  cherry_kit::ActionList m_supported_action_list;
 };
 
 date_controller::date_controller(QObject *object)
@@ -42,15 +41,7 @@ date_controller::date_controller(QObject *object)
 
 date_controller::~date_controller() { delete priv; }
 
-void date_controller::init() {
-  QAction *_add_note_action = new QAction(this);
-  _add_note_action->setText(tr("Meet"));
-
-  _add_note_action->setProperty("id", QVariant(1));
-  _add_note_action->setProperty("icon_name", "pd_calendar_icon.png");
-
-  priv->m_supported_action_list << _add_note_action;
-}
+void date_controller::init() {}
 
 void date_controller::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {

@@ -33,7 +33,6 @@
 #include <QDir>
 #include <QMimeData>
 #include <QPixmap>
-#include <QAction>
 #include <QPainter>
 
 #include <ck_space.h>
@@ -52,13 +51,9 @@ public:
 
   ~PrivateBackgroundController() {}
 
-  QAction *add_action(desktop_controller_impl *controller, const QString &name,
-                      const QString &icon, int id);
   void save_session(const QString &a_key, const QString &a_value);
 
   void updateProgress(float progress);
-
-  cherry_kit::ActionList m_supported_actions;
 
   std::string m_background_texture;
   desktop_window *m_background_window;
@@ -93,8 +88,6 @@ void desktop_controller_impl::init() {
     if (o_ctr->m_background_window)
       delete o_ctr->m_background_window;
   });
-
-  o_ctr->add_action(this, tr("Configure"), "pd_settings_icon.png", 1);
 
   insert(o_ctr->m_background_window);
 }
@@ -387,19 +380,6 @@ void desktop_controller_impl::sync_session_data(const QString &key,
     return;
 
   viewport()->update_session_value(controller_name(), "", "");
-}
-
-QAction *desktop_controller_impl::PrivateBackgroundController::add_action(
-    desktop_controller_impl *controller, const QString &name,
-    const QString &icon, int id) {
-  QAction *qt_action = new QAction(controller);
-  qt_action->setText(name);
-  qt_action->setProperty("id", QVariant(id));
-  qt_action->setProperty("icon_name", icon);
-
-  m_supported_actions << qt_action;
-
-  return qt_action;
 }
 
 void desktop_controller_impl::PrivateBackgroundController::save_session(
