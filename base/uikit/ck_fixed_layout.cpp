@@ -445,7 +445,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
   }
 
   image_button->set_lable(text);
-  QPixmap pixmap = resource_manager::instance()->drawable(icon, "hdpi");
+  QPixmap pixmap = resource_manager::instance()->drawable(icon, "mdpi");
   image_button->set_pixmap(pixmap);
 
   image_button->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
