@@ -66,7 +66,7 @@ protected:
 
   void switch_to_previous_space();
   void switch_to_next_space();
-  void toggle_seamless() const;
+  void toggle_seamless();
 
   void remove_space_request();
   void add_new_space();
