@@ -4,7 +4,6 @@
 #define QT_SHAREDPOINTER_TRACK_POINTERS 1
 
 #include <QSharedPointer>
-#include <QAction>
 
 #include <ck_data_source.h>
 #include <ck_desktop_dialog.h>
@@ -19,8 +18,6 @@ namespace cherry_kit {
 
 class widget;
 class session_sync;
-
-typedef QList<QAction *> ActionList;
 
 class DECL_UI_KIT_EXPORT desktop_controller_interface : public QObject {
   Q_OBJECT

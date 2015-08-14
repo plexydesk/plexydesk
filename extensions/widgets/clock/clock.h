@@ -43,10 +43,7 @@ public:
 
   cherry_kit::ui_action task() const;
 
-  QAction *createAction(int id, const QString &action_name,
-                        const QString &icon_name);
-public
-Q_SLOTS:
+public Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);
 
 private:
