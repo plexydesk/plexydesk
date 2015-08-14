@@ -36,9 +36,9 @@ class desktop_panel_controller_impl
 
 public:
   desktop_panel_controller_impl(QObject *object = 0);
-  void init();
-
   virtual ~desktop_panel_controller_impl();
+
+  void init();
   void prepare_removal();
 
   void session_data_ready(const cherry_kit::sync_object &a_sesion_root);
@@ -46,32 +46,32 @@ public:
 
   void set_view_rect(const QRectF &rect);
 
-  //cherry_kit::ActionList actions() const;
-  //void request_action(const QString &actionName, const QVariantMap &args);
+  cherry_kit::ui_action task() const;
 
-  void switch_to_previous_space();
-  void switch_to_next_space();
-  void toggle_seamless();
+protected:
+
+  widget *create_task_action(ui_action &a_task);
+
+  void insert_action(ui_action &a_task);
+  void insert_sub_action(ui_action &a_task);
+
+  void discover_actions_from_controller(const QString &name);
+
+  void toggle_panel();
+  void udpate_desktop_preview();
 
   void create_dock_action(cherry_kit::fixed_layout *build, int row, int column,
                           const std::string &icon,
                           std::function<void()> a_button_action_func);
 
-  void toggle_panel();
-
-  void discover_actions_from_controller(const QString &name);
+  void switch_to_previous_space();
+  void switch_to_next_space();
+  void toggle_seamless();
 
   void remove_space_request();
   void add_new_space();
 
   void exec_action(const QString &action);
-
-  widget *create_task_action(ui_action &a_task);
-  void insert_action(ui_action &a_task);
-  void insert_sub_action(ui_action &a_task);
-
-protected:
-  void udpate_desktop_preview();
 
 private:
   class PrivateDock;
@@ -82,8 +82,6 @@ private:
                                                 const QString &title,
                                                 const QPoint &pos,
                                                 const QVariantMap &dataItem);
-  QAction *createAction(int id, const QString &action_name,
-                        const QString &icon_name);
 };
 
 #endif

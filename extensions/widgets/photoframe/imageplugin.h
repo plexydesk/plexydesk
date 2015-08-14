@@ -50,7 +50,6 @@ private:
   PhotoWidget *mFrameParentitem;
   QList<PhotoWidget *> mPhotoList;
   QString mImageSource;
-  cherry_kit::ActionList m_supported_action_list;
   QStringList m_current_url_list;
 };
 

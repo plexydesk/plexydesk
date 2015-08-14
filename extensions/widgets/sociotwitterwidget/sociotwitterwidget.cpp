@@ -25,7 +25,6 @@
 #include <QStyleOptionGraphicsItem>
 
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QGraphicsView>
