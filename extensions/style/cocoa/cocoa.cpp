@@ -196,9 +196,10 @@ void CocoaStyle::PrivateCocoa::set_pen_color(QPainter *painter,
 }
 
 void CocoaStyle::set_default_painter_hints(QPainter *painter) {
-  painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                              QPainter::SmoothPixmapTransform |
-                              QPainter::HighQualityAntialiasing,
+  painter->setRenderHints(QPainter::Antialiasing
+                          | QPainter::TextAntialiasing
+                          | QPainter::SmoothPixmapTransform
+                          | QPainter::HighQualityAntialiasing,
                           true);
 }
 

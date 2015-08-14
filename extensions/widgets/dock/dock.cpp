@@ -322,7 +322,9 @@ ui_action desktop_panel_controller_impl::task() const {
   ui_action menu_task;
   menu_task.set_name("menu");
   menu_task.set_id(0);
+  menu_task.set_visible(0);
   menu_task.set_icon("ck_menu_icon.png");
+  menu_task.set_controller(controller_name().toStdString());
   menu_task.set_task([this](const ui_action *a_action_ref,
                             const ui_task_data_t &a_data) {
     if (priv->m_task_window) {
@@ -330,17 +332,28 @@ ui_action desktop_panel_controller_impl::task() const {
       QPointF menu_pos;
       if (a_data.find("x") != a_data.end() &&
           a_data.find("y") != a_data.end()) {
-          menu_pos.setX(std::stod(a_data.at("x")));
-          menu_pos.setY(std::stod(a_data.at("y")));
+        menu_pos.setX(std::stod(a_data.at("x")));
+        menu_pos.setY(std::stod(a_data.at("y")));
       }
 
       priv->m_task_window->setPos(menu_pos);
       priv->m_task_window->show();
     }
   });
-  menu_task.set_controller(controller_name().toStdString());
+
+  ui_action desktop_task;
+  desktop_task.set_name("seamless");
+  desktop_task.set_id(1);
+  desktop_task.set_visible(0);
+  desktop_task.set_icon("ck_seamless_icon.png");
+  desktop_task.set_controller(controller_name().toStdString());
+  desktop_task.set_task([this](const ui_action *a_action_ref,
+                               const ui_task_data_t &a_data) {
+    toggle_seamless();
+  });
 
   task.add_action(menu_task);
+  task.add_action(desktop_task);
 
   return task;
 }
@@ -386,10 +399,11 @@ void desktop_panel_controller_impl::init() {
   priv->m_preview_window->enable_window_background(false);
 
   // navigation
+  float icon_size = 32.0f;
   priv->m_fixed_panel_layout =
       new cherry_kit::fixed_layout(priv->m_panel_window);
   priv->m_fixed_panel_layout->set_content_margin(3, 5, 5, 5);
-  priv->m_fixed_panel_layout->set_geometry(0, 0, 24 + 8, 24 * 7);
+  priv->m_fixed_panel_layout->set_geometry(0, 0, icon_size + 8, icon_size * 7);
   priv->m_fixed_panel_layout->add_rows(7);
 
   priv->m_panel_window->on_window_discarded([this](
@@ -399,7 +413,8 @@ void desktop_panel_controller_impl::init() {
     delete aWindow;
   });
 
-  std::string default_height = std::to_string((24.0 / (24 * 7)) * 100) + "%";
+  std::string default_height =
+      std::to_string((icon_size / (icon_size * 7)) * 100) + "%";
 
   for (int i = 0; i < 7; i++) {
     priv->m_fixed_panel_layout->add_segments(i, 1);
@@ -554,7 +569,7 @@ void desktop_panel_controller_impl::toggle_seamless() {
     return;
   }
 
-  // controller->request_action("Seamless");
+  controller->task().execute("seamless");
 }
 
 void desktop_panel_controller_impl::prepare_removal() {
