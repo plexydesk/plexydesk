@@ -1,6 +1,5 @@
 ﻿#include "ck_space.h"
 
-#include <QAction>
 #include <QDebug>
 #include <QDropEvent>
 #include <QGraphicsItem>

@@ -23,7 +23,6 @@
 #include <QDir>
 #include <QDropEvent>
 #include <QMimeData>
-#include <QAction>
 
 #define ADD_DIR "addDirectory"
 #define CREATE_DIR "createDirectory"
@@ -54,55 +53,12 @@ DirectoryController::DirectoryController(QObject *object)
 
 DirectoryController::~DirectoryController() {}
 
-void DirectoryController::init() {
-  QAction *_add_dir_action = new QAction(this);
-  _add_dir_action->setText(tr("Folder"));
-
-  _add_dir_action->setProperty("id", QVariant(1));
-  _add_dir_action->setProperty("icon_name", "pd_add_folder_frame_icon.png");
-
-  m_supported_action_list << _add_dir_action;
-}
+void DirectoryController::init() {}
 
 void DirectoryController::session_data_available(
     const cherry::sync_object &a_session_root) {}
 
 void DirectoryController::submit_session_data(cherry::sync_object *a_obj) {}
-
-cherry_kit::ActionList DirectoryController::actions() const {
-  return m_supported_action_list;
-}
-
-void DirectoryController::request_action(const QString &actionName,
-                                         const QVariantMap &args) {
-  /*
-  if (actionName == CREATE_DIR) {
-    qDebug() << "Not supported yet";
-  } else if (actionName == tr("Folder")) {
-    cherry_kit::Window *window = new cherry_kit::Window();
-
-    window->on_window_closed([&](cherry_kit::Window *aWindow) { delete aWindow;
-  });
-
-    cherry_kit::Widget *parent = new cherry_kit::Widget();
-
-    window->set_window_content(parent);
-
-    IconWidgetView *view = new IconWidgetView(parent);
-
-    view->setDirectoryPath(args["path"].toString());
-    view->set_controller(this);
-
-    QFileInfo info(args["path"].toString());
-
-    window->set_window_title(info.baseName());
-
-    mFolderViewList.append(parent);
-
-    insert(window);
-  }
-  */
-}
 
 void DirectoryController::handle_drop_event(cherry_kit::Widget *widget,
                                             QDropEvent *event) {

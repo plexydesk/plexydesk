@@ -55,18 +55,12 @@ public:
   bool m_main_panel_is_hidden;
 
   cherry_kit::icon_button *m_add_new_workspace_button_ptr;
-  cherry_kit::ActionList m_supported_action_list;
 
   cherry_kit::ui_action_list m_task_list;
 };
 
 desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object), priv(new PrivateDock) {
-  priv->m_actions_map["ToggleDock"] = 1;
-  priv->m_actions_map["ShowDock"] = 2;
-  priv->m_actions_map["HideDock"] = 3;
-  priv->m_actions_map["HideDock"] = 4;
-  priv->m_actions_map["ShowMenu"] = 5;
 
   priv->m_main_panel_is_hidden = true;
 
@@ -214,7 +208,7 @@ void desktop_panel_controller_impl::discover_actions_from_controller(
 void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
 
   if (!a_task.is_visibile())
-      return;
+    return;
 
   cherry_kit::model_view_item *grid_item = new cherry_kit::model_view_item();
   grid_item->set_view(create_task_action(a_task));
@@ -257,12 +251,11 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   sub_menu->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
     if (!a_visible) {
       a_window_ref->close();
-      //delete a_window_ref;
+      // delete a_window_ref;
       delete sub_task_grid;
-       delete sub_menu;
+      delete sub_menu;
     }
   });
-
 
   if (child_actions.size() > 0) {
     std::for_each(std::begin(child_actions), std::end(child_actions),
@@ -317,18 +310,16 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   sub_menu->raise();
 }
 
-void desktop_panel_controller_impl::init() {
-  priv->m_supported_action_list << createAction(1, tr("Menu"),
-                                                "pd_menu_icon.png");
-  priv->m_supported_action_list << createAction(2, tr("show-dock"),
-                                                "pd_menu_icon.png");
-  priv->m_supported_action_list << createAction(3, tr("hide-dock"),
-                                                "pd_menu_icon.png");
-  priv->m_supported_action_list << createAction(4, tr("show-expose"),
-                                                "pd_menu_icon.png");
-  priv->m_supported_action_list << createAction(5, tr("hide-expose"),
-                                                "pd_menu_icon.png");
+ui_action desktop_panel_controller_impl::task() const {
+  ui_action task;
+  task.set_visible(0);
+  task.set_name("Desktop");
+  task.set_icon("ck_desktop_icon.png");
 
+  return task;
+}
+
+void desktop_panel_controller_impl::init() {
   if (!viewport()) {
     return;
   }
@@ -537,7 +528,7 @@ void desktop_panel_controller_impl::toggle_seamless() {
     return;
   }
 
-  //controller->request_action("Seamless");
+  // controller->request_action("Seamless");
 }
 
 void desktop_panel_controller_impl::prepare_removal() {
@@ -637,18 +628,6 @@ void desktop_panel_controller_impl::add_new_space() {
       _workspace->add_default_space();
     }
   }
-}
-
-QAction *desktop_panel_controller_impl::createAction(int id,
-                                                     const QString &action_name,
-                                                     const QString &icon_name) {
-  QAction *_add_clock_action = new QAction(this);
-  _add_clock_action->setText(action_name);
-  _add_clock_action->setProperty("id", QVariant(id));
-  _add_clock_action->setProperty("icon_name", icon_name);
-  _add_clock_action->setProperty("hidden", 1);
-
-  return _add_clock_action;
 }
 
 void desktop_panel_controller_impl::udpate_desktop_preview() {

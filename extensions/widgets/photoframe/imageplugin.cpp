@@ -27,7 +27,6 @@
 #include <QDropEvent>
 #include <QMimeData>
 #include <QFileInfo>
-#include <QAction>
 
 photo_controller_impl::photo_controller_impl(QObject * /*object*/)
     : mFrameParentitem(0) {}
@@ -38,13 +37,6 @@ photo_controller_impl::~photo_controller_impl() {
 }
 
 void photo_controller_impl::init() {
-  QAction *_add_dir_action = new QAction(this);
-  _add_dir_action->setText(tr("Share"));
-
-  _add_dir_action->setProperty("id", QVariant(1));
-  _add_dir_action->setProperty("icon_name", "pd_flickr_photo_icon.png");
-
-  m_supported_action_list << _add_dir_action;
 }
 
 void photo_controller_impl::revoke_session(const QVariantMap &args) {

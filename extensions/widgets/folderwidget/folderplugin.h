@@ -38,17 +38,11 @@ public:
   void session_data_available(const cherry::sync_object &a_session_root);
   virtual void submit_session_data(cherry::sync_object *a_obj);
 
-  cherry_kit::ActionList actions() const;
-  void request_action(const QString &actionName, const QVariantMap &args);
   void handle_drop_event(cherry_kit::Widget *widget, QDropEvent *event);
   void set_view_rect(const QRectF &rect);
 
   QString icon() const;
 
-private:
-  // cherry_kit::Theme *mThemePack;
-  // QList<cherry_kit::Widget *> mFolderViewList;
-  cherry_kit::ActionList m_supported_action_list;
 };
 
 #endif
