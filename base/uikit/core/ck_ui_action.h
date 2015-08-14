@@ -23,16 +23,19 @@
 #include <string>
 #include <algorithm>
 #include <functional>
+#include <map>
 
 namespace cherry_kit {
 class ui_action;
 typedef std::vector<ui_action> ui_action_list;
-typedef std::function<void (const ui_action *)> ui_task_callback_t;
+typedef std::map<std::string, std::string> ui_task_data_t;
+typedef std::function<void(const ui_action *, const ui_task_data_t &)>
+ui_task_callback_t;
 
 class ui_action {
 public:
   ui_action();
-  ui_action(const ui_action& copy);
+  ui_action(const ui_action &copy);
 
   virtual ~ui_action();
 
@@ -55,8 +58,9 @@ public:
   virtual ui_action_list sub_actions() const;
 
   virtual void set_task(ui_task_callback_t callback);
-
-  virtual void execute() const;
+  virtual void execute(const ui_task_data_t &a_data = ui_task_data_t()) const;
+  virtual void execute(const std::string &a_task_name,
+                       const ui_task_data_t &a_data = ui_task_data_t());
 
 private:
   class PrivateControllerAction;

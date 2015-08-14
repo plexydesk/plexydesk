@@ -48,10 +48,13 @@ void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
       desktop_controller_ref dock_controller =
           current_active_space()->controller("dockwidget");
       if (dock_controller) {
-        QVariantMap menu_argument;
-        menu_argument["menu_pos"] = mapToScene(event->pos());
+        QPointF pos = mapToScene(event->pos());
 
-        dock_controller->task().execute();
+        cherry_kit::ui_task_data_t data;
+        data["x"] = std::to_string(pos.x());
+        data["y"] = std::to_string(pos.y());
+
+        dock_controller->task().execute("menu", data);
       }
     }
   }
