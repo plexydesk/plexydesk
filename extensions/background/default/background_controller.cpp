@@ -149,11 +149,19 @@ void desktop_controller_impl::create_task_group() const {
   bg_task.set_icon("pd_settings_icon.png");
   bg_task.set_visible(true);
   bg_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                          const cherry_kit::ui_task_data_t &a_data) {
-    qDebug() << Q_FUNC_INFO;
+                          const cherry_kit::ui_task_data_t &a_data) {});
+
+  cherry_kit::ui_action seamless_task;
+  seamless_task.set_name("seamless");
+  seamless_task.set_icon("ck_seamless_icon.png");
+  seamless_task.set_id(1);
+  seamless_task.set_task([this](const cherry_kit::ui_action *a_ref,
+                                const cherry_kit::ui_task_data_t &a_data) {
+    expose_platform_desktop();
   });
 
   o_ctr->m_supported_action.add_action(bg_task);
+  o_ctr->m_supported_action.add_action(seamless_task);
 }
 
 cherry_kit::ui_action desktop_controller_impl::task() const {
