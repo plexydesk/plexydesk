@@ -152,20 +152,8 @@ std::string desktop_controller_interface::session_store_name(
   return session_db_name;
 }
 
-ActionList desktop_controller_interface::actions() const {
-  return ActionList();
-}
-
-void
-desktop_controller_interface::request_action(const QString & /*actionName*/,
-                                             const QVariantMap & /*args*/) {}
-
 void desktop_controller_interface::handle_drop_event(widget * /*widget*/,
                                                      QDropEvent * /*event*/) {}
-
-data_source *desktop_controller_interface::dataSource() {
-  return priv->m_data_source.data();
-}
 
 void desktop_controller_interface::set_controller_name(const QString &a_name) {
   priv->m_name = a_name;

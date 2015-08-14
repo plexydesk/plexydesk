@@ -153,8 +153,10 @@ void desktop_dialog::update_action() {
     return;
   }
 
+  /*
   priv->m_controller_ptr->request_action(result()["action"].toString(),
                                          result());
+                                         */
 }
 
 // todo: remove this

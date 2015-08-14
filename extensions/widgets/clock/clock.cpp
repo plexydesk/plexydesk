@@ -80,12 +80,6 @@ QAction *time_controller::createAction(int id, const QString &action_name,
 }
 
 void time_controller::init() {
-  priv->m_supported_action_list
-      << createAction(1, tr("Track"), "pd_alarm_icon.png");
-	/*
-  o_view_controller->m_supported_action_list
-      << createAction(2, tr("Timer"), "pd_timer_icon.png");
-			*/
 }
 
 void time_controller::set_view_rect(const QRectF &rect) {}
@@ -113,12 +107,10 @@ void time_controller::submit_session_data(cherry_kit::sync_object *a_obj) {
 }
 
 bool time_controller::remove_widget(cherry_kit::widget *widget) {
-  disconnect(dataSource(), SIGNAL(sourceUpdated(QVariantMap)));
-  int index = 0;
-
   return 1;
 }
 
+/*
 cherry_kit::ActionList time_controller::actions() const {
   return priv->m_supported_action_list;
 }
@@ -168,6 +160,7 @@ void time_controller::request_action(const QString &actionName,
     return;
   }
 }
+*/
 
 cherry_kit::ui_action time_controller::task() const
 {

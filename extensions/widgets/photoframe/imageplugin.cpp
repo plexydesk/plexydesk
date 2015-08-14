@@ -158,27 +158,6 @@ bool photo_controller_impl::remove_widget(cherry_kit::widget *widget) {
   return 1;
 }
 
-cherry_kit::ActionList photo_controller_impl::actions() const {
-  return m_supported_action_list;
-}
-
-void photo_controller_impl::request_action(const QString &actionName,
-                                          const QVariantMap &args) {
-  if (actionName == tr("Share")) {
-    cherry_kit::window *window = new cherry_kit::window();
-    PhotoWidget *photoWidget = new PhotoWidget();
-
-    window->set_window_content(photoWidget);
-
-    photoWidget->set_controller(this);
-    photoWidget->set_widget_name("Photo");
-    mPhotoList.append(photoWidget);
-    photoWidget->setPhotoURL(QString("ID:%1").arg(mPhotoList.count()));
-
-    insert(window);
-  }
-}
-
 void photo_controller_impl::prepare_removal() {
   foreach(PhotoWidget * _widget, mPhotoList) { this->remove_widget(_widget); }
 }
