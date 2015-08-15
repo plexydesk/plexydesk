@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <functional>
 #include <map>
+#include <vector>
 
 namespace cherry_kit {
 class ui_action;
