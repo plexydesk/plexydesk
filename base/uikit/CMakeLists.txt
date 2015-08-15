@@ -83,7 +83,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
 set(LIBRARY_SOURCE_FILES
     netwm.cpp
     ck_fixed_layout.cpp
-		ck_resource_manager.cpp
+        ck_resource_manager.cpp
     ck_config.cpp
     ck_window.cpp
     ck_workspace.cpp
@@ -152,7 +152,7 @@ set(LIBRARY_SOURCE_FILES
     )
 
 if (NOT WIN32)
-  set (THREAD_LIBRARY pthread) 
+  set (THREAD_LIBRARY pthread)
 endif()
 
 set(LIBRARY_LINK_TARGETS
@@ -201,7 +201,7 @@ target_link_libraries(${PLEXY_UI_CORE_LIBRARY}
     ${LIBRARY_LINK_TARGETS}
     ${LIBRARY_NATIVE_LINK_TARGETS})
 
-	qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Widgets Xml OpenGL  Core)
+    qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Widgets Xml OpenGL  Core)
 
 if(UNIX AND NOT APPLE)
     set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SOVERSION "1.0.0")
@@ -209,7 +209,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 if (APPLE)
-    set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SKIP_BUILD_RPATH 1)
+    set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SKIP_BUILD_RPATH 0)
     install(TARGETS ${PLEXY_UI_CORE_LIBRARY}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
