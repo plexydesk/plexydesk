@@ -20,7 +20,6 @@
 #define DESKTOPACTIVITY_H
 
 #include <QCursor>
-#include <QGraphicsObject>
 
 #include <ck_widget.h>
 #include <ck_window.h>
@@ -59,7 +58,7 @@ public:
   virtual QVariantMap attributes() const;
 
   virtual QString error_message() const;
-  virtual QVariantMap result() const {}
+  virtual QVariantMap result() const { return QVariantMap();}
 
   virtual void exec(const QPointF &a_pos = QCursor::pos());
   virtual void show_activity();

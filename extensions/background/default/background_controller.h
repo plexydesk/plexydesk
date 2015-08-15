@@ -55,7 +55,7 @@ private Q_SLOTS:
 
 protected:
   void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
-  void expose_platform_desktop();
+  void expose_platform_desktop() const;
 
 private:
   void download_image_from_url(QUrl fileUrl);
