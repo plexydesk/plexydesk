@@ -168,7 +168,7 @@ cherry_kit::ui_action desktop_controller_impl::task() const {
   return o_ctr->m_supported_action;
 }
 
-void desktop_controller_impl::expose_platform_desktop() {
+void desktop_controller_impl::expose_platform_desktop() const {
   bool _is_seamless_set = false;
 
   if (o_ctr->m_background_window) {

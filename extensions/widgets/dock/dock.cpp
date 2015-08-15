@@ -399,7 +399,7 @@ void desktop_panel_controller_impl::init() {
   priv->m_preview_window->enable_window_background(false);
 
   // navigation
-  float icon_size = 32.0f;
+  float icon_size = 24.0f;
   priv->m_fixed_panel_layout =
       new cherry_kit::fixed_layout(priv->m_panel_window);
   priv->m_fixed_panel_layout->set_content_margin(3, 5, 5, 5);
@@ -556,7 +556,7 @@ void desktop_panel_controller_impl::switch_to_next_space() {
   }
 }
 
-void desktop_panel_controller_impl::toggle_seamless() {
+void desktop_panel_controller_impl::toggle_seamless() const {
   if (!viewport()) {
     return;
   }
