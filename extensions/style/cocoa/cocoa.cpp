@@ -933,10 +933,16 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
   QRect text_rect = a_rect.toRect();
   text_rect.setX(icon_rect.width() + 5);
 
+  a_ctx->save();
+  a_ctx->setRenderHint(QPainter::Antialiasing, false);
   a_ctx->drawPixmap(icon_rect, a_features.image_data);
-  d->set_default_font_size(a_ctx, 8);
-  a_ctx->drawText(text_rect, a_features.text_data,
+  a_ctx->restore();
+
+  if (!a_features.text_data.isNull()) {
+      d->set_default_font_size(a_ctx, 8);
+      a_ctx->drawText(text_rect, a_features.text_data,
                   Qt::AlignLeft | Qt::AlignVCenter);
+    }
   a_ctx->restore();
 }
 
