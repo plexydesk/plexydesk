@@ -66,7 +66,8 @@ resource_manager::resource_manager(const QString &a_theme_name)
   set_color_scheme("default");
 
   QString theme_prefix = config::instance()->prefix();
-  QString theme_base_path = "/share/plexy/themepack/";
+
+  QString theme_base_path = "Resources/packs";
   QString theme_pack_path = theme_prefix + "/" + theme_base_path;
 
   priv->m_resource_group = QDir::toNativeSeparators(theme_pack_path);
@@ -108,7 +109,7 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
 
   QString iconThemePath =
       QDir::toNativeSeparators(priv->m_resource_group + "/" +
-                               priv->m_resource_name + "/resources/" +
+                               priv->m_resource_name + "/" +
                                a_dpi + "/" + a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
@@ -122,6 +123,7 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
     return rv;
   }
 
+  qDebug() << Q_FUNC_INFO << iconThemePath;
   rv = QPixmap(iconThemePath);
   priv->m_image_cache[iconThemePath] = rv;
 
