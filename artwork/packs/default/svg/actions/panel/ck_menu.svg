@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.0.1 (7597) - http://www.bohemiancoding.com/sketch -->
+    <title>32x32</title>
+    <description>Created with Sketch.</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="32x32" sketch:type="MSArtboardGroup">
+            <g id="Oval-1-copy-2-+-Rectangle-13-+-Rectangle-1-+-Rectangle-2-+-Rectangle-4" sketch:type="MSLayerGroup" transform="translate(1.000000, 1.000000)">
+                <path d="M15,30 C23.2842717,30 30,23.2842717 30,15 C30,6.71572834 23.2842717,0 15,0 C6.71572834,0 0,6.71572834 0,15 C0,23.2842717 6.71572834,30 15,30 Z" id="Oval-1-copy-2" stroke="#FFFFFF" fill="#F54B5C" sketch:type="MSShapeGroup"></path>
+                <g id="Rectangle-1-+-Rectangle-2-+-Rectangle-3" transform="translate(11.000000, 10.000000)" fill="#FFFFFF" sketch:type="MSShapeGroup">
+                    <rect id="Rectangle-1" x="0" y="0" width="8.33333333" height="2"></rect>
+                    <rect id="Rectangle-2" x="0" y="8" width="8.33333333" height="2"></rect>
+                    <rect id="Rectangle-3" x="0" y="4" width="8.33333333" height="2"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
