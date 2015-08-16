@@ -77,7 +77,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   float height_factor = desktop_verticle_scale_factor();
   float width_factor = desktop_horizontal_scale_factor();
 
-#if 0
+#if 1
   qDebug() << Q_FUNC_INFO << "geometry " << geometry();
   qDebug() << Q_FUNC_INFO << " base width " << get_base_width();
   qDebug() << Q_FUNC_INFO << "base height " << get_base_height();
@@ -589,26 +589,22 @@ float workspace::get_base_width() {
   float rv = 1920.0f;
 
   QRectF display_rect(0, 0, geometry().width(), geometry().height());
-
-  float source_ratio = 1920.0f / 1080.0f;
-  float view_aspect_ratio = display_rect.width() / display_rect.height();
+  float view_aspect_ratio = (display_rect.width() / display_rect.height());
 
   rv =  1920.0f / view_aspect_ratio;
 
-  return rv;
+  return 1920.0f;
 }
 
 float workspace::get_base_height() {
   float rv = 1080.0f;
 
-  float source_ratio = 1920.0f / 1080.0f;
   QRectF display_rect(0, 0, geometry().width(), geometry().height());
 
-  float view_aspect_ratio = display_rect.width() / display_rect.height();
+  //float view_aspect_ratio = display_rect.width() / display_rect.height();
+  float scaled_height = (display_rect.height() / display_rect.width()) * 1920.0;
+  //rv = 1080.0f / view_aspect_ratio;
 
-  float scaled_height = display_rect.height() / display_rect.width() * 1920.0;
-  rv = scaled_height / view_aspect_ratio;
-
-  return rv;
+  return scaled_height;
 }
 }
