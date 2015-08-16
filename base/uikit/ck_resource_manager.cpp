@@ -67,6 +67,7 @@ resource_manager::resource_manager(const QString &a_theme_name)
 
   QString theme_prefix = config::instance()->prefix();
 
+
   QString theme_base_path = "Resources/packs";
   QString theme_pack_path = theme_prefix + "/" + theme_base_path;
 
@@ -123,7 +124,6 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
     return rv;
   }
 
-  qDebug() << Q_FUNC_INFO << iconThemePath;
   rv = QPixmap(iconThemePath);
   priv->m_image_cache[iconThemePath] = rv;
 
