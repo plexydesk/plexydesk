@@ -421,26 +421,26 @@ void desktop_panel_controller_impl::init() {
     priv->m_fixed_panel_layout->set_row_height(i, default_height);
   }
 
-  create_dock_action(priv->m_fixed_panel_layout, 0, 0, "pd_up_icon.png",
+  create_dock_action(priv->m_fixed_panel_layout, 0, 0, "panel/ck_up_arrow.png",
                      [&]() { exec_action("Up"); });
 
-  create_dock_action(priv->m_fixed_panel_layout, 1, 0, "pd_space_icon.png",
+  create_dock_action(priv->m_fixed_panel_layout, 1, 0, "panel/ck_space.png",
                      [&]() { exec_action("Expose"); });
 
   create_dock_action(priv->m_fixed_panel_layout, 2, 0,
-                     "pd_note_add_button_green.png",
+                     "panel/ck_add.png",
                      [&]() { exec_action("Add"); });
 
-  create_dock_action(priv->m_fixed_panel_layout, 3, 0, "pd_menu_icon.png",
+  create_dock_action(priv->m_fixed_panel_layout, 3, 0, "panel/ck_menu.png",
                      [&]() { exec_action("Menu"); });
 
-  create_dock_action(priv->m_fixed_panel_layout, 4, 0, "pd_seamless_icon.png",
+  create_dock_action(priv->m_fixed_panel_layout, 4, 0, "panel/ck_expose.png",
                      [&]() { exec_action("Seamless"); });
 
-  create_dock_action(priv->m_fixed_panel_layout, 5, 0, "pd_delete_icon.png",
+  create_dock_action(priv->m_fixed_panel_layout, 5, 0, "panel/ck_trash.png",
                      [&]() { exec_action("Close"); });
 
-  create_dock_action(priv->m_fixed_panel_layout, 6, 0, "pd_down_icon.png",
+  create_dock_action(priv->m_fixed_panel_layout, 6, 0, "panel/ck_down_arrow.png",
                      [&]() { exec_action("Down"); });
 
   // base->setGeometry(m_fixed_panel_layout->ui()->geometry());
