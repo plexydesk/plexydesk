@@ -88,5 +88,24 @@ QString config::cache_dir(const QString &a_folder) {
   return rv;
 }
 
+std::string config::icon_resource_prefix_path()
+{
+  QString prefix_path = prefix();
+  QString rv = prefix_path;
+
+#ifdef Q_OS_MAC
+  rv = prefix_path + "/Resources/icons/";
+#endif
+
+#ifdef Q_OS_LINUX
+  rv = prefix_path + "/share/icons/plexydesk/resources/icons/";
+#endif
+
+#ifdef Q_OS_WIN
+  rv = QDir::toNativeSeparators(prefix_path + "resources/icons/");
+#endif
+  return rv.toStdString();
+}
+
 config::config() : d(new Private) {}
 }

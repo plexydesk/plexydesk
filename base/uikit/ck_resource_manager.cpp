@@ -68,8 +68,9 @@ resource_manager::resource_manager(const QString &a_theme_name)
   QString theme_prefix = config::instance()->prefix();
 
 
-  QString theme_base_path = "Resources/packs";
-  QString theme_pack_path = theme_prefix + "/" + theme_base_path;
+  //QString theme_base_path = "Resources/icons/";
+  //QString theme_pack_path = theme_prefix + "/" + theme_base_path;
+  QString theme_pack_path = config::icon_resource_prefix_path().c_str();
 
   priv->m_resource_group = QDir::toNativeSeparators(theme_pack_path);
   priv->m_resource_name = a_theme_name;
