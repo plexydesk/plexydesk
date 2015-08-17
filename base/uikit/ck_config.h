@@ -30,9 +30,9 @@ public:
   static config *instance();
   virtual ~config();
 
-  QString prefix();
-
+  static QString prefix();
   static QString cache_dir(const QString &a_folder = QString());
+  static std::string icon_resource_prefix_path();
 
 private:
   config();
