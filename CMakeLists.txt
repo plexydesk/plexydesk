@@ -128,12 +128,16 @@ if (APPLE)
     set(MACOSX_BUNDLE_COPYRIGHT "© 2014, Siraj Razick")
     set(MACOSX_BUNDLE_CLASS "NSApplication")
 
-    set(RESOURCES_DEST_DIR plexydesk.app/Contents/share/plexy/themepack/default/resources)
+    set(RESOURCES_DEST_DIR plexydesk.app/Contents/Resources/icons/)
 endif (APPLE)
 
-if (NOT APPLE)
-    set(RESOURCES_DEST_DIR share/plexy/themepack/default/resources)
-endif (NOT APPLE)
+if (NOT APPLE AND UNIX)
+    set(RESOURCES_DEST_DIR share/icons/plexydesk/resources/icons/)
+endif ()
+
+if (WIN32)
+    set(RESOURCES_DEST_DIR resources/icons/)
+endif()
 
 #set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS})
 if (NOT WIN32)
@@ -345,5 +349,4 @@ add_subdirectory(extensions/activity/)
 
 add_subdirectory(extensions/style/cocoa)
 
-add_subdirectory(artwork)
-
+add_subdirectory(artwork/packs/)
