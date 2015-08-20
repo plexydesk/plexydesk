@@ -231,7 +231,7 @@ void space::insert_window_to_view(window *a_window) {
         if (a_win != a_window) {
           a_win->hide();
           a_win->removeFocus();
-          //if window gets deleted we shoudln't proceed further.
+          // if window gets deleted we shoudln't proceed further.
           return;
         }
       }
@@ -470,10 +470,10 @@ void space::PrivateSpace::init_session_registry(space *space) {
 }
 
 space::PrivateSpace::~PrivateSpace() {
-    if (m_surface)
-        free(m_surface);
+  if (m_surface)
+    free(m_surface);
 
-    m_current_controller_list.clear();
+  m_current_controller_list.clear();
 }
 
 QString space::PrivateSpace::session_name_of_space() {
@@ -594,6 +594,36 @@ QPointF space::center(const QRectF &a_view_geometry,
   }
 
   return _rv;
+}
+
+float space::scaled_width(float a_value) {
+  if (!owner_workspace())
+    return a_value;
+
+  float scale_factor = owner_workspace()->desktop_horizontal_scale_factor();
+
+  if (scale_factor < 1.0f) {
+    a_value = a_value / scale_factor;
+  } else {
+    a_value = scale_factor * a_value;
+  }
+
+  return a_value;
+}
+
+float space::scaled_height(float a_value) {
+  if (!owner_workspace())
+    return a_value;
+
+  float scale_factor = owner_workspace()->desktop_verticle_scale_factor();
+
+  if (scale_factor < 1.0f) {
+    a_value = a_value / scale_factor;
+  } else {
+    a_value = scale_factor * a_value;
+  }
+
+  return a_value;
 }
 
 desktop_controller_ref space::controller(const QString &a_name) {

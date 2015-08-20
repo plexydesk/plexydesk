@@ -83,6 +83,9 @@ public:
          const QRectF a_window_geometry = QRectF(),
          const ViewportLocation &a_location = kCenterOnViewport) const;
 
+  float scaled_width(float a_value);
+  float scaled_height(float a_value);
+
   virtual void on_viewport_event_notify(
       std::function<void(ViewportNotificationType, const QVariant &,
                          const space *)> a_notify_handler);
