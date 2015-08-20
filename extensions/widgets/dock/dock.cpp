@@ -395,11 +395,13 @@ void desktop_panel_controller_impl::init() {
     delete aWindow;
   });
 
+  // navigation
   priv->m_preview_window->set_window_type(window::kPopupWindow);
   priv->m_preview_window->enable_window_background(false);
 
-  // navigation
-  float icon_size = 36.0f;
+  // so that the icon size is 36.0f;
+  float icon_size =
+          viewport()->scaled_width(39.0f); ///viewport()->owner_workspace()->desktop_horizontal_scale_factor();
   priv->m_fixed_panel_layout =
       new cherry_kit::fixed_layout(priv->m_panel_window);
   priv->m_fixed_panel_layout->set_content_margin(3, 5, 5, 5);
