@@ -159,7 +159,7 @@ cherry_kit::ui_action time_controller::task() const {
   time_task.set_icon("panel/ck_add.png");
 
   time_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                      const cherry_kit::ui_task_data_t &a_data) {
+                            const cherry_kit::ui_task_data_t &a_data) {
     //
     QPointF window_location;
     if (viewport()) {
@@ -189,7 +189,7 @@ cherry_kit::ui_action time_controller::task() const {
   timer_task.set_icon("panel/ck_add.png");
 
   timer_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                      const cherry_kit::ui_task_data_t &a_data) {
+                             const cherry_kit::ui_task_data_t &a_data) {
     //
     QPointF window_location;
     if (viewport()) {
@@ -210,7 +210,6 @@ cherry_kit::ui_action time_controller::task() const {
       priv->setup_create_timer_ui((time_controller *)a_controller, a_session);
     });
   });
-
 
   task.add_action(time_task);
   task.add_action(timer_task);
@@ -323,7 +322,8 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
 
   cherry_kit::icon_button *ck_start_btn = 0;
-  cherry_kit::dial_view *ck_clock = 0;
+  cherry_kit::dial_view *ck_dial = 0;
+  cherry_kit::label *ck_timer_label = 0;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
   ck_ui->set_geometry(0, 0, 320, 320);
@@ -332,8 +332,8 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
 
   ck_ui->add_segments(0, 1);
   ck_ui->add_segments(1, 1);
-  ck_ui->add_segments(2, 3);
-  ck_ui->add_segments(3, 3);
+  ck_ui->add_segments(2, 1);
+  ck_ui->add_segments(3, 1);
 
   ck_ui->set_row_height(0, "10%");
   ck_ui->set_row_height(1, "70%");
@@ -342,16 +342,13 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
 
   cherry_kit::widget_properties_t ui_data;
 
-  ck_ui->add_widget(1, 0, "dial", ui_data);
+  ck_dial = dynamic_cast<cherry_kit::dial_view *>(
+      ck_ui->add_widget(1, 0, "dial", ui_data));
 
   ui_data["label"] = "00";
-  ck_ui->add_widget(2, 0, "label", ui_data);
-  ck_ui->add_widget(2, 1, "label", ui_data);
-  ck_ui->add_widget(2, 2, "label", ui_data);
+  ck_timer_label = dynamic_cast<cherry_kit::label*> (ck_ui->add_widget(2, 0, "label", ui_data));
 
-  ck_start_btn = add_action_button(ck_ui, 3, 0, "Start", "ck_play");
-  add_action_button(ck_ui, 3, 1, "Pause", "ck_pause");
-  add_action_button(ck_ui, 3, 2, "Stop", "ck_stop");
+  ck_start_btn = add_action_button(ck_ui, 3, 0, "", "ck_play");
 
   ck_window->set_window_content(ck_ui->viewport());
   ck_window->set_window_title("Timer");
@@ -371,8 +368,23 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   }
 
   ck_start_btn->on_input_event([=](cherry_kit::widget::InputEvent a_event,
-                                      const cherry_kit::widget *a_widget) {
+                                   const cherry_kit::widget *a_widget) {
     if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
+        if (ck_dial) {
+            int current_dial_value = ck_dial->current_dial_value();
+            //start timer now!.
+        }
     }
   });
+
+  // dial
+  if (ck_dial) {
+    ck_dial->set_maximum_dial_value(60);
+    ck_dial->on_dialed([=](int a_value) {
+      qDebug() << Q_FUNC_INFO << a_value;
+      if (ck_timer_label) {
+          ck_timer_label->set_text(QString("%1").arg(a_value));
+      }
+    });
+  }
 }
