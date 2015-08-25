@@ -126,8 +126,6 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   ui->add_widget(0, 0, "calendar", ui_data);
 
   add_action_button(ui, 1, 0, "", "ck_person_add");
- // add_action_button(ui, 1, 1, "Events", "ck_event");
- // add_action_button(ui, 1, 2, "Alarms", "ck_alarm");
 
   window->set_window_title("Appointments");
   window->set_window_content(ui->viewport());
