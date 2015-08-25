@@ -58,7 +58,7 @@ protected:
   void discover_actions_from_controller(const QString &name);
 
   void toggle_panel();
-  void udpate_desktop_preview();
+  void update_desktop_preview();
 
   void create_dock_action(cherry_kit::fixed_layout *build, int row, int column,
                           const std::string &icon,

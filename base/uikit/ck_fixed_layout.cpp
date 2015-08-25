@@ -326,7 +326,7 @@ float
 fixed_layout::PrivateViewBuilder::calculate_cell_height(int a_row,
                                                         int a_column) const {
   if (get_value_type(m_row_height_data.at(a_row)) == kAutoValue) {
-    float max_height = 16;
+    float max_height = 32;
 
     for (int i = 0; i < m_row_data.at(a_row); i++) {
       GridPos pos = std::make_pair(a_row, i);
@@ -348,7 +348,7 @@ fixed_layout::PrivateViewBuilder::calculate_cell_height(int a_row,
   }
 
   float rv = 0;
-  float auto_height = 2;
+  float auto_height = 4;
 
   for (int i = 0; i < m_row_count; i++) {
     if (get_value_type(m_row_height_data.at(i)) == kAutoValue) {
