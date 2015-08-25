@@ -213,8 +213,8 @@ void desktop_settings_dialog::insert_image_to_grid(
 
   ck_image_preview->set_image(ck_preview_pixmap);
 
-  int width = 64;
-  int height = 64;
+  int width = 128;
+  int height = 128;
 
   ck_image_preview->set_size(QSizeF(width, height));
 

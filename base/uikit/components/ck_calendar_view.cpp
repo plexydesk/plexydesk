@@ -42,7 +42,7 @@ calendar_view::calendar_view(widget *parent)
 
   o_calendar_widget->m_ui = new fixed_layout(this);
   o_calendar_widget->m_ui->set_content_margin(5, 5, 5, 5);
-  o_calendar_widget->m_ui->set_geometry(0, 0, 160, 200);
+  o_calendar_widget->m_ui->set_geometry(0, 0, 300, 300);
 
   o_calendar_widget->m_ui->add_rows(10);
 
@@ -65,14 +65,14 @@ calendar_view::calendar_view(widget *parent)
   widget_properties_t ui_data;
 
   ui_data["label"] = "";
-  ui_data["icon"] = "actions/pd_previous.png";
+  ui_data["icon"] = "toolbar/ck_previous.png";
   o_calendar_widget->m_ui->add_widget(0, 0, "image_button", ui_data);
 
   ui_data["label"] = "Year";
   o_calendar_widget->m_ui->add_widget(0, 1, "label", ui_data);
 
   ui_data["label"] = "";
-  ui_data["icon"] = "actions/pd_next.png";
+  ui_data["icon"] = "toolbar/ck_next.png";
   o_calendar_widget->m_ui->add_widget(0, 2, "image_button", ui_data);
 
   char day_name_table[7][4] = {

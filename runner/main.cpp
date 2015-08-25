@@ -48,6 +48,7 @@
 #endif
 
 #include "desktopmanager.h"
+#include <ck_screen.h>
 
 #ifdef Q_OS_WIN
 // Windows
@@ -129,7 +130,7 @@ static CHAR *          //   return error message
 class Runtime {
 public:
   Runtime(const char *a_platform_name = 0) {
-    for (int i = 0; i < qApp->desktop()->screenCount(); i++) {
+    for (int i = 0; i < cherry_kit::screen::screen_count() ; i++) {
       DesktopManager *workspace = new DesktopManager();
 
       workspace->move_to_screen(i);
