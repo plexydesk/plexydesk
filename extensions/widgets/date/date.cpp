@@ -32,12 +32,10 @@ class date_controller::PrivateDate {
 public:
   PrivateDate() {}
   ~PrivateDate() {}
-
 };
 
 date_controller::date_controller(QObject *object)
-    : cherry_kit::desktop_controller_interface(object),
-      priv(new PrivateDate) {}
+    : cherry_kit::desktop_controller_interface(object), priv(new PrivateDate) {}
 
 date_controller::~date_controller() { delete priv; }
 
@@ -62,22 +60,26 @@ bool date_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
 
-/*
-cherry_kit::ActionList date_controller::actions() const {
-  return priv->m_supported_action_list;
-}
+cherry_kit::ui_action date_controller::task() const {
+  cherry_kit::ui_action task;
+  task.set_name("Organize");
+  task.set_visible(1);
+  task.set_controller(controller_name().toStdString());
+  task.set_icon("panel/ck_add.png");
 
-void date_controller::request_action(const QString &a_name,
-                                     const QVariantMap &a_args) {
-  QPointF window_location;
+  cherry_kit::ui_action cal_task;
+  cal_task.set_name("Calendar");
+  cal_task.set_visible(1);
+  cal_task.set_icon("panel/ck_add.png");
+  cal_task.set_controller(controller_name().toStdString());
+  cal_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
+                           const cherry_kit::ui_task_data_t &a_data) {
+    QPointF window_location;
+    if (viewport()) {
+      window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+    }
+    QVariantMap session_args;
 
-  if (viewport()) {
-    window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
-  }
-
-  QVariantMap session_args;
-
-  if (a_name == tr("Meet")) {
     session_args["x"] = window_location.x();
     session_args["y"] = window_location.y();
     session_args["calendar_id"] = session_count();
@@ -89,19 +91,11 @@ void date_controller::request_action(const QString &a_name,
                          cherry_kit::session_sync *a_session) {
       create_ui_calendar_ui(a_session);
     });
-  }
-}
-*/
+  });
 
-cherry_kit::ui_action date_controller::task() const
-{
-    cherry_kit::ui_action task;
-    task.set_name("Organize");
-    task.set_visible(1);
-    task.set_controller(controller_name().toStdString());
-    task.set_icon("pd_calendar_icon.png");
+  task.add_action(cal_task);
 
-    return task;
+  return task;
 }
 
 void date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
@@ -109,7 +103,7 @@ void date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
                                         const std::string &a_icon) {
   cherry_kit::widget_properties_t ui_data;
   ui_data["label"] = a_label;
-  ui_data["icon"] = "actions/" + a_icon + ".png";
+  ui_data["icon"] = "toolbar/" + a_icon + ".png";
   ui->add_widget(a_row, a_col, "image_button", ui_data);
 }
 
@@ -119,10 +113,10 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   cherry_kit::fixed_layout *ui = new cherry_kit::fixed_layout(window);
 
   ui->set_content_margin(5, 5, 5, 5);
-  ui->set_geometry(0, 0, 180, 180);
+  ui->set_geometry(0, 0, 320, 320);
   ui->add_rows(2);
   ui->add_segments(0, 1);
-  ui->add_segments(1, 3);
+  ui->add_segments(1, 1);
   ui->set_row_height(0, "90%");
   ui->set_row_height(1, "10%");
 
@@ -131,11 +125,11 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
 
   ui->add_widget(0, 0, "calendar", ui_data);
 
-  add_action_button(ui, 1, 0, "Meet", "pd_zoom_in");
-  add_action_button(ui, 1, 1, "Date", "pd_zoom_out");
-  add_action_button(ui, 1, 2, "Time", "pd_view_list");
+  add_action_button(ui, 1, 0, "", "ck_person_add");
+ // add_action_button(ui, 1, 1, "Events", "ck_event");
+ // add_action_button(ui, 1, 2, "Alarms", "ck_alarm");
 
-  window->set_window_title("People");
+  window->set_window_title("Appointments");
   window->set_window_content(ui->viewport());
 
   a_session->bind_to_window(window);

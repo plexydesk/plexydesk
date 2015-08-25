@@ -140,21 +140,47 @@ void desktop_controller_impl::submit_session_data(
 
 void desktop_controller_impl::create_task_group() const {
   o_ctr->m_supported_action.set_name("Configure");
-  o_ctr->m_supported_action.set_icon("pd_settings_icon.png");
+  o_ctr->m_supported_action.set_icon("panel/ck_add.png");
   o_ctr->m_supported_action.set_visible(1);
   o_ctr->m_supported_action.set_controller(controller_name().toStdString());
 
   cherry_kit::ui_action bg_task;
   bg_task.set_name("Background");
-  bg_task.set_icon("pd_settings_icon.png");
+  bg_task.set_icon("panel/ck_add.png");
   bg_task.set_visible(true);
-  bg_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                          const cherry_kit::ui_task_data_t &a_data) {});
+  bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
+                          const cherry_kit::ui_task_data_t &a_data) {
+    if (!viewport())
+      return;
+
+    QRectF dialog_window_geometry(0, 0, 672, 660);
+    QPointF qt_activity_window_location = viewport()->center(
+        dialog_window_geometry,
+        QRectF(o_ctr->m_background_window->x(), o_ctr->m_background_window->y(),
+               o_ctr->m_background_window->geometry().width(),
+               o_ctr->m_background_window->geometry().height()),
+        cherry_kit::space::kCenterOnWindow);
+
+    cherry_kit::desktop_dialog_ref ck_activity =
+        viewport()->open_desktop_dialog("desktop_settings_dialog", "Desktop",
+                                        qt_activity_window_location,
+                                        dialog_window_geometry, QVariantMap());
+
+    ck_activity->on_notify([&](const std::string &key,
+                               const std::string &value) {
+      if (key.compare("url") == 0) {
+        o_ctr->m_background_window->set_background(value);
+        o_ctr->m_background_texture = "file://" + value;
+        viewport()->update_session_value(controller_name(), "", "");
+      }
+    });
+  });
 
   cherry_kit::ui_action seamless_task;
-  seamless_task.set_name("seamless");
-  seamless_task.set_icon("ck_seamless_icon.png");
+  seamless_task.set_name("Seamless");
+  seamless_task.set_icon("panel/ck_seamless.png");
   seamless_task.set_id(1);
+  seamless_task.set_visible(1);
   seamless_task.set_task([this](const cherry_kit::ui_action *a_ref,
                                 const cherry_kit::ui_task_data_t &a_data) {
     expose_platform_desktop();
@@ -284,7 +310,8 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
       if (o_ctr->m_background_window) {
         o_ctr->m_background_window->set_background(
             qt_dropped_file_name_string.toStdString());
-        o_ctr->m_background_texture = qt_dropped_file_name_string.toStdString();
+        o_ctr->m_background_texture =
+                "file://" + qt_dropped_file_name_string.toStdString();
         sync_session_data("background", qt_dropped_file_name_string);
       }
     }
