@@ -125,6 +125,9 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
   int l_item_per_row =
       (d->m_viewport_geometry.width()) / a_widget_ptr->minimumWidth();
 
+  if (l_item_per_row <= 0)
+      l_item_per_row = 1;
+
   d->m_grid_layout->addItem(a_widget_ptr,
                             d->m_grid_layout->count() / (l_item_per_row),
                             d->m_grid_layout->count() % (l_item_per_row));
@@ -132,6 +135,8 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
   d->m_grid_layout->activate();
   d->m_grid_layout->updateGeometry();
   d->m_scroll_frame->setGeometry(d->m_grid_layout->geometry());
+
+  qDebug() << Q_FUNC_INFO << d->m_grid_layout->geometry();
 
   d->m_verticle_scrollbar->set_maximum_value(
       d->m_grid_layout->geometry().height());
@@ -267,7 +272,7 @@ void item_view::set_view_geometry(const QRectF &a_rect) {
   // if (d->m_model_view_type == kGridModel)
 
   d->m_scroll_frame->setGeometry(a_rect);
-  d->m_verticle_scrollbar->set_size(QSizeF(8, a_rect.height()));
+  d->m_verticle_scrollbar->set_size(QSizeF(16, a_rect.height()));
 
   int page_step = a_rect.height();
 
@@ -300,7 +305,7 @@ void item_view::check_needs_scrolling() {
 }
 
 void item_view::adjust_scrollbar(const QRectF &a_rect) {
-  QPointF scrollbar_pos = QPointF(a_rect.width() - 8, a_rect.y());
+  QPointF scrollbar_pos = QPointF(a_rect.width() - 16, a_rect.y());
   d->m_verticle_scrollbar->setPos(scrollbar_pos);
 }
 

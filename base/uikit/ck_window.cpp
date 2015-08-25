@@ -80,7 +80,7 @@ window::window(widget *parent) : widget(parent), priv(new PrivateWindow) {
   priv->m_window_type = kApplicationWindow;
 
   priv->m_window_close_button = new window_button(this);
-  priv->m_window_close_button->setPos(2, 2);
+  priv->m_window_close_button->setPos(8, 8);
   priv->m_window_close_button->show();
   // todo:
   // set the correct z-order
@@ -108,12 +108,10 @@ float window::window_title_height() {
         .toFloat();
   }
 
-  return 32;
+  return 64;
 }
 
-void window::removeFocus() {
-    invoke_window_visibility_action(0);
-}
+void window::removeFocus() { invoke_window_visibility_action(0); }
 
 void window::set_window_content(widget *a_widget_ptr) {
   if (priv->m_window_content) {
@@ -126,10 +124,12 @@ void window::set_window_content(widget *a_widget_ptr) {
   float window_bordr_height = window_title_height();
 
   QRectF content_geometry(a_widget_ptr->boundingRect());
-  content_geometry.setHeight(content_geometry.height() + window_bordr_height);
+  content_geometry.setHeight(content_geometry.height() + window_title_height());
+  content_geometry.setWidth(content_geometry.width() + 16);
 
   if (priv->m_window_type == kApplicationWindow) {
-    priv->m_window_content->setPos(0.0, window_bordr_height);
+    priv->m_window_content->setPos(8.0, window_bordr_height + 4);
+    content_geometry.setHeight(content_geometry.height() + 8);
     setGeometry(content_geometry);
   } else if (priv->m_window_type == kNotificationWindow) {
     priv->m_window_content->setPos(0.0, window_bordr_height);
@@ -141,10 +141,16 @@ void window::set_window_content(widget *a_widget_ptr) {
     priv->m_window_content->setPos(0, 0);
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
+  } else if (priv->m_window_type == kPopupWindow) {
+    priv->m_window_close_button->hide();
+    setGeometry(content_geometry);
+    priv->m_window_content->setPos(0,
+                                   window_bordr_height);
   } else {
     priv->m_window_close_button->hide();
     setGeometry(content_geometry);
-    priv->m_window_content->setPos(0, window_bordr_height);
+    priv->m_window_content->setPos(0,
+                                   window_bordr_height + window_title_height());
   }
 
   if (priv->m_window_type != kFramelessWindow) {

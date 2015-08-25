@@ -11,6 +11,7 @@
 #include <QGLWidget>
 #include <ck_data_sync.h>
 
+#include <ck_screen.h>
 #include <ck_disk_engine.h>
 #include <ck_icon_button.h>
 #include <ck_sync_object.h>
@@ -70,7 +71,14 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   priv->m_current_activty_space_id = 0;
   priv->m_workspace_left_margine = 0;
 
-  set_workspace_geometry(priv->m_screen_id);
+  setAcceptDrops(true);
+}
+
+workspace::~workspace() { delete priv; }
+
+void workspace::move_to_screen(int a_screen_id) {
+  priv->m_screen_id = a_screen_id;
+  set_workspace_geometry(a_screen_id);
 
   priv->m_render_box = QRectF(0, 0, get_base_width(), get_base_height());
 
@@ -88,15 +96,6 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 #endif
 
   scale(width_factor, height_factor);
-
-  setAcceptDrops(true);
-}
-
-workspace::~workspace() { delete priv; }
-
-void workspace::move_to_screen(int a_screen_id) {
-  priv->m_screen_id = a_screen_id;
-  set_workspace_geometry(a_screen_id);
 }
 
 void workspace::add_default_controller(const std::string &a_controller_name) {
@@ -588,22 +587,12 @@ void workspace::restore_session() {
 float workspace::get_base_width() {
   float rv = 1920.0f;
 
-  QRectF display_rect(0, 0, geometry().width(), geometry().height());
-  float view_aspect_ratio = (display_rect.width() / display_rect.height());
-
-  rv =  1920.0f / view_aspect_ratio;
-
   return 1920.0f;
 }
 
 float workspace::get_base_height() {
-  float rv = 1080.0f;
-
   QRectF display_rect(0, 0, geometry().width(), geometry().height());
-
-  //float view_aspect_ratio = display_rect.width() / display_rect.height();
   float scaled_height = (display_rect.height() / display_rect.width()) * 1920.0;
-  //rv = 1080.0f / view_aspect_ratio;
 
   return scaled_height;
 }
