@@ -1,7 +1,7 @@
 #include "ck_timer.h"
 
-timer::timer()
-{
+namespace cherry_kit {
+timer::timer() {}
 
+timer::~timer() {}
 }
-

@@ -1,11 +1,11 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef CK_TIMER_H
+#define CK_TIMER_H
 
-
-class timer
-{
+namespace cherry_kit {
+class timer {
 public:
-    timer();
+  timer();
+  virtual ~timer();
 };
-
-#endif // TIMER_H
+}
+#endif // CK_hTIMER_H
