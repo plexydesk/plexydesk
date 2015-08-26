@@ -297,7 +297,7 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   sub_menu->raise();
 }
 
-ui_action desktop_panel_controller_impl::task() const {
+ui_action desktop_panel_controller_impl::task() {
   ui_action task;
   task.set_visible(0);
   task.set_name("Desktop");

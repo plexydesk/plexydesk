@@ -41,7 +41,7 @@ public:
 
   bool remove_widget(cherry_kit::widget *widget);
 
-  cherry_kit::ui_action task() const;
+  cherry_kit::ui_action task();
 
 public Q_SLOTS:
   void onDataUpdated(const QVariantMap &data);

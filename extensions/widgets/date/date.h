@@ -36,7 +36,7 @@ public:
 
   bool remove_widget(cherry_kit::widget *a_widget_ptr);
 
-  cherry_kit::ui_action task() const;
+  cherry_kit::ui_action task();
 
   void add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
                          const std::string &a_label, const std::string &a_icon);
