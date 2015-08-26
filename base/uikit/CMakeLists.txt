@@ -32,6 +32,7 @@ endif(UNIX AND NOT APPLE)
 
 #stage 1 : move core files
 set(CORE_LIB_CXX_FILES
+    core/ck_timer.cpp
     core/ck_screen.cpp
     core/ck_widget.cpp
     core/ck_ui_action.cpp
@@ -49,6 +50,7 @@ set(CORE_LIBRARY_INTERFACE_FILES
     core/ck_style_interface.h)
 
 set(CORE_LIBRARY_HEADER_FILES
+    core/ck_timer.h
     core/ck_style.h
     core/ck_screen.h
     core/ck_widget.h
