@@ -46,7 +46,7 @@ public:
 
   void set_view_rect(const QRectF &rect);
 
-  cherry_kit::ui_action task() const;
+  cherry_kit::ui_action task();
 
 protected:
 

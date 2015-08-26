@@ -119,7 +119,7 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
 }
 */
 
-cherry_kit::ui_action desktop_task_controller_impl::task() const {
+cherry_kit::ui_action desktop_task_controller_impl::task() {
     cherry_kit::ui_action task;
     task.set_name("Do");
     task.set_visible(1);

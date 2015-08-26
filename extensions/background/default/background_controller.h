@@ -42,7 +42,7 @@ public:
   void session_data_ready(const cherry_kit::sync_object &a_session_root);
   void submit_session_data(cherry_kit::sync_object *a_object);
 
-  cherry_kit::ui_action task() const;
+  cherry_kit::ui_action task();
 
   void set_view_rect(const QRectF &rect);
 
