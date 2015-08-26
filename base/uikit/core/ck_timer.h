@@ -4,8 +4,11 @@
 namespace cherry_kit {
 class timer {
 public:
-  timer();
+  timer(int a_duration);
   virtual ~timer();
+private:
+  class private_timer;
+  private_timer * const priv;
 };
 }
-#endif // CK_hTIMER_H
+#endif // CK_TIMER_H
