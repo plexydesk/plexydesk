@@ -60,7 +60,7 @@ bool date_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
   return false;
 }
 
-cherry_kit::ui_action date_controller::task() const {
+cherry_kit::ui_action date_controller::task() {
   cherry_kit::ui_action task;
   task.set_name("Organize");
   task.set_visible(1);

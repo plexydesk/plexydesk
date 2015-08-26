@@ -33,7 +33,7 @@ public:
   virtual space *viewport() const;
 
 
-  virtual ui_action task() const {
+  virtual ui_action task() {
       return ui_action();
   }
 
@@ -49,7 +49,7 @@ protected:
                           std::function<void(desktop_controller_interface *,
                                              session_sync *)> a_callback);
   virtual void write_session_data(const std::string &a_session_name);
-  virtual int session_count();
+  virtual int session_count() const;
 
   virtual void session_data_ready(const cherry_kit::sync_object &a_root) = 0;
   virtual void submit_session_data(cherry_kit::sync_object *a_root_obj) = 0;

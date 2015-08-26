@@ -190,7 +190,7 @@ void desktop_controller_impl::create_task_group() const {
   o_ctr->m_supported_action.add_action(seamless_task);
 }
 
-cherry_kit::ui_action desktop_controller_impl::task() const {
+cherry_kit::ui_action desktop_controller_impl::task() {
   return o_ctr->m_supported_action;
 }
 

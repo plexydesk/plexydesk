@@ -47,7 +47,7 @@ public:
                               const QVariantMap &args);
                               */
 
-  cherry_kit::ui_action task() const;
+  cherry_kit::ui_action task();
 
   virtual void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
 

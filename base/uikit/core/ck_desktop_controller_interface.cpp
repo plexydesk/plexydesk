@@ -102,7 +102,7 @@ void desktop_controller_interface::write_session_data(
   });
 }
 
-int desktop_controller_interface::session_count() {
+int desktop_controller_interface::session_count() const {
   return priv->m_session_list.size();
 }
 
