@@ -25,12 +25,14 @@
 #include <QtGui>
 #include <QIcon>
 #include <QDesktopWidget>
+#include <thread>
 
 // plexydesk
 
 #include "mock_desk_runtime.h"
 
 #include "desktopmanager.h"
+#include <ck_timer.h>
 
 #ifdef Q_OS_WIN
 // Windows
@@ -111,17 +113,14 @@ static CHAR *          //   return error message
 
 static void start_test_runtime() {}
 
-
 cherry_kit::ui_action get_action() {
-    cherry_kit::ui_action action;
-    action.set_name("test_task");
+  cherry_kit::ui_action action;
+  action.set_name("test_task");
 
-    return action;
+  return action;
 }
 
-cherry_kit::ui_action load_action() {
-    return get_action();
-}
+cherry_kit::ui_action load_action() { return get_action(); }
 
 void init_plugin_loader() {
   cherry_kit::extension_manager *loader = 0;
@@ -138,18 +137,28 @@ int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
 
   //init_plugin_loader();
-  //Runtime runtime;
-  //QTimer::singleShot(100, &runtime, SLOT(init()));
-  //QTimer::singleShot(2000, &runtime, SLOT(run_remove_space_test()));
-  //QTimer::singleShot(5000, &runtime, SLOT(end()));
 
-  qDebug() << Q_FUNC_INFO;
+  cherry_kit::timer timer(1000);
+  timer.on_timeout([&]() {
+      qDebug() << Q_FUNC_INFO << "Timeout";
+  });
+  timer.start();
 
-  cherry_kit::ui_action copy = load_action();
-  cherry_kit::ui_action_list list = copy.sub_actions();
-  qDebug() << Q_FUNC_INFO << copy.name().c_str();
-  qDebug() << Q_FUNC_INFO << list.size();
+  Runtime *runtime = new Runtime;
+
+  cherry_kit::timer::start_once(1000, [=]() {
+   runtime->moveToThread(QApplication::instance()->thread());
+   runtime->init();
+  });
+
+  cherry_kit::timer::start_once(2000, [=]() {
+      runtime->run_remove_space_test();
+  });
+
+  cherry_kit::timer::start_once(5000, [=]() {
+      runtime->end();
+      delete runtime;
+  });
 
   return app.exec();
 }
-
