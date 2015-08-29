@@ -347,15 +347,18 @@ void CocoaStyle::draw_clock_hands(
                           rect.width() - (_adjustment * 2),
                           rect.height() - (_adjustment * 2));
 
+
+  a_ctx->save();
   QTransform _xform_hour = a_ctx->transform();
   QPointF _transPos = _clock_hour_rect.center();
   _xform_hour.translate(_transPos.x(), _transPos.y());
-  _xform_hour.rotate(45 + angle);
+  _xform_hour.rotate(90 + 45 + angle);
   _xform_hour.translate(-_transPos.x(), -_transPos.y());
   a_ctx->setTransform(_xform_hour);
 
   d->set_pen_color(a_ctx, a_clock_hand_color, a_thikness);
   a_ctx->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
+  a_ctx->restore();
 }
 
 void CocoaStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
@@ -536,6 +539,12 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
 
   a_ctx->restore();
   /* Draw Hour Hand */
+  /*
+  qDebug() << Q_FUNC_INFO << "Hour : " << hour_value
+           << " : " << minutes_value
+           << " : " << second_value;
+  */
+
   draw_clock_hands(a_ctx, features.geometry, 3, hour_value,
                    resource_manager::kSecondryTextColor, 3 * scale_factor());
   draw_clock_hands(a_ctx, rect, 4, minutes_value,
