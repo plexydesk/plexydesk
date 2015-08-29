@@ -21,6 +21,7 @@
 #include "ck_clock_view.h"
 
 #include <QDebug>
+#include <QApplication>
 
 // uikit
 #include <ck_desktop_controller_interface.h>
@@ -30,6 +31,7 @@
 #include <ck_dial_view.h>
 #include <ck_ToolBar.h>
 #include <ck_space.h>
+#include <ck_resource_manager.h>
 
 // datakit
 #include <ck_window.h>
@@ -41,6 +43,10 @@
 #include <ck_icon_button.h>
 #include <ck_label.h>
 #include <ck_fixed_layout.h>
+#include <ck_timer.h>
+
+// c++
+#include <chrono>
 
 class time_controller::PrivateClockController {
 public:
@@ -55,6 +61,8 @@ public:
                                              const std::string &a_icon);
   void setup_create_timer_ui(time_controller *a_controller,
                              cherry_kit::session_sync *a_session);
+
+  cherry_kit::timer *m_timer;
 };
 
 time_controller::time_controller(QObject *parent)
@@ -325,6 +333,10 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   cherry_kit::dial_view *ck_dial = 0;
   cherry_kit::label *ck_timer_label = 0;
 
+  cherry_kit::timer *timer = new cherry_kit::timer(1000);
+  int timeout_value = 0;
+  std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
+
   ck_ui->set_content_margin(10, 10, 10, 10);
   ck_ui->set_geometry(0, 0, 320, 320);
 
@@ -346,7 +358,8 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
       ck_ui->add_widget(1, 0, "dial", ui_data));
 
   ui_data["label"] = "00";
-  ck_timer_label = dynamic_cast<cherry_kit::label*> (ck_ui->add_widget(2, 0, "label", ui_data));
+  ck_timer_label = dynamic_cast<cherry_kit::label *>(
+      ck_ui->add_widget(2, 0, "label", ui_data));
 
   ck_start_btn = add_action_button(ck_ui, 3, 0, "", "ck_play");
 
@@ -356,6 +369,9 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   a_session->bind_to_window(ck_window);
   ck_window->on_window_discarded([=](cherry_kit::window *aWindow) {
     a_session->unbind_window(ck_window);
+    if (timer->is_active())
+        timer->stop();
+    delete timer;
     delete aWindow;
   });
 
@@ -367,13 +383,51 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
     ck_window->setPos(window_location);
   }
 
+  timer->on_timeout([=]() {
+    if (!ck_start_btn || !ck_dial || !ck_timer_label || !timer)
+      return;
+
+    int dial_value_in_seconds = ck_dial->current_dial_value() * 60;
+
+    if (timer->elapsed_seconds() >= dial_value_in_seconds) {
+      timer->stop();
+      ck_window->set_window_title("Complete");
+      QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+          "toolbar/ck_play.png", "mdpi");
+      ck_start_btn->set_pixmap(pixmap);
+
+      return;
+    }
+
+    QString time_as_string =
+        QString("%2 : %1")
+            .arg((dial_value_in_seconds - timer->elapsed_seconds()) % 60)
+            .arg(ck_dial->current_dial_value() -
+                 (timer->elapsed_minutes() + 1));
+
+    ck_window->set_window_title(time_as_string);
+  });
+
   ck_start_btn->on_input_event([=](cherry_kit::widget::InputEvent a_event,
                                    const cherry_kit::widget *a_widget) {
     if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
+      if (!timer->is_active()) {
         if (ck_dial) {
-            int current_dial_value = ck_dial->current_dial_value();
-            //start timer now!.
+          timer->start();
         }
+        if (ck_start_btn) {
+          QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+              "toolbar/ck_stop.png", "mdpi");
+          ck_start_btn->set_pixmap(pixmap);
+        }
+      } else {
+        timer->stop();
+        if (ck_start_btn) {
+          QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+              "toolbar/ck_play.png", "mdpi");
+          ck_start_btn->set_pixmap(pixmap);
+        }
+      }
     }
   });
 
@@ -383,7 +437,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
     ck_dial->on_dialed([=](int a_value) {
       qDebug() << Q_FUNC_INFO << a_value;
       if (ck_timer_label) {
-          ck_timer_label->set_text(QString("%1").arg(a_value));
+        ck_timer_label->set_text(QString("%1").arg(a_value));
       }
     });
   }
