@@ -646,6 +646,19 @@ void space::set_id(int a_id) { o_space->m_id = a_id; }
 
 int space::id() const { return o_space->m_id; }
 
+void space::reset_focus() {
+    std::for_each(std::begin(o_space->m_window_list),
+                  std::end(o_space->m_window_list), [&](window *a_win) {
+      if (!a_win)
+        return;
+
+      if (a_win->window_type() == window::kPopupWindow) {
+        a_win->hide();
+        a_win->removeFocus();
+      }
+    });
+}
+
 void space::setGeometry(const QRectF &a_geometry) {
   o_space->m_geometry = a_geometry;
 

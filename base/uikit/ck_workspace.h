@@ -75,6 +75,7 @@ protected:
   virtual void dragMoveEvent(QDragMoveEvent *a_event_ptr);
   virtual void dropEvent(QDropEvent *a_event_ptr);
   virtual void wheelEvent(QWheelEvent *a_event_ptr);
+  virtual void focusOutEvent(QFocusEvent *a_event_ref);
 
 private:
   class PrivateWorkSpace;
