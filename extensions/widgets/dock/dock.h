@@ -76,12 +76,6 @@ protected:
 private:
   class PrivateDock;
   PrivateDock *const priv;
-
-  cherry_kit::desktop_dialog_ref createActivity(const QString &controller_name,
-                                                const QString &activity,
-                                                const QString &title,
-                                                const QPoint &pos,
-                                                const QVariantMap &dataItem);
 };
 
 #endif
