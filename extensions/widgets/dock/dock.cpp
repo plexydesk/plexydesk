@@ -441,21 +441,6 @@ void desktop_panel_controller_impl::set_view_rect(const QRectF &rect) {
   }
 }
 
-desktop_dialog_ref desktop_panel_controller_impl::createActivity(
-    const QString &controllerName, const QString &activity,
-    const QString &title, const QPoint &pos, const QVariantMap &dataItem) {
-  QPoint _activity_location = pos;
-
-  cherry_kit::desktop_dialog_ref _intent = viewport()->open_desktop_dialog(
-      activity, title, _activity_location,
-      QRectF(0, _activity_location.y(), (64 * 3) - 10, 240), dataItem);
-  _intent->set_controller(cherry_kit::desktop_controller_ref(this));
-  _intent->set_activity_attribute("data", QVariant(dataItem));
-  _intent->set_activity_attribute("auto_scale", QVariant(1));
-
-  return _intent;
-}
-
 void desktop_panel_controller_impl::switch_to_next_space() {
   if (this->viewport() && this->viewport()->owner_workspace()) {
     cherry_kit::workspace *_workspace =
