@@ -66,8 +66,6 @@ void button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   update();
 
   priv->invoke_click_actions();
-
-  widget::mouseReleaseEvent(a_event_ptr);
 }
 
 void button::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
