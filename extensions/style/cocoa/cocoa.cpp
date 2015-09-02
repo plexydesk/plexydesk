@@ -60,7 +60,7 @@ public:
   QColor color(resource_manager::ColorName a_name);
   void set_pen_color(QPainter *painter, resource_manager::ColorName a_name,
                      int a_thikness = 0);
-  void set_default_font_size(QPainter *painter, int a_size = 13,
+  void set_default_font_size(QPainter *painter, int a_size = 8,
                              bool a_highlight = false);
 
   QHash<QString, int> m_type_map;
@@ -224,13 +224,13 @@ void CocoaStyle::draw_push_button(const style_data &features,
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kDarkPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter, 13, true);
+    d->set_default_font_size(painter, 8, true);
     painter->drawPath(button_background_path);
   } else {
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kDarkPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter);
+    d->set_default_font_size(painter, 8);
     painter->drawPath(button_background_path);
   }
 
@@ -318,7 +318,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
     // draw frame text;
     a_ctx->save();
 
-    d->set_default_font_size(a_ctx, 12, true);
+    d->set_default_font_size(a_ctx, 13.0, true);
     d->set_pen_color(a_ctx, resource_manager::kTextColor);
     a_ctx->drawText(window_title_rect, features.text_data,
                     QTextOption(Qt::AlignCenter));
@@ -701,7 +701,7 @@ void CocoaStyle::draw_line_edit(const style_data &features, QPainter *painter) {
   painter->fillPath(background_path,
                     d->color(resource_manager::kLightPrimaryColor));
 
-  d->set_default_font_size(painter, 13);
+  d->set_default_font_size(painter, 8);
 
   if (features.render_state == style_data::kRenderRaised) {
     d->set_pen_color(painter, resource_manager::kDividerColor);
