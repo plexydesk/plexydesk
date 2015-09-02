@@ -135,7 +135,7 @@ void window::set_window_content(widget *a_widget_ptr) {
   } else if (priv->m_window_type == kPanelWindow) {
     priv->m_window_close_button->hide();
     setGeometry(priv->m_window_content->geometry());
-    priv->m_window_content->setPos(0, 0);
+    priv->m_window_content->setPos(0, 4);
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
   } else if (priv->m_window_type == kPopupWindow) {
