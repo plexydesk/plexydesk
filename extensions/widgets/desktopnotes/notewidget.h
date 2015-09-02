@@ -42,6 +42,8 @@ public:
   void on_text_data_changed(std::function<void(const QString &)> a_callback);
   void on_note_config_changed(
       std::function<void(const QString &, const QString &)> a_callback);
+  void on_note_deleted(std::function<void()> a_callback);
+
 Q_SIGNALS:
   void clicked(NoteWidget *item);
 
