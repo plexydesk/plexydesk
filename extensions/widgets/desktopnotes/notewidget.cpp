@@ -11,6 +11,7 @@
 #include <ck_config.h>
 #include <ck_button.h>
 #include <ck_image_view.h>
+#include <ck_icon_button.h>
 #include <ck_text_editor.h>
 #include <ck_disk_engine.h>
 #include <ck_sync_object.h>
@@ -126,24 +127,23 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   cherry_kit::widget_properties_t button_props;
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_delete.png";
+  button_props["icon"] = "toolbar/ck_red_selection.png";
   d->m_ui->add_widget(1, 0, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_paste.png";
+  button_props["icon"] = "toolbar/ck_blue_selection.png";
   d->m_ui->add_widget(1, 1, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_copy.png";
+  button_props["icon"] = "toolbar/ck_yellow_selection.png";
   d->m_ui->add_widget(1, 2, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_share.png";
+  button_props["icon"] = "toolbar/ck_green_selection.png";
   d->m_ui->add_widget(1, 3, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_clear.png";
-  d->m_ui->add_widget(1, 4, "image_button", button_props);
+  button_props["icon"] = "toolbar/ck_delete.png";
   cherry_kit::icon_button *delete_btn = dynamic_cast<cherry_kit::icon_button*>
       (d->m_ui->add_widget(1, 4, "image_button", button_props));
   if (delete_btn) {
