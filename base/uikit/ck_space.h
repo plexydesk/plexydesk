@@ -92,6 +92,8 @@ public:
   virtual void on_activity_finished(const desktop_dialog *a_activity);
 
   virtual int id() const;
+
+  virtual void reset_focus();
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
