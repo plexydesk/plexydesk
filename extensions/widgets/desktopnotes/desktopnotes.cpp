@@ -143,8 +143,6 @@ void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
   }
 }
 
-void desktop_task_controller_impl::onDataUpdated(const QVariantMap &data) {}
-
 void desktop_task_controller_impl::createNoteUI(
     cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
