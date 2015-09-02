@@ -23,6 +23,7 @@
 #include <ck_extension_manager.h>
 #include <ck_widget.h>
 #include <ck_extension_manager.h>
+#include <ck_resource_manager.h>
 
 // social
 #include <webservice.h>
@@ -72,9 +73,17 @@ desktop_controller_impl::~desktop_controller_impl() {
 void desktop_controller_impl::init() {
   create_task_group();
 
+  /*
   QString default_wallpaper_file = QDir::toNativeSeparators(
       cherry_kit::config::instance()->prefix() +
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
+ */
+
+ QString default_wallpaper_file =
+     cherry_kit::resource_manager::instance()->drawable_file_name(
+       "mdpi", "desktop/ck_default_wallpaper.png");
+
+ qDebug() << Q_FUNC_INFO << default_wallpaper_file;
 
   o_ctr->m_background_texture = default_wallpaper_file.toStdString();
   o_ctr->m_background_window = new desktop_window();
@@ -145,7 +154,7 @@ void desktop_controller_impl::create_task_group() const {
   o_ctr->m_supported_action.set_controller(controller_name().toStdString());
 
   cherry_kit::ui_action bg_task;
-  bg_task.set_name("Background");
+  bg_task.set_name("Desktop");
   bg_task.set_icon("panel/ck_add.png");
   bg_task.set_visible(true);
   bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
@@ -180,7 +189,7 @@ void desktop_controller_impl::create_task_group() const {
   seamless_task.set_name("Seamless");
   seamless_task.set_icon("panel/ck_seamless.png");
   seamless_task.set_id(1);
-  seamless_task.set_visible(1);
+  seamless_task.set_visible(0);
   seamless_task.set_task([this](const cherry_kit::ui_action *a_ref,
                                 const cherry_kit::ui_task_data_t &a_data) {
     expose_platform_desktop();
