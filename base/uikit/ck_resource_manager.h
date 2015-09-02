@@ -36,6 +36,8 @@ public:
   static StylePtr style();
 
   virtual QPixmap drawable(const QString &a_fileName, const QString &a_dpi);
+  virtual QString drawable_file_name(const QString &a_dpi,
+                                     const QString &a_fileName);
 
   typedef enum {
     kDarkPrimaryColor = 1,
