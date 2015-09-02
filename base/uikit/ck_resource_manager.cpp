@@ -105,14 +105,21 @@ const char *resource_manager::color(resource_manager::ColorName a_name) {
   return instance()->color_code(a_name);
 }
 
-QPixmap resource_manager::drawable(const QString &a_fileName,
-                                   const QString &a_dpi) {
-  QPixmap rv;
-
+QString resource_manager::drawable_file_name(const QString &a_dpi, const QString &a_fileName)
+{
   QString iconThemePath =
       QDir::toNativeSeparators(priv->m_resource_group + "/" +
                                priv->m_resource_name + "/" +
                                a_dpi + "/" + a_fileName);
+
+  return iconThemePath;
+}
+
+QPixmap resource_manager::drawable(const QString &a_fileName,
+                                   const QString &a_dpi) {
+  QPixmap rv;
+
+  QString iconThemePath = drawable_file_name(a_dpi, a_fileName);
 
   QFileInfo fileInfo(iconThemePath);
 
