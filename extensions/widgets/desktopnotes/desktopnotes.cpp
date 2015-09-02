@@ -120,13 +120,72 @@ void desktop_task_controller_impl::request_action(const QString &actionName,
 */
 
 cherry_kit::ui_action desktop_task_controller_impl::task() {
-    cherry_kit::ui_action task;
-    task.set_name("Do");
-    task.set_visible(1);
-    task.set_controller(controller_name().toStdString());
-    task.set_icon("panel/ck_add.png");
+  cherry_kit::ui_action task;
+  task.set_name("Record");
+  task.set_visible(1);
+  task.set_controller(controller_name().toStdString());
+  task.set_icon("panel/ck_add.png");
 
-    return task;
+  cherry_kit::ui_action note_action;
+  note_action.set_name("Note");
+  note_action.set_visible(1);
+  note_action.set_id(1);
+  note_action.set_icon("panel/ck_add.png");
+  note_action.set_controller(controller_name().toStdString());
+  note_action.set_task([this](const cherry_kit::ui_action *a_action_ref,
+                            const cherry_kit::ui_task_data_t &a_data) {
+  QPointF window_location;
+
+  if (viewport()) {
+    window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+  }
+
+  QVariantMap session_args;
+  session_args["x"] = window_location.x();
+  session_args["y"] = window_location.y();
+  session_args["notes_id"] = session_count();
+  session_args["database_name"] =
+      QString::fromStdString(session_store_name("Notes"));
+
+  start_session("Notes", session_args, false,
+                [this](cherry_kit::desktop_controller_interface *a_controller,
+                       cherry_kit::session_sync *a_session) {
+    createNoteUI(a_session);
+  });
+});
+
+  cherry_kit::ui_action task_action;
+  task_action.set_name("Task");
+  task_action.set_visible(1);
+  task_action.set_id(2);
+  task_action.set_icon("panel/ck_add.png");
+  task_action.set_controller(controller_name().toStdString());
+  task_action.set_task([this](const cherry_kit::ui_action *a_action_ref,
+                            const cherry_kit::ui_task_data_t &a_data) {
+    QPointF window_location;
+
+    if (viewport()) {
+      window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+    }
+
+    QVariantMap session_args;
+    session_args["x"] = window_location.x();
+    session_args["y"] = window_location.y();
+    session_args["reminders_id"] = session_count();
+    session_args["database_name"] =
+    QString::fromStdString(session_store_name("reminders"));
+
+    start_session("Reminders", session_args, false,
+                   [this](cherry_kit::desktop_controller_interface *a_controller,
+                          cherry_kit::session_sync *a_session) {
+      createReminderUI(a_session);
+    });
+  });
+
+  task.add_action(note_action);
+  task.add_action(task_action);
+
+  return task;
 }
 
 void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
@@ -146,7 +205,7 @@ void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
 void desktop_task_controller_impl::createNoteUI(
     cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
-  window->setGeometry(QRectF(0, 0, 240, 180));
+  window->setGeometry(QRectF(0, 0, 320, 240));
 
   NoteWidget *note = new NoteWidget(a_session, window);
   note->set_controller(this);
@@ -195,6 +254,11 @@ void desktop_task_controller_impl::createNoteUI(
         a_value.toStdString());
   });
 
+  note->on_note_deleted([=] () {
+    a_session->unbind_window(window);
+    window->close();
+  });
+
   window->on_window_discarded([this](cherry_kit::window *aWindow) {
     delete aWindow;
   });
@@ -214,14 +278,14 @@ void desktop_task_controller_impl::createReminderUI(
   cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);
 
   view->set_content_margin(10, 2, 5, 5);
-  view->set_geometry(0, 0, 240, 80);
+  view->set_geometry(0, 0, 320, 160);
 
   view->add_rows(2);
   view->add_segments(0, 1);
   view->add_segments(1, 4);
 
-  view->set_row_height(0, "80%");
-  view->set_row_height(1, "20%");
+  view->set_row_height(0, "85%");
+  view->set_row_height(1, "15%");
 
   cherry_kit::widget_properties_t top_label_prop;
   top_label_prop["label"] = "reminder";
@@ -238,14 +302,14 @@ void desktop_task_controller_impl::createReminderUI(
 
   view->add_widget(0, 0, "text_edit", text_editor_prop);
 
-  accept_button_prop["label"] = "Date";
-  accept_button_prop["icon"] = "actions/pd_notification.png";
+  accept_button_prop["label"] = "";
+  accept_button_prop["icon"] = "toolbar/ck_event.png";
   view->add_widget(1, 0, "image_button", accept_button_prop);
 
   if (a_session->session_keys().contains("state") &&
       (a_session->session_data("state").toString() == "done")) {
-    accept_button_prop["label"] = "Resume";
-    accept_button_prop["icon"] = "actions/pd_resume.png";
+    accept_button_prop["label"] = "";
+    accept_button_prop["icon"] = "toolbar/ck_play.png";
 
     cherry_kit::text_editor *editor =
         dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
@@ -253,18 +317,18 @@ void desktop_task_controller_impl::createReminderUI(
       editor->style("border: 0; background: #29CDA8; color: #ffffff");
     }
   } else {
-    accept_button_prop["label"] = "Done";
-    accept_button_prop["icon"] = "actions/pd_done.png";
+    accept_button_prop["label"] = "";
+    accept_button_prop["icon"] = "toolbar/ck_ok.png";
   }
 
   view->add_widget(1, 1, "image_button", accept_button_prop);
 
-  accept_button_prop["label"] = "save";
-  accept_button_prop["icon"] = "actions/pd_save.png";
+  accept_button_prop["label"] = "";
+  accept_button_prop["icon"] = "toolbar/ck_save.png";
   view->add_widget(1, 2, "image_button", accept_button_prop);
 
-  accept_button_prop["label"] = "delete";
-  accept_button_prop["icon"] = "actions/pd_delete.png";
+  accept_button_prop["label"] = "";
+  accept_button_prop["icon"] = "toolbar/ck_delete.png";
   view->add_widget(1, 3, "image_button", accept_button_prop);
 
   window->set_window_content(view->viewport());
@@ -342,11 +406,11 @@ void desktop_task_controller_impl::createReminderUI(
 
         cherry_kit::widget_properties_t update_prop;
         if (is_complete) {
-          update_prop["label"] = "Done";
-          update_prop["icon"] = "actions/pd_done.png";
+          update_prop["label"] = "";
+          update_prop["icon"] = "toolbar/ck_ok.png";
         } else {
-          update_prop["label"] = "Resume";
-          update_prop["icon"] = "actions/pd_resume.png";
+          update_prop["label"] = "";
+          update_prop["icon"] = "toolbar/ck_play.png";
         }
 
         view->update_property(1, 1, update_prop);
@@ -376,7 +440,7 @@ void desktop_task_controller_impl::createReminderUI(
         QRectF parent_rect(window->x(), window->y(), window->geometry().width(),
                            window->geometry().height());
 
-        QRectF dialog_rect(0, 0, 180, 180);
+        QRectF dialog_rect(0, 0, 320, 320);
 
         QPointF dialog_pos = viewport()->center(
             dialog_rect, parent_rect, cherry_kit::space::kCenterOnWindow);
