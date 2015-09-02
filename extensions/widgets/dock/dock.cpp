@@ -111,7 +111,7 @@ widget *desktop_panel_controller_impl::create_task_action(
   QSizeF item_icon_size(viewport()->scaled_width(39),
                         viewport()->scaled_height(39));
   QSizeF item_label_size(viewport()->scaled_width(64),
-                         viewport()->scaled_height(16));
+                         viewport()->scaled_height(24));
 
   widget *l_rv = new widget();
 
@@ -144,7 +144,6 @@ widget *desktop_panel_controller_impl::create_task_action(
     ui_action_list child_actions = a_action_ref->sub_actions();
 
     if (child_actions.size() > 0) {
-      qDebug() << Q_FUNC_INFO << "insert Sub Tasks";
       ui_action copy(*a_action_ref);
       insert_sub_action(copy);
     }
@@ -208,12 +207,11 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
     row_count = (priv->m_task_grid->count() + 1) / 4;
   }
 
-  qDebug() << Q_FUNC_INFO << row_count;
   float window_width = (viewport()->scaled_width(64) * 4);
   float window_height = (viewport()->scaled_width(36) * row_count) +
                         (viewport()->scaled_height(24) * row_count);
   priv->m_task_grid->set_view_geometry(
-      QRectF(0, 0, window_width, window_height));
+      QRectF(0, 0, window_width, window_height + 16));
 
   priv->m_task_grid->insert(grid_item);
   priv->m_task_window->set_window_content(priv->m_task_grid);
@@ -247,9 +245,8 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   if (x_count < 4)
       menu_width = x_count;
 
-  float window_width = (viewport()->scaled_width(64) * menu_width);
-  float window_height = (viewport()->scaled_width(36) * (row_count)) +
-                        (viewport()->scaled_height(24) * (row_count));
+  float window_width = (viewport()->scaled_width(72) * menu_width);
+  float window_height = (viewport()->scaled_width(64) * (row_count)) + 16;
 
   sub_task_grid->set_view_geometry(QRectF(0, 0, window_width, window_height));
 
@@ -570,17 +567,19 @@ void desktop_panel_controller_impl::update_desktop_preview() {
       new cherry_kit::item_view(ck_window, cherry_kit::item_view::kGridModel);
 
   cherry_kit::workspace *workspace_ref = viewport()->owner_workspace();
-  float item_height = 80;
+  float item_height = 120;
 
   float row_count = (workspace_ref->current_spaces().count()) % 4;
 
   if (row_count != 0)
     row_count = 1 + (workspace_ref->current_spaces().count()) / 4;
   else if (row_count == 0) {
-    row_count = (workspace_ref->current_spaces().count()) / 4;
+    row_count = 1 + (workspace_ref->current_spaces().count()) / 4;
   }
-  float window_width = (128 * 4) + 32;
-  float window_height = (item_height * (row_count)) + 56;
+
+  float window_width = (128 * 5);
+  float window_height =
+      (item_height * (row_count)) + viewport()->scaled_height(24);
 
   preview_view->set_view_geometry(QRectF(0, 0, window_width, window_height));
 
@@ -599,7 +598,7 @@ void desktop_panel_controller_impl::update_desktop_preview() {
 
     p->set_pixmap(_preview);
     p->set_size(_preview.size());
-    p->setGeometry(QRectF(0, 0, _preview.size().width(), _preview.height()));
+    p->setGeometry(QRectF(0, 0, 128, 120));
     p->setMinimumSize(_preview.size());
 
     item_height = _preview.height();
@@ -624,6 +623,7 @@ void desktop_panel_controller_impl::update_desktop_preview() {
           qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
 
       if (_workspace) {
+        viewport()->reset_focus();
         _workspace->expose(index);
       }
     }
