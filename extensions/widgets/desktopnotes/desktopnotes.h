@@ -51,10 +51,6 @@ public:
 
   virtual void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
 
-public
-Q_SLOTS:
-  void onDataUpdated(const QVariantMap &data);
-
 private:
   void createNoteUI(cherry_kit::session_sync *a_session);
   void createReminderUI(cherry_kit::session_sync *a_session);
