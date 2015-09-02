@@ -88,11 +88,8 @@ window::window(widget *parent) : widget(parent), priv(new PrivateWindow) {
 
   setFocus(Qt::MouseFocusReason);
 
-  priv->m_window_close_button->on_input_event([this](widget::InputEvent aEvent,
-                                                     const widget *aWidget) {
-    if (aEvent == widget::kMouseReleaseEvent) {
+  priv->m_window_close_button->on_click([this]() {
       invoke_window_closed_action();
-    }
   });
 }
 
