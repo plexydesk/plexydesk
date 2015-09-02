@@ -484,7 +484,7 @@ void fixed_layout::PrivateViewBuilder::update_image_button_properties(
     icon = QString::fromStdString(a_props.at("icon"));
   }
 
-  QPixmap pixmap = resource_manager::instance()->drawable(icon, "hdpi");
+  QPixmap pixmap = resource_manager::instance()->drawable(icon, "mdpi");
 
   image_button->set_lable(text);
   image_button->set_pixmap(pixmap);
