@@ -260,6 +260,11 @@ void workspace::wheelEvent(QWheelEvent *a_event_ptr) {
   a_event_ptr->accept();
 }
 
+void workspace::focusOutEvent(QFocusEvent *a_event_ref) {
+  if (current_active_space())
+    current_active_space()->reset_focus();
+}
+
 float workspace::desktop_verticle_scale_factor() {
   QRectF _current_desktop_geometry(0, 0, geometry().width(), geometry().height());
 
