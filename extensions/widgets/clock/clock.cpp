@@ -248,7 +248,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::clock_view *ck_clock = 0;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
-  ck_ui->set_geometry(0, 0, 320, 320);
+  ck_ui->set_geometry(0, 0, 240, 240);
 
   ck_ui->add_rows(2);
 
@@ -271,6 +271,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
       ck_ui->add_widget(0, 0, "clock", ui_data));
 
   ck_location_btn = add_action_button(ck_ui, 1, 0, "", "ck_location");
+  ck_location_btn->hide();
 
   ck_window->set_window_content(ck_ui->viewport());
   ck_window->set_window_title("Time");
@@ -301,13 +302,13 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
         cherry_kit::space *ck_space = a_controller->viewport();
 
         QPointF _activity_window_location = ck_space->center(
-            QRectF(0, 0, 320, 320), QRectF(ck_window->x(), ck_window->y(),
+            QRectF(0, 0, 240, 240), QRectF(ck_window->x(), ck_window->y(),
                                            ck_window->geometry().width(),
                                            ck_window->geometry().height()),
             cherry_kit::space::kCenterOnWindow);
         cherry_kit::desktop_dialog_ref activity = ck_space->open_desktop_dialog(
             "timezone_dialog", "TimeZone", _activity_window_location,
-            QRectF(0, 0, 320, 320), QVariantMap());
+            QRectF(0, 0, 240, 240), QVariantMap());
 
         activity->on_action_completed([=](const QVariantMap &a_data) {
           ck_clock->set_timezone_id(a_data["zone_id"].toByteArray());
@@ -338,7 +339,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
-  ck_ui->set_geometry(0, 0, 320, 320);
+  ck_ui->set_geometry(0, 0, 240, 240);
 
   ck_ui->add_rows(4);
 
