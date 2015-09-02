@@ -55,6 +55,8 @@ public:
 
   // new ui
   cherry_kit::fixed_layout *m_ui;
+
+  std::function<void ()> m_on_delete_func;
 };
 
 void NoteWidget::createToolBar() {
@@ -91,6 +93,10 @@ void NoteWidget::on_text_data_changed(
 void NoteWidget::on_note_config_changed(
     std::function<void(const QString &, const QString &)> a_callback) {
   d->m_on_config_callback_func_list.push_back(a_callback);
+}
+
+void NoteWidget::on_note_deleted(std::function<void ()> a_callback) {
+  d->m_on_delete_func = a_callback;
 }
 
 NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
@@ -138,6 +144,19 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   button_props["label"] = "";
   button_props["icon"] = "actions/pd_clear.png";
   d->m_ui->add_widget(1, 4, "image_button", button_props);
+  cherry_kit::icon_button *delete_btn = dynamic_cast<cherry_kit::icon_button*>
+      (d->m_ui->add_widget(1, 4, "image_button", button_props));
+  if (delete_btn) {
+    delete_btn->on_input_event([this](cherry_kit::widget::InputEvent event,
+                               const cherry_kit::widget *a_widget_ref) {
+      if (event != cherry_kit::widget::kMouseReleaseEvent)
+        return;
+
+      if (d->m_on_delete_func)
+        d->m_on_delete_func();
+
+    });
+  }
 
   button_props["label"] = "";
   button_props["icon"] = "actions/pd_increase.png";
