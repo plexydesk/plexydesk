@@ -41,8 +41,8 @@ public:
   ~PrivateDock() {}
 
 public:
-  window *m_panel_window;
-  window *m_task_window;
+  window *m_dock_window;
+  window *m_deskt_menu;
 
   cherry_kit::item_view *m_task_grid;
   cherry_kit::fixed_layout *m_fixed_panel_layout;
@@ -60,19 +60,19 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
   priv->m_main_panel_is_hidden = true;
 
   // menu
-  priv->m_task_window = new cherry_kit::window();
-  priv->m_task_window->set_window_type(cherry_kit::window::kPopupWindow);
-  priv->m_task_window->hide();
-  priv->m_task_window->resize(400, 10);
+  priv->m_deskt_menu = new cherry_kit::window();
+  priv->m_deskt_menu->set_window_type(cherry_kit::window::kPopupWindow);
+  priv->m_deskt_menu->hide();
+  priv->m_deskt_menu->resize(400, 10);
 
-  priv->m_task_window->on_window_discarded([=](cherry_kit::window *aWindow) {
+  priv->m_deskt_menu->on_window_discarded([=](cherry_kit::window *aWindow) {
     if (priv->m_task_grid)
       priv->m_task_grid->clear();
 
     delete aWindow;
   });
 
-  priv->m_task_grid = new item_view(priv->m_task_window, item_view::kGridModel);
+  priv->m_task_grid = new item_view(priv->m_deskt_menu, item_view::kGridModel);
   priv->m_task_grid->set_content_spacing(0);
 
   priv->m_task_grid->on_item_removed([](cherry_kit::model_view_item *a_item) {
@@ -214,7 +214,7 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
       QRectF(0, 0, window_width, window_height + 16));
 
   priv->m_task_grid->insert(grid_item);
-  priv->m_task_window->set_window_content(priv->m_task_grid);
+  priv->m_deskt_menu->set_window_content(priv->m_task_grid);
 }
 
 void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
@@ -287,8 +287,8 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
 
   // window pos
   QPointF _menu_pos;
-  _menu_pos.setX(priv->m_task_window->x());
-  _menu_pos.setY(priv->m_task_window->y());
+  _menu_pos.setX(priv->m_deskt_menu->x());
+  _menu_pos.setY(priv->m_deskt_menu->y());
 
   sub_menu->setPos(_menu_pos);
   sub_menu->raise();
@@ -309,7 +309,7 @@ ui_action desktop_panel_controller_impl::task() {
   menu_task.set_controller(controller_name().toStdString());
   menu_task.set_task([this](const ui_action *a_action_ref,
                             const ui_task_data_t &a_data) {
-    if (priv->m_task_window) {
+    if (priv->m_deskt_menu) {
 
       QPointF menu_pos;
       if (a_data.find("x") != a_data.end() &&
@@ -318,8 +318,8 @@ ui_action desktop_panel_controller_impl::task() {
         menu_pos.setY(std::stod(a_data.at("y")));
       }
 
-      priv->m_task_window->setPos(menu_pos);
-      priv->m_task_window->show();
+      priv->m_deskt_menu->setPos(menu_pos);
+      priv->m_deskt_menu->show();
     }
   });
 
@@ -345,8 +345,8 @@ void desktop_panel_controller_impl::init() {
     return;
   }
 
-  if (priv->m_task_window)
-    priv->m_task_window->set_window_title("PlexyDesk RedCherry 1.0");
+  if (priv->m_deskt_menu)
+    priv->m_deskt_menu->set_window_title("PlexyDesk RedCherry 1.0");
 
   // loads the controllers before dock was created;
   Q_FOREACH(const QString & name, viewport()->current_controller_list()) {
@@ -362,20 +362,20 @@ void desktop_panel_controller_impl::init() {
     }
   });
 
-  priv->m_panel_window = new cherry_kit::window();
-  priv->m_panel_window->set_window_type(window::kPanelWindow);
+  cherry_kit::window *m_dock_window = new cherry_kit::window();
+  m_dock_window->set_window_type(window::kPanelWindow);
 
   // navigation
   // so that the icon size is 36.0f;
   float icon_size = viewport()->scaled_width(
       39.0f); /// viewport()->owner_workspace()->desktop_horizontal_scale_factor();
   priv->m_fixed_panel_layout =
-      new cherry_kit::fixed_layout(priv->m_panel_window);
+      new cherry_kit::fixed_layout(m_dock_window);
   priv->m_fixed_panel_layout->set_content_margin(3, 5, 5, 5);
   priv->m_fixed_panel_layout->set_geometry(0, 0, icon_size + 8, icon_size * 7);
   priv->m_fixed_panel_layout->add_rows(7);
 
-  priv->m_panel_window->on_window_discarded([this](
+  m_dock_window->on_window_discarded([this](
       cherry_kit::window *aWindow) {
     if (priv->m_fixed_panel_layout)
       delete priv->m_fixed_panel_layout;
@@ -391,31 +391,37 @@ void desktop_panel_controller_impl::init() {
   }
 
   create_dock_action(priv->m_fixed_panel_layout, 0, 0, "panel/ck_up_arrow.png",
-                     [&]() { exec_action("Up"); });
+                     [=]() { exec_action("Up", m_dock_window); });
 
   create_dock_action(priv->m_fixed_panel_layout, 1, 0, "panel/ck_add.png",
-                     [&]() { exec_action("Add"); });
+                     [=]() { exec_action("Add", m_dock_window); });
 
   create_dock_action(priv->m_fixed_panel_layout, 2, 0, "panel/ck_space.png",
-                     [&]() { exec_action("Expose"); });
+                     [=]() { exec_action("Expose", m_dock_window); });
 
   create_dock_action(priv->m_fixed_panel_layout, 3, 0, "panel/ck_menu.png",
-                     [&]() { exec_action("Menu"); });
+                     [=]() { exec_action("Menu", m_dock_window); });
 
   create_dock_action(priv->m_fixed_panel_layout, 4, 0, "panel/ck_expose.png",
-                     [&]() { exec_action("Seamless"); });
+                     [=]() { exec_action("Seamless", m_dock_window); });
 
   create_dock_action(priv->m_fixed_panel_layout, 5, 0, "panel/ck_trash.png",
-                     [&]() { exec_action("Close"); });
+                     [=]() { exec_action("Close", m_dock_window); });
 
   create_dock_action(priv->m_fixed_panel_layout, 6, 0,
-                     "panel/ck_down_arrow.png", [&]() { exec_action("Down"); });
+                     "panel/ck_down_arrow.png", [=]() {
+      exec_action("Down", m_dock_window); });
 
-  priv->m_panel_window->set_window_content(
+  m_dock_window->set_window_content(
       priv->m_fixed_panel_layout->viewport());
 
-  insert(priv->m_task_window);
-  insert(priv->m_panel_window);
+  insert(priv->m_deskt_menu);
+
+  insert(m_dock_window);
+
+  m_dock_window->setPos(
+      viewport()->center(m_dock_window->geometry(), QRectF(),
+                         space::kCenterOnViewportLeft));
 }
 
 void desktop_panel_controller_impl::session_data_ready(
@@ -429,12 +435,8 @@ void desktop_panel_controller_impl::set_view_rect(const QRectF &rect) {
     return;
   }
 
-  priv->m_panel_window->setPos(
-      viewport()->center(priv->m_panel_window->geometry(), QRectF(),
-                         space::kCenterOnViewportLeft));
-
-  if (priv->m_task_window) {
-    priv->m_task_window->setPos(rect.x(), rect.y());
+  if (priv->m_deskt_menu) {
+    priv->m_deskt_menu->setPos(rect.x(), rect.y());
   }
 }
 
@@ -514,7 +516,8 @@ void desktop_panel_controller_impl::remove_space_request() {
   }
 }
 
-void desktop_panel_controller_impl::exec_action(const QString &action) {
+void desktop_panel_controller_impl::exec_action(const QString &action,
+                                                cherry_kit::window *a_window) {
   if (action == tr("Close")) {
     remove_space_request();
     return;
@@ -532,13 +535,13 @@ void desktop_panel_controller_impl::exec_action(const QString &action) {
     }
 
     QPointF _menu_pos =
-        viewport()->center(priv->m_task_window->geometry(), QRectF(),
+        viewport()->center(priv->m_deskt_menu->geometry(), QRectF(),
                            cherry_kit::space::kCenterOnViewportLeft);
-    _menu_pos.setX(priv->m_panel_window->geometry().width() + 5);
+    _menu_pos.setX(a_window->geometry().width() + 5);
 
-    if (priv->m_task_window) {
-      priv->m_task_window->setPos(_menu_pos);
-      priv->m_task_window->show();
+    if (priv->m_deskt_menu) {
+      priv->m_deskt_menu->setPos(_menu_pos);
+      priv->m_deskt_menu->show();
     }
 
   } else if (action == tr("Add")) {
@@ -558,6 +561,9 @@ void desktop_panel_controller_impl::add_new_space() {
 }
 
 void desktop_panel_controller_impl::update_desktop_preview() {
+  if (!viewport())
+    return;
+
   cherry_kit::window *ck_window = new cherry_kit::window;
   ck_window->set_window_title("Desktop Preview");
   ck_window->setGeometry(QRectF(0, 0, 400, 400));
@@ -577,7 +583,7 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     row_count = 1 + (workspace_ref->current_spaces().count()) / 4;
   }
 
-  float window_width = (128 * 5);
+  float window_width = viewport()->geometry().width();
   float window_height =
       (item_height * (row_count)) + viewport()->scaled_height(24);
 
@@ -635,8 +641,12 @@ void desktop_panel_controller_impl::update_desktop_preview() {
 
   QPointF menu_pos =
       viewport()->center(ck_window->geometry(), QRectF(),
-                         cherry_kit::space::kCenterOnViewportLeft);
+                         cherry_kit::space::kCenterOnViewportTop);
 
-  menu_pos.setX(priv->m_panel_window->geometry().width() + 5);
+  //menu_pos.setX(m_dock_window->geometry().width() + 5);
+#ifdef __APPLE__
+  menu_pos.setY(menu_pos.y() + viewport()->scaled_height(24));
+#endif
+
   ck_window->setPos(menu_pos);
 }

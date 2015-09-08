@@ -71,7 +71,8 @@ protected:
   void remove_space_request();
   void add_new_space();
 
-  void exec_action(const QString &action);
+  void exec_action(const QString &action,
+                   cherry_kit::window *a_window);
 
 private:
   class PrivateDock;
