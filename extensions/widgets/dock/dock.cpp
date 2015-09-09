@@ -569,26 +569,9 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   ck_window->set_window_title("Desktop Preview");
   ck_window->setGeometry(QRectF(0, 0, 400, 400));
   ck_window->set_window_type(cherry_kit::window::kPopupWindow);
-
+  cherry_kit::workspace *workspace_ref = viewport()->owner_workspace();
   cherry_kit::item_view *preview_view =
       new cherry_kit::item_view(ck_window, cherry_kit::item_view::kGridModel);
-
-  cherry_kit::workspace *workspace_ref = viewport()->owner_workspace();
-  float item_height = 120;
-
-  float row_count = (workspace_ref->current_spaces().count()) % 4;
-
-  if (row_count != 0)
-    row_count = 1 + (workspace_ref->current_spaces().count()) / 4;
-  else if (row_count == 0) {
-    row_count = 1 + (workspace_ref->current_spaces().count()) / 4;
-  }
-
-  float window_width = viewport()->geometry().width();
-  float window_height =
-      (item_height * (row_count)) + viewport()->scaled_height(24);
-
-  preview_view->set_view_geometry(QRectF(0, 0, window_width, window_height));
 
   ck_window->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
     if (!a_visible) {
@@ -598,14 +581,40 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     }
   });
 
+  std::vector<QPixmap> desktop_preview_list;
+
   foreach(cherry_kit::space * _space, workspace_ref->current_spaces()) {
     QPixmap _preview = workspace_ref->thumbnail(_space);
+    desktop_preview_list.push_back(_preview);
+  }
 
+  QPixmap sample_pixmap = desktop_preview_list.front();
+
+  float item_height = sample_pixmap.height();
+  float item_width = sample_pixmap.width();
+  int max_item_count = ((viewport()->geometry().width()) / item_width) - 1;
+  float row_count = (workspace_ref->current_spaces().count()) % max_item_count;
+
+  if (row_count != 0)
+    row_count = 1 + (workspace_ref->current_spaces().count()) / max_item_count;
+  else if (row_count == 0) {
+    row_count = 1 + (workspace_ref->current_spaces().count()) / max_item_count;
+  }
+
+  float window_width = (item_width * max_item_count) +
+          viewport()->scaled_width(64);
+  float window_height = (item_height * (row_count)) +
+          viewport()->scaled_height(8);
+
+  preview_view->set_view_geometry(QRectF(0, 0, window_width, window_height));
+
+  std::for_each(std::begin(desktop_preview_list),
+                std::end(desktop_preview_list), [&](QPixmap _preview) {
     cherry_kit::image_view *p = new cherry_kit::image_view(preview_view);
 
     p->set_pixmap(_preview);
     p->set_size(_preview.size());
-    p->setGeometry(QRectF(0, 0, 128, 120));
+    p->setGeometry(QRectF(0, 0, _preview.width(), _preview.height()));
     p->setMinimumSize(_preview.size());
 
     item_height = _preview.height();
@@ -622,19 +631,22 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     });
 
     preview_view->insert(model_item);
-  }
 
-  preview_view->on_activated([this](int index) {
-    if (this->viewport() && this->viewport()->owner_workspace()) {
-      cherry_kit::workspace *_workspace =
-          qobject_cast<cherry_kit::workspace *>(viewport()->owner_workspace());
+    preview_view->on_activated([this](int index) {
+      if (this->viewport() && this->viewport()->owner_workspace()) {
+        cherry_kit::workspace *_workspace =
+            qobject_cast<cherry_kit::workspace *>(
+                viewport()->owner_workspace());
 
-      if (_workspace) {
-        viewport()->reset_focus();
-        _workspace->expose(index);
+        if (_workspace) {
+          viewport()->reset_focus();
+          _workspace->expose(index);
+        }
       }
-    }
+    });
   });
+
+  desktop_preview_list.clear();
 
   insert(ck_window);
   ck_window->raise();
@@ -644,7 +656,7 @@ void desktop_panel_controller_impl::update_desktop_preview() {
       ck_window->geometry(), QRectF(), cherry_kit::space::kCenterOnViewportTop);
 
 // menu_pos.setX(m_dock_window->geometry().width() + 5);
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__linux__)
   menu_pos.setY(menu_pos.y() + viewport()->scaled_height(24));
 #endif
 
