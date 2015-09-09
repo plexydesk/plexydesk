@@ -238,12 +238,12 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   } else if (row_count == 0) {
     row_count = (x_count) / 4;
   } else if (x_count < 4) {
-     row_count = 1;
+    row_count = 1;
   }
 
   int menu_width = 4;
   if (x_count < 4)
-      menu_width = x_count;
+    menu_width = x_count;
 
   float window_width = (viewport()->scaled_width(72) * menu_width);
   float window_height = (viewport()->scaled_width(64) * (row_count)) + 16;
@@ -353,30 +353,33 @@ void desktop_panel_controller_impl::init() {
     discover_actions_from_controller(name);
   }
 
-  viewport()->on_viewport_event_notify([this](
-      space::ViewportNotificationType aType, const QVariant &aData,
-      const space *aSpace) {
-
-    if (aType == space::kControllerAddedNotification) {
-      discover_actions_from_controller(aData.toString());
-    }
-  });
-
   cherry_kit::window *m_dock_window = new cherry_kit::window();
   m_dock_window->set_window_type(window::kPanelWindow);
+
+  viewport()->on_viewport_event_notify([=](
+      space::ViewportNotificationType aType,
+      const cherry_kit::ui_task_data_t &a_data, const space *aSpace) {
+
+    if (aType == space::kControllerAddedNotification) {
+      discover_actions_from_controller(
+          QString::fromStdString(a_data.at("controller")));
+    } else if (aType == space::kGeometryChangedNotification) {
+
+      m_dock_window->setPos(viewport()->center(
+          m_dock_window->geometry(), QRectF(), space::kCenterOnViewportLeft));
+    }
+  });
 
   // navigation
   // so that the icon size is 36.0f;
   float icon_size = viewport()->scaled_width(
       39.0f); /// viewport()->owner_workspace()->desktop_horizontal_scale_factor();
-  priv->m_fixed_panel_layout =
-      new cherry_kit::fixed_layout(m_dock_window);
+  priv->m_fixed_panel_layout = new cherry_kit::fixed_layout(m_dock_window);
   priv->m_fixed_panel_layout->set_content_margin(3, 5, 5, 5);
   priv->m_fixed_panel_layout->set_geometry(0, 0, icon_size + 8, icon_size * 7);
   priv->m_fixed_panel_layout->add_rows(7);
 
-  m_dock_window->on_window_discarded([this](
-      cherry_kit::window *aWindow) {
+  m_dock_window->on_window_discarded([this](cherry_kit::window *aWindow) {
     if (priv->m_fixed_panel_layout)
       delete priv->m_fixed_panel_layout;
     delete aWindow;
@@ -409,19 +412,17 @@ void desktop_panel_controller_impl::init() {
                      [=]() { exec_action("Close", m_dock_window); });
 
   create_dock_action(priv->m_fixed_panel_layout, 6, 0,
-                     "panel/ck_down_arrow.png", [=]() {
-      exec_action("Down", m_dock_window); });
+                     "panel/ck_down_arrow.png",
+                     [=]() { exec_action("Down", m_dock_window); });
 
-  m_dock_window->set_window_content(
-      priv->m_fixed_panel_layout->viewport());
+  m_dock_window->set_window_content(priv->m_fixed_panel_layout->viewport());
 
   insert(priv->m_deskt_menu);
 
   insert(m_dock_window);
 
-  m_dock_window->setPos(
-      viewport()->center(m_dock_window->geometry(), QRectF(),
-                         space::kCenterOnViewportLeft));
+  m_dock_window->setPos(viewport()->center(m_dock_window->geometry(), QRectF(),
+                                           space::kCenterOnViewportLeft));
 }
 
 void desktop_panel_controller_impl::session_data_ready(
@@ -528,7 +529,7 @@ void desktop_panel_controller_impl::exec_action(const QString &action,
   } else if (action == tr("Seamless")) {
     this->toggle_seamless();
   } else if (action == tr("Expose")) {
-      update_desktop_preview();
+    update_desktop_preview();
   } else if (action == tr("Menu")) {
     if (!viewport() || !viewport()->owner_workspace()) {
       return;
@@ -639,11 +640,10 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   ck_window->raise();
   ck_window->set_window_content(preview_view);
 
-  QPointF menu_pos =
-      viewport()->center(ck_window->geometry(), QRectF(),
-                         cherry_kit::space::kCenterOnViewportTop);
+  QPointF menu_pos = viewport()->center(
+      ck_window->geometry(), QRectF(), cherry_kit::space::kCenterOnViewportTop);
 
-  //menu_pos.setX(m_dock_window->geometry().width() + 5);
+// menu_pos.setX(m_dock_window->geometry().width() + 5);
 #ifdef __APPLE__
   menu_pos.setY(menu_pos.y() + viewport()->scaled_height(24));
 #endif

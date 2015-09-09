@@ -22,6 +22,7 @@
 #include <ck_desktop_controller_interface.h>
 #include <plexydesk_ui_exports.h>
 #include <ck_widget.h>
+#include <ck_ui_action.h>
 #include <ck_sync_object.h>
 
 namespace cherry_kit {
@@ -87,7 +88,7 @@ public:
   float scaled_height(float a_value);
 
   virtual void on_viewport_event_notify(
-      std::function<void(ViewportNotificationType, const QVariant &,
+      std::function<void(ViewportNotificationType, const ui_task_data_t &a_data,
                          const space *)> a_notify_handler);
   virtual void on_activity_finished(const desktop_dialog *a_activity);
 
