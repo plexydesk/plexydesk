@@ -19,8 +19,9 @@ namespace cherry_kit {
 #define kMinimumZOrder 100
 #define kMediumZOrder 5000
 
-typedef std::function<void(space::ViewportNotificationType, const QVariant &,
-                           const space *)> NotifyFunc;
+typedef std::function<void(space::ViewportNotificationType,
+                           const cherry_kit::ui_task_data_t &, const space *)>
+NotifyFunc;
 class space::PrivateSpace {
 public:
   PrivateSpace() : m_surface(0) {}
@@ -85,10 +86,12 @@ void space::add_controller(const QString &a_name) {
 
   register_controller(a_name);
 
+  ui_task_data_t argument;
+  argument["controller"] = a_name.toStdString();
+
   foreach(NotifyFunc l_notify_handler, o_space->m_notify_chain) {
     if (l_notify_handler)
-      l_notify_handler(space::kControllerAddedNotification, QVariant(a_name),
-                       this);
+      l_notify_handler(space::kControllerAddedNotification, argument, this);
   }
 }
 
@@ -278,7 +281,7 @@ void space::remove_window_from_view(window *a_window) {
 }
 
 void space::on_viewport_event_notify(
-    std::function<void(ViewportNotificationType, const QVariant &,
+    std::function<void(ViewportNotificationType, const ui_task_data_t &a_data,
                        const space *)> a_notify_handler) {
   o_space->m_notify_chain.append(a_notify_handler);
 }
@@ -647,16 +650,16 @@ void space::set_id(int a_id) { o_space->m_id = a_id; }
 int space::id() const { return o_space->m_id; }
 
 void space::reset_focus() {
-    std::for_each(std::begin(o_space->m_window_list),
-                  std::end(o_space->m_window_list), [&](window *a_win) {
-      if (!a_win)
-        return;
+  std::for_each(std::begin(o_space->m_window_list),
+                std::end(o_space->m_window_list), [&](window *a_win) {
+    if (!a_win)
+      return;
 
-      if (a_win->window_type() == window::kPopupWindow) {
-        a_win->hide();
-        a_win->removeFocus();
-      }
-    });
+    if (a_win->window_type() == window::kPopupWindow) {
+      a_win->hide();
+      a_win->removeFocus();
+    }
+  });
 }
 
 void space::setGeometry(const QRectF &a_geometry) {
@@ -686,6 +689,13 @@ void space::setGeometry(const QRectF &a_geometry) {
     desktop_controller_ref _controller_ptr =
         o_space->m_current_controller_list[_key];
     _controller_ptr->set_view_rect(o_space->m_geometry);
+  }
+
+  ui_task_data_t argument;
+
+  foreach(NotifyFunc l_notify_handler, o_space->m_notify_chain) {
+    if (l_notify_handler)
+      l_notify_handler(space::kGeometryChangedNotification, argument, this);
   }
 }
 
