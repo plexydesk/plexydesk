@@ -340,21 +340,80 @@ ui_action desktop_panel_controller_impl::task() {
   return task;
 }
 
-void desktop_panel_controller_impl::init() {
+void desktop_panel_controller_impl::create_desktop_navigation_panel() {
   if (!viewport()) {
     return;
   }
 
-  if (priv->m_deskt_menu)
-    priv->m_deskt_menu->set_window_title("PlexyDesk RedCherry 1.0");
+  cherry_kit::window *m_dock_window = new cherry_kit::window();
+  m_dock_window->set_window_type(window::kPanelWindow);
 
-  // loads the controllers before dock was created;
+  // navigation
+  // so that the icon size is 36.0f;
+  float icon_size = viewport()->scaled_width(36.0f);
+  cherry_kit::fixed_layout *panel_ui =
+      new cherry_kit::fixed_layout(m_dock_window);
+  panel_ui->set_content_margin(3, 5, 5, 5);
+  panel_ui->set_geometry(0, 0, icon_size + 8, icon_size * 7);
+  panel_ui->add_rows(7);
+
+  m_dock_window->on_window_discarded([=](cherry_kit::window *aWindow) {
+    if (panel_ui)
+      delete panel_ui;
+    delete aWindow;
+  });
+
+  std::string default_height =
+      std::to_string((icon_size / (icon_size * 7)) * 100) + "%";
+
+  for (int i = 0; i < 7; i++) {
+    panel_ui->add_segments(i, 1);
+    panel_ui->set_row_height(i, default_height);
+  }
+
+  create_dock_action(panel_ui, 0, 0, "panel/ck_up_arrow.png",
+                     [=]() { exec_action("Up", m_dock_window); });
+
+  create_dock_action(panel_ui, 1, 0, "panel/ck_add.png",
+                     [=]() { exec_action("Add", m_dock_window); });
+
+  create_dock_action(panel_ui, 2, 0, "panel/ck_space.png",
+                     [=]() { exec_action("Expose", m_dock_window); });
+
+  create_dock_action(panel_ui, 3, 0, "panel/ck_menu.png",
+                     [=]() { exec_action("Menu", m_dock_window); });
+
+  create_dock_action(panel_ui, 4, 0, "panel/ck_expose.png",
+                     [=]() { exec_action("Seamless", m_dock_window); });
+
+  create_dock_action(panel_ui, 5, 0, "panel/ck_trash.png",
+                     [=]() { exec_action("Close", m_dock_window); });
+
+  create_dock_action(panel_ui, 6, 0, "panel/ck_down_arrow.png",
+                     [=]() { exec_action("Down", m_dock_window); });
+
+  m_dock_window->set_window_content(panel_ui->viewport());
+  m_dock_window->setFlag(QGraphicsItem::ItemIsMovable, true);
+  m_dock_window->setPos(viewport()->center(m_dock_window->geometry(), QRectF(),
+                                           space::kCenterOnViewportLeft));
+  insert(m_dock_window);
+
+  viewport()->on_viewport_event_notify([=](
+      space::ViewportNotificationType aType,
+      const cherry_kit::ui_task_data_t &a_data, const space *aSpace) {
+
+    if (aType == space::kGeometryChangedNotification) {
+      m_dock_window->setPos(viewport()->center(
+          m_dock_window->geometry(), QRectF(), space::kCenterOnViewportLeft));
+    }
+  });
+}
+
+void desktop_panel_controller_impl::init() {
+  //loads the controllers before dock was created
   Q_FOREACH(const QString & name, viewport()->current_controller_list()) {
     discover_actions_from_controller(name);
   }
-
-  cherry_kit::window *m_dock_window = new cherry_kit::window();
-  m_dock_window->set_window_type(window::kPanelWindow);
 
   viewport()->on_viewport_event_notify([=](
       space::ViewportNotificationType aType,
@@ -363,66 +422,16 @@ void desktop_panel_controller_impl::init() {
     if (aType == space::kControllerAddedNotification) {
       discover_actions_from_controller(
           QString::fromStdString(a_data.at("controller")));
-    } else if (aType == space::kGeometryChangedNotification) {
-
-      m_dock_window->setPos(viewport()->center(
-          m_dock_window->geometry(), QRectF(), space::kCenterOnViewportLeft));
     }
   });
 
-  // navigation
-  // so that the icon size is 36.0f;
-  float icon_size = viewport()->scaled_width(
-      39.0f); /// viewport()->owner_workspace()->desktop_horizontal_scale_factor();
-  priv->m_fixed_panel_layout = new cherry_kit::fixed_layout(m_dock_window);
-  priv->m_fixed_panel_layout->set_content_margin(3, 5, 5, 5);
-  priv->m_fixed_panel_layout->set_geometry(0, 0, icon_size + 8, icon_size * 7);
-  priv->m_fixed_panel_layout->add_rows(7);
+  create_desktop_navigation_panel();
 
-  m_dock_window->on_window_discarded([this](cherry_kit::window *aWindow) {
-    if (priv->m_fixed_panel_layout)
-      delete priv->m_fixed_panel_layout;
-    delete aWindow;
-  });
-
-  std::string default_height =
-      std::to_string((icon_size / (icon_size * 7)) * 100) + "%";
-
-  for (int i = 0; i < 7; i++) {
-    priv->m_fixed_panel_layout->add_segments(i, 1);
-    priv->m_fixed_panel_layout->set_row_height(i, default_height);
+  if (priv->m_deskt_menu) {
+    priv->m_deskt_menu->set_window_title("PlexyDesk 1.0");
+    insert(priv->m_deskt_menu);
+    priv->m_deskt_menu->hide();
   }
-
-  create_dock_action(priv->m_fixed_panel_layout, 0, 0, "panel/ck_up_arrow.png",
-                     [=]() { exec_action("Up", m_dock_window); });
-
-  create_dock_action(priv->m_fixed_panel_layout, 1, 0, "panel/ck_add.png",
-                     [=]() { exec_action("Add", m_dock_window); });
-
-  create_dock_action(priv->m_fixed_panel_layout, 2, 0, "panel/ck_space.png",
-                     [=]() { exec_action("Expose", m_dock_window); });
-
-  create_dock_action(priv->m_fixed_panel_layout, 3, 0, "panel/ck_menu.png",
-                     [=]() { exec_action("Menu", m_dock_window); });
-
-  create_dock_action(priv->m_fixed_panel_layout, 4, 0, "panel/ck_expose.png",
-                     [=]() { exec_action("Seamless", m_dock_window); });
-
-  create_dock_action(priv->m_fixed_panel_layout, 5, 0, "panel/ck_trash.png",
-                     [=]() { exec_action("Close", m_dock_window); });
-
-  create_dock_action(priv->m_fixed_panel_layout, 6, 0,
-                     "panel/ck_down_arrow.png",
-                     [=]() { exec_action("Down", m_dock_window); });
-
-  m_dock_window->set_window_content(priv->m_fixed_panel_layout->viewport());
-
-  insert(priv->m_deskt_menu);
-
-  insert(m_dock_window);
-
-  m_dock_window->setPos(viewport()->center(m_dock_window->geometry(), QRectF(),
-                                           space::kCenterOnViewportLeft));
 }
 
 void desktop_panel_controller_impl::session_data_ready(
@@ -601,10 +610,10 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     row_count = 1 + (workspace_ref->current_spaces().count()) / max_item_count;
   }
 
-  float window_width = (item_width * max_item_count) +
-          viewport()->scaled_width(64);
-  float window_height = (item_height * (row_count)) +
-          viewport()->scaled_height(8);
+  float window_width =
+      (item_width * max_item_count) + viewport()->scaled_width(64);
+  float window_height =
+      (item_height * (row_count)) + viewport()->scaled_height(8);
 
   preview_view->set_view_geometry(QRectF(0, 0, window_width, window_height));
 
@@ -631,7 +640,6 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     });
 
     preview_view->insert(model_item);
-
     preview_view->on_activated([this](int index) {
       if (this->viewport() && this->viewport()->owner_workspace()) {
         cherry_kit::workspace *_workspace =
