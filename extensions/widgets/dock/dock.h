@@ -77,6 +77,7 @@ protected:
 private:
   class PrivateDock;
   PrivateDock *const priv;
+  void create_desktop_navigation_panel();
 };
 
 #endif
