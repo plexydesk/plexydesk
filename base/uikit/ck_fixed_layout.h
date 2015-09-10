@@ -43,6 +43,7 @@ class DECL_UI_KIT_EXPORT fixed_layout {
     kWidget = 0,
     kButton,
     kImageButton,
+    kImageView,
     kLabel,
     kLineEdit,
     kTextEdit,
