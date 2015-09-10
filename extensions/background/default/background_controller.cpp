@@ -36,8 +36,11 @@
 #include <QPixmap>
 #include <QPainter>
 
+#include <ck_fixed_layout.h>
 #include <ck_space.h>
 #include <ck_workspace.h>
+#include <ck_image_view.h>
+#include <ck_icon_button.h>
 
 #include "desktopwindow.h"
 
@@ -79,11 +82,11 @@ void desktop_controller_impl::init() {
       QString("/share/plexy/themepack/default/resources/default-16x9.png"));
  */
 
- QString default_wallpaper_file =
-     cherry_kit::resource_manager::instance()->drawable_file_name(
-       "mdpi", "desktop/ck_default_wallpaper.png");
+  QString default_wallpaper_file =
+      cherry_kit::resource_manager::instance()->drawable_file_name(
+          "mdpi", "desktop/ck_default_wallpaper.png");
 
- qDebug() << Q_FUNC_INFO << default_wallpaper_file;
+  qDebug() << Q_FUNC_INFO << default_wallpaper_file;
 
   o_ctr->m_background_texture = default_wallpaper_file.toStdString();
   o_ctr->m_background_window = new desktop_window();
@@ -158,7 +161,7 @@ void desktop_controller_impl::create_task_group() const {
   bg_task.set_icon("panel/ck_add.png");
   bg_task.set_visible(true);
   bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
-                          const cherry_kit::ui_task_data_t &a_data) {
+                       const cherry_kit::ui_task_data_t &a_data) {
     if (!viewport())
       return;
 
@@ -189,13 +192,79 @@ void desktop_controller_impl::create_task_group() const {
   seamless_task.set_name("Seamless");
   seamless_task.set_icon("panel/ck_seamless.png");
   seamless_task.set_id(1);
-  seamless_task.set_visible(0);
+  seamless_task.set_visible(1);
   seamless_task.set_task([this](const cherry_kit::ui_action *a_ref,
                                 const cherry_kit::ui_task_data_t &a_data) {
     expose_platform_desktop();
   });
 
+  cherry_kit::ui_action dock_task;
+  dock_task.set_name("Dock");
+  dock_task.set_icon("panel/ck_add.png");
+  dock_task.set_id(1);
+  dock_task.set_visible(1);
+  dock_task.set_task([this](const cherry_kit::ui_action *a_ref,
+                            const cherry_kit::ui_task_data_t &a_data) {
+    cherry_kit::window *ck_window = new cherry_kit::window();
+    ck_window->setGeometry(QRectF(0, 0, 400, 400));
+    ck_window->set_window_title("Dock Settings");
+
+    ck_window->on_window_discarded([=](cherry_kit::window *a_window) {
+      if (a_window)
+        delete a_window;
+    });
+
+    // setup ui
+    cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
+    ck_ui->set_content_margin(10, 10, 10, 10);
+
+    QPixmap previw_img = viewport()->owner_workspace()->thumbnail(viewport(), 2);
+
+    ck_ui->set_geometry(0, 0, 320, 240);
+
+    ck_ui->add_rows(2);
+
+    ck_ui->add_segments(0, 1);
+    ck_ui->add_segments(1, 4);
+
+    ck_ui->set_row_height(0, "80%");
+    ck_ui->set_row_height(1, "20%");
+
+    cherry_kit::widget_properties_t ck_ui_data;
+    cherry_kit::image_view *preview_view =
+            dynamic_cast<cherry_kit::image_view *>(
+                ck_ui->add_widget(0, 0, "image_view", ck_ui_data));
+    preview_view->set_pixmap(previw_img);
+
+    ck_ui_data["icon"] = "toolbar/ck_left_arrow.png";
+    cherry_kit::icon_button *btn_left =
+            dynamic_cast<cherry_kit::icon_button*>(
+                ck_ui->add_widget(1,0, "image_button",ck_ui_data));
+
+    ck_ui_data["icon"] = "toolbar/ck_up_arrow.png";
+    cherry_kit::icon_button *btn_up =
+            dynamic_cast<cherry_kit::icon_button*>(
+                ck_ui->add_widget(1,1, "image_button",ck_ui_data));
+
+    ck_ui_data["icon"] = "toolbar/ck_down_arrow.png";
+    cherry_kit::icon_button *btn_down =
+            dynamic_cast<cherry_kit::icon_button*>(
+                ck_ui->add_widget(1,2, "image_button",ck_ui_data));
+
+    ck_ui_data["icon"] = "toolbar/ck_right_arrow.png";
+    cherry_kit::icon_button *btn_right =
+            dynamic_cast<cherry_kit::icon_button*>(
+                ck_ui->add_widget(1,3, "image_button",ck_ui_data));
+
+    ck_window->set_window_content(ck_ui->viewport());
+
+    insert(ck_window);
+    ck_window->setPos(viewport()->center(QRectF(0, 0, 400, 400), QRectF(),
+                                         cherry_kit::space::kCenterOnViewport));
+  });
+
   o_ctr->m_supported_action.add_action(bg_task);
+  o_ctr->m_supported_action.add_action(dock_task);
   o_ctr->m_supported_action.add_action(seamless_task);
 }
 
@@ -320,7 +389,7 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
         o_ctr->m_background_window->set_background(
             qt_dropped_file_name_string.toStdString());
         o_ctr->m_background_texture =
-                "file://" + qt_dropped_file_name_string.toStdString();
+            "file://" + qt_dropped_file_name_string.toStdString();
         sync_session_data("background", qt_dropped_file_name_string);
       }
     }
