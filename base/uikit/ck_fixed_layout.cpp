@@ -11,6 +11,7 @@
 #include <ck_clock_view.h>
 
 #include <ck_dial_view.h>
+#include <ck_image_view.h>
 #include <ck_widget.h>
 
 namespace cherry_kit {
@@ -52,6 +53,9 @@ public:
                            const widget_properties_t &a_props);
   widget *add_new_image_button_at(int a_row, int a_col,
                                   const widget_properties_t &a_props);
+  widget *add_new_image_view_at(int a_row, int a_col,
+                                const widget_properties_t &a_props);
+
   void update_image_button_properties(int a_row, int a_col,
                                       const widget_properties_t &a_props);
 
@@ -233,6 +237,9 @@ widget *fixed_layout::add_widget(int a_row, int a_column,
   case kImageButton:
     rv = o_fixed_layout->add_new_image_button_at(a_row, a_column, a_properties);
     break;
+  case kImageView:
+    rv = o_fixed_layout->add_new_image_view_at(a_row, a_column, a_properties);
+    break;
   case kCalendar:
     rv = o_fixed_layout->add_new_calendar_at(a_row, a_column, a_properties);
     break;
@@ -273,6 +280,7 @@ void fixed_layout::PrivateViewBuilder::build_ui_map() {
   m_ui_dict["widget"] = fixed_layout::kWidget;
   m_ui_dict["button"] = fixed_layout::kButton;
   m_ui_dict["image_button"] = fixed_layout::kImageButton;
+  m_ui_dict["image_view"] = fixed_layout::kImageView;
   m_ui_dict["label"] = fixed_layout::kLabel;
   m_ui_dict["line_edit"] = fixed_layout::kLineEdit;
   m_ui_dict["text_edit"] = fixed_layout::kTextEdit;
@@ -417,9 +425,9 @@ widget *fixed_layout::PrivateViewBuilder::add_new_label_at(
 
   ck_label->set_text(QString::fromStdString(a_props.at("label")));
   ck_label->set_size(QSizeF(calculate_cell_width(a_row, a_col),
-                         calculate_cell_height(a_row, a_col)));
-  ck_label->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                             calculate_cell_height(a_row, a_col)));
+  ck_label->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                               calculate_cell_height(a_row, a_col)));
   layout();
 
   return ck_label;
@@ -455,6 +463,23 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
   layout();
 
   return image_button;
+}
+
+widget *fixed_layout::PrivateViewBuilder::add_new_image_view_at(
+    int a_row, int a_col, const widget_properties_t &a_props) {
+  image_view *img_view = new image_view(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = img_view;
+  m_ui_type_dict[pos] = kImageButton;
+
+  img_view->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                                 calculate_cell_height(a_row, a_col)));
+  img_view->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
+                                   calculate_cell_height(a_row, a_col)));
+  layout();
+
+  return img_view;
 }
 
 void fixed_layout::PrivateViewBuilder::update_image_button_properties(
