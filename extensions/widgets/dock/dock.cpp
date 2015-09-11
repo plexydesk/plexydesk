@@ -108,14 +108,14 @@ void desktop_panel_controller_impl::create_dock_action(
 widget *desktop_panel_controller_impl::create_task_action(
     cherry_kit::ui_action &a_task) {
 
-  QSizeF item_icon_size(viewport()->scaled_width(39),
-                        viewport()->scaled_height(39));
+  QSizeF item_icon_size(viewport()->scaled_width(36),
+                        viewport()->scaled_height(36));
   QSizeF item_label_size(viewport()->scaled_width(64),
                          viewport()->scaled_height(24));
 
   widget *l_rv = new widget();
 
-  cherry_kit::image_view *l_image_view = new cherry_kit::image_view(l_rv);
+  cherry_kit::icon_button *l_image_view = new cherry_kit::icon_button(l_rv);
   cherry_kit::label *l_action_label = new cherry_kit::label(l_rv);
   l_action_label->set_text(a_task.name().c_str());
   l_action_label->set_widget_name(a_task.name().c_str());
@@ -124,11 +124,11 @@ widget *desktop_panel_controller_impl::create_task_action(
       a_task.icon().c_str(), "mdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
-  l_image_view->set_size(item_icon_size);
+  l_image_view->set_size(item_icon_size.toSize());
 
-  l_action_label->set_size(item_label_size);
+  l_action_label->set_size(item_label_size.toSize());
   l_action_label->setPos(0, l_image_view->geometry().height());
-  l_image_view->setPos(16, 0);
+  l_image_view->setPos(viewport()->scaled_width(14), 0);
 
   l_rv->setGeometry(l_image_view->geometry());
 
