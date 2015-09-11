@@ -37,7 +37,7 @@ public:
       return ui_action();
   }
 
-  virtual void insert(window *a_window_ptr);
+  virtual void insert(window *a_window_ptr) const;
 
   virtual void set_controller_name(const QString &a_name);
   virtual QString controller_name() const;
