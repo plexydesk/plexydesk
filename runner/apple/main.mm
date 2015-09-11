@@ -100,12 +100,12 @@ public:
       workspace->set_accelerated_rendering(false);
       workspace->move_to_screen(i);
       workspace->add_default_controller("classicbackdrop");
-      workspace->add_default_controller("dockwidget");
       workspace->add_default_controller("plexyclock");
       workspace->add_default_controller("desktopnoteswidget");
       workspace->add_default_controller("folderwidget");
       workspace->add_default_controller("photoframe");
       workspace->add_default_controller("datewidget");
+      workspace->add_default_controller("dockwidget");
 
       workspace->restore_session();
 
