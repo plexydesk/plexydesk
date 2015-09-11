@@ -171,7 +171,7 @@ bool desktop_controller_interface::remove_widget(widget *a_widget_ptr) {
   return false;
 }
 
-void desktop_controller_interface::insert(window *a_window_ptr) {
+void desktop_controller_interface::insert(window *a_window_ptr) const{
   if (!priv->m_viewport) {
     return;
   }
