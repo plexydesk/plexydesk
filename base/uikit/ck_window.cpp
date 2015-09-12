@@ -19,9 +19,11 @@ typedef std::function<void(window *)> WindowActionCallback;
 typedef std::function<void(window *, bool)> WindowVisibilityCallback;
 class window::PrivateWindow {
 public:
-  PrivateWindow() : m_window_content(0), mWindowBackgroundVisibility(true) {}
+  PrivateWindow() : m_window_opacity(1.0f), m_window_content(0),
+    mWindowBackgroundVisibility(true) {}
   ~PrivateWindow() {}
 
+  float m_window_opacity;
   QRectF m_window_geometry;
   widget *m_window_content;
   space *m_window_viewport;
@@ -242,6 +244,8 @@ void window::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr) {
   style_data feature;
   feature.geometry = a_rect_ptr;
   feature.text_data = priv->m_window_title;
+  feature.opacity = priv->m_window_opacity;
+  feature.style_object = this;
 
   if (style()) {
     style()->draw("window_frame", feature, a_painter_ptr);
@@ -262,7 +266,18 @@ void window::discard() {
   if (priv->m_window_discard_callback) {
     qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
     priv->m_window_discard_callback(this);
-  }
+    }
+}
+
+float window::window_opacity() const
+{
+  return priv->m_window_opacity;
+}
+
+void window::set_window_opacity(float a_value)
+{
+  priv->m_window_opacity = a_value;
+  update();
 }
 
 void window::resize(float a_width, float a_height) {
