@@ -71,6 +71,9 @@ public:
   virtual void hide();
   virtual void discard();
 
+  virtual float window_opacity() const;
+  virtual void set_window_opacity(float a_value);
+
   virtual void resize(float a_width, float a_height);
 
   virtual void enable_window_background(bool a_visibility = true);
