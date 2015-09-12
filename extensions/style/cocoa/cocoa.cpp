@@ -282,6 +282,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
 
   a_ctx->save();
   set_default_painter_hints(a_ctx);
+  a_ctx->setOpacity(features.opacity);
 
   /* draw shadow */
   QPainterPath drop_shadow;
@@ -303,7 +304,9 @@ void CocoaStyle::draw_window_frame(const style_data &features,
                   d->color(resource_manager::kLightPrimaryColor));
 
   /* draw seperator */
-  if (!features.text_data.isNull() || !features.text_data.isEmpty()) {
+  window *ck_window = dynamic_cast<window *> (features.style_object);
+
+  if (ck_window && ck_window->window_type() != window::kPanelWindow) {
     QRectF window_title_rect(4, 2, rect.width() - 8, 28.0 * scale_factor());
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
@@ -335,6 +338,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
     a_ctx->restore();
   }
 
+  a_ctx->setOpacity(1.0);
   a_ctx->restore();
 }
 
@@ -903,8 +907,8 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
 
   switch (a_features.render_state) {
   case style_data::kRenderElement:
-    a_ctx->fillPath(background_path,
-                    d->color(resource_manager::kLightPrimaryColor));
+    //a_ctx->fillPath(background_path,
+                    //d->color(resource_manager::kLightPrimaryColor));
     break;
   case style_data::kRenderPressed:
     a_ctx->fillPath(background_path, d->color(resource_manager::kPrimaryColor));
