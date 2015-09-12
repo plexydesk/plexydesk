@@ -41,7 +41,6 @@ public:
   ~PrivateDock() {}
 
 public:
-  window *m_dock_window;
   window *m_deskt_menu;
 
   cherry_kit::item_view *m_task_grid;
@@ -64,6 +63,8 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
   priv->m_deskt_menu->set_window_type(cherry_kit::window::kPopupWindow);
   priv->m_deskt_menu->hide();
   priv->m_deskt_menu->resize(400, 10);
+  priv->m_deskt_menu->set_window_opacity(1.0);
+
 
   priv->m_deskt_menu->on_window_discarded([=](cherry_kit::window *aWindow) {
     if (priv->m_task_grid)
@@ -225,6 +226,7 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   sub_menu->set_window_type(cherry_kit::window::kPopupWindow);
   sub_menu->set_window_title(a_task.name().c_str());
   sub_menu->setGeometry(QRectF(0, 0, 400, 400));
+  sub_menu->set_window_opacity(1.0);
 
   cherry_kit::item_view *sub_task_grid =
       new cherry_kit::item_view(sub_menu, cherry_kit::item_view::kGridModel);
@@ -347,6 +349,7 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 
   cherry_kit::window *m_dock_window = new cherry_kit::window();
   m_dock_window->set_window_type(window::kPanelWindow);
+  m_dock_window->set_window_opacity(0.5);
 
   // navigation
   // so that the icon size is 36.0f;
@@ -575,9 +578,10 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     return;
 
   cherry_kit::window *ck_window = new cherry_kit::window;
-  ck_window->set_window_title("Desktop Preview");
+  ck_window->set_window_title("");
   ck_window->setGeometry(QRectF(0, 0, 400, 400));
   ck_window->set_window_type(cherry_kit::window::kPopupWindow);
+  ck_window->set_window_opacity(0.3);
   cherry_kit::workspace *workspace_ref = viewport()->owner_workspace();
   cherry_kit::item_view *preview_view =
       new cherry_kit::item_view(ck_window, cherry_kit::item_view::kGridModel);
@@ -662,11 +666,6 @@ void desktop_panel_controller_impl::update_desktop_preview() {
 
   QPointF menu_pos = viewport()->center(
       ck_window->geometry(), QRectF(), cherry_kit::space::kCenterOnViewportTop);
-
-// menu_pos.setX(m_dock_window->geometry().width() + 5);
-#if defined(__APPLE__) || defined(__linux__)
-  menu_pos.setY(menu_pos.y() + viewport()->scaled_height(24));
-#endif
 
   ck_window->setPos(menu_pos);
 }
