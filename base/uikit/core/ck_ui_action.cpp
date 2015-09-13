@@ -52,7 +52,7 @@ void ui_action::set_name(const std::string &a_name) {
   priv->m_action_name = a_name;
 }
 
-std::string ui_action::controller() const { priv->m_controller_name; }
+std::string ui_action::controller() const { return priv->m_controller_name; }
 
 void ui_action::set_controller(const std::string &a_name) {
   priv->m_controller_name = a_name;
