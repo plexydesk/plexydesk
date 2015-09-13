@@ -136,7 +136,7 @@ if (NOT APPLE AND UNIX)
 endif ()
 
 if (WIN32)
-    set(RESOURCES_DEST_DIR resources/icons/)
+    set(RESOURCES_DEST_DIR /resources/icons/)
 endif()
 
 #set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS})
