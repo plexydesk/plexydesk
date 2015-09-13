@@ -26,6 +26,8 @@
 #include <map>
 #include <vector>
 
+#include <plexydesk_ui_exports.h>
+
 namespace cherry_kit {
 class ui_action;
 typedef std::vector<ui_action> ui_action_list;
@@ -33,7 +35,7 @@ typedef std::map<std::string, std::string> ui_task_data_t;
 typedef std::function<void(const ui_action *, const ui_task_data_t &)>
 ui_task_callback_t;
 
-class ui_action {
+class DECL_UI_KIT_EXPORT ui_action {
 public:
   ui_action();
   ui_action(const ui_action &copy);

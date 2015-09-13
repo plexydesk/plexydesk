@@ -4,8 +4,10 @@
 #include <functional>
 #include <chrono>
 
+#include <plexydesk_ui_exports.h>
+
 namespace cherry_kit {
-class timer {
+class DECL_UI_KIT_EXPORT timer {
 public:
   timer(int a_duration);
   virtual ~timer();
