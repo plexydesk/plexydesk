@@ -1,8 +1,10 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include <plexydesk_ui_exports.h>
+
 namespace cherry_kit {
-class screen
+class DECL_UI_KIT_EXPORT screen
 {
 public:
     screen();

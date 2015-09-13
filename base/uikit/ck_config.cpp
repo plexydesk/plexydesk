@@ -102,7 +102,7 @@ std::string config::icon_resource_prefix_path()
 #endif
 
 #ifdef Q_OS_WIN
-  rv = QDir::toNativeSeparators(prefix_path + "resources/icons/");
+  rv = QDir::toNativeSeparators(prefix_path + "/resources/icons/");
 #endif
   return rv.toStdString();
 }
