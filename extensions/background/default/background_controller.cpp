@@ -178,7 +178,7 @@ void desktop_controller_impl::create_task_group() const {
                                         qt_activity_window_location,
                                         dialog_window_geometry, QVariantMap());
 
-    ck_activity->on_notify([&](const std::string &key,
+    ck_activity->on_notify([=](const std::string &key,
                                const std::string &value) {
       if (key.compare("url") == 0) {
         o_ctr->m_background_window->set_background(value);
