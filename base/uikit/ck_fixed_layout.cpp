@@ -28,7 +28,8 @@ class fixed_layout::PrivateViewBuilder {
   } Value;
 
 public:
-  PrivateViewBuilder(widget *a_window) : m_row_count(1), m_column_count(1) {
+  PrivateViewBuilder(widget *a_window) : m_row_count(1), m_column_count(1),
+  m_horizontal_padding(1.0f), m_verticle_padding(2.0f) {
     m_content_frame = new widget(a_window);
     build_ui_map();
   }
@@ -90,38 +91,48 @@ public:
   float m_right_margine;
   float m_top_margine;
   float m_bottom_margine;
+  float m_horizontal_padding;
+  float m_verticle_padding;
 };
 
 fixed_layout::fixed_layout(widget *a_window)
-    : o_fixed_layout(new PrivateViewBuilder(a_window)) {}
+    : priv(new PrivateViewBuilder(a_window)) {}
 
-fixed_layout::~fixed_layout() { delete o_fixed_layout; }
+fixed_layout::~fixed_layout() { delete priv; }
 
 void fixed_layout::set_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
-  o_fixed_layout->m_grid_geometry = QRectF(a_x, a_y, a_width, a_height);
-  o_fixed_layout->m_content_frame->setGeometry(o_fixed_layout->m_grid_geometry);
+  priv->m_grid_geometry = QRectF(a_x, a_y, a_width, a_height);
+  priv->m_content_frame->setGeometry(priv->m_grid_geometry);
   set_content_margin(
-      o_fixed_layout->m_left_margine, o_fixed_layout->m_right_margine,
-      o_fixed_layout->m_top_margine, o_fixed_layout->m_bottom_margine);
+      priv->m_left_margine, priv->m_right_margine,
+      priv->m_top_margine, priv->m_bottom_margine);
   layout();
 }
 
 void fixed_layout::set_content_margin(float a_left, float a_right, float a_top,
                                       float a_bottom) {
-  o_fixed_layout->m_left_margine = a_left;
-  o_fixed_layout->m_right_margine = a_right;
-  o_fixed_layout->m_top_margine = a_top;
-  o_fixed_layout->m_bottom_margine = a_bottom;
+  priv->m_left_margine = a_left;
+  priv->m_right_margine = a_right;
+  priv->m_top_margine = a_top;
+  priv->m_bottom_margine = a_bottom;
 
-  o_fixed_layout->m_grid_geometry.setWidth(
-      o_fixed_layout->m_grid_geometry.width() - (a_left + a_right));
-  o_fixed_layout->m_grid_geometry.setHeight(
-      o_fixed_layout->m_grid_geometry.height() - (a_top + a_bottom));
+  priv->m_grid_geometry.setWidth(
+      priv->m_grid_geometry.width() - ((a_left + a_right) / 2));
+  priv->m_grid_geometry.setHeight(
+      priv->m_grid_geometry.height() - ((a_top + a_bottom) /2 ));
 
-  o_fixed_layout->m_content_frame->setPos(a_left, a_top);
+  priv->m_content_frame->setPos(a_left, a_top);
 
   layout();
+}
+
+void fixed_layout::set_verticle_spacing(float a_value) {
+  priv->m_verticle_padding = a_value;
+}
+
+void fixed_layout::set_horizontal_spacing(float a_value) {
+  priv->m_horizontal_padding = a_value;
 }
 
 void fixed_layout::PrivateViewBuilder::layout() {
@@ -142,11 +153,11 @@ void fixed_layout::PrivateViewBuilder::layout() {
 }
 
 void fixed_layout::add_column(int a_count) {
-  o_fixed_layout->m_column_count = a_count;
+  priv->m_column_count = a_count;
 }
 
 void fixed_layout::add_rows(int a_row_count) {
-  o_fixed_layout->m_row_count = a_row_count;
+  priv->m_row_count = a_row_count;
   for (int i = 0; i < a_row_count; i++) {
     // if (!(d->m_row_data[i] > 1))
     //  continue;
@@ -155,7 +166,7 @@ void fixed_layout::add_rows(int a_row_count) {
 }
 
 void fixed_layout::add_segments(int a_index, int a_count) {
-  o_fixed_layout->m_row_data[a_index] = a_count;
+  priv->m_row_data[a_index] = a_count;
 
   for (int i = 0; i < a_count; i++) {
     set_segment_width(a_index, i, "auto");
@@ -163,46 +174,46 @@ void fixed_layout::add_segments(int a_index, int a_count) {
 }
 
 void fixed_layout::set_row_height(int a_row, const std::string &a_height) {
-  o_fixed_layout->m_row_height_data[a_row] = a_height;
+  priv->m_row_height_data[a_row] = a_height;
 }
 
 void fixed_layout::set_segment_width(int a_row, int a_column,
                                      const std::string &a_width) {
   GridPos pos = std::make_pair(a_row, a_column);
-  o_fixed_layout->m_column_width_data[pos] = a_width;
+  priv->m_column_width_data[pos] = a_width;
 }
 
 widget *fixed_layout::viewport() const {
-  return o_fixed_layout->m_content_frame;
+  return priv->m_content_frame;
 }
 
 widget *fixed_layout::at(int a_row, int a_column) {
   GridPos pos = std::make_pair(a_row, a_column);
-  return o_fixed_layout->m_widget_grid[pos];
+  return priv->m_widget_grid[pos];
 }
 
 widget *fixed_layout::add_new_widget_at(int a_col, int a_row,
                                         const widget_properties_t &a_props) {
-  cherry_kit::widget *ck_widget = new widget(o_fixed_layout->m_content_frame);
+  cherry_kit::widget *ck_widget = new widget(priv->m_content_frame);
   GridPos pos(a_col, a_row);
-  o_fixed_layout->m_widget_grid[pos] = ck_widget;
-  o_fixed_layout->m_ui_type_dict[pos] = kWidget;
+  priv->m_widget_grid[pos] = ck_widget;
+  priv->m_ui_type_dict[pos] = kWidget;
 
   return ck_widget;
 }
 
 widget *fixed_layout::add_new_button_at(int a_row, int a_col,
                                         const widget_properties_t &a_props) {
-  button *btn = new button(o_fixed_layout->m_content_frame);
+  button *btn = new button(priv->m_content_frame);
   GridPos pos(a_row, a_col);
 
-  o_fixed_layout->m_widget_grid[pos] = btn;
-  o_fixed_layout->m_ui_type_dict[pos] = kButton;
+  priv->m_widget_grid[pos] = btn;
+  priv->m_ui_type_dict[pos] = kButton;
 
   // set view properties.
   btn->set_label(QString::fromStdString(a_props.at("label")));
-  btn->set_size(QSizeF(o_fixed_layout->calculate_cell_width(a_row, a_col),
-                       o_fixed_layout->calculate_cell_height(a_row, a_col)));
+  btn->set_size(QSizeF(priv->calculate_cell_width(a_row, a_col),
+                       priv->calculate_cell_height(a_row, a_col)));
 
   layout();
 
@@ -214,14 +225,14 @@ widget *fixed_layout::add_new_label_at(int a_col, int a_row,
   return 0;
 }
 
-void fixed_layout::layout() { o_fixed_layout->layout(); }
+void fixed_layout::layout() { priv->layout(); }
 
 widget *fixed_layout::add_widget(int a_row, int a_column,
                                  const std::string &a_widget,
                                  const widget_properties_t &a_properties) {
   widget *rv = 0;
 
-  switch (o_fixed_layout->m_ui_dict[a_widget]) {
+  switch (priv->m_ui_dict[a_widget]) {
   case kWidget:
     rv = add_new_widget_at(a_row, a_column, a_properties);
     break;
@@ -229,25 +240,25 @@ widget *fixed_layout::add_widget(int a_row, int a_column,
     rv = add_new_button_at(a_row, a_column, a_properties);
     break;
   case kLabel:
-    rv = o_fixed_layout->add_new_label_at(a_row, a_column, a_properties);
+    rv = priv->add_new_label_at(a_row, a_column, a_properties);
     break;
   case kTextEdit:
-    rv = o_fixed_layout->add_new_text_edit_at(a_row, a_column, a_properties);
+    rv = priv->add_new_text_edit_at(a_row, a_column, a_properties);
     break;
   case kImageButton:
-    rv = o_fixed_layout->add_new_image_button_at(a_row, a_column, a_properties);
+    rv = priv->add_new_image_button_at(a_row, a_column, a_properties);
     break;
   case kImageView:
-    rv = o_fixed_layout->add_new_image_view_at(a_row, a_column, a_properties);
+    rv = priv->add_new_image_view_at(a_row, a_column, a_properties);
     break;
   case kCalendar:
-    rv = o_fixed_layout->add_new_calendar_at(a_row, a_column, a_properties);
+    rv = priv->add_new_calendar_at(a_row, a_column, a_properties);
     break;
   case kClock:
-    rv = o_fixed_layout->add_new_clock_at(a_row, a_column, a_properties);
+    rv = priv->add_new_clock_at(a_row, a_column, a_properties);
     break;
   case kDialView:
-    rv = o_fixed_layout->add_new_dial_at(a_row, a_column, a_properties);
+    rv = priv->add_new_dial_at(a_row, a_column, a_properties);
     break;
   default:
     rv = 0;
@@ -260,15 +271,15 @@ void fixed_layout::update_property(int a_row, int a_column,
                                    const widget_properties_t &a_properties) {
   GridPos pos = std::make_pair(a_row, a_column);
 
-  if (o_fixed_layout->m_ui_type_dict.find(pos) ==
-      o_fixed_layout->m_ui_type_dict.end()) {
+  if (priv->m_ui_type_dict.find(pos) ==
+      priv->m_ui_type_dict.end()) {
     qWarning() << Q_FUNC_INFO << "Error: No widget at index : ";
     return;
   }
 
-  switch (o_fixed_layout->m_ui_type_dict[pos]) {
+  switch (priv->m_ui_type_dict[pos]) {
   case kImageButton:
-    o_fixed_layout->update_image_button_properties(a_row, a_column,
+    priv->update_image_button_properties(a_row, a_column,
                                                    a_properties);
     break;
   default:
@@ -352,7 +363,7 @@ fixed_layout::PrivateViewBuilder::calculate_cell_height(int a_row,
                        ? max_height
                        : widget->boundingRect().height();
     }
-    return max_height;
+    return max_height - m_verticle_padding;
   }
 
   float rv = 0;
@@ -367,7 +378,7 @@ fixed_layout::PrivateViewBuilder::calculate_cell_height(int a_row,
   rv = ((m_grid_geometry.height() - auto_height) / 100) *
        get_percentage(m_row_height_data.at(a_row));
 
-  return rv;
+  return rv - m_verticle_padding;
 }
 
 float fixed_layout::PrivateViewBuilder::get_x(int a_row, int a_column) {
@@ -383,7 +394,7 @@ float fixed_layout::PrivateViewBuilder::get_y(int a_row, int a_column) {
   float cell_height = m_top_margine;
 
   for (int i = 0; i < a_row; i++) {
-    float _height = calculate_cell_height(i, 0);
+    float _height = (calculate_cell_height(i, 0) + m_verticle_padding);
     cell_height += _height;
   }
 
