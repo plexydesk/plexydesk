@@ -210,8 +210,7 @@ void desktop_task_controller_impl::createNoteUI(
   NoteWidget *note = new NoteWidget(a_session, window);
   note->set_controller(this);
   note->setViewport(viewport());
-
-  window->setGeometry(note->geometry());
+  //window->setGeometry(note->geometry());
   window->set_window_title("Note");
   window->set_window_content(note);
 
@@ -277,7 +276,7 @@ void desktop_task_controller_impl::createReminderUI(
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);
 
-  view->set_content_margin(10, 2, 5, 5);
+  view->set_content_margin(0, 0, 0, 5);
   view->set_geometry(0, 0, 320, 160);
 
   view->add_rows(2);

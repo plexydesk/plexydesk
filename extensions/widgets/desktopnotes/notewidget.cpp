@@ -108,15 +108,15 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
     return;
 
   d->m_ui = new cherry_kit::fixed_layout(this);
-  d->m_ui->set_content_margin(5, 5, 5, 10);
-  d->m_ui->set_geometry(parent->geometry().x(), parent->geometry().y(),
-                        parent->geometry().width(),
-                        parent->geometry().height());
+  d->m_ui->set_verticle_spacing(5);
+  d->m_ui->set_content_margin(0, 0, 0, 0);
+  d->m_ui->set_geometry(0, 0, 320, 240);
+
   d->m_ui->add_rows(2);
   d->m_ui->add_segments(0, 1);
   d->m_ui->add_segments(1, 9);
-  d->m_ui->set_row_height(0, "90%");
-  d->m_ui->set_row_height(1, "10%");
+  d->m_ui->set_row_height(0, "88%");
+  d->m_ui->set_row_height(1, "12%");
 
   cherry_kit::widget_properties_t text_editor_prop;
   text_editor_prop["text"] = "";
@@ -127,25 +127,41 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   cherry_kit::widget_properties_t button_props;
 
   button_props["label"] = "";
-  button_props["icon"] = "toolbar/ck_red_selection.png";
+  button_props["icon"] = "actions/pd_increase.png";
   d->m_ui->add_widget(1, 0, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "toolbar/ck_blue_selection.png";
+  button_props["icon"] = "actions/pd_increase.png";
   d->m_ui->add_widget(1, 1, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "toolbar/ck_yellow_selection.png";
+  button_props["icon"] = "actions/pd_decrease.png";
   d->m_ui->add_widget(1, 2, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "toolbar/ck_green_selection.png";
+  button_props["icon"] = "actions/pd_settings.png";
   d->m_ui->add_widget(1, 3, "image_button", button_props);
+
+  button_props["label"] = "";
+  button_props["icon"] = "toolbar/ck_red_selection.png";
+  d->m_ui->add_widget(1, 4, "image_button", button_props);
+
+  button_props["label"] = "";
+  button_props["icon"] = "toolbar/ck_blue_selection.png";
+  d->m_ui->add_widget(1, 5, "image_button", button_props);
+
+  button_props["label"] = "";
+  button_props["icon"] = "toolbar/ck_yellow_selection.png";
+  d->m_ui->add_widget(1, 6, "image_button", button_props);
+
+  button_props["label"] = "";
+  button_props["icon"] = "toolbar/ck_green_selection.png";
+  d->m_ui->add_widget(1, 7, "image_button", button_props);
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_delete.png";
   cherry_kit::icon_button *delete_btn = dynamic_cast<cherry_kit::icon_button*>
-      (d->m_ui->add_widget(1, 4, "image_button", button_props));
+      (d->m_ui->add_widget(1, 8, "image_button", button_props));
   if (delete_btn) {
     delete_btn->on_input_event([this](cherry_kit::widget::InputEvent event,
                                const cherry_kit::widget *a_widget_ref) {
@@ -157,18 +173,6 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
 
     });
   }
-
-  button_props["label"] = "";
-  button_props["icon"] = "actions/pd_increase.png";
-  d->m_ui->add_widget(1, 5, "image_button", button_props);
-
-  button_props["label"] = "";
-  button_props["icon"] = "actions/pd_decrease.png";
-  d->m_ui->add_widget(1, 6, "image_button", button_props);
-
-  button_props["label"] = "";
-  button_props["icon"] = "actions/pd_settings.png";
-  d->m_ui->add_widget(1, 7, "image_button", button_props);
 
   connect(d->m_text_editor_widget, SIGNAL(documentTitleAvailable(QString)),
           this, SLOT(onDocuemntTitleAvailable(QString)));
