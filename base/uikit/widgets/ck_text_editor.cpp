@@ -60,7 +60,7 @@ text_editor::text_editor(widget *parent)
   priv->m_proxy_widget = new QGraphicsProxyWidget(this);
   priv->m_text_editor = new PrivateTextBrowser(0);
   priv->m_text_editor->setFontPointSize(
-      8 * resource_manager::style()->scale_factor());
+      11 * resource_manager::style()->scale_factor());
   priv->m_text_editor->setReadOnly(false);
   priv->m_text_editor->setAcceptRichText(true);
   priv->m_text_editor->setAutoFormatting(QTextEdit::AutoAll);
@@ -75,7 +75,7 @@ text_editor::text_editor(widget *parent)
   priv->m_text_editor->move(0.0, 0.0);
   priv->m_proxy_widget->setPos(0.0, 0.0);
 
-  priv->m_text_scale_factor = 1.0;
+  priv->m_text_scale_factor = resource_manager::style()->scale_factor();
   set_widget_flag(cherry_kit::widget::kRenderDropShadow, false);
   set_widget_flag(cherry_kit::widget::kRenderBackground, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -136,7 +136,7 @@ void text_editor::setGeometry(const QRectF &a_rect) {
   priv->m_proxy_widget->setMinimumSize(a_rect.size());
   priv->m_proxy_widget->setMaximumSize(a_rect.size());
   priv->m_proxy_widget->resize(a_rect.size());
-  priv->m_text_editor->resize(a_rect.width() - 10, a_rect.height());
+  priv->m_text_editor->resize(a_rect.width(), a_rect.height());
   priv->m_text_editor->move(0.0, 0.0);
 
   widget::setGeometry(a_rect);
