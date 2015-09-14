@@ -63,6 +63,8 @@ public:
                             float a_height);
   virtual void set_content_margin(float a_left, float a_right, float a_top,
                                   float a_bottom);
+  virtual void set_verticle_spacing(float a_value);
+  virtual void set_horizontal_spacing(float a_value);
 
   virtual void add_column(int a_count);
 
@@ -95,7 +97,7 @@ protected:
 
 private:
   class PrivateViewBuilder;
-  PrivateViewBuilder *const o_fixed_layout;
+  PrivateViewBuilder *const priv;
 };
 }
 #endif // VIEWBUILDER_H
