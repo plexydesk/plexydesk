@@ -299,7 +299,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
 
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
-  window_background_path.addRoundedRect(rect, 6.0, 6.0);
+  window_background_path.addRoundedRect(rect, 4.0, 4.0);
   a_ctx->fillPath(window_background_path,
                   d->color(resource_manager::kLightPrimaryColor));
 
