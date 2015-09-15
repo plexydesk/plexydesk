@@ -37,43 +37,87 @@ public:
   cherry_kit::fixed_layout *m_ui;
 };
 
+void calendar_view::next_view(label *ck_year_label)
+{
+  priv->m_current_date = priv->m_current_date.addMonths(1);
+  set_date(priv->m_current_date);
+  ck_year_label->set_text(QString("%1 %2").
+                           arg(priv->m_current_date.toString("MMM")).
+                           arg(priv->m_current_date.year()));
+}
+
+void calendar_view::previous_view(label *ck_year_label)
+{
+  priv->m_current_date = priv->m_current_date.addMonths(-1);
+  set_date(priv->m_current_date);
+
+  ck_year_label->set_text(QString("%1 %2").
+                          arg(priv->m_current_date.toString("MMM")).
+                          arg(priv->m_current_date.year()));
+}
+
+void calendar_view::reset_view(label *ck_year_label)
+{
+  priv->m_current_date = QDate::currentDate();
+  set_date(priv->m_current_date);
+
+  ck_year_label->set_text(QString("%1 %2").
+                          arg(priv->m_current_date.toString("MMM")).
+                          arg(priv->m_current_date.year()));
+}
+
 calendar_view::calendar_view(widget *parent)
-    : cherry_kit::widget(parent), o_calendar_widget(new PrivateCalendarWidget) {
+    : cherry_kit::widget(parent), priv(new PrivateCalendarWidget) {
 
-  o_calendar_widget->m_ui = new fixed_layout(this);
-  o_calendar_widget->m_ui->set_content_margin(5, 5, 5, 5);
-  o_calendar_widget->m_ui->set_geometry(0, 0, 300, 300);
+  priv->m_ui = new fixed_layout(this);
+  priv->m_ui->set_content_margin(5, 5, 5, 5);
+  priv->m_ui->set_geometry(0, 0, 300, 300);
 
-  o_calendar_widget->m_ui->add_rows(10);
+  priv->m_ui->add_rows(10);
 
-  o_calendar_widget->m_ui->add_segments(0, 3);
-  o_calendar_widget->m_ui->add_segments(2, 7);
+  priv->m_ui->add_segments(0, 3);
+  priv->m_ui->add_segments(2, 7);
 
-  o_calendar_widget->m_ui->set_row_height(0, "7%");
-  o_calendar_widget->m_ui->set_row_height(1, "6%");
-  o_calendar_widget->m_ui->set_row_height(2, "7%");
+  priv->m_ui->set_row_height(0, "7%");
+  priv->m_ui->set_row_height(1, "6%");
+  priv->m_ui->set_row_height(2, "7%");
 
   for (int i = 3; i < 10; i++) {
-    o_calendar_widget->m_ui->add_segments(i, 7);
-    o_calendar_widget->m_ui->set_row_height(i, "8%");
+    priv->m_ui->add_segments(i, 7);
+    priv->m_ui->set_row_height(i, "8%");
   }
 
-  o_calendar_widget->m_ui->set_segment_width(0, 0, "10%");
-  o_calendar_widget->m_ui->set_segment_width(0, 1, "80%");
-  o_calendar_widget->m_ui->set_segment_width(0, 2, "10%");
+  priv->m_ui->set_segment_width(0, 0, "10%");
+  priv->m_ui->set_segment_width(0, 1, "80%");
+  priv->m_ui->set_segment_width(0, 2, "10%");
 
   widget_properties_t ui_data;
 
+  ui_data["label"] = "Year";
+  label *ck_year_label = dynamic_cast<label*>
+      (priv->m_ui->add_widget(0, 1, "label", ui_data));
+  ck_year_label->on_click([=]() {
+    reset_view(ck_year_label);
+  });
+
   ui_data["label"] = "";
   ui_data["icon"] = "toolbar/ck_previous.png";
-  o_calendar_widget->m_ui->add_widget(0, 0, "image_button", ui_data);
+  icon_button *ck_prev_btn = dynamic_cast<icon_button*>
+      (priv->m_ui->add_widget(0, 0, "image_button", ui_data));
+  ck_prev_btn->on_click([=] (){
+    previous_view(ck_year_label);
+  });
 
-  ui_data["label"] = "Year";
-  o_calendar_widget->m_ui->add_widget(0, 1, "label", ui_data);
+  //ui_data["label"] = "Year";
+  //priv->m_ui->add_widget(0, 1, "label", ui_data);
 
   ui_data["label"] = "";
   ui_data["icon"] = "toolbar/ck_next.png";
-  o_calendar_widget->m_ui->add_widget(0, 2, "image_button", ui_data);
+  icon_button *ck_next_btn = dynamic_cast<icon_button*>
+    (priv->m_ui->add_widget(0, 2, "image_button", ui_data));
+  ck_next_btn->on_click([=]() {
+   next_view(ck_year_label);
+  });
 
   char day_name_table[7][4] = {
     "Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat"
@@ -81,25 +125,38 @@ calendar_view::calendar_view(widget *parent)
 
   for (int i = 0; i < 7; i++) {
     ui_data["label"] = day_name_table[i];
-    o_calendar_widget->m_ui->add_widget(2, i, "label", ui_data);
+    priv->m_ui->add_widget(2, i, "label", ui_data);
   }
 
   for (int r = 3; r < 10; r++) {
     for (int c = 0; c < 7; c++) {
       ui_data["label"] = "";
-      o_calendar_widget->m_ui->add_widget(r, c, "label", ui_data);
+      label *ck_date_lbl = dynamic_cast<label*>
+          (priv->m_ui->add_widget(r, c, "label", ui_data));
+      if (ck_date_lbl) {
+          ck_date_lbl->on_click([=]() {
+            clear_selection();
+            //ck_date_lbl->set_highlight(1);
+            int ck_click_date  = ck_date_lbl->text().toInt();
+            priv->m_current_date.setDate(
+                  priv->m_current_date.year(),
+                  priv->m_current_date.month(),
+                  ck_click_date);
+            set_date(priv->m_current_date);
+          });
+      }
     }
   }
 
-  set_date(QDate());
+  reset_view(dynamic_cast<label*>(priv->m_ui->at(0,1)));
 }
 
-calendar_view::~calendar_view() { delete o_calendar_widget; }
+calendar_view::~calendar_view() { delete priv; }
 
 void calendar_view::clear() {
   for (int r = 3; r < 10; r++) {
     for (int c = 0; c < 7; c++) {
-      cherry_kit::widget *widget = o_calendar_widget->m_ui->at(r, c);
+      cherry_kit::widget *widget = priv->m_ui->at(r, c);
 
       if (!widget)
         continue;
@@ -110,6 +167,24 @@ void calendar_view::clear() {
         continue;
 
       label->set_text("");
+      label->set_highlight(false);
+    }
+  }
+}
+
+void calendar_view::clear_selection() {
+  for (int r = 3; r < 10; r++) {
+    for (int c = 0; c < 7; c++) {
+      cherry_kit::widget *widget = priv->m_ui->at(r, c);
+
+      if (!widget)
+        continue;
+
+      cherry_kit::label *label = dynamic_cast<cherry_kit::label *>(widget);
+
+      if (!label)
+        continue;
+
       label->set_highlight(false);
     }
   }
@@ -118,7 +193,7 @@ void calendar_view::clear() {
 void calendar_view::reset() {
   for (int r = 3; r < 10; r++) {
     for (int c = 0; c < 7; c++) {
-      cherry_kit::widget *widget = o_calendar_widget->m_ui->at(r, c);
+      cherry_kit::widget *widget = priv->m_ui->at(r, c);
 
       if (!widget)
         continue;
@@ -134,31 +209,32 @@ void calendar_view::reset() {
   }
 }
 
-QDate calendar_view::selected_date() const { return o_calendar_widget->m_current_date; }
+QDate calendar_view::selected_date() const { return priv->m_current_date; }
 
 void calendar_view::set_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
-  o_calendar_widget->m_ui->set_geometry(a_x, a_y, a_width, a_height);
+  priv->m_ui->set_geometry(a_x, a_y, a_width, a_height);
 }
 
 QRectF calendar_view::geometry() const {
-  return o_calendar_widget->m_ui->viewport()->geometry();
+  return priv->m_ui->viewport()->geometry();
 }
 
 void calendar_view::set_date(const QDate &date) {
   clear();
-  int day = 1;
-  int month = 7;
-  int year = 2015;
+  int day = date.day();
+  int month = date.month();
+  int year = date.year();
+  priv->m_current_date = date;
 
   int week_num = 3;
-  for (int i = 1; i <= o_calendar_widget->days_in_month(day, month, year);
+  for (int i = 1; i <= priv->days_in_month(day, month, year);
        i++) {
-    if (o_calendar_widget->days_of_week(i, month, year) == 0)
+    if (priv->days_of_week(i, month, year) == 0)
       week_num++;
 
-    cherry_kit::widget *widget = o_calendar_widget->m_ui->at(
-        week_num, o_calendar_widget->days_of_week(i, month, year));
+    cherry_kit::widget *widget = priv->m_ui->at(
+        week_num, priv->days_of_week(i, month, year));
 
     if (!widget)
       continue;
@@ -168,13 +244,19 @@ void calendar_view::set_date(const QDate &date) {
     if (!label)
       continue;
 
+    if(i == day)
+      label->set_highlight(1);
     label->set_text(QString("%1").arg(i));
   }
 }
 
-void calendar_view::next() {}
+void calendar_view::next() {
+  next_view(dynamic_cast<label*>(priv->m_ui->at(0,1)));
+}
 
-void calendar_view::previous() {}
+void calendar_view::previous() {
+  previous_view(dynamic_cast<label*>(priv->m_ui->at(0,1)));
+}
 
 void calendar_view::paint_view(QPainter *painter, const QRectF &rect) {}
 

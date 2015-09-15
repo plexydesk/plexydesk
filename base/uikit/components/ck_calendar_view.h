@@ -20,6 +20,7 @@
 #define CALENDARWIDGET_H
 
 #include <ck_widget.h>
+#include <ck_label.h>
 
 namespace cherry_kit {
 class widget;
@@ -39,14 +40,20 @@ public:
   virtual void next();
   virtual void previous();
 
-protected:
+  void clear_selection();
+
+ protected:
   virtual void clear();
   virtual void reset();
+  void next_view(label *ck_year_label);
+  void previous_view(label *ck_year_label);
+  void reset_view(label *ck_year_label);
+
   virtual void paint_view(QPainter *painter, const QRectF &rect);
 
 private:
   class PrivateCalendarWidget;
-  PrivateCalendarWidget *const o_calendar_widget;
+  PrivateCalendarWidget *const priv;
 };
 }
 
