@@ -295,9 +295,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
     ck_window->setPos(window_location);
   }
 
-  ck_location_btn->on_input_event([=](cherry_kit::widget::InputEvent a_event,
-                                      const cherry_kit::widget *a_widget) {
-    if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
+  ck_location_btn->on_click([=]() {
       if (a_controller && a_controller->viewport()) {
         cherry_kit::space *ck_space = a_controller->viewport();
 
@@ -321,7 +319,6 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
               a_session->session_id_to_string(), "zone_id", zone_id);
         });
       }
-    }
   });
 }
 
@@ -409,9 +406,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
     ck_window->set_window_title(time_as_string);
   });
 
-  ck_start_btn->on_input_event([=](cherry_kit::widget::InputEvent a_event,
-                                   const cherry_kit::widget *a_widget) {
-    if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
+  ck_start_btn->on_click([=]() {
       if (!timer->is_active()) {
         if (ck_dial) {
           timer->start();
@@ -429,7 +424,6 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
           ck_start_btn->set_pixmap(pixmap);
         }
       }
-    }
   });
 
   // dial

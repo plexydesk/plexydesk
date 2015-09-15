@@ -92,6 +92,8 @@ public:
   virtual void on_input_event(std::function<
       void(InputEvent a_type, const widget *a_widget_ptr)> a_callback);
 
+  virtual void on_click(std::function<void()> a_callback);
+
   virtual void
   on_geometry_changed(std::function<void(const QRectF &)> a_callback);
 
@@ -124,6 +126,7 @@ protected:
   virtual void set_child_widet_visibility(bool a_visibility);
 
   virtual void exec_func(InputEvent a_type, const widget *a_widget_ptr);
+  virtual void invoke_click_handlers();
 private:
   class PrivateWidget;
   PrivateWidget *const priv;
