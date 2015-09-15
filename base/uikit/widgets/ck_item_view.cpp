@@ -150,12 +150,10 @@ void item_view::insert(widget *a_widget_ptr) {
   a_widget_ptr->setParentItem(d->m_scroll_frame);
   a_widget_ptr->setParent(d->m_scroll_frame);
 
-  a_widget_ptr->on_input_event([this](int type, const widget *widget) {
-    if (type == widget::kMouseReleaseEvent) {
+  a_widget_ptr->on_click([=] () {
       if (d->m_activation_handler) {
-        d->m_activation_handler(widget->widget_id());
+        d->m_activation_handler(a_widget_ptr->widget_id());
       }
-    }
   });
 
   switch (d->m_model_view_type) {

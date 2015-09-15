@@ -50,12 +50,8 @@ model_view_item::~model_view_item() {
 void model_view_item::set_view(widget *a_widget) {
   o_model_view_item->m_view_ptr = a_widget;
 
-  a_widget->on_input_event([&](widget::InputEvent a_event,
-                               const widget *a_widget) {
+  a_widget->on_click([&]() {
     qDebug() << Q_FUNC_INFO << "Model view register";
-    if (a_event != widget::kMouseReleaseEvent)
-      return;
-
     if (o_model_view_item->m_item_handler) {
       o_model_view_item->m_item_handler(this);
     }
