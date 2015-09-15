@@ -216,7 +216,7 @@ void desktop_controller_impl::create_task_group() const {
 
     // setup ui
     cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
-    ck_ui->set_content_margin(10, 10, 10, 10);
+    ck_ui->set_content_margin(0, 0, 10, 10);
 
     QPixmap previw_img = viewport()->owner_workspace()->thumbnail(viewport(), 2);
 
@@ -227,8 +227,8 @@ void desktop_controller_impl::create_task_group() const {
     ck_ui->add_segments(0, 1);
     ck_ui->add_segments(1, 4);
 
-    ck_ui->set_row_height(0, "80%");
-    ck_ui->set_row_height(1, "20%");
+    ck_ui->set_row_height(0, "90%");
+    ck_ui->set_row_height(1, "10%");
 
     cherry_kit::widget_properties_t ck_ui_data;
     cherry_kit::image_view *preview_view =
