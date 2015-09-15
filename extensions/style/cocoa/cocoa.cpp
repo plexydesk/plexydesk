@@ -224,7 +224,7 @@ void CocoaStyle::draw_push_button(const style_data &features,
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kDarkPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter, 8, true);
+    d->set_default_font_size(painter, 8);
     painter->drawPath(button_background_path);
   } else {
     painter->fillPath(button_background_path,
