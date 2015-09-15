@@ -428,11 +428,7 @@ void desktop_task_controller_impl::createReminderUI(
       dynamic_cast<cherry_kit::icon_button *>(view->at(1, 0));
 
   if (set_btn) {
-    cherry_kit::widget::InputCallback func = [=](
-        cherry_kit::widget::InputEvent a_event,
-        const cherry_kit::widget *a_widget) {
-      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-        // todo : invoke the calendar.
+    std::function<void ()> func = [=]() {
         if (!viewport())
           return;
 
@@ -448,10 +444,9 @@ void desktop_task_controller_impl::createReminderUI(
             viewport()->open_desktop_dialog("date_dialog", "Date", dialog_pos,
                                             dialog_rect, QVariantMap());
         //todo handle dialog close.
-      }
     };
 
-    set_btn->on_input_event(func);
+    set_btn->on_click(func);
   }
 
   window->on_window_discarded([this](cherry_kit::window *aWindow) {
