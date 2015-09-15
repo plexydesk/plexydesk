@@ -64,7 +64,7 @@ void NoteWidget::createToolBar() {
   /*
 d->m_note_toolbar_widget = new cherry_kit::ToolBar(this);
 d->m_note_toolbar_widget->add_action("contact", "pd_add_contact_icon.png",
-                                     false);
+                                     false);∫
 d->m_note_toolbar_widget->add_action("list", "pd_list_icon.png", false);
 d->m_note_toolbar_widget->add_action("date", "pd_calendar_icon.png", false);
 d->m_note_toolbar_widget->add_action("red", "pd_icon_red_color_action.png",
@@ -243,7 +243,7 @@ void NoteWidget::attach_image(const std::string &a_url) {
   prepareGeometryChange();
 
   if (d->m_image_attachment_view) {
-    float image_width_ratio = 220.0 / pixmap.width();
+    float image_width_ratio = 320.0 / pixmap.width();
 
     float image_height = pixmap.height() * image_width_ratio;
     float image_width = pixmap.width() * image_width_ratio;
@@ -255,17 +255,17 @@ void NoteWidget::attach_image(const std::string &a_url) {
 
     d->m_image_attachment_view->setGeometry(QRectF(0, 0, image_width, image_height));
     d->m_image_attachment_view->set_size(QSizeF(image_width, image_height));
-    d->m_image_attachment_view->setPos(10, 0);
+    d->m_image_attachment_view->setPos(1, 0);
     d->m_image_attachment_view->update();
     d->m_image_attachment_view->updateGeometry();
     d->m_image_attachment_view->show();
 
     if (d->m_text_editor_widget) {
-      d->m_text_editor_widget->setMinimumWidth(image_width);
-      d->m_ui->viewport()->setPos(10, image_height);
+      d->m_text_editor_widget->setMinimumWidth(image_width + 1);
+      d->m_ui->viewport()->setPos(1, image_height);
     }
 
-    setGeometry(QRectF(5, 0, image_width + 20, image_height +
+    setGeometry(QRectF(0, 0, image_width + 2, image_height +
                        d->m_ui->viewport()->geometry().height()));
 
     d->notify_config_change("image", a_url.c_str());
