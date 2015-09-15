@@ -343,14 +343,15 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 
   cherry_kit::window *m_dock_window = new cherry_kit::window();
   m_dock_window->set_window_type(window::kPanelWindow);
-  m_dock_window->set_window_opacity(0.5);
+  m_dock_window->set_window_opacity(1.0);
 
   // navigation
   // so that the icon size is 36.0f;
-  float icon_size = viewport()->scaled_width(36.0f);
+  float icon_size = viewport()->scaled_width(48.0f);
   cherry_kit::fixed_layout *panel_ui =
       new cherry_kit::fixed_layout(m_dock_window);
-  panel_ui->set_content_margin(3, 5, 5, 5);
+  panel_ui->set_content_margin(0, 0, 5, 5);
+  panel_ui->set_verticle_spacing(10.0f);
   panel_ui->set_geometry(0, 0, icon_size + 8, icon_size * 7);
   panel_ui->add_rows(7);
 
