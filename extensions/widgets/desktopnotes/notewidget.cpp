@@ -135,44 +135,59 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   d->m_ui->add_widget(1, 1, "image_button", button_props);
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_decrease.png";
-  d->m_ui->add_widget(1, 2, "image_button", button_props);
+  button_props["icon"] = "actions/pd_copy_text.png";
+  cherry_kit::icon_button *copy_btn = dynamic_cast<cherry_kit::icon_button *>
+    (d->m_ui->add_widget(1, 2, "image_button", button_props));
+  copy_btn->on_click([this]() {});
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_settings.png";
-  d->m_ui->add_widget(1, 3, "image_button", button_props);
+  button_props["icon"] = "actions/pd_paste_text.png";
+  cherry_kit::icon_button *paste_btn = dynamic_cast<cherry_kit::icon_button *>
+    (d->m_ui->add_widget(1, 3, "image_button", button_props));
+  paste_btn->on_click([this]() {});
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_red_selection.png";
-  d->m_ui->add_widget(1, 4, "image_button", button_props);
+  cherry_kit::icon_button *red_btn = dynamic_cast<cherry_kit::icon_button *>
+    (d->m_ui->add_widget(1, 4, "image_button", button_props));
+  red_btn->on_click([this]() {
+    exec_toolbar_action("red");
+  });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_blue_selection.png";
-  d->m_ui->add_widget(1, 5, "image_button", button_props);
+  cherry_kit::icon_button *blue_btn = dynamic_cast<cherry_kit::icon_button *>
+   (d->m_ui->add_widget(1, 5, "image_button", button_props));
+  blue_btn->on_click([this]() {
+    exec_toolbar_action("blue");
+  });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_yellow_selection.png";
-  d->m_ui->add_widget(1, 6, "image_button", button_props);
+  cherry_kit::icon_button *yellow_btn =
+      dynamic_cast<cherry_kit::icon_button *>
+      (d->m_ui->add_widget(1, 6, "image_button", button_props));
+  yellow_btn->on_click([this]() {
+      exec_toolbar_action("yellow");
+  });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_green_selection.png";
-  d->m_ui->add_widget(1, 7, "image_button", button_props);
+  cherry_kit::icon_button *green_btn  = dynamic_cast<cherry_kit::icon_button*>(
+      d->m_ui->add_widget(1, 7, "image_button", button_props));
+  green_btn->on_click([this]() {
+      exec_toolbar_action("green");
+  });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_delete.png";
   cherry_kit::icon_button *delete_btn = dynamic_cast<cherry_kit::icon_button*>
       (d->m_ui->add_widget(1, 8, "image_button", button_props));
-  if (delete_btn) {
-    delete_btn->on_input_event([this](cherry_kit::widget::InputEvent event,
-                               const cherry_kit::widget *a_widget_ref) {
-      if (event != cherry_kit::widget::kMouseReleaseEvent)
-        return;
 
-      if (d->m_on_delete_func)
-        d->m_on_delete_func();
-
-    });
-  }
+  delete_btn->on_click([this]() {
+    if (d->m_on_delete_func)
+      d->m_on_delete_func();
+  });
 
   connect(d->m_text_editor_widget, SIGNAL(documentTitleAvailable(QString)),
           this, SLOT(onDocuemntTitleAvailable(QString)));
@@ -360,7 +375,7 @@ void NoteWidget::onDocuemntTitleAvailable(const QString &title) {
   this->setTitle(title);
 }
 
-void NoteWidget::onToolBarAction(const QString &action) {
+void NoteWidget::exec_toolbar_action(const QString &action) {
   qDebug() << Q_FUNC_INFO << action;
   if (action == tr("date")) {
 

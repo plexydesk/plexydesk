@@ -52,7 +52,7 @@ Q_SLOTS:
   void onClicked();
   void onTextUpdated(const QString &text);
   void onDocuemntTitleAvailable(const QString &title);
-  void onToolBarAction(const QString &action);
+  void exec_toolbar_action(const QString &action);
 
   // web service
   void onServiceCompleteJson(QuetzalSocialKit::WebService *service);

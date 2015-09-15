@@ -51,9 +51,9 @@ public:
   std::vector<std::function<void(const QRectF &)> > m_on_geometry_func_list;
   std::vector<EventCallbackFunc> m_handler_list;
   std::vector<UpdateCallback> m_update_monitor_list;
+  std::vector<std::function<void()>> m_on_click_handlers;
 
   WidgetList m_child_list;
-
   unsigned char *m_surface;
 };
 
@@ -94,6 +94,10 @@ void widget::set_widget_flag(int a_flags, bool a_enable) {}
 void widget::on_input_event(
     std::function<void(InputEvent, const widget *)> a_callback) {
   priv->m_handler_list.push_back(a_callback);
+}
+
+void widget::on_click(std::function<void ()> a_callback) {
+  priv->m_on_click_handlers.push_back(a_callback);
 }
 
 void
@@ -248,7 +252,8 @@ void widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
 }
 
 void widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  exec_func(kMouseReleaseEvent, this);
+  invoke_click_handlers();
+  //exec_func(kMouseReleaseEvent, this);
 }
 
 void widget::focusOutEvent(QFocusEvent *event) {
@@ -290,6 +295,17 @@ void widget::exec_func(InputEvent a_type,
       a_func(a_type, a_widget_ptr);
     else
       qWarning() << Q_FUNC_INFO << "Fatal Error : Function out of scope";
+  });
+}
+
+void widget::invoke_click_handlers() {
+   std::for_each(std::begin(priv->m_on_click_handlers),
+                std::end(priv->m_on_click_handlers),
+                [&](std::function<void()> a_func) {
+    if (a_func)
+      a_func();
+    else
+      qDebug() << Q_FUNC_INFO << "INvalid function pointer";
   });
 }
 
