@@ -97,12 +97,9 @@ void desktop_panel_controller_impl::create_dock_action(
   ck_widget =
       m_fixed_panel_layout->add_widget(row, column, "image_button", prop);
 
-  ck_widget->on_input_event([=](cherry_kit::widget::InputEvent a_event,
-                                const cherry_kit::widget *a_widget) {
-    if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-      if (a_button_action_func)
-        a_button_action_func();
-    }
+  ck_widget->on_click([=]() {
+    if (a_button_action_func)
+      a_button_action_func();
   });
 }
 
@@ -150,11 +147,8 @@ widget *desktop_panel_controller_impl::create_task_action(
     }
   });
 
-  l_image_view->on_input_event([=](cherry_kit::widget::InputEvent aEvent,
-                                   const widget *aWidget) {
-    if (aEvent == cherry_kit::widget::kMouseReleaseEvent) {
+  l_image_view->on_click([=]() {
       a_task.execute();
-    }
   });
 
   return l_rv;
