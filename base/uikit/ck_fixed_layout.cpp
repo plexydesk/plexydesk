@@ -13,6 +13,7 @@
 #include <ck_dial_view.h>
 #include <ck_image_view.h>
 #include <ck_widget.h>
+#include <ck_item_view.h>
 
 namespace cherry_kit {
 
@@ -93,6 +94,7 @@ public:
   float m_bottom_margine;
   float m_horizontal_padding;
   float m_verticle_padding;
+  widget *add_new_model_view_at(int a_row, int a_col, const widget_properties_t &a_props);
 };
 
 fixed_layout::fixed_layout(widget *a_window)
@@ -259,6 +261,9 @@ widget *fixed_layout::add_widget(int a_row, int a_column,
     break;
   case kDialView:
     rv = priv->add_new_dial_at(a_row, a_column, a_properties);
+    break;
+  case kModelView:
+    rv = priv->add_new_model_view_at(a_row, a_column, a_properties);
     break;
   default:
     rv = 0;
@@ -591,5 +596,24 @@ widget *fixed_layout::PrivateViewBuilder::add_new_dial_at(
   layout();
 
   return dial_widget;
+}
+
+widget *fixed_layout::PrivateViewBuilder::add_new_model_view_at(
+    int a_row, int a_col, const widget_properties_t &a_props) {
+  cherry_kit::item_view *item_view =
+      new cherry_kit::item_view(m_content_frame, cherry_kit::item_view::kListModel);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = item_view;//_widget;
+  m_ui_type_dict[pos] = kModelView;
+
+  item_view->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                                  calculate_cell_height(a_row, a_col)));
+
+  item_view->set_view_geometry(QRectF(0, 0,
+                                      calculate_cell_width(a_row, a_col),
+                                      calculate_cell_height(a_row, a_col)));
+
+  return item_view;
 }
 }
