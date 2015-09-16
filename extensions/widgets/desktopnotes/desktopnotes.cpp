@@ -68,54 +68,6 @@ void desktop_task_controller_impl::submit_session_data(
 
 void desktop_task_controller_impl::set_view_rect(const QRectF &rect) {}
 
-/*
-cherry_kit::ActionList desktop_task_controller_impl::actions() const {
-  return priv->m_supported_action_list;
-}
-
-void desktop_task_controller_impl::request_action(const QString &actionName,
-                                                  const QVariantMap &args) {
-  QPointF window_location;
-
-  if (viewport()) {
-    window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
-  }
-
-  QVariantMap session_args;
-
-  switch (priv->mNoteActions[actionName]) {
-  case 1:
-    session_args["x"] = window_location.x();
-    session_args["y"] = window_location.y();
-    session_args["notes_id"] = session_count();
-    session_args["database_name"] =
-        QString::fromStdString(session_store_name("Notes"));
-
-    start_session("Notes", session_args, false,
-                  [this](cherry_kit::desktop_controller_interface *a_controller,
-                         cherry_kit::session_sync *a_session) {
-      createNoteUI(a_session);
-    });
-    break;
-  case 2:
-    session_args["x"] = window_location.x();
-    session_args["y"] = window_location.y();
-    session_args["reminders_id"] = session_count();
-    session_args["database_name"] =
-        QString::fromStdString(session_store_name("reminders"));
-
-    start_session("Reminders", session_args, false,
-                  [this](cherry_kit::desktop_controller_interface *a_controller,
-                         cherry_kit::session_sync *a_session) {
-      createReminderUI(a_session);
-    });
-    break;
-  default:
-    qWarning() << Q_FUNC_INFO << "Unknown Action";
-  }
-}
-*/
-
 cherry_kit::ui_action desktop_task_controller_impl::task() {
   cherry_kit::ui_action task;
   task.set_name("Record");
