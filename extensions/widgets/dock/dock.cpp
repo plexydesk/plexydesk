@@ -105,7 +105,6 @@ void desktop_panel_controller_impl::create_dock_action(
 
 widget *desktop_panel_controller_impl::create_task_action(
     cherry_kit::ui_action &a_task) {
-
   QSizeF item_icon_size(viewport()->scaled_width(36),
                         viewport()->scaled_height(36));
   QSizeF item_label_size(viewport()->scaled_width(64),
