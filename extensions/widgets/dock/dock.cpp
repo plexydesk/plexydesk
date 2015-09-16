@@ -343,7 +343,7 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 
   cherry_kit::window *m_dock_window = new cherry_kit::window();
   m_dock_window->set_window_type(window::kPanelWindow);
-  m_dock_window->set_window_opacity(1.0);
+  m_dock_window->set_window_opacity(0.5f);
 
   // navigation
   // so that the icon size is 36.0f;
