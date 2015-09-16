@@ -252,8 +252,8 @@ void widget::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
 }
 
 void widget::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
+  exec_func(kMouseReleaseEvent, this);
   invoke_click_handlers();
-  //exec_func(kMouseReleaseEvent, this);
 }
 
 void widget::focusOutEvent(QFocusEvent *event) {
