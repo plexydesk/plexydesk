@@ -217,12 +217,9 @@ widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
 
   l_rv->setMinimumSize(l_action_item_size);
 
-  l_image_view->on_input_event([this](cherry_kit::widget::InputEvent aEvent,
-                                      const widget *aWidget) {
-    if (aEvent == cherry_kit::widget::kMouseReleaseEvent) {
-      if (m_action_handler) {
-        m_action_handler(this);
-      }
+  l_image_view->on_click([this]() {
+    if (m_action_handler) {
+      m_action_handler(this);
     }
   });
 

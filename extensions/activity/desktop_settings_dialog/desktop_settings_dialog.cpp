@@ -131,7 +131,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
 
   priv->m_progress_window = new cherry_kit::window(priv->m_window);
   priv->m_progress_window->set_window_type(
-              cherry_kit::window::kNotificationWindow);
+      cherry_kit::window::kNotificationWindow);
   priv->m_progress_window->setGeometry(QRectF(0, 0, 320, 240));
   priv->m_progress_widget =
       new cherry_kit::progress_bar(priv->m_progress_window);
@@ -192,8 +192,9 @@ void desktop_settings_dialog::purge() {
   priv->m_window = 0;
 }
 
-void desktop_settings_dialog::insert_image_to_grid(
-    const QImage &ck_preview_pixmap, const std::string &a_file_url) {
+void
+desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
+                                              const std::string &a_file_url) {
 
   if (ck_preview_pixmap.isNull()) {
     qWarning() << Q_FUNC_INFO << "Null image in list";
@@ -203,13 +204,7 @@ void desktop_settings_dialog::insert_image_to_grid(
   cherry_kit::image_view *ck_image_preview =
       new cherry_kit::image_view(priv->m_image_view);
 
-  ck_image_preview->on_input_event([=](cherry_kit::widget::InputEvent event,
-                              const cherry_kit::widget *widget) {
-
-      if (event == cherry_kit::widget::kMouseReleaseEvent) {
-          notify_message("url", a_file_url);
-      }
-  });
+  ck_image_preview->on_click([=]() { notify_message("url", a_file_url); });
 
   ck_image_preview->set_image(ck_preview_pixmap);
 
@@ -274,7 +269,7 @@ void desktop_settings_dialog::invoke_image_loader() {
     ck_image_service->preview_image(a_file);
   });
 
-  //current_file_list.erase(std::end(current_file_list));
+  // current_file_list.erase(std::end(current_file_list));
 
   if (priv->m_progress_window) {
     priv->m_progress_window->hide();
@@ -326,8 +321,8 @@ desktop_settings_dialog::PrivatePhotoSearch::locate_system_images() {
     }
   });
 
-  //if (image_path_list.size() > 0)
-   // image_path_list.erase(std::end(image_path_list));
+  // if (image_path_list.size() > 0)
+  // image_path_list.erase(std::end(image_path_list));
 
   return rv_list;
 }
