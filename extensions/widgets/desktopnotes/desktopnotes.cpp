@@ -39,12 +39,9 @@ public:
 
 desktop_task_controller_impl::desktop_task_controller_impl(QObject *object)
     : cherry_kit::desktop_controller_interface(object),
-      priv(new PrivateDesktopNotes) {
-}
+      priv(new PrivateDesktopNotes) {}
 
-desktop_task_controller_impl::~desktop_task_controller_impl() {
-  delete priv;
-}
+desktop_task_controller_impl::~desktop_task_controller_impl() { delete priv; }
 
 void desktop_task_controller_impl::init() {}
 
@@ -133,26 +130,26 @@ cherry_kit::ui_action desktop_task_controller_impl::task() {
   note_action.set_icon("panel/ck_add.png");
   note_action.set_controller(controller_name().toStdString());
   note_action.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                            const cherry_kit::ui_task_data_t &a_data) {
-  QPointF window_location;
+                              const cherry_kit::ui_task_data_t &a_data) {
+    QPointF window_location;
 
-  if (viewport()) {
-    window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
-  }
+    if (viewport()) {
+      window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+    }
 
-  QVariantMap session_args;
-  session_args["x"] = window_location.x();
-  session_args["y"] = window_location.y();
-  session_args["notes_id"] = session_count();
-  session_args["database_name"] =
-      QString::fromStdString(session_store_name("Notes"));
+    QVariantMap session_args;
+    session_args["x"] = window_location.x();
+    session_args["y"] = window_location.y();
+    session_args["notes_id"] = session_count();
+    session_args["database_name"] =
+        QString::fromStdString(session_store_name("Notes"));
 
-  start_session("Notes", session_args, false,
-                [this](cherry_kit::desktop_controller_interface *a_controller,
-                       cherry_kit::session_sync *a_session) {
-    createNoteUI(a_session);
+    start_session("Notes", session_args, false,
+                  [this](cherry_kit::desktop_controller_interface *a_controller,
+                         cherry_kit::session_sync *a_session) {
+      createNoteUI(a_session);
+    });
   });
-});
 
   cherry_kit::ui_action task_action;
   task_action.set_name("Task");
@@ -161,7 +158,7 @@ cherry_kit::ui_action desktop_task_controller_impl::task() {
   task_action.set_icon("panel/ck_add.png");
   task_action.set_controller(controller_name().toStdString());
   task_action.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                            const cherry_kit::ui_task_data_t &a_data) {
+                              const cherry_kit::ui_task_data_t &a_data) {
     QPointF window_location;
 
     if (viewport()) {
@@ -173,11 +170,11 @@ cherry_kit::ui_action desktop_task_controller_impl::task() {
     session_args["y"] = window_location.y();
     session_args["reminders_id"] = session_count();
     session_args["database_name"] =
-    QString::fromStdString(session_store_name("reminders"));
+        QString::fromStdString(session_store_name("reminders"));
 
     start_session("Reminders", session_args, false,
-                   [this](cherry_kit::desktop_controller_interface *a_controller,
-                          cherry_kit::session_sync *a_session) {
+                  [this](cherry_kit::desktop_controller_interface *a_controller,
+                         cherry_kit::session_sync *a_session) {
       createReminderUI(a_session);
     });
   });
@@ -190,7 +187,8 @@ cherry_kit::ui_action desktop_task_controller_impl::task() {
 
 void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
                                                      QDropEvent *event) {
-  const QString drop_file_name = event->mimeData()->urls().value(0).toLocalFile();
+  const QString drop_file_name =
+      event->mimeData()->urls().value(0).toLocalFile();
   QFileInfo fileInfo(drop_file_name);
 
   if (fileInfo.isFile()) {
@@ -210,7 +208,7 @@ void desktop_task_controller_impl::createNoteUI(
   NoteWidget *note = new NoteWidget(a_session, window);
   note->set_controller(this);
   note->setViewport(viewport());
-  //window->setGeometry(note->geometry());
+  // window->setGeometry(note->geometry());
   window->set_window_title("Note");
   window->set_window_content(note);
 
@@ -242,7 +240,7 @@ void desktop_task_controller_impl::createNoteUI(
 
   if (a_session->session_keys().contains("image")) {
     note->attach_image(
-                a_session->session_data("image").toString().toStdString());
+        a_session->session_data("image").toString().toStdString());
   }
 
   note->on_note_config_changed([=](const QString &a_key,
@@ -253,7 +251,7 @@ void desktop_task_controller_impl::createNoteUI(
         a_value.toStdString());
   });
 
-  note->on_note_deleted([=] () {
+  note->on_note_deleted([=]() {
     a_session->unbind_window(window);
     window->close();
   });
@@ -340,110 +338,98 @@ void desktop_task_controller_impl::createReminderUI(
       dynamic_cast<cherry_kit::icon_button *>(view->at(1, 3));
 
   if (delete_btn) {
-    cherry_kit::widget::InputCallback func = [=](
-        cherry_kit::widget::InputEvent a_event,
-        const cherry_kit::widget *a_widget) {
-      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-        a_session->unbind_window(window);
-        window->close();
-      }
+    std::function<void()> func = [=]() {
+      a_session->unbind_window(window);
+      window->close();
     };
 
-    delete_btn->on_input_event(func);
+    delete_btn->on_click(func);
   }
 
   cherry_kit::icon_button *save_btn =
       dynamic_cast<cherry_kit::icon_button *>(view->at(1, 2));
 
   if (save_btn) {
-    cherry_kit::widget::InputCallback func = [=](
-        cherry_kit::widget::InputEvent a_event,
-        const cherry_kit::widget *a_widget) {
-      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-        cherry_kit::text_editor *editor =
-            dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
-        if (editor) {
-          a_session->save_session_attribute(
-              session_store_name("reminders"), "Reminders", "reminders_id",
-              a_session->session_id_to_string(), "text",
-              editor->text().toStdString());
-        }
+    std::function<void()> func = [=]() {
+      cherry_kit::text_editor *editor =
+          dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
+      if (editor) {
+        a_session->save_session_attribute(session_store_name("reminders"),
+                                          "Reminders", "reminders_id",
+                                          a_session->session_id_to_string(),
+                                          "text", editor->text().toStdString());
       }
     };
 
-    save_btn->on_input_event(func);
+    save_btn->on_click(func);
   }
 
   cherry_kit::icon_button *done_btn =
       dynamic_cast<cherry_kit::icon_button *>(view->at(1, 1));
 
   if (done_btn) {
-    cherry_kit::widget::InputCallback func = [=](
-        cherry_kit::widget::InputEvent a_event,
-        const cherry_kit::widget *a_widget) {
-      if (a_event == cherry_kit::widget::kMouseReleaseEvent) {
-        cherry_kit::text_editor *editor =
-            dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
-        bool is_complete = 0;
+    std::function<void()> func = [=]() {
+      cherry_kit::text_editor *editor =
+          dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
+      bool is_complete = 0;
 
-        if (a_session->session_keys().contains("state")) {
-          qDebug() << Q_FUNC_INFO << "Current state : "
-                   << a_session->session_data("state").toString();
-        }
-
-        if (a_session->session_keys().contains("state") &&
-            (a_session->session_data("state").toString() == "done")) {
-          is_complete = 1;
-        }
-
-        if (editor) {
-          if (is_complete)
-            editor->style("border: 0; background: #ffffff; color: #000000");
-          else
-            editor->style("border: 0; background: #29CDA8; color: #ffffff");
-        }
-
-        cherry_kit::widget_properties_t update_prop;
-        if (is_complete) {
-          update_prop["label"] = "";
-          update_prop["icon"] = "toolbar/ck_ok.png";
-        } else {
-          update_prop["label"] = "";
-          update_prop["icon"] = "toolbar/ck_play.png";
-        }
-
-        view->update_property(1, 1, update_prop);
-
-        a_session->save_session_attribute(
-            session_store_name("reminders"), "Reminders", "reminders_id",
-            a_session->session_id_to_string(), "state",
-            (is_complete == 1) ? "wip" : "done");
+      if (a_session->session_keys().contains("state")) {
+        qDebug() << Q_FUNC_INFO << "Current state : "
+                 << a_session->session_data("state").toString();
       }
+
+      if (a_session->session_keys().contains("state") &&
+          (a_session->session_data("state").toString() == "done")) {
+        is_complete = 1;
+      }
+
+      if (editor) {
+        if (is_complete)
+          editor->style("border: 0; background: #ffffff; color: #000000");
+        else
+          editor->style("border: 0; background: #29CDA8; color: #ffffff");
+      }
+
+      cherry_kit::widget_properties_t update_prop;
+      if (is_complete) {
+        update_prop["label"] = "";
+        update_prop["icon"] = "toolbar/ck_ok.png";
+      } else {
+        update_prop["label"] = "";
+        update_prop["icon"] = "toolbar/ck_play.png";
+      }
+
+      view->update_property(1, 1, update_prop);
+
+      a_session->save_session_attribute(
+          session_store_name("reminders"), "Reminders", "reminders_id",
+          a_session->session_id_to_string(), "state",
+          (is_complete == 1) ? "wip" : "done");
     };
 
-    done_btn->on_input_event(func);
+    done_btn->on_click(func);
   }
 
   cherry_kit::icon_button *set_btn =
       dynamic_cast<cherry_kit::icon_button *>(view->at(1, 0));
 
   if (set_btn) {
-    std::function<void ()> func = [=]() {
-        if (!viewport())
-          return;
+    std::function<void()> func = [=]() {
+      if (!viewport())
+        return;
 
-        QRectF parent_rect(window->x(), window->y(), window->geometry().width(),
-                           window->geometry().height());
+      QRectF parent_rect(window->x(), window->y(), window->geometry().width(),
+                         window->geometry().height());
 
-        QRectF dialog_rect(0, 0, 320, 320);
+      QRectF dialog_rect(0, 0, 320, 320);
 
-        QPointF dialog_pos = viewport()->center(
-            dialog_rect, parent_rect, cherry_kit::space::kCenterOnWindow);
+      QPointF dialog_pos = viewport()->center(
+          dialog_rect, parent_rect, cherry_kit::space::kCenterOnWindow);
 
-        cherry_kit::desktop_dialog_ref ck_date_dialog =
-            viewport()->open_desktop_dialog("date_dialog", "Date", dialog_pos,
-                                            dialog_rect, QVariantMap());
-        //todo handle dialog close.
+      cherry_kit::desktop_dialog_ref ck_date_dialog =
+          viewport()->open_desktop_dialog("date_dialog", "Date", dialog_pos,
+                                          dialog_rect, QVariantMap());
+      // todo handle dialog close.
     };
 
     set_btn->on_click(func);
