@@ -27,6 +27,7 @@
 #include <ck_resource_manager.h>
 #include <ck_window.h>
 #include <ck_fixed_layout.h>
+#include <ck_model_view_item.h>
 
 class date_controller::PrivateDate {
 public:
@@ -107,25 +108,64 @@ void date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
   ui->add_widget(a_row, a_col, "image_button", ui_data);
 }
 
+void date_controller::insert_time_element(cherry_kit::item_view *ck_model_view,
+                                          int i)
+{
+  cherry_kit::model_view_item *ck_model_itm =
+      new cherry_kit::model_view_item();
+  cherry_kit::widget *ck_base_view = new cherry_kit::widget(ck_model_view);
+  cherry_kit::label *ck_item_lbl = new cherry_kit::label(ck_base_view);
+  cherry_kit::icon_button *ck_button =
+      new cherry_kit::icon_button(ck_base_view);
+
+  ck_base_view->setMinimumSize(ck_model_view->boundingRect().width(), 32);
+  ck_item_lbl->set_alignment(Qt::AlignLeft);
+  ck_item_lbl->set_text(QString("%1 AM").arg(i));
+  ck_item_lbl->set_size(
+        QSize(ck_model_view->boundingRect().width() - 32, 32));
+
+  ck_model_itm->set_view(ck_base_view);
+  ck_model_view->insert(ck_model_itm);
+}
+
 void
 date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *ui = new cherry_kit::fixed_layout(window);
+  cherry_kit::item_view *ck_model_view = 0;
 
   ui->set_content_margin(5, 5, 5, 5);
-  ui->set_geometry(0, 0, 320, 320);
-  ui->add_rows(2);
+  ui->set_geometry(0, 0, 320, 480);
+  ui->add_rows(3);
   ui->add_segments(0, 1);
   ui->add_segments(1, 1);
-  ui->set_row_height(0, "90%");
-  ui->set_row_height(1, "10%");
+  ui->add_segments(2, 1);
+  ui->set_row_height(0, "60%");
+  ui->set_row_height(1, "35%");
+  ui->set_row_height(2, "5%");
 
   cherry_kit::widget_properties_t ui_data;
   ui_data["text"] + "";
 
   ui->add_widget(0, 0, "calendar", ui_data);
+  ck_model_view  = dynamic_cast<cherry_kit::item_view*>
+      (ui->add_widget(1, 0, "model_view", ui_data));
 
-  add_action_button(ui, 1, 0, "", "ck_person_add");
+  insert_time_element(ck_model_view, 12);
+
+  for(int i = 1; i < 11; i++) {
+    insert_time_element(ck_model_view, i);
+  }
+
+  insert_time_element(ck_model_view, 0);
+
+  for(int i = 1; i < 11; i++) {
+    insert_time_element(ck_model_view, i);
+  }
+
+  insert_time_element(ck_model_view, 12);
+
+  add_action_button(ui, 2, 0, "", "ck_person_add");
 
   window->set_window_title("Appointments");
   window->set_window_content(ui->viewport());
