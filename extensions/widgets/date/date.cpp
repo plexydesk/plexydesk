@@ -247,7 +247,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
 
   a_session->bind_to_window(window);
 
-  std::function<void ()> ck_timeout_func = ([=]() {
+  std::function<void()> ck_timeout_func = ([=]() {
     std::chrono::system_clock::time_point now =
         std::chrono::system_clock::now();
 
@@ -268,7 +268,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
           a_time_seg_ref->time_type() == type) {
         a_time_seg_ref->set_heighlight(1);
       } else {
-          a_time_seg_ref->set_heighlight(0);
+        a_time_seg_ref->set_heighlight(0);
       }
     });
   });
