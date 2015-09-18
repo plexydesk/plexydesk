@@ -58,7 +58,7 @@ protected:
 
 private:
   class PrivateClockWidget;
-  PrivateClockWidget *const o_clock_widget;
+  PrivateClockWidget *const priv;
 };
 }
 #endif
