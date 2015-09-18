@@ -53,6 +53,8 @@ public:
   bool heighlight() const;
   void set_heighlight(bool a_is_enabled);
 
+  cherry_kit::window *create_new();
+
 protected:
   virtual void paint_view(QPainter *a_ctx, const QRectF &a_rect);
 
@@ -134,13 +136,14 @@ cherry_kit::ui_action date_controller::task() {
   return task;
 }
 
-void date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
-                                        int a_col, const std::string &a_label,
-                                        const std::string &a_icon) {
+cherry_kit::widget *
+date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
+                                   int a_col, const std::string &a_label,
+                                   const std::string &a_icon) {
   cherry_kit::widget_properties_t ui_data;
   ui_data["label"] = a_label;
   ui_data["icon"] = "toolbar/" + a_icon + ".png";
-  ui->add_widget(a_row, a_col, "image_button", ui_data);
+  return ui->add_widget(a_row, a_col, "image_button", ui_data);
 }
 
 time_segment *
@@ -182,7 +185,6 @@ date_controller::insert_time_element(cherry_kit::item_view *a_view, int a_value,
       cherry_kit::widget *view = a_item->view();
       if (view)
         delete view;
-      qDebug() << Q_FUNC_INFO << "Clear";
     }
   });
 
@@ -195,6 +197,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   cherry_kit::fixed_layout *ui = new cherry_kit::fixed_layout(window);
   cherry_kit::item_view *ck_model_view = 0;
   cherry_kit::timer *ck_timer = new cherry_kit::timer(1000 * 60);
+  cherry_kit::icon_button *ck_add_button = 0;
 
   ui->set_content_margin(5, 5, 5, 5);
   ui->set_geometry(0, 0, 320, 480);
@@ -215,12 +218,6 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
 
   time_segment_list_t time_segment_list;
 
-  time_segment *start_segment = new time_segment(ck_model_view);
-  start_segment->set_time_value(12);
-  start_segment->set_time_type(time_segment::kAMTime);
-
-  time_segment_list.push_back(start_segment);
-
   time_segment_list.push_back(
       insert_time_element(ck_model_view, 12, time_segment::kAMTime));
 
@@ -237,14 +234,68 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
         insert_time_element(ck_model_view, i, time_segment::kPMTime));
   }
 
-  time_segment_list.push_back(
-      insert_time_element(ck_model_view, 12, time_segment::kAMTime));
+  //time_segment_list.push_back(
+   //   insert_time_element(ck_model_view, 12, time_segment::kAMTime));
 
-  add_action_button(ui, 2, 0, "", "ck_person_add");
+  ck_add_button = dynamic_cast<cherry_kit::icon_button *>(
+      add_action_button(ui, 2, 0, "", "ck_person_add"));
 
   window->set_window_title("Appointments");
   window->set_window_content(ui->viewport());
 
+  ck_add_button->on_click([=]() {
+    std::chrono::system_clock::time_point now =
+        std::chrono::system_clock::now();
+
+    time_t tt = std::chrono::system_clock::to_time_t(now);
+    tm local_tm = *localtime(&tt);
+
+    time_segment::segment_t type;
+
+    qDebug() << Q_FUNC_INFO << local_tm.tm_hour;
+    if (local_tm.tm_hour == 12) {
+      type = time_segment::kNoonTime;
+    } else if (local_tm.tm_hour > 12) {
+      type = time_segment::kPMTime;
+    } else {
+      type = time_segment::kAMTime;
+    }
+
+    std::for_each(std::begin(time_segment_list), std::end(time_segment_list),
+                  [=](time_segment *a_time_seg_ref) {
+      if (!a_time_seg_ref)
+        return;
+      int current_time = local_tm.tm_hour;
+
+      if (current_time == 0)
+        current_time = 12;
+
+      if (type == time_segment::kPMTime)
+        current_time = (local_tm.tm_hour - 12);
+
+      if (a_time_seg_ref->time_value() == current_time &&
+          a_time_seg_ref->time_type() == type) {
+        cherry_kit::window *ck_app_window = a_time_seg_ref->create_new();
+
+        ck_app_window->setPos(window->pos());
+        QPointF window_pos(window->mapToScene(QPointF()));
+        QRectF window_geometry(window_pos.x(), window_pos.y(),
+                               window->geometry().width(),
+                               window->geometry().height());
+
+        QPointF sub_window_pos(window->mapToScene(QPointF()));
+        QRectF sub_window_geometry(sub_window_pos.x(), sub_window_pos.y(),
+                                   ck_app_window->geometry().width(),
+                                   ck_app_window->geometry().height());
+
+        ck_app_window->setPos(
+            viewport()->center(window_geometry, window_geometry,
+                               cherry_kit::space::kCenterOnWindow));
+
+        insert(ck_app_window);
+      }
+    });
+  });
   a_session->bind_to_window(window);
 
   std::function<void()> ck_timeout_func = ([=]() {
@@ -270,8 +321,11 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
         return;
       int current_time = local_tm.tm_hour;
 
+      if (current_time == 0)
+        current_time = 12;
+
       if (type == time_segment::kPMTime)
-          current_time = (local_tm.tm_hour - 12);
+        current_time = (local_tm.tm_hour - 12);
 
       if (a_time_seg_ref->time_value() == current_time &&
           a_time_seg_ref->time_type() == type) {
@@ -340,6 +394,12 @@ bool time_segment::heighlight() const { return m_heighlight; }
 void time_segment::set_heighlight(bool a_is_enabled) {
   m_heighlight = a_is_enabled;
   update();
+}
+
+cherry_kit::window *time_segment::create_new() {
+  cherry_kit::window *ck_window = new cherry_kit::window();
+
+  return ck_window;
 }
 
 void time_segment::set_time_value(int time_value) { m_time_value = time_value; }

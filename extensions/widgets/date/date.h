@@ -41,7 +41,7 @@ public:
 
   cherry_kit::ui_action task();
 
-  void add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
+  cherry_kit::widget *add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
                          const std::string &a_label, const std::string &a_icon);
 
   time_segment *insert_time_element(cherry_kit::item_view *a_view, int a_value,
