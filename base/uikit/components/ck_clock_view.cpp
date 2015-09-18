@@ -77,115 +77,117 @@ public:
 };
 
 clock_view::clock_view(widget *parent)
-    : cherry_kit::widget(parent), o_clock_widget(new PrivateClockWidget) {
-  o_clock_widget->m_clock_timer = new QTimer(this);
-  o_clock_widget->m_range_timer = new QTimer(this);
-  o_clock_widget->m_mark_hour_value = 0.0;
-  o_clock_widget->m_mark_minutes_value = 0.0;
-  o_clock_widget->m_mark_start = 0.1;
-  o_clock_widget->m_mark_end = 0.0;
-  o_clock_widget->m_range_timer_duration = 1000;
-  o_clock_widget->m_clock_timer->setTimerType(Qt::VeryCoarseTimer);
-  o_clock_widget->m_range_timer->setTimerType(Qt::VeryCoarseTimer);
+    : cherry_kit::widget(parent), priv(new PrivateClockWidget) {
+  priv->m_clock_timer = new QTimer(this);
+  priv->m_range_timer = new QTimer(this);
+  priv->m_mark_hour_value = 0.0;
+  priv->m_mark_minutes_value = 0.0;
+  priv->m_mark_start = 0.1;
+  priv->m_mark_end = 0.0;
+  priv->m_range_timer_duration = 1000;
+  priv->m_clock_timer->setTimerType(Qt::VeryCoarseTimer);
+  priv->m_range_timer->setTimerType(Qt::VeryCoarseTimer);
 
-  connect(o_clock_widget->m_clock_timer, &QTimer::timeout, [this]() {
-    o_clock_widget->on_timout_slot_func();
+  connect(priv->m_clock_timer, &QTimer::timeout, [this]() {
+    priv->on_timout_slot_func();
     update();
   });
 
-  connect(o_clock_widget->m_range_timer, &QTimer::timeout, [this]() {
-    o_clock_widget->on_range_timout_slot_func(this);
+  connect(priv->m_range_timer, &QTimer::timeout, [this]() {
+    priv->on_range_timout_slot_func(this);
     update();
   });
 
-  o_clock_widget->m_clock_timer->start(1000);
-  o_clock_widget->m_range_timer->stop();
+  priv->m_clock_timer->start(1000);
+  priv->m_range_timer->stop();
 
   set_widget_flag(widget::kRenderDropShadow, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
 
   set_widget_name("Clock");
+  priv->update();
 }
 
 void clock_view::set_timezone_id(const QByteArray &a_timezone_id) {
-  o_clock_widget->m_timezone_id = a_timezone_id;
+  priv->m_timezone_id = a_timezone_id;
 
-  o_clock_widget->m_clock_timer->stop();
+  priv->m_clock_timer->stop();
 
-  if (o_clock_widget->m_timezone) {
-    delete o_clock_widget->m_timezone;
+  if (priv->m_timezone) {
+    delete priv->m_timezone;
   }
 
-  o_clock_widget->m_timezone = new QTimeZone(a_timezone_id);
+  priv->m_timezone = new QTimeZone(a_timezone_id);
 
-  o_clock_widget->m_clock_timer->start();
+  priv->m_clock_timer->start();
+  update();
 }
 
 void clock_view::add_marker(double a_hour, double a_min) {
-  o_clock_widget->m_mark_hour_value = a_hour;
-  o_clock_widget->m_mark_minutes_value = a_min;
+  priv->m_mark_hour_value = a_hour;
+  priv->m_mark_minutes_value = a_min;
   update();
 }
 
 void clock_view::add_range_marker(double a_start, double a_end) {
-  o_clock_widget->m_mark_start = a_start;
+  priv->m_mark_start = a_start;
   int duration = a_end - a_start;
-  o_clock_widget->m_range_timer_initial_duration = duration;
+  priv->m_range_timer_initial_duration = duration;
   int hours = duration / 3600;
   int min = (duration / 60) - (hours * 60);
   int sec = duration - ((hours * 3600) + (min * 60));
-  o_clock_widget->m_mark_end = sec;
-  o_clock_widget->m_range_timer_duration = duration;
+  priv->m_mark_end = sec;
+  priv->m_range_timer_duration = duration;
 
   QDateTime current_date_time = QDateTime::currentDateTime();
 
-  if (o_clock_widget->m_timezone)
+  if (priv->m_timezone)
     current_date_time =
-        current_date_time.toTimeZone(*o_clock_widget->m_timezone);
+        current_date_time.toTimeZone(*priv->m_timezone);
 
   QTime current_time = current_date_time.time();
 
   current_time = current_time.addSecs(duration);
-  o_clock_widget->m_mark_minutes_value = current_time.minute();
-  o_clock_widget->m_mark_hour_value = current_time.hour();
-  o_clock_widget->m_completion_time_label =
+  priv->m_mark_minutes_value = current_time.minute();
+  priv->m_mark_hour_value = current_time.hour();
+  priv->m_completion_time_label =
       current_time.toString("hh:mm:ss ap");
 }
 
 int clock_view::duration() const {
-  return o_clock_widget->m_range_timer_initial_duration;
+  return priv->m_range_timer_initial_duration;
 }
 
 int clock_view::elapsed_time_in_seconds() const {
-  return o_clock_widget->m_range_timer_duration;
+  return priv->m_range_timer_duration;
 }
 
 QString clock_view::completion_time_as_string() const {
-  return o_clock_widget->m_completion_time_label;
+  return priv->m_completion_time_label;
 }
 
 void clock_view::run_timer(Direction a_direction) {
-  o_clock_widget->m_range_timer->start(1000);
+  priv->m_range_timer->start(1000);
 }
 
 void clock_view::on_timer_ended(std::function<void()> a_callback) {
-  o_clock_widget->m_completed_callback_list.push_back(a_callback);
+  priv->m_completed_callback_list.push_back(a_callback);
 }
 
 void
 clock_view::on_timeout(std::function<void(const clock_view *)> a_callback) {
-  o_clock_widget->m_timeout_callback_list.push_back(a_callback);
+  priv->m_timeout_callback_list.push_back(a_callback);
 }
 
 clock_view::~clock_view() {
-  if (o_clock_widget->m_clock_timer) {
-    o_clock_widget->m_clock_timer->stop();
+  if (priv->m_clock_timer) {
+    priv->m_clock_timer->stop();
   }
 
-  if (o_clock_widget->m_timezone)
-    delete o_clock_widget->m_timezone;
+  if (priv->m_timezone)
+    delete priv->m_timezone;
 
-  delete o_clock_widget;
+  delete priv;
 }
 
 void clock_view::PrivateClockWidget::on_timout_slot_func() { update(); }
@@ -244,22 +246,22 @@ void clock_view::paint_view(QPainter *p, const QRectF &r) {
   style_data feature;
 
   feature.text_data = QString("%1:%2:%3")
-                          .arg(o_clock_widget->m_hour_value)
-                          .arg(o_clock_widget->m_minutes_value)
-                          .arg(o_clock_widget->m_second_value);
+                          .arg(priv->m_hour_value)
+                          .arg(priv->m_minutes_value)
+                          .arg(priv->m_second_value);
 
   feature.geometry = rect;
   feature.render_state = style_data::kRenderElement;
-  feature.attributes["hour"] = o_clock_widget->m_hour_value;
-  feature.attributes["minutes"] = o_clock_widget->m_minutes_value;
-  feature.attributes["seconds"] = o_clock_widget->m_second_value;
+  feature.attributes["hour"] = priv->m_hour_value;
+  feature.attributes["minutes"] = priv->m_minutes_value;
+  feature.attributes["seconds"] = priv->m_second_value;
 
-  feature.attributes["mark_hour"] = o_clock_widget->m_mark_hour_value;
-  feature.attributes["mark_minutes"] = o_clock_widget->m_mark_minutes_value;
+  feature.attributes["mark_hour"] = priv->m_mark_hour_value;
+  feature.attributes["mark_minutes"] = priv->m_mark_minutes_value;
 
-  feature.attributes["mark_start"] = o_clock_widget->m_mark_start;
-  feature.attributes["mark_end"] = o_clock_widget->m_mark_end;
-  feature.text_data = o_clock_widget->m_completion_time_label;
+  feature.attributes["mark_start"] = priv->m_mark_start;
+  feature.attributes["mark_end"] = priv->m_mark_end;
+  feature.text_data = priv->m_completion_time_label;
 
   if (cherry_kit::resource_manager::style()) {
     cherry_kit::resource_manager::style()->draw("clock", feature, p);
