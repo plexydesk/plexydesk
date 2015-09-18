@@ -254,17 +254,26 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
     time_t tt = std::chrono::system_clock::to_time_t(now);
     tm local_tm = *localtime(&tt);
 
-    time_segment::segment_t type =
-        (local_tm.tm_hour > 12) ? time_segment::kPMTime : time_segment::kAMTime;
+    time_segment::segment_t type;
 
-    if (local_tm.tm_hour == 12)
+    if (local_tm.tm_hour == 12) {
       type = time_segment::kNoonTime;
+    } else if (local_tm.tm_hour > 12) {
+      type = time_segment::kPMTime;
+    } else {
+      type = time_segment::kAMTime;
+    }
 
     std::for_each(std::begin(time_segment_list), std::end(time_segment_list),
                   [=](time_segment *a_time_seg_ref) {
       if (!a_time_seg_ref)
         return;
-      if (a_time_seg_ref->time_value() == local_tm.tm_hour &&
+      int current_time = local_tm.tm_hour;
+
+      if (type == time_segment::kPMTime)
+          current_time = (local_tm.tm_hour - 12);
+
+      if (a_time_seg_ref->time_value() == current_time &&
           a_time_seg_ref->time_type() == type) {
         a_time_seg_ref->set_heighlight(1);
       } else {
