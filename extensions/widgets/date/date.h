@@ -23,6 +23,8 @@
 #include <ck_fixed_layout.h>
 #include <ck_item_view.h>
 
+class time_segment;
+
 class date_controller : public cherry_kit::desktop_controller_interface {
 public:
   explicit date_controller(QObject *object = 0);
@@ -42,7 +44,9 @@ public:
   void add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
                          const std::string &a_label, const std::string &a_icon);
 
-  void insert_time_element(cherry_kit::item_view *ck_model_view, int i);
+  time_segment *insert_time_element(cherry_kit::item_view *a_view, int a_value,
+                                    int a_type);
+
 private:
   void create_ui_calendar_ui(cherry_kit::session_sync *a_session);
 
