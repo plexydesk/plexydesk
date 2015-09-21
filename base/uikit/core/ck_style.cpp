@@ -39,6 +39,6 @@ float style::scale_factor() {
   return 1.5f;
 #endif
 
-  return 2.0f;
+  return 1.5f;
 }
 }
