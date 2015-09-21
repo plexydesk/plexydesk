@@ -65,7 +65,6 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
   priv->m_deskt_menu->resize(400, 10);
   priv->m_deskt_menu->set_window_opacity(1.0);
 
-
   priv->m_deskt_menu->on_window_discarded([=](cherry_kit::window *aWindow) {
     if (priv->m_task_grid)
       priv->m_task_grid->clear();
@@ -146,9 +145,7 @@ widget *desktop_panel_controller_impl::create_task_action(
     }
   });
 
-  l_image_view->on_click([=]() {
-      a_task.execute();
-  });
+  l_image_view->on_click([=]() { a_task.execute(); });
 
   return l_rv;
 }
@@ -239,6 +236,9 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   int menu_width = 4;
   if (x_count < 4)
     menu_width = x_count;
+
+  if (x_count < 2)
+    menu_width = 4;
 
   float window_width = (viewport()->scaled_width(72) * menu_width);
   float window_height = (viewport()->scaled_width(64) * (row_count)) + 16;
@@ -407,7 +407,7 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 }
 
 void desktop_panel_controller_impl::init() {
-  //loads the controllers before dock was created
+  // loads the controllers before dock was created
   Q_FOREACH(const QString & name, viewport()->current_controller_list()) {
     discover_actions_from_controller(name);
   }
