@@ -381,7 +381,6 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
 
     if (d->m_viewport) {
       QPointF window_pos(mapToScene(QPointF()));
-
       QRectF window_geometry(window_pos.x(), window_pos.y(), 300, 348);
 
       d->m_viewport->open_desktop_dialog(
