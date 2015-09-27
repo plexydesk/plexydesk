@@ -7,6 +7,7 @@
 #include <ck_icon_button.h>
 #include <ck_label.h>
 #include <ck_text_editor.h>
+#include <ck_line_edit.h>
 #include <ck_calendar_view.h>
 #include <ck_clock_view.h>
 
@@ -29,8 +30,9 @@ class fixed_layout::PrivateViewBuilder {
   } Value;
 
 public:
-  PrivateViewBuilder(widget *a_window) : m_row_count(1), m_column_count(1),
-  m_horizontal_padding(1.0f), m_verticle_padding(2.0f) {
+  PrivateViewBuilder(widget *a_window)
+      : m_row_count(1), m_column_count(1), m_horizontal_padding(1.0f),
+        m_verticle_padding(2.0f) {
     m_content_frame = new widget(a_window);
     build_ui_map();
   }
@@ -52,24 +54,37 @@ public:
   float get_percentage(const std::string &a_value) const;
 
   widget *add_new_label_at(int a_row, int a_col,
-                           const widget_properties_t &a_props);
+                           const widget_properties_t &a_props,
+                           widget_handler_callback_t a_callback);
   widget *add_new_image_button_at(int a_row, int a_col,
-                                  const widget_properties_t &a_props);
+                                  const widget_properties_t &a_props,
+                                  widget_handler_callback_t a_callback);
   widget *add_new_image_view_at(int a_row, int a_col,
-                                const widget_properties_t &a_props);
+                                const widget_properties_t &a_props,
+                                widget_handler_callback_t a_callback);
 
   void update_image_button_properties(int a_row, int a_col,
                                       const widget_properties_t &a_props);
 
   widget *add_new_text_edit_at(int a_row, int a_col,
-                               const widget_properties_t &a_props);
+                               const widget_properties_t &a_props,
+                               widget_handler_callback_t a_callback);
+  widget *add_new_line_edit_at(int a_row, int a_col,
+                               const widget_properties_t &a_props,
+                               widget_handler_callback_t a_callback);
   widget *add_new_calendar_at(int a_row, int a_col,
-                              const widget_properties_t &a_props);
+                              const widget_properties_t &a_props,
+                              widget_handler_callback_t a_callback);
   widget *add_new_clock_at(int a_row, int a_col,
-                           const widget_properties_t &a_props);
+                           const widget_properties_t &a_props,
+                           widget_handler_callback_t a_callback);
   widget *add_new_dial_at(int a_row, int a_col,
-                          const widget_properties_t &a_props);
+                          const widget_properties_t &a_props,
+                          widget_handler_callback_t a_callback);
 
+  widget *add_new_model_view_at(int a_row, int a_col,
+                                const widget_properties_t &a_props,
+                                widget_handler_callback_t a_callback);
   void layout();
 
   // members
@@ -94,7 +109,6 @@ public:
   float m_bottom_margine;
   float m_horizontal_padding;
   float m_verticle_padding;
-  widget *add_new_model_view_at(int a_row, int a_col, const widget_properties_t &a_props);
 };
 
 fixed_layout::fixed_layout(widget *a_window)
@@ -106,9 +120,8 @@ void fixed_layout::set_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
   priv->m_grid_geometry = QRectF(a_x, a_y, a_width, a_height);
   priv->m_content_frame->setGeometry(priv->m_grid_geometry);
-  set_content_margin(
-      priv->m_left_margine, priv->m_right_margine,
-      priv->m_top_margine, priv->m_bottom_margine);
+  set_content_margin(priv->m_left_margine, priv->m_right_margine,
+                     priv->m_top_margine, priv->m_bottom_margine);
   layout();
 }
 
@@ -119,10 +132,10 @@ void fixed_layout::set_content_margin(float a_left, float a_right, float a_top,
   priv->m_top_margine = a_top;
   priv->m_bottom_margine = a_bottom;
 
-  priv->m_grid_geometry.setWidth(
-      priv->m_grid_geometry.width() - ((a_left + a_right) / 2));
-  priv->m_grid_geometry.setHeight(
-      priv->m_grid_geometry.height() - ((a_top + a_bottom) /2 ));
+  priv->m_grid_geometry.setWidth(priv->m_grid_geometry.width() -
+                                 ((a_left + a_right) / 2));
+  priv->m_grid_geometry.setHeight(priv->m_grid_geometry.height() -
+                                  ((a_top + a_bottom) / 2));
 
   priv->m_content_frame->setPos(a_left, a_top);
 
@@ -154,9 +167,7 @@ void fixed_layout::PrivateViewBuilder::layout() {
   }
 }
 
-void fixed_layout::add_column(int a_count) {
-  priv->m_column_count = a_count;
-}
+void fixed_layout::add_column(int a_count) { priv->m_column_count = a_count; }
 
 void fixed_layout::add_rows(int a_row_count) {
   priv->m_row_count = a_row_count;
@@ -185,9 +196,7 @@ void fixed_layout::set_segment_width(int a_row, int a_column,
   priv->m_column_width_data[pos] = a_width;
 }
 
-widget *fixed_layout::viewport() const {
-  return priv->m_content_frame;
-}
+widget *fixed_layout::viewport() const { return priv->m_content_frame; }
 
 widget *fixed_layout::at(int a_row, int a_column) {
   GridPos pos = std::make_pair(a_row, a_column);
@@ -195,7 +204,8 @@ widget *fixed_layout::at(int a_row, int a_column) {
 }
 
 widget *fixed_layout::add_new_widget_at(int a_col, int a_row,
-                                        const widget_properties_t &a_props) {
+                                        const widget_properties_t &a_props,
+                                        widget_handler_callback_t a_callback) {
   cherry_kit::widget *ck_widget = new widget(priv->m_content_frame);
   GridPos pos(a_col, a_row);
   priv->m_widget_grid[pos] = ck_widget;
@@ -205,7 +215,8 @@ widget *fixed_layout::add_new_widget_at(int a_col, int a_row,
 }
 
 widget *fixed_layout::add_new_button_at(int a_row, int a_col,
-                                        const widget_properties_t &a_props) {
+                                        const widget_properties_t &a_props,
+                                        widget_handler_callback_t a_callback) {
   button *btn = new button(priv->m_content_frame);
   GridPos pos(a_row, a_col);
 
@@ -219,11 +230,17 @@ widget *fixed_layout::add_new_button_at(int a_row, int a_col,
 
   layout();
 
+  btn->on_click([=] (){
+      if (a_callback)
+          a_callback();
+  });
+
   return btn;
 }
 
 widget *fixed_layout::add_new_label_at(int a_col, int a_row,
-                                       const widget_properties_t &a_props) {
+                                       const widget_properties_t &a_props,
+                                       widget_handler_callback_t a_callback) {
   return 0;
 }
 
@@ -231,39 +248,44 @@ void fixed_layout::layout() { priv->layout(); }
 
 widget *fixed_layout::add_widget(int a_row, int a_column,
                                  const std::string &a_widget,
-                                 const widget_properties_t &a_properties) {
+                                 const widget_properties_t &a_properties,
+                                 widget_handler_callback_t a_callback) {
   widget *rv = 0;
 
   switch (priv->m_ui_dict[a_widget]) {
   case kWidget:
-    rv = add_new_widget_at(a_row, a_column, a_properties);
+    rv = add_new_widget_at(a_row, a_column, a_properties, a_callback);
     break;
   case kButton:
-    rv = add_new_button_at(a_row, a_column, a_properties);
+    rv = add_new_button_at(a_row, a_column, a_properties, a_callback);
     break;
   case kLabel:
-    rv = priv->add_new_label_at(a_row, a_column, a_properties);
+    rv = priv->add_new_label_at(a_row, a_column, a_properties, a_callback);
     break;
   case kTextEdit:
-    rv = priv->add_new_text_edit_at(a_row, a_column, a_properties);
+    rv = priv->add_new_text_edit_at(a_row, a_column, a_properties, a_callback);
     break;
   case kImageButton:
-    rv = priv->add_new_image_button_at(a_row, a_column, a_properties);
+    rv = priv->add_new_image_button_at(a_row, a_column, a_properties,
+                                       a_callback);
     break;
   case kImageView:
-    rv = priv->add_new_image_view_at(a_row, a_column, a_properties);
+    rv = priv->add_new_image_view_at(a_row, a_column, a_properties, a_callback);
     break;
   case kCalendar:
-    rv = priv->add_new_calendar_at(a_row, a_column, a_properties);
+    rv = priv->add_new_calendar_at(a_row, a_column, a_properties, a_callback);
     break;
   case kClock:
-    rv = priv->add_new_clock_at(a_row, a_column, a_properties);
+    rv = priv->add_new_clock_at(a_row, a_column, a_properties, a_callback);
     break;
   case kDialView:
-    rv = priv->add_new_dial_at(a_row, a_column, a_properties);
+    rv = priv->add_new_dial_at(a_row, a_column, a_properties, a_callback);
     break;
   case kModelView:
-    rv = priv->add_new_model_view_at(a_row, a_column, a_properties);
+    rv = priv->add_new_model_view_at(a_row, a_column, a_properties, a_callback);
+    break;
+  case kLineEdit:
+    rv = priv->add_new_line_edit_at(a_row, a_column, a_properties, a_callback);
     break;
   default:
     rv = 0;
@@ -276,16 +298,14 @@ void fixed_layout::update_property(int a_row, int a_column,
                                    const widget_properties_t &a_properties) {
   GridPos pos = std::make_pair(a_row, a_column);
 
-  if (priv->m_ui_type_dict.find(pos) ==
-      priv->m_ui_type_dict.end()) {
+  if (priv->m_ui_type_dict.find(pos) == priv->m_ui_type_dict.end()) {
     qWarning() << Q_FUNC_INFO << "Error: No widget at index : ";
     return;
   }
 
   switch (priv->m_ui_type_dict[pos]) {
   case kImageButton:
-    priv->update_image_button_properties(a_row, a_column,
-                                                   a_properties);
+    priv->update_image_button_properties(a_row, a_column, a_properties);
     break;
   default:
     qWarning() << Q_FUNC_INFO << "Unknown Widget type";
@@ -432,7 +452,8 @@ float fixed_layout::PrivateViewBuilder::get_percentage(
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_label_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
   cherry_kit::label *ck_label = new label(m_content_frame);
   GridPos pos(a_row, a_col);
 
@@ -450,7 +471,8 @@ widget *fixed_layout::PrivateViewBuilder::add_new_label_at(
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
   icon_button *image_button = new icon_button(m_content_frame);
   GridPos pos(a_row, a_col);
 
@@ -482,7 +504,8 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_image_view_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
   image_view *img_view = new image_view(m_content_frame);
   GridPos pos(a_row, a_col);
 
@@ -490,9 +513,9 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_view_at(
   m_ui_type_dict[pos] = kImageButton;
 
   img_view->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                                 calculate_cell_height(a_row, a_col)));
+                               calculate_cell_height(a_row, a_col)));
   img_view->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
-                                   calculate_cell_height(a_row, a_col)));
+                                 calculate_cell_height(a_row, a_col)));
   layout();
 
   return img_view;
@@ -532,8 +555,10 @@ void fixed_layout::PrivateViewBuilder::update_image_button_properties(
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_text_edit_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
-  text_editor *editor = new text_editor(m_content_frame);
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
+  cherry_kit::text_editor *editor =
+      new cherry_kit::text_editor(m_content_frame);
   GridPos pos(a_row, a_col);
 
   m_widget_grid[pos] = editor;
@@ -553,8 +578,34 @@ widget *fixed_layout::PrivateViewBuilder::add_new_text_edit_at(
   return editor;
 }
 
+widget *fixed_layout::PrivateViewBuilder::add_new_line_edit_at(
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
+  cherry_kit::line_edit *editor = new cherry_kit::line_edit(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = editor;
+  m_ui_type_dict[pos] = kLineEdit;
+
+  QString text;
+
+  if (a_props.find("text") != a_props.end()) {
+    text = QString::fromStdString(a_props.at("text"));
+  }
+
+  editor->set_text(text);
+  editor->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                             calculate_cell_height(a_row, a_col)));
+  editor->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
+                               calculate_cell_height(a_row, a_col)));
+  layout();
+
+  return editor;
+}
+
 widget *fixed_layout::PrivateViewBuilder::add_new_calendar_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
   calendar_view *calendar = new calendar_view(m_content_frame);
   GridPos pos(a_row, a_col);
 
@@ -569,7 +620,8 @@ widget *fixed_layout::PrivateViewBuilder::add_new_calendar_at(
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_clock_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
   clock_view *clock = new clock_view(m_content_frame);
   GridPos pos(a_row, a_col);
 
@@ -584,7 +636,8 @@ widget *fixed_layout::PrivateViewBuilder::add_new_clock_at(
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_dial_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
   dial_view *dial_widget = new dial_view(m_content_frame);
   GridPos pos(a_row, a_col);
 
@@ -599,19 +652,19 @@ widget *fixed_layout::PrivateViewBuilder::add_new_dial_at(
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_model_view_at(
-    int a_row, int a_col, const widget_properties_t &a_props) {
-  cherry_kit::item_view *item_view =
-      new cherry_kit::item_view(m_content_frame, cherry_kit::item_view::kListModel);
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
+  cherry_kit::item_view *item_view = new cherry_kit::item_view(
+      m_content_frame, cherry_kit::item_view::kListModel);
   GridPos pos(a_row, a_col);
 
-  m_widget_grid[pos] = item_view;//_widget;
+  m_widget_grid[pos] = item_view; //_widget;
   m_ui_type_dict[pos] = kModelView;
 
   item_view->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                                  calculate_cell_height(a_row, a_col)));
+                                calculate_cell_height(a_row, a_col)));
 
-  item_view->set_view_geometry(QRectF(0, 0,
-                                      calculate_cell_width(a_row, a_col),
+  item_view->set_view_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                       calculate_cell_height(a_row, a_col)));
 
   return item_view;
