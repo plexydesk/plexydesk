@@ -27,9 +27,9 @@ class window;
 class label;
 class button;
 class icon_button;
-class line_edit;
 
 typedef std::map<std::string, std::string> widget_properties_t;
+typedef std::function<void ()> widget_handler_callback_t;
 
 class DECL_UI_KIT_EXPORT fixed_layout {
   typedef enum {
@@ -81,17 +81,20 @@ public:
 
   virtual widget *add_widget(int a_row, int a_column,
                              const std::string &a_widget,
-                             const widget_properties_t &a_properties);
+                             const widget_properties_t &a_properties,
+                             widget_handler_callback_t a_callback = 0);
   virtual void update_property(int a_row, int a_column,
                                const widget_properties_t &a_properties);
-
 protected:
   widget *add_new_widget_at(int a_col, int a_row,
-                            const widget_properties_t &a_props);
+                            const widget_properties_t &a_props,
+                            widget_handler_callback_t a_callback);
   widget *add_new_button_at(int a_row, int a_col,
-                            const widget_properties_t &a_props);
+                            const widget_properties_t &a_props,
+                            widget_handler_callback_t a_callback);
   widget *add_new_label_at(int a_col, int a_row,
-                           const widget_properties_t &a_props);
+                           const widget_properties_t &a_props,
+                           widget_handler_callback_t a_callback);
 
   void layout();
 
