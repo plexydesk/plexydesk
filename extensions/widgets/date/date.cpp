@@ -32,6 +32,8 @@
 
 #include <ctime>
 #include <chrono>
+#include <ck_button.h>
+#include <ck_line_edit.h>
 
 class time_segment : public cherry_kit::widget {
 public:
@@ -41,7 +43,7 @@ public:
     kNoonTime
   } segment_t;
   time_segment(cherry_kit::widget *a_parent_ref = 0)
-      : cherry_kit::widget(a_parent_ref), m_heighlight(0) {}
+      : cherry_kit::widget(a_parent_ref), m_heighlight(0), m_duration(0) {}
   virtual ~time_segment() {}
 
   void set_time_value(int time_value);
@@ -60,6 +62,7 @@ protected:
 
 private:
   int m_time_value;
+  int m_duration;
   segment_t m_time_type;
   bool m_heighlight;
 };
@@ -234,9 +237,6 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
         insert_time_element(ck_model_view, i, time_segment::kPMTime));
   }
 
-  //time_segment_list.push_back(
-   //   insert_time_element(ck_model_view, 12, time_segment::kAMTime));
-
   ck_add_button = dynamic_cast<cherry_kit::icon_button *>(
       add_action_button(ui, 2, 0, "", "ck_person_add"));
 
@@ -289,7 +289,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
                                    ck_app_window->geometry().height());
 
         ck_app_window->setPos(
-            viewport()->center(window_geometry, window_geometry,
+            viewport()->center(sub_window_geometry, window_geometry,
                                cherry_kit::space::kCenterOnWindow));
 
         insert(ck_app_window);
@@ -366,8 +366,8 @@ void time_segment::set_time_type(const segment_t &time_type) {
 
 void time_segment::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   // a_ctx->fillRect(a_rect, QColor("#ffffff"));
-  //todo:
-  //this should be moved to style class.
+  // todo:
+  // this should be moved to style class.
   a_ctx->save();
   a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
                             QPainter::SmoothPixmapTransform |
@@ -401,29 +401,80 @@ void time_segment::set_heighlight(bool a_is_enabled) {
 cherry_kit::window *time_segment::create_new() {
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_layout = new cherry_kit::fixed_layout(ck_window);
+  cherry_kit::line_edit *ck_duration_editor = 0;
 
-  ck_layout->set_content_margin(0, 0, 5, 5);
-  ck_layout->set_geometry(0, 0, 320, 320);
-  ck_layout->add_rows(4);
-  ck_layout->add_segments(0, 2);
-  ck_layout->add_segments(1, 2);
-  ck_layout->add_segments(2, 2);
-  ck_layout->add_segments(3, 2);
+  ck_layout->set_verticle_spacing(5);
+  ck_layout->set_content_margin(5, 5, 5, 5);
+  ck_layout->set_geometry(0, 0, 240, 148);
+  ck_layout->add_rows(3);
+  ck_layout->add_segments(0, 4);
+  ck_layout->add_segments(1, 1);
+  ck_layout->add_segments(2, 3);
 
-  ck_layout->set_row_height(0, "25%");
-  ck_layout->set_row_height(1, "25%");
-  ck_layout->set_row_height(2, "25%");
-  ck_layout->set_row_height(3, "25%");
+  ck_layout->set_row_height(0, "20%");
+  ck_layout->set_row_height(1, "60%");
+  ck_layout->set_row_height(2, "20%");
+
+  ck_layout->set_segment_width(0, 0, "25%");
+  ck_layout->set_segment_width(0, 1, "55%");
+  ck_layout->set_segment_width(0, 2, "10%");
+  ck_layout->set_segment_width(0, 3, "10%");
 
   cherry_kit::widget_properties_t ui_data;
-  ui_data["label"] = "test";
 
-  ck_layout->add_widget(0, 0, "button", ui_data);
-  ck_layout->add_widget(1, 0, "button", ui_data);
-  ck_layout->add_widget(2, 0, "button", ui_data);
-  ck_layout->add_widget(3, 0, "button", ui_data);
+  ui_data["label"] = "Duration";
+  ck_layout->add_widget(0, 0, "label", ui_data);
+
+  ui_data["text"] = "00 Minutes";
+
+  ck_duration_editor =
+      dynamic_cast<cherry_kit::line_edit *>(ck_layout->add_widget(
+          0, 1, "line_edit", ui_data));
+  ck_duration_editor->set_readonly(true);
+
+  ui_data["label"] = "+";
+  ck_layout->add_widget(0, 2, "button", ui_data,[=]() {
+      m_duration++;
+
+      if (m_duration >= 60)
+          m_duration = 60;
+
+      QString time_value = QString("%1").arg(m_duration);
+      if (m_duration <= 9) {
+          time_value = QString("0%1").arg(m_duration);
+      }
+
+      ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
+  });
+
+  ui_data["label"] = "-";
+  ck_layout->add_widget(0, 3, "button", ui_data,[=]() {
+      m_duration--;
+      QString time_value = QString("%1").arg(m_duration);
+
+      if (m_duration <= 0)
+          m_duration = 0;
+
+      if (m_duration <= 9) {
+          time_value = QString("0%1").arg(m_duration);
+      }
+
+      ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
+  });
+
+  ui_data["text"] = "";
+  ck_layout->add_widget(1, 0, "text_edit", ui_data);
+
+  ui_data["label"] = "Add";
+  cherry_kit::button *ck_add_btn = dynamic_cast<cherry_kit::button *>(
+      ck_layout->add_widget(2, 1, "button", ui_data));
+
+  ck_add_btn->on_click([=]() { ck_window->close(); });
 
   ck_window->set_window_content(ck_layout->viewport());
+  ck_window->on_window_discarded([=](cherry_kit::window *a_window) {
+    delete ck_window;
+  });
 
   return ck_window;
 }
