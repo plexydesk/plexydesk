@@ -42,6 +42,9 @@ public:
   virtual void on_insert(std::function<void(const QString &a_txt)> a_handler);
 
   virtual QString current_text_selection() const;
+
+   virtual bool readonly();
+   virtual void set_readonly(bool a_value);
 Q_SIGNALS:
   void submit();
   void text(const QString &a_text);
@@ -64,7 +67,7 @@ protected:
 
 private:
   class PrivateLineEdit;
-  PrivateLineEdit *const o_line_edit;
+  PrivateLineEdit *const priv;
 };
 }
 #endif // LINEEDIT_H
