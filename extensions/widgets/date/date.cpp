@@ -34,6 +34,33 @@
 #include <chrono>
 #include <ck_button.h>
 #include <ck_line_edit.h>
+#include <ck_text_editor.h>
+
+class time_event {
+public:
+  time_event() {}
+  virtual ~time_event() {}
+
+  int duration() const;
+  void set_duration(int duration);
+
+  std::string name() const;
+  void set_name(const std::string &name);
+
+  std::string note() const;
+  void set_note(const std::string &note);
+
+  std::string start_time() const;
+  void set_start_time(const std::string &start_time);
+
+private:
+  int m_duration;
+  std::string m_name;
+  std::string m_note;
+  std::string m_start_time;
+};
+
+typedef std::vector<time_event> event_list_t;
 
 class time_segment : public cherry_kit::widget {
 public:
@@ -55,6 +82,9 @@ public:
   bool heighlight() const;
   void set_heighlight(bool a_is_enabled);
 
+  void add_event(const time_event &a_event);
+  event_list_t events() const;
+
   cherry_kit::window *create_new();
 
 protected:
@@ -65,6 +95,8 @@ private:
   int m_duration;
   segment_t m_time_type;
   bool m_heighlight;
+
+  event_list_t m_events;
 };
 
 typedef std::vector<time_segment *> time_segment_list_t;
@@ -398,10 +430,17 @@ void time_segment::set_heighlight(bool a_is_enabled) {
   update();
 }
 
+void time_segment::add_event(const time_event &a_event) {
+  m_events.push_back(a_event);
+}
+
+event_list_t time_segment::events() const { return m_events; }
+
 cherry_kit::window *time_segment::create_new() {
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_layout = new cherry_kit::fixed_layout(ck_window);
   cherry_kit::line_edit *ck_duration_editor = 0;
+  cherry_kit::text_editor *ck_note_editor = 0;
 
   ck_layout->set_verticle_spacing(5);
   ck_layout->set_content_margin(5, 5, 5, 5);
@@ -420,6 +459,8 @@ cherry_kit::window *time_segment::create_new() {
   ck_layout->set_segment_width(0, 2, "10%");
   ck_layout->set_segment_width(0, 3, "10%");
 
+  time_event *event = new time_event();
+
   cherry_kit::widget_properties_t ui_data;
 
   ui_data["label"] = "Duration";
@@ -427,49 +468,60 @@ cherry_kit::window *time_segment::create_new() {
 
   ui_data["text"] = "00 Minutes";
 
-  ck_duration_editor =
-      dynamic_cast<cherry_kit::line_edit *>(ck_layout->add_widget(
-          0, 1, "line_edit", ui_data));
+  ck_duration_editor = dynamic_cast<cherry_kit::line_edit *>(
+      ck_layout->add_widget(0, 1, "line_edit", ui_data));
   ck_duration_editor->set_readonly(true);
 
+  ui_data["text"] = "";
+  ck_note_editor = dynamic_cast<cherry_kit::text_editor *>(
+      ck_layout->add_widget(1, 0, "text_edit", ui_data));
+
   ui_data["label"] = "+";
-  ck_layout->add_widget(0, 2, "button", ui_data,[=]() {
-      m_duration++;
+  ck_layout->add_widget(0, 2, "button", ui_data, [=]() {
+    m_duration++;
 
-      if (m_duration >= 60)
-          m_duration = 60;
+    if (m_duration >= 60)
+      m_duration = 60;
 
-      QString time_value = QString("%1").arg(m_duration);
-      if (m_duration <= 9) {
-          time_value = QString("0%1").arg(m_duration);
-      }
+    event->set_duration(m_duration);
+    QString time_value = QString("%1").arg(m_duration);
+    if (m_duration <= 9) {
+      time_value = QString("0%1").arg(m_duration);
+    }
 
-      ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
+    ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
   });
 
   ui_data["label"] = "-";
-  ck_layout->add_widget(0, 3, "button", ui_data,[=]() {
-      m_duration--;
-      QString time_value = QString("%1").arg(m_duration);
+  ck_layout->add_widget(0, 3, "button", ui_data, [=]() {
+    m_duration--;
+    QString time_value = QString("%1").arg(m_duration);
 
-      if (m_duration <= 0)
-          m_duration = 0;
+    if (m_duration <= 0)
+      m_duration = 0;
 
-      if (m_duration <= 9) {
-          time_value = QString("0%1").arg(m_duration);
-      }
+    event->set_duration(m_duration);
+    if (m_duration <= 9) {
+      time_value = QString("0%1").arg(m_duration);
+    }
 
-      ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
+    ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
   });
-
-  ui_data["text"] = "";
-  ck_layout->add_widget(1, 0, "text_edit", ui_data);
 
   ui_data["label"] = "Add";
   cherry_kit::button *ck_add_btn = dynamic_cast<cherry_kit::button *>(
       ck_layout->add_widget(2, 1, "button", ui_data));
 
-  ck_add_btn->on_click([=]() { ck_window->close(); });
+  ck_add_btn->on_click([=]() {
+    event->set_note(ck_note_editor->text().toStdString());
+    event->set_name("None");
+
+    add_event(*event);
+    delete event;
+
+    m_duration = 0;
+    ck_window->close();
+  });
 
   ck_window->set_window_content(ck_layout->viewport());
   ck_window->on_window_discarded([=](cherry_kit::window *a_window) {
@@ -480,3 +532,18 @@ cherry_kit::window *time_segment::create_new() {
 }
 
 void time_segment::set_time_value(int time_value) { m_time_value = time_value; }
+
+int time_event::duration() const { return m_duration; }
+
+void time_event::set_duration(int duration) { m_duration = duration; }
+std::string time_event::name() const { return m_name; }
+
+void time_event::set_name(const std::string &name) { m_name = name; }
+std::string time_event::note() const { return m_note; }
+
+void time_event::set_note(const std::string &note) { m_note = note; }
+std::string time_event::start_time() const { return m_start_time; }
+
+void time_event::set_start_time(const std::string &start_time) {
+  m_start_time = start_time;
+}
