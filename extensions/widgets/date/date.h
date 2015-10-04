@@ -45,7 +45,8 @@ public:
                          const std::string &a_label, const std::string &a_icon);
 
   time_segment *insert_time_element(cherry_kit::item_view *a_view, int a_value,
-                                    int a_type);
+                                    int a_type, cherry_kit::window *a_window,
+                                    const date_controller *a_controller_ref);
 
 private:
   void create_ui_calendar_ui(cherry_kit::session_sync *a_session);

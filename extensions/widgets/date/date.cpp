@@ -181,9 +181,9 @@ date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
   return ui->add_widget(a_row, a_col, "image_button", ui_data);
 }
 
-time_segment *
-date_controller::insert_time_element(cherry_kit::item_view *a_view, int a_value,
-                                     int a_type) {
+time_segment *date_controller::insert_time_element(
+    cherry_kit::item_view *a_view, int a_value, int a_type,
+    cherry_kit::window *a_window_ref, const date_controller *a_controller_ref) {
   cherry_kit::model_view_item *ck_model_itm = new cherry_kit::model_view_item();
   time_segment *ck_base_view = new time_segment(a_view);
   ck_base_view->set_time_value(a_value);
@@ -210,6 +210,27 @@ date_controller::insert_time_element(cherry_kit::item_view *a_view, int a_value,
   ck_item_lbl->set_alignment(Qt::AlignHCenter | Qt::AlignVCenter);
   ck_item_lbl->set_text(time_str);
   ck_item_lbl->set_size(QSize(64, 32));
+
+  ck_model_itm->on_activated([=](cherry_kit::model_view_item *a_item) {
+    cherry_kit::window *ck_app_window = ck_base_view->create_new();
+
+    ck_app_window->setPos(a_window_ref->pos());
+    QPointF window_pos(a_window_ref->mapToScene(QPointF()));
+    QRectF window_geometry(window_pos.x(), window_pos.y(),
+                           a_window_ref->geometry().width(),
+                           a_window_ref->geometry().height());
+
+    QPointF sub_window_pos(a_window_ref->mapToScene(QPointF()));
+    QRectF sub_window_geometry(sub_window_pos.x(), sub_window_pos.y(),
+                               ck_app_window->geometry().width(),
+                               ck_app_window->geometry().height());
+
+    ck_app_window->setPos(
+        viewport()->center(sub_window_geometry, window_geometry,
+                           cherry_kit::space::kCenterOnWindow));
+
+    insert(ck_app_window);
+  });
 
   ck_model_itm->set_view(ck_base_view);
   a_view->insert(ck_model_itm);
@@ -253,20 +274,20 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
 
   time_segment_list_t time_segment_list;
 
-  time_segment_list.push_back(
-      insert_time_element(ck_model_view, 12, time_segment::kAMTime));
+  time_segment_list.push_back(insert_time_element(
+      ck_model_view, 12, time_segment::kAMTime, window, this));
 
   for (int i = 1; i <= 11; i++) {
-    time_segment_list.push_back(
-        insert_time_element(ck_model_view, i, time_segment::kAMTime));
+    time_segment_list.push_back(insert_time_element(
+        ck_model_view, i, time_segment::kAMTime, window, this));
   }
 
-  time_segment_list.push_back(
-      insert_time_element(ck_model_view, 12, time_segment::kNoonTime));
+  time_segment_list.push_back(insert_time_element(
+      ck_model_view, 12, time_segment::kNoonTime, window, this));
 
   for (int i = 1; i <= 11; i++) {
-    time_segment_list.push_back(
-        insert_time_element(ck_model_view, i, time_segment::kPMTime));
+    time_segment_list.push_back(insert_time_element(
+        ck_model_view, i, time_segment::kPMTime, window, this));
   }
 
   ck_add_button = dynamic_cast<cherry_kit::icon_button *>(
@@ -284,7 +305,6 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
 
     time_segment::segment_t type;
 
-    qDebug() << Q_FUNC_INFO << local_tm.tm_hour;
     if (local_tm.tm_hour == 12) {
       type = time_segment::kNoonTime;
     } else if (local_tm.tm_hour > 12) {
@@ -307,6 +327,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
 
       if (a_time_seg_ref->time_value() == current_time &&
           a_time_seg_ref->time_type() == type) {
+
         cherry_kit::window *ck_app_window = a_time_seg_ref->create_new();
 
         ck_app_window->setPos(window->pos());
@@ -417,9 +438,26 @@ void time_segment::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
     a_ctx->setPen(
         QPen(QColor("#9E9E9E"), 1, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin));
   }
+
   a_ctx->drawLine(QPointF(64, a_rect.height() / 2),
                   QPointF(a_rect.width(), a_rect.height() / 2));
 
+  // draw segments.
+  int unit_length = (a_rect.width() - 64) / 60;
+
+  std::for_each(std::begin(m_events), std::end(m_events),
+                [&](time_event a_event) {
+    a_ctx->save();
+    a_ctx->setOpacity(0.5);
+    // a_ctx->fillRect(a_rect, QColor(0, 0, 255));
+    qDebug() << Q_FUNC_INFO << "Size :" << a_event.duration() * unit_length;
+    a_ctx->setPen(
+        QPen(QColor(0, 0, 255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    a_ctx->drawLine(
+        QPointF(64, a_rect.height() / 2),
+        QPointF((a_event.duration() * unit_length) + 64, a_rect.height() / 2));
+    a_ctx->restore();
+  });
   a_ctx->restore();
 }
 
@@ -432,11 +470,13 @@ void time_segment::set_heighlight(bool a_is_enabled) {
 
 void time_segment::add_event(const time_event &a_event) {
   m_events.push_back(a_event);
+  update();
 }
 
 event_list_t time_segment::events() const { return m_events; }
 
 cherry_kit::window *time_segment::create_new() {
+  qDebug() << Q_FUNC_INFO << "What ?";
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_layout = new cherry_kit::fixed_layout(ck_window);
   cherry_kit::line_edit *ck_duration_editor = 0;
@@ -466,7 +506,7 @@ cherry_kit::window *time_segment::create_new() {
   ui_data["label"] = "Duration";
   ck_layout->add_widget(0, 0, "label", ui_data);
 
-  ui_data["text"] = "00 Minutes";
+  ui_data["text"] = std::to_string(m_time_value) + ":00";
 
   ck_duration_editor = dynamic_cast<cherry_kit::line_edit *>(
       ck_layout->add_widget(0, 1, "line_edit", ui_data));
@@ -489,7 +529,8 @@ cherry_kit::window *time_segment::create_new() {
       time_value = QString("0%1").arg(m_duration);
     }
 
-    ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
+    ck_duration_editor->set_text(
+        QString("%1:%2").arg(m_time_value).arg(time_value));
   });
 
   ui_data["label"] = "-";
@@ -505,7 +546,8 @@ cherry_kit::window *time_segment::create_new() {
       time_value = QString("0%1").arg(m_duration);
     }
 
-    ck_duration_editor->set_text(QString("%1 Minutes").arg(time_value));
+    ck_duration_editor->set_text(
+        QString("%1:%2").arg(m_time_value).arg(time_value));
   });
 
   ui_data["label"] = "Add";
