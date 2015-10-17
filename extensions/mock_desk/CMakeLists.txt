@@ -25,6 +25,7 @@ set(libs
     ${QT_QTXML_LIBRARY}
     ${PLEXY_UI_CORE_LIBRARY}
     ${QT_QTXMLPATTERNS_LIBRARY}
+		${X11_LIBRARIES}
     ${Qt5X11Extras_LIBRARIES}
     )
 
