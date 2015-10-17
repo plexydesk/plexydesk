@@ -36,8 +36,9 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${PLEXY_UI_CORE_LIBRARY}
     ${QT_QTXMLPATTERNS_LIBRARY}
     ${Qt5X11Extras_LIBRARIES}
-		${LIBRARY_NATIVE_LINK_TARGETS}
+    ${LIBRARY_NATIVE_LINK_TARGETS}
     ${THREAD_LIBS}
+    ${X11_LIBRARIES}
     )
 
 
@@ -60,6 +61,7 @@ endif(MSVC)
 
 TARGET_LINK_LIBRARIES(datasync_runtime LINK_PUBLIC
     ${QUETZAL_DATA_KIT_LIBRARY}
+		${libs}
     )
 
 ########### Install files ###############
