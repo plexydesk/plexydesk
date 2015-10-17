@@ -46,6 +46,7 @@ if(UNIX)
 		${QT_QTCORE_LIBRARY}
 		${QT_QTOPENGL_LIBRARY}
 		${QT_QTSQL_LIBRARY}
+		${X11_LIBRARIES}
 		${Qt5X11Extras_LIBRARIES}
 		${extra_libs})
 endif(UNIX)
@@ -69,7 +70,6 @@ TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME}
         Qt5::Widgets
         Qt5::Core
         ${QT_QTGUI_LIBRARY}
-        ${QT_QTCORE_LIBRARY}
         ${PLEXY_UI_CORE_LIBRARY}
         ${Qt5X11Extras_LIBRARIES}
         ${MAC_LIBS}
