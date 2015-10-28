@@ -41,16 +41,13 @@ ADD_EXECUTABLE(mock_desk ${WIN_APPLICATION} ${sourceFiles})
 
 SET_PROPERTY(TARGET mock_desk PROPERTY QT5_NO_LINK_QTMAIN ON)
 
-QT5_USE_MODULES(mock_desk Widgets Xml  Core)
+QT5_USE_MODULES(mock_desk Widgets Xml Core)
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(mock_desk)
 endif(MSVC)
 
-TARGET_LINK_LIBRARIES(mock_desk
-    ${PLEXY_UI_CORE_LIBRARY}
-    ${QUETZAL_SOCIAL_KIT_LIBRARY}
-    ${libs}
+TARGET_LINK_LIBRARIES(mock_desk ${libs}
     )
 
  #DBUS_ADD_ACTIVATION_SERVICE(org.plexydesk.extloader.service.in)
