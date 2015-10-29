@@ -36,7 +36,6 @@ ContactListItem::ContactListItem(QGraphicsObject *parent)
 
   d->mButton->show();
 
-  d->mButton->setCacheMode(QGraphicsItem::ItemCoordinateCache);
 
   connect(d->mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
   setCacheMode(QGraphicsItem::DeviceCoordinateCache);

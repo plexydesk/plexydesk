@@ -28,6 +28,18 @@
 
 #include <px_bench.h>
 
+#include <QPaintEngine>
+#include <QPaintDevice>
+
+#ifdef __APPLE__
+#include <CoreGraphics/CGContext.h>
+#include <CoreGraphics/CGBitmapContext.h>
+#include <CoreGraphics/CGDirectDisplay.h>
+#include <stdlib.h>
+#include <malloc/malloc.h>
+
+#endif
+
 // for the clock
 int angle_between_hands(double h, double m) {
   // validate the input
@@ -240,7 +252,11 @@ void CocoaStyle::draw_push_button(const style_data &features,
 
 void CocoaStyle::draw_window_button(const style_data &features,
                                     QPainter *painter) {
+#ifdef __APPLE__
+  QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
+#elif
   QRectF rect = features.geometry.adjusted(2, 2, -2, -2);
+#endif
 
   painter->save();
   set_default_painter_hints(painter);
@@ -257,7 +273,7 @@ void CocoaStyle::draw_window_button(const style_data &features,
   painter->save();
 
   d->set_pen_color(painter, resource_manager::kSecondryTextColor, 2);
-  QRectF cross_rect(9.0, 9.0, rect.width() - 14, rect.height() - 14);
+  QRectF cross_rect(12.0, 12.0, rect.width() - 12, rect.height() - 12);
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
   painter->drawLine(cross_rect.topRight(), cross_rect.bottomLeft());
@@ -267,6 +283,57 @@ void CocoaStyle::draw_window_button(const style_data &features,
   painter->restore();
 }
 
+#ifdef __APPLE__
+CGContextRef _create_cg_context(int pixelsWide, int pixelsHigh) {
+  CGContextRef context = NULL;
+  CGColorSpaceRef colorSpace;
+  void *bitmapData;
+  int bitmapByteCount;
+  int bitmapBytesPerRow;
+
+  bitmapBytesPerRow = (pixelsWide * 4); // 1
+  bitmapByteCount = (bitmapBytesPerRow * pixelsHigh);
+
+  colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB); // 2
+  bitmapData = calloc(bitmapByteCount, sizeof(int));                // 3
+  if (bitmapData == NULL) {
+    fprintf(stderr, "Memory not allocated!");
+    return NULL;
+  }
+  context = CGBitmapContextCreate(bitmapData, // 4
+                                  pixelsWide, pixelsHigh,
+                                  8, // bits per component
+                                  bitmapBytesPerRow, colorSpace,
+                                  kCGImageAlphaPremultipliedLast);
+  if (context == NULL) {
+    free(bitmapData); // 5
+    fprintf(stderr, "Context not created!");
+    return NULL;
+  }
+  CGColorSpaceRelease(colorSpace); // 6
+
+  return context; // 7
+}
+
+QImage _cg_image_to_qimage(CGImageRef image) {
+  const size_t w = CGImageGetWidth(image), h = CGImageGetHeight(image);
+  QImage ret(w, h, QImage::Format_ARGB32_Premultiplied);
+  ret.fill(Qt::transparent);
+  CGRect rect = CGRectMake(0, 0, w, h);
+  // CGContextRef ctx = qt_mac_cg_context(&ret);
+  // qt_mac_drawCGImage(ctx, &rect, image);
+  // CGContextRelease(ctx);
+  return ret;
+}
+
+void _draw_drop_shadow(CGContextRef myContext, // 1
+                       CGFloat wd, CGFloat ht) {
+  CGSize myShadowOffset = CGSizeMake(2, -5);         // 2
+  CGContextSaveGState(myContext);                    // 6
+  CGContextSetShadow(myContext, myShadowOffset, 30); // 7
+  CGContextRestoreGState(myContext);                 // 15
+}
+#endif
 void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
                                                      int a_size,
                                                      bool a_highlight) {
@@ -278,25 +345,64 @@ void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
 
 void CocoaStyle::draw_window_frame(const style_data &features,
                                    QPainter *a_ctx) {
+#ifdef __APPLE__
+  QRectF rect = features.geometry.adjusted(10, 10, -10, -10);
+#elif
   QRectF rect = features.geometry.adjusted(1, 1, -1, -1);
+#endif
 
   a_ctx->save();
   set_default_painter_hints(a_ctx);
-  a_ctx->setOpacity(features.opacity);
-
+#ifdef __APPLE__
   /* draw shadow */
   QPainterPath drop_shadow;
-  drop_shadow.addRoundRect(features.geometry, 6.0, 6.0);
+  drop_shadow.addRoundRect(features.geometry, 4.0, 4.0);
+  QPaintDevice *current_paint_device = a_ctx->paintEngine()->paintDevice();
+  CGContextRef bitmap_ctx = 0;
 
-  /* draw a border around the window */
-  // todo : do this only when drop shadows are disabled
-  /*
-  a_ctx->save();
-  a_ctx->setOpacity(0.3);
-  a_ctx->fillPath(drop_shadow, d->color(ResourceManager::kTextColor));
-  a_ctx->restore();
-  */
+  if (current_paint_device) {
+    if (current_paint_device->devType() == QInternal::Image) {
+      QImage *qt_surface = static_cast<QImage *>(current_paint_device);
 
+      if (!qt_surface)
+        qDebug() << Q_FUNC_INFO << "Error Loding Qt Image";
+
+      CGColorSpaceRef colorspace =
+          CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+      uint flags = kCGImageAlphaPremultipliedFirst;
+      flags |= kCGBitmapByteOrder32Host;
+      bitmap_ctx = CGBitmapContextCreate(
+          qt_surface->bits(), qt_surface->width(), qt_surface->height(), 8,
+          qt_surface->bytesPerLine(), colorspace, flags);
+      CGContextTranslateCTM(bitmap_ctx, 0, qt_surface->height());
+      CGContextScaleCTM(bitmap_ctx, 1, -1);
+
+      CGColorSpaceRelease(colorspace);
+
+      // draw
+      CGSize myShadowOffset = CGSizeMake(0.0, 0.0);
+      CGContextSaveGState(bitmap_ctx);
+      CGContextSetShadow(bitmap_ctx, myShadowOffset, 20);
+
+      QColor window_color = d->color(resource_manager::kLightPrimaryColor);
+
+      CGContextSetRGBFillColor(bitmap_ctx, window_color.red(),
+                               window_color.blue(), window_color.green(),
+                               features.opacity);
+      CGContextFillRect(bitmap_ctx, CGRectMake(15, 15, qt_surface->width() - 30,
+                                               qt_surface->height() - 30));
+
+      CGContextRestoreGState(bitmap_ctx);
+      CGContextRelease(bitmap_ctx);
+    } else if (current_paint_device->devType() == QInternal::Widget) {
+      qDebug() << Q_FUNC_INFO << "Device Type Is Widget";
+    }
+  } else {
+    qDebug() << Q_FUNC_INFO << "Invalide Paint Device";
+  }
+#endif
+
+  a_ctx->setOpacity(features.opacity);
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
   window_background_path.addRoundedRect(rect, 4.0, 4.0);
@@ -307,7 +413,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
   window *ck_window = dynamic_cast<window *>(features.style_object);
 
   if (ck_window && ck_window->window_type() != window::kPanelWindow) {
-    QRectF window_title_rect(4, 2, rect.width() - 8, 28.0 * scale_factor());
+    QRectF window_title_rect(10, 5, rect.width() - 16, 32.0 * scale_factor());
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
@@ -340,6 +446,8 @@ void CocoaStyle::draw_window_frame(const style_data &features,
 
   a_ctx->setOpacity(1.0);
   a_ctx->restore();
+#ifdef __APPLE__
+#endif
 }
 
 void CocoaStyle::draw_clock_hands(
