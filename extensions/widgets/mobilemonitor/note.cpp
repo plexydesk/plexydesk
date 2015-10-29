@@ -27,7 +27,6 @@ public:
 
 Note::Note(const QRectF &rect, QGraphicsObject *parent)
     : PlexyDesk::DesktopWidget(rect, parent), d(new PrivateNote) {
-  setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
   d->mTextEdit = new PlexyDesk::TextEditor(rect, this);
   d->mTextEdit->setPos(1.0, 24.0);

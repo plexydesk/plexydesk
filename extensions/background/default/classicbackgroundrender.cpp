@@ -36,8 +36,8 @@ void ClassicBackgroundRender::setBackgroundImage(const QImage &img) {
   mScalingMode = None;
   mBackgroundImage = img;
   QSizeF size = mBackgroundImage.size();
-  setCacheMode(QGraphicsItem::ItemCoordinateCache, mBackgroundImage.size());
-  QPixmapCache::setCacheLimit((size.width() * size.height() * 32) / 8);
+  //setCacheMode(QGraphicsItem::ItemCoordinateCache, mBackgroundImage.size());
+  //QPixmapCache::setCacheLimit((size.width() * size.height() * 32) / 8);
   update();
 }
 

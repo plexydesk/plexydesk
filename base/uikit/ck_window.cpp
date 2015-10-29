@@ -19,8 +19,9 @@ typedef std::function<void(window *)> WindowActionCallback;
 typedef std::function<void(window *, bool)> WindowVisibilityCallback;
 class window::PrivateWindow {
 public:
-  PrivateWindow() : m_window_opacity(1.0f), m_window_content(0),
-    mWindowBackgroundVisibility(true) {}
+  PrivateWindow()
+      : m_window_opacity(1.0f), m_window_content(0),
+        mWindowBackgroundVisibility(true) {}
   ~PrivateWindow() {}
 
   float m_window_opacity;
@@ -37,7 +38,7 @@ public:
   std::function<void(const QSizeF &size)> m_window_size_callback;
   std::function<void(const QPointF &size)> m_window_move_callback;
 
-  std::vector<std::function<void(const QPointF &size)> > m_window_move_cb_list;
+  std::vector<std::function<void(const QPointF &size)>> m_window_move_cb_list;
 
   std::vector<window::ResizeCallback> m_window_resized_callback_list;
   std::vector<WindowActionCallback> m_window_close_callback_list;
@@ -90,9 +91,8 @@ window::window(widget *parent) : widget(parent), priv(new PrivateWindow) {
 
   setFocus(Qt::MouseFocusReason);
 
-  priv->m_window_close_button->on_click([this]() {
-      invoke_window_closed_action();
-  });
+  priv->m_window_close_button->on_click(
+      [this]() { invoke_window_closed_action(); });
 }
 
 window::~window() {
@@ -123,28 +123,53 @@ void window::set_window_content(widget *a_widget_ptr) {
   float window_bordr_height = window_title_height();
 
   QRectF content_geometry(a_widget_ptr->boundingRect());
+#ifdef __APPLE__
+  content_geometry.setHeight(content_geometry.height() + window_title_height() +
+                             30);
+  content_geometry.setWidth(content_geometry.width() + 30);
+#elif
   content_geometry.setHeight(content_geometry.height() + window_title_height());
   content_geometry.setWidth(content_geometry.width() + 2);
+#endif
 
   if (priv->m_window_type == kApplicationWindow) {
+#ifdef __APPLE__
+    priv->m_window_content->setPos(15.0, window_bordr_height + 10);
+    content_geometry.setHeight(content_geometry.height());
+#elif
     priv->m_window_content->setPos(1.0, window_bordr_height);
     content_geometry.setHeight(content_geometry.height() + 8);
+#endif
     setGeometry(content_geometry);
   } else if (priv->m_window_type == kNotificationWindow) {
+#ifdef __APPLE__
+    priv->m_window_content->setPos(15.0, window_bordr_height + 10);
+#elif
     priv->m_window_content->setPos(0.0, window_bordr_height);
+#elif
+#endif
+
     priv->m_window_close_button->hide();
     setGeometry(content_geometry);
   } else if (priv->m_window_type == kPanelWindow) {
     priv->m_window_close_button->hide();
+#ifdef __APPLE__
+    setGeometry(content_geometry);
+    priv->m_window_content->setPos(15.0, window_bordr_height);
+#elif
     setGeometry(priv->m_window_content->geometry());
     priv->m_window_content->setPos(0, 4);
+#endif
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
   } else if (priv->m_window_type == kPopupWindow) {
     priv->m_window_close_button->hide();
     setGeometry(content_geometry);
-    priv->m_window_content->setPos(0,
-                                   window_bordr_height);
+#ifdef __APPLE__
+    priv->m_window_content->setPos(15, window_bordr_height + 10);
+#elif
+    priv->m_window_content->setPos(0, window_bordr_height);
+#endif
   } else {
     priv->m_window_close_button->hide();
     setGeometry(content_geometry);
@@ -153,12 +178,15 @@ void window::set_window_content(widget *a_widget_ptr) {
   }
 
   if (priv->m_window_type != kFramelessWindow) {
+#ifndef __APPLE__
     QGraphicsDropShadowEffect *lEffect = new QGraphicsDropShadowEffect(this);
     lEffect->setColor(QColor("#111111"));
     lEffect->setBlurRadius(26);
     lEffect->setXOffset(0);
     lEffect->setYOffset(0);
     setGraphicsEffect(lEffect);
+    setCacheMode(NoCache);
+#endif
   }
 
   if (priv->m_window_type == kFramelessWindow) {
@@ -266,16 +294,12 @@ void window::discard() {
   if (priv->m_window_discard_callback) {
     qDebug() << Q_FUNC_INFO << "Discard Requested: Notifiy";
     priv->m_window_discard_callback(this);
-    }
+  }
 }
 
-float window::window_opacity() const
-{
-  return priv->m_window_opacity;
-}
+float window::window_opacity() const { return priv->m_window_opacity; }
 
-void window::set_window_opacity(float a_value)
-{
+void window::set_window_opacity(float a_value) {
   priv->m_window_opacity = a_value;
   update();
 }

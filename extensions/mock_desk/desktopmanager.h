@@ -30,6 +30,8 @@ public:
   explicit DesktopManager(QWidget *a_parent_ptr = 0);
   virtual ~DesktopManager();
 
+  void add_sample_text();
+
 protected:
   virtual void mouseReleaseEvent(QMouseEvent *event);
 

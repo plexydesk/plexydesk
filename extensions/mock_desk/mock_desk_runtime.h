@@ -28,8 +28,9 @@ class Runtime : public QObject {
     Q_OBJECT
 public:
   explicit Runtime(QObject *parent = 0);
-
   ~Runtime();
+
+  void open_window();
 
 public Q_SLOTS:
   void init();
