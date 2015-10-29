@@ -127,7 +127,7 @@ void window::set_window_content(widget *a_widget_ptr) {
   content_geometry.setHeight(content_geometry.height() + window_title_height() +
                              30);
   content_geometry.setWidth(content_geometry.width() + 30);
-#elif
+#else
   content_geometry.setHeight(content_geometry.height() + window_title_height());
   content_geometry.setWidth(content_geometry.width() + 2);
 #endif
@@ -136,7 +136,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 #ifdef __APPLE__
     priv->m_window_content->setPos(15.0, window_bordr_height + 10);
     content_geometry.setHeight(content_geometry.height());
-#elif
+#else
     priv->m_window_content->setPos(1.0, window_bordr_height);
     content_geometry.setHeight(content_geometry.height() + 8);
 #endif
@@ -144,9 +144,8 @@ void window::set_window_content(widget *a_widget_ptr) {
   } else if (priv->m_window_type == kNotificationWindow) {
 #ifdef __APPLE__
     priv->m_window_content->setPos(15.0, window_bordr_height + 10);
-#elif
+#else
     priv->m_window_content->setPos(0.0, window_bordr_height);
-#elif
 #endif
 
     priv->m_window_close_button->hide();
@@ -156,7 +155,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 #ifdef __APPLE__
     setGeometry(content_geometry);
     priv->m_window_content->setPos(15.0, window_bordr_height);
-#elif
+#else
     setGeometry(priv->m_window_content->geometry());
     priv->m_window_content->setPos(0, 4);
 #endif
@@ -167,7 +166,7 @@ void window::set_window_content(widget *a_widget_ptr) {
     setGeometry(content_geometry);
 #ifdef __APPLE__
     priv->m_window_content->setPos(15, window_bordr_height + 10);
-#elif
+#else
     priv->m_window_content->setPos(0, window_bordr_height);
 #endif
   } else {
