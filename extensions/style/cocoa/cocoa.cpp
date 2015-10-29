@@ -254,7 +254,7 @@ void CocoaStyle::draw_window_button(const style_data &features,
                                     QPainter *painter) {
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
-#elif
+#else
   QRectF rect = features.geometry.adjusted(2, 2, -2, -2);
 #endif
 
@@ -347,7 +347,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
                                    QPainter *a_ctx) {
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(10, 10, -10, -10);
-#elif
+#else
   QRectF rect = features.geometry.adjusted(1, 1, -1, -1);
 #endif
 
