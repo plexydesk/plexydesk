@@ -99,6 +99,7 @@ public:
 
       workspace->set_accelerated_rendering(false);
       workspace->move_to_screen(i);
+
       workspace->add_default_controller("classicbackdrop");
       workspace->add_default_controller("plexyclock");
       workspace->add_default_controller("desktopnoteswidget");

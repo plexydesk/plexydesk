@@ -21,8 +21,10 @@
 
 #include <QDebug>
 
+#include <QPushButton>
 #include <ck_space.h>
 #include <ck_workspace.h>
+#include <ck_text_editor.h>
 
 class DesktopManager::PrivateDesktopManager {
 public:
@@ -45,6 +47,20 @@ DesktopManager::DesktopManager(QWidget *parent)
 }
 
 DesktopManager::~DesktopManager() { delete priv; }
+
+void DesktopManager::add_sample_text()
+{
+  cherry_kit::window *window = new cherry_kit::window();
+
+  scene()->addItem(window);
+  window->set_window_title("Hello world");
+  cherry_kit::text_editor *edit = new cherry_kit::text_editor();
+  cherry_kit::widget *widget = new cherry_kit::widget();
+  widget->setGeometry(QRectF(0, 0, 200, 200));
+  edit->setGeometry(QRectF(0, 0, 200, 200));
+  window->set_window_content(edit);
+  window->show();
+}
 
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
   if (event->button() == Qt::RightButton) {

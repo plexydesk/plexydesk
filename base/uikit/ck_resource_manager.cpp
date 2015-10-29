@@ -208,7 +208,7 @@ void resource_manager::set_theme_name(const QString &a_name) {
 
 std::string resource_manager::ThemepackLoaderPrivate::get_dpi() const {
    std::string rv = "mdpi";
-   int base_dpi = 160;
+   int base_dpi = 240;
 
    if (base_dpi <= 120) {
      rv = "ldpi";
