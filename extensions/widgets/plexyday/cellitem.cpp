@@ -15,7 +15,6 @@ public:
 
 CellItem::CellItem(const QRectF &rect, QGraphicsItem *parent)
     : PlexyDesk::TableViewItem(rect, parent), d(new PrivateCellItem) {
-  this->setCacheMode(DeviceCoordinateCache);
   d->mRect = rect;
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
   setFlag(QGraphicsItem::ItemIsMovable, false);

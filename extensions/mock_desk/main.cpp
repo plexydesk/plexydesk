@@ -138,14 +138,18 @@ int main(int argc, char *argv[]) {
 
   //init_plugin_loader();
 
+  /*
   cherry_kit::timer timer(1000);
   timer.on_timeout([&]() {
       qDebug() << Q_FUNC_INFO << "Timeout";
   });
   timer.start();
+  */
 
   Runtime *runtime = new Runtime;
+  runtime->open_window();
 
+  /*
   cherry_kit::timer::start_once(1000, [=]() {
    runtime->moveToThread(QApplication::instance()->thread());
    runtime->init();
@@ -159,6 +163,7 @@ int main(int argc, char *argv[]) {
       runtime->end();
       delete runtime;
   });
+  */
 
   return app.exec();
 }
