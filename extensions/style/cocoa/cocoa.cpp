@@ -273,7 +273,11 @@ void CocoaStyle::draw_window_button(const style_data &features,
   painter->save();
 
   d->set_pen_color(painter, resource_manager::kTextBackground, 2);
+#ifdef __APPLE__
   QRectF cross_rect(12.0, 12.0, rect.width() - 12, rect.height() - 12);
+#else
+  QRectF cross_rect(8.0, 8.0, rect.width() - 12, rect.height() - 12);
+#endif
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
   painter->drawLine(cross_rect.topRight(), cross_rect.bottomLeft());
@@ -402,7 +406,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
   }
 #endif
 
-  a_ctx->setOpacity(features.opacity - 0.2);
+  a_ctx->setOpacity(features.opacity);
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
   window_background_path.addRoundedRect(rect, 4.0, 4.0);
