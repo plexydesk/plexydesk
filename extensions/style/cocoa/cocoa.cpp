@@ -265,14 +265,14 @@ void CocoaStyle::draw_window_button(const style_data &features,
   background.addRoundedRect(rect, 4.0, 4.0);
 
   if (features.render_state == style_data::kRenderElement) {
-    painter->fillPath(background, d->color(resource_manager::kAccentColor));
+    painter->fillPath(background, d->color(resource_manager::kTextColor));
   } else {
     painter->fillPath(background, d->color(resource_manager::kAccentColor));
   }
 
   painter->save();
 
-  d->set_pen_color(painter, resource_manager::kSecondryTextColor, 2);
+  d->set_pen_color(painter, resource_manager::kTextBackground, 2);
   QRectF cross_rect(12.0, 12.0, rect.width() - 12, rect.height() - 12);
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
@@ -382,7 +382,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
       // draw
       CGSize myShadowOffset = CGSizeMake(0.0, 0.0);
       CGContextSaveGState(bitmap_ctx);
-      CGContextSetShadow(bitmap_ctx, myShadowOffset, 20);
+      CGContextSetShadow(bitmap_ctx, myShadowOffset, 15);
 
       QColor window_color = d->color(resource_manager::kLightPrimaryColor);
 
@@ -402,7 +402,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
   }
 #endif
 
-  a_ctx->setOpacity(features.opacity);
+  a_ctx->setOpacity(features.opacity - 0.2);
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
   window_background_path.addRoundedRect(rect, 4.0, 4.0);
@@ -413,7 +413,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
   window *ck_window = dynamic_cast<window *>(features.style_object);
 
   if (ck_window && ck_window->window_type() != window::kPanelWindow) {
-    QRectF window_title_rect(10, 5, rect.width() - 16, 32.0 * scale_factor());
+    QRectF window_title_rect(12, 5, rect.width() - 16, 32.0 * scale_factor());
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
