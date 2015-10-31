@@ -136,7 +136,7 @@ void workspace::set_accelerated_rendering(bool a_on) {
   } else {
     setupViewport(new QWidget);
     setCacheMode(QGraphicsView::CacheNone);
-    setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
   }
 }
 
