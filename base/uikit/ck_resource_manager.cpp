@@ -144,7 +144,7 @@ void resource_manager::load_default_color_values() {
   priv->m_color_map[kLightPrimaryColor] = "#F0F0F0";
   priv->m_color_map[kTextBackground] = "#FFFFFF";
   priv->m_color_map[kAccentColor] = "#FF4081";
-  priv->m_color_map[kTextColor] = "#646464";
+  priv->m_color_map[kTextColor] = "#757D85";
   priv->m_color_map[kSecondryTextColor] = "#FFFFFF";
   priv->m_color_map[kDividerColor] = "#B6B6B6";
 }
