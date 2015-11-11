@@ -155,6 +155,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 #ifdef __APPLE__
     setGeometry(content_geometry);
     priv->m_window_content->setPos(15.0, window_bordr_height);
+    a_widget_ptr->setFlag(QGraphicsItem::ItemIsMovable, false);
 #else
     setGeometry(priv->m_window_content->geometry());
     priv->m_window_content->setPos(0, 4);
