@@ -70,6 +70,7 @@ void image_view::hoverMoveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
 void image_view::paint_view(QPainter *a_painter_ptr,
                            const QRectF &a_exposeRect) {
   int marginLeft = (a_exposeRect.width() - o_image_view->mPixmap.width()) / 2;
+  a_painter_ptr->save();
 
   a_painter_ptr->setRenderHints(QPainter::HighQualityAntialiasing |
                                 QPainter::SmoothPixmapTransform |
@@ -79,7 +80,6 @@ void image_view::paint_view(QPainter *a_painter_ptr,
   QRect rect(marginLeft, a_exposeRect.y(), o_image_view->mPixmap.width(),
              o_image_view->mPixmap.height());
 
-  a_painter_ptr->save();
   if (!o_image_view->mPixmap.isNull())
     a_painter_ptr->drawPixmap(a_exposeRect.toRect(), o_image_view->mPixmap);
 
