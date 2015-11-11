@@ -1046,7 +1046,7 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
   text_rect.setX(icon_rect.width() + 5);
 
   a_ctx->save();
-  a_ctx->setRenderHint(QPainter::Antialiasing, false);
+  set_default_painter_hints(a_ctx);
   a_ctx->drawPixmap(icon_rect, a_features.image_data);
   a_ctx->restore();
 
