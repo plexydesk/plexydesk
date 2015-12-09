@@ -95,7 +95,7 @@ calendar_view::calendar_view(widget *parent)
 
   ui_data["label"] = "Year";
   label *ck_year_label = dynamic_cast<label*>
-      (priv->m_ui->add_widget(0, 1, "label", ui_data));
+          (priv->m_ui->add_widget(0, 1, "label", ui_data, [=]() {}));
   ck_year_label->on_click([=]() {
     reset_view(ck_year_label);
   });
@@ -103,7 +103,7 @@ calendar_view::calendar_view(widget *parent)
   ui_data["label"] = "";
   ui_data["icon"] = "toolbar/ck_previous.png";
   icon_button *ck_prev_btn = dynamic_cast<icon_button*>
-      (priv->m_ui->add_widget(0, 0, "image_button", ui_data));
+          (priv->m_ui->add_widget(0, 0, "image_button", ui_data, [=]() {}));
   ck_prev_btn->on_click([=] (){
     previous_view(ck_year_label);
   });
@@ -114,7 +114,7 @@ calendar_view::calendar_view(widget *parent)
   ui_data["label"] = "";
   ui_data["icon"] = "toolbar/ck_next.png";
   icon_button *ck_next_btn = dynamic_cast<icon_button*>
-    (priv->m_ui->add_widget(0, 2, "image_button", ui_data));
+          (priv->m_ui->add_widget(0, 2, "image_button", ui_data, [=]() {}));
   ck_next_btn->on_click([=]() {
    next_view(ck_year_label);
   });
@@ -125,14 +125,14 @@ calendar_view::calendar_view(widget *parent)
 
   for (int i = 0; i < 7; i++) {
     ui_data["label"] = day_name_table[i];
-    priv->m_ui->add_widget(2, i, "label", ui_data);
+    priv->m_ui->add_widget(2, i, "label", ui_data, [=]() {});
   }
 
   for (int r = 3; r < 10; r++) {
     for (int c = 0; c < 7; c++) {
       ui_data["label"] = "";
       label *ck_date_lbl = dynamic_cast<label*>
-          (priv->m_ui->add_widget(r, c, "label", ui_data));
+              (priv->m_ui->add_widget(r, c, "label", ui_data, [=]() {}));
       if (ck_date_lbl) {
           ck_date_lbl->on_click([=]() {
             clear_selection();

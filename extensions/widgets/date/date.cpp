@@ -178,7 +178,7 @@ date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
   cherry_kit::widget_properties_t ui_data;
   ui_data["label"] = a_label;
   ui_data["icon"] = "toolbar/" + a_icon + ".png";
-  return ui->add_widget(a_row, a_col, "image_button", ui_data);
+  return ui->add_widget(a_row, a_col, "image_button", ui_data, [=]() {});
 }
 
 time_segment *date_controller::insert_time_element(
@@ -269,9 +269,9 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   cherry_kit::widget_properties_t ui_data;
   ui_data["text"] + "";
 
-  ui->add_widget(0, 0, "calendar", ui_data);
+  ui->add_widget(0, 0, "calendar", ui_data, [=]() {});
   ck_model_view = dynamic_cast<cherry_kit::item_view *>(
-      ui->add_widget(1, 0, "model_view", ui_data));
+              ui->add_widget(1, 0, "model_view", ui_data, [=] () {}));
 
   time_segment_list_t time_segment_list;
 
@@ -518,16 +518,16 @@ cherry_kit::window *time_segment::create_new() {
 
   ui_data["text"] = "";
   ck_note_editor = dynamic_cast<cherry_kit::text_editor *>(
-      ck_layout->add_widget(2, 0, "text_edit", ui_data));
+              ck_layout->add_widget(2, 0, "text_edit", ui_data, [=]() {}));
 
   /* start adding first row of the layout */
   ui_data["label"] = "Start";
-  ck_layout->add_widget(0, 0, "label", ui_data);
+  ck_layout->add_widget(0, 0, "label", ui_data, [=]() {});
 
   ui_data["text"] = std::to_string(m_time_value) + ":00";
 
   ck_duration_editor = dynamic_cast<cherry_kit::line_edit *>(
-      ck_layout->add_widget(0, 1, "line_edit", ui_data));
+              ck_layout->add_widget(0, 1, "line_edit", ui_data, [=]() {}));
   ck_duration_editor->set_readonly(true);
 
   ui_data["label"] = "+";
@@ -566,12 +566,12 @@ cherry_kit::window *time_segment::create_new() {
 
   /* end adding the first row */
   ui_data["label"] = "End";
-  ck_layout->add_widget(1, 0, "label", ui_data);
+  ck_layout->add_widget(1, 0, "label", ui_data, [=]() {});
 
   ui_data["text"] = std::to_string(m_time_value) + ":00";
 
   ck_end_time_editor = dynamic_cast<cherry_kit::line_edit *>(
-      ck_layout->add_widget(1, 1, "line_edit", ui_data));
+              ck_layout->add_widget(1, 1, "line_edit", ui_data, [=]() {}));
   ck_end_time_editor->set_readonly(true);
 
   ui_data["label"] = "+";
@@ -611,7 +611,7 @@ cherry_kit::window *time_segment::create_new() {
   //////
   ui_data["label"] = "Add";
   cherry_kit::button *ck_add_btn = dynamic_cast<cherry_kit::button *>(
-      ck_layout->add_widget(3, 1, "button", ui_data));
+      ck_layout->add_widget(3, 1, "button", ui_data, [=]() {}));
 
   ck_add_btn->on_click([=]() {
     event->set_note(ck_note_editor->text().toStdString());
