@@ -68,10 +68,10 @@ void date_dialog::create_window(const QRectF &window_geometry,
   prop["label"] = "Apply";
 
   priv->m_cal_widget = dynamic_cast<cherry_kit::calendar_view *>(
-      view->add_widget(0, 0, "calendar", prop));
+      view->add_widget(0, 0, "calendar", prop, [=]() {}));
 
   priv->m_done_btn = dynamic_cast<cherry_kit::button *>(
-      view->add_widget(1, 1, "button", prop));
+      view->add_widget(1, 1, "button", prop, [=]() {}));
 
   priv->m_activity_window->set_window_content(view->viewport());
 
