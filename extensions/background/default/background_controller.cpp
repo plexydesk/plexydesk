@@ -233,28 +233,28 @@ void desktop_controller_impl::create_task_group() const {
     cherry_kit::widget_properties_t ck_ui_data;
     cherry_kit::image_view *preview_view =
             dynamic_cast<cherry_kit::image_view *>(
-                ck_ui->add_widget(0, 0, "image_view", ck_ui_data));
+                ck_ui->add_widget(0, 0, "image_view", ck_ui_data, [=]() {}));
     preview_view->set_pixmap(previw_img);
 
     ck_ui_data["icon"] = "toolbar/ck_left_arrow.png";
     cherry_kit::icon_button *btn_left =
             dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,0, "image_button",ck_ui_data));
+                ck_ui->add_widget(1,0, "image_button",ck_ui_data, [=]() {}));
 
     ck_ui_data["icon"] = "toolbar/ck_up_arrow.png";
     cherry_kit::icon_button *btn_up =
             dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,1, "image_button",ck_ui_data));
+                ck_ui->add_widget(1,1, "image_button",ck_ui_data, [=]() {}));
 
     ck_ui_data["icon"] = "toolbar/ck_down_arrow.png";
     cherry_kit::icon_button *btn_down =
             dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,2, "image_button",ck_ui_data));
+                ck_ui->add_widget(1,2, "image_button",ck_ui_data, [=]() {}));
 
     ck_ui_data["icon"] = "toolbar/ck_right_arrow.png";
     cherry_kit::icon_button *btn_right =
             dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,3, "image_button",ck_ui_data));
+                ck_ui->add_widget(1,3, "image_button",ck_ui_data, [=]() {}));
 
     ck_window->set_window_content(ck_ui->viewport());
 
