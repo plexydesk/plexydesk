@@ -51,7 +51,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+  setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
 
 #ifndef Q_OS_WIN
@@ -136,7 +136,7 @@ void workspace::set_accelerated_rendering(bool a_on) {
   } else {
     setupViewport(new QWidget);
     setCacheMode(QGraphicsView::CacheNone);
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   }
 }
 

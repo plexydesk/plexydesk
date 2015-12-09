@@ -63,7 +63,7 @@ widget::widget(widget *parent)
   priv->m_name = QLatin1String("Widget");
   priv->m_current_layer_type = kRenderAtForgroundLevel;
 
-  setCacheMode(DeviceCoordinateCache);
+  setCacheMode(ItemCoordinateCache);
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
