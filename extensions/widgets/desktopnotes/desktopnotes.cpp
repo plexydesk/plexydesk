@@ -249,11 +249,11 @@ void desktop_task_controller_impl::createReminderUI(
 
   cherry_kit::widget_properties_t accept_button_prop;
 
-  view->add_widget(0, 0, "text_edit", text_editor_prop);
+  view->add_widget(0, 0, "text_edit", text_editor_prop, [=]() {});
 
   accept_button_prop["label"] = "";
   accept_button_prop["icon"] = "toolbar/ck_event.png";
-  view->add_widget(1, 0, "image_button", accept_button_prop);
+  view->add_widget(1, 0, "image_button", accept_button_prop, [=]() {});
 
   if (a_session->session_keys().contains("state") &&
       (a_session->session_data("state").toString() == "done")) {
@@ -262,6 +262,7 @@ void desktop_task_controller_impl::createReminderUI(
 
     cherry_kit::text_editor *editor =
         dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
+
     if (editor) {
       editor->style("border: 0; background: #29CDA8; color: #ffffff");
     }
@@ -270,15 +271,15 @@ void desktop_task_controller_impl::createReminderUI(
     accept_button_prop["icon"] = "toolbar/ck_ok.png";
   }
 
-  view->add_widget(1, 1, "image_button", accept_button_prop);
+  view->add_widget(1, 1, "image_button", accept_button_prop,[=]() {});
 
   accept_button_prop["label"] = "";
   accept_button_prop["icon"] = "toolbar/ck_save.png";
-  view->add_widget(1, 2, "image_button", accept_button_prop);
+  view->add_widget(1, 2, "image_button", accept_button_prop, [=]() {});
 
   accept_button_prop["label"] = "";
   accept_button_prop["icon"] = "toolbar/ck_delete.png";
-  view->add_widget(1, 3, "image_button", accept_button_prop);
+  view->add_widget(1, 3, "image_button", accept_button_prop, [=]() {});
 
   window->set_window_content(view->viewport());
   window->set_window_title("Task");

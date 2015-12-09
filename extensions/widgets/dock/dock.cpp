@@ -94,7 +94,7 @@ void desktop_panel_controller_impl::create_dock_action(
   prop["label"] = "";
   prop["icon"] = icon;
   ck_widget =
-      m_fixed_panel_layout->add_widget(row, column, "image_button", prop);
+      m_fixed_panel_layout->add_widget(row, column, "image_button", prop, [=]() {});
 
   ck_widget->on_click([=]() {
     if (a_button_action_func)

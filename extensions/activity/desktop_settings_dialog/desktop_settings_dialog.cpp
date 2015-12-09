@@ -103,7 +103,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
 
   cherry_kit::widget_properties_t ui_data;
 
-  cherry_kit::widget *ck_icon_gird = ck_ui->add_widget(0, 0, "widget", ui_data);
+  cherry_kit::widget *ck_icon_gird = ck_ui->add_widget(0, 0, "widget", ui_data, [=]() {});
   priv->m_image_view = new cherry_kit::item_view(
       ck_icon_gird, cherry_kit::item_view::kGridModel);
   priv->m_image_view->set_enable_scrollbars(true);
@@ -116,13 +116,13 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   ui_data["label"] = "";
   ui_data["icon"] = "actions/pd_previous.png";
 
-  ck_ui->add_widget(1, 0, "image_button", ui_data);
+  ck_ui->add_widget(1, 0, "image_button", ui_data, [=]() {});
   ui_data["label"] = "";
   ui_data["icon"] = "actions/pd_search.png";
-  ck_ui->add_widget(1, 1, "image_button", ui_data);
+  ck_ui->add_widget(1, 1, "image_button", ui_data, [=]() {});
   ui_data["label"] = "";
   ui_data["icon"] = "actions/pd_next.png";
-  ck_ui->add_widget(1, 2, "image_button", ui_data);
+  ck_ui->add_widget(1, 2, "image_button", ui_data, [=]() {});
 
   priv->m_window->set_window_content(ck_ui->viewport());
 

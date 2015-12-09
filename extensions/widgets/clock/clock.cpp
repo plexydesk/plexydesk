@@ -235,7 +235,7 @@ time_controller::PrivateClockController::add_action_button(
   ck_ui_data["label"] = a_label;
   ck_ui_data["icon"] = "toolbar/" + a_icon + ".png";
   ck_rv = dynamic_cast<cherry_kit::icon_button *>(
-      ui->add_widget(a_row, a_col, "image_button", ck_ui_data));
+              ui->add_widget(a_row, a_col, "image_button", ck_ui_data, [=]() {}));
   return ck_rv;
 }
 
@@ -268,7 +268,10 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   ui_data["text"] + "";
 
   ck_clock = dynamic_cast<cherry_kit::clock_view *>(
-      ck_ui->add_widget(0, 0, "clock", ui_data));
+              ck_ui->add_widget(0, 0, "clock", ui_data, [=]() {
+
+
+  }));
 
   ck_location_btn = add_action_button(ck_ui, 1, 0, "", "ck_location");
   ck_location_btn->hide();
@@ -353,11 +356,11 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   cherry_kit::widget_properties_t ui_data;
 
   ck_dial = dynamic_cast<cherry_kit::dial_view *>(
-      ck_ui->add_widget(1, 0, "dial", ui_data));
+              ck_ui->add_widget(1, 0, "dial", ui_data, [=]() {}));
 
   ui_data["label"] = "00";
   ck_timer_label = dynamic_cast<cherry_kit::label *>(
-      ck_ui->add_widget(2, 0, "label", ui_data));
+              ck_ui->add_widget(2, 0, "label", ui_data, [=]() {}));
 
   ck_start_btn = add_action_button(ck_ui, 3, 0, "", "ck_play");
 
