@@ -174,10 +174,13 @@ public:
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
       HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
 
+      if (!folderView)
+          qApp->quit();
+
       /*
       //following code creates redraw and resize problems
       //investigate
-           LONG lExStyle = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
+      LONG lExStyle = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
       lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
       SetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE, lExStyle);
 
@@ -189,10 +192,18 @@ public:
       SetWindowLong((HWND) workspace->winId(), GWL_STYLE, lStyle);
 
       */
-      SetParent((HWND)workspace->winId(), folderView);
+
+      if (SetParent((HWND)workspace->winId(), folderView) == NULL)
+          qApp->quit();
 
       SetWindowPos((HWND) workspace->winId(), NULL, 0,0,0,0,
-                   SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+                   SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER );
+
+      LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
+      ///lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
+      lStyle &= ~(WS_CAPTION | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU | WS_BORDER | WS_EX_TRANSPARENT );
+      SetWindowLong((HWND) workspace->winId(), GWL_STYLE, lStyle);
+
       // SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE
       // |
       // SWP_NOSIZE | SWP_NOACTIVATE);
