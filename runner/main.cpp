@@ -54,6 +54,7 @@
 // Windows
 #include <Windows.h>
 #include <tchar.h>
+#include <clrdata.h>
 
 WNDPROC wpOrigEditProc;
 
@@ -128,6 +129,18 @@ static CHAR *          //   return error message
 #endif
 
 class Runtime {
+private:
+#ifdef Q_OS_WIN32
+    int check_windows_version() {
+       OSVERSIONINFO osvi;
+       ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+       osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+       GetVersionEx(&osvi);
+       return osvi.dwMajorVersion;
+    }
+
+#endif
+
 public:
   Runtime(const char *a_platform_name = 0) {
     for (int i = 0; i < cherry_kit::screen::screen_count() ; i++) {
@@ -168,7 +181,6 @@ public:
       workspace->show();
 
 #ifdef Q_OS_WIN
-      // HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
       HWND hShellWnd = GetShellWindow();
       HWND hDefView =
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
@@ -177,40 +189,76 @@ public:
       if (!folderView)
           qApp->quit();
 
-      /*
-      //following code creates redraw and resize problems
-      //investigate
-      LONG lExStyle = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
-      lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
-      SetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE, lExStyle);
-
-      SetWindowPos((HWND) workspace->winId(), NULL, 0,0,0,0,
-                   SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
-
-      LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
-      lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
-      SetWindowLong((HWND) workspace->winId(), GWL_STYLE, lStyle);
-
-      */
-
-      if (SetParent((HWND)workspace->winId(), folderView) == NULL)
+      if (check_windows_version() <= 6){
+         if (SetParent((HWND)workspace->winId(), folderView) == NULL)
           qApp->quit();
-
-      SetWindowPos((HWND) workspace->winId(), NULL, 0,0,0,0,
-                   SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER );
+         return;
+      } else {
+         if (SetParent((HWND)workspace->winId(), hShellWnd) == NULL)
+          qApp->quit();
+      }
 
       LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
-      ///lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
-      lStyle &= ~(WS_CAPTION | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU | WS_BORDER | WS_EX_TRANSPARENT );
-      SetWindowLong((HWND) workspace->winId(), GWL_STYLE, lStyle);
+      LONG current_window_ex_style = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
 
-      // SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE
-      // |
-      // SWP_NOSIZE | SWP_NOACTIVATE);
-      // SetWindowPos((HWND) workspace->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE |
-      // SWP_NOSIZE | SWP_NOACTIVATE);
-      // wpOrigEditProc = (WNDPROC) SetWindowLong((HWND) workspace->winId(),
-      // GWL_WNDPROC, (LONG) EditSubclassProc);
+      //lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
+      lStyle &= ~(WS_SYSMENU | WS_MINIMIZE | WS_CAPTION | WS_SIZEBOX);
+      lStyle |=
+              (WS_MAXIMIZE
+               | WS_CHILDWINDOW
+               | WS_VISIBLE
+               | WS_CLIPCHILDREN
+               | WS_CLIPSIBLINGS
+               );
+      SetWindowLongPtr((HWND) workspace->winId(), GWL_STYLE, lStyle);
+
+      current_window_ex_style &= ~(WS_EX_WINDOWEDGE
+                                   | WS_EX_RIGHTSCROLLBAR
+                                   | WS_EX_LEFTSCROLLBAR
+                                   | WS_EX_LEFT
+                                   | WS_EX_RIGHT
+                                   | WS_EX_STATICEDGE
+                                   );
+
+      SetWindowLongPtr((HWND) workspace->winId(), GWL_EXSTYLE,
+                       current_window_ex_style
+                       | WS_EX_TOPMOST
+                       | WS_EX_COMPOSITED
+                       | WS_EX_TRANSPARENT
+                       | WS_EX_ACCEPTFILES
+                       );
+
+      SetWindowLongPtr((HWND) workspace->viewport()->winId(), GWL_EXSTYLE,
+                       current_window_ex_style
+                       | WS_EX_TOPMOST
+                       | WS_EX_COMPOSITED
+                       | WS_EX_TRANSPARENT
+                       | WS_EX_ACCEPTFILES
+                       );
+
+
+      SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST,
+                   0, 0, 0, 0,
+                   SWP_FRAMECHANGED
+                   | SWP_NOMOVE
+                   | SWP_NOSIZE
+                   | SWP_NOZORDER
+                   | SWP_NOOWNERZORDER);
+
+      SetWindowPos((HWND) workspace->viewport()->winId(), HWND_TOPMOST,
+                   0, 0, 0, 0,
+                   SWP_FRAMECHANGED
+                   | SWP_NOMOVE
+                   | SWP_NOSIZE
+                   | SWP_NOZORDER
+                   | SWP_NOOWNERZORDER);
+
+
+      HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
+      PDWORD_PTR result = 0;
+      ::SendMessageTimeout(ProgmanHwnd, 0x052C, 0xD, 0x1, SMTO_NORMAL, 1000, result);
+
+      SendMessage(hDefView, 0x0112, 0xF060, 0);
 #endif
     }
   }
