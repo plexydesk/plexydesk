@@ -53,13 +53,19 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-
 #ifndef Q_OS_WIN
   setWindowFlags(Qt::CustomizeWindowHint
                  | Qt::FramelessWindowHint
                  | Qt::WindowStaysOnBottomHint
                  | Qt::NoDropShadowWindowHint
                  );
+#endif
+
+#ifdef Q_OS_WIN
+  setCacheMode(QGraphicsView::CacheNone);
+  setOptimizationFlags(QGraphicsView::DontSavePainterState);
+  setOptimizationFlag(QGraphicsView::DontClipPainter);
+  setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 #endif
 
   setInteractive(true);
@@ -69,7 +75,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
   priv->m_space_count = 0;
   priv->m_current_activty_space_id = 0;
-  priv->m_workspace_left_margine = 0;
+  priv->m_workspace_left_margine = 32;
 
   setAcceptDrops(true);
 }
@@ -126,17 +132,23 @@ void workspace::set_accelerated_rendering(bool a_on) {
   priv->m_opengl_on = a_on;
 
   if (priv->m_opengl_on) {
+    /*
     setViewport(new QGLWidget(
         QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
                   QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
+    */
+
+    setViewport(new QGLWidget(QGLFormat(QGL::DoubleBuffer)));
     setCacheMode(QGraphicsView::CacheNone);
     // setOptimizationFlags(QGraphicsView::DontSavePainterState);
     // setOptimizationFlag(QGraphicsView::DontClipPainter);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
     setupViewport(new QWidget);
-    setCacheMode(QGraphicsView::CacheNone);
-    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    setCacheMode(QGraphicsView::CacheBackground);
+    setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    setOptimizationFlag(QGraphicsView::DontClipPainter);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
   }
 }
 
@@ -151,7 +163,7 @@ void workspace::auto_switch() {
     QScroller *_activeScroller = QScroller::scroller(this);
     if (_activeScroller) {
       QRectF r;
-      r.setX(priv->m_workspace_left_margine);
+      r.setX(0);
       r.setY(0.0);
       r.setHeight(this->geometry().height());
       r.setWidth(this->geometry().width() + priv->m_workspace_left_margine);
@@ -292,7 +304,7 @@ void workspace::revoke_space(const QString &a_name, int a_id) {
   _space->set_id(a_id);
 
   QRectF _space_geometry;
-  _space_geometry.setX(priv->m_workspace_left_margine);
+  _space_geometry.setX(0);
   _space_geometry.setY((priv->m_workspace_geometry.height()) -
                        priv->m_render_box.height());
   _space_geometry.setHeight(priv->m_render_box.height());
@@ -482,7 +494,7 @@ QPixmap workspace::thumbnail(space *a_space, int a_scale_factor) {
                     QImage::Format_ARGB32_Premultiplied);
   QRectF _source_rect = a_space->geometry();
   QRectF _thumbnail_geometry(0.0, 0.0, _thumbnail.width(), _thumbnail.height());
-  _source_rect.setX(priv->m_workspace_left_margine);
+  _source_rect.setX(0);
   _source_rect.setWidth(a_space->geometry().width() -
                         priv->m_workspace_left_margine);
 
@@ -541,7 +553,7 @@ void workspace::add_default_space() {
   priv->m_desktop_space_list << _space;
 
   QRectF _space_geometry;
-  _space_geometry.setX(priv->m_workspace_left_margine);
+  _space_geometry.setX(0);
   _space_geometry.setY((priv->m_workspace_geometry.height()) -
                        priv->m_render_box.height());
   _space_geometry.setHeight(priv->m_render_box.height());
