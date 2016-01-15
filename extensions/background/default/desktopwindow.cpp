@@ -1,6 +1,7 @@
 #include "desktopwindow.h"
 
 #include <QImage>
+#include <QPixmapCache>
 #include <QPainter>
 #include <ck_image_io.h>
 
@@ -116,9 +117,7 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
     a_ctx->setBackgroundMode(Qt::TransparentMode);
     a_ctx->setCompositionMode(QPainter::CompositionMode_Source);
     a_ctx->fillRect(a_rect, Qt::transparent);
-
     widget::paint_view(a_ctx, a_rect);
-
     return;
   }
 
@@ -126,6 +125,11 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   a_ctx->setRenderHints(QPainter::SmoothPixmapTransform |
                         QPainter::HighQualityAntialiasing |
                         QPainter::Antialiasing);
-  a_ctx->drawImage(a_rect, priv->m_background_texture);
+  QRectF draw_rect;
+  draw_rect.setX(a_rect.x());
+  draw_rect.setY(a_rect.y());
+  draw_rect.setWidth(a_rect.width());
+  draw_rect.setHeight(a_rect.height());
+  a_ctx->drawImage(draw_rect, priv->m_background_texture);
   a_ctx->restore();
 }
