@@ -4,8 +4,10 @@
 #include <ck_image_io.h>
 #include <functional>
 
+#include <QuetzalDataKitQt_export.h>
+
 namespace cherry_kit {
-class image_io::platform_image {
+class QuetzalDataKitQt_EXPORT image_io::platform_image {
 public:
   platform_image();
   ~platform_image();
