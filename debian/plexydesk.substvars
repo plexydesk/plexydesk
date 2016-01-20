@@ -1,3 +1,0 @@
-misc:Pre-Depends=multiarch-support
-shlibs:Depends=libc6 (>= 2.14), libgcc1 (>= 1:4.1.1), libqt5core5a (>= 5.4.0), libqt5gui5 (>= 5.0.2) | libqt5gui5-gles (>= 5.0.2), libqt5network5 (>= 5.0.2), libqt5opengl5 (>= 5.0.2) | libqt5opengl5-gles (>= 5.0.2), libqt5widgets5 (>= 5.0.2), libqt5xml5 (>= 5.0.2), libstdc++6 (>= 4.9), libx11-6, plexydesk
-misc:Depends=
