@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Dock
+Type=Widget
+Comment=Add a comment about the widget 
+X-PLEXYDESK-Library=dockwidget

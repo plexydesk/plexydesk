@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Document created by: PlexyDesk, http://www.plexydesk.org for Social Framework -->
+<services>
+<service name="flickr.photos.search">
+    <input url="http://api.flickr.com/services/rest/" request="GET">
+            <arg type="string" optional="true" default="flickr.photos.search">method</arg>
+            <arg type="string" optional="false">api_key</arg>
+            <arg type="string" optional="false">text</arg>
+            <arg type="string" optional="true" default="rest">format</arg>
+            <arg type="string" optional="true">tags</arg>
+            <arg type="string" optional="true">tag_mode</arg>
+            <arg type="string" optional="true">min_upload_date</arg>
+            <arg type="string" optional="true">max_upload_date</arg>
+            <arg type="string" optional="true">max_taken_date</arg>
+            <arg type="string" optional="true">license</arg>
+            <arg type="string" optional="true">sort</arg>
+            <arg type="string" optional="true">privacy_filter</arg>
+            <arg type="string" optional="true">bbox</arg>
+            <arg type="string" optional="true">accuracy</arg>
+            <arg type="string" optional="true">safe_search</arg>
+            <arg type="string" optional="true">machine_tag</arg>
+            <arg type="string" optional="true">machine_tag_mode</arg>
+            <arg type="string" optional="true">contacts</arg>
+            <arg type="string" optional="true">woe_id</arg>
+            <arg type="string" optional="true">media</arg>
+            <arg type="string" optional="true">has_geo</arg>
+            <arg type="string" optional="true">geo_context</arg>
+            <arg type="string" optional="true">lat</arg>
+            <arg type="string" optional="true">lan</arg>
+            <arg type="string" optional="true">radius</arg>
+            <arg type="string" optional="true">radius_units</arg>
+            <arg type="string" optional="true">in_commons</arg>
+            <arg type="string" optional="true" default="true">in_gallery</arg>
+            <arg type="string" optional="true">extras</arg>
+            <arg type="string" optional="true" default="30">per_page</arg>
+            <arg type="string" optional="true">page</arg>
+    </input>
+
+   <result format="xml">
+           <query name="photo" tag="photo">
+                   <attr type="string">id</attr>
+                   <attr type="string">owner</attr>
+                   <attr type="string">secret</attr>
+                   <attr type="string">server</attr>
+                   <attr type="string">farm</attr>
+                   <attr type="string">title</attr>
+                   <attr type="bool">ispublic</attr>
+                   <attr type="bool">isfriend</attr>
+                   <attr type="bool">isfamily</attr>
+           </query>
+
+           <query name="photos" tag="photos">
+                   <attr type="string">pages</attr>
+                   <attr type="string">perpage</attr>
+                   <attr type="string">totoal</attr>
+           </query>
+
+           <query name="status" tag="rsp">
+                   <attr type="string">stat</attr>
+           </query>
+   </result>
+
+   <error format="xml">
+           <tag name="status" tag="rsp">
+                   <attr name="stat" type="string"/>
+                   <attr name="message" type="string"/>
+                   <attr name="code" type="integer" />
+           </tag>
+   </error>
+</service>
+
+<service name="flickr.photos.getSizes">
+    <input url="http://api.flickr.com/services/rest/" type="GET">
+            <arg type="string" optional="true" default="flickr.photos.getSizes">method</arg>
+            <arg type="string" optional="false">api_key</arg>
+            <arg type="string" optional="false">photo_id</arg>
+            <arg type="string" optional="true" default="rest">format</arg>
+    </input>
+
+   <result format="xml">
+           <query name="sizes" tag="sizes">
+                   <attr type="bool">canblog</attr>
+                   <attr type="bool">canprint</attr>
+                   <attr type="bool">candownload</attr>
+           </query>
+
+           <query name="size" tag="size">
+                   <attr type="string">source</attr>
+                   <attr type="string">media</attr>
+                   <attr type="string">url</attr>
+                   <attr type="string">width</attr>
+                   <attr type="string">height</attr>
+                   <attr type="string">label</attr>
+           </query>
+
+           <query name="status" tag="rsp">
+                   <attr type="string">stat</attr>
+           </query>
+   </result>
+
+   <error format="xml">
+           <tag name="status" tag="rsp">
+                   <attr name="stat" type="string"/>
+                   <attr name="message" type="string"/>
+                   <attr name="code" type="integer" />
+           </tag>
+   </error>
+</service>
+
+<service name="flickr.photos.data">
+   <input url="" type="POST">
+      <arg type="string" optional="false">url</arg>
+   </input>
+
+   <result format="binary">
+   </result>
+
+</service>
+</services>
