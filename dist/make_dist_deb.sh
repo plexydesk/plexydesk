@@ -110,7 +110,7 @@ cd "${DEB_BUILD_DIR_}/${APP_NAME}-${APP_VERSION}"
 
 if [ -z "${GPGKEY}" ] ; then
 	prog_ok "Building the dist DEB binary file with debuild..."
-	debuild -b -us -uc
+	debuild -b -us -uc 
 else
 	prog_ok "Building the dist DEB source files only with debuild..."
 	debuild -k${GPGKEY} -S -sa -Zbzip2

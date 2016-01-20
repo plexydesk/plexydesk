@@ -78,6 +78,8 @@ find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED Gui Core Xml Widgets Network)
 
 
 if (UNIX AND NOT APPLE)
+	  find_package(Threads REQUIRED)
+	  find_package(X11)
     find_package(Qt5X11Extras)
 endif(UNIX AND NOT APPLE)
 
