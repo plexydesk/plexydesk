@@ -1,0 +1,49 @@
+Source: plexydesk
+Section: x11
+Priority: extra
+Maintainer: PhobosK <phobosk@kbfx.net>
+Build-Depends:  debhelper (>= 5),
+                cdbs,
+                cmake (>= 3.2.0),
+                bison,
+                flex,
+								qtbase5-dev,
+								qtbase5-dev-tools,
+								libqt5xmlpatterns5-dev,
+								pkg-config,
+								x11proto-core-dev,
+								x11proto-randr-dev,
+								x11proto-render-dev,
+								x11proto-video-dev,
+								x11proto-dri2-dev,
+								libpthread-stubs0-dev,
+                libsm-dev,
+                libxext-dev,
+                libxcomposite-dev,
+                libxdamage-dev,
+                libxrender-dev
+Standards-Version: 3.9.1
+Homepage: http://www.plexyplanet.org
+
+Package: plexydesk
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+         shared-mime-info,
+				 libqt5gui5,
+				 libqt5widgets5,
+				 libqt5network5,
+				 libqt5xml5,
+				 libqt5xmlpatterns5,
+				 libqt5core5,
+         libqtwebkit4-declarative | libqtwebkit-qmlwebkitplugin
+Description: A Desktop extension letting you efficiently organise and use your Desktop
+ .
+ PlexyDesk is a lightweight Desktop, and it's not a Desktop Environment like
+ KDE or GNOME.
+ PlexyDesk will render your workspace and help organise all your information
+ with a touch, yes heard us right.
+ PlexyDesk will support multi touch screens.
+ PlexyDesk might not be the new Desktop Environment you came looking for, but
+ it will be the Ultimate Desktop Experience you would ever get.
+ The aim of the PlexyDesk Team is to create "A Desktop which is easy to
+ communicate with, Create and Simply cool!"
