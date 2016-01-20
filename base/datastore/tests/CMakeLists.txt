@@ -9,6 +9,22 @@ if (WIN32)
     ADD_DEFINITIONS(-DNODEFAULTLIB:library)
 endif(WIN32)
 
+if (UNIX AND NOT APPLE)
+	set (THREAD_LIBS pthread)
+endif()
+
+if(UNIX AND NOT APPLE)
+	if(THREADS_HAVE_PTHREAD_ARG)
+		target_compile_options(PUBLIC ${PLEXY_UI_CORE_LIBRARY} "-pthread")
+	endif()
+
+  set(LIBRARY_NATIVE_LINK_TARGETS
+			      ${X11_LIBRARIES}
+						${THREAD_LIBRARY}
+						${CMAKE_THREAD_LIBS_INIT}
+						)
+endif()
+
 set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${QT_QTSVG_LIBRARY}
@@ -20,6 +36,8 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${PLEXY_UI_CORE_LIBRARY}
     ${QT_QTXMLPATTERNS_LIBRARY}
     ${Qt5X11Extras_LIBRARIES}
+		${LIBRARY_NATIVE_LINK_TARGETS}
+    ${THREAD_LIBS}
     )
 
 

@@ -168,6 +168,18 @@ add_library(${PLEXY_UI_CORE_LIBRARY} SHARED
     ${CORE_LIB_CXX_FILES}
     ${UI_FILES})
 
+if(UNIX AND NOT APPLE)
+	if(THREADS_HAVE_PTHREAD_ARG)
+		target_compile_options(PUBLIC ${PLEXY_UI_CORE_LIBRARY} "-pthread")
+	endif()
+
+  set(LIBRARY_NATIVE_LINK_TARGETS
+			      ${X11_LIBRARIES}
+						${THREAD_LIBRARY}
+						${CMAKE_THREAD_LIBS_INIT}
+						)
+endif()
+
 if(APPLE)
     set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES FRAMEWORK 1)
 endif(APPLE)
