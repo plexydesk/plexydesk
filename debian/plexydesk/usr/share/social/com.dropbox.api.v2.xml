@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Document created by: PlexyDesk, http://www.plexydesk.org for Social Framework QuetzalSocialKit -->
+<services>
+<service name="dropbox.oauth2.token">
+    <input url="https://api.dropbox.com/1/oauth2/token" type="POST">
+            <arg type="string" optional="true">code</arg>
+            <arg type="string" optional="false" default="authorization_code">grant_type</arg>
+            <arg type="string" optional="true">client_id</arg>
+            <arg type="string" optional="true">client_secret</arg>
+            <arg type="string" optional="true">redirect_url</arg>
+    </input>
+
+   <result format="json">
+           <query name="uid" tag="uid">
+                   <attr type="string">uid</attr>
+           </query>
+
+           <query name="token_type" tag="token_type">
+                   <attr type="string">token_type</attr>
+           </query>
+
+           <query name="access_token" tag="access_token">
+                   <attr type="string">access_token</attr>
+           </query>
+
+
+   </result>
+
+   <error format="json">
+           <tag name="stat" tag="rsp">
+                   <attr name="stat" type="string"/>
+                   <attr name="message" type="string"/>
+                   <attr name="code" type="integer" />
+           </tag>
+   </error>
+</service>
+
+<service name="dropbox.oauth2.accountInfo">
+    <input url="https://api.dropbox.com/1/account/info" type="GET">
+    </input>
+
+    <result format="json">
+           <query name="uid" tag="uid">
+                   <attr type="integer">uid</attr>
+           </query>
+
+           <query name="referral_link" tag="referral_link">
+                   <attr type="string">referral_link</attr>
+           </query>
+
+           <query name="display_name" tag="display_name">
+                   <attr type="string">display_name</attr>
+           </query>
+
+           <query name="team" tag="team">
+                   <attr type="string">name</attr>
+           </query>
+
+            <query name="country" tag="country">
+                   <attr type="string">country</attr>
+            </query>
+
+            <query name="email" tag="email">
+                   <attr type="string">email</attr>
+            </query>
+
+            <query name="quota_info" tag="quota_info">
+                   <attr type="array">quota_info</attr>
+            </query>
+
+   </result>
+
+   <error format="json">
+           <tag name="stat" tag="rsp">
+                   <attr name="stat" type="string"/>
+                   <attr name="message" type="string"/>
+                   <attr name="code" type="integer" />
+           </tag>
+   </error>
+</service>
+
+<service name="dropbox.photos.data">
+   <input url="" type="POST">
+      <arg type="string" optional="false">url</arg>
+   </input>
+
+   <result format="binary">
+   </result>
+</service>
+</services>

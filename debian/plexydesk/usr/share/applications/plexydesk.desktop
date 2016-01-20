@@ -1,0 +1,13 @@
+﻿[Desktop Entry]
+Version=1.0
+Type=Application
+Name=PlexyDesk
+GenericName=Desktop Orginiser
+GenericName[bg]=Организатор за работната площ
+Comment=Helps you efficiently organise and use your Desktop.
+Comment[bg]=Ефективно организира и променя работната Ви площ.
+Exec=/usr/bin/plexydesk
+TryExec=/usr/bin/plexydesk
+Icon=/usr/share/plexy/plexydesk.png
+Terminal=false
+Categories=Qt;System;
