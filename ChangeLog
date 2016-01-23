@@ -1,6 +1,7 @@
 plexydesk (1.0.2) unstable; urgency=low
 
   * Windows Build Support 
+  * Save Session Log to File on linux and windows.
 
  -- Siraj Razick <siraj@plexydesk.com>  Wed, 23 Jan 2016 21:03:00 -0400
 

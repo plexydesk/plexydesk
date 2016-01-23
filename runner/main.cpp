@@ -58,6 +58,52 @@
 
 WNDPROC wpOrigEditProc;
 
+extern void __reset_session_log();
+extern void __sync_session_log(QtMsgType msg_type,
+                        const QMessageLogContext &ctx,
+                        const QString &data);
+
+
+void __sync_session_log(QtMsgType msg_type,
+                        const QMessageLogContext &ctx,
+                        const QString &data)
+{
+    QByteArray debug_data = data.toLocal8Bit();
+
+    QFile sync_file(
+                QDir::toNativeSeparators(
+                    QDir::homePath() + "/plexydesk-session-log.txt"));
+
+    sync_file.open(QIODevice::WriteOnly
+                        | QIODevice::Text
+                        | QIODevice::Append);
+
+    if (!sync_file.isOpen()) { return;}
+
+    QTextStream sync_stream(&sync_file);
+
+    if (msg_type == QtWarningMsg || msg_type == QtDebugMsg) {
+      sync_stream <<  debug_data.constData() << " - " << endl;
+    }
+
+    sync_file.close();
+}
+
+void __reset_session_log() {
+    QFile sync_file(
+                QDir::toNativeSeparators(
+                    QDir::homePath() + "/plexydesk-session-log.txt"));
+
+    sync_file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    if (!sync_file.isOpen()){ return;}
+
+    QTextStream sync_stream(&sync_file);
+
+    sync_stream << "";
+    sync_file.close();
+}
+
 // Subclass procedure
 LRESULT APIENTRY
 EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -282,6 +328,9 @@ private:
 };
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
+  __reset_session_log();
+  qInstallMessageHandler(__sync_session_log);
+
   char *runtime_platform_name = 0;
 #ifdef Q_OS_LINUX
   for (int i = 0; i < argc; i++) {
