@@ -459,7 +459,7 @@ void desktop_panel_controller_impl::switch_to_next_space() {
   }
 }
 
-void desktop_panel_controller_impl::toggle_seamless() const {
+void desktop_panel_controller_impl::toggle_seamless() {
   if (!viewport()) {
     return;
   }
