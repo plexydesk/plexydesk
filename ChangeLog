@@ -1,0 +1,113 @@
+plexydesk (1.0.2) unstable; urgency=low
+
+  * Windows Build Support 
+
+ -- Siraj Razick <siraj@plexydesk.com>  Wed, 23 Jan 2016 21:03:00 -0400
+
+plexydesk (1.0.1) unstable; urgency=low
+
+  * Debian Build Support. - Fixes Compilatoin and Linker issues on Linux
+
+ -- Siraj Razick <siraj@plexydesk.com>  Wed, 23 Jan 2016 21:03:00 -0400
+
+plexydesk (1.0.0) unstable; urgency=low
+
+  * New upstream version
+  * New UI Library
+  * New Data Library
+
+ -- Siraj Razick <siraj@plexydesk.com>  Wed, 20 Jan 2016 21:03:00 -0400
+
+plexydesk (0.6.6) unstable; urgency=low
+
+  * Adds: flex and bison build requirements
+  * New upstream version
+
+ -- PhobosK <phobosk@kbfx.net>  Mon, 08 Oct 2012 21:03:00 -0400
+
+plexydesk (0.6.5) unstable; urgency=low
+
+  * Feature #11: Desktop Folder Handling
+  * Feature #54: Write rpm spec file for plexydesk
+  * Feature #71: Ability to drag and drop folders
+  * Feature #72: Animated wallpaper swictching
+  * Feature #86: define icon attribute for themepack groups
+  * Feature #96: Unable to change the display picture in the Picture Frame.
+  * Feature #100: Fix and use image cache class
+  * Feature #112: merged shaders branch
+  * Feature #128: Make Folderview work again on linux
+  * Feature #137: rewrite the main runner for the default Desktop UI
+  * Feature #146: Test for OpenGL and enable it by default
+  * Feature #156: UNABLE TO ADD OR REMOVE EXTRA WIDGETS MANUALLY
+  * Feature #162: split the QML specific stuff out of PlexydeskWidget
+  * Feature #163: Move the system tray into into view plugin
+  * Support #101: Make a plexydesk Screencast
+  * Support #104: install https://github.com/sitaramc/gitolite
+  * Bug #60: QML application quit
+  * Bug #81: plexydesk is filled with junk
+  * Bug #98: Inconsistent image paths in plexy
+  * Bug #105: Do not produce log file when in release mode
+  * Bug #107: background doesn't scale properly on start up
+  * Bug #109: Shader branch does not build on windows
+  * Bug #111: Segfault on Mandriva x86
+  * Bug #114: Windows build script fails
+  * Bug #125: windows build script fails
+  * Bug #139: The main widget should have the 'plexydesk' name assigned
+  * Bug #140: No tray icon now
+  * Bug #141: PlexyDesk is broken when Compiz running. These bugs are seen when compiz on (Tested on Gnome):
+  * Bug #142: Plexy is only on one of the virtual Desktops
+  * Bug #145: plexydesk doesn't resize properly on widows
+  * Bug #158: Folder drop in Windows opens always in My Computer
+
+ -- Siraj Razick <siraj@plexyplanet.org>  Sun, 03 June 2012 04:01:00 -0530
+
+plexydesk (0.6.0) unstable; urgency=low
+
+  * Feature #53: Create .deb files for plexydesk
+  * New upstream version
+
+ -- Siraj Razick <siraj@plexyplanet.org>  Sun, 03 Jul 2011 04:01:00 +0530
+
+plexydesk (0.5.26~1) unstable; urgency=low
+
+  * Fixes : PPA Build Issue Fix
+  * New upstream version
+
+ -- Siraj Razick <sirajrazick@plexydesk.org>  Fri, 28 Jun 2011 22:07:12 +0530
+
+plexydesk (0.5.21~2) unstable; urgency=low
+
+  * Fixes: qml plugin install path on Ubuntu
+
+ -- Siraj Razick <sirajrazick@plexydesk.org>  Fri, 27 May 2011 22:07:12 +0530
+
+plexydesk (0.5.21~1) unstable; urgency=low
+
+  * Build fix for Ubuntu
+
+ -- Siraj Razick <sirajrazick@plexydesk.org>  Fri, 27 May 2011 21:07:12 +0530
+
+plexydesk (0.5.21) unstable; urgency=low
+
+  * New upstream version
+
+ -- Siraj Razick <sirajrazick@plexydesk.org>  Fri, 27 May 2011 20:07:12 +0530
+
+plexydesk (0.5.20) unstable; urgency=low
+
+  * New upstream version
+
+ -- Siraj Razick <sirajrazick@plexydesk.org>  Fri, 20 May 2011 20:07:12 +0530
+
+plexydesk (0.2.1) unstable; urgency=low
+
+  * Working Debian files
+  * New upstream version
+
+ -- Siraj Razick <sirajrazick@plexydesk.org>  Sat, 15 jan 2011 20:07:12 +0330
+
+plexydesk (0.0.1-1alpha) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Johnny Saenz A. <saenzac@gmail.com>  Sat, 06 Sep 2008 20:07:12 -0500
