@@ -157,7 +157,7 @@ void WebService::onDownloadRequestComplete() {
 }
 
 QString WebService::installPrefix() const {
-#ifndef Q_OS_WINDOWS
+#ifndef Q_OS_WIN32DOWS
   QDir binaryPath(QCoreApplication::applicationDirPath());
   if (binaryPath.cdUp()) {
     return QDir::toNativeSeparators(binaryPath.canonicalPath());

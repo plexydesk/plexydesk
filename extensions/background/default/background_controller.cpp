@@ -44,7 +44,7 @@
 
 #include "desktopwindow.h"
 
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
 #include <Windows.h>
 #include <tchar.h>
 #endif
@@ -283,7 +283,7 @@ void desktop_controller_impl::expose_platform_desktop() const {
     cherry_kit::workspace *ck_workspace = viewport()->owner_workspace();
 
     if (ck_workspace) {
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
       if (!_is_seamless_set) {
         SetParent((HWND)ck_workspace->winId(), NULL);
       } else {
