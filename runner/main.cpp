@@ -50,7 +50,7 @@
 #include "desktopmanager.h"
 #include <ck_screen.h>
 
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
 // Windows
 #include <Windows.h>
 #include <tchar.h>
@@ -141,6 +141,9 @@ private:
 
 #endif
 
+#ifdef Q_OS_WIN32
+//#error "Not supported";
+#endif
 public:
   Runtime(const char *a_platform_name = 0) {
     for (int i = 0; i < cherry_kit::screen::screen_count() ; i++) {
@@ -180,7 +183,7 @@ public:
 #endif
       workspace->show();
 
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
       HWND hShellWnd = GetShellWindow();
       HWND hDefView =
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);

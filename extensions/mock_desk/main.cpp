@@ -34,7 +34,7 @@
 #include "desktopmanager.h"
 #include <ck_timer.h>
 
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
 // Windows
 #include <Windows.h>
 #include <tchar.h>
