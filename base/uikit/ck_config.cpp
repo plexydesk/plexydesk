@@ -101,7 +101,7 @@ std::string config::icon_resource_prefix_path()
   rv = prefix_path + "/share/icons/plexydesk/resources/icons/";
 #endif
 
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
   rv = QDir::toNativeSeparators(prefix_path + "/resources/icons/");
 #endif
   return rv.toStdString();

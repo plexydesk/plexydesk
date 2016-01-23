@@ -53,7 +53,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-#ifndef Q_OS_WIN
+#ifndef Q_OS_WIN32
   setWindowFlags(Qt::CustomizeWindowHint
                  | Qt::FramelessWindowHint
                  | Qt::WindowStaysOnBottomHint
@@ -61,7 +61,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
                  );
 #endif
 
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
   setCacheMode(QGraphicsView::CacheNone);
   setOptimizationFlags(QGraphicsView::DontSavePainterState);
   setOptimizationFlag(QGraphicsView::DontClipPainter);

@@ -179,7 +179,7 @@ void extension_manager::load(const QString &a_interface,
                         QLatin1String("lib") + a_plugin_name + ".so");
 #endif
 
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
   QPluginLoader *loader = new QPluginLoader(o_extension_manager->mPluginPrefix +
                                             a_plugin_name + ".dll");
 #endif

@@ -287,7 +287,7 @@ desktop_settings_dialog::PrivatePhotoSearch::locate_system_images() {
   image_path_list.push_back("/usr/share/backgrounds/gnome");
 #elif defined(Q_OS_MAC)
   image_path_list.push_back("/Library/Desktop Pictures/");
-#elif defined(Q_OS_WIN)
+#elif defined(Q_OS_WIN32)
   image_path_list.push_back("C:\\Windows\\Web\\Wallpaper\\Theme1\\");
   image_path_list.push_back("C:\\Windows\\Web\\Wallpaper\\Theme2\\");
   image_path_list.push_back("C:\\Windows\\Web\\Wallpaper\\Windows\\");
