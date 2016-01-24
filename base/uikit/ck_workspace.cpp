@@ -62,10 +62,11 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 #endif
 
 #ifdef Q_OS_WIN32
+  //setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint);
   setCacheMode(QGraphicsView::CacheNone);
   setOptimizationFlags(QGraphicsView::DontSavePainterState);
   setOptimizationFlag(QGraphicsView::DontClipPainter);
-  setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+  setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 #endif
 
   setInteractive(true);
@@ -148,7 +149,7 @@ void workspace::set_accelerated_rendering(bool a_on) {
     setCacheMode(QGraphicsView::CacheBackground);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setOptimizationFlag(QGraphicsView::DontClipPainter);
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
   }
 }
 
