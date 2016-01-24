@@ -87,12 +87,14 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
 set(LIBRARY_SOURCE_FILES
     netwm.cpp
     ck_fixed_layout.cpp
-        ck_resource_manager.cpp
+    ck_resource_manager.cpp
     ck_config.cpp
     ck_window.cpp
     ck_workspace.cpp
     ck_session_sync.cpp
     ck_space.cpp
+    ck_device_window.cpp
+    ck_system_window_context.cpp
     ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
     ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
 
@@ -127,6 +129,8 @@ set(LIBRARY_HEADER_FILES
     ck_workspace.h
     ck_session_sync.h
     ck_space.h
+    ck_device_window.h
+    ck_system_window_context.h
     ${CORE_LIBRARY_HEADER_FILES}
     ${CORE_LIBRARY_INTERFACE_FILES}
     ${LIBRARY_PLATFORM_HEADERS}
