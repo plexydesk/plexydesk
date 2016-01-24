@@ -182,7 +182,7 @@ void desktop_controller_impl::create_task_group() const {
                                const std::string &value) {
       if (key.compare("url") == 0) {
         o_ctr->m_background_window->set_background(value);
-        o_ctr->m_background_texture = "file://" + value;
+        o_ctr->m_background_texture = "file:///" + value;
         viewport()->update_session_value(controller_name(), "", "");
       }
     });
@@ -389,7 +389,7 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
         o_ctr->m_background_window->set_background(
             qt_dropped_file_name_string.toStdString());
         o_ctr->m_background_texture =
-            "file://" + qt_dropped_file_name_string.toStdString();
+            "file:///" + qt_dropped_file_name_string.toStdString();
         sync_session_data("background", qt_dropped_file_name_string);
       }
     }
