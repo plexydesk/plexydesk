@@ -1,6 +1,25 @@
 #include "ck_system_window_context.h"
 
 namespace cherry_kit {
+class null_windows_context : public system_window_context {
+public:
+    null_windows_context() {}
+
+    device_window *find_window(const std::string &a_title)  { return 0;}
+    bool reparent(device_window *a_child, device_window *a_parent) {return 0;}
+
+    device_window *desktop() { return 0;}
+
+    bool convert_to_popup_window(device_window *a_window) {return false;}
+    bool convert_to_panel_window(device_window *a_window) {return false;}
+    bool convert_to_desktop_window(device_window *a_window) {return false;}
+    bool convert_to_frameless_window(device_window *a_window) {return false;}
+    bool convert_to_transparent_window(device_window *a_window) {return false;}
+    bool convert_to_notification_window(device_window *a_window) {return false;}
+};
+
+system_window_context *system_window_context::_self = 0;
+
 class system_window_context::private_window_context {
 public:
     private_window_context() {}
@@ -10,7 +29,26 @@ public:
 system_window_context::system_window_context():
     ctx(new private_window_context){}
 
-system_window_context::~system_window_context(){ delete ctx;}
+system_window_context *system_window_context::get()
+{
+    if (_self)
+        return _self;
+
+#if defined(_WIN32) || defined(_WIN64)
+    _self = new null_windows_context;
+#elif
+    _self = new null_windows_context();
+#endif
+    return _self;
+}
+
+system_window_context::~system_window_context() {
+    delete ctx;
+    if (_self) {
+      delete _self;
+      _self = 0;
+    }
+}
 
 void system_window_context::on_change(
         system_window_context::window_change_callback_t a_callback)
