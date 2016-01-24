@@ -31,7 +31,13 @@ public:
     virtual bool reparent(device_window *a_child, device_window *a_parent) = 0;
 
     virtual device_window *desktop() = 0;
-    virtual bool set_desktop(device_window *a_window) = 0;
+
+    virtual bool convert_to_popup_window(device_window *a_window) = 0;
+    virtual bool convert_to_panel_window(device_window *a_window) = 0;
+    virtual bool convert_to_desktop_window(device_window *a_window) = 0;
+    virtual bool convert_to_frameless_window(device_window *a_window) = 0;
+    virtual bool convert_to_transparent_window(device_window *a_window) = 0;
+    virtual bool convert_to_notification_window(device_window *a_window) = 0;
 
     virtual void on_change(window_change_callback_t a_callback);
 
