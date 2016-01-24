@@ -238,7 +238,7 @@ public:
       if (!folderView)
           qApp->quit();
 
-      if (check_windows_version() <= 6){
+      if (check_windows_version() < 6){
          if (SetParent((HWND)workspace->winId(), folderView) == NULL)
           qApp->quit();
          return;
@@ -246,6 +246,8 @@ public:
          if (SetParent((HWND)workspace->winId(), hShellWnd) == NULL)
           qApp->quit();
       }
+
+
 
       LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
       LONG current_window_ex_style = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
