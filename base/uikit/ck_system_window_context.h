@@ -24,7 +24,7 @@ public:
 
     typedef std::function<void(device_window *)> window_change_callback_t;
 
-    system_window_context();
+    system_window_context *get();
     virtual ~system_window_context();
 
     virtual device_window *find_window(const std::string &a_title) = 0;
@@ -42,6 +42,9 @@ public:
     virtual void on_change(window_change_callback_t a_callback);
 
 protected:
+    static system_window_context *_self;
+    system_window_context();
+
     virtual void notify_window_change();
 
 private:
