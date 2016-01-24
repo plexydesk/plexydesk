@@ -247,8 +247,6 @@ public:
           qApp->quit();
       }
 
-
-
       LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
       LONG current_window_ex_style = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
 
@@ -277,6 +275,7 @@ public:
                        | WS_EX_COMPOSITED
                        | WS_EX_TRANSPARENT
                        | WS_EX_ACCEPTFILES
+                       | WS_EX_TOOLWINDOW
                        );
 
       SetWindowLongPtr((HWND) workspace->viewport()->winId(), GWL_EXSTYLE,
@@ -303,7 +302,6 @@ public:
                    | SWP_NOSIZE
                    | SWP_NOZORDER
                    | SWP_NOOWNERZORDER);
-
 
       HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
       PDWORD_PTR result = 0;
@@ -334,6 +332,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
   qInstallMessageHandler(__sync_session_log);
 
   char *runtime_platform_name = 0;
+
 #ifdef Q_OS_LINUX
   for (int i = 0; i < argc; i++) {
     if ((strcmp(argv[i], "-platform") != 0) ||
@@ -350,6 +349,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
   }
   printf("Detected Platform %s\n", runtime_platform_name);
 #endif
+
   QApplication app(argc, argv);
   cherry_kit::extension_manager *loader = 0;
 
@@ -358,14 +358,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
                                QLatin1String("/share/plexy/ext/groups/")),
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/lib/plexyext/")));
-#ifndef Q_WS_QPA
-  QString appIconPath =
-      cherry_kit::config::instance()->prefix() + "/share/plexy/plexydesk.png";
-  QIcon appIcon = QIcon(QDir::toNativeSeparators(appIconPath));
-  app.setWindowIcon(appIcon);
-  app.setApplicationName(QString(PLEXYNAME));
-  QApplication::setQuitOnLastWindowClosed(true);
-#endif
 
   Runtime runtime(runtime_platform_name);
 
