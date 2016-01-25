@@ -95,6 +95,7 @@ set(LIBRARY_SOURCE_FILES
     ck_space.cpp
     ck_device_window.cpp
     ck_system_window_context.cpp
+    platform/ck_win32_window_context.cpp
     ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
     ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
 
@@ -131,6 +132,7 @@ set(LIBRARY_HEADER_FILES
     ck_space.h
     ck_device_window.h
     ck_system_window_context.h
+    platform/ck_win32_window_context.h
     ${CORE_LIBRARY_HEADER_FILES}
     ${CORE_LIBRARY_INTERFACE_FILES}
     ${LIBRARY_PLATFORM_HEADERS}
