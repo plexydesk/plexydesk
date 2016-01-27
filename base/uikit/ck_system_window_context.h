@@ -41,6 +41,9 @@ public:
 
     virtual void on_change(window_change_callback_t a_callback);
 
+    virtual void post_notifycation(const std::string &icon,
+                                   const std::string &msg) = 0;
+
 protected:
     static system_window_context *_self;
     system_window_context();
