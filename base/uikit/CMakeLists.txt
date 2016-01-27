@@ -84,6 +84,15 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     ck_fixed_layout.cpp
     )
 
+if (WIN32)
+  set(PLATFORM_SOURCE_FILES
+    platform/ck_win32_window_context.cpp
+  )
+  set(PLATFORM_HEADER_FILES
+    platform/ck_win32_window_context.h
+  )
+endif()
+
 set(LIBRARY_SOURCE_FILES
     netwm.cpp
     ck_fixed_layout.cpp
@@ -95,7 +104,7 @@ set(LIBRARY_SOURCE_FILES
     ck_space.cpp
     ck_device_window.cpp
     ck_system_window_context.cpp
-    platform/ck_win32_window_context.cpp
+    ${PLATFORM_SOURCE_FILES}
     ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
     ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
 
@@ -132,7 +141,7 @@ set(LIBRARY_HEADER_FILES
     ck_space.h
     ck_device_window.h
     ck_system_window_context.h
-    platform/ck_win32_window_context.h
+    ${PLATFORM_HEADER_FILES}
     ${CORE_LIBRARY_HEADER_FILES}
     ${CORE_LIBRARY_INTERFACE_FILES}
     ${LIBRARY_PLATFORM_HEADERS}
