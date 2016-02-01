@@ -328,8 +328,10 @@ private:
 };
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
+#ifdef Q_OS_WIN32
   __reset_session_log();
   qInstallMessageHandler(__sync_session_log);
+#endif
 
   char *runtime_platform_name = 0;
 

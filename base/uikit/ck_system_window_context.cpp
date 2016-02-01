@@ -42,7 +42,7 @@ system_window_context *system_window_context::get()
 
 #if defined(_WIN32) || defined(_WIN64)
     _self = new win32_window_context();
-#elif
+#else
     _self = new null_windows_context();
 #endif
     return _self;
