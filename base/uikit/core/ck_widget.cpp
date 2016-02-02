@@ -64,7 +64,7 @@ widget::widget(widget *parent)
   priv->m_current_layer_type = kRenderAtForgroundLevel;
 
 #ifdef Q_OS_MAC
-  setCacheMode(ItemCoordinateCache);
+  setCacheMode(DeviceCoordinateCache);
 #else
   setCacheMode(DeviceCoordinateCache);
 #endif
