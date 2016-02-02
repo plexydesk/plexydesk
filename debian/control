@@ -4,11 +4,13 @@ Priority: extra
 Maintainer: PhobosK <phobosk@kbfx.net>
 Build-Depends:  debhelper (>= 5),
                 cdbs,
-                cmake (>= 3.2.0),
+                cmake (>= 3.0.0),
                 bison,
                 flex,
 								qtbase5-dev,
 								qtbase5-dev-tools,
+								qtbase5-private-dev,
+								libqt5opengl5-dev,
 								libqt5xmlpatterns5-dev,
 								pkg-config,
 								x11proto-core-dev,
@@ -30,12 +32,12 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
          shared-mime-info,
 				 libqt5gui5,
+				 libqt5opengl5,
 				 libqt5widgets5,
 				 libqt5network5,
 				 libqt5xml5,
 				 libqt5xmlpatterns5,
-				 libqt5core5,
-         libqtwebkit4-declarative | libqtwebkit-qmlwebkitplugin
+				 libqt5core5a
 Description: A Desktop extension letting you efficiently organise and use your Desktop
  .
  PlexyDesk is a lightweight Desktop, and it's not a Desktop Environment like
