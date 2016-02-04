@@ -41,6 +41,7 @@
 #include <ck_workspace.h>
 #include <ck_image_view.h>
 #include <ck_icon_button.h>
+#include <ck_system_window_context.h>
 
 #include "desktopwindow.h"
 
@@ -284,17 +285,7 @@ void desktop_controller_impl::expose_platform_desktop() const {
 
     if (ck_workspace) {
 #ifdef Q_OS_WIN32
-      if (!_is_seamless_set) {
-        SetParent((HWND)ck_workspace->winId(), NULL);
-      } else {
-        HWND hShellWnd = GetShellWindow();
-        HWND hDefView =
-            FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
-        HWND hFolderView =
-            FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
-
-        SetParent((HWND)ck_workspace->winId(), hFolderView);
-      }
+      cherry_kit::system_window_context::get()->hide_native_desktop();
 #endif
     }
   }
