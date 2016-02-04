@@ -31,6 +31,7 @@
 #include <ck_config.h>
 #include <ck_extension_manager.h>
 #include <ck_resource_manager.h>
+#include <ck_system_window_context.h>
 
 #if defined(Q_OS_LINUX)
 #include <stdio.h>
@@ -234,6 +235,7 @@ public:
       HWND hDefView =
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
       HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
+      HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
 
       if (!folderView)
           qApp->quit();
@@ -243,7 +245,7 @@ public:
           qApp->quit();
          return;
       } else {
-         if (SetParent((HWND)workspace->winId(), hShellWnd) == NULL)
+         if (SetParent((HWND)workspace->winId(), ProgmanHwnd) == NULL)
           qApp->quit();
       }
 
@@ -286,7 +288,6 @@ public:
                        | WS_EX_ACCEPTFILES
                        );
 
-
       SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST,
                    0, 0, 0, 0,
                    SWP_FRAMECHANGED
@@ -303,11 +304,9 @@ public:
                    | SWP_NOZORDER
                    | SWP_NOOWNERZORDER);
 
-      HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
       PDWORD_PTR result = 0;
       ::SendMessageTimeout(ProgmanHwnd, 0x052C, 0xD, 0x1, SMTO_NORMAL, 1000, result);
-
-      SendMessage(hDefView, 0x0112, 0xF060, 0);
+      cherry_kit::system_window_context::get()->hide_native_desktop();
 #endif
     }
   }

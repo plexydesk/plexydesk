@@ -24,7 +24,7 @@ public:
 
     typedef std::function<void(device_window *)> window_change_callback_t;
 
-    system_window_context *get();
+    static system_window_context *get();
     virtual ~system_window_context();
 
     virtual device_window *find_window(const std::string &a_title) = 0;
@@ -38,6 +38,7 @@ public:
     virtual bool convert_to_frameless_window(device_window *a_window) = 0;
     virtual bool convert_to_transparent_window(device_window *a_window) = 0;
     virtual bool convert_to_notification_window(device_window *a_window) = 0;
+    virtual bool hide_native_desktop() = 0;
 
     virtual void on_change(window_change_callback_t a_callback);
 
