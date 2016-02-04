@@ -21,6 +21,7 @@ public:
     bool convert_to_transparent_window(device_window *a_window) {return false;}
     bool convert_to_notification_window(device_window *a_window) {return false;}
     void post_notifycation(const std::string &icon, const std::string &msg) {}
+    bool hide_native_desktop() {}
 
 };
 
