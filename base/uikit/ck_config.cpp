@@ -94,7 +94,7 @@ std::string config::icon_resource_prefix_path()
   QString rv = prefix_path;
 
 #ifdef Q_OS_MAC
-  rv = prefix_path + "/Resources/icons/";
+  rv = prefix() + "/Resources/icons/";
 #endif
 
 #ifdef Q_OS_LINUX
