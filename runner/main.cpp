@@ -358,7 +358,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/share/plexy/ext/groups/")),
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
-                               QLatin1String("/lib/plexyext/")));
+                               QLatin1String("/plexyext/")));
 
   Runtime runtime(runtime_platform_name);
 
