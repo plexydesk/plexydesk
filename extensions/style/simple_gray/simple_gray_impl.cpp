@@ -16,16 +16,18 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "ubuntu.h"
-#include "ubuntuinterface.h"
-#include <desktopck_widget.h>
+#include "simple_gray.h"
+#include "simple_gray_impl.h"
+#include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<PlexyDesk::Style> ubuntuInterface::style() {
-  QSharedPointer<PlexyDesk::Style> obj = QSharedPointer<PlexyDesk::Style>(
-      new ubuntuStyle(), &QObject::deleteLater);
+static void destroyStyle(cherry_kit::style *style) { delete style; }
 
-  return obj;
+QSharedPointer<cherry_kit::style> SimpleGrayInterface::style() {
+  m_instence_ref = QSharedPointer<cherry_kit::style>(
+      (cherry_kit::style *)new SimpleGrayStyle(), &destroyStyle);
+
+  return m_instence_ref;
 }
 
-// Q_EXPORT_PLUGIN2(ubuntuengine, ubuntuInterface)
+// Q_EXPORT_PLUGIN2(cocoaengine, SimpleGrayInterface)
