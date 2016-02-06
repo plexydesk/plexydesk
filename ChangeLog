@@ -5,6 +5,7 @@ plexydesk (1.0.2) unstable; urgency=low
   * Fix Window Reparenting on Windows 10
   * Fix Seamless Mode on Mac.
   * Fix Wallpaper Path on Windows 10.
+  * Fix Plugin Loading Path on Linux.
 
  -- Siraj Razick <siraj@plexydesk.com>  Wed, 23 Jan 2016 21:03:00 -0400
 
