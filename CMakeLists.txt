@@ -350,5 +350,6 @@ add_subdirectory(extensions/data/timer)
 add_subdirectory(extensions/activity/)
 
 add_subdirectory(extensions/style/cocoa)
+add_subdirectory(extensions/style/simple_gray)
 
 add_subdirectory(artwork/packs/)
