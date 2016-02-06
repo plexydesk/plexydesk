@@ -79,6 +79,7 @@ public:
   QHash<QString, int> m_type_map;
   QVariantMap m_attribute_map;
   QVariantMap m_color_map;
+  QImage *get_drawable_surface(QPainter *a_ctx);
 };
 
 void SimpleGrayStyle::load_default_widget_style_properties() {
@@ -157,7 +158,7 @@ QVariantMap SimpleGrayStyle::attribute_map(const QString &type) const {
 QVariantMap SimpleGrayStyle::color_scheme_map() const { return d->m_color_map; }
 
 void SimpleGrayStyle::draw(const QString &type, const style_data &options,
-                      QPainter *painter, const widget *aWidget) {
+                           QPainter *painter, const widget *aWidget) {
   switch (d->m_type_map[type]) {
   case 1:
     draw_push_button(options, painter);
@@ -201,9 +202,8 @@ void SimpleGrayStyle::draw(const QString &type, const style_data &options,
   }
 }
 
-void SimpleGrayStyle::PrivateSimpleGray::set_pen_color(QPainter *painter,
-                                             resource_manager::ColorName a_name,
-                                             int a_thikness) {
+void SimpleGrayStyle::PrivateSimpleGray::set_pen_color(
+    QPainter *painter, resource_manager::ColorName a_name, int a_thikness) {
   painter->setPen(QPen(color(a_name), a_thikness * scale_factor(),
                        Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 }
@@ -216,7 +216,7 @@ void SimpleGrayStyle::set_default_painter_hints(QPainter *painter) {
 }
 
 void SimpleGrayStyle::draw_push_button(const style_data &features,
-                                  QPainter *painter) {
+                                       QPainter *painter) {
   QRectF rect = features.geometry;
 
   /* Painter settings */
@@ -251,7 +251,7 @@ void SimpleGrayStyle::draw_push_button(const style_data &features,
 }
 
 void SimpleGrayStyle::draw_window_button(const style_data &features,
-                                    QPainter *painter) {
+                                         QPainter *painter) {
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
 #else
@@ -338,17 +338,33 @@ void _draw_drop_shadow(CGContextRef myContext, // 1
   CGContextRestoreGState(myContext);                 // 15
 }
 #endif
-void SimpleGrayStyle::PrivateSimpleGray::set_default_font_size(QPainter *painter,
-                                                     int a_size,
-                                                     bool a_highlight) {
+void SimpleGrayStyle::PrivateSimpleGray::set_default_font_size(
+    QPainter *painter, int a_size, bool a_highlight) {
   QFont _font = painter->font();
   _font.setBold(a_highlight);
   _font.setPixelSize(a_size * scale_factor());
   painter->setFont(_font);
 }
 
+#ifdef __APPLE__
+QImage *
+SimpleGrayStyle::PrivateSimpleGray::get_drawable_surface(QPainter *a_ctx) {
+  QPaintDevice *current_paint_device = a_ctx->paintEngine()->paintDevice();
+  CGContextRef bitmap_ctx = 0;
+  QImage *rv = NULL;
+
+  if (current_paint_device) {
+    if (current_paint_device->devType() == QInternal::Image) {
+        rv = static_cast<QImage *>(current_paint_device);
+      }
+    }
+
+  return rv;
+}
+#endif
+
 void SimpleGrayStyle::draw_window_frame(const style_data &features,
-                                   QPainter *a_ctx) {
+                                        QPainter *a_ctx) {
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(10, 10, -10, -10);
 #else
@@ -476,12 +492,10 @@ void SimpleGrayStyle::draw_clock_hands(
   a_ctx->restore();
 }
 
-void SimpleGrayStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
-                                   QPainter *a_ctx, double mark_start,
-                                   double mark_end,
-                                   QPointF current_marker_location,
-                                   QPointF _transPos,
-                                   QPointF current_marker_location_for_min) {
+void SimpleGrayStyle::draw_range_marker(
+    QRectF rect, QTransform _xform_hour, QPainter *a_ctx, double mark_start,
+    double mark_end, QPointF current_marker_location, QPointF _transPos,
+    QPointF current_marker_location_for_min) {
   double end_angle = (mark_end / 60) * 360;
   double start_angle = (mark_start / 60) * 360;
 
@@ -507,12 +521,10 @@ void SimpleGrayStyle::draw_range_marker(QRectF rect, QTransform _xform_hour,
   a_ctx->setOpacity(1.0);
 }
 
-void SimpleGrayStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
-                                   QPainter *a_ctx, double mark_minutes,
-                                   double mark_hour,
-                                   QPointF current_marker_location,
-                                   QPointF _transPos,
-                                   QPointF current_marker_location_for_min) {
+void SimpleGrayStyle::draw_timer_marker(
+    QRectF rect, QTransform _xform_hour, QPainter *a_ctx, double mark_minutes,
+    double mark_hour, QPointF current_marker_location, QPointF _transPos,
+    QPointF current_marker_location_for_min) {
   if (mark_hour > 12)
     mark_hour = mark_hour - 12;
   double hour_angle = (((60.0 * mark_hour) + mark_minutes) / 2);
@@ -547,7 +559,7 @@ void SimpleGrayStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
 }
 
 void SimpleGrayStyle::draw_clock_surface(const style_data &features,
-                                    QPainter *a_ctx) {
+                                         QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
   float border_len = features.geometry.width() - (16 * scale_factor());
 
@@ -693,7 +705,7 @@ void SimpleGrayStyle::draw_clock_surface(const style_data &features,
 }
 
 void SimpleGrayStyle::draw_clock_surface_to_buffer(const style_data &features,
-                                              QPainter *a_ctx) {
+                                                   QPainter *a_ctx) {
   QRectF src_rect = features.geometry;
   int width = src_rect.width();
   int height = src_rect.height();
@@ -801,7 +813,8 @@ void SimpleGrayStyle::draw_knob(const style_data &features, QPainter *a_ctx) {
   }
 }
 
-void SimpleGrayStyle::draw_line_edit(const style_data &features, QPainter *painter) {
+void SimpleGrayStyle::draw_line_edit(const style_data &features,
+                                     QPainter *painter) {
   cherry_kit::line_edit *ck_line_edit =
       dynamic_cast<cherry_kit::line_edit *>(features.style_object);
   QRectF rect = features.geometry.adjusted(0, 0, 0, 0);
@@ -884,7 +897,7 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features, QPainter *paint
 }
 
 void SimpleGrayStyle::draw_text_editor(const style_data &features,
-                                  const QString &text, QPainter *a_ctx) {
+                                       const QString &text, QPainter *a_ctx) {
   /* Painter settings */
   a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
                             QPainter::HighQualityAntialiasing,
@@ -912,7 +925,7 @@ void SimpleGrayStyle::draw_text_editor(const style_data &features,
 }
 
 void SimpleGrayStyle::drawSeperatorLine(const style_data &features,
-                                   QPainter *a_ctx) {
+                                        QPainter *a_ctx) {
   a_ctx->save();
   QPen pen = QPen(QColor(217, 217, 217), 1, Qt::SolidLine, Qt::RoundCap,
                   Qt::RoundJoin);
@@ -930,7 +943,7 @@ void SimpleGrayStyle::drawSeperatorLine(const style_data &features,
 }
 
 void SimpleGrayStyle::draw_progress_bar(const style_data &features,
-                                   QPainter *a_ctx) {
+                                        QPainter *a_ctx) {
   a_ctx->save();
 
   set_default_painter_hints(a_ctx);
@@ -978,7 +991,8 @@ void SimpleGrayStyle::draw_progress_bar(const style_data &features,
   a_ctx->restore();
 }
 
-void SimpleGrayStyle::drawVListItem(const style_data &features, QPainter *painter) {
+void SimpleGrayStyle::drawVListItem(const style_data &features,
+                                    QPainter *painter) {
   qWarning() << Q_FUNC_INFO << "This method is depricated and non-functional";
   // todo : Remove this method.
   /*
@@ -1008,7 +1022,7 @@ void SimpleGrayStyle::drawVListItem(const style_data &features, QPainter *painte
 }
 
 void SimpleGrayStyle::draw_image_button(const style_data &a_features,
-                                   QPainter *a_ctx) {
+                                        QPainter *a_ctx) {
   a_ctx->save();
 
   set_default_painter_hints(a_ctx);
@@ -1058,7 +1072,8 @@ void SimpleGrayStyle::draw_image_button(const style_data &a_features,
   a_ctx->restore();
 }
 
-void SimpleGrayStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) {
+void SimpleGrayStyle::draw_scrollbar(const style_data &a_data,
+                                     QPainter *a_ctx) {
   QRectF rect = a_data.geometry;
 
   a_ctx->save();
@@ -1073,7 +1088,7 @@ void SimpleGrayStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) 
 }
 
 void SimpleGrayStyle::draw_scrollbar_slider(const style_data &a_data,
-                                       QPainter *a_ctx) {
+                                            QPainter *a_ctx) {
   QRectF rect(2, a_data.geometry.y(), a_data.geometry.width() - 4,
               a_data.geometry.height());
   a_ctx->save();
@@ -1118,6 +1133,7 @@ void SimpleGrayStyle::draw_label(const style_data &aFeatures, QPainter *a_ctx) {
   a_ctx->restore();
 }
 
-QColor SimpleGrayStyle::PrivateSimpleGray::color(resource_manager::ColorName a_name) {
+QColor
+SimpleGrayStyle::PrivateSimpleGray::color(resource_manager::ColorName a_name) {
   return resource_manager::color(a_name);
 }
