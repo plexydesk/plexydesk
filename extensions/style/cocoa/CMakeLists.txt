@@ -1,11 +1,13 @@
 set(sourceFiles
     cocoa.cpp
     cocoainterface.cpp
+    ck_platform_context.cpp
     )
 
 set(headerFiles
     cocoa.h
     cocoainterface.h
+    ck_platform_context.h
     )
 
 set(QTMOC_SRCS
