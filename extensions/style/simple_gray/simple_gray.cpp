@@ -79,7 +79,9 @@ public:
   QHash<QString, int> m_type_map;
   QVariantMap m_attribute_map;
   QVariantMap m_color_map;
+#ifdef __APPLE__
   QImage *get_drawable_surface(QPainter *a_ctx);
+#endif
 };
 
 void SimpleGrayStyle::load_default_widget_style_properties() {
