@@ -349,7 +349,11 @@ add_subdirectory(extensions/data/timer)
 #add_subdirectory(extensions/activity/template_dialog)
 add_subdirectory(extensions/activity/)
 
-add_subdirectory(extensions/style/cocoa)
+if (APPLE)
+ #this style works only on Mac OS.
+ add_subdirectory(extensions/style/cocoa)
+endif()
+
 add_subdirectory(extensions/style/simple_gray)
 
 add_subdirectory(artwork/packs/)
