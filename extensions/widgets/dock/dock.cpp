@@ -117,7 +117,7 @@ widget *desktop_panel_controller_impl::create_task_action(
   l_action_label->set_widget_name(a_task.name().c_str());
 
   QPixmap l_view_pixmap(cherry_kit::resource_manager::instance()->drawable(
-      a_task.icon().c_str(), "mdpi"));
+      a_task.icon().c_str(), "hdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size.toSize());
@@ -198,11 +198,12 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
     row_count = (priv->m_task_grid->count() + 1) / 4;
   }
 
-  float window_width = (viewport()->scaled_width(64) * 4);
+  float window_width = (viewport()->scaled_width(64) * 5);
   float window_height = (viewport()->scaled_width(36) * row_count) +
                         (viewport()->scaled_height(24) * row_count);
   priv->m_task_grid->set_view_geometry(
-      QRectF(0, 0, window_width, window_height + 16));
+      QRectF(0, 0, window_width, window_height
+             + viewport()->scaled_height(16)));
 
   priv->m_task_grid->insert(grid_item);
   priv->m_deskt_menu->set_window_content(priv->m_task_grid);
