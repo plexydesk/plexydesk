@@ -34,6 +34,7 @@ endif(UNIX AND NOT APPLE)
 set(CORE_LIB_CXX_FILES
     core/ck_timer.cpp
     core/ck_screen.cpp
+    core/qt/ck_screen_impl_qt.cpp
     core/ck_widget.cpp
     core/ck_ui_action.cpp
     core/ck_desktop_controller_interface.cpp
@@ -53,6 +54,7 @@ set(CORE_LIBRARY_HEADER_FILES
     core/ck_timer.h
     core/ck_style.h
     core/ck_screen.h
+    core/qt/ck_screen_impl_qt.h
     core/ck_widget.h
     core/ck_data_source.h
     core/ck_style_data.h
@@ -188,15 +190,15 @@ add_library(${PLEXY_UI_CORE_LIBRARY} SHARED
     ${UI_FILES})
 
 if(UNIX AND NOT APPLE)
-	if(THREADS_HAVE_PTHREAD_ARG)
-		target_compile_options(PUBLIC ${PLEXY_UI_CORE_LIBRARY} "-pthread")
-	endif()
+        if(THREADS_HAVE_PTHREAD_ARG)
+                target_compile_options(PUBLIC ${PLEXY_UI_CORE_LIBRARY} "-pthread")
+        endif()
 
   set(LIBRARY_NATIVE_LINK_TARGETS
-			      ${X11_LIBRARIES}
-						${THREAD_LIBRARY}
-						${CMAKE_THREAD_LIBS_INIT}
-						)
+                              ${X11_LIBRARIES}
+                                                ${THREAD_LIBRARY}
+                                                ${CMAKE_THREAD_LIBS_INIT}
+                                                )
 endif()
 
 if(APPLE)
