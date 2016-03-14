@@ -25,10 +25,11 @@
 #include "ck_resource_manager.h"
 #include <ck_desktop_controller_interface.h>
 #include "ck_widget.h"
+#include <ck_screen.h>
 
 namespace cherry_kit {
 typedef std::function<void(widget::InputEvent, const widget *)>
-EventCallbackFunc;
+    EventCallbackFunc;
 
 class widget::PrivateWidget {
 public:
@@ -51,22 +52,21 @@ public:
   std::vector<std::function<void(const QRectF &)> > m_on_geometry_func_list;
   std::vector<EventCallbackFunc> m_handler_list;
   std::vector<UpdateCallback> m_update_monitor_list;
-  std::vector<std::function<void()>> m_on_click_handlers;
+  std::vector<std::function<void()> > m_on_click_handlers;
 
   WidgetList m_child_list;
   unsigned char *m_surface;
 };
 
 widget::widget(widget *parent)
-    : QGraphicsObject(parent), QGraphicsLayoutItem(0),
-      priv(new PrivateWidget) {
+    : QGraphicsObject(parent), QGraphicsLayoutItem(0), priv(new PrivateWidget) {
   priv->m_name = QLatin1String("Widget");
   priv->m_current_layer_type = kRenderAtForgroundLevel;
 
 #ifdef Q_OS_MAC
   setCacheMode(ItemCoordinateCache);
 #else
-  setCacheMode(DeviceCoordinateCache);
+  setCacheMode(ItemCoordinateCache);
 #endif
 
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -85,14 +85,11 @@ widget::~widget() {
   delete priv;
 }
 
-QRectF widget::contents_geometry() const
-{
+QRectF widget::contents_geometry() const {
   return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
 }
 
-QRectF widget::boundingRect() const {
-    return contents_geometry();
-}
+QRectF widget::boundingRect() const { return contents_geometry(); }
 
 void widget::set_widget_flag(int a_flags, bool a_enable) {}
 
@@ -101,12 +98,12 @@ void widget::on_input_event(
   priv->m_handler_list.push_back(a_callback);
 }
 
-void widget::on_click(std::function<void ()> a_callback) {
+void widget::on_click(std::function<void()> a_callback) {
   priv->m_on_click_handlers.push_back(a_callback);
 }
 
-void
-widget::on_geometry_changed(std::function<void(const QRectF &)> a_callback) {
+void widget::on_geometry_changed(
+    std::function<void(const QRectF &)> a_callback) {
   priv->m_on_geometry_func_list.push_back(a_callback);
 }
 
@@ -192,7 +189,6 @@ void widget::paint(QPainter *a_painter_ptr,
 }
 
 void widget::setGeometry(const QRectF &a_rect) {
-
   if (!priv->m_surface) {
     priv->m_surface =
         (unsigned char *)malloc(4 * a_rect.width() * a_rect.height());
@@ -205,11 +201,15 @@ void widget::setGeometry(const QRectF &a_rect) {
 
   // d->m_content_geometry = rect;
   prepareGeometryChange();
-  QGraphicsLayoutItem::setGeometry(a_rect);
+  float scale_factor = 1; //screen().scale_factor();
+  QRectF scaled_rect(a_rect.x(), a_rect.y(), a_rect.width() * scale_factor,
+                     a_rect.height() * scale_factor);
+  QGraphicsLayoutItem::setGeometry(scaled_rect);
   setPos(a_rect.topLeft());
 
-  priv->_inoke_geometry_func(a_rect);
+  priv->_inoke_geometry_func(scaled_rect);
 
+  setCacheMode(ItemCoordinateCache, boundingRect().size().toSize());
   request_update();
 }
 
@@ -219,19 +219,19 @@ QSizeF widget::sizeHint(Qt::SizeHint a_which,
   // return geometry().size();
   QSizeF sh;
   switch (a_which) {
-  case Qt::MinimumSize:
-    sh = QSizeF(0, 0);
-    break;
-  case Qt::PreferredSize:
-    sh = QSizeF(50, 50); // rather arbitrary
-    break;
-  case Qt::MaximumSize:
-    sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    break;
-  default:
-    qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
-             "value of 'which'");
-    break;
+    case Qt::MinimumSize:
+      sh = QSizeF(0, 0);
+      break;
+    case Qt::PreferredSize:
+      sh = QSizeF(50, 50); // rather arbitrary
+      break;
+    case Qt::MaximumSize:
+      sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+      break;
+    default:
+      qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
+               "value of 'which'");
+      break;
   }
   return sh;
 }
@@ -277,13 +277,13 @@ float widget::scale_factor_for_height() const {
 }
 
 void widget::set_child_widet_visibility(bool a_visibility) {
-  Q_FOREACH(QGraphicsItem * item, this->childItems()) {
+  Q_FOREACH (QGraphicsItem *item, this->childItems()) {
     (a_visibility) ? item->show() : item->hide();
   }
 }
 
-void
-widget::set_controller(desktop_controller_interface *a_view_controller_ptr) {
+void widget::set_controller(
+    desktop_controller_interface *a_view_controller_ptr) {
   priv->m_widget_controller = a_view_controller_ptr;
 }
 
@@ -291,11 +291,9 @@ desktop_controller_interface *widget::controller() const {
   return priv->m_widget_controller;
 }
 
-void widget::exec_func(InputEvent a_type,
-                                       const widget *a_widget_ptr) {
+void widget::exec_func(InputEvent a_type, const widget *a_widget_ptr) {
   std::for_each(std::begin(priv->m_handler_list),
-                std::end(priv->m_handler_list),
-                [&](EventCallbackFunc a_func) {
+                std::end(priv->m_handler_list), [&](EventCallbackFunc a_func) {
     if (a_func)
       a_func(a_type, a_widget_ptr);
     else
@@ -304,7 +302,7 @@ void widget::exec_func(InputEvent a_type,
 }
 
 void widget::invoke_click_handlers() {
-   std::for_each(std::begin(priv->m_on_click_handlers),
+  std::for_each(std::begin(priv->m_on_click_handlers),
                 std::end(priv->m_on_click_handlers),
                 [&](std::function<void()> a_func) {
     if (a_func)

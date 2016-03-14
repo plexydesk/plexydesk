@@ -29,6 +29,10 @@
 
 #ifdef BUILD_WITH_QT
 #define USE_QT ${BUILD_WITH_QT}
+
+#ifndef __QT_TOOLKIT__
+#define __QT_TOOLKIT__
+#endif
 #else
 #error "Run with -DBUILD_WITH_{toolkit_name}, for example -DBUILD_WITH_QT=ON"
 #endif

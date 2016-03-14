@@ -51,7 +51,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+  setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifndef Q_OS_WIN32
   setWindowFlags(Qt::CustomizeWindowHint
@@ -103,6 +103,7 @@ void workspace::move_to_screen(int a_screen_id) {
 #endif
 
   scale(width_factor, height_factor);
+  //scale(2,2);
 }
 
 void workspace::add_default_controller(const std::string &a_controller_name) {
@@ -610,7 +611,8 @@ float workspace::get_base_width() {
 
 float workspace::get_base_height() {
   QRectF display_rect(0, 0, geometry().width(), geometry().height());
-  float scaled_height = (display_rect.height() / display_rect.width()) * 1920.0;
+  float scaled_height =
+      (display_rect.height() / display_rect.width()) * get_base_width();
 
   return scaled_height;
 }
