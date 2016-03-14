@@ -1,26 +1,45 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include <functional>
+#include <vector>
 #include <plexydesk_ui_exports.h>
 
 namespace cherry_kit {
-class DECL_UI_KIT_EXPORT screen
-{
-public:
-    screen();
-    virtual ~screen();
+typedef enum {
+  kScreenCountChange,
+  kScreenGeomentyChange,
+  kScreenStructureChange,
+  kScreenErrorChange
+} display_change_notify_t;
 
-    static int screen_count();
+typedef std::function<void(display_change_notify_t)>
+    display_change_notify_callback_t;
+
+class DECL_UI_KIT_EXPORT screen {
+public:
+  screen();
+  virtual ~screen();
+
+  int screen_count() const;
+
+  float scale_factor() const;
+
+  int pixel_count_x() const;
+  int pixel_count_y() const;
+
+  void change_notifications(display_change_notify_callback_t a_callback);
 
 protected:
-    virtual float virtual_desktop_width();
-    virtual float virtual_desktop_height();
+  virtual float virtual_desktop_width();
+  virtual float virtual_desktop_height();
 
 private:
-    class private_screen;
-    private_screen * const priv;
-};
+  class platform_screen;
+  platform_screen* const priv;
 
+  std::vector<display_change_notify_callback_t> m_notify_chain;
+};
 }
 
 #endif // SCREEN_H

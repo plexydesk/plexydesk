@@ -168,7 +168,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 #ifdef __APPLE__
     priv->m_window_content->setPos(15, window_bordr_height + 10);
 #else
-    priv->m_window_content->setPos(0, window_bordr_height);
+    priv->m_window_content->setPos(0, window_bordr_height + 10);
 #endif
   } else {
     priv->m_window_close_button->hide();
@@ -181,11 +181,10 @@ void window::set_window_content(widget *a_widget_ptr) {
 #ifndef __APPLE__
     QGraphicsDropShadowEffect *lEffect = new QGraphicsDropShadowEffect(this);
     lEffect->setColor(QColor("#111111"));
-    lEffect->setBlurRadius(26);
-    lEffect->setXOffset(0);
-    lEffect->setYOffset(0);
+    lEffect->setBlurRadius(8);
+    lEffect->setXOffset(1);
+    lEffect->setYOffset(1);
     setGraphicsEffect(lEffect);
-    setCacheMode(NoCache);
 #endif
   }
 

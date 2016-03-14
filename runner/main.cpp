@@ -193,8 +193,9 @@ private:
 #endif
 public:
   Runtime(const char *a_platform_name = 0) {
-    for (int i = 0; i < cherry_kit::screen::screen_count() ; i++) {
+    for (int i = 0; i < cherry_kit::screen().screen_count() ; i++) {
       DesktopManager *workspace = new DesktopManager();
+      //workspace->set_accelerated_rendering(true);
 
       workspace->move_to_screen(i);
       m_workspace_list.push_back(workspace);
@@ -224,7 +225,7 @@ public:
                           NET::WMDesktop);
           info.setDesktop(NETWinInfo::OnAllDesktops);
           info.setWindowType(NET::Desktop);
-        } 
+        }
         // handle wayland
       }
 #endif
