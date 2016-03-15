@@ -32,13 +32,14 @@
 #include <QPaintDevice>
 
 #ifdef __APPLE__
-#include <CoreGraphics/CGContext.h>
-#include <CoreGraphics/CGBitmapContext.h>
-#include <CoreGraphics/CGDirectDisplay.h>
+#include <ApplicationServices/ApplicationServices.h>
+//#include <CoreGraphics/CGBitmapContext.h>
+//#include <CoreGraphics/CGDirectDisplay.h>
 #include <stdlib.h>
 #include <malloc/malloc.h>
 
 #include "ck_platform_context.h"
+
 #endif
 
 // for the clock
