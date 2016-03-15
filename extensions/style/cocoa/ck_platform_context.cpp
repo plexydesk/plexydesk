@@ -5,11 +5,13 @@
 #include <QPaintDevice>
 
 #ifdef __APPLE__
-#include <CoreGraphics/CGContext.h>
-#include <CoreGraphics/CGBitmapContext.h>
-#include <CoreGraphics/CGDirectDisplay.h>
-#include <stdlib.h>
-#include <malloc/malloc.h>
+#include <ApplicationServices/ApplicationServices.h>
+
+//#include <CoreGraphics/CGContext.h>
+//#include <CoreGraphics/CGBitmapContext.h>
+//#include <CoreGraphics/CGDirectDisplay.h>
+//#include <stdlib.h>
+//#include <malloc/malloc.h>
 #endif
 
 class ck_platform_context::private_platform_context {
