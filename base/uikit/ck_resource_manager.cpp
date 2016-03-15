@@ -74,7 +74,7 @@ resource_manager::resource_manager(const QString &a_theme_name)
       cherry_kit::extension_manager::instance()->style("simplegray");
 #else
   priv->m_current_style_ref =
-      cherry_kit::extension_manager::instance()->style("simplegray");
+      cherry_kit::extension_manager::instance()->style("cocoastyle");
 #endif
 
 

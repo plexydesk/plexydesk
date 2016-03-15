@@ -5,22 +5,14 @@
 #endif
 
 #ifdef __APPLE_PLATFORM__
-#error "Platform Screen Support not Implemented"
+#include <core/mac/ck_screen_impl_mac.h>
 #endif
 
 #ifdef __WINDOWS__PLATFORM__
-#error "Platform Screen Support not Implemented"
+#error "Windows Platform Screen Support not Implemented"
 #endif
 
 namespace cherry_kit {
-
-#ifndef __X11_PLATFORM__
-class screen::private_screen {
-public:
-  private_screen() {}
-  ~private_screen() {}
-};
-#endif
 
 screen::screen() : priv(new platform_screen) {}
 
