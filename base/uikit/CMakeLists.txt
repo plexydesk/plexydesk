@@ -34,7 +34,6 @@ endif(UNIX AND NOT APPLE)
 set(CORE_LIB_CXX_FILES
     core/ck_timer.cpp
     core/ck_screen.cpp
-    core/qt/ck_screen_impl_qt.cpp
     core/ck_widget.cpp
     core/ck_ui_action.cpp
     core/ck_desktop_controller_interface.cpp
@@ -42,6 +41,18 @@ set(CORE_LIB_CXX_FILES
     core/ck_desktop_dialog.cpp
     core/ck_extension_manager.cpp
     core/ck_style.cpp)
+
+if(APPLE)
+  set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
+       core/mac/ck_screen_impl_mac.mm
+      )
+endif()
+
+if(UNIX AND NOT APPLE)
+  set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
+       core/qt/ck_screen_impl_qt.cpp
+      )
+endif()
 
 set(CORE_LIBRARY_INTERFACE_FILES
     core/ck_desktop_controller_interface.h
@@ -54,14 +65,12 @@ set(CORE_LIBRARY_HEADER_FILES
     core/ck_timer.h
     core/ck_style.h
     core/ck_screen.h
-    core/qt/ck_screen_impl_qt.h
     core/ck_widget.h
     core/ck_data_source.h
     core/ck_style_data.h
     core/ck_desktop_dialog.h
     core/ck_extension_manager.h
     core/ck_ui_action.h)
-
 #
 set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/ck_button.cpp
