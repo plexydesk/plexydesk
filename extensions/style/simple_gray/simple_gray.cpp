@@ -32,9 +32,7 @@
 #include <QPaintDevice>
 
 #ifdef __APPLE__
-#include <CoreGraphics/CGContext.h>
-#include <CoreGraphics/CGBitmapContext.h>
-#include <CoreGraphics/CGDirectDisplay.h>
+#include <ApplicationServices/ApplicationServices.h>
 #include <stdlib.h>
 #include <malloc/malloc.h>
 
