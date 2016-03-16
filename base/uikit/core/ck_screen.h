@@ -23,10 +23,10 @@ public:
 
   int screen_count() const;
 
-  float scale_factor() const;
+  float scale_factor(int a_id) const;
 
-  int pixel_count_x() const;
-  int pixel_count_y() const;
+  int x_resolution(int a_id) const;
+  int y_resolution(int a_id) const;
 
   void change_notifications(display_change_notify_callback_t a_callback);
 
