@@ -102,6 +102,11 @@ void workspace::move_to_screen(int a_screen_id) {
   qDebug() << Q_FUNC_INFO << "Final H" << (height_factor * get_base_height());
 #endif
 
+  setRenderHints(QPainter::Antialiasing
+          | QPainter::SmoothPixmapTransform
+          | QPainter::HighQualityAntialiasing
+          | QPainter::TextAntialiasing);
+
   scale(width_factor, height_factor);
   //scale(2,2);
 }
