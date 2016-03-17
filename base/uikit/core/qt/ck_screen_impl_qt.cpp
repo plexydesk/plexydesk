@@ -18,7 +18,7 @@ int cherry_kit::screen::platform_screen::screen_count() const
   return qApp->desktop()->screenCount();
 }
 
-float cherry_kit::screen::platform_screen::scale_factor() const
+float cherry_kit::screen::platform_screen::scale_factor(int a_id) const
 {
   return 2.0f;
 }
@@ -33,12 +33,12 @@ float cherry_kit::screen::platform_screen::desktop_height() const
   return 1200.0f;
 }
 
-float cherry_kit::screen::platform_screen::display_width() const
+float cherry_kit::screen::platform_screen::display_width(int a_id) const
 {
   return 1920.0f;
 }
 
-float cherry_kit::screen::platform_screen::display_height() const
+float cherry_kit::screen::platform_screen::display_height(int a_id) const
 {
   return 1200.0f;
 }
