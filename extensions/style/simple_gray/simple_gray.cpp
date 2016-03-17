@@ -272,7 +272,7 @@ void SimpleGrayStyle::draw_window_button(const style_data &features,
 
   painter->save();
 
-  d->set_pen_color(painter, resource_manager::kTextBackground, 2);
+  d->set_pen_color(painter, resource_manager::kTextBackground, 1);
 #ifdef __APPLE__
   QRectF cross_rect(12.0, 12.0, rect.width() - 12, rect.height() - 12);
 #else
