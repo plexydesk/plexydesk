@@ -14,7 +14,8 @@
 //#include <malloc/malloc.h>
 #endif
 
-class ck_platform_context::private_platform_context {
+namespace cherry_kit {
+class graphics_context::private_platform_context {
 public:
   private_platform_context(QImage *a_surface) { m_surface_ref = a_surface; }
   ~private_platform_context() {}
@@ -25,16 +26,16 @@ public:
   QImage *m_surface_ref;
 };
 
-ck_platform_context::ck_platform_context(QImage *a_surface_ref)
+graphics_context::graphics_context(QImage *a_surface_ref)
     : ctx(new private_platform_context(a_surface_ref)) {}
 
-ck_platform_context::~ck_platform_context() { delete ctx; }
+graphics_context::~graphics_context() { delete ctx; }
 
-bool ck_platform_context::is_valid() const {
+bool graphics_context::is_valid() const {
   return (ctx->m_surface_ref && ctx->copy_cg_context(ctx->m_surface_ref));
 }
 
-void ck_platform_context::draw_round_rect(float x, float y, float width,
+void graphics_context::draw_round_rect(float x, float y, float width,
                                           float height, float x_radious,
                                           float y_radious) {
   CGContextRef p = nil;
@@ -62,7 +63,7 @@ void ck_platform_context::draw_round_rect(float x, float y, float width,
   CGContextRelease(p);
 }
 
-QImage *ck_platform_context::private_platform_context::get_drawable_surface(
+QImage *graphics_context::private_platform_context::get_drawable_surface(
     QPainter *a_ctx) {
   QPaintDevice *current_paint_device = a_ctx->paintEngine()->paintDevice();
   QImage *rv = NULL;
@@ -76,7 +77,7 @@ QImage *ck_platform_context::private_platform_context::get_drawable_surface(
   return rv;
 }
 
-CGContextRef ck_platform_context::private_platform_context::copy_cg_context(
+CGContextRef graphics_context::private_platform_context::copy_cg_context(
     QImage *a_surface_ptr) {
   CGContextRef rv = nil;
   CGColorSpaceRef colorspace =
@@ -93,4 +94,5 @@ CGContextRef ck_platform_context::private_platform_context::copy_cg_context(
   CGColorSpaceRelease(colorspace);
 
   return rv;
+}
 }

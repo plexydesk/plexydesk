@@ -262,7 +262,7 @@ void CocoaStyle::draw_window_button(const style_data &features,
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
   QImage *surface_ref = d->get_drawable_surface(painter);
-  ck_platform_context ctx(surface_ref);
+  cherry_kit::graphics_context ctx(surface_ref);
 
   if (!ctx.is_valid())
     return;
