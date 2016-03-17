@@ -3,6 +3,7 @@
 
 #include <QImage>
 
+namespace cherry_kit {
 class ck_color {
 public:
   ck_color(float, float, float, float) {}
@@ -14,10 +15,16 @@ private:
   float m_alpha;
 };
 
-class ck_platform_context {
+class rectf {
 public:
-  ck_platform_context(QImage *a_surface_ref = 0);
-  virtual ~ck_platform_context();
+  rectf() {}
+
+};
+
+class graphics_context {
+public:
+  graphics_context(QImage *a_surface_ref = 0);
+  virtual ~graphics_context();
 
   bool is_valid() const;
 
@@ -28,5 +35,6 @@ private:
   class private_platform_context;
   private_platform_context *const ctx;
 };
+}
 
 #endif // CK_PLATFORM_CONTEXT_H
