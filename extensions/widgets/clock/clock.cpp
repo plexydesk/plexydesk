@@ -171,7 +171,7 @@ cherry_kit::ui_action time_controller::task() {
     //
     QPointF window_location;
     if (viewport()) {
-      window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+      window_location = viewport()->center(QRectF(0, 0, 320, 320 + 48));
     }
 
     QVariantMap session_args;
@@ -201,7 +201,7 @@ cherry_kit::ui_action time_controller::task() {
     //
     QPointF window_location;
     if (viewport()) {
-      window_location = viewport()->center(QRectF(0, 0, 240, 240 + 48));
+      window_location = viewport()->center(QRectF(0, 0, 320, 320 + 48));
     }
 
     QVariantMap session_args;
@@ -248,7 +248,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::clock_view *ck_clock = 0;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
-  ck_ui->set_geometry(0, 0, 240, 240);
+  ck_ui->set_geometry(0, 0, 320, 320);
 
   ck_ui->add_rows(2);
 
@@ -269,8 +269,6 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
 
   ck_clock = dynamic_cast<cherry_kit::clock_view *>(
               ck_ui->add_widget(0, 0, "clock", ui_data, [=]() {
-
-
   }));
 
   ck_location_btn = add_action_button(ck_ui, 1, 0, "", "ck_location");
@@ -339,7 +337,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
-  ck_ui->set_geometry(0, 0, 240, 240);
+  ck_ui->set_geometry(0, 0, 320, 320);
 
   ck_ui->add_rows(4);
 
