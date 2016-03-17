@@ -11,13 +11,13 @@ public:
 
     int screen_count() const;
 
-    float scale_factor() const;
+    float scale_factor(int a_id) const;
 
     float desktop_width() const;
     float desktop_height() const;
 
-    float display_width() const;
-    float display_height() const;
+    float display_width(int a_id) const;
+    float display_height(int a_id) const;
 };
 }
 
