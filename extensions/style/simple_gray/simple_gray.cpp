@@ -120,8 +120,8 @@ void SimpleGrayStyle::load_default_widget_style_properties() {
   _frame_attributes["window_minimized_height"] = 128.0;
   _frame_attributes["window_minimized_width"] = 96.0;
   _frame_attributes["window_blur_radius"] = 12.0;
-  _frame_attributes["window_close_button_width"] = 24.0;
-  _frame_attributes["window_close_button_height"] = 24.0;
+  _frame_attributes["window_close_button_width"] = 14.0 * scale_factor();
+  _frame_attributes["window_close_button_height"] = 14.0 * scale_factor();
   _frame_attributes["window_shadow_color"] = QString("#323232");
   _frame_attributes["padding"] = 2.0;
 
