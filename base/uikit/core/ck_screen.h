@@ -30,9 +30,8 @@ public:
 
   void change_notifications(display_change_notify_callback_t a_callback);
 
-protected:
-  virtual float virtual_desktop_width();
-  virtual float virtual_desktop_height();
+  float desktop_height(int a_display_id) const;
+  float desktop_width(int a_display_id) const;
 
 private:
   class platform_screen;
