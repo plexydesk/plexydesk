@@ -43,9 +43,6 @@ public:
 
   cherry_kit::ui_action task();
 
-public Q_SLOTS:
-  void onDataUpdated(const QVariantMap &data);
-
 private:
   class PrivateClockController;
   PrivateClockController *const priv;

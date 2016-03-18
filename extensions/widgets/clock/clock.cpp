@@ -228,8 +228,6 @@ cherry_kit::ui_action time_controller::task() {
   return task;
 }
 
-void time_controller::onDataUpdated(const QVariantMap &data) {}
-
 cherry_kit::icon_button *
 time_controller::PrivateClockController::add_action_button(
     cherry_kit::fixed_layout *ui, int a_row, int a_col,
