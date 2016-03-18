@@ -20,10 +20,10 @@
 #define PD_SPACE_H
 
 #include <ck_desktop_controller_interface.h>
-#include <plexydesk_ui_exports.h>
-#include <ck_widget.h>
-#include <ck_ui_action.h>
 #include <ck_sync_object.h>
+#include <ck_ui_action.h>
+#include <ck_widget.h>
+#include <plexydesk_ui_exports.h>
 
 namespace cherry_kit {
 class workspace;
@@ -72,11 +72,10 @@ public:
                                     const QString &a_key,
                                     const QString &a_value);
 
-  cherry_kit::desktop_dialog_ref open_desktop_dialog(const QString &a_activity,
-                                                 const QString &a_title,
-                                                 const QPointF &a_pos,
-                                                 const QRectF &a_rect,
-                                                 const QVariantMap &a_data_map);
+  cherry_kit::desktop_dialog_ref
+  open_desktop_dialog(const QString &a_activity, const QString &a_title,
+                      const QPointF &a_pos, const QRectF &a_rect,
+                      const QVariantMap &a_data_map);
 
   virtual QPointF cursor_pos() const;
   virtual QPointF
@@ -89,12 +88,14 @@ public:
 
   virtual void on_viewport_event_notify(
       std::function<void(ViewportNotificationType, const ui_task_data_t &a_data,
-                         const space *)> a_notify_handler);
+                         const space *)>
+          a_notify_handler);
   virtual void on_activity_finished(const desktop_dialog *a_activity);
 
   virtual int id() const;
 
   virtual void reset_focus();
+
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);

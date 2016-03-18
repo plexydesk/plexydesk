@@ -20,17 +20,27 @@ screen::~screen() { delete priv; }
 
 int screen::screen_count() const { return priv->screen_count(); }
 
-float screen::scale_factor(int a_display_id) const { return priv->scale_factor(a_display_id); }
+float screen::scale_factor(int a_display_id) const {
+  return priv->scale_factor(a_display_id);
+}
 
-int screen::x_resolution(int a_display_id) const { return priv->display_width(a_display_id); }
+int screen::x_resolution(int a_display_id) const {
+  return priv->display_width(a_display_id);
+}
 
-int screen::y_resolution(int a_display_id) const { return priv->display_height(a_display_id); }
+int screen::y_resolution(int a_display_id) const {
+  return priv->display_height(a_display_id);
+}
+
+float screen::desktop_height(int a_display_id) const {
+  return priv->desktop_height(a_display_id);
+}
 
 void screen::change_notifications(display_change_notify_callback_t a_callback) {
   m_notify_chain.push_back(a_callback);
 }
 
-float screen::virtual_desktop_width() { return priv->desktop_width(); }
-
-float screen::virtual_desktop_height() { return priv->desktop_height(); }
+float screen::desktop_width(int a_display_id) const {
+  return priv->desktop_width(a_display_id);
+}
 }
