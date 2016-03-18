@@ -1,19 +1,20 @@
-#include <config.h>
-#include "ck_resource_manager.h"
 #include "ck_workspace.h"
+#include "ck_resource_manager.h"
+
+#include <config.h>
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QDebug>
-#include <QScroller>
+#include <QDesktopWidget>
+#include <QGLWidget>
 #include <QImage>
 #include <QPainter>
-#include <QGLWidget>
-#include <ck_data_sync.h>
+#include <QScroller>
 
-#include <ck_screen.h>
+#include <ck_data_sync.h>
 #include <ck_disk_engine.h>
 #include <ck_icon_button.h>
+#include <ck_screen.h>
 #include <ck_sync_object.h>
 
 namespace cherry_kit {
@@ -54,15 +55,12 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifndef Q_OS_WIN32
-  setWindowFlags(Qt::CustomizeWindowHint
-                 | Qt::FramelessWindowHint
-                 | Qt::WindowStaysOnBottomHint
-                 | Qt::NoDropShadowWindowHint
-                 );
+  setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint |
+                 Qt::WindowStaysOnBottomHint | Qt::NoDropShadowWindowHint);
 #endif
 
 #ifdef Q_OS_WIN32
-  //setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint);
+  // setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint);
   setCacheMode(QGraphicsView::CacheNone);
   setOptimizationFlags(QGraphicsView::DontSavePainterState);
   setOptimizationFlag(QGraphicsView::DontClipPainter);
@@ -102,13 +100,12 @@ void workspace::move_to_screen(int a_screen_id) {
   qDebug() << Q_FUNC_INFO << "Final H" << (height_factor * get_base_height());
 #endif
 
-  setRenderHints(QPainter::Antialiasing
-          | QPainter::SmoothPixmapTransform
-          | QPainter::HighQualityAntialiasing
-          | QPainter::TextAntialiasing);
+  setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                 QPainter::HighQualityAntialiasing |
+                 QPainter::TextAntialiasing);
 
   scale(width_factor, height_factor);
-  //scale(2,2);
+  // scale(2,2);
 }
 
 void workspace::add_default_controller(const std::string &a_controller_name) {
@@ -143,14 +140,14 @@ void workspace::set_accelerated_rendering(bool a_on) {
         QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
                   QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
 
-    //setViewport(new QGLWidget(QGLFormat(QGL::DoubleBuffer)));
+    // setViewport(new QGLWidget(QGLFormat(QGL::DoubleBuffer)));
     setCacheMode(QGraphicsView::CacheNone);
     // setOptimizationFlags(QGraphicsView::DontSavePainterState);
     // setOptimizationFlag(QGraphicsView::DontClipPainter);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
     setupViewport(new QWidget);
-    //setCacheMode(QGraphicsView::CacheBackground);
+    // setCacheMode(QGraphicsView::CacheBackground);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setOptimizationFlag(QGraphicsView::DontClipPainter);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
@@ -283,7 +280,8 @@ void workspace::focusOutEvent(QFocusEvent *a_event_ref) {
 }
 
 float workspace::desktop_verticle_scale_factor() {
-  QRectF _current_desktop_geometry(0, 0, geometry().width(), geometry().height());
+  QRectF _current_desktop_geometry(0, 0, geometry().width(),
+                                   geometry().height());
 
   float height_factor =
       (_current_desktop_geometry.height() / get_base_height());
@@ -292,10 +290,10 @@ float workspace::desktop_verticle_scale_factor() {
 }
 
 float workspace::desktop_horizontal_scale_factor() {
-  QRectF _current_desktop_geometry(0, 0, geometry().width(), geometry().height());
+  QRectF _current_desktop_geometry(0, 0, geometry().width(),
+                                   geometry().height());
 
-  float width_factor =
-            (_current_desktop_geometry.width() / get_base_width()) ;
+  float width_factor = (_current_desktop_geometry.width() / get_base_width());
 
   return width_factor;
 }
@@ -552,8 +550,9 @@ void workspace::add_default_space() {
   std::for_each(std::begin(priv->m_default_controller_name_list),
                 std::end(priv->m_default_controller_name_list),
                 [=](std::string &a_controller_name) {
-    _space->add_controller(QString::fromStdString(a_controller_name));
-  });
+                  _space->add_controller(
+                      QString::fromStdString(a_controller_name));
+                });
 
   priv->m_desktop_space_list << _space;
 
@@ -607,16 +606,10 @@ void workspace::restore_session() {
 }
 
 float workspace::get_base_width() {
-  float rv = 1920.0f;
-
-  return 1920.0f;
+  return screen().desktop_width(priv->m_screen_id);
 }
 
 float workspace::get_base_height() {
-  QRectF display_rect(0, 0, geometry().width(), geometry().height());
-  float scaled_height =
-      (display_rect.height() / display_rect.width()) * get_base_width();
-
-  return scaled_height;
+  return screen().desktop_height(priv->m_screen_id);
 }
 }
