@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include "dock.h"
 #include "snapframe.h"
+#include "vertical_dock.h"
 
 #include <ck_icon_button.h>
 #include <ck_workspace.h>
@@ -341,68 +342,40 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
     return;
   }
 
-  cherry_kit::window *m_dock_window = new cherry_kit::window();
-  m_dock_window->set_window_type(window::kPanelWindow);
-  m_dock_window->set_window_opacity(0.5f);
+  vertical_dock *vdock = new vertical_dock();
 
-  // navigation
-  // so that the icon size is 36.0f;
-  float icon_size = viewport()->scaled_width(48.0f);
-  cherry_kit::fixed_layout *panel_ui =
-      new cherry_kit::fixed_layout(m_dock_window);
-  panel_ui->set_content_margin(0, 0, 5, 5);
-  panel_ui->set_verticle_spacing(10.0f);
-  panel_ui->set_geometry(0, 0, icon_size + 8, icon_size * 7);
-  panel_ui->add_rows(7);
+  vdock->create_dock_action(0, 0, "panel/ck_up_arrow.png",
+                     [=]() { exec_action("Up", vdock->window()); });
 
-  m_dock_window->on_window_discarded([=](cherry_kit::window *aWindow) {
-    if (panel_ui)
-      delete panel_ui;
-    delete aWindow;
-  });
+  vdock->create_dock_action(1, 0, "panel/ck_add.png",
+                     [=]() { exec_action("Add", vdock->window()); });
 
-  std::string default_height =
-      std::to_string((icon_size / (icon_size * 7)) * 100) + "%";
+  vdock->create_dock_action(2, 0, "panel/ck_space.png",
+                     [=]() { exec_action("Expose", vdock->window()); });
 
-  for (int i = 0; i < 7; i++) {
-    panel_ui->add_segments(i, 1);
-    panel_ui->set_row_height(i, default_height);
-  }
+  vdock->create_dock_action(3, 0, "panel/ck_menu.png",
+                     [=]() { exec_action("Menu", vdock->window()); });
 
-  create_dock_action(panel_ui, 0, 0, "panel/ck_up_arrow.png",
-                     [=]() { exec_action("Up", m_dock_window); });
+  vdock->create_dock_action(4, 0, "panel/ck_expose.png",
+                     [=]() { exec_action("Seamless", vdock->window()); });
 
-  create_dock_action(panel_ui, 1, 0, "panel/ck_add.png",
-                     [=]() { exec_action("Add", m_dock_window); });
+  vdock->create_dock_action(5, 0, "panel/ck_trash.png",
+                     [=]() { exec_action("Close", vdock->window()); });
 
-  create_dock_action(panel_ui, 2, 0, "panel/ck_space.png",
-                     [=]() { exec_action("Expose", m_dock_window); });
+  vdock->create_dock_action(6, 0, "panel/ck_down_arrow.png",
+                     [=]() { exec_action("Down", vdock->window()); });
 
-  create_dock_action(panel_ui, 3, 0, "panel/ck_menu.png",
-                     [=]() { exec_action("Menu", m_dock_window); });
-
-  create_dock_action(panel_ui, 4, 0, "panel/ck_expose.png",
-                     [=]() { exec_action("Seamless", m_dock_window); });
-
-  create_dock_action(panel_ui, 5, 0, "panel/ck_trash.png",
-                     [=]() { exec_action("Close", m_dock_window); });
-
-  create_dock_action(panel_ui, 6, 0, "panel/ck_down_arrow.png",
-                     [=]() { exec_action("Down", m_dock_window); });
-
-  m_dock_window->set_window_content(panel_ui->viewport());
-  m_dock_window->setFlag(QGraphicsItem::ItemIsMovable, true);
-  m_dock_window->setPos(viewport()->center(m_dock_window->geometry(), QRectF(),
+  vdock->window()->setPos(viewport()->center(vdock->window()->geometry(), QRectF(),
                                            space::kCenterOnViewportLeft));
-  insert(m_dock_window);
+  insert(vdock->window());
 
   viewport()->on_viewport_event_notify([=](
       space::ViewportNotificationType aType,
       const cherry_kit::ui_task_data_t &a_data, const space *aSpace) {
 
     if (aType == space::kGeometryChangedNotification) {
-      m_dock_window->setPos(viewport()->center(
-          m_dock_window->geometry(), QRectF(), space::kCenterOnViewportLeft));
+     vdock->window()->setPos(viewport()->center(
+         vdock->window()->geometry(), QRectF(), space::kCenterOnViewportLeft));
     }
   });
 }
