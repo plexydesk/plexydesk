@@ -153,7 +153,7 @@ void desktop_controller_impl::submit_session_data(
 
 void desktop_controller_impl::create_task_group() const {
   o_ctr->m_supported_action.set_name("Configure");
-  o_ctr->m_supported_action.set_icon("panel/ck_add.png");
+  o_ctr->m_supported_action.set_icon("navigation/ck_configure.png");
   o_ctr->m_supported_action.set_visible(1);
   o_ctr->m_supported_action.set_controller(controller_name().toStdString());
 

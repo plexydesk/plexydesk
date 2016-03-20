@@ -157,7 +157,7 @@ cherry_kit::ui_action time_controller::task() {
   task.set_name("Track");
   task.set_visible(1);
   task.set_controller(controller_name().toStdString());
-  task.set_icon("actions/ck_alarm.png");
+  task.set_icon("navigation/ck_alarm.png");
 
   cherry_kit::ui_action time_task;
   time_task.set_name("Time");
