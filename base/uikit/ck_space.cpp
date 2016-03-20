@@ -604,6 +604,8 @@ QPointF space::center(const QRectF &a_view_geometry,
 }
 
 float space::scaled_width(float a_value) {
+  return a_value;
+/*
   if (!owner_workspace())
     return a_value;
 
@@ -616,9 +618,12 @@ float space::scaled_width(float a_value) {
   }
 
   return a_value;
+  */
 }
 
 float space::scaled_height(float a_value) {
+  return a_value;
+  /*
   if (!owner_workspace())
     return a_value;
 
@@ -631,6 +636,7 @@ float space::scaled_height(float a_value) {
   }
 
   return a_value;
+  */
 }
 
 desktop_controller_ref space::controller(const QString &a_name) {
