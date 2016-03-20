@@ -138,7 +138,7 @@ cherry_kit::ui_action date_controller::task() {
   task.set_name("Organize");
   task.set_visible(1);
   task.set_controller(controller_name().toStdString());
-  task.set_icon("panel/ck_add.png");
+  task.set_icon("navigation/ck_organize.png");
 
   cherry_kit::ui_action cal_task;
   cal_task.set_name("Calendar");
