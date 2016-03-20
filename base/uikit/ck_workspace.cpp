@@ -35,8 +35,8 @@ public:
 };
 
 void workspace::set_workspace_geometry(int a_screen_id) {
-  QRect _current_desktop_geometry =
-      QApplication::desktop()->screenGeometry(a_screen_id);
+  QRect _current_desktop_geometry = QRect(0, 0, screen().x_resolution(a_screen_id),
+                                          screen().y_resolution(a_screen_id));
   setGeometry(_current_desktop_geometry);
 }
 
