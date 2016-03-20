@@ -73,7 +73,7 @@ cherry_kit::ui_action desktop_task_controller_impl::task() {
   task.set_name("Record");
   task.set_visible(1);
   task.set_controller(controller_name().toStdString());
-  task.set_icon("panel/ck_add.png");
+  task.set_icon("navigation/ck_do.png");
 
   cherry_kit::ui_action note_action;
   note_action.set_name("Note");
