@@ -196,7 +196,12 @@ void space::insert_window_to_view(window *a_window) {
   _widget_location.setY(_center_of_space_location.y() -
                         a_window->boundingRect().height() / 2);
 
+  //set the screen id of the owner space.
+  a_window->set_screen_id(owner_workspace()->screen_id());
+
+  //introduce the item to the graphicsview system
   o_space->m_native_scene->addItem(a_window);
+
   if (a_window->window_type() == window::kApplicationWindow)
     a_window->setZValue(kMaximumZOrder);
 

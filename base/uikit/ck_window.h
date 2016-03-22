@@ -93,6 +93,7 @@ protected:
   void invoke_window_moved_action();
 
   void invoke_window_visibility_action(bool a_visibility);
+
 private:
   class PrivateWindow;
   PrivateWindow *const priv;
