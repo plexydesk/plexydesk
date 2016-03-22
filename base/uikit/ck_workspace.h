@@ -69,6 +69,8 @@ public:
   float desktop_verticle_scale_factor();
   float desktop_horizontal_scale_factor();
 
+  virtual int screen_id() const;
+
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);

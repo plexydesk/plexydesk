@@ -23,8 +23,8 @@
 #include <QWidget>
 
 #include "ck_resource_manager.h"
-#include <ck_desktop_controller_interface.h>
 #include "ck_widget.h"
+#include <ck_desktop_controller_interface.h>
 #include <ck_screen.h>
 
 namespace cherry_kit {
@@ -33,7 +33,8 @@ typedef std::function<void(widget::InputEvent, const widget *)>
 
 class widget::PrivateWidget {
 public:
-  PrivateWidget() : m_surface(0), m_widget_controller(0), m_identifier(0) {}
+  PrivateWidget()
+      : m_surface(0), m_widget_controller(0), m_identifier(0), m_screen_id(0) {}
   ~PrivateWidget() {
     if (m_surface)
       free(m_surface);
@@ -49,13 +50,15 @@ public:
 
   desktop_controller_interface *m_widget_controller;
 
-  std::vector<std::function<void(const QRectF &)> > m_on_geometry_func_list;
+  std::vector<std::function<void(const QRectF &)>> m_on_geometry_func_list;
   std::vector<EventCallbackFunc> m_handler_list;
   std::vector<UpdateCallback> m_update_monitor_list;
-  std::vector<std::function<void()> > m_on_click_handlers;
+  std::vector<std::function<void()>> m_on_click_handlers;
 
   WidgetList m_child_list;
   unsigned char *m_surface;
+
+  int m_screen_id;
 };
 
 widget::widget(widget *parent)
@@ -141,9 +144,9 @@ void widget::request_update() {
   std::for_each(std::begin(priv->m_update_monitor_list),
                 std::end(priv->m_update_monitor_list),
                 [this](UpdateCallback a_func) {
-    if (a_func)
-      a_func(this);
-  });
+                  if (a_func)
+                    a_func(this);
+                });
 }
 
 void widget::on_update(UpdateCallback a_callback) {
@@ -151,6 +154,14 @@ void widget::on_update(UpdateCallback a_callback) {
 }
 
 WidgetList widget::children() { return priv->m_child_list; }
+
+void widget::set_screen_id(int a_screen_id) {
+  // todo:
+  // Move the widget to the next screen if the screen id changes.
+  priv->m_screen_id = a_screen_id;
+}
+
+int widget::screen_id() const { return priv->m_screen_id; }
 
 void widget::set_widget_name(const QString &a_name) {
   priv->m_name = a_name;
@@ -201,7 +212,7 @@ void widget::setGeometry(const QRectF &a_rect) {
 
   // d->m_content_geometry = rect;
   prepareGeometryChange();
-  float scale_factor = 1; //screen().scale_factor();
+  float scale_factor = 1; // screen().scale_factor();
   QRectF scaled_rect(a_rect.x(), a_rect.y(), a_rect.width() * scale_factor,
                      a_rect.height() * scale_factor);
   QGraphicsLayoutItem::setGeometry(scaled_rect);
@@ -219,19 +230,19 @@ QSizeF widget::sizeHint(Qt::SizeHint a_which,
   // return geometry().size();
   QSizeF sh;
   switch (a_which) {
-    case Qt::MinimumSize:
-      sh = QSizeF(0, 0);
-      break;
-    case Qt::PreferredSize:
-      sh = QSizeF(50, 50); // rather arbitrary
-      break;
-    case Qt::MaximumSize:
-      sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-      break;
-    default:
-      qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
-               "value of 'which'");
-      break;
+  case Qt::MinimumSize:
+    sh = QSizeF(0, 0);
+    break;
+  case Qt::PreferredSize:
+    sh = QSizeF(50, 50); // rather arbitrary
+    break;
+  case Qt::MaximumSize:
+    sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    break;
+  default:
+    qWarning("QGraphicsWidget::sizeHint(): Don't know how to handle the "
+             "value of 'which'");
+    break;
   }
   return sh;
 }
@@ -294,33 +305,34 @@ desktop_controller_interface *widget::controller() const {
 void widget::exec_func(InputEvent a_type, const widget *a_widget_ptr) {
   std::for_each(std::begin(priv->m_handler_list),
                 std::end(priv->m_handler_list), [&](EventCallbackFunc a_func) {
-    if (a_func)
-      a_func(a_type, a_widget_ptr);
-    else
-      qWarning() << Q_FUNC_INFO << "Fatal Error : Function out of scope";
-  });
+                  if (a_func)
+                    a_func(a_type, a_widget_ptr);
+                  else
+                    qWarning() << Q_FUNC_INFO
+                               << "Fatal Error : Function out of scope";
+                });
 }
 
 void widget::invoke_click_handlers() {
   std::for_each(std::begin(priv->m_on_click_handlers),
                 std::end(priv->m_on_click_handlers),
                 [&](std::function<void()> a_func) {
-    if (a_func)
-      a_func();
-    else
-      qDebug() << Q_FUNC_INFO << "INvalid function pointer";
-  });
+                  if (a_func)
+                    a_func();
+                  else
+                    qDebug() << Q_FUNC_INFO << "INvalid function pointer";
+                });
 }
 
 void widget::PrivateWidget::_inoke_geometry_func(const QRectF &a_rect) {
   std::for_each(std::begin(m_on_geometry_func_list),
                 std::end(m_on_geometry_func_list),
                 [&](std::function<void(const QRectF &)> a_func) {
-    if (a_func)
-      a_func(a_rect);
-    else
-      qDebug() << Q_FUNC_INFO << "INvalid function pointer";
-  });
+                  if (a_func)
+                    a_func(a_rect);
+                  else
+                    qDebug() << Q_FUNC_INFO << "INvalid function pointer";
+                });
 }
 
 } // namespace PlexyDesk
