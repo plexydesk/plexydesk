@@ -573,7 +573,7 @@ void SimpleGrayStyle::draw_clock_surface(const style_data &features,
                                          QPainter *a_ctx,
                                          const widget *a_widget) {
   /* please note that the clock is drawn with the inverted color scheme */
-  float border_len = features.geometry.width() - (16 * scale_factor());
+  float border_len = features.geometry.width() - (48 * scale_factor());
 
   QRectF rect = QRectF(
       features.geometry.x() + ((features.geometry.width() - border_len) / 2),
