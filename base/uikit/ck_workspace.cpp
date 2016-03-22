@@ -35,8 +35,8 @@ public:
 };
 
 void workspace::set_workspace_geometry(int a_screen_id) {
-  QRect _current_desktop_geometry = QRect(0, 0, screen().x_resolution(a_screen_id),
-                                          screen().y_resolution(a_screen_id));
+  QRect _current_desktop_geometry = QRect(0, 0, screen::get()->x_resolution(a_screen_id),
+                                          screen::get()->y_resolution(a_screen_id));
   setGeometry(_current_desktop_geometry);
 }
 
@@ -606,10 +606,10 @@ void workspace::restore_session() {
 }
 
 float workspace::get_base_width() {
-  return screen().desktop_width(priv->m_screen_id);
+  return screen::get()->desktop_width(priv->m_screen_id);
 }
 
 float workspace::get_base_height() {
-  return screen().desktop_height(priv->m_screen_id);
+  return screen::get()->desktop_height(priv->m_screen_id);
 }
 }

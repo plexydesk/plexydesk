@@ -36,6 +36,6 @@ QString style::color(const QString &a_element) const {
 }
 
 float style::scale_factor() {
-  return screen().scale_factor(0);
+  return screen::get()->scale_factor(0);
 }
 }

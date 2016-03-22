@@ -605,7 +605,7 @@ QPointF space::center(const QRectF &a_view_geometry,
 }
 
 float space::scaled_width(float a_value) {
-  return a_value * screen().scale_factor(0);
+  return a_value * screen::get()->scale_factor(0);
 /*
   if (!owner_workspace())
     return a_value;
@@ -623,7 +623,7 @@ float space::scaled_width(float a_value) {
 }
 
 float space::scaled_height(float a_value) {
-  return a_value * screen().scale_factor(0);
+  return a_value * screen::get()->scale_factor(0);
   /*
   if (!owner_workspace())
     return a_value;

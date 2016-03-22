@@ -18,8 +18,9 @@ typedef std::function<void(display_change_notify_t)>
 
 class DECL_UI_KIT_EXPORT screen {
 public:
-  screen();
   virtual ~screen();
+
+  static screen *get();
 
   int screen_count() const;
 
@@ -33,11 +34,16 @@ public:
   float desktop_height(int a_display_id) const;
   float desktop_width(int a_display_id) const;
 
+protected:
+  screen();
+
 private:
   class platform_screen;
   platform_screen* const priv;
 
   std::vector<display_change_notify_callback_t> m_notify_chain;
+
+  static screen *__self;
 };
 }
 

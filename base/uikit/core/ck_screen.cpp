@@ -14,6 +14,17 @@
 
 namespace cherry_kit {
 
+screen *screen::__self = 0;
+
+screen *screen::get() {
+   if (__self)
+       return __self;
+
+   __self = new screen();
+
+   return __self;
+}
+
 screen::screen() : priv(new platform_screen) {}
 
 screen::~screen() { delete priv; }
