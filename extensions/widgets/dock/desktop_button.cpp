@@ -1,13 +1,15 @@
 #include "desktop_button.h"
 #include <ck_resource_manager.h>
+#include <ck_screen.h>
 
 desktop_button::desktop_button() {
   m_window = new cherry_kit::window();
   m_button = new cherry_kit::icon_button(m_window);
 
-  m_button->setGeometry(QRectF(0, 0, 48, 48));
-  m_button->setMinimumSize(QSizeF(48, 48));
-  m_button->set_size(QSize(48, 48));
+  float button_size = 48 * cherry_kit::screen().scale_factor(0);
+  m_button->setGeometry(QRectF(0, 0, button_size, button_size));
+  m_button->setMinimumSize(QSizeF(button_size, button_size));
+  m_button->set_size(QSize(button_size, button_size));
 
   m_window->set_window_type(cherry_kit::window::kPanelWindow);
   m_window->set_window_opacity(0.0);

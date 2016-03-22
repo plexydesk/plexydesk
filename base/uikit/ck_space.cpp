@@ -8,6 +8,7 @@
 #include <ck_data_sync.h>
 #include <ck_disk_engine.h>
 #include <ck_extension_manager.h>
+#include <ck_screen.h>
 #include <ck_sync_object.h>
 #include <ck_widget.h>
 
@@ -604,7 +605,7 @@ QPointF space::center(const QRectF &a_view_geometry,
 }
 
 float space::scaled_width(float a_value) {
-  return a_value;
+  return a_value * screen().scale_factor(0);
 /*
   if (!owner_workspace())
     return a_value;
@@ -622,7 +623,7 @@ float space::scaled_width(float a_value) {
 }
 
 float space::scaled_height(float a_value) {
-  return a_value;
+  return a_value * screen().scale_factor(0);
   /*
   if (!owner_workspace())
     return a_value;
