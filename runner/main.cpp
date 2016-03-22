@@ -193,7 +193,7 @@ private:
 #endif
 public:
   Runtime(const char *a_platform_name = 0) {
-    for (int i = 0; i < cherry_kit::screen().screen_count() ; i++) {
+    for (int i = 0; i < cherry_kit::screen::get()->screen_count() ; i++) {
       DesktopManager *workspace = new DesktopManager();
       //workspace->set_accelerated_rendering(true);
 
