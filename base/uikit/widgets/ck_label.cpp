@@ -43,7 +43,7 @@ public:
 };
 
 label::label(widget *parent) : widget(parent), o_label(new PrivateLabel) {
-  o_label->m_font_size = 6; // style renders this as 12px
+  o_label->m_font_size = 12; // style renders this as 12px
   o_label->m_alignment = Qt::AlignCenter;
   o_label->m_mode = false;
 
