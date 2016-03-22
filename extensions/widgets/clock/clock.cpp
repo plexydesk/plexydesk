@@ -32,6 +32,7 @@
 #include <ck_resource_manager.h>
 #include <ck_session_sync.h>
 #include <ck_space.h>
+#include <ck_screen.h>
 
 // datakit
 #include <ck_clock_view.h>
@@ -250,7 +251,8 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::clock_view *ck_clock = 0;
 
   ck_ui->set_content_margin(10, 10, 10, 10);
-  ck_ui->set_geometry(0, 0, 240, 240);
+  ck_ui->set_geometry(0, 0, 240 * cherry_kit::screen::get()->scale_factor(0),
+                      240 * cherry_kit::screen::get()->scale_factor(0));
 
   ck_ui->add_rows(2);
 

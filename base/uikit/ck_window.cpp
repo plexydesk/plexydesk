@@ -104,10 +104,11 @@ float window::window_title_height() {
   if (cherry_kit::resource_manager::style()) {
     return cherry_kit::resource_manager::style()
         ->attribute("frame", "window_title_height")
-        .toFloat();
+        .toFloat() *
+            cherry_kit::resource_manager::style()->scale_factor();
   }
 
-  return 64;
+  return 48 * cherry_kit::resource_manager::style()->scale_factor();
 }
 
 void window::removeFocus() { invoke_window_visibility_action(0); }

@@ -22,8 +22,8 @@
 #include <QtCore>
 
 #include <ck_data_source.h>
-#include <ck_style.h>
 #include <ck_resource_manager.h>
+#include <ck_style.h>
 
 using namespace cherry_kit;
 
@@ -54,29 +54,41 @@ protected:
 private:
   class PrivateSimpleGray;
   PrivateSimpleGray *const d;
-  void draw_push_button(const style_data &features, QPainter *painter);
-  void draw_window_button(const style_data &features, QPainter *painter);
-  void draw_window_frame(const style_data &features, QPainter *a_ctx);
+  void draw_push_button(const style_data &features, QPainter *painter,
+                        const widget *a_widget);
+  void draw_window_button(const style_data &features, QPainter *painter,
+                          const widget *a_widget);
+  void draw_window_frame(const style_data &features, QPainter *a_ctx,
+                         const widget *a_widget);
   void
   draw_clock_hands(QPainter *a_ctx, QRectF rect, int factor, float angle,
                    cherry_kit::resource_manager::ColorName a_clock_hand_color,
                    int a_thikness);
-  void draw_clock_surface(const style_data &features, QPainter *painter);
+  void draw_clock_surface(const style_data &features, QPainter *painter, const widget *a_widget);
   void draw_clock_surface_to_buffer(const style_data &features,
                                     QPainter *a_ctx);
 
-  void draw_knob(const style_data &features, QPainter *a_ctx);
-  void draw_line_edit(const style_data &features, QPainter *painter);
+  void draw_knob(const style_data &features, QPainter *a_ctx,
+                 const widget *a_widget);
+  void draw_line_edit(const style_data &features, QPainter *painter,
+                      const widget *a_widget);
   void draw_text_editor(const style_data &features, const QString &text,
-                        QPainter *a_ctx);
-  void drawSeperatorLine(const style_data &features, QPainter *a_ctx);
-  void draw_progress_bar(const style_data &features, QPainter *a_ctx);
-  void drawVListItem(const style_data &features, QPainter *painter);
-  void draw_image_button(const style_data &features, QPainter *a_ctx);
-  void draw_scrollbar(const style_data &features, QPainter *a_ctx);
-  void draw_scrollbar_slider(const style_data &features, QPainter *a_ctx);
+                        QPainter *a_ctx, const widget *a_widget);
+  void drawSeperatorLine(const style_data &features, QPainter *a_ctx,
+                         const widget *a_widget);
+  void draw_progress_bar(const style_data &features, QPainter *a_ctx,
+                         const widget *a_widget);
+  void drawVListItem(const style_data &features, QPainter *painter,
+                     const widget *a_widget);
+  void draw_image_button(const style_data &features, QPainter *a_ctx,
+                         const widget *a_widget);
+  void draw_scrollbar(const style_data &features, QPainter *a_ctx,
+                      const widget *a_widget);
+  void draw_scrollbar_slider(const style_data &features, QPainter *a_ctx,
+                             const widget *a_widget);
 
-  void draw_label(const style_data &a_features, QPainter *a_ctx);
+  void draw_label(const style_data &a_features, QPainter *a_ctx,
+                  const widget *a_widget);
 };
 
 #endif

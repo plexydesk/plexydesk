@@ -108,6 +108,9 @@ public:
   virtual void on_update(UpdateCallback a_callback);
   virtual WidgetList children();
 
+  virtual void set_screen_id(int a_screen_id);
+  virtual int screen_id() const;
+
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
   virtual void paint(QPainter *a_painter_ptr,
