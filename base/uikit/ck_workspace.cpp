@@ -298,6 +298,10 @@ float workspace::desktop_horizontal_scale_factor() {
   return width_factor;
 }
 
+int workspace::screen_id() const {
+  return priv->m_screen_id;
+}
+
 void workspace::revoke_space(const QString &a_name, int a_id) {
   space *_space = create_blank_space();
 
