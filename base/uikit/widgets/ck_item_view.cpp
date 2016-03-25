@@ -131,6 +131,7 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
   d->m_grid_layout->addItem(a_widget_ptr,
                             d->m_grid_layout->count() / (l_item_per_row),
                             d->m_grid_layout->count() % (l_item_per_row));
+  d->m_grid_layout->setAlignment(a_widget_ptr, Qt::AlignVCenter);
 
   d->m_grid_layout->activate();
   d->m_grid_layout->updateGeometry();
