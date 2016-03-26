@@ -82,7 +82,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_geometry = a_window_geometry;
 
   priv->m_window = new cherry_kit::window();
-  priv->m_window->setGeometry(a_window_geometry);
+  priv->m_window->set_geometry(a_window_geometry);
   priv->m_window->set_window_title(a_window_title);
 
   cherry_kit::fixed_layout *ck_ui =
@@ -110,7 +110,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_image_view->set_content_spacing(0);
 
   ck_icon_gird->on_geometry_changed([&](const QRectF &a_rect) {
-    priv->m_image_view->setGeometry(a_rect);
+    priv->m_image_view->set_geometry(a_rect);
   });
 
   ui_data["label"] = "";
@@ -132,7 +132,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_progress_window = new cherry_kit::window(priv->m_window);
   priv->m_progress_window->set_window_type(
       cherry_kit::window::kNotificationWindow);
-  priv->m_progress_window->setGeometry(QRectF(0, 0, 320, 240));
+  priv->m_progress_window->set_geometry(QRectF(0, 0, 320, 240));
   priv->m_progress_widget =
       new cherry_kit::progress_bar(priv->m_progress_window);
   priv->m_progress_widget->set_range(1, 100);
@@ -224,7 +224,7 @@ desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
     }
   });
 
-  ck_image_preview->setGeometry(QRectF(0, 0, width, height));
+  ck_image_preview->set_geometry(QRectF(0, 0, width, height));
   ck_image_preview->setMinimumSize(width, height);
 
   ck_preview_item->set_view(ck_image_preview);

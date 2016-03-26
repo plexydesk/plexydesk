@@ -78,7 +78,7 @@ void window::invoke_window_moved_action() {
 window::window(widget *parent) : widget(parent), priv(new PrivateWindow) {
   set_widget_flag(widget::kRenderBackground, true);
   setFlag(QGraphicsItem::ItemIsMovable, true);
-  setGeometry(QRectF(0, 0, 400, 400));
+  set_geometry(QRectF(0, 0, 400, 400));
   set_window_title("");
   priv->m_window_type = kApplicationWindow;
 
@@ -141,7 +141,7 @@ void window::set_window_content(widget *a_widget_ptr) {
     priv->m_window_content->setPos(1.0, window_bordr_height);
     content_geometry.setHeight(content_geometry.height() + 8);
 #endif
-    setGeometry(content_geometry);
+    set_geometry(content_geometry);
   } else if (priv->m_window_type == kNotificationWindow) {
 #ifdef __APPLE__
     priv->m_window_content->setPos(15.0, window_bordr_height + 10);
@@ -150,7 +150,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 #endif
 
     priv->m_window_close_button->hide();
-    setGeometry(content_geometry);
+    set_geometry(content_geometry);
   } else if (priv->m_window_type == kPanelWindow) {
     priv->m_window_close_button->hide();
 #ifdef __APPLE__
@@ -158,14 +158,14 @@ void window::set_window_content(widget *a_widget_ptr) {
     priv->m_window_content->setPos(15.0, window_bordr_height);
     a_widget_ptr->setFlag(QGraphicsItem::ItemIsMovable, false);
 #else
-    setGeometry(priv->m_window_content->geometry());
+    set_geometry(priv->m_window_content->geometry());
     priv->m_window_content->setPos(0, 4);
 #endif
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
   } else if (priv->m_window_type == kPopupWindow) {
     priv->m_window_close_button->hide();
-    setGeometry(content_geometry);
+    set_geometry(content_geometry);
 #ifdef __APPLE__
     priv->m_window_content->setPos(15, window_bordr_height + 10);
 #else
@@ -173,7 +173,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 #endif
   } else {
     priv->m_window_close_button->hide();
-    setGeometry(content_geometry);
+    set_geometry(content_geometry);
     priv->m_window_content->setPos(0,
                                    window_bordr_height + window_title_height());
   }
@@ -305,7 +305,7 @@ void window::set_window_opacity(float a_value) {
 }
 
 void window::resize(float a_width, float a_height) {
-  setGeometry(QRectF(x(), y(), a_width, a_height + window_title_height()));
+  set_geometry(QRectF(x(), y(), a_width, a_height + window_title_height()));
 
   if (priv->m_window_content) {
     if (priv->m_window_type == kApplicationWindow ||

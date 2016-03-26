@@ -67,7 +67,7 @@ void desktop_dialog::set_geometry(const QRectF &a_geometry) {
   priv->m_geometry = a_geometry;
 
   if (dialog_window()) {
-    dialog_window()->setGeometry(a_geometry);
+    dialog_window()->set_geometry(a_geometry);
   }
 }
 
@@ -79,7 +79,7 @@ bool desktop_dialog::has_attribute(const QString &a_arg) {
 
 void desktop_dialog::exec(const QPointF &a_pos) {
   if (dialog_window()) {
-    dialog_window()->setPos(a_pos);
+    dialog_window()->setPos(dialog_window()->mapFromScene(a_pos));
   }
 }
 
@@ -165,7 +165,7 @@ void desktop_dialog::update_content_geometry(widget *a_widget_ptr) {
     return;
   }
 
-  a_widget_ptr->setGeometry(geometry());
+  a_widget_ptr->set_geometry(geometry());
 }
 
 void desktop_dialog::notify_done() {

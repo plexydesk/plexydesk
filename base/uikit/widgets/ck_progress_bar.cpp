@@ -41,7 +41,7 @@ progress_bar::~progress_bar() {
 void progress_bar::set_size(const QSizeF &size) {
   priv->m_width = size.width();
   priv->m_height = size.height();
-  setGeometry(QRectF(0, 0, size.width(), size.height()));
+  set_geometry(QRectF(0, 0, size.width(), size.height()));
   update();
 }
 

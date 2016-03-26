@@ -40,7 +40,7 @@ public:
       free(m_surface);
   }
 
-  void _inoke_geometry_func(const QRectF &a_rect);
+  void _invoke_geometry_func(const QRectF &a_rect);
 
   QVariantMap mStyleAttributeMap;
 
@@ -57,6 +57,8 @@ public:
 
   WidgetList m_child_list;
   unsigned char *m_surface;
+
+  QRectF m_content_rect;
 
   int m_screen_id;
 };
@@ -89,10 +91,16 @@ widget::~widget() {
 }
 
 QRectF widget::contents_geometry() const {
-  return QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
+  return priv->m_content_rect;// QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
 }
 
 QRectF widget::boundingRect() const { return contents_geometry(); }
+
+void widget::setGeometry(const QRectF &rect)
+{
+    qDebug() << Q_FUNC_INFO << "Geometry : " << rect;
+    set_geometry(rect);
+}
 
 void widget::set_widget_flag(int a_flags, bool a_enable) {}
 
@@ -199,7 +207,7 @@ void widget::paint(QPainter *a_painter_ptr,
   paint_view(a_painter_ptr, boundingRect());
 }
 
-void widget::setGeometry(const QRectF &a_rect) {
+void widget::set_geometry(const QRectF &a_rect) {
   if (!priv->m_surface) {
     priv->m_surface =
         (unsigned char *)malloc(4 * a_rect.width() * a_rect.height());
@@ -210,6 +218,7 @@ void widget::setGeometry(const QRectF &a_rect) {
     memset(priv->m_surface, 0, 4 * a_rect.width() * a_rect.height());
   }
 
+  /*
   // d->m_content_geometry = rect;
   prepareGeometryChange();
   float scale_factor = 1; // screen().scale_factor();
@@ -218,8 +227,30 @@ void widget::setGeometry(const QRectF &a_rect) {
   QGraphicsLayoutItem::setGeometry(scaled_rect);
   setPos(a_rect.topLeft());
 
-  priv->_inoke_geometry_func(scaled_rect);
+  priv->_invoke_geometry_func(scaled_rect);
 
+  setCacheMode(ItemCoordinateCache, boundingRect().size().toSize());
+  request_update();
+  */
+
+  set_contents_geometry(a_rect.x(), a_rect.y(), a_rect.width(), a_rect.height());
+}
+
+void widget::set_contents_geometry(float a_x, float a_y, float a_width,
+                                  float a_height) {
+  priv->m_content_rect = QRectF(a_x, a_y, a_width, a_height);
+  QRectF a_rect = priv->m_content_rect;
+
+  prepareGeometryChange();
+  float scale_factor = 1; // screen().scale_factor();
+  QRectF scaled_rect(a_rect.x(), a_rect.y(), a_rect.width() * scale_factor,
+                     a_rect.height() * scale_factor);
+
+  //setGeometry(scaled_rect);
+  QGraphicsLayoutItem::setGeometry(scaled_rect);
+
+  setPos(mapFromScene(a_rect.topLeft()));
+  priv->_invoke_geometry_func(scaled_rect);
   setCacheMode(ItemCoordinateCache, boundingRect().size().toSize());
   request_update();
 }
@@ -324,7 +355,7 @@ void widget::invoke_click_handlers() {
                 });
 }
 
-void widget::PrivateWidget::_inoke_geometry_func(const QRectF &a_rect) {
+void widget::PrivateWidget::_invoke_geometry_func(const QRectF &a_rect) {
   std::for_each(std::begin(m_on_geometry_func_list),
                 std::end(m_on_geometry_func_list),
                 [&](std::function<void(const QRectF &)> a_func) {

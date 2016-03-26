@@ -49,7 +49,7 @@ void ClassicBackgroundRender::setBackgroundImage(const QUrl &url) {
 
 void ClassicBackgroundRender::setBackgroundGeometry(const QRectF &rect) {
   mGeometry = rect;
-  setGeometry(rect);
+  set_geometry(rect);
 }
 
 void ClassicBackgroundRender::setBackgroundMode(

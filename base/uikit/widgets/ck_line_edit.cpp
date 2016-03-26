@@ -74,7 +74,7 @@ QString line_edit::text() const { return priv->m_editor_text; }
 void line_edit::style(StylePtr a_style) { priv->mStyle = a_style; }
 
 void line_edit::set_size(const QSizeF &a_size) {
-  setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
+  set_geometry(QRectF(0, 0, a_size.width(), a_size.height()));
 }
 
 QSizeF line_edit::sizeHint(Qt::SizeHint which,
