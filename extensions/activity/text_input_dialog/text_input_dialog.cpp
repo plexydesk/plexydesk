@@ -81,7 +81,7 @@ void text_input_dialog::create_window(const QRectF &window_geometry,
 
   // todo: invoke UI
   priv->mFrame = new cherry_kit::window();
-  priv->mFrame->setGeometry(geometry());
+  priv->mFrame->set_geometry(geometry());
   priv->mFrame->setVisible(true);
   priv->mFrame->set_widget_name("Message Dialog");
 

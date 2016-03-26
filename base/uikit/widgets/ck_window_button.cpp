@@ -36,7 +36,7 @@ public:
 
 window_button::window_button(widget *parent)
     : button(parent), priv(new PrivateWindowButton) {
-  setGeometry(boundingRect());
+  set_geometry(boundingRect());
   priv->mType = CLOSE;
 }
 

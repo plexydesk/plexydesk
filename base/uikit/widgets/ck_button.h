@@ -45,7 +45,7 @@ public:
   virtual void set_size(const QSizeF &a_size);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
   virtual QRectF boundingRect() const;
-  virtual void setGeometry(const QRectF &a_rect);
+  virtual void set_geometry(const QRectF &a_rect);
 
   void set_action_data(const QVariant &a_data);
   QVariant action_data() const;

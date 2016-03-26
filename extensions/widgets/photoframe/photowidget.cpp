@@ -24,7 +24,7 @@ void PhotoWidget::setContentImage(const QPixmap &pixmap) {
       (pixmapRect.height() / pixmapRect.width()) * geometry().width();
   pixmapRect.setHeight(pixmapHeight);
   pixmapRect.setWidth(geometry().width());
-  setGeometry(pixmapRect);
+  set_geometry(pixmapRect);
 
   mValid = 1;
   update();

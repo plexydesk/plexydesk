@@ -166,14 +166,13 @@ void desktop_controller_impl::create_task_group() const {
     if (!viewport())
       return;
 
-    QRectF dialog_window_geometry(0, 0, 672, 660);
+    QRectF dialog_window_geometry(0, 0, 672, 240);
     QPointF qt_activity_window_location = viewport()->center(
         dialog_window_geometry,
-        QRectF(o_ctr->m_background_window->x(), o_ctr->m_background_window->y(),
-               o_ctr->m_background_window->geometry().width(),
-               o_ctr->m_background_window->geometry().height()),
-        cherry_kit::space::kCenterOnWindow);
+        QRectF(),
+        cherry_kit::space::kCenterOnViewport);
 
+    qDebug() << Q_FUNC_INFO << "Desktop Settings Dialog : " << qt_activity_window_location;
     cherry_kit::desktop_dialog_ref ck_activity =
         viewport()->open_desktop_dialog("desktop_settings_dialog", "Desktop",
                                         qt_activity_window_location,
@@ -207,7 +206,7 @@ void desktop_controller_impl::create_task_group() const {
   dock_task.set_task([this](const cherry_kit::ui_action *a_ref,
                             const cherry_kit::ui_task_data_t &a_data) {
     cherry_kit::window *ck_window = new cherry_kit::window();
-    ck_window->setGeometry(QRectF(0, 0, 400, 400));
+    ck_window->set_geometry(QRectF(0, 0, 400, 400));
     ck_window->set_window_title("Dock Settings");
 
     ck_window->on_window_discarded([=](cherry_kit::window *a_window) {
@@ -389,7 +388,7 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
 
 void desktop_controller_impl::set_view_rect(const QRectF &rect) {
   if (o_ctr->m_background_window) {
-    o_ctr->m_background_window->setGeometry(rect);
+    o_ctr->m_background_window->set_geometry(rect);
   }
 }
 

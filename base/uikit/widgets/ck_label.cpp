@@ -18,11 +18,11 @@
 *******************************************************************************/
 #include "ck_label.h"
 
-#include <QStyleOptionGraphicsItem>
-#include <QPainter>
-#include <QFontMetrics>
-#include <QFont>
 #include <QDebug>
+#include <QFont>
+#include <QFontMetrics>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
 #include <QTextOption>
 #include <ck_resource_manager.h>
 
@@ -59,26 +59,32 @@ void label::set_text(const QString &a_txt) {
 
 QString label::text() const { return o_label->m_label_string; }
 
+/*
 QRectF label::boundingRect() const {
   return QRectF(0.0, 0.0, o_label->m_label_size.width(),
                 o_label->m_label_size.height());
 }
+*/
 
-void label::set_size(const QSizeF &_asize) { o_label->m_label_size = _asize; }
+void label::set_size(const QSizeF &_asize) {
+  o_label->m_label_size = _asize;
+  set_contents_geometry(0, 0, _asize.width(), _asize.height());
+}
 
 void label::set_font_size(uint pixelSize) { o_label->m_font_size = pixelSize; }
 
+/*
 QSizeF label::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
   return boundingRect().size();
 }
 
-void label::setGeometry(const QRectF &a_rect) {
+void label::set_geometry(const QRectF &a_rect) {
   prepareGeometryChange();
   setPos(a_rect.topLeft());
   o_label->m_label_size = a_rect.size();
 
   update();
-  widget::setGeometry(a_rect);
+  widget::set_geometry(a_rect);
 }
 
 QRectF label::contents_bounding_rect() const {
@@ -92,6 +98,7 @@ QRectF label::contents_bounding_rect() const {
 
   return rect;
 }
+*/
 
 void label::set_label_style(const QColor &a_backgroundColor,
                             const QColor &a_textColor) {

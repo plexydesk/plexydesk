@@ -14,7 +14,7 @@ table_view_item::~table_view_item() {
 #endif
 }
 
-void table_view_item::setGeometry(const QRectF &a_rect) {
+void table_view_item::set_geometry(const QRectF &a_rect) {
   setPos(a_rect.x(), a_rect.y());
 }
 
