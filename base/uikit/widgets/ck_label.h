@@ -25,10 +25,12 @@ public:
   virtual void set_size(const QSizeF &_asize);
   virtual void set_font_size(uint a_pixelSize);
 
+  /*
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
   virtual QRectF boundingRect() const;
-  virtual void setGeometry(const QRectF &a_rect);
+  virtual void set_geometry(const QRectF &a_rect);
   virtual QRectF contents_bounding_rect() const;
+  */
 
   virtual void set_label_style(const QColor &a_backgroundColor,
                                const QColor &a_textColor);

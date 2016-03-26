@@ -211,7 +211,7 @@ void calendar_view::reset() {
 
 QDate calendar_view::selected_date() const { return priv->m_current_date; }
 
-void calendar_view::set_geometry(float a_x, float a_y, float a_width,
+void calendar_view::set_view_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
   priv->m_ui->set_geometry(a_x, a_y, a_width, a_height);
 }

@@ -1,9 +1,9 @@
 #include "ck_item_view.h"
 
-#include <QGraphicsLinearLayout>
 #include <QDebug>
-#include <QGraphicsWidget>
 #include <QGraphicsGridLayout>
+#include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
 
 #include <QScroller>
 #include <ck_scrollbar.h>
@@ -12,7 +12,7 @@ namespace cherry_kit {
 
 class item_view::PrivateModelView {
 public:
-  PrivateModelView() : m_needs_scrollbars(0) {}
+  PrivateModelView() : m_needs_scrollbars(0), m_item_count(0) {}
   ~PrivateModelView() {}
 
   ModelType m_model_view_type;
@@ -28,6 +28,7 @@ public:
 
   std::function<void(int index)> m_activation_handler;
   std::function<void(model_view_item *)> m_item_remove_handler;
+  int m_item_count;
 };
 
 void item_view::set_content_margin(int a_left, int a_right, int a_top,
@@ -121,13 +122,16 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
     return;
   }
 
+  /*
   a_widget_ptr->set_widget_id(d->m_grid_layout->count());
   int l_item_per_row =
-      (d->m_viewport_geometry.width()) / a_widget_ptr->minimumWidth();
+      (d->m_viewport_geometry.width()) /
+  a_widget_ptr->contents_geometry().width();
 
   if (l_item_per_row <= 0)
       l_item_per_row = 1;
 
+  l_item_per_row = 4;
   d->m_grid_layout->addItem(a_widget_ptr,
                             d->m_grid_layout->count() / (l_item_per_row),
                             d->m_grid_layout->count() % (l_item_per_row));
@@ -143,6 +147,35 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
       d->m_grid_layout->geometry().height());
 
   check_needs_scrolling();
+  */
+
+  a_widget_ptr->setParentItem(this);
+
+  int l_item_per_row = (d->m_viewport_geometry.width()) /
+                       a_widget_ptr->contents_geometry().width();
+
+  if (l_item_per_row <= 0)
+    l_item_per_row = 1;
+
+  a_widget_ptr->setPos(a_widget_ptr->contents_geometry().width() *
+                           (d->m_item_count % l_item_per_row),
+                       a_widget_ptr->contents_geometry().height() *
+                           (d->m_item_count / l_item_per_row));
+
+  d->m_item_count++;
+
+  d->m_verticle_scrollbar->set_maximum_value(600);
+
+  check_needs_scrolling();
+
+
+  qDebug() << Q_FUNC_INFO << "Items Per Row: " << l_item_per_row;
+  qDebug() << Q_FUNC_INFO
+           << "ScrollView Geometry :" << d->m_grid_layout->geometry();
+  qDebug() << Q_FUNC_INFO << "Viewport : " << d->m_viewport_geometry;
+  qDebug() << Q_FUNC_INFO << "Item Geometry " << a_widget_ptr->boundingRect();
+  qDebug() << Q_FUNC_INFO << "Item Contents Geometry "
+           << a_widget_ptr->contents_geometry();
 }
 
 void item_view::insert_to_table_view(widget *a_widget_ptr) {}
@@ -151,10 +184,10 @@ void item_view::insert(widget *a_widget_ptr) {
   a_widget_ptr->setParentItem(d->m_scroll_frame);
   a_widget_ptr->setParent(d->m_scroll_frame);
 
-  a_widget_ptr->on_click([=] () {
-      if (d->m_activation_handler) {
-        d->m_activation_handler(a_widget_ptr->widget_id());
-      }
+  a_widget_ptr->on_click([=]() {
+    if (d->m_activation_handler) {
+      d->m_activation_handler(a_widget_ptr->widget_id());
+    }
   });
 
   switch (d->m_model_view_type) {
@@ -210,7 +243,7 @@ int item_view::count() const {
 }
 
 void item_view::set_filter(const QString &a_keyword) {
-  foreach(model_view_item * _item, d->m_model_item_list) {
+  foreach (model_view_item *_item, d->m_model_item_list) {
     if (!_item)
       continue;
     if (!_item->view())
@@ -228,7 +261,7 @@ void item_view::set_filter(const QString &a_keyword) {
 }
 
 void item_view::clear() {
-    qDebug() << Q_FUNC_INFO << "cleaering";
+  qDebug() << Q_FUNC_INFO << "cleaering";
   if (d->m_model_item_list.count() <= 0)
     return;
 
@@ -254,7 +287,7 @@ void item_view::clear() {
     }
   }
 
-  Q_FOREACH(model_view_item * item, d->m_model_item_list) {
+  Q_FOREACH (model_view_item *item, d->m_model_item_list) {
     if (!item)
       continue;
 
@@ -293,6 +326,8 @@ void item_view::check_needs_scrolling() {
     return;
 
   if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
+      d->m_needs_scrollbars = true;
+      return;
     int viewport_hight = d->m_viewport_geometry.height();
     int content_height = d->m_grid_layout->geometry().height();
 
@@ -308,7 +343,9 @@ void item_view::adjust_scrollbar(const QRectF &a_rect) {
   d->m_verticle_scrollbar->setPos(scrollbar_pos);
 }
 
-void item_view::setGeometry(const QRectF &a_rect) {
+void item_view::set_geometry(const QRectF &a_rect) {
+  set_contents_geometry(a_rect.x(), a_rect.y(), a_rect.width(),
+                        a_rect.height());
   setPos(a_rect.topLeft());
 
   adjust_scrollbar(a_rect);
@@ -317,15 +354,15 @@ void item_view::setGeometry(const QRectF &a_rect) {
 
 QSizeF item_view::sizeHint(Qt::SizeHint which,
                            const QSizeF &a_constraint) const {
-  return d->m_list_layout->contentsRect().size();
+  return d->m_viewport_geometry.size();
 }
 
 void item_view::on_activated(std::function<void(int)> a_callback) {
   d->m_activation_handler = a_callback;
 }
 
-void
-item_view::on_item_removed(std::function<void(model_view_item *)> a_handler) {
+void item_view::on_item_removed(
+    std::function<void(model_view_item *)> a_handler) {
   // please note that the item can be set only once, and can't be over-ridden
   // once set. without destruction of the class.
   if (d->m_item_remove_handler)

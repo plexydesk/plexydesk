@@ -188,7 +188,7 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
           SLOT(onTextUpdated(QString)));
 
   setAcceptDrops(true);
-  setGeometry(parent->geometry());
+  set_geometry(parent->geometry());
 
   d->m_image_attachment_view = new cherry_kit::image_view(this);
   d->m_image_attachment_view->setMinimumSize(0, 0);
@@ -245,7 +245,7 @@ void NoteWidget::attach_image(const std::string &a_url) {
     d->m_image_attachment_view->set_pixmap(
         pixmap.scaled(image_width, image_height));
 
-    d->m_image_attachment_view->setGeometry(
+    d->m_image_attachment_view->set_geometry(
         QRectF(0, 0, image_width, image_height));
     d->m_image_attachment_view->set_size(QSizeF(image_width, image_height));
     d->m_image_attachment_view->setPos(1, 0);
@@ -258,7 +258,7 @@ void NoteWidget::attach_image(const std::string &a_url) {
       d->m_ui->viewport()->setPos(1, image_height);
     }
 
-    setGeometry(
+    set_geometry(
         QRectF(0, 0, image_width + 2,
                image_height + d->m_ui->viewport()->geometry().height()));
 

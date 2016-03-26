@@ -7,7 +7,7 @@ desktop_button::desktop_button() {
   m_button = new cherry_kit::icon_button(m_window);
 
   float button_size = 38 * cherry_kit::screen::get()->scale_factor(0);
-  m_button->setGeometry(QRectF(0, 0, button_size, button_size));
+  m_button->set_geometry(QRectF(0, 0, button_size, button_size));
   m_button->setMinimumSize(QSizeF(button_size, button_size));
   m_button->set_size(QSize(button_size, button_size));
 

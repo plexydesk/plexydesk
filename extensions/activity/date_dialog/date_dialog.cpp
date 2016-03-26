@@ -48,7 +48,7 @@ void date_dialog::create_window(const QRectF &window_geometry,
                                 const QString &window_title,
                                 const QPointF &window_pos) {
   priv->m_activity_window = new cherry_kit::window();
-  priv->m_activity_window->setGeometry(window_geometry);
+  priv->m_activity_window->set_geometry(window_geometry);
   priv->m_activity_window->set_window_title(window_title);
 
   cherry_kit::fixed_layout *view =

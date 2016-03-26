@@ -48,7 +48,8 @@ icon_button::icon_button(widget *a_parent_ptr)
 icon_button::~icon_button() { delete o_image_button; }
 
 void icon_button::set_size(const QSize &a_size) {
-  setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
+  //setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
+  set_contents_geometry(0, 0, a_size.width(), a_size.height());
 }
 
 QSizeF icon_button::sizeHint(Qt::SizeHint which,

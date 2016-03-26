@@ -69,8 +69,12 @@ public:
   virtual ~widget();
 
   virtual QRectF contents_geometry() const;
-  virtual void setGeometry(const QRectF &a_rect);
+  virtual void set_geometry(const QRectF &a_rect);
+  virtual void set_contents_geometry(float a_x, float a_y, float a_width,
+                                     float a_height);
   virtual QRectF boundingRect() const;
+
+  virtual void setGeometry(const QRectF &rect);
 
   virtual void
   set_controller(desktop_controller_interface *a_view_controller_ptr);
@@ -89,8 +93,9 @@ public:
 
   virtual void set_widget_flag(int a_flags, bool a_enable = true);
 
-  virtual void on_input_event(std::function<
-      void(InputEvent a_type, const widget *a_widget_ptr)> a_callback);
+  virtual void on_input_event(
+      std::function<void(InputEvent a_type, const widget *a_widget_ptr)>
+          a_callback);
 
   virtual void on_click(std::function<void()> a_callback);
 
@@ -130,6 +135,7 @@ protected:
 
   virtual void exec_func(InputEvent a_type, const widget *a_widget_ptr);
   virtual void invoke_click_handlers();
+
 private:
   class PrivateWidget;
   PrivateWidget *const priv;
