@@ -120,7 +120,7 @@ void icon_button::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
 
   if (cherry_kit::resource_manager::style()) {
     cherry_kit::resource_manager::style()->draw("image_button", feature,
-                                                a_painter_ptr);
+                                                a_painter_ptr, this);
   }
 }
 }
