@@ -1066,9 +1066,13 @@ void SimpleGrayStyle::draw_image_button(const style_data &a_features,
     qWarning() << Q_FUNC_INFO << "Unknown State";
   }
 
-  QRect icon_rect = a_rect.toRect();
+  //QRect icon_rect = a_rect.toRect();
+  QRect icon_rect = a_features.image_data.rect();
   if (a_features.text_data.isNull() || a_features.text_data.isEmpty()) {
-    icon_rect.setX(a_rect.center().x() - (icon_rect.height() / 2));
+    icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
+    icon_rect.setY(a_rect.center().y() - (icon_rect.height() / 2));
+    icon_rect.setWidth(a_features.image_data.width());
+    icon_rect.setHeight(a_features.image_data.height());
   } else {
     icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
   }

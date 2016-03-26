@@ -124,7 +124,7 @@ widget *desktop_panel_controller_impl::create_task_action(
   l_action_label->set_widget_name(a_task.name().c_str());
 
   QPixmap l_view_pixmap(cherry_kit::resource_manager::instance()->drawable(
-      a_task.icon().c_str(), "hdpi"));
+      a_task.icon().c_str(), "mdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
   l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size.toSize());
@@ -426,7 +426,7 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 
   // move to next desktop button
   priv->m_up_btn = new desktop_button();
-  priv->m_up_btn->set_icon("panel/ck_up_arrow.png");
+  priv->m_up_btn->set_icon("navigation/ck_up_arrow.png");
   priv->m_up_btn->set_label("Menu");
   priv->m_up_btn->set_action(
       [=]() { exec_action("Up", priv->m_up_btn->window()); });
@@ -445,7 +445,7 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 
   // move down button
   priv->m_down_btn = new desktop_button();
-  priv->m_down_btn->set_icon("panel/ck_down_arrow.png");
+  priv->m_down_btn->set_icon("navigation/ck_down_arrow.png");
   priv->m_down_btn->set_label("Menu");
   priv->m_down_btn->set_action(
       [=]() { exec_action("Down", priv->m_down_btn->window()); });
@@ -733,13 +733,13 @@ void desktop_panel_controller_impl::update_desktop_preview() {
         new cherry_kit::model_view_item();
     cherry_kit::icon_button *add_space_btn = new cherry_kit::icon_button();
 
-    float button_size = 32 * cherry_kit::screen::get()->scale_factor(0);
+    float button_size = 36 * cherry_kit::screen::get()->scale_factor(0);
     add_space_btn->setGeometry(QRectF(0, 0, button_size, button_size));
     add_space_btn->setMinimumSize(QSizeF(button_size, button_size));
     add_space_btn->set_size(QSize(button_size, button_size));
 
     QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
-        "panel/ck_add.png", "hdpi");
+        "navigation/ck_add.png", "mdpi");
     add_space_btn->set_pixmap(pixmap);
 
     add_space_itm->set_view(add_space_btn);
