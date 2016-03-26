@@ -159,7 +159,7 @@ void desktop_controller_impl::create_task_group() const {
 
   cherry_kit::ui_action bg_task;
   bg_task.set_name("Desktop");
-  bg_task.set_icon("panel/ck_add.png");
+  bg_task.set_icon("navigation/ck_add.png");
   bg_task.set_visible(true);
   bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
                        const cherry_kit::ui_task_data_t &a_data) {
@@ -191,7 +191,7 @@ void desktop_controller_impl::create_task_group() const {
 
   cherry_kit::ui_action seamless_task;
   seamless_task.set_name("Seamless");
-  seamless_task.set_icon("panel/ck_seamless.png");
+  seamless_task.set_icon("navigation/ck_expose.png");
   seamless_task.set_id(1);
   seamless_task.set_visible(1);
   seamless_task.set_task([this](const cherry_kit::ui_action *a_ref,
@@ -201,7 +201,7 @@ void desktop_controller_impl::create_task_group() const {
 
   cherry_kit::ui_action dock_task;
   dock_task.set_name("Dock");
-  dock_task.set_icon("panel/ck_add.png");
+  dock_task.set_icon("navigation/ck_add.png");
   dock_task.set_id(1);
   dock_task.set_visible(1);
   dock_task.set_task([this](const cherry_kit::ui_action *a_ref,
