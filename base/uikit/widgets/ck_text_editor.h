@@ -40,7 +40,7 @@ public:
   virtual void style(const QString &a_style);
 
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
-  virtual void setGeometry(const QRectF &a_rect);
+  virtual void set_geometry(const QRectF &a_rect);
 
   virtual void set_text_scale_factor(qreal a_scale_factor);
   virtual qreal text_scale_factor() const;

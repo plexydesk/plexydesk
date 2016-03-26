@@ -36,7 +36,7 @@ public:
 
   virtual ~table_view_item();
 
-  virtual void setGeometry(const QRectF &a_rect);
+  virtual void set_geometry(const QRectF &a_rect);
 
   virtual void set_selected() = 0;
 

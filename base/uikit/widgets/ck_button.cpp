@@ -138,7 +138,7 @@ QRectF button::boundingRect() const {
                 priv->m_button_size.height());
 }
 
-void button::setGeometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
+void button::set_geometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
 
 void button::set_action_data(const QVariant &a_data) {
   priv->m_button_data = a_data;

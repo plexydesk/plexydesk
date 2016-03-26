@@ -65,13 +65,13 @@ void timezone_dialog::create_window(const QRectF &aWindowGeometry,
 
   m_priv_ptr->m_content_widget_ptr =
       new cherry_kit::widget(m_priv_ptr->m_window_ptr);
-  m_priv_ptr->m_content_widget_ptr->setGeometry(aWindowGeometry);
+  m_priv_ptr->m_content_widget_ptr->set_geometry(aWindowGeometry);
 
   m_priv_ptr->m_filter_widget_ptr =
       new cherry_kit::line_edit(m_priv_ptr->m_content_widget_ptr);
   m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width() - 16,
                                                   32);
-  m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(8, 0, 0, 0));
+  m_priv_ptr->m_filter_widget_ptr->set_geometry(QRectF(8, 0, 0, 0));
 
   m_priv_ptr->m_timezone_browser_ptr =
       new cherry_kit::item_view(m_priv_ptr->m_content_widget_ptr);

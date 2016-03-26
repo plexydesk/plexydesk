@@ -155,7 +155,7 @@ void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
 void desktop_task_controller_impl::createNoteUI(
     cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
-  window->setGeometry(QRectF(0, 0, 320, 240));
+  window->set_geometry(QRectF(0, 0, 320, 240));
 
   NoteWidget *note = new NoteWidget(a_session, window);
   note->set_controller(this);
