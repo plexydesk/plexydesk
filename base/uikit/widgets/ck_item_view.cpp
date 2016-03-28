@@ -29,6 +29,9 @@ public:
   std::function<void(int index)> m_activation_handler;
   std::function<void(model_view_item *)> m_item_remove_handler;
   int m_item_count;
+
+  std::vector<widget *> m_widget_vector;
+  widget *m_frame;
 };
 
 void item_view::set_content_margin(int a_left, int a_right, int a_top,
@@ -57,14 +60,16 @@ item_view::item_view(widget *parent, ModelType a_model_type)
     : widget(parent), d(new PrivateModelView) {
   d->m_model_view_type = a_model_type;
   d->m_scroll_frame = new QGraphicsWidget(this);
+  //d->m_scroll_frame->hide();
+  d->m_frame = new widget(this);
+  d->m_frame->setParentItem(this);
 
   d->m_verticle_scrollbar = new scrollbar(this);
-  d->m_verticle_scrollbar->setZValue(d->m_scroll_frame->zValue() + 1000);
+  d->m_verticle_scrollbar->setZValue(d->m_frame->zValue() + 1000);
   d->m_verticle_scrollbar->hide();
 
-  d->m_verticle_scrollbar->on_value_changed([this](int value) {
-    d->m_scroll_frame->setPos(d->m_scroll_frame->x(), value);
-  });
+  d->m_verticle_scrollbar->on_value_changed(
+      [this](int value) { d->m_frame->setPos(d->m_frame->x(), value); });
 
   if (d->m_model_view_type == kListModel) {
     d->m_list_layout = new QGraphicsLinearLayout(d->m_scroll_frame);
@@ -78,7 +83,7 @@ item_view::item_view(widget *parent, ModelType a_model_type)
   }
 
   d->m_viewport_geometry = QRectF();
-  d->m_scroll_frame->setGeometry(QRectF());
+  d->m_frame->set_geometry(QRectF());
 
   setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
   setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -100,7 +105,7 @@ void item_view::insert_to_list_view(widget *a_widget_ptr) {
   d->m_list_layout->updateGeometry();
   d->m_list_layout->activate();
 
-  d->m_scroll_frame->setGeometry(d->m_list_layout->geometry());
+  d->m_frame->set_geometry(d->m_list_layout->geometry());
 
   d->m_verticle_scrollbar->set_maximum_value(
       d->m_list_layout->contentsRect().height());
@@ -117,11 +122,7 @@ void item_view::remove_from_list_view(widget *a_widget_ptr) {
       d->m_list_layout->contentsRect().height());
 }
 
-void item_view::insert_to_grid_view(widget *a_widget_ptr) {
-  if (!d->m_grid_layout) {
-    return;
-  }
-
+void item_view::insert_to_grid_view(widget *a_widget_ref) {
   /*
   a_widget_ptr->set_widget_id(d->m_grid_layout->count());
   int l_item_per_row =
@@ -149,40 +150,69 @@ void item_view::insert_to_grid_view(widget *a_widget_ptr) {
   check_needs_scrolling();
   */
 
-  a_widget_ptr->setParentItem(this);
+  a_widget_ref->setParentItem(d->m_frame);
+
+  /*
+  a_widget_ref->setZValue(d->m_frame->zValue() + 1);
+  a_widget_ref->show();
+  d->m_frame->show();
+  */
+
+  d->m_frame->set_contents_geometry(0, 0, 1000, 1000);
+  d->m_frame->setPos(0,0);
+
+  a_widget_ref->set_widget_id(d->m_item_count);
+  d->m_widget_vector.push_back(a_widget_ref);
+
+  float current_content_width = 0;
+  float current_content_height = 0;
+
+  std::for_each(std::begin(d->m_widget_vector), std::end(d->m_widget_vector),
+                [&](widget *w_ref) {
+                  current_content_width += w_ref->geometry().width();
+                });
+
+  float grid_width = 96.0f;
+
+  if (d->m_widget_vector.size() > 0) {
+    grid_width = current_content_width / d->m_widget_vector.size();
+  }
 
   int l_item_per_row = (d->m_viewport_geometry.width()) /
-                       a_widget_ptr->contents_geometry().width();
+                       a_widget_ref->contents_geometry().width();
 
   if (l_item_per_row <= 0)
     l_item_per_row = 1;
 
-  a_widget_ptr->setPos(a_widget_ptr->contents_geometry().width() *
+  a_widget_ref->setPos(a_widget_ref->contents_geometry().width() *
                            (d->m_item_count % l_item_per_row),
-                       a_widget_ptr->contents_geometry().height() *
+                       a_widget_ref->contents_geometry().height() *
                            (d->m_item_count / l_item_per_row));
+  /*
+  d->m_frame->set_contents_geometry(0, 0,
+                                    d->m_frame->geometry().width(),
+                                    d->m_frame->geometry().height());
+  */
 
   d->m_item_count++;
-
-  d->m_verticle_scrollbar->set_maximum_value(600);
-
   check_needs_scrolling();
-
 
   qDebug() << Q_FUNC_INFO << "Items Per Row: " << l_item_per_row;
   qDebug() << Q_FUNC_INFO
-           << "ScrollView Geometry :" << d->m_grid_layout->geometry();
+           << "ScrollView Geometry :" << d->m_frame->geometry();
   qDebug() << Q_FUNC_INFO << "Viewport : " << d->m_viewport_geometry;
-  qDebug() << Q_FUNC_INFO << "Item Geometry " << a_widget_ptr->boundingRect();
+  qDebug() << Q_FUNC_INFO << "Item Geometry " << a_widget_ref->boundingRect();
+  qDebug() << Q_FUNC_INFO << "Item Location : " << a_widget_ref->pos();
+  qDebug() << Q_FUNC_INFO << "Frame Location : " << d->m_frame->pos();
   qDebug() << Q_FUNC_INFO << "Item Contents Geometry "
-           << a_widget_ptr->contents_geometry();
+           << a_widget_ref->contents_geometry();
 }
 
 void item_view::insert_to_table_view(widget *a_widget_ptr) {}
 
 void item_view::insert(widget *a_widget_ptr) {
-  a_widget_ptr->setParentItem(d->m_scroll_frame);
-  a_widget_ptr->setParent(d->m_scroll_frame);
+  a_widget_ptr->setParentItem(d->m_frame);
+  a_widget_ptr->setParent(d->m_frame);
 
   a_widget_ptr->on_click([=]() {
     if (d->m_activation_handler) {
@@ -303,7 +333,7 @@ void item_view::set_view_geometry(const QRectF &a_rect) {
   d->m_viewport_geometry = a_rect;
   // if (d->m_model_view_type == kGridModel)
 
-  d->m_scroll_frame->setGeometry(a_rect);
+  d->m_frame->set_geometry(a_rect);
   d->m_verticle_scrollbar->set_size(QSizeF(16, a_rect.height()));
 
   int page_step = a_rect.height();
@@ -326,10 +356,8 @@ void item_view::check_needs_scrolling() {
     return;
 
   if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
-      d->m_needs_scrollbars = true;
-      return;
     int viewport_hight = d->m_viewport_geometry.height();
-    int content_height = d->m_grid_layout->geometry().height();
+    int content_height = d->m_frame->geometry().height();
 
     if (viewport_hight < content_height)
       d->m_needs_scrollbars = false;
