@@ -101,6 +101,7 @@ void desktop_controller_impl::init() {
       delete o_ctr->m_background_window;
   });
 
+  qDebug() << Q_FUNC_INFO << "insert Window";
   insert(o_ctr->m_background_window);
 }
 
@@ -388,7 +389,9 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
 
 void desktop_controller_impl::set_view_rect(const QRectF &rect) {
   if (o_ctr->m_background_window) {
-    o_ctr->m_background_window->set_geometry(rect);
+    o_ctr->m_background_window->set_contents_geometry(0, 0, rect.width(),
+				rect.height());
+        o_ctr->m_background_window->set_coordinates(rect.x(), rect.y());
   }
 }
 
