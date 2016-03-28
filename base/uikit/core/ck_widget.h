@@ -70,11 +70,12 @@ public:
 
   virtual QRectF contents_geometry() const;
   virtual void set_geometry(const QRectF &a_rect);
-  virtual void set_contents_geometry(float a_x, float a_y, float a_width,
-                                     float a_height);
+  virtual void set_contents_geometry(float a_x, float a_y, float a_width, float a_height);
   virtual QRectF boundingRect() const;
-
   virtual void setGeometry(const QRectF &rect);
+
+  virtual void set_coordinates(float a_x, float a_y);
+  //todo : pos() ?
 
   virtual void
   set_controller(desktop_controller_interface *a_view_controller_ptr);

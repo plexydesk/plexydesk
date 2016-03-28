@@ -76,8 +76,6 @@ resource_manager::resource_manager(const QString &a_theme_name)
   priv->m_current_style_ref =
       cherry_kit::extension_manager::instance()->style("simplegray");
 #endif
-
-
 }
 
 resource_manager::~resource_manager() {
