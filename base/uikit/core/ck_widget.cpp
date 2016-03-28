@@ -102,6 +102,10 @@ void widget::setGeometry(const QRectF &rect)
     set_geometry(rect);
 }
 
+void widget::set_coordinates(float a_x, float a_y) {
+    setPos(a_x, a_y);
+}
+
 void widget::set_widget_flag(int a_flags, bool a_enable) {}
 
 void widget::on_input_event(
@@ -249,7 +253,8 @@ void widget::set_contents_geometry(float a_x, float a_y, float a_width,
   //setGeometry(scaled_rect);
   QGraphicsLayoutItem::setGeometry(scaled_rect);
 
-  setPos(mapFromScene(a_rect.topLeft()));
+  ///setPos(mapFromScene(a_rect.topLeft()));
+  setPos(a_rect.topLeft());
   priv->_invoke_geometry_func(scaled_rect);
   setCacheMode(ItemCoordinateCache, boundingRect().size().toSize());
   request_update();
