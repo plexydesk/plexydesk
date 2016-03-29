@@ -679,7 +679,8 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   ck_window->set_window_opacity(0.5);
 
   preview_view =
-      new cherry_kit::item_view(ck_window, cherry_kit::item_view::kGridModel);
+      new cherry_kit::item_view(ck_window, cherry_kit::item_view::kGridModel);  
+  preview_view->set_column_count(11);
 
   ck_window->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
     if (!a_visible) {
@@ -703,6 +704,8 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   int max_item_count =
       12; //((viewport()->geometry().width()) / item_width) - 1;
   float row_count = (workspace_ref->current_spaces().count()) % max_item_count;
+
+  preview_view->set_content_size(item_width, item_height);
 
   if (row_count != 0)
     row_count = 1 + (workspace_ref->current_spaces().count()) / max_item_count;
