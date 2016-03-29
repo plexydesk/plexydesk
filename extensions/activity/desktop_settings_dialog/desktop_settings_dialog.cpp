@@ -227,8 +227,7 @@ desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
     }
   });
 
-  ck_image_preview->set_geometry(QRectF(0, 0, width, height));
-  ck_image_preview->setMinimumSize(width, height);
+  ck_image_preview->set_contents_geometry(0, 0, width, height);
 
   ck_preview_item->set_view(ck_image_preview);
   priv->m_image_view->insert(ck_preview_item);
