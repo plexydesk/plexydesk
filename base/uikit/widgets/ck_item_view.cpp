@@ -10,6 +10,49 @@
 
 namespace cherry_kit {
 
+typedef std::pair<int, int> item_coordinate_t;
+typedef const widget *widget_const_ref;
+
+class grid_model_container {
+public:
+  grid_model_container()
+      : m_row_count(0), m_column_count(0), m_container_width(0),
+        m_container_height(0), m_item_count_per_row(4) {}
+  ~grid_model_container() {}
+
+  void insert(widget *w_ref);
+  void remove_item(const widget *w_ref);
+
+  int row_count() const;
+  int column_count() const;
+
+  void set_geometry(float a_x, float a_y, float a_width, float a_height);
+
+  void set_grid_size(int a_width, int a_height);
+  int grid_size() const;
+
+  void set_item_count_per_row(int a_count);
+
+  void clear();
+
+  float content_height();
+  float content_width();
+
+private:
+  std::map<item_coordinate_t, widget_const_ref> m_widget_map;
+  int m_row_count;
+  int m_column_count;
+  float m_container_width;
+  float m_container_height;
+  float m_x;
+  float m_y;
+
+  float m_item_count_per_row;
+
+  int m_grid_width;
+  int m_grid_height;
+};
+
 class item_view::PrivateModelView {
 public:
   PrivateModelView() : m_needs_scrollbars(0), m_item_count(0) {}
@@ -32,6 +75,8 @@ public:
 
   std::vector<widget *> m_widget_vector;
   widget *m_frame;
+
+  grid_model_container m_grid_model_container;
 };
 
 void item_view::set_content_margin(int a_left, int a_right, int a_top,
@@ -47,6 +92,13 @@ void item_view::set_content_spacing(int a_distance) {
   }
 }
 
+void item_view::set_content_size(int a_width, int a_height) {
+  if (d->m_model_view_type == kGridModel) {
+    d->m_grid_model_container.set_grid_size(a_width, a_height);
+    d->m_verticle_scrollbar->set_page_step(a_height * 2);
+  }
+}
+
 void item_view::set_enable_scrollbars(bool a_state) {
   d->m_needs_scrollbars = a_state;
 
@@ -54,19 +106,22 @@ void item_view::set_enable_scrollbars(bool a_state) {
     d->m_verticle_scrollbar->show();
   else
     d->m_verticle_scrollbar->hide();
+
+  d->m_verticle_scrollbar->setZValue(d->m_frame->zValue() + 1);
 }
 
 item_view::item_view(widget *parent, ModelType a_model_type)
     : widget(parent), d(new PrivateModelView) {
   d->m_model_view_type = a_model_type;
   d->m_scroll_frame = new QGraphicsWidget(this);
-  //d->m_scroll_frame->hide();
+  // d->m_scroll_frame->hide();
   d->m_frame = new widget(this);
   d->m_frame->setParentItem(this);
 
   d->m_verticle_scrollbar = new scrollbar(this);
   d->m_verticle_scrollbar->setZValue(d->m_frame->zValue() + 1000);
-  d->m_verticle_scrollbar->hide();
+  d->m_verticle_scrollbar->set_page_step(60);
+  d->m_verticle_scrollbar->show();
 
   d->m_verticle_scrollbar->on_value_changed(
       [this](int value) { d->m_frame->setPos(d->m_frame->x(), value); });
@@ -79,6 +134,7 @@ item_view::item_view(widget *parent, ModelType a_model_type)
 
   if (d->m_model_view_type == kGridModel) {
     d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
+    d->m_grid_model_container.set_grid_size(96, 96);
     set_content_margin(4, 4, 4, 4);
   }
 
@@ -122,90 +178,52 @@ void item_view::remove_from_list_view(widget *a_widget_ptr) {
       d->m_list_layout->contentsRect().height());
 }
 
-void item_view::insert_to_grid_view(widget *a_widget_ref) {
-  /*
-  a_widget_ptr->set_widget_id(d->m_grid_layout->count());
-  int l_item_per_row =
-      (d->m_viewport_geometry.width()) /
-  a_widget_ptr->contents_geometry().width();
-
-  if (l_item_per_row <= 0)
-      l_item_per_row = 1;
-
-  l_item_per_row = 4;
-  d->m_grid_layout->addItem(a_widget_ptr,
-                            d->m_grid_layout->count() / (l_item_per_row),
-                            d->m_grid_layout->count() % (l_item_per_row));
-  d->m_grid_layout->setAlignment(a_widget_ptr, Qt::AlignVCenter);
-
-  d->m_grid_layout->activate();
-  d->m_grid_layout->updateGeometry();
-  d->m_scroll_frame->setGeometry(d->m_grid_layout->geometry());
-
-  qDebug() << Q_FUNC_INFO << d->m_grid_layout->geometry();
-
-  d->m_verticle_scrollbar->set_maximum_value(
-      d->m_grid_layout->geometry().height());
-
-  check_needs_scrolling();
-  */
-
-  a_widget_ref->setParentItem(d->m_frame);
-
-  /*
-  a_widget_ref->setZValue(d->m_frame->zValue() + 1);
-  a_widget_ref->show();
-  d->m_frame->show();
-  */
-
-  d->m_frame->set_contents_geometry(0, 0, 1000, 1000);
-  d->m_frame->setPos(0,0);
-
-  a_widget_ref->set_widget_id(d->m_item_count);
-  d->m_widget_vector.push_back(a_widget_ref);
-
+float item_view::content_width() const {
   float current_content_width = 0;
-  float current_content_height = 0;
-
   std::for_each(std::begin(d->m_widget_vector), std::end(d->m_widget_vector),
                 [&](widget *w_ref) {
                   current_content_width += w_ref->geometry().width();
                 });
 
-  float grid_width = 96.0f;
+  return current_content_width;
+}
 
-  if (d->m_widget_vector.size() > 0) {
-    grid_width = current_content_width / d->m_widget_vector.size();
-  }
+float item_view::content_height() const {
+  float current_content_height = 0;
+  std::for_each(std::begin(d->m_widget_vector), std::end(d->m_widget_vector),
+                [&](widget *w_ref) {
+                  current_content_height += w_ref->geometry().height();
+                });
 
-  int l_item_per_row = (d->m_viewport_geometry.width()) /
-                       a_widget_ref->contents_geometry().width();
+  return current_content_height;
+}
 
-  if (l_item_per_row <= 0)
-    l_item_per_row = 1;
+void item_view::insert_to_grid_view(widget *a_widget_ref) {
 
-  a_widget_ref->setPos(a_widget_ref->contents_geometry().width() *
-                           (d->m_item_count % l_item_per_row),
-                       a_widget_ref->contents_geometry().height() *
-                           (d->m_item_count / l_item_per_row));
-  /*
-  d->m_frame->set_contents_geometry(0, 0,
-                                    d->m_frame->geometry().width(),
-                                    d->m_frame->geometry().height());
-  */
+  a_widget_ref->setParentItem(d->m_frame);
 
-  d->m_item_count++;
-  check_needs_scrolling();
+  a_widget_ref->set_widget_id(d->m_item_count++);
+  d->m_widget_vector.push_back(a_widget_ref);
 
-  qDebug() << Q_FUNC_INFO << "Items Per Row: " << l_item_per_row;
-  qDebug() << Q_FUNC_INFO
-           << "ScrollView Geometry :" << d->m_frame->geometry();
+  d->m_grid_model_container.insert(a_widget_ref);
+
+  d->m_frame->set_geometry(QRectF(d->m_frame->x(), d->m_frame->y(),
+                                  d->m_grid_model_container.content_width(),
+                                  d->m_grid_model_container.content_height()));
+
+#ifdef ENABLE_QT_DEBUG_ON
+  qDebug() << Q_FUNC_INFO << "ScrollView Geometry :" << d->m_frame->geometry();
   qDebug() << Q_FUNC_INFO << "Viewport : " << d->m_viewport_geometry;
   qDebug() << Q_FUNC_INFO << "Item Geometry " << a_widget_ref->boundingRect();
   qDebug() << Q_FUNC_INFO << "Item Location : " << a_widget_ref->pos();
   qDebug() << Q_FUNC_INFO << "Frame Location : " << d->m_frame->pos();
   qDebug() << Q_FUNC_INFO << "Item Contents Geometry "
            << a_widget_ref->contents_geometry();
+#endif
+
+  d->m_verticle_scrollbar->set_maximum_value(
+      d->m_grid_model_container.content_height());
+  check_needs_scrolling();
 }
 
 void item_view::insert_to_table_view(widget *a_widget_ptr) {}
@@ -272,6 +290,10 @@ int item_view::count() const {
   return 0;
 }
 
+void item_view::set_column_count(int a_count) {
+  d->m_grid_model_container.set_item_count_per_row(a_count);
+}
+
 void item_view::set_filter(const QString &a_keyword) {
   foreach (model_view_item *_item, d->m_model_item_list) {
     if (!_item)
@@ -315,6 +337,9 @@ void item_view::clear() {
     while (d->m_grid_layout->count() > 0) {
       d->m_grid_layout->removeAt(d->m_grid_layout->count() - 1);
     }
+
+    // new
+    d->m_grid_model_container.clear();
   }
 
   Q_FOREACH (model_view_item *item, d->m_model_item_list) {
@@ -343,8 +368,6 @@ void item_view::set_view_geometry(const QRectF &a_rect) {
         d->m_grid_layout->contentsRect().height());
   }
 
-  d->m_verticle_scrollbar->set_page_step(20);
-
   adjust_scrollbar(a_rect);
   check_needs_scrolling();
 }
@@ -355,7 +378,7 @@ void item_view::check_needs_scrolling() {
   if (!d->m_needs_scrollbars)
     return;
 
-  if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
+  if (d->m_model_view_type == kGridModel) {
     int viewport_hight = d->m_viewport_geometry.height();
     int content_height = d->m_frame->geometry().height();
 
@@ -398,6 +421,71 @@ void item_view::on_item_removed(
 
   d->m_item_remove_handler = a_handler;
 }
+
+// grid model class defs;
+void grid_model_container::insert(widget *w_ref) {
+  if (!w_ref)
+    return;
+
+  int item_count = m_widget_map.size();
+
+  m_row_count = item_count / m_item_count_per_row;
+
+  float x_coord = (m_column_count++) * m_grid_width;
+  float y_coord = (m_row_count * m_grid_height);
+
+  float h_align = (m_grid_width - w_ref->contents_geometry().width()) / 2;
+  float v_align = (m_grid_height - w_ref->contents_geometry().height()) / 2;
+
+  w_ref->set_coordinates(h_align + x_coord, v_align + y_coord);
+
+  item_coordinate_t pos(m_row_count, m_column_count);
+  m_widget_map[pos] = w_ref;
+
+  if (m_column_count >= m_item_count_per_row) {
+    m_column_count = 0;
+  }
+}
+
+void grid_model_container::remove_item(const widget *w_ref) {}
+
+int grid_model_container::row_count() const { return m_row_count; }
+
+int grid_model_container::column_count() const { return m_column_count; }
+
+void grid_model_container::set_geometry(float a_x, float a_y, float a_width,
+                                        float a_height) {
+  m_x = a_x;
+  m_y = a_y;
+  m_container_width = a_width;
+  m_container_height = a_height;
+}
+
+void grid_model_container::set_grid_size(int a_width, int a_height) {
+  m_grid_width = a_width;
+  m_grid_height = a_height;
+}
+
+int grid_model_container::grid_size() const { return m_grid_width; }
+
+void grid_model_container::set_item_count_per_row(int a_count) {
+  m_item_count_per_row = a_count;
+}
+
+void grid_model_container::clear() {
+  m_column_count = 0;
+  m_row_count = 0;
+  m_widget_map.clear();
+}
+
+float grid_model_container::content_height() {
+  return (m_grid_height * (m_row_count + 1));
+}
+
+float grid_model_container::content_width() {
+  return (m_grid_width * m_item_count_per_row);
+}
+
 /*
 bool item_view::event(QEvent *e) {
   switch (e->type()) {
