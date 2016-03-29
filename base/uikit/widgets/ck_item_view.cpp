@@ -1,7 +1,6 @@
 #include "ck_item_view.h"
 
 #include <QDebug>
-#include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
 
@@ -34,7 +33,6 @@ public:
   void set_item_count_per_row(int a_count);
 
   void clear();
-
   float content_height();
   float content_width();
 
@@ -64,7 +62,6 @@ public:
   bool m_needs_scrollbars;
 
   QGraphicsLinearLayout *m_list_layout;
-  QGraphicsGridLayout *m_grid_layout;
   QRectF m_viewport_geometry;
 
   QList<model_view_item *> m_model_item_list;
@@ -81,14 +78,12 @@ public:
 
 void item_view::set_content_margin(int a_left, int a_right, int a_top,
                                    int a_bottom) {
-  if (d->m_grid_layout && d->m_model_view_type == kGridModel) {
-    d->m_grid_layout->setContentsMargins(a_left, a_right, a_top, a_bottom);
+  if (d->m_model_view_type == kGridModel) {
   }
 }
 
 void item_view::set_content_spacing(int a_distance) {
-  if (d->m_grid_layout && d->m_model_view_type == kGridModel) {
-    d->m_grid_layout->setSpacing(a_distance);
+  if (d->m_model_view_type == kGridModel) {
   }
 }
 
@@ -133,7 +128,6 @@ item_view::item_view(widget *parent, ModelType a_model_type)
   }
 
   if (d->m_model_view_type == kGridModel) {
-    d->m_grid_layout = new QGraphicsGridLayout(d->m_scroll_frame);
     d->m_grid_model_container.set_grid_size(96, 96);
     set_content_margin(4, 4, 4, 4);
   }
@@ -282,8 +276,9 @@ model_view_item *item_view::at(int index) {
 }
 
 int item_view::count() const {
-  if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
-    return d->m_grid_layout->count();
+  if (d->m_model_view_type == kGridModel) {
+    return d->m_grid_model_container.row_count() *
+           d->m_grid_model_container.column_count();
   } else if (d->m_model_view_type == kListModel && d->m_list_layout) {
     return d->m_list_layout->count();
   }
@@ -331,14 +326,9 @@ void item_view::clear() {
   }
 
   if (d->m_model_view_type == kGridModel) {
-    if (d->m_grid_layout->count() <= 0)
+    if (count() <= 0)
       return;
 
-    while (d->m_grid_layout->count() > 0) {
-      d->m_grid_layout->removeAt(d->m_grid_layout->count() - 1);
-    }
-
-    // new
     d->m_grid_model_container.clear();
   }
 
@@ -363,9 +353,9 @@ void item_view::set_view_geometry(const QRectF &a_rect) {
 
   int page_step = a_rect.height();
 
-  if (d->m_model_view_type == kGridModel && d->m_grid_layout) {
+  if (d->m_model_view_type == kGridModel) {
     d->m_verticle_scrollbar->set_maximum_value(
-        d->m_grid_layout->contentsRect().height());
+        d->m_grid_model_container.content_height());
   }
 
   adjust_scrollbar(a_rect);
