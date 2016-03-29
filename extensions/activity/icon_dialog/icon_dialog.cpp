@@ -202,7 +202,6 @@ widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   QPixmap l_view_pixmap(
       cherry_kit::resource_manager::instance()->drawable(aIcon, "mdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
-  l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size);
 
   l_action_label->set_size(item_label_size);

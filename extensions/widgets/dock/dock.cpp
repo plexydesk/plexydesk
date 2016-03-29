@@ -727,8 +727,7 @@ void desktop_panel_controller_impl::update_desktop_preview() {
 
         p->set_pixmap(_preview);
         p->set_size(_preview.size());
-        p->set_geometry(QRectF(0, 0, _preview.width(), _preview.height()));
-        p->setMinimumSize(_preview.size());
+        p->set_contents_geometry(0, 0, _preview.width(), _preview.height());
 
         item_height = _preview.height();
 
@@ -769,8 +768,7 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     cherry_kit::icon_button *add_space_btn = new cherry_kit::icon_button();
 
     float button_size = 36 * cherry_kit::screen::get()->scale_factor(0);
-    add_space_btn->set_geometry(QRectF(0, 0, button_size, button_size));
-    add_space_btn->setMinimumSize(QSizeF(button_size, button_size));
+    add_space_btn->set_contents_geometry(0, 0, button_size, button_size);
     add_space_btn->set_size(QSize(button_size, button_size));
 
     QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
