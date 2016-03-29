@@ -167,7 +167,7 @@ void desktop_controller_impl::create_task_group() const {
     if (!viewport())
       return;
 
-    QRectF dialog_window_geometry(0, 0, 672, 240);
+    QRectF dialog_window_geometry(0, 0, 672, 340);
     QPointF qt_activity_window_location = viewport()->center(
         dialog_window_geometry,
         QRectF(),
