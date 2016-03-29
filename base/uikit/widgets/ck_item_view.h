@@ -45,6 +45,8 @@ public:
   virtual model_view_item *at(int index);
   virtual int count() const;
 
+  virtual void set_column_count(int a_count);
+
   virtual void set_filter(const QString &a_keyword);
   virtual void clear();
 
@@ -60,10 +62,18 @@ public:
 
   void set_content_margin(int a_left, int a_right, int a_top, int a_bottom);
   void set_content_spacing(int a_distance);
+  void set_content_size(int a_width, int a_height);
 
   void set_enable_scrollbars(bool a_state);
 
   void adjust_scrollbar(const QRectF &a_rect);
+  void get_content_width(float current_content_width);
+  
+  void content_width(float current_content_width);
+  
+  float content_width() const;
+  float content_height() const;
+
 protected:
   virtual void insert(widget *a_widget_ptr);
   virtual void remove(widget *a_widget_ptr);
