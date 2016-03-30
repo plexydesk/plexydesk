@@ -135,8 +135,8 @@ void scrollbar::move_slider(bool a_progress_front, int a_distance) {
   int move_handler_by = 0;
 
   if (a_progress_front) {
-    if (std::abs(a_distance) > 10)
-      a_distance = (-10);
+    if (std::abs(a_distance) > 20)
+      a_distance = (-20);
 
     move_handler_by = priv->m_handler_rect.y() - std::abs(a_distance);
     if (move_handler_by < 0)
@@ -144,8 +144,8 @@ void scrollbar::move_slider(bool a_progress_front, int a_distance) {
 
     priv->m_handler_rect.setY(move_handler_by);
   } else {
-    if (std::abs(a_distance) > 10)
-      a_distance = 10;
+    if (std::abs(a_distance) > 20)
+      a_distance = 20;
 
     move_handler_by = priv->m_handler_rect.y() + std::abs(a_distance);
 

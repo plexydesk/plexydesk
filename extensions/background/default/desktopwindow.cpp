@@ -1,8 +1,8 @@
 #include "desktopwindow.h"
 
 #include <QImage>
-#include <QPixmapCache>
 #include <QPainter>
+#include <QPixmapCache>
 #include <ck_image_io.h>
 
 class desktop_window::PrivateDesktopWindow {
@@ -15,8 +15,8 @@ public:
     if (m_background_buffer)
       free(m_background_buffer);
 
-                if (m_image_service)
-                        delete m_image_service;
+    if (m_image_service)
+      delete m_image_service;
 
     qDebug() << Q_FUNC_INFO;
   }

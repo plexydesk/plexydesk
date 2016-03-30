@@ -1,8 +1,6 @@
 #include "ck_item_view.h"
 
 #include <QDebug>
-#include <QGraphicsLinearLayout>
-#include <QGraphicsWidget>
 
 #include <QScroller>
 #include <ck_scrollbar.h>
@@ -10,7 +8,7 @@
 namespace cherry_kit {
 
 typedef std::pair<int, int> item_coordinate_t;
-typedef const widget *widget_const_ref;
+typedef widget *widget_ref_t;
 
 class grid_model_container {
 public:
@@ -37,7 +35,7 @@ public:
   float content_width();
 
 private:
-  std::map<item_coordinate_t, widget_const_ref> m_widget_map;
+  std::map<item_coordinate_t, widget_ref_t> m_widget_map;
   int m_row_count;
   int m_column_count;
   float m_container_width;
@@ -51,17 +49,40 @@ private:
   int m_grid_height;
 };
 
+class linear_model_container {
+public:
+  linear_model_container() : m_height(0), m_width(0) {}
+  ~linear_model_container() {}
+
+  void insert(widget_ref_t a_widget);
+  void remove(widget_ref_t a_widget);
+  void clear();
+
+  float container_height() const;
+  float container_width() const;
+
+  void set_grid_size(int a_width, int a_height);
+
+  int count() const;
+
+private:
+  std::vector<widget_ref_t> m_widget_list;
+  float m_width;
+  float m_height;
+
+  int m_grid_width;
+  int m_grid_height;
+};
+
 class item_view::PrivateModelView {
 public:
   PrivateModelView() : m_needs_scrollbars(0), m_item_count(0) {}
   ~PrivateModelView() {}
 
   ModelType m_model_view_type;
-  QGraphicsWidget *m_scroll_frame;
   cherry_kit::scrollbar *m_verticle_scrollbar;
   bool m_needs_scrollbars;
 
-  QGraphicsLinearLayout *m_list_layout;
   QRectF m_viewport_geometry;
 
   QList<model_view_item *> m_model_item_list;
@@ -74,6 +95,7 @@ public:
   widget *m_frame;
 
   grid_model_container m_grid_model_container;
+  linear_model_container m_linear_model_container;
 };
 
 void item_view::set_content_margin(int a_left, int a_right, int a_top,
@@ -91,6 +113,8 @@ void item_view::set_content_size(int a_width, int a_height) {
   if (d->m_model_view_type == kGridModel) {
     d->m_grid_model_container.set_grid_size(a_width, a_height);
     d->m_verticle_scrollbar->set_page_step(a_height * 2);
+  } else if (d->m_model_view_type == kListModel) {
+    d->m_linear_model_container.set_grid_size(a_width, a_height);
   }
 }
 
@@ -108,7 +132,6 @@ void item_view::set_enable_scrollbars(bool a_state) {
 item_view::item_view(widget *parent, ModelType a_model_type)
     : widget(parent), d(new PrivateModelView) {
   d->m_model_view_type = a_model_type;
-  d->m_scroll_frame = new QGraphicsWidget(this);
   // d->m_scroll_frame->hide();
   d->m_frame = new widget(this);
   d->m_frame->setParentItem(this);
@@ -122,13 +145,11 @@ item_view::item_view(widget *parent, ModelType a_model_type)
       [this](int value) { d->m_frame->setPos(d->m_frame->x(), value); });
 
   if (d->m_model_view_type == kListModel) {
-    d->m_list_layout = new QGraphicsLinearLayout(d->m_scroll_frame);
-    d->m_list_layout->setOrientation(Qt::Vertical);
-    d->m_list_layout->setContentsMargins(0, 0, 0, 0);
+    d->m_linear_model_container.set_grid_size(96, 240);
   }
 
   if (d->m_model_view_type == kGridModel) {
-    d->m_grid_model_container.set_grid_size(96, 96);
+    d->m_grid_model_container.set_grid_size(96.0, 96.0);
     set_content_margin(4, 4, 4, 4);
   }
 
@@ -149,27 +170,24 @@ item_view::~item_view() {
 }
 
 void item_view::insert_to_list_view(widget *a_widget_ptr) {
-  a_widget_ptr->set_widget_id(d->m_list_layout->count());
+  a_widget_ptr->setParentItem(d->m_frame);
+  a_widget_ptr->set_widget_id(d->m_linear_model_container.count());
 
-  d->m_list_layout->addItem(a_widget_ptr);
-  d->m_list_layout->updateGeometry();
-  d->m_list_layout->activate();
+  d->m_linear_model_container.insert(a_widget_ptr);
 
-  d->m_frame->set_geometry(d->m_list_layout->geometry());
+  d->m_frame->set_geometry(
+      QRectF(0, 0, d->m_linear_model_container.container_width(),
+             d->m_linear_model_container.container_height()));
 
   d->m_verticle_scrollbar->set_maximum_value(
-      d->m_list_layout->contentsRect().height());
+      d->m_linear_model_container.container_height());
+
+  check_needs_scrolling();
 }
 
 void item_view::remove_from_list_view(widget *a_widget_ptr) {
-  if (!d->m_list_layout)
-    return;
-  d->m_list_layout->removeItem(a_widget_ptr);
-  d->m_list_layout->updateGeometry();
-  d->m_list_layout->activate();
-
   d->m_verticle_scrollbar->set_maximum_value(
-      d->m_list_layout->contentsRect().height());
+      d->m_linear_model_container.container_height());
 }
 
 float item_view::content_width() const {
@@ -279,8 +297,8 @@ int item_view::count() const {
   if (d->m_model_view_type == kGridModel) {
     return d->m_grid_model_container.row_count() *
            d->m_grid_model_container.column_count();
-  } else if (d->m_model_view_type == kListModel && d->m_list_layout) {
-    return d->m_list_layout->count();
+  } else if (d->m_model_view_type == kListModel) {
+    return d->m_linear_model_container.count();
   }
   return 0;
 }
@@ -308,21 +326,20 @@ void item_view::set_filter(const QString &a_keyword) {
 }
 
 void item_view::clear() {
-  qDebug() << Q_FUNC_INFO << "cleaering";
   if (d->m_model_item_list.count() <= 0)
     return;
 
   if (d->m_model_view_type == kListModel) {
-    if (d->m_list_layout->count() <= 0) {
+    if (d->m_linear_model_container.count() <= 0) {
       return;
     }
 
-    while (d->m_list_layout->count() > 0) {
-      d->m_list_layout->removeAt(d->m_list_layout->count() - 1);
-    }
+    d->m_linear_model_container.clear();
 
-    d->m_list_layout->invalidate();
-    d->m_list_layout->updateGeometry();
+    d->m_frame->set_contents_geometry(
+        0, 0, d->m_linear_model_container.container_width(),
+        d->m_linear_model_container.container_height());
+    check_needs_scrolling();
   }
 
   if (d->m_model_view_type == kGridModel) {
@@ -330,6 +347,11 @@ void item_view::clear() {
       return;
 
     d->m_grid_model_container.clear();
+
+    d->m_frame->set_contents_geometry(
+        0, 0, d->m_grid_model_container.content_width(),
+        d->m_grid_model_container.content_height());
+    check_needs_scrolling();
   }
 
   Q_FOREACH (model_view_item *item, d->m_model_item_list) {
@@ -475,6 +497,47 @@ float grid_model_container::content_height() {
 float grid_model_container::content_width() {
   return (m_grid_width * m_item_count_per_row);
 }
+
+void linear_model_container::insert(widget_ref_t a_widget) {
+  if (!a_widget)
+    return;
+
+  m_widget_list.push_back(a_widget);
+  a_widget->set_coordinates(0, m_height);
+
+  m_height += a_widget->contents_geometry().height();
+}
+
+void linear_model_container::remove(widget_ref_t a_widget) {
+  int item_index = -1;
+  int count = 0;
+  for (widget *_widget : m_widget_list) {
+    count++;
+
+    if (!_widget)
+      continue;
+
+    if (_widget == a_widget) {
+      item_index = count;
+      break;
+    }
+  }
+
+  m_widget_list.erase(m_widget_list.begin() + item_index);
+}
+
+void linear_model_container::clear() { m_widget_list.clear(); }
+
+float linear_model_container::container_height() const { return m_height; }
+
+float linear_model_container::container_width() const { return m_grid_width; }
+
+void linear_model_container::set_grid_size(int a_width, int a_height) {
+  m_grid_width = a_width;
+  m_grid_height = a_height;
+}
+
+int linear_model_container::count() const { return m_widget_list.size(); }
 
 /*
 bool item_view::event(QEvent *e) {

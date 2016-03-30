@@ -206,7 +206,7 @@ time_segment *date_controller::insert_time_element(
     break;
   };
 
-  ck_base_view->setMinimumSize(a_view->boundingRect().width(), 32);
+  ck_base_view->set_contents_geometry(0, 0,a_view->boundingRect().width(), 32);
   ck_item_lbl->set_alignment(Qt::AlignHCenter | Qt::AlignVCenter);
   ck_item_lbl->set_text(time_str);
   ck_item_lbl->set_size(QSize(64, 32));
@@ -272,6 +272,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   ui->add_widget(0, 0, "calendar", ui_data, [=]() {});
   ck_model_view = dynamic_cast<cherry_kit::item_view *>(
               ui->add_widget(1, 0, "model_view", ui_data, [=] () {}));
+  ck_model_view->set_content_size(320, 64);
 
   time_segment_list_t time_segment_list;
 
