@@ -64,7 +64,7 @@ public:
 };
 
 widget::widget(widget *parent)
-    : QGraphicsObject(parent), QGraphicsLayoutItem(0), priv(new PrivateWidget) {
+    : QGraphicsObject(parent), priv(new PrivateWidget) {
   priv->m_name = QLatin1String("Widget");
   priv->m_current_layer_type = kRenderAtForgroundLevel;
 
@@ -82,7 +82,6 @@ widget::widget(widget *parent)
 
   setAcceptTouchEvents(true);
   setAcceptHoverEvents(true);
-  setGraphicsItem(this);
 }
 
 widget::~widget() {
@@ -91,20 +90,20 @@ widget::~widget() {
 }
 
 QRectF widget::contents_geometry() const {
-  return priv->m_content_rect;// QRectF(QPointF(0, 0), geometry().size()); // d->m_content_geometry;
+  return priv->m_content_rect; // QRectF(QPointF(0, 0), geometry().size()); //
+                               // d->m_content_geometry;
 }
+
+QRectF widget::geometry() const { return contents_geometry(); }
 
 QRectF widget::boundingRect() const { return contents_geometry(); }
 
-void widget::setGeometry(const QRectF &rect)
-{
-    qDebug() << Q_FUNC_INFO << "Geometry : " << rect;
-    set_geometry(rect);
+void widget::setGeometry(const QRectF &rect) {
+  qDebug() << Q_FUNC_INFO << "Geometry : " << rect;
+  set_geometry(rect);
 }
 
-void widget::set_coordinates(float a_x, float a_y) {
-    setPos(a_x, a_y);
-}
+void widget::set_coordinates(float a_x, float a_y) { setPos(a_x, a_y); }
 
 void widget::set_widget_flag(int a_flags, bool a_enable) {}
 
@@ -237,11 +236,12 @@ void widget::set_geometry(const QRectF &a_rect) {
   request_update();
   */
 
-  set_contents_geometry(a_rect.x(), a_rect.y(), a_rect.width(), a_rect.height());
+  set_contents_geometry(a_rect.x(), a_rect.y(), a_rect.width(),
+                        a_rect.height());
 }
 
 void widget::set_contents_geometry(float a_x, float a_y, float a_width,
-                                  float a_height) {
+                                   float a_height) {
   priv->m_content_rect = QRectF(a_x, a_y, a_width, a_height);
   QRectF a_rect = priv->m_content_rect;
 
@@ -250,10 +250,10 @@ void widget::set_contents_geometry(float a_x, float a_y, float a_width,
   QRectF scaled_rect(a_rect.x(), a_rect.y(), a_rect.width() * scale_factor,
                      a_rect.height() * scale_factor);
 
-  //setGeometry(scaled_rect);
-  QGraphicsLayoutItem::setGeometry(scaled_rect);
+  // setGeometry(scaled_rect);
+  //QGraphicsLayoutItem::setGeometry(scaled_rect);
 
-  ///setPos(mapFromScene(a_rect.topLeft()));
+  /// setPos(mapFromScene(a_rect.topLeft()));
   setPos(a_rect.topLeft());
   priv->_invoke_geometry_func(scaled_rect);
   setCacheMode(ItemCoordinateCache, boundingRect().size().toSize());

@@ -36,10 +36,8 @@ typedef unsigned char *GraphicsSurface;
 typedef std::function<void(const widget *)> UpdateCallback;
 typedef std::vector<widget *> WidgetList;
 
-class DECL_UI_KIT_EXPORT widget : public QGraphicsObject,
-                                  public QGraphicsLayoutItem {
+class DECL_UI_KIT_EXPORT widget : public QGraphicsObject {
   Q_OBJECT
-  Q_INTERFACES(QGraphicsLayoutItem)
 public:
   typedef enum {
     kRenderBackground = 1ul << 0,
@@ -68,14 +66,17 @@ public:
   widget(widget *a_parent_ptr = 0);
   virtual ~widget();
 
-  virtual QRectF contents_geometry() const;
+  virtual QRectF geometry() const;
   virtual void set_geometry(const QRectF &a_rect);
-  virtual void set_contents_geometry(float a_x, float a_y, float a_width, float a_height);
+
+  virtual QRectF contents_geometry() const;
+  virtual void set_contents_geometry(float a_x, float a_y, float a_width,
+                                     float a_height);
   virtual QRectF boundingRect() const;
   virtual void setGeometry(const QRectF &rect);
 
   virtual void set_coordinates(float a_x, float a_y);
-  //todo : pos() ?
+  // todo : pos() ?
 
   virtual void
   set_controller(desktop_controller_interface *a_view_controller_ptr);

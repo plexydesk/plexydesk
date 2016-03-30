@@ -125,7 +125,6 @@ StylePtr button::style() const { return cherry_kit::resource_manager::style(); }
 void button::set_size(const QSizeF &a_size) {
   prepareGeometryChange();
   priv->m_button_size = a_size;
-  setMinimumSize(a_size);
   update();
 }
 

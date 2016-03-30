@@ -496,8 +496,10 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
 
   image_button->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                    calculate_cell_height(a_row, a_col)));
+  /*
   image_button->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                      calculate_cell_height(a_row, a_col)));
+                                     */
   layout();
 
   return image_button;
@@ -514,8 +516,10 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_view_at(
 
   img_view->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                calculate_cell_height(a_row, a_col)));
+  /*
   img_view->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                  calculate_cell_height(a_row, a_col)));
+                                 */
   layout();
 
   return img_view;
@@ -596,8 +600,10 @@ widget *fixed_layout::PrivateViewBuilder::add_new_line_edit_at(
   editor->set_text(text);
   editor->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                              calculate_cell_height(a_row, a_col)));
+  /*
   editor->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                calculate_cell_height(a_row, a_col)));
+                               */
   layout();
 
   return editor;

@@ -214,7 +214,7 @@ widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
                                l_action_label->boundingRect().height());
   l_action_item_size.setWidth(l_image_view->boundingRect().width());
 
-  l_rv->setMinimumSize(l_action_item_size);
+  ///l_rv->setMinimumSize(l_action_item_size);
 
   l_image_view->on_click([this]() {
     if (m_action_handler) {

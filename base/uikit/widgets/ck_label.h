@@ -12,9 +12,6 @@
 namespace cherry_kit {
 
 class DECL_UI_KIT_EXPORT label : public widget {
-  Q_OBJECT
-  Q_INTERFACES(QGraphicsLayoutItem)
-
 public:
   explicit label(widget *a_parent_ptr = 0);
   virtual ~label();

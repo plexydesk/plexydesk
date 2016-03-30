@@ -191,7 +191,7 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   set_geometry(parent->geometry());
 
   d->m_image_attachment_view = new cherry_kit::image_view(this);
-  d->m_image_attachment_view->setMinimumSize(0, 0);
+  //d->m_image_attachment_view->setMinimumSize(0, 0);
 }
 
 NoteWidget::~NoteWidget() { delete d; }
@@ -240,7 +240,7 @@ void NoteWidget::attach_image(const std::string &a_url) {
     float image_height = pixmap.height() * image_width_ratio;
     float image_width = pixmap.width() * image_width_ratio;
 
-    d->m_image_attachment_view->setMinimumSize(image_width, image_height);
+    //d->m_image_attachment_view->setMinimumSize(image_width, image_height);
 
     d->m_image_attachment_view->set_pixmap(
         pixmap.scaled(image_width, image_height));
@@ -250,11 +250,11 @@ void NoteWidget::attach_image(const std::string &a_url) {
     d->m_image_attachment_view->set_size(QSizeF(image_width, image_height));
     d->m_image_attachment_view->setPos(1, 0);
     d->m_image_attachment_view->update();
-    d->m_image_attachment_view->updateGeometry();
+    //d->m_image_attachment_view->updateGeometry();
     d->m_image_attachment_view->show();
 
     if (d->m_text_editor_widget) {
-      d->m_text_editor_widget->setMinimumWidth(image_width + 1);
+      //d->m_text_editor_widget->setMinimumWidth(image_width + 1);
       d->m_ui->viewport()->setPos(1, image_height);
     }
 
