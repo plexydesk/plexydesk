@@ -709,6 +709,10 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     cherry_kit::image_view *image_view = new cherry_kit::image_view();
     QPixmap preview = viewport()->owner_workspace()->thumbnail(_space);
 
+		image_view->on_click([=] () {
+		  viewport()->owner_workspace()->expose(_space->id());	
+		});
+
     image_view->set_pixmap(preview);
     image_view->set_contents_geometry(0, 0, preview_width, preview_height);
 
@@ -719,7 +723,6 @@ void desktop_panel_controller_impl::update_desktop_preview() {
 
   // cleanup
   preview_list->on_item_removed([=](cherry_kit::model_view_item *a_item) {
-    qDebug() << Q_FUNC_INFO;
     delete a_item;
   });
 

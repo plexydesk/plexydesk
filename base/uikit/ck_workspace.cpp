@@ -346,9 +346,16 @@ void workspace::expose(uint a_space_id) {
     return;
   }
 
+	space *_current_space = current_active_space();
+
+	if (_current_space && (_current_space->id() == a_space_id)) {
+			return;
+	}
+
   space *_space = priv->m_desktop_space_list.at(a_space_id);
 
   if (_space) {
+		_space->reset_focus();
     QRectF _space_rect = _space->geometry();
     priv->m_current_activty_space_id = a_space_id;
     expose_sub_region(_space_rect);
