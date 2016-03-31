@@ -35,8 +35,9 @@ public:
 };
 
 void workspace::set_workspace_geometry(int a_screen_id) {
-  QRect _current_desktop_geometry = QRect(0, 0, screen::get()->x_resolution(a_screen_id),
-                                          screen::get()->y_resolution(a_screen_id));
+  QRect _current_desktop_geometry =
+      QRect(0, 0, screen::get()->x_resolution(a_screen_id),
+            screen::get()->y_resolution(a_screen_id));
   setGeometry(_current_desktop_geometry);
 }
 
@@ -137,20 +138,14 @@ void workspace::set_accelerated_rendering(bool a_on) {
 
   if (priv->m_opengl_on) {
     setViewport(new QGLWidget(
-        QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer |
-                  QGL::Rgba | QGL::StencilBuffer | QGL::AlphaChannel)));
-
-    // setViewport(new QGLWidget(QGLFormat(QGL::DoubleBuffer)));
+        QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer | QGL::SampleBuffers)));
     setCacheMode(QGraphicsView::CacheNone);
-    // setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    // setOptimizationFlag(QGraphicsView::DontClipPainter);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
     setupViewport(new QWidget);
-    // setCacheMode(QGraphicsView::CacheBackground);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setOptimizationFlag(QGraphicsView::DontClipPainter);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
   }
 }
 
@@ -298,9 +293,7 @@ float workspace::desktop_horizontal_scale_factor() {
   return width_factor;
 }
 
-int workspace::screen_id() const {
-  return priv->m_screen_id;
-}
+int workspace::screen_id() const { return priv->m_screen_id; }
 
 void workspace::revoke_space(const QString &a_name, int a_id) {
   space *_space = create_blank_space();

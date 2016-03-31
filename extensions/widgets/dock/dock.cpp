@@ -260,6 +260,10 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   cherry_kit::item_view *sub_task_grid =
       new cherry_kit::item_view(sub_menu, cherry_kit::item_view::kGridModel);
 
+	sub_task_grid->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+	  delete a_item;
+	});
+
   int x_count = child_actions.size();
 
   float row_count = (x_count) % 4;
@@ -286,6 +290,7 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
 
   sub_menu->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
     if (!a_visible) {
+		  sub_task_grid->clear();
       a_window_ref->close();
       // delete a_window_ref;
       delete sub_task_grid;
@@ -669,128 +674,75 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   if (!viewport())
     return;
 
-  cherry_kit::window *ck_window = new cherry_kit::window;
-  cherry_kit::workspace *workspace_ref = viewport()->owner_workspace();
-  cherry_kit::item_view *preview_view = 0;
+  cherry_kit::window *expose_window = new cherry_kit::window();
 
-  ck_window->set_window_title("");
-  //ck_window->setGeometry(QRectF(0, 0, 400, 400));
-  ck_window->set_window_type(cherry_kit::window::kPopupWindow);
-  ck_window->set_window_opacity(0.5);
+  /* default thumbnail returned is 10% of the actual desktop */
+  float preview_width = (viewport()->geometry().width() / 100) * 10;
+  float preview_height = (viewport()->geometry().height() / 100) * 10;
 
-  preview_view =
-      new cherry_kit::item_view(ck_window, cherry_kit::item_view::kGridModel);  
-  preview_view->set_column_count(11);
+  cherry_kit::item_view *preview_list = new cherry_kit::item_view(
+      expose_window, cherry_kit::item_view::kGridModel);
+  preview_list->set_column_count(11);
+  preview_list->set_content_size(preview_width, preview_height);
+  preview_list->set_view_geometry(
+      QRectF(0, 0, viewport()->geometry().width(), preview_height));
 
-  ck_window->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
-    if (!a_visible) {
-      a_window_ref->close();
-      // delete a_window_ref;
-      delete preview_view;
-    }
-  });
+  expose_window->set_window_title("");
+  expose_window->set_geometry(
+      QRectF(0, 0, viewport()->geometry().width(), preview_height));
+  expose_window->set_window_type(cherry_kit::window::kPopupWindow);
+  expose_window->set_window_opacity(0.5);
 
-  std::vector<QPixmap> desktop_preview_list;
-
-  foreach (cherry_kit::space *_space, workspace_ref->current_spaces()) {
-    QPixmap _preview = workspace_ref->thumbnail(_space);
-    desktop_preview_list.push_back(_preview);
-  }
-
-  QPixmap sample_pixmap = desktop_preview_list.front();
-
-  float item_height = sample_pixmap.height();
-  float item_width = sample_pixmap.width();
-  int max_item_count =
-      12; //((viewport()->geometry().width()) / item_width) - 1;
-  float row_count = (workspace_ref->current_spaces().count()) % max_item_count;
-
-  preview_view->set_content_size(item_width, item_height);
-
-  if (row_count != 0)
-    row_count = 1 + (workspace_ref->current_spaces().count()) / max_item_count;
-  else if (row_count == 0) {
-    row_count = 1 + (workspace_ref->current_spaces().count()) / max_item_count;
-  }
-
-  float window_width =
-      (item_width * max_item_count) + viewport()->scaled_width(64);
-  float window_height = (item_height * (row_count));
-
-  preview_view->set_view_geometry(
-      QRectF(0, 0, viewport()->geometry().width(), window_height));
-
-  std::for_each(
-      std::begin(desktop_preview_list), std::end(desktop_preview_list),
-      [&](QPixmap _preview) {
-        cherry_kit::image_view *p = new cherry_kit::image_view(preview_view);
-
-        p->set_pixmap(_preview);
-        p->set_size(_preview.size());
-        p->set_contents_geometry(0, 0, _preview.width(), _preview.height());
-
-        item_height = _preview.height();
-
-        cherry_kit::model_view_item *model_item =
-            new cherry_kit::model_view_item();
-        model_item->set_view(p);
-
-        model_item->on_view_removed([=](cherry_kit::model_view_item *a_item) {
-          if (a_item && a_item->view()) {
-            cherry_kit::widget *view = a_item->view();
-            if (view)
-              delete view;
-          }
-        });
-
-        preview_view->insert(model_item);
-
-        preview_view->on_activated([this](int index) {
-          if (this->viewport() && this->viewport()->owner_workspace()) {
-            if (index >= viewport()->owner_workspace()->space_count())
-              return;
-
-            cherry_kit::workspace *_workspace =
-                qobject_cast<cherry_kit::workspace *>(
-                    viewport()->owner_workspace());
-
-            if (_workspace) {
-              viewport()->reset_focus();
-              _workspace->expose(index);
-            }
-          }
-        });
+  expose_window->on_visibility_changed(
+      [=](window *a_window_ref, bool a_visible) {
+        if (!a_visible) {
+          preview_list->clear();
+          a_window_ref->close();
+          delete a_window_ref;
+        }
       });
 
-  if (viewport() && viewport()->owner_workspace()->space_count() < 11) {
-    cherry_kit::model_view_item *add_space_itm =
-        new cherry_kit::model_view_item();
-    cherry_kit::icon_button *add_space_btn = new cherry_kit::icon_button();
+  // insert preview items.
+  foreach (cherry_kit::space *_space,
+           viewport()->owner_workspace()->current_spaces()) {
+    cherry_kit::model_view_item *item = new cherry_kit::model_view_item();
+    cherry_kit::image_view *image_view = new cherry_kit::image_view();
+    QPixmap preview = viewport()->owner_workspace()->thumbnail(_space);
 
-    float button_size = 36 * cherry_kit::screen::get()->scale_factor(0);
-    add_space_btn->set_contents_geometry(0, 0, button_size, button_size);
-    add_space_btn->set_size(QSize(button_size, button_size));
+    image_view->set_pixmap(preview);
+    image_view->set_contents_geometry(0, 0, preview_width, preview_height);
 
-    QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
-        "navigation/ck_add.png", "mdpi");
-    add_space_btn->set_pixmap(pixmap);
+    item->set_view(image_view);
 
-    add_space_itm->set_view(add_space_btn);
-
-    // todo : make sure layout manager centers stuff correctly.
-    preview_view->insert(add_space_itm);
-
-    add_space_btn->on_click([=]() { add_new_space(); });
+    preview_list->insert(item);
   }
 
-  desktop_preview_list.clear();
+  // cleanup
+  preview_list->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    qDebug() << Q_FUNC_INFO;
+    delete a_item;
+  });
 
-  insert(ck_window);
-  ck_window->raise();
-  ck_window->set_window_content(preview_view);
+	//insert button
+  cherry_kit::model_view_item *button_item = new cherry_kit::model_view_item();
+  cherry_kit::icon_button *btn = new cherry_kit::icon_button();
 
-  QPointF menu_pos = viewport()->center(
-      ck_window->geometry(), QRectF(), cherry_kit::space::kCenterOnViewportTop);
+  btn->set_contents_geometry(0, 0, 128, 128);
+  btn->set_icon("navigation/ck_add.png");
+  btn->on_click([=]() {
+    add_new_space();
+  });
 
-  ck_window->setPos(menu_pos);
+  button_item->set_view(btn);
+  preview_list->insert(button_item);
+
+  expose_window->set_window_content(preview_list);
+
+  QPointF menu_pos =
+      viewport()->center(expose_window->geometry(), QRectF(),
+                         cherry_kit::space::kCenterOnViewportTop);
+
+  expose_window->set_coordinates(menu_pos.x(), menu_pos.y());
+
+  insert(expose_window);
 }

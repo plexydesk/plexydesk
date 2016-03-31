@@ -28,7 +28,10 @@ typedef std::function<void(const QString &, const QString &)>
 class NoteWidget::PrivateNoteWidget {
 public:
   PrivateNoteWidget() {}
-  ~PrivateNoteWidget() {}
+  ~PrivateNoteWidget() {
+		if (m_ui)
+			delete m_ui;
+	}
 
   void initDataStore();
 

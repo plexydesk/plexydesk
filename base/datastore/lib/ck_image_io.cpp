@@ -44,6 +44,7 @@ image_io::image_io(int a_width, int a_height)
     : o_surface_proxy(new platform_image), priv(new private_io_image_impl) {}
 
 image_io::~image_io() {
+  qDebug() << Q_FUNC_INFO;
   delete priv;
   delete o_surface_proxy;
 }

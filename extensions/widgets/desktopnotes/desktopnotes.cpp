@@ -388,7 +388,8 @@ void desktop_task_controller_impl::createReminderUI(
     set_btn->on_click(func);
   }
 
-  window->on_window_discarded([this](cherry_kit::window *aWindow) {
+  window->on_window_discarded([=](cherry_kit::window *aWindow) {
+	  delete view;
     delete aWindow;
   });
 

@@ -28,7 +28,10 @@ namespace cherry_kit {
 class calendar_view::PrivateCalendarWidget {
 public:
   PrivateCalendarWidget() {}
-  ~PrivateCalendarWidget() {}
+  ~PrivateCalendarWidget() {
+		if (m_ui)
+			delete m_ui;
+	}
 
   int days_in_month(int a_day, int a_month, int a_year);
   int days_of_week(int a_day, int a_month, int a_year);

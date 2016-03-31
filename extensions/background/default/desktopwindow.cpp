@@ -85,7 +85,7 @@ desktop_window::desktop_window()
   });
 
   setCacheMode(ItemCoordinateCache);
-  QPixmapCache::setCacheLimit(1920 * 1200 * 32);
+  //QPixmapCache::setCacheLimit(1920 * 1200 * 32);
 }
 
 desktop_window::~desktop_window() { delete priv; }

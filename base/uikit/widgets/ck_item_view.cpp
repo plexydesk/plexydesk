@@ -34,6 +34,8 @@ public:
   float content_height();
   float content_width();
 
+  int count();
+
 private:
   std::map<item_coordinate_t, widget_ref_t> m_widget_map;
   int m_row_count;
@@ -326,8 +328,10 @@ void item_view::set_filter(const QString &a_keyword) {
 }
 
 void item_view::clear() {
-  if (d->m_model_item_list.count() <= 0)
+  if (d->m_model_item_list.count() <= 0) {
+    qDebug() << Q_FUNC_INFO << "No Items in list";
     return;
+  }
 
   if (d->m_model_view_type == kListModel) {
     if (d->m_linear_model_container.count() <= 0) {
@@ -343,8 +347,11 @@ void item_view::clear() {
   }
 
   if (d->m_model_view_type == kGridModel) {
-    if (count() <= 0)
+    if (d->m_grid_model_container.count() <= 0) {
+      qDebug() << Q_FUNC_INFO << "Model Has no Items : "
+			 << d->m_grid_model_container.count();
       return;
+    }
 
     d->m_grid_model_container.clear();
 
@@ -355,10 +362,12 @@ void item_view::clear() {
   }
 
   Q_FOREACH (model_view_item *item, d->m_model_item_list) {
+    qDebug() << Q_FUNC_INFO << "Delete Request";
+
     if (!item)
       continue;
 
-    item->remove_view();
+    //item->remove_view();
     if (d->m_item_remove_handler)
       d->m_item_remove_handler(item);
   }
@@ -461,9 +470,9 @@ void grid_model_container::insert(widget *w_ref) {
 
 void grid_model_container::remove_item(const widget *w_ref) {}
 
-int grid_model_container::row_count() const { return m_row_count; }
+int grid_model_container::row_count() const { return m_row_count + 1; }
 
-int grid_model_container::column_count() const { return m_column_count; }
+int grid_model_container::column_count() const { return m_column_count + 1; }
 
 void grid_model_container::set_geometry(float a_x, float a_y, float a_width,
                                         float a_height) {
@@ -495,7 +504,12 @@ float grid_model_container::content_height() {
 }
 
 float grid_model_container::content_width() {
-  return (m_grid_width * m_item_count_per_row);
+    return (m_grid_width * m_item_count_per_row);
+}
+
+int grid_model_container::count()
+{
+    return (row_count() * column_count());
 }
 
 void linear_model_container::insert(widget_ref_t a_widget) {

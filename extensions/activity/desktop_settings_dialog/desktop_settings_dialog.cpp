@@ -107,6 +107,9 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_image_view = new cherry_kit::item_view(
       ck_icon_gird, cherry_kit::item_view::kGridModel);
 
+	priv->m_image_view->on_item_removed(
+			[=](cherry_kit::model_view_item *a_item) {delete a_item;});
+
   priv->m_image_view->set_content_size(128, 128);
   priv->m_image_view->set_column_count(5);
   priv->m_image_view->set_enable_scrollbars(true);
@@ -198,7 +201,6 @@ void desktop_settings_dialog::purge() {
 void
 desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
                                               const std::string &a_file_url) {
-
   if (ck_preview_pixmap.isNull()) {
     qWarning() << Q_FUNC_INFO << "Null image in list";
     return;
@@ -218,14 +220,6 @@ desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
 
   cherry_kit::model_view_item *ck_preview_item =
       new cherry_kit::model_view_item();
-
-  ck_preview_item->on_view_removed([](cherry_kit::model_view_item *item) {
-    if (item && item->view()) {
-      cherry_kit::widget *view = item->view();
-      if (view)
-        delete view;
-    }
-  });
 
   ck_image_preview->set_contents_geometry(0, 0, width, height);
 

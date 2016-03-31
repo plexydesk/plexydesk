@@ -274,6 +274,10 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
               ui->add_widget(1, 0, "model_view", ui_data, [=] () {}));
   ck_model_view->set_content_size(320, 64);
 
+	ck_model_view->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    delete a_item;	
+	});
+
   time_segment_list_t time_segment_list;
 
   time_segment_list.push_back(insert_time_element(
@@ -399,6 +403,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
     a_session->unbind_window(aWindow);
     ck_model_view->clear();
     ck_timer->stop();
+		delete ui;
     delete ck_timer;
     delete aWindow;
   });

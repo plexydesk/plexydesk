@@ -211,6 +211,9 @@ void widget::paint(QPainter *a_painter_ptr,
 }
 
 void widget::set_geometry(const QRectF &a_rect) {
+  /*
+    //todo :
+    // Move this somewhere else.
   if (!priv->m_surface) {
     priv->m_surface =
         (unsigned char *)malloc(4 * a_rect.width() * a_rect.height());
@@ -220,20 +223,6 @@ void widget::set_geometry(const QRectF &a_rect) {
         priv->m_surface, 4 * a_rect.width() * a_rect.height());
     memset(priv->m_surface, 0, 4 * a_rect.width() * a_rect.height());
   }
-
-  /*
-  // d->m_content_geometry = rect;
-  prepareGeometryChange();
-  float scale_factor = 1; // screen().scale_factor();
-  QRectF scaled_rect(a_rect.x(), a_rect.y(), a_rect.width() * scale_factor,
-                     a_rect.height() * scale_factor);
-  QGraphicsLayoutItem::setGeometry(scaled_rect);
-  setPos(a_rect.topLeft());
-
-  priv->_invoke_geometry_func(scaled_rect);
-
-  setCacheMode(ItemCoordinateCache, boundingRect().size().toSize());
-  request_update();
   */
 
   set_contents_geometry(a_rect.x(), a_rect.y(), a_rect.width(),

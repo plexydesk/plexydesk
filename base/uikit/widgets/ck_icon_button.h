@@ -19,10 +19,10 @@
 #ifndef IMAGEBUTTON_H
 #define IMAGEBUTTON_H
 
-#include <plexydesk_ui_exports.h>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 #include <ck_widget.h>
+#include <plexydesk_ui_exports.h>
 
 namespace cherry_kit {
 
@@ -37,6 +37,7 @@ public:
                           const QSizeF &a_constraint = QSizeF()) const;
 
   virtual void set_pixmap(const QPixmap &a_pixmap);
+  virtual void set_icon(const std::string &a_icon_name);
 
   virtual void set_lable(const QString &a_text);
   virtual QString text() const;
@@ -46,8 +47,7 @@ public:
 
 Q_SIGNALS:
   void selected(bool);
-private
-Q_SLOTS:
+private Q_SLOTS:
   void onZoomDone();
   void onZoomOutDone();
 

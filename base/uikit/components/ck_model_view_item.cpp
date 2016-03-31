@@ -25,7 +25,10 @@ namespace cherry_kit {
 class model_view_item::PrivateModelViewItem {
 public:
   PrivateModelViewItem() : m_view_ptr(0), m_index(0) {}
-  ~PrivateModelViewItem() {}
+  ~PrivateModelViewItem()	{
+		if (m_view_ptr)
+			delete m_view_ptr;
+	}
 
   QVariantMap m_data;
   widget *m_view_ptr;
@@ -41,9 +44,6 @@ model_view_item::model_view_item() : o_model_view_item(new PrivateModelViewItem)
 
 model_view_item::~model_view_item() {
   qDebug() << Q_FUNC_INFO;
-  if (o_model_view_item->m_view_ptr)
-    remove_view();
-
   delete o_model_view_item;
 }
 

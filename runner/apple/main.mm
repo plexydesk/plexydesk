@@ -97,7 +97,6 @@ public:
       DesktopManager *workspace = new DesktopManager();
       m_workspace_list.push_back(workspace);
 
-      workspace->set_accelerated_rendering(false);
       workspace->move_to_screen(i);
 
       workspace->add_default_controller("classicbackdrop");
