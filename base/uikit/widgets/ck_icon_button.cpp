@@ -72,10 +72,6 @@ void icon_button::set_lable(const QString &a_text) {
 
 QString icon_button::text() const { return o_image_button->m_button_text; }
 
-void icon_button::onZoomDone() {}
-
-void icon_button::onZoomOutDone() {}
-
 void icon_button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   o_image_button->m_state = PrivateImageButton::_kNormal;
   update();
@@ -83,7 +79,6 @@ void icon_button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
 }
 
 void icon_button::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  Q_EMIT selected(true);
   o_image_button->m_state = PrivateImageButton::_kPressed;
   update();
   widget::mousePressEvent(a_event_ptr);

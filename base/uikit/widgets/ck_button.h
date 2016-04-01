@@ -23,8 +23,8 @@
 
 #include <functional>
 
-#include <ck_widget.h>
 #include <ck_style.h>
+#include <ck_widget.h>
 
 #include <plexydesk_ui_exports.h>
 
