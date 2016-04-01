@@ -1,11 +1,15 @@
 set(sourceFiles
     cocoa.cpp
     cocoainterface.cpp
+    ck_platform_context.cpp
+    ck_rectf.cpp
     )
 
 set(headerFiles
     cocoa.h
     cocoainterface.h
+    ck_platform_context.h
+    ck_rectf.h
     )
 
 set(QTMOC_SRCS
@@ -23,7 +27,31 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(cocoastyle SHARED ${sourceFiles} ${QT_MOC_SRCS})
+
+#Locate cococa framework on mac
+if(APPLE)
+    include_directories(/System/Library/Frameworks)
+
+    find_library(CORE_GRAPHICS_LIBRARY ApplicationServices)
+    find_library(COCOA_LIBRARY Cocoa)
+    find_library(GLUT_LIBRARY GLUT)
+    find_library(OpenGL_LIBRARY OpenGL)
+
+
+    mark_as_advanced(COCOA_LIBRARY
+        CORE_GRAPHICS_LIBRARY
+        GLUT_LIBRARY
+        OpenGL_LIBRARY)
+
+    set(LIBRARY_NATIVE_LINK_TARGETS
+        ${CORE_GRAPHICS_LIBRARY}
+        ${COCOA_LIBRARY}
+        ${GLUT_LIBRARY}
+        ${OpenGL_LIBRARY})
+endif(APPLE)
+
+ADD_LIBRARY(cocoastyle SHARED ${sourceFiles} ${QT_MOC_SRCS}
+                              ${LIBRARY_NATIVE_LINK_TARGETS})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(cocoastyle PROPERTIES

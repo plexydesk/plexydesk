@@ -19,15 +19,14 @@
 #ifndef IMAGEBUTTON_H
 #define IMAGEBUTTON_H
 
-#include <plexydesk_ui_exports.h>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 #include <ck_widget.h>
+#include <plexydesk_ui_exports.h>
 
 namespace cherry_kit {
 
 class DECL_UI_KIT_EXPORT icon_button : public widget {
-  Q_OBJECT
 public:
   explicit icon_button(widget *a_parent_ptr = 0);
   virtual ~icon_button();
@@ -37,19 +36,13 @@ public:
                           const QSizeF &a_constraint = QSizeF()) const;
 
   virtual void set_pixmap(const QPixmap &a_pixmap);
+  virtual void set_icon(const std::string &a_icon_name);
 
   virtual void set_lable(const QString &a_text);
   virtual QString text() const;
 
   void set_background_color(const QColor &a_color);
   virtual StylePtr style() const;
-
-Q_SIGNALS:
-  void selected(bool);
-private
-Q_SLOTS:
-  void onZoomDone();
-  void onZoomOutDone();
 
 protected:
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);

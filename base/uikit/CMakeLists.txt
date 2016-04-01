@@ -42,6 +42,18 @@ set(CORE_LIB_CXX_FILES
     core/ck_extension_manager.cpp
     core/ck_style.cpp)
 
+if(APPLE)
+  set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
+       core/mac/ck_screen_impl_mac.mm
+      )
+endif()
+
+if(UNIX AND NOT APPLE)
+  set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
+       core/qt/ck_screen_impl_qt.cpp
+      )
+endif()
+
 set(CORE_LIBRARY_INTERFACE_FILES
     core/ck_desktop_controller_interface.h
     core/ck_desktop_plugin_interface.h
@@ -59,7 +71,6 @@ set(CORE_LIBRARY_HEADER_FILES
     core/ck_desktop_dialog.h
     core/ck_extension_manager.h
     core/ck_ui_action.h)
-
 #
 set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/ck_button.cpp
@@ -84,15 +95,27 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     ck_fixed_layout.cpp
     )
 
+if (WIN32)
+  set(PLATFORM_SOURCE_FILES
+    platform/ck_win32_window_context.cpp
+  )
+  set(PLATFORM_HEADER_FILES
+    platform/ck_win32_window_context.h
+  )
+endif()
+
 set(LIBRARY_SOURCE_FILES
     netwm.cpp
     ck_fixed_layout.cpp
-        ck_resource_manager.cpp
+    ck_resource_manager.cpp
     ck_config.cpp
     ck_window.cpp
     ck_workspace.cpp
     ck_session_sync.cpp
     ck_space.cpp
+    ck_device_window.cpp
+    ck_system_window_context.cpp
+    ${PLATFORM_SOURCE_FILES}
     ${LIBRARY_WIDGET_SOURCE_CXX_FILES}
     ${LIBRARY_PLATFORM_SOURCE_CXX_FILES})
 
@@ -127,6 +150,9 @@ set(LIBRARY_HEADER_FILES
     ck_workspace.h
     ck_session_sync.h
     ck_space.h
+    ck_device_window.h
+    ck_system_window_context.h
+    ${PLATFORM_HEADER_FILES}
     ${CORE_LIBRARY_HEADER_FILES}
     ${CORE_LIBRARY_INTERFACE_FILES}
     ${LIBRARY_PLATFORM_HEADERS}
@@ -173,15 +199,15 @@ add_library(${PLEXY_UI_CORE_LIBRARY} SHARED
     ${UI_FILES})
 
 if(UNIX AND NOT APPLE)
-	if(THREADS_HAVE_PTHREAD_ARG)
-		target_compile_options(PUBLIC ${PLEXY_UI_CORE_LIBRARY} "-pthread")
-	endif()
+        if(THREADS_HAVE_PTHREAD_ARG)
+                target_compile_options(PUBLIC ${PLEXY_UI_CORE_LIBRARY} "-pthread")
+        endif()
 
   set(LIBRARY_NATIVE_LINK_TARGETS
-			      ${X11_LIBRARIES}
-						${THREAD_LIBRARY}
-						${CMAKE_THREAD_LIBS_INIT}
-						)
+                              ${X11_LIBRARIES}
+                                                ${THREAD_LIBRARY}
+                                                ${CMAKE_THREAD_LIBS_INIT}
+                                                )
 endif()
 
 if(APPLE)

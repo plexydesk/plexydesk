@@ -8,6 +8,7 @@
 
 #define PLEXYPREFIX  "${CMAKE_INSTALL_PREFIX}"
 #define PLEXYLIBDIR "${CMAKE_INSTALL_LIBDIR}"
+#define CK_PLUGIN_PREFIX "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/"
 
 #ifndef PLEXYQTIMPORTSDIR
 #define PLEXYQTIMPORTSDIR "${QT_IMPORTS_INSTALL_DIR}"
@@ -28,6 +29,10 @@
 
 #ifdef BUILD_WITH_QT
 #define USE_QT ${BUILD_WITH_QT}
+
+#ifndef __QT_TOOLKIT__
+#define __QT_TOOLKIT__
+#endif
 #else
 #error "Run with -DBUILD_WITH_{toolkit_name}, for example -DBUILD_WITH_QT=ON"
 #endif

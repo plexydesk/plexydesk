@@ -32,11 +32,13 @@
 #include <QPaintDevice>
 
 #ifdef __APPLE__
-#include <CoreGraphics/CGContext.h>
-#include <CoreGraphics/CGBitmapContext.h>
-#include <CoreGraphics/CGDirectDisplay.h>
+#include <ApplicationServices/ApplicationServices.h>
+//#include <CoreGraphics/CGBitmapContext.h>
+//#include <CoreGraphics/CGDirectDisplay.h>
 #include <stdlib.h>
 #include <malloc/malloc.h>
+
+#include "ck_platform_context.h"
 
 #endif
 
@@ -75,6 +77,11 @@ public:
                      int a_thikness = 0);
   void set_default_font_size(QPainter *painter, int a_size = 8,
                              bool a_highlight = false);
+
+#ifdef __APPLE__
+  QImage *get_drawable_surface(QPainter *a_ctx);
+  CGContextRef copy_cg_context(QImage *a_surface_ptr);
+#endif
 
   QHash<QString, int> m_type_map;
   QVariantMap m_attribute_map;
@@ -254,11 +261,17 @@ void CocoaStyle::draw_window_button(const style_data &features,
                                     QPainter *painter) {
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
-#else
-  QRectF rect = features.geometry.adjusted(2, 2, -2, -2);
-#endif
+  QImage *surface_ref = d->get_drawable_surface(painter);
+  cherry_kit::graphics_context ctx(surface_ref);
 
+  if (!ctx.is_valid())
+    return;
+
+  ctx.draw_round_rect(rect.x(), rect.y(), rect.width(), rect.height(), 4.0,4.0);
+#else
+  QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
   painter->save();
+
   set_default_painter_hints(painter);
 
   QPainterPath background;
@@ -273,18 +286,14 @@ void CocoaStyle::draw_window_button(const style_data &features,
   painter->save();
 
   d->set_pen_color(painter, resource_manager::kTextBackground, 2);
-#ifdef __APPLE__
   QRectF cross_rect(12.0, 12.0, rect.width() - 12, rect.height() - 12);
-#else
-  QRectF cross_rect(8.0, 8.0, rect.width() - 12, rect.height() - 12);
-#endif
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
   painter->drawLine(cross_rect.topRight(), cross_rect.bottomLeft());
 
   painter->restore();
-
   painter->restore();
+#endif
 }
 
 #ifdef __APPLE__
@@ -346,6 +355,41 @@ void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
   _font.setPixelSize(a_size * scale_factor());
   painter->setFont(_font);
 }
+
+#ifdef __APPLE__
+QImage *CocoaStyle::PrivateCocoa::get_drawable_surface(QPainter *a_ctx) {
+  QPaintDevice *current_paint_device = a_ctx->paintEngine()->paintDevice();
+  QImage *rv = NULL;
+
+  if (current_paint_device) {
+    if (current_paint_device->devType() == QInternal::Image) {
+      rv = static_cast<QImage *>(current_paint_device);
+    }
+  }
+
+  return rv;
+}
+
+CGContextRef
+CocoaStyle::PrivateCocoa::copy_cg_context(QImage *a_surface_ptr) {
+  CGContextRef rv = nil;
+  CGColorSpaceRef colorspace =
+      CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+
+  uint flags = kCGImageAlphaPremultipliedFirst;
+  flags |= kCGBitmapByteOrder32Host;
+  rv = CGBitmapContextCreate(
+      a_surface_ptr->bits(), a_surface_ptr->width(), a_surface_ptr->height(), 8,
+      a_surface_ptr->bytesPerLine(), colorspace, flags);
+  CGContextTranslateCTM(rv, 0, a_surface_ptr->height());
+  CGContextScaleCTM(rv, 1, -1);
+
+  CGColorSpaceRelease(colorspace);
+
+  return rv;
+}
+
+#endif
 
 void CocoaStyle::draw_window_frame(const style_data &features,
                                    QPainter *a_ctx) {
@@ -450,8 +494,6 @@ void CocoaStyle::draw_window_frame(const style_data &features,
 
   a_ctx->setOpacity(1.0);
   a_ctx->restore();
-#ifdef __APPLE__
-#endif
 }
 
 void CocoaStyle::draw_clock_hands(

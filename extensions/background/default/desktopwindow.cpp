@@ -1,8 +1,8 @@
 #include "desktopwindow.h"
 
 #include <QImage>
-#include <QPixmapCache>
 #include <QPainter>
+#include <QPixmapCache>
 #include <ck_image_io.h>
 
 class desktop_window::PrivateDesktopWindow {
@@ -15,8 +15,8 @@ public:
     if (m_background_buffer)
       free(m_background_buffer);
 
-		if (m_image_service)
-			delete m_image_service;
+    if (m_image_service)
+      delete m_image_service;
 
     qDebug() << Q_FUNC_INFO;
   }
@@ -83,6 +83,9 @@ desktop_window::desktop_window()
     */
     }
   });
+
+  setCacheMode(ItemCoordinateCache);
+  //QPixmapCache::setCacheLimit(1920 * 1200 * 32);
 }
 
 desktop_window::~desktop_window() { delete priv; }
@@ -109,6 +112,7 @@ void desktop_window::set_background(const std::string &a_image_name) {
 
 void desktop_window::set_background(const QImage &a_image_name) {
   priv->m_background_texture = a_image_name;
+  setCacheMode(ItemCoordinateCache, a_image_name.size());
   update();
 }
 
@@ -122,14 +126,13 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   }
 
   a_ctx->save();
-  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform |
-                        QPainter::HighQualityAntialiasing |
-                        QPainter::Antialiasing);
+  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform);
   QRectF draw_rect;
   draw_rect.setX(a_rect.x());
   draw_rect.setY(a_rect.y());
   draw_rect.setWidth(a_rect.width());
   draw_rect.setHeight(a_rect.height());
+
   a_ctx->drawImage(draw_rect, priv->m_background_texture);
   a_ctx->restore();
 }

@@ -1,10 +1,10 @@
 #include "ck_icon_button.h"
 
-#include <QStyleOptionGraphicsItem>
-#include <QPainter>
-#include <QGraphicsSceneHoverEvent>
-#include <QPropertyAnimation>
 #include <QAbstractAnimation>
+#include <QGraphicsSceneHoverEvent>
+#include <QPainter>
+#include <QPropertyAnimation>
+#include <QStyleOptionGraphicsItem>
 #include <ck_resource_manager.h>
 
 #include <QDebug>
@@ -13,11 +13,7 @@ namespace cherry_kit {
 
 class icon_button::PrivateImageButton {
 public:
-  typedef enum {
-    _kNormal,
-    _kPressed,
-    _kHover
-  } ButtonState;
+  typedef enum { _kNormal, _kPressed, _kHover } ButtonState;
 
   PrivateImageButton() : m_state(_kNormal) {}
   ~PrivateImageButton() {}
@@ -48,7 +44,8 @@ icon_button::icon_button(widget *a_parent_ptr)
 icon_button::~icon_button() { delete o_image_button; }
 
 void icon_button::set_size(const QSize &a_size) {
-  setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
+  // setGeometry(QRectF(0, 0, a_size.width(), a_size.height()));
+  set_contents_geometry(0, 0, a_size.width(), a_size.height());
 }
 
 QSizeF icon_button::sizeHint(Qt::SizeHint which,
@@ -61,16 +58,19 @@ void icon_button::set_pixmap(const QPixmap &a_pixmap) {
   update();
 }
 
+void icon_button::set_icon(const std::string &a_icon_name) {
+  QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+      a_icon_name.c_str(), "mdpi");
+
+  set_pixmap(pixmap);
+}
+
 void icon_button::set_lable(const QString &a_text) {
   o_image_button->m_button_text = a_text;
   update();
 }
 
 QString icon_button::text() const { return o_image_button->m_button_text; }
-
-void icon_button::onZoomDone() {}
-
-void icon_button::onZoomOutDone() {}
 
 void icon_button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   o_image_button->m_state = PrivateImageButton::_kNormal;
@@ -79,7 +79,6 @@ void icon_button::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
 }
 
 void icon_button::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
-  Q_EMIT selected(true);
   o_image_button->m_state = PrivateImageButton::_kPressed;
   update();
   widget::mousePressEvent(a_event_ptr);
@@ -120,7 +119,7 @@ void icon_button::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
 
   if (cherry_kit::resource_manager::style()) {
     cherry_kit::resource_manager::style()->draw("image_button", feature,
-                                                a_painter_ptr);
+                                                a_painter_ptr, this);
   }
 }
 }

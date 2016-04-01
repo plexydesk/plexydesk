@@ -55,13 +55,13 @@ config::~config() { delete d; }
 QString config::prefix() {
 #ifdef Q_OS_WIN32
   QDir binaryPath(QCoreApplication::applicationDirPath());
-  return QDir::toNativeSeparators(binaryPath.canonicalPath());
+  return QDir::toNativeSeparators(binaryPath.canonicalPath() + "/lib/");
 #endif
 
 #ifdef Q_OS_LINUX
   QString basePath(qgetenv("PLEXYDESK_DIR"));
   if (basePath.isEmpty() || basePath.isNull()) {
-    return PLEXYPREFIX;
+    return CK_PLUGIN_PREFIX;
   }
 
   return basePath;
@@ -90,11 +90,11 @@ QString config::cache_dir(const QString &a_folder) {
 
 std::string config::icon_resource_prefix_path()
 {
-  QString prefix_path = prefix();
+  QString prefix_path = PLEXYPREFIX;
   QString rv = prefix_path;
 
 #ifdef Q_OS_MAC
-  rv = prefix_path + "/Resources/icons/";
+  rv = prefix() + "/Resources/icons/";
 #endif
 
 #ifdef Q_OS_LINUX

@@ -33,7 +33,7 @@ QSizeF image_view::sizeHint(Qt::SizeHint which,
 }
 
 void image_view::set_size(const QSizeF &size) {
-  setGeometry(QRectF(0, 0, size.width(), size.height()));
+  set_geometry(QRectF(0, 0, size.width(), size.height()));
 }
 
 void image_view::set_pixmap(const QPixmap &a_pixmap) {

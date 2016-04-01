@@ -1,16 +1,22 @@
 set(sourceFiles
     dock.cpp
     dockinterface.cpp
+    vertical_dock.cpp
+    desktop_button.cpp
     )
 
 set(headerFiles
     dock.h
     dockinterface.h
+    vertical_dock.h
+    desktop_button.h
     )
 
 set(QTMOC_SRCS
     dock.h
     dockinterface.h
+    vertical_dock.h
+    desktop_button.h
     )
 
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})

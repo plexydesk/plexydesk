@@ -28,7 +28,10 @@ namespace cherry_kit {
 class calendar_view::PrivateCalendarWidget {
 public:
   PrivateCalendarWidget() {}
-  ~PrivateCalendarWidget() {}
+  ~PrivateCalendarWidget() {
+		if (m_ui)
+			delete m_ui;
+	}
 
   int days_in_month(int a_day, int a_month, int a_year);
   int days_of_week(int a_day, int a_month, int a_year);
@@ -211,7 +214,7 @@ void calendar_view::reset() {
 
 QDate calendar_view::selected_date() const { return priv->m_current_date; }
 
-void calendar_view::set_geometry(float a_x, float a_y, float a_width,
+void calendar_view::set_view_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
   priv->m_ui->set_geometry(a_x, a_y, a_width, a_height);
 }

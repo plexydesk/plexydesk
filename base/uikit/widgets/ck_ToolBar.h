@@ -22,7 +22,7 @@ public:
 
   virtual StylePtr style() const;
 
-  virtual void setGeometry(const QRectF &a_rect);
+  virtual void set_geometry(const QRectF &a_rect);
   virtual QRectF contents_geometry() const;
   virtual QRectF frame_geometry() const;
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;

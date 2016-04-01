@@ -1,34 +1,57 @@
 #include "ck_screen.h"
 
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QRectF>
+#ifdef __X11_PLATFORM__
+#include <core/qt/ck_screen_impl_qt.h>
+#endif
+
+#ifdef __APPLE_PLATFORM__
+#include <core/mac/ck_screen_impl_mac.h>
+#endif
+
+#ifdef __WINDOWS__PLATFORM__
+#error "Windows Platform Screen Support not Implemented"
+#endif
 
 namespace cherry_kit {
-class screen::private_screen {
-public:
-    private_screen() {}
-    ~private_screen() {}
-};
 
-screen::screen() : priv(new private_screen)
-{
+screen *screen::__self = 0;
+
+screen *screen::get() {
+   if (__self)
+       return __self;
+
+   __self = new screen();
+
+   return __self;
 }
 
-screen::~screen(){
-    delete priv;
+screen::screen() : priv(new platform_screen) {}
+
+screen::~screen() { delete priv; }
+
+int screen::screen_count() const { return priv->screen_count(); }
+
+float screen::scale_factor(int a_display_id) const {
+  return priv->scale_factor(a_display_id);
 }
 
-int screen::screen_count() {
-    return qApp->desktop()->screenCount();
+int screen::x_resolution(int a_display_id) const {
+  return priv->display_width(a_display_id);
 }
 
-float screen::virtual_desktop_width() {
-  return 1920.0f;
+int screen::y_resolution(int a_display_id) const {
+  return priv->display_height(a_display_id);
 }
 
-float screen::virtual_desktop_height() {
-    return 1080.0f;
+float screen::desktop_height(int a_display_id) const {
+  return priv->desktop_height(a_display_id);
 }
 
+void screen::change_notifications(display_change_notify_callback_t a_callback) {
+  m_notify_chain.push_back(a_callback);
+}
+
+float screen::desktop_width(int a_display_id) const {
+  return priv->desktop_width(a_display_id);
+}
 }

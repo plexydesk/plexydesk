@@ -82,7 +82,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_geometry = a_window_geometry;
 
   priv->m_window = new cherry_kit::window();
-  priv->m_window->setGeometry(a_window_geometry);
+  priv->m_window->set_geometry(a_window_geometry);
   priv->m_window->set_window_title(a_window_title);
 
   cherry_kit::fixed_layout *ck_ui =
@@ -90,7 +90,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
 
   priv->m_ck_layout = ck_ui;
 
-  ck_ui->set_content_margin(2, 2, 2, 2);
+  ck_ui->set_content_margin(4, 4, 4, 4);
   ck_ui->set_geometry(0, 0, a_window_geometry.width(),
                       a_window_geometry.height());
 
@@ -106,11 +106,17 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   cherry_kit::widget *ck_icon_gird = ck_ui->add_widget(0, 0, "widget", ui_data, [=]() {});
   priv->m_image_view = new cherry_kit::item_view(
       ck_icon_gird, cherry_kit::item_view::kGridModel);
+
+	priv->m_image_view->on_item_removed(
+			[=](cherry_kit::model_view_item *a_item) {delete a_item;});
+
+  priv->m_image_view->set_content_size(128, 128);
+  priv->m_image_view->set_column_count(5);
   priv->m_image_view->set_enable_scrollbars(true);
   priv->m_image_view->set_content_spacing(0);
 
   ck_icon_gird->on_geometry_changed([&](const QRectF &a_rect) {
-    priv->m_image_view->setGeometry(a_rect);
+    priv->m_image_view->set_geometry(a_rect);
   });
 
   ui_data["label"] = "";
@@ -132,7 +138,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
   priv->m_progress_window = new cherry_kit::window(priv->m_window);
   priv->m_progress_window->set_window_type(
       cherry_kit::window::kNotificationWindow);
-  priv->m_progress_window->setGeometry(QRectF(0, 0, 320, 240));
+  priv->m_progress_window->set_geometry(QRectF(0, 0, 320, 240));
   priv->m_progress_widget =
       new cherry_kit::progress_bar(priv->m_progress_window);
   priv->m_progress_widget->set_range(1, 100);
@@ -195,7 +201,6 @@ void desktop_settings_dialog::purge() {
 void
 desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
                                               const std::string &a_file_url) {
-
   if (ck_preview_pixmap.isNull()) {
     qWarning() << Q_FUNC_INFO << "Null image in list";
     return;
@@ -216,16 +221,7 @@ desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
   cherry_kit::model_view_item *ck_preview_item =
       new cherry_kit::model_view_item();
 
-  ck_preview_item->on_view_removed([](cherry_kit::model_view_item *item) {
-    if (item && item->view()) {
-      cherry_kit::widget *view = item->view();
-      if (view)
-        delete view;
-    }
-  });
-
-  ck_image_preview->setGeometry(QRectF(0, 0, width, height));
-  ck_image_preview->setMinimumSize(width, height);
+  ck_image_preview->set_contents_geometry(0, 0, width, height);
 
   ck_preview_item->set_view(ck_image_preview);
   priv->m_image_view->insert(ck_preview_item);

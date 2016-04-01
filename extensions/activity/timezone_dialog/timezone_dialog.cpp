@@ -65,13 +65,13 @@ void timezone_dialog::create_window(const QRectF &aWindowGeometry,
 
   m_priv_ptr->m_content_widget_ptr =
       new cherry_kit::widget(m_priv_ptr->m_window_ptr);
-  m_priv_ptr->m_content_widget_ptr->setGeometry(aWindowGeometry);
+  m_priv_ptr->m_content_widget_ptr->set_geometry(aWindowGeometry);
 
   m_priv_ptr->m_filter_widget_ptr =
       new cherry_kit::line_edit(m_priv_ptr->m_content_widget_ptr);
-  m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width() - 16,
-                                                  32);
-  m_priv_ptr->m_filter_widget_ptr->setGeometry(QRectF(8, 0, 0, 0));
+  //m_priv_ptr->m_filter_widget_ptr->setMinimumSize(aWindowGeometry.width() - 16,
+   //                                               32);
+  m_priv_ptr->m_filter_widget_ptr->set_geometry(QRectF(8, 0, 0, 0));
 
   m_priv_ptr->m_timezone_browser_ptr =
       new cherry_kit::item_view(m_priv_ptr->m_content_widget_ptr);
@@ -81,13 +81,14 @@ void timezone_dialog::create_window(const QRectF &aWindowGeometry,
                aWindowGeometry.height() -
                m_priv_ptr->m_filter_widget_ptr->minimumHeight()));
                */
+
   m_priv_ptr->m_timezone_browser_ptr->set_view_geometry(
       QRectF(0, 0, aWindowGeometry.width() - 16,
              aWindowGeometry.height() -
-                 m_priv_ptr->m_filter_widget_ptr->minimumHeight()));
+                 m_priv_ptr->m_filter_widget_ptr->boundingRect().height()));
 
   m_priv_ptr->m_timezone_browser_ptr->setPos(
-      18, m_priv_ptr->m_filter_widget_ptr->minimumHeight() + 8);
+      18, m_priv_ptr->m_filter_widget_ptr->boundingRect().height() + 8);
 
   m_priv_ptr->m_filter_widget_ptr->show();
 
@@ -190,8 +191,9 @@ void timezone_dialog::loadTimeZones() {
 
     lTimeZoneLabelPtr->set_alignment(Qt::AlignLeft);
 
-    lTimeZoneLabelPtr->setMinimumSize(
-        m_priv_ptr->m_timezone_browser_ptr->geometry().width(), 32);
+    //lTimeZoneLabelPtr->setMinimumSize(
+    //    m_priv_ptr->m_timezone_browser_ptr->geometry().width(), 32);
+
     lTimeZoneLabelPtr->set_size(
         QSizeF(m_priv_ptr->m_timezone_browser_ptr->boundingRect().width(), 32));
     lTimeZoneLabelPtr->set_text(l_time_zone_lable_str);

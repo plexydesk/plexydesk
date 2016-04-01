@@ -73,7 +73,7 @@ cherry_kit::ui_action desktop_task_controller_impl::task() {
   task.set_name("Record");
   task.set_visible(1);
   task.set_controller(controller_name().toStdString());
-  task.set_icon("panel/ck_add.png");
+  task.set_icon("navigation/ck_do.png");
 
   cherry_kit::ui_action note_action;
   note_action.set_name("Note");
@@ -155,7 +155,7 @@ void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
 void desktop_task_controller_impl::createNoteUI(
     cherry_kit::session_sync *a_session) {
   cherry_kit::window *window = new cherry_kit::window();
-  window->setGeometry(QRectF(0, 0, 320, 240));
+  window->set_geometry(QRectF(0, 0, 320, 240));
 
   NoteWidget *note = new NoteWidget(a_session, window);
   note->set_controller(this);
@@ -252,13 +252,13 @@ void desktop_task_controller_impl::createReminderUI(
   view->add_widget(0, 0, "text_edit", text_editor_prop, [=]() {});
 
   accept_button_prop["label"] = "";
-  accept_button_prop["icon"] = "toolbar/ck_event.png";
+  accept_button_prop["icon"] = "toolbar/ck_calendar.png";
   view->add_widget(1, 0, "image_button", accept_button_prop, [=]() {});
 
   if (a_session->session_keys().contains("state") &&
       (a_session->session_data("state").toString() == "done")) {
     accept_button_prop["label"] = "";
-    accept_button_prop["icon"] = "toolbar/ck_play.png";
+    accept_button_prop["icon"] = "toolbar/ck_checkmark2.png";
 
     cherry_kit::text_editor *editor =
         dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
@@ -268,17 +268,17 @@ void desktop_task_controller_impl::createReminderUI(
     }
   } else {
     accept_button_prop["label"] = "";
-    accept_button_prop["icon"] = "toolbar/ck_ok.png";
+    accept_button_prop["icon"] = "toolbar/ck_checkmark.png";
   }
 
   view->add_widget(1, 1, "image_button", accept_button_prop,[=]() {});
 
   accept_button_prop["label"] = "";
-  accept_button_prop["icon"] = "toolbar/ck_save.png";
+  accept_button_prop["icon"] = "toolbar/ck_floppy-disk.png";
   view->add_widget(1, 2, "image_button", accept_button_prop, [=]() {});
 
   accept_button_prop["label"] = "";
-  accept_button_prop["icon"] = "toolbar/ck_delete.png";
+  accept_button_prop["icon"] = "toolbar/ck_bin.png";
   view->add_widget(1, 3, "image_button", accept_button_prop, [=]() {});
 
   window->set_window_content(view->viewport());
@@ -346,10 +346,10 @@ void desktop_task_controller_impl::createReminderUI(
       cherry_kit::widget_properties_t update_prop;
       if (is_complete) {
         update_prop["label"] = "";
-        update_prop["icon"] = "toolbar/ck_ok.png";
+        update_prop["icon"] = "toolbar/ck_checkmark2.png";
       } else {
         update_prop["label"] = "";
-        update_prop["icon"] = "toolbar/ck_play.png";
+        update_prop["icon"] = "toolbar/ck_checkmark.png";
       }
 
       view->update_property(1, 1, update_prop);
@@ -388,7 +388,8 @@ void desktop_task_controller_impl::createReminderUI(
     set_btn->on_click(func);
   }
 
-  window->on_window_discarded([this](cherry_kit::window *aWindow) {
+  window->on_window_discarded([=](cherry_kit::window *aWindow) {
+	  delete view;
     delete aWindow;
   });
 

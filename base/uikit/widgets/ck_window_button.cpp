@@ -36,7 +36,7 @@ public:
 
 window_button::window_button(widget *parent)
     : button(parent), priv(new PrivateWindowButton) {
-  setGeometry(boundingRect());
+  set_geometry(boundingRect());
   priv->mType = CLOSE;
 }
 
@@ -53,10 +53,10 @@ QRectF window_button::boundingRect() const {
 
   return QRectF(0.0, 0.0, resource_manager::style()
                               ->attribute("frame", "window_close_button_width")
-                              .toFloat(),
+                              .toFloat() * resource_manager::style()->scale_factor(),
                 resource_manager::style()
                     ->attribute("frame", "window_close_button_height")
-                    .toFloat());
+                    .toFloat() * resource_manager::style()->scale_factor());
 }
 
 void window_button::paint_normal_button(QPainter *a_painter_ptr,

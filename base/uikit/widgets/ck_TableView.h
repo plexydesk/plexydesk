@@ -43,7 +43,7 @@ public:
   virtual void clear_selection();
 
   virtual QRectF boundingRect() const;
-  virtual void setGeometry(const QRectF &a_rect);
+  virtual void set_geometry(const QRectF &a_rect);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 
   virtual table_view_item *itemAt(uint i);

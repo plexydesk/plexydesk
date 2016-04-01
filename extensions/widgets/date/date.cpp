@@ -138,7 +138,7 @@ cherry_kit::ui_action date_controller::task() {
   task.set_name("Organize");
   task.set_visible(1);
   task.set_controller(controller_name().toStdString());
-  task.set_icon("panel/ck_add.png");
+  task.set_icon("navigation/ck_organize.png");
 
   cherry_kit::ui_action cal_task;
   cal_task.set_name("Calendar");
@@ -206,7 +206,7 @@ time_segment *date_controller::insert_time_element(
     break;
   };
 
-  ck_base_view->setMinimumSize(a_view->boundingRect().width(), 32);
+  ck_base_view->set_contents_geometry(0, 0,a_view->boundingRect().width(), 32);
   ck_item_lbl->set_alignment(Qt::AlignHCenter | Qt::AlignVCenter);
   ck_item_lbl->set_text(time_str);
   ck_item_lbl->set_size(QSize(64, 32));
@@ -272,6 +272,11 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   ui->add_widget(0, 0, "calendar", ui_data, [=]() {});
   ck_model_view = dynamic_cast<cherry_kit::item_view *>(
               ui->add_widget(1, 0, "model_view", ui_data, [=] () {}));
+  ck_model_view->set_content_size(320, 64);
+
+	ck_model_view->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    delete a_item;	
+	});
 
   time_segment_list_t time_segment_list;
 
@@ -398,6 +403,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
     a_session->unbind_window(aWindow);
     ck_model_view->clear();
     ck_timer->stop();
+		delete ui;
     delete ck_timer;
     delete aWindow;
   });

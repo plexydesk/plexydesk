@@ -73,6 +73,7 @@ text_input_dialog::~text_input_dialog() { delete priv; }
 void text_input_dialog::create_window(const QRectF &window_geometry,
                                             const QString &window_title,
                                             const QPointF &window_pos) {
+  /*
   if (has_attribute("geometry")) {
     priv->mBoundingRect = attributes()["geometry"].toRect();
   } else {
@@ -81,7 +82,7 @@ void text_input_dialog::create_window(const QRectF &window_geometry,
 
   // todo: invoke UI
   priv->mFrame = new cherry_kit::window();
-  priv->mFrame->setGeometry(geometry());
+  priv->mFrame->set_geometry(geometry());
   priv->mFrame->setVisible(true);
   priv->mFrame->set_widget_name("Message Dialog");
 
@@ -148,6 +149,7 @@ void text_input_dialog::create_window(const QRectF &window_geometry,
 
   this->exec();
   show_activity();
+  */
 }
 
 QString text_input_dialog::error_message() const { return QString(); }

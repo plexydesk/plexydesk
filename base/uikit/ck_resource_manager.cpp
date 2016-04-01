@@ -64,19 +64,18 @@ public:
 resource_manager::resource_manager(const QString &a_theme_name)
     : priv(new ThemepackLoaderPrivate) {
   set_color_scheme("default");
-
-  QString theme_prefix = config::instance()->prefix();
-
-
-  //QString theme_base_path = "Resources/icons/";
-  //QString theme_pack_path = theme_prefix + "/" + theme_base_path;
   QString theme_pack_path = config::icon_resource_prefix_path().c_str();
 
   priv->m_resource_group = QDir::toNativeSeparators(theme_pack_path);
   priv->m_resource_name = a_theme_name;
 
+#ifndef __APPLE__
   priv->m_current_style_ref =
-      cherry_kit::extension_manager::instance()->style("cocoastyle");
+      cherry_kit::extension_manager::instance()->style("simplegray");
+#else
+  priv->m_current_style_ref =
+      cherry_kit::extension_manager::instance()->style("simplegray");
+#endif
 }
 
 resource_manager::~resource_manager() {

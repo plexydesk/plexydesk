@@ -31,6 +31,7 @@
 #include <ck_config.h>
 #include <ck_extension_manager.h>
 #include <ck_resource_manager.h>
+#include <ck_system_window_context.h>
 
 #if defined(Q_OS_LINUX)
 #include <stdio.h>
@@ -192,8 +193,9 @@ private:
 #endif
 public:
   Runtime(const char *a_platform_name = 0) {
-    for (int i = 0; i < cherry_kit::screen::screen_count() ; i++) {
+    for (int i = 0; i < cherry_kit::screen::get()->screen_count() ; i++) {
       DesktopManager *workspace = new DesktopManager();
+      //workspace->set_accelerated_rendering(true);
 
       workspace->move_to_screen(i);
       m_workspace_list.push_back(workspace);
@@ -223,7 +225,7 @@ public:
                           NET::WMDesktop);
           info.setDesktop(NETWinInfo::OnAllDesktops);
           info.setWindowType(NET::Desktop);
-        } 
+        }
         // handle wayland
       }
 #endif
@@ -234,6 +236,7 @@ public:
       HWND hDefView =
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
       HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
+      HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
 
       if (!folderView)
           qApp->quit();
@@ -243,11 +246,9 @@ public:
           qApp->quit();
          return;
       } else {
-         if (SetParent((HWND)workspace->winId(), hShellWnd) == NULL)
+         if (SetParent((HWND)workspace->winId(), ProgmanHwnd) == NULL)
           qApp->quit();
       }
-
-
 
       LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
       LONG current_window_ex_style = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
@@ -277,6 +278,7 @@ public:
                        | WS_EX_COMPOSITED
                        | WS_EX_TRANSPARENT
                        | WS_EX_ACCEPTFILES
+                       | WS_EX_TOOLWINDOW
                        );
 
       SetWindowLongPtr((HWND) workspace->viewport()->winId(), GWL_EXSTYLE,
@@ -286,7 +288,6 @@ public:
                        | WS_EX_TRANSPARENT
                        | WS_EX_ACCEPTFILES
                        );
-
 
       SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST,
                    0, 0, 0, 0,
@@ -304,12 +305,9 @@ public:
                    | SWP_NOZORDER
                    | SWP_NOOWNERZORDER);
 
-
-      HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
       PDWORD_PTR result = 0;
       ::SendMessageTimeout(ProgmanHwnd, 0x052C, 0xD, 0x1, SMTO_NORMAL, 1000, result);
-
-      SendMessage(hDefView, 0x0112, 0xF060, 0);
+      cherry_kit::system_window_context::get()->hide_native_desktop();
 #endif
     }
   }
@@ -330,10 +328,13 @@ private:
 };
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
+#ifdef Q_OS_WIN32
   __reset_session_log();
   qInstallMessageHandler(__sync_session_log);
+#endif
 
   char *runtime_platform_name = 0;
+
 #ifdef Q_OS_LINUX
   for (int i = 0; i < argc; i++) {
     if ((strcmp(argv[i], "-platform") != 0) ||
@@ -350,6 +351,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
   }
   printf("Detected Platform %s\n", runtime_platform_name);
 #endif
+
   QApplication app(argc, argv);
   cherry_kit::extension_manager *loader = 0;
 
@@ -357,15 +359,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/share/plexy/ext/groups/")),
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
-                               QLatin1String("/lib/plexyext/")));
-#ifndef Q_WS_QPA
-  QString appIconPath =
-      cherry_kit::config::instance()->prefix() + "/share/plexy/plexydesk.png";
-  QIcon appIcon = QIcon(QDir::toNativeSeparators(appIconPath));
-  app.setWindowIcon(appIcon);
-  app.setApplicationName(QString(PLEXYNAME));
-  QApplication::setQuitOnLastWindowClosed(true);
-#endif
+                               QLatin1String("/plexyext/")));
 
   Runtime runtime(runtime_platform_name);
 

@@ -41,6 +41,7 @@
 #include <ck_workspace.h>
 #include <ck_image_view.h>
 #include <ck_icon_button.h>
+#include <ck_system_window_context.h>
 
 #include "desktopwindow.h"
 
@@ -100,6 +101,7 @@ void desktop_controller_impl::init() {
       delete o_ctr->m_background_window;
   });
 
+  qDebug() << Q_FUNC_INFO << "insert Window";
   insert(o_ctr->m_background_window);
 }
 
@@ -152,27 +154,26 @@ void desktop_controller_impl::submit_session_data(
 
 void desktop_controller_impl::create_task_group() const {
   o_ctr->m_supported_action.set_name("Configure");
-  o_ctr->m_supported_action.set_icon("panel/ck_add.png");
+  o_ctr->m_supported_action.set_icon("navigation/ck_configure.png");
   o_ctr->m_supported_action.set_visible(1);
   o_ctr->m_supported_action.set_controller(controller_name().toStdString());
 
   cherry_kit::ui_action bg_task;
   bg_task.set_name("Desktop");
-  bg_task.set_icon("panel/ck_add.png");
+  bg_task.set_icon("navigation/ck_add.png");
   bg_task.set_visible(true);
   bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
                        const cherry_kit::ui_task_data_t &a_data) {
     if (!viewport())
       return;
 
-    QRectF dialog_window_geometry(0, 0, 672, 660);
+    QRectF dialog_window_geometry(0, 0, 672, 340);
     QPointF qt_activity_window_location = viewport()->center(
         dialog_window_geometry,
-        QRectF(o_ctr->m_background_window->x(), o_ctr->m_background_window->y(),
-               o_ctr->m_background_window->geometry().width(),
-               o_ctr->m_background_window->geometry().height()),
-        cherry_kit::space::kCenterOnWindow);
+        QRectF(),
+        cherry_kit::space::kCenterOnViewport);
 
+    qDebug() << Q_FUNC_INFO << "Desktop Settings Dialog : " << qt_activity_window_location;
     cherry_kit::desktop_dialog_ref ck_activity =
         viewport()->open_desktop_dialog("desktop_settings_dialog", "Desktop",
                                         qt_activity_window_location,
@@ -190,7 +191,7 @@ void desktop_controller_impl::create_task_group() const {
 
   cherry_kit::ui_action seamless_task;
   seamless_task.set_name("Seamless");
-  seamless_task.set_icon("panel/ck_seamless.png");
+  seamless_task.set_icon("navigation/ck_expose.png");
   seamless_task.set_id(1);
   seamless_task.set_visible(1);
   seamless_task.set_task([this](const cherry_kit::ui_action *a_ref,
@@ -200,13 +201,13 @@ void desktop_controller_impl::create_task_group() const {
 
   cherry_kit::ui_action dock_task;
   dock_task.set_name("Dock");
-  dock_task.set_icon("panel/ck_add.png");
+  dock_task.set_icon("navigation/ck_add.png");
   dock_task.set_id(1);
   dock_task.set_visible(1);
   dock_task.set_task([this](const cherry_kit::ui_action *a_ref,
                             const cherry_kit::ui_task_data_t &a_data) {
     cherry_kit::window *ck_window = new cherry_kit::window();
-    ck_window->setGeometry(QRectF(0, 0, 400, 400));
+    ck_window->set_geometry(QRectF(0, 0, 400, 400));
     ck_window->set_window_title("Dock Settings");
 
     ck_window->on_window_discarded([=](cherry_kit::window *a_window) {
@@ -284,17 +285,7 @@ void desktop_controller_impl::expose_platform_desktop() const {
 
     if (ck_workspace) {
 #ifdef Q_OS_WIN32
-      if (!_is_seamless_set) {
-        SetParent((HWND)ck_workspace->winId(), NULL);
-      } else {
-        HWND hShellWnd = GetShellWindow();
-        HWND hDefView =
-            FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
-        HWND hFolderView =
-            FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
-
-        SetParent((HWND)ck_workspace->winId(), hFolderView);
-      }
+      cherry_kit::system_window_context::get()->hide_native_desktop();
 #endif
     }
   }
@@ -398,7 +389,9 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
 
 void desktop_controller_impl::set_view_rect(const QRectF &rect) {
   if (o_ctr->m_background_window) {
-    o_ctr->m_background_window->setGeometry(rect);
+    o_ctr->m_background_window->set_contents_geometry(0, 0, rect.width(),
+				rect.height());
+        o_ctr->m_background_window->set_coordinates(rect.x(), rect.y());
   }
 }
 

@@ -93,7 +93,7 @@ void icon_dialog::create_window(const QRectF &window_geometry,
 
   priv->window_ref = new cherry_kit::window();
   priv->window_ref->set_window_title(window_title);
-  priv->window_ref->setGeometry(window_geometry);
+  priv->window_ref->set_geometry(window_geometry);
 
   priv->m_grid_view = new cherry_kit::item_view(
       priv->window_ref, cherry_kit::item_view::kGridModel);
@@ -142,7 +142,7 @@ void icon_dialog::create_window(const QRectF &window_geometry,
 
         set_geometry(_content_rect);
 
-        priv->window_ref->setGeometry(_content_rect);
+        priv->window_ref->set_geometry(_content_rect);
       }
     }
 
@@ -156,7 +156,7 @@ void icon_dialog::create_window(const QRectF &window_geometry,
       _content_rect.setHeight(_content_rect.height() + 2);
 
       priv->m_grid_view->set_view_geometry(_content_rect);
-      priv->m_grid_view->setGeometry(_content_rect);
+      priv->m_grid_view->set_geometry(_content_rect);
       priv->window_ref->resize(_content_rect.width(), _content_rect.height());
     }
   });
@@ -202,20 +202,19 @@ widget *Action::createActionItem(const QString &aIcon, const QString &aLabel,
   QPixmap l_view_pixmap(
       cherry_kit::resource_manager::instance()->drawable(aIcon, "mdpi"));
   l_image_view->set_pixmap(l_view_pixmap);
-  l_image_view->setMinimumSize(item_icon_size);
   l_image_view->set_size(item_icon_size);
 
   l_action_label->set_size(item_label_size);
   l_action_label->setPos(0, l_image_view->geometry().height());
 
-  l_rv->setGeometry(l_image_view->geometry());
+  l_rv->set_geometry(l_image_view->geometry());
 
   QSizeF l_action_item_size;
   l_action_item_size.setHeight(l_image_view->boundingRect().height() +
                                l_action_label->boundingRect().height());
   l_action_item_size.setWidth(l_image_view->boundingRect().width());
 
-  l_rv->setMinimumSize(l_action_item_size);
+  ///l_rv->setMinimumSize(l_action_item_size);
 
   l_image_view->on_click([this]() {
     if (m_action_handler) {

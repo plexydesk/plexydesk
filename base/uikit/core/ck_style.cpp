@@ -19,6 +19,7 @@
 
 #include <QVariant>
 #include <ck_style.h>
+#include <ck_screen.h>
 
 namespace cherry_kit {
 
@@ -35,10 +36,6 @@ QString style::color(const QString &a_element) const {
 }
 
 float style::scale_factor() {
-#ifdef __APPLE__
-  return 1.5f;
-#endif
-
-  return 1.5f;
+  return screen::get()->scale_factor(0);
 }
 }

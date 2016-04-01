@@ -16,13 +16,14 @@ option(BUILD_WITH_QT "Enable Qt ToolKit to Build PlexyDesk" ON)
 option(BUILD_OPTIMIZED "Enable Compiler Optimizations" OFF)
 
 if(BUILD_WITH_QT)
-	add_definitions(-DBUILD_WITH_QT=1)
+  add_definitions(-DBUILD_WITH_QT=1)
+  add_definitions(-D__QT_TOOLKIT__)
 endif()
 
 if(BUILD_OPTIMIZED)
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native")
-	endif()
+        endif()
 endif()
 #check if the compiler support c++11
 include(CheckCXXCompilerFlag)
@@ -78,10 +79,22 @@ find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED Gui Core Xml Widgets Network)
 
 
 if (UNIX AND NOT APPLE)
-    find_package(Threads REQUIRED)
-    find_package(X11)
-    find_package(Qt5X11Extras)
+  find_package(Threads REQUIRED)
+  find_package(X11 REQUIRED)
+  find_package(Qt5X11Extras)
+
+  if (${X11_FOUND})
+    add_definitions(-D__X11_PLATFORM__)
+  endif()
 endif(UNIX AND NOT APPLE)
+
+if (APPLE)
+  add_definitions(-D__APPLE_PLATFORM__)
+endif()
+
+if (WIN32)
+  add_definitions(-D__WINDOWS_PLATFORM__)
+endif()
 
 # Project variables that need to be defined manually
 set(LIB_MAJOR 1)
@@ -98,12 +111,12 @@ set(APPLICATION_MAIN_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
 #Library Names
 if (BUILD_WITH_QT)
   set(APPLICATION_EXE_NAME plexydesk)
-	set(PLEXY_UI_CORE_LIBRARY CherryKitQt)
+        set(PLEXY_UI_CORE_LIBRARY CherryKitQt)
   set(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKitQt)
   set(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKitQt)
 else()
   set(APPLICATION_EXE_NAME plexydesk)
-	set(PLEXY_UI_CORE_LIBRARY CherryKit)
+        set(PLEXY_UI_CORE_LIBRARY CherryKit)
   set(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKit)
   set(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKit)
 endif()
@@ -148,7 +161,7 @@ endif (NOT WIN32)
 
 if (APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gdwarf-2")
-endif (APPLE) 
+endif (APPLE)
 
 
 
@@ -176,7 +189,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -O1")
     endif()
-		
+
     set(WIN_APPLICATION "")
 else(CMAKE_BUILD_TYPE MATCHES "Release")
     # Note: the WIN32 is ignored on other platforms than Windows
@@ -349,6 +362,11 @@ add_subdirectory(extensions/data/timer)
 #add_subdirectory(extensions/activity/template_dialog)
 add_subdirectory(extensions/activity/)
 
-add_subdirectory(extensions/style/cocoa)
+if (APPLE)
+ #this style works only on Mac OS.
+ add_subdirectory(extensions/style/cocoa)
+endif()
+
+add_subdirectory(extensions/style/simple_gray)
 
 add_subdirectory(artwork/packs/)

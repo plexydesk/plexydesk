@@ -60,7 +60,7 @@ text_editor::text_editor(widget *parent)
   priv->m_proxy_widget = new QGraphicsProxyWidget(this);
   priv->m_text_editor = new PrivateTextBrowser(0);
   priv->m_text_editor->setFontPointSize(
-     8 * resource_manager::style()->scale_factor());
+     14 * resource_manager::style()->scale_factor());
   priv->m_text_editor->setReadOnly(false);
   priv->m_text_editor->setAcceptRichText(true);
   priv->m_text_editor->setAutoFormatting(QTextEdit::AutoAll);
@@ -132,14 +132,14 @@ QSizeF text_editor::sizeHint(Qt::SizeHint which,
   return priv->m_text_editor->size();
 }
 
-void text_editor::setGeometry(const QRectF &a_rect) {
+void text_editor::set_geometry(const QRectF &a_rect) {
   priv->m_proxy_widget->setMinimumSize(a_rect.size());
   priv->m_proxy_widget->setMaximumSize(a_rect.size());
   priv->m_proxy_widget->resize(a_rect.size());
   priv->m_text_editor->resize(a_rect.width(), a_rect.height());
   priv->m_text_editor->move(0.0, 0.0);
 
-  widget::setGeometry(a_rect);
+  widget::set_geometry(a_rect);
   update_scrollbars();
 }
 
@@ -148,7 +148,7 @@ void text_editor::update_text_scale() {
   const QRectF newBounds(bounds.x(), bounds.y(),
                          bounds.width() / priv->m_text_scale_factor,
                          bounds.height() / priv->m_text_scale_factor);
-  setGeometry(newBounds);
+  set_geometry(newBounds);
 
   priv->m_proxy_widget->setMinimumSize(newBounds.size());
   priv->m_proxy_widget->setMaximumSize(newBounds.size());

@@ -21,15 +21,17 @@
 #include <ck_extension_manager.h>
 #include <ck_memory_sync_engine.h>
 
-
 typedef std::function<void(const QString &)> on_title_callback_func;
 typedef std::function<void(const QString &, const QString &)>
-on_config_callback_func;
+    on_config_callback_func;
 
 class NoteWidget::PrivateNoteWidget {
 public:
   PrivateNoteWidget() {}
-  ~PrivateNoteWidget() {}
+  ~PrivateNoteWidget() {
+		if (m_ui)
+			delete m_ui;
+	}
 
   void initDataStore();
 
@@ -57,7 +59,7 @@ public:
   // new ui
   cherry_kit::fixed_layout *m_ui;
 
-  std::function<void ()> m_on_delete_func;
+  std::function<void()> m_on_delete_func;
 };
 
 void NoteWidget::createToolBar() {
@@ -96,7 +98,7 @@ void NoteWidget::on_note_config_changed(
   d->m_on_config_callback_func_list.push_back(a_callback);
 }
 
-void NoteWidget::on_note_deleted(std::function<void ()> a_callback) {
+void NoteWidget::on_note_deleted(std::function<void()> a_callback) {
   d->m_on_delete_func = a_callback;
 }
 
@@ -122,7 +124,7 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   text_editor_prop["text"] = "";
 
   d->m_text_editor_widget = dynamic_cast<cherry_kit::text_editor *>(
-              d->m_ui->add_widget(0, 0, "text_edit", text_editor_prop, [=]() {}));
+      d->m_ui->add_widget(0, 0, "text_edit", text_editor_prop, [=]() {}));
 
   cherry_kit::widget_properties_t button_props;
 
@@ -131,58 +133,52 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   d->m_ui->add_widget(1, 0, "image_button", button_props, [=]() {});
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_increase.png";
+  button_props["icon"] = "toolbar/ck_copy.png";
   d->m_ui->add_widget(1, 1, "image_button", button_props, [=]() {});
-
-  button_props["label"] = "";
-  button_props["icon"] = "actions/pd_copy_text.png";
-  cherry_kit::icon_button *copy_btn = dynamic_cast<cherry_kit::icon_button *>
-          (d->m_ui->add_widget(1, 2, "image_button", button_props, [=]() {}));
+  cherry_kit::icon_button *copy_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 1, "image_button", button_props, [=]() {}));
   copy_btn->on_click([this]() {});
 
   button_props["label"] = "";
-  button_props["icon"] = "actions/pd_paste_text.png";
-  cherry_kit::icon_button *paste_btn = dynamic_cast<cherry_kit::icon_button *>
-          (d->m_ui->add_widget(1, 3, "image_button", button_props, [=]() {}));
+  button_props["icon"] = "toolbar/ck_paste.png";
+  cherry_kit::icon_button *paste_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 2, "image_button", button_props, [=]() {}));
   paste_btn->on_click([this]() {});
 
   button_props["label"] = "";
+  button_props["icon"] = "toolbar/ck_white_selection.png";
+  cherry_kit::icon_button *white_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 3, "image_button", button_props, [=]() {}));
+  white_btn->on_click([this]() { exec_toolbar_action("white"); });
+
+  button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_red_selection.png";
-  cherry_kit::icon_button *red_btn = dynamic_cast<cherry_kit::icon_button *>
-          (d->m_ui->add_widget(1, 4, "image_button", button_props, [=]() {}));
-  red_btn->on_click([this]() {
-    exec_toolbar_action("red");
-  });
+  cherry_kit::icon_button *red_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 4, "image_button", button_props, [=]() {}));
+  red_btn->on_click([this]() { exec_toolbar_action("red"); });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_blue_selection.png";
-  cherry_kit::icon_button *blue_btn = dynamic_cast<cherry_kit::icon_button *>
-          (d->m_ui->add_widget(1, 5, "image_button", button_props, [=]() {}));
-  blue_btn->on_click([this]() {
-    exec_toolbar_action("blue");
-  });
+  cherry_kit::icon_button *blue_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 5, "image_button", button_props, [=]() {}));
+  blue_btn->on_click([this]() { exec_toolbar_action("blue"); });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_yellow_selection.png";
-  cherry_kit::icon_button *yellow_btn =
-      dynamic_cast<cherry_kit::icon_button *>
-          (d->m_ui->add_widget(1, 6, "image_button", button_props, [=]() {}));
-  yellow_btn->on_click([this]() {
-      exec_toolbar_action("yellow");
-  });
+  cherry_kit::icon_button *yellow_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 6, "image_button", button_props, [=]() {}));
+  yellow_btn->on_click([this]() { exec_toolbar_action("yellow"); });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_green_selection.png";
-  cherry_kit::icon_button *green_btn  = dynamic_cast<cherry_kit::icon_button*>(
-              d->m_ui->add_widget(1, 7, "image_button", button_props, [=]() {}));
-  green_btn->on_click([this]() {
-      exec_toolbar_action("green");
-  });
+  cherry_kit::icon_button *green_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 7, "image_button", button_props, [=]() {}));
+  green_btn->on_click([this]() { exec_toolbar_action("green"); });
 
   button_props["label"] = "";
-  button_props["icon"] = "toolbar/ck_delete.png";
-  cherry_kit::icon_button *delete_btn = dynamic_cast<cherry_kit::icon_button*>
-          (d->m_ui->add_widget(1, 8, "image_button", button_props, [=]() {}));
+  button_props["icon"] = "toolbar/ck_bin.png";
+  cherry_kit::icon_button *delete_btn = dynamic_cast<cherry_kit::icon_button *>(
+      d->m_ui->add_widget(1, 8, "image_button", button_props, [=]() {}));
 
   delete_btn->on_click([this]() {
     if (d->m_on_delete_func)
@@ -195,10 +191,10 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
           SLOT(onTextUpdated(QString)));
 
   setAcceptDrops(true);
-  setGeometry(parent->geometry());
+  set_geometry(parent->geometry());
 
   d->m_image_attachment_view = new cherry_kit::image_view(this);
-  d->m_image_attachment_view->setMinimumSize(0, 0);
+  //d->m_image_attachment_view->setMinimumSize(0, 0);
 }
 
 NoteWidget::~NoteWidget() { delete d; }
@@ -247,29 +243,30 @@ void NoteWidget::attach_image(const std::string &a_url) {
     float image_height = pixmap.height() * image_width_ratio;
     float image_width = pixmap.width() * image_width_ratio;
 
-    d->m_image_attachment_view->setMinimumSize(image_width, image_height);
+    //d->m_image_attachment_view->setMinimumSize(image_width, image_height);
 
     d->m_image_attachment_view->set_pixmap(
         pixmap.scaled(image_width, image_height));
 
-    d->m_image_attachment_view->setGeometry(QRectF(0, 0, image_width, image_height));
+    d->m_image_attachment_view->set_geometry(
+        QRectF(0, 0, image_width, image_height));
     d->m_image_attachment_view->set_size(QSizeF(image_width, image_height));
     d->m_image_attachment_view->setPos(1, 0);
     d->m_image_attachment_view->update();
-    d->m_image_attachment_view->updateGeometry();
+    //d->m_image_attachment_view->updateGeometry();
     d->m_image_attachment_view->show();
 
     if (d->m_text_editor_widget) {
-      d->m_text_editor_widget->setMinimumWidth(image_width + 1);
+      //d->m_text_editor_widget->setMinimumWidth(image_width + 1);
       d->m_ui->viewport()->setPos(1, image_height);
     }
 
-    setGeometry(QRectF(0, 0, image_width + 2, image_height +
-                       d->m_ui->viewport()->geometry().height()));
+    set_geometry(
+        QRectF(0, 0, image_width + 2,
+               image_height + d->m_ui->viewport()->geometry().height()));
 
     d->notify_config_change("image", a_url.c_str());
   }
-
 }
 
 void NoteWidget::resize(const QSizeF &size) {
@@ -418,6 +415,11 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
         "border: 0; background: #4A4A4A; color: #ffffff");
     d->notify_config_change("background", "#4A4A4A");
     d->notify_config_change("forground", "#ffffff");
+  } else if (action == tr("white")) {
+    d->m_text_editor_widget->style(
+        "border: 0; background: #ffffff; color: #000000");
+    d->notify_config_change("background", "#ffffff");
+    d->notify_config_change("forground", "#000000");
   } else if (action == tr("delete")) {
     this->hide();
   }
@@ -426,7 +428,7 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
 void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH(const QVariantMap & map, photoList) {
+  Q_FOREACH (const QVariantMap &map, photoList) {
     requestPhotoSizes(map["id"].toString());
   }
 
@@ -435,7 +437,7 @@ void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
 
 void
 NoteWidget::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
-  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
+  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
         map["label"].toString() == "Original") {
@@ -502,23 +504,23 @@ void NoteWidget::onImageReadyJson(const QString &fileName) {
 }
 
 void NoteWidget::deleteImageAttachment() {
- /*
-d->m_image_attachment = QPixmap();
+  /*
+ d->m_image_attachment = QPixmap();
 
-this->prepareGeometryChange();
-this->setGeometry(QRectF(0.0, 0.0, this->boundingRect().width(), 300));
+ this->prepareGeometryChange();
+ this->setGeometry(QRectF(0.0, 0.0, this->boundingRect().width(), 300));
 
-if (d->m_image_attachment.isNull()) {
-  d->m_text_editor_widget->setPos(d->m_text_editor_widget->pos().x(),
-                                  d->m_text_editor_widget->pos().y() - 300);
-  d->m_note_toolbar_widget->setPos(d->m_note_toolbar_widget->pos().x(),
-                                   d->m_note_toolbar_widget->pos().y() - 300);
-}
+ if (d->m_image_attachment.isNull()) {
+   d->m_text_editor_widget->setPos(d->m_text_editor_widget->pos().x(),
+                                   d->m_text_editor_widget->pos().y() - 300);
+   d->m_note_toolbar_widget->setPos(d->m_note_toolbar_widget->pos().x(),
+                                    d->m_note_toolbar_widget->pos().y() - 300);
+ }
 
-d->m_attachment_del_button->hide();
+ d->m_attachment_del_button->hide();
 
-update();
-*/
+ update();
+ */
 }
 
 QString

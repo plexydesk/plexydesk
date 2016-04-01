@@ -119,7 +119,7 @@ fixed_layout::~fixed_layout() { delete priv; }
 void fixed_layout::set_geometry(float a_x, float a_y, float a_width,
                                 float a_height) {
   priv->m_grid_geometry = QRectF(a_x, a_y, a_width, a_height);
-  priv->m_content_frame->setGeometry(priv->m_grid_geometry);
+  priv->m_content_frame->set_geometry(priv->m_grid_geometry);
   set_content_margin(priv->m_left_margine, priv->m_right_margine,
                      priv->m_top_margine, priv->m_bottom_margine);
   layout();
@@ -160,7 +160,7 @@ void fixed_layout::PrivateViewBuilder::layout() {
         continue;
 
       widget *widget = m_widget_grid[pos];
-      widget->setGeometry(QRectF(0, 0, calculate_cell_width(row, i),
+      widget->set_geometry(QRectF(0, 0, calculate_cell_width(row, i),
                                  calculate_cell_height(row, i)));
       widget->setPos(get_x(row, i), get_y(row, 0));
     }
@@ -463,7 +463,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_label_at(
   ck_label->set_text(QString::fromStdString(a_props.at("label")));
   ck_label->set_size(QSizeF(calculate_cell_width(a_row, a_col),
                             calculate_cell_height(a_row, a_col)));
-  ck_label->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  ck_label->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                calculate_cell_height(a_row, a_col)));
   layout();
 
@@ -491,13 +491,15 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
   }
 
   image_button->set_lable(text);
-  QPixmap pixmap = resource_manager::instance()->drawable(icon, "hdpi");
+  QPixmap pixmap = resource_manager::instance()->drawable(icon, "mdpi");
   image_button->set_pixmap(pixmap);
 
-  image_button->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  image_button->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                    calculate_cell_height(a_row, a_col)));
+  /*
   image_button->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                      calculate_cell_height(a_row, a_col)));
+                                     */
   layout();
 
   return image_button;
@@ -512,10 +514,12 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_view_at(
   m_widget_grid[pos] = img_view;
   m_ui_type_dict[pos] = kImageButton;
 
-  img_view->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  img_view->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                calculate_cell_height(a_row, a_col)));
+  /*
   img_view->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                  calculate_cell_height(a_row, a_col)));
+                                 */
   layout();
 
   return img_view;
@@ -548,7 +552,7 @@ void fixed_layout::PrivateViewBuilder::update_image_button_properties(
     icon = QString::fromStdString(a_props.at("icon"));
   }
 
-  QPixmap pixmap = resource_manager::instance()->drawable(icon, "hdpi");
+  QPixmap pixmap = resource_manager::instance()->drawable(icon, "mdpi");
 
   image_button->set_lable(text);
   image_button->set_pixmap(pixmap);
@@ -571,7 +575,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_text_edit_at(
   }
 
   editor->set_text(text);
-  editor->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  editor->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                              calculate_cell_height(a_row, a_col)));
   layout();
 
@@ -594,10 +598,12 @@ widget *fixed_layout::PrivateViewBuilder::add_new_line_edit_at(
   }
 
   editor->set_text(text);
-  editor->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  editor->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                              calculate_cell_height(a_row, a_col)));
+  /*
   editor->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                calculate_cell_height(a_row, a_col)));
+                               */
   layout();
 
   return editor;
@@ -612,7 +618,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_calendar_at(
   m_widget_grid[pos] = calendar;
   m_ui_type_dict[pos] = kCalendar;
 
-  calendar->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  calendar->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                calculate_cell_height(a_row, a_col)));
   layout();
 
@@ -628,7 +634,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_clock_at(
   m_widget_grid[pos] = clock;
   m_ui_type_dict[pos] = kClock;
 
-  clock->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  clock->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                             calculate_cell_height(a_row, a_col)));
   layout();
 
@@ -644,7 +650,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_dial_at(
   m_widget_grid[pos] = dial_widget;
   m_ui_type_dict[pos] = kClock;
 
-  dial_widget->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  dial_widget->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                   calculate_cell_height(a_row, a_col)));
   layout();
 
@@ -661,7 +667,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_model_view_at(
   m_widget_grid[pos] = item_view; //_widget;
   m_ui_type_dict[pos] = kModelView;
 
-  item_view->setGeometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+  item_view->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                 calculate_cell_height(a_row, a_col)));
 
   item_view->set_view_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),

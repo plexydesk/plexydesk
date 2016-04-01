@@ -3,7 +3,10 @@ plexydesk (1.0.2) unstable; urgency=low
   * Windows Build Support 
   * Save Session Log to File on linux and windows.
   * Fix Window Reparenting on Windows 10
+  * Fix Seamless Mode on Mac.
   * Fix Wallpaper Path on Windows 10.
+  * Fix Plugin Loading Path on Linux.
+  * Improve rendering in low resolution screens.
 
  -- Siraj Razick <siraj@plexydesk.com>  Wed, 23 Jan 2016 21:03:00 -0400
 
