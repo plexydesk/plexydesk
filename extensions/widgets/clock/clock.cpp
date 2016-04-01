@@ -283,6 +283,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   a_session->bind_to_window(ck_window);
   ck_window->on_window_discarded([=](cherry_kit::window *aWindow) {
     a_session->unbind_window(ck_window);
+		delete ck_ui;
     delete aWindow;
   });
 
@@ -374,6 +375,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
     if (timer->is_active())
       timer->stop();
     delete timer;
+		delete ck_ui;
     delete aWindow;
   });
 
