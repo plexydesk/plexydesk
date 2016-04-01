@@ -14,7 +14,8 @@ class grid_model_container {
 public:
   grid_model_container()
       : m_row_count(0), m_column_count(0), m_container_width(0),
-        m_container_height(0), m_item_count_per_row(4) {}
+        m_container_height(0), m_item_count_per_row(5), m_v_padding(5),
+        m_h_padding(5) {}
   ~grid_model_container() {}
 
   void insert(widget *w_ref);
@@ -36,6 +37,8 @@ public:
 
   int count();
 
+  void set_padding(float a_padding) { m_h_padding = a_padding; };
+
 private:
   std::map<item_coordinate_t, widget_ref_t> m_widget_map;
   int m_row_count;
@@ -49,6 +52,9 @@ private:
 
   int m_grid_width;
   int m_grid_height;
+
+  float m_h_padding;
+  float m_v_padding;
 };
 
 class linear_model_container {
@@ -108,6 +114,7 @@ void item_view::set_content_margin(int a_left, int a_right, int a_top,
 
 void item_view::set_content_spacing(int a_distance) {
   if (d->m_model_view_type == kGridModel) {
+    d->m_grid_model_container.set_padding(a_distance);
   }
 }
 
@@ -348,8 +355,8 @@ void item_view::clear() {
 
   if (d->m_model_view_type == kGridModel) {
     if (d->m_grid_model_container.count() <= 0) {
-      qDebug() << Q_FUNC_INFO << "Model Has no Items : "
-			 << d->m_grid_model_container.count();
+      qDebug() << Q_FUNC_INFO
+               << "Model Has no Items : " << d->m_grid_model_container.count();
       return;
     }
 
@@ -367,7 +374,7 @@ void item_view::clear() {
     if (!item)
       continue;
 
-    //item->remove_view();
+    // item->remove_view();
     if (d->m_item_remove_handler)
       d->m_item_remove_handler(item);
   }
@@ -452,8 +459,8 @@ void grid_model_container::insert(widget *w_ref) {
 
   m_row_count = item_count / m_item_count_per_row;
 
-  float x_coord = (m_column_count++) * m_grid_width;
-  float y_coord = (m_row_count * m_grid_height);
+  float x_coord = ((m_column_count++) * m_grid_width);
+  float y_coord = (m_row_count * m_grid_height) + m_h_padding;
 
   float h_align = (m_grid_width - w_ref->contents_geometry().width()) / 2;
   float v_align = (m_grid_height - w_ref->contents_geometry().height()) / 2;
@@ -483,8 +490,8 @@ void grid_model_container::set_geometry(float a_x, float a_y, float a_width,
 }
 
 void grid_model_container::set_grid_size(int a_width, int a_height) {
-  m_grid_width = a_width;
-  m_grid_height = a_height;
+  m_grid_width = a_width + m_h_padding;
+  m_grid_height = a_height + m_v_padding;
 }
 
 int grid_model_container::grid_size() const { return m_grid_width; }
@@ -504,13 +511,10 @@ float grid_model_container::content_height() {
 }
 
 float grid_model_container::content_width() {
-    return (m_grid_width * m_item_count_per_row);
+  return (m_grid_width * m_item_count_per_row);
 }
 
-int grid_model_container::count()
-{
-    return (row_count() * column_count());
-}
+int grid_model_container::count() { return (row_count() * column_count()); }
 
 void linear_model_container::insert(widget_ref_t a_widget) {
   if (!a_widget)
