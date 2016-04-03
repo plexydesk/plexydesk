@@ -345,9 +345,12 @@ add_subdirectory(extensions/data/httpserver)
 add_subdirectory(extensions/widgets/desktopnotes)
 add_subdirectory(extensions/widgets/date)
 add_subdirectory(extensions/widgets/template)
-add_subdirectory(extensions/widgets/nlp)
-add_subdirectory(extensions/widgets/nlp/tools/query_jeff)
-add_subdirectory(extensions/widgets/nlp/tools/train_jeff)
+
+
+#add_subdirectory(extensions/widgets/nlp)
+#add_subdirectory(extensions/widgets/nlp/tools/query_jeff)
+#add_subdirectory(extensions/widgets/nlp/tools/train_jeff)
+
 add_subdirectory(extensions/widgets/dock)
 
 add_subdirectory(extensions/data/rest)
