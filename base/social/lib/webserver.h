@@ -22,7 +22,7 @@
 #include <QTcpServer>
 #include <QuetzalSocialKitQt_export.h>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 class WebContentInterface;
 class QuetzalSocialKitQt_EXPORT WebServer : public QTcpServer {
   Q_OBJECT

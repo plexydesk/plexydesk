@@ -23,11 +23,47 @@
 #include <QUrl>
 #include <QuetzalSocialKitQt_export.h>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
+
+typedef std::map<std::string, std::string> query_parameter_map_t;
+
+class QuetzalSocialKitQt_EXPORT service_query_parameters {
+public:
+  service_query_parameters() {}
+  ~service_query_parameters() { m_parameter_map.clear(); }
+
+  void insert(const std::string &a_key, const std::string &a_value) {
+    m_parameter_map[a_key] = a_value;
+  }
+
+  std::vector<std::string> keys() {
+    std::vector<std::string> rv;
+
+    for (std::map<std::string, std::string>::iterator it =
+             m_parameter_map.begin();
+         it != m_parameter_map.end(); ++it) {
+      rv.push_back(it->first);
+    }
+
+    return rv;
+  }
+
+  std::string value(const std::string &a_key) { return m_parameter_map[a_key]; }
+
+  query_parameter_map_t data() const { return m_parameter_map; }
+
+private:
+  std::map<std::string, std::string> m_parameter_map;
+};
 
 class QuetzalSocialKitQt_EXPORT ServiceDefinition : public QObject {
   Q_OBJECT
 public:
+  typedef enum {
+    kDefinitionLoadError,
+    kNoError
+  } definition_error_t;
+
   ServiceDefinition(const QString &input, QObject *a_parent_ptr = 0);
 
   virtual ~ServiceDefinition();
@@ -46,6 +82,8 @@ public:
   uint requestType(const QString &name) const;
 
   QStringList arguments(const QString &name) const;
+  std::vector<std::string> input_arguments(const std::string &a_name,
+                                           bool a_optional = false);
 
   QStringList optionalArguments(const QString &name) const;
 
@@ -54,8 +92,15 @@ public:
 
   QUrl queryURL(const QString &method, const QVariantMap &data) const;
 
+  std::string service_url(const std::string &a_method,
+                          service_query_parameters *a_params) const;
+
   QMultiMap<QString, QVariantMap> queryResult(const QString &method,
                                               const QString &data) const;
+
+  definition_error_t error() const;
+
+  void load_services();
 
 protected:
   void buildServiceDefs();

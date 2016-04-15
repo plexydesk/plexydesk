@@ -31,7 +31,7 @@
 
 #include "servicedefinition.h"
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class WebService::PrivateWebService {
 
@@ -157,7 +157,7 @@ void WebService::onDownloadRequestComplete() {
 }
 
 QString WebService::installPrefix() const {
-#ifndef Q_OS_WIN32DOWS
+#ifndef Q_OS_WIN32
   QDir binaryPath(QCoreApplication::applicationDirPath());
   if (binaryPath.cdUp()) {
     return QDir::toNativeSeparators(binaryPath.canonicalPath());

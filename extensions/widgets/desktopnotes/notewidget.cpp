@@ -313,8 +313,8 @@ void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::WebService *service =
+      new social_kit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -329,13 +329,13 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
 
   service->queryService("flickr.photos.search", args);
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onServiceCompleteJson(QuetzalSocialKit::WebService *)));
+  connect(service, SIGNAL(finished(social_kit::WebService *)), this,
+          SLOT(onServiceCompleteJson(social_kit::WebService *)));
 }
 
 void NoteWidget::requestPhotoSizes(const QString &photoID) {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::WebService *service =
+      new social_kit::WebService(this);
 
   service->create("com.flickr.json.api");
 
@@ -345,8 +345,8 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
 
   service->queryService("flickr.photos.getSizes", args);
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onSizeServiceCompleteJson(QuetzalSocialKit::WebService *)));
+  connect(service, SIGNAL(finished(social_kit::WebService *)), this,
+          SLOT(onSizeServiceCompleteJson(social_kit::WebService *)));
 }
 
 void NoteWidget::onClicked() { Q_EMIT clicked(this); }
@@ -425,7 +425,7 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
   }
 }
 
-void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+void NoteWidget::onServiceCompleteJson(social_kit::WebService *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
   Q_FOREACH (const QVariantMap &map, photoList) {
@@ -436,15 +436,15 @@ void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
 }
 
 void
-NoteWidget::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+NoteWidget::onSizeServiceCompleteJson(social_kit::WebService *service) {
   Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
         map["label"].toString() == "Original") {
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
-      QuetzalSocialKit::AsyncDataDownloader *downloader =
-          new QuetzalSocialKit::AsyncDataDownloader(this);
+      social_kit::AsyncDataDownloader *downloader =
+          new social_kit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
       metaData["method"] = service->methodName();
@@ -461,16 +461,16 @@ NoteWidget::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   service->deleteLater();
 }
 
-void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service) {
+void NoteWidget::onDownloadCompleteJson(social_kit::WebService *service) {
 }
 
 void NoteWidget::onImageReady() {
-  QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+  social_kit::AsyncDataDownloader *downloader =
+      qobject_cast<social_kit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
-    QuetzalSocialKit::AsyncImageCreator *imageSave =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+    social_kit::AsyncImageCreator *imageSave =
+        new social_kit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 

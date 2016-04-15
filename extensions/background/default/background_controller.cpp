@@ -334,8 +334,8 @@ void desktop_controller_impl::request_action(const QString &actionName,
 */
 
 void desktop_controller_impl::download_image_from_url(QUrl fileUrl) {
-  QuetzalSocialKit::AsyncDataDownloader *downloader =
-      new QuetzalSocialKit::AsyncDataDownloader(this);
+  social_kit::AsyncDataDownloader *downloader =
+      new social_kit::AsyncDataDownloader(this);
 
   connect(downloader, SIGNAL(ready()), this, SLOT(image_locally_available()));
   connect(downloader, SIGNAL(progress(float)), this,
@@ -398,8 +398,8 @@ void desktop_controller_impl::set_view_rect(const QRectF &rect) {
 void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
                                                       const QString &source,
                                                       bool a_local_file) {
-  QuetzalSocialKit::AsyncImageCreator *ck_image_service =
-      new QuetzalSocialKit::AsyncImageCreator(this);
+  social_kit::AsyncImageCreator *ck_image_service =
+      new social_kit::AsyncImageCreator(this);
 
   connect(ck_image_service, SIGNAL(ready()), this,
           SLOT(on_image_data_available()));
@@ -415,8 +415,8 @@ void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
 void desktop_controller_impl::sync_image_data_to_disk(const QImage &data,
                                                       const QString &source,
                                                       bool saveLocally) {
-  QuetzalSocialKit::AsyncImageCreator *ck_async_image_service =
-      new QuetzalSocialKit::AsyncImageCreator(this);
+  social_kit::AsyncImageCreator *ck_async_image_service =
+      new social_kit::AsyncImageCreator(this);
 
   connect(ck_async_image_service, SIGNAL(ready()), this,
           SLOT(on_image_data_available()));
@@ -430,8 +430,8 @@ void desktop_controller_impl::sync_image_data_to_disk(const QImage &data,
 }
 
 void desktop_controller_impl::image_locally_available() {
-  QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+  social_kit::AsyncDataDownloader *downloader =
+      qobject_cast<social_kit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
     sync_image_data_to_disk(downloader->data(),
@@ -441,8 +441,8 @@ void desktop_controller_impl::image_locally_available() {
 }
 
 void desktop_controller_impl::on_image_data_available() {
-  QuetzalSocialKit::AsyncImageCreator *ck_image_service =
-      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+  social_kit::AsyncImageCreator *ck_image_service =
+      qobject_cast<social_kit::AsyncImageCreator *>(sender());
 
   if (ck_image_service) {
     if (ck_image_service->image().isNull()) {

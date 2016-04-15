@@ -28,7 +28,7 @@ public:
   PrivateFlickrPhotoSearch() {}
   ~PrivateFlickrPhotoSearch() {}
 
-  QuetzalSocialKit::WebService *mWebService;
+  social_kit::WebService *mWebService;
 };
 
 FlickrPhotoSearchData::FlickrPhotoSearchData(QObject *object)
@@ -41,18 +41,18 @@ FlickrPhotoSearchData::~FlickrPhotoSearchData() { delete o_data_soure; }
 
 void FlickrPhotoSearchData::set_arguments(QVariant arg) {
   QVariantMap data = arg.toMap();
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::WebService *service =
+      new social_kit::WebService(this);
 
   service->create("com.flikr.api");
   service->queryService("flickr.photos.search", data);
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onServiceComplete(QuetzalSocialKit::WebService *)));
+  connect(service, SIGNAL(finished(social_kit::WebService *)), this,
+          SLOT(onServiceComplete(social_kit::WebService *)));
 }
 
 void FlickrPhotoSearchData::onServiceComplete(
-    QuetzalSocialKit::WebService *service) {
+    social_kit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO

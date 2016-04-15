@@ -20,7 +20,7 @@
 
 #include <QDateTime>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 WebContentInterface::WebContentInterface() {}
 

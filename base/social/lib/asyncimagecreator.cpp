@@ -25,7 +25,7 @@
 #include <QPainter>
 #include <QDir>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class AsyncImageCreator::PrivateAsyncImageCreator {
 public:

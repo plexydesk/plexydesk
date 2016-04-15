@@ -39,7 +39,7 @@ public:
 public
 Q_SLOTS:
   void set_arguments(QVariant source_updated);
-  void onServiceComplete(QuetzalSocialKit::WebService *service);
+  void onServiceComplete(social_kit::WebService *service);
 
 private:
   class PrivateFlickrPhotoSearch;
