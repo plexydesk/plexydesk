@@ -88,6 +88,16 @@ if (UNIX AND NOT APPLE)
   endif()
 endif(UNIX AND NOT APPLE)
 
+if (UNIX AND NOT APPLE)
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        add_definitions(-D__GNU_LINUX_PLATFORM__)
+    endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+    if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+        add_definitions(-D__FREE_BSD_PLATFORM__)
+    endif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+endif()
+
 if (APPLE)
   add_definitions(-D__APPLE_PLATFORM__)
 endif()

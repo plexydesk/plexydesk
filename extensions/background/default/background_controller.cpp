@@ -95,11 +95,11 @@ void desktop_controller_impl::init() {
   o_ctr->m_background_window->set_background(
       default_wallpaper_file.toStdString());
 
-  o_ctr->m_background_window->on_window_discarded([this](
-      cherry_kit::window *a_window) {
-    if (o_ctr->m_background_window)
-      delete o_ctr->m_background_window;
-  });
+  o_ctr->m_background_window->on_window_discarded(
+      [this](cherry_kit::window *a_window) {
+        if (o_ctr->m_background_window)
+          delete o_ctr->m_background_window;
+      });
 
   qDebug() << Q_FUNC_INFO << "insert Window";
   insert(o_ctr->m_background_window);
@@ -169,24 +169,23 @@ void desktop_controller_impl::create_task_group() const {
 
     QRectF dialog_window_geometry(0, 0, 672, 340);
     QPointF qt_activity_window_location = viewport()->center(
-        dialog_window_geometry,
-        QRectF(),
-        cherry_kit::space::kCenterOnViewport);
+        dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
 
-    qDebug() << Q_FUNC_INFO << "Desktop Settings Dialog : " << qt_activity_window_location;
+    qDebug() << Q_FUNC_INFO
+             << "Desktop Settings Dialog : " << qt_activity_window_location;
     cherry_kit::desktop_dialog_ref ck_activity =
         viewport()->open_desktop_dialog("desktop_settings_dialog", "Desktop",
                                         qt_activity_window_location,
                                         dialog_window_geometry, QVariantMap());
 
-    ck_activity->on_notify([=](const std::string &key,
-                               const std::string &value) {
-      if (key.compare("url") == 0) {
-        o_ctr->m_background_window->set_background(value);
-        o_ctr->m_background_texture = "file:///" + value;
-        viewport()->update_session_value(controller_name(), "", "");
-      }
-    });
+    ck_activity->on_notify(
+        [=](const std::string &key, const std::string &value) {
+          if (key.compare("url") == 0) {
+            o_ctr->m_background_window->set_background(value);
+            o_ctr->m_background_texture = "file:///" + value;
+            viewport()->update_session_value(controller_name(), "", "");
+          }
+        });
   });
 
   cherry_kit::ui_action seamless_task;
@@ -219,7 +218,8 @@ void desktop_controller_impl::create_task_group() const {
     cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
     ck_ui->set_content_margin(0, 0, 10, 10);
 
-    QPixmap previw_img = viewport()->owner_workspace()->thumbnail(viewport(), 2);
+    QPixmap previw_img =
+        viewport()->owner_workspace()->thumbnail(viewport(), 2);
 
     ck_ui->set_geometry(0, 0, 320, 240);
 
@@ -233,29 +233,26 @@ void desktop_controller_impl::create_task_group() const {
 
     cherry_kit::widget_properties_t ck_ui_data;
     cherry_kit::image_view *preview_view =
-            dynamic_cast<cherry_kit::image_view *>(
-                ck_ui->add_widget(0, 0, "image_view", ck_ui_data, [=]() {}));
+        dynamic_cast<cherry_kit::image_view *>(
+            ck_ui->add_widget(0, 0, "image_view", ck_ui_data, [=]() {}));
     preview_view->set_pixmap(previw_img);
 
     ck_ui_data["icon"] = "toolbar/ck_left_arrow.png";
-    cherry_kit::icon_button *btn_left =
-            dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,0, "image_button",ck_ui_data, [=]() {}));
+    cherry_kit::icon_button *btn_left = dynamic_cast<cherry_kit::icon_button *>(
+        ck_ui->add_widget(1, 0, "image_button", ck_ui_data, [=]() {}));
 
     ck_ui_data["icon"] = "toolbar/ck_up_arrow.png";
-    cherry_kit::icon_button *btn_up =
-            dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,1, "image_button",ck_ui_data, [=]() {}));
+    cherry_kit::icon_button *btn_up = dynamic_cast<cherry_kit::icon_button *>(
+        ck_ui->add_widget(1, 1, "image_button", ck_ui_data, [=]() {}));
 
     ck_ui_data["icon"] = "toolbar/ck_down_arrow.png";
-    cherry_kit::icon_button *btn_down =
-            dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,2, "image_button",ck_ui_data, [=]() {}));
+    cherry_kit::icon_button *btn_down = dynamic_cast<cherry_kit::icon_button *>(
+        ck_ui->add_widget(1, 2, "image_button", ck_ui_data, [=]() {}));
 
     ck_ui_data["icon"] = "toolbar/ck_right_arrow.png";
     cherry_kit::icon_button *btn_right =
-            dynamic_cast<cherry_kit::icon_button*>(
-                ck_ui->add_widget(1,3, "image_button",ck_ui_data, [=]() {}));
+        dynamic_cast<cherry_kit::icon_button *>(
+            ck_ui->add_widget(1, 3, "image_button", ck_ui_data, [=]() {}));
 
     ck_window->set_window_content(ck_ui->viewport());
 
@@ -390,14 +387,16 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
 void desktop_controller_impl::set_view_rect(const QRectF &rect) {
   if (o_ctr->m_background_window) {
     o_ctr->m_background_window->set_contents_geometry(0, 0, rect.width(),
-				rect.height());
-        o_ctr->m_background_window->set_coordinates(rect.x(), rect.y());
+                                                      rect.height());
+    o_ctr->m_background_window->set_coordinates(rect.x(), rect.y());
   }
 }
 
 void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
                                                       const QString &source,
                                                       bool a_local_file) {
+  //todo:
+  // replace with image_io class.
   social_kit::AsyncImageCreator *ck_image_service =
       new social_kit::AsyncImageCreator(this);
 
@@ -462,8 +461,9 @@ void desktop_controller_impl::on_image_data_available() {
         sync_session_data("background",
                           ck_image_service->metaData()["url"].toString());
       } else {
-        o_ctr->m_background_texture = QDir::toNativeSeparators(
-            "file:///" + ck_image_service->imagePath()).toStdString();
+        o_ctr->m_background_texture =
+            QDir::toNativeSeparators("file:///" + ck_image_service->imagePath())
+                .toStdString();
         sync_session_data("background",
                           QDir::toNativeSeparators(
                               "file:///" + ck_image_service->imagePath()));

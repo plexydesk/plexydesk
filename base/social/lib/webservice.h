@@ -24,11 +24,13 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKitQt_export.h>
 
+#include <servicedefinition.h>
+
 namespace social_kit {
 
-class ServiceDefinition;
+class service_query;
 
-typedef QSharedPointer<ServiceDefinition> ServiceDefinitionPtr;
+typedef QSharedPointer<service_query> ServiceDefinitionPtr;
 
 class QuetzalSocialKitQt_EXPORT WebService : public QObject {
   Q_OBJECT
@@ -41,12 +43,12 @@ public:
 
   QString serviceName() const;
 
-  void queryService(const QString &method, const QVariantMap &arguments,
+  void queryService(const QString &method, service_query_parameters *a_params,
                     QHttpMultiPart *data = 0,
                     const QByteArray &headerName = QByteArray(),
                     const QByteArray &headerValue = QByteArray());
 
-  QVariantMap inputArgumentForMethod(const QString &str);
+  service_query_parameters inputArgumentForMethod(const QString &str);
 
   QVariantMap serviceData() const;
 

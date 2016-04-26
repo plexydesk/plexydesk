@@ -44,8 +44,14 @@ void FlickrPhotoSearchData::set_arguments(QVariant arg) {
   social_kit::WebService *service =
       new social_kit::WebService(this);
 
+  social_kit::service_query_parameters input_data;
+
+  Q_FOREACH(const QString &key, data.keys()) {
+     input_data.insert(key.toStdString(), data[key].toString().toStdString());
+  }
+
   service->create("com.flikr.api");
-  service->queryService("flickr.photos.search", data);
+  service->queryService("flickr.photos.search", &input_data);
 
   connect(service, SIGNAL(finished(social_kit::WebService *)), this,
           SLOT(onServiceComplete(social_kit::WebService *)));
