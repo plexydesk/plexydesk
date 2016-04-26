@@ -50,7 +50,6 @@ void image_io::platform_image::load_from_file(const std::string &a_file_name) {
     status = image_io::kDataError;
 
   priv->m_on_ready_call(result, status);
-
 }
 
 void

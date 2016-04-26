@@ -11,6 +11,10 @@ public:
 
   virtual ~SocialTestRunner();
 
+  void check_url_encode();
+
+  void check_url_request_loader();
+
   void check_service_file();
 
   void testSocialPrefix();

@@ -21,15 +21,20 @@
 
 #include <QObject>
 #include <QUrl>
-#include <QuetzalSocialKitQt_export.h>
+#include <social_kit_export.h>
 
 namespace social_kit {
 
 typedef std::map<std::string, std::string> query_parameter_map_t;
+typedef std::vector<std::string> string_list;
 
-class QuetzalSocialKitQt_EXPORT service_query_parameters {
+class DECL_SOCIAL_KIT_EXPORT service_query_parameters {
 public:
   service_query_parameters() {}
+  service_query_parameters(const service_query_parameters &copy) {
+    m_parameter_map = copy.m_parameter_map;
+  }
+
   ~service_query_parameters() { m_parameter_map.clear(); }
 
   void insert(const std::string &a_key, const std::string &a_value) {
@@ -56,58 +61,42 @@ private:
   std::map<std::string, std::string> m_parameter_map;
 };
 
-class QuetzalSocialKitQt_EXPORT ServiceDefinition : public QObject {
-  Q_OBJECT
+class DECL_SOCIAL_KIT_EXPORT service_query {
 public:
-  typedef enum {
-    kDefinitionLoadError,
-    kNoError
-  } definition_error_t;
+  typedef enum { kDefinitionLoadError, kNoError } definition_error_t;
 
-  ServiceDefinition(const QString &input, QObject *a_parent_ptr = 0);
+  service_query(const QString &input);
+  virtual ~service_query();
 
-  virtual ~ServiceDefinition();
+  QStringList service_list() const;
 
-  QStringList knownServices() const;
+  std::string endpoint(const std::string &a_name) const;
 
-  QString endpoint(const QString &name) const;
+  uint method(const QString &name) const;
 
-  /*!
-  \brief
-  retuns the request type GET/POST
-  \fn requestType
-  \param name method name.
-  \return uint
-  */
-  uint requestType(const QString &name) const;
+  string_list arguments(const QString &name) const;
 
-  QStringList arguments(const QString &name) const;
-  std::vector<std::string> input_arguments(const std::string &a_name,
+  string_list input_arguments(const std::string &a_name,
                                            bool a_optional = false);
+  QStringList optional_arguments(const std::string &name) const;
 
-  QStringList optionalArguments(const QString &name) const;
-
-  QString argumentType(const QString &serviceName,
+  QString argument_type(const QString &serviceName,
                        const QString &argument) const;
 
-  QUrl queryURL(const QString &method, const QVariantMap &data) const;
-
-  std::string service_url(const std::string &a_method,
-                          service_query_parameters *a_params) const;
+  std::string url(const std::string &a_method,
+                  service_query_parameters *a_params) const;
 
   QMultiMap<QString, QVariantMap> queryResult(const QString &method,
                                               const QString &data) const;
 
   definition_error_t error() const;
 
+protected:
   void load_services();
 
-protected:
-  void buildServiceDefs();
-
 private:
-  class PrivateServiceDefinition;
-  PrivateServiceDefinition *const d;
+  class service_query_context;
+  service_query_context *const ctx;
 };
 }
 

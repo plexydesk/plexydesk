@@ -27,10 +27,10 @@ if (NOT CMAKE_INSTALL_LIBDIR)
     INCLUDE(GNUInstallDirs)
 endif (NOT CMAKE_INSTALL_LIBDIR)
 
-INCLUDE_DIRECTORIES (
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_BINARY_DIR}
-)
+if (UNIX AND NOT APPLE)
+    find_package(LibSoup REQUIRED)
+    find_package(GLIB REQUIRED)
+endif()
 
 # Find Qt5
 if (NOT Qt5Core_FOUND)
@@ -55,6 +55,14 @@ ADD_DEFINITIONS(-DPLEXYPREFIX="${CMAKE_INSTALL_PREFIX}"
                 -DPLEXYRESOURCESDIR="${RESOURCES_DEST_DIR}"
                )
 
+INCLUDE_DIRECTORIES (
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${LIBSOUP_INCLUDE_DIRS}
+        ${GLIB_INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/deps/tinyxml2/
+)
+
 set(sourceFiles
     ck_url.cpp
     webservice.cpp
@@ -64,6 +72,8 @@ set(sourceFiles
     asyncdatadownloader.cpp
     webserver.cpp
     webcontentinterface.cpp
+    #linux
+    ck_url_request_linux.cpp
    )
 
 set(headerFiles
@@ -75,6 +85,7 @@ set(headerFiles
     asyncdatadownloader.h
     webserver.h
     webcontentinterface.h
+    ck_url_request_linux.h
    )
 
 if (APPLE)
@@ -121,7 +132,11 @@ if (MINGW)
    )
 endif(MINGW)
 
-TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${MAC_LIBS} ${libs} tinyxml2)
+if (UNIX AND NOT LINUX)
+    set(PLATFORM_LINK_LIBRARIES ${LIBSOUP_LIBRARIES})
+endif()
+
+TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${MAC_LIBS} ${libs} ${PLATFORM_LINK_LIBRARIES} tinyxml2)
 
 QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
 

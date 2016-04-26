@@ -11,4 +11,3 @@ device_window::device_window() : ctx(new window_context){}
 
 device_window::~device_window() { delete ctx;}
 }
-

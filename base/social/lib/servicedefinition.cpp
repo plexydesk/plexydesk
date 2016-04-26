@@ -16,6 +16,7 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
+#include "ck_url.h"
 #include "servicedefinition.h"
 
 #include <QBuffer>
@@ -44,9 +45,7 @@ typedef QMap<QString, QDomNode> DefinitionMapType;
 class PrivateResultQuery {
 public:
   PrivateResultQuery() {}
-  ~PrivateResultQuery() {
-    // qDebug() << Q_FUNC_INFO;
-  }
+  ~PrivateResultQuery() {}
 
   QString format;
   QDomNode mDataNode;
@@ -69,7 +68,7 @@ typedef enum {
 class service_input_argument {
 public:
   service_input_argument() : m_optional(0) {}
-  ~service_input_argument() { qDebug() << Q_FUNC_INFO; }
+  ~service_input_argument() {}
 
   bool optional() const;
   void set_optional(bool optional);
@@ -107,7 +106,6 @@ public:
 
   service_input() : m_request_type(kUndefinedRequest) {}
   ~service_input() {
-    qDebug() << Q_FUNC_INFO;
     std::for_each(std::begin(m_argument_list), std::end(m_argument_list),
                   [this](service_input_argument *value) {
       if (value)
@@ -217,7 +215,6 @@ class service {
 public:
   service() : m_input(0) {}
   ~service() {
-    qDebug() << Q_FUNC_INFO;
     if (m_input)
       delete m_input;
 
@@ -245,10 +242,10 @@ private:
 typedef std::map<std::string, service *> service_map_t;
 typedef service_map_t::iterator service_map_iterator_t;
 
-class ServiceDefinition::PrivateServiceDefinition {
+class service_query::service_query_context {
 public:
-  PrivateServiceDefinition() : m_current_error(ServiceDefinition::kNoError) {}
-  ~PrivateServiceDefinition() {
+  service_query_context() : m_current_error(service_query::kNoError) {}
+  ~service_query_context() {
     for (service_map_iterator_t iterator = m_service_dict.begin();
          iterator != m_service_dict.end(); iterator++) {
 
@@ -306,17 +303,17 @@ bool ck_file_exisits(const std::string &a_file_name) {
   return (stat(a_file_name.c_str(), &buffer) == 0);
 }
 
-ServiceDefinition::ServiceDefinition(const QString &input, QObject *parent)
-    : QObject(parent), d(new PrivateServiceDefinition) {
+service_query::service_query(const QString &input)
+    : ctx(new service_query_context) {
   if (ck_file_exisits(input.toLatin1().data())) {
     tinyxml2::XMLError error =
-        d->m_xml_root_doc.LoadFile(input.toStdString().c_str());
+        ctx->m_xml_root_doc.LoadFile(input.toStdString().c_str());
     if (error != tinyxml2::XML_NO_ERROR) {
       std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
-                << d->m_xml_root_doc.GetErrorStr1() << std::endl;
-      d->m_current_error = kDefinitionLoadError;
+                << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
+      ctx->m_current_error = kDefinitionLoadError;
     } else {
-      d->m_current_error = kNoError;
+      ctx->m_current_error = kNoError;
       load_services();
     }
   } else {
@@ -324,16 +321,16 @@ ServiceDefinition::ServiceDefinition(const QString &input, QObject *parent)
     std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
               << "Service Definistion File Not Found : " << input.toStdString()
               << std::endl;
-    d->m_current_error = kDefinitionLoadError;
+    ctx->m_current_error = kDefinitionLoadError;
   }
 }
 
-ServiceDefinition::~ServiceDefinition() { delete d; }
+service_query::~service_query() { delete ctx; }
 
-QStringList ServiceDefinition::knownServices() const {
+QStringList service_query::service_list() const {
   QStringList rv;
-  for (service_map_iterator_t iterator = d->m_service_dict.begin();
-       iterator != d->m_service_dict.end(); iterator++) {
+  for (service_map_iterator_t iterator = ctx->m_service_dict.begin();
+       iterator != ctx->m_service_dict.end(); iterator++) {
     rv << QString::fromStdString(iterator->first);
   }
 
@@ -341,22 +338,23 @@ QStringList ServiceDefinition::knownServices() const {
 }
 
 // fetch the url from the <input> tag
-QString ServiceDefinition::endpoint(const QString &name) const {
-  QString rv;
+std::string
+service_query::endpoint(const std::string &a_name) const {
+  std::string rv;
 
-  service *srv = d->m_service_dict[name.toStdString()];
+  service *srv = ctx->m_service_dict[a_name];
 
   if (srv && srv->input()) {
-    rv = QString::fromStdString(srv->input()->url());
+    rv = srv->input()->url();
   }
 
   return rv;
 }
 
-uint ServiceDefinition::requestType(const QString &name) const {
+uint service_query::method(const QString &name) const {
   uint rv = service_input::kUndefinedRequest;
 
-  service *srv = d->m_service_dict[name.toStdString()];
+  service *srv = ctx->m_service_dict[name.toStdString()];
 
   if (srv && srv->input()) {
     rv = (uint)srv->input()->request_type();
@@ -365,9 +363,9 @@ uint ServiceDefinition::requestType(const QString &name) const {
   return rv;
 }
 
-QStringList ServiceDefinition::arguments(const QString &name) const {
-  QStringList rv;
-  service *srv = d->m_service_dict[name.toStdString()];
+string_list service_query::arguments(const QString &name) const {
+  string_list rv;
+  service *srv = ctx->m_service_dict[name.toStdString()];
 
   if (srv && srv->input()) {
     std::vector<service_input_argument *> argument_list =
@@ -377,17 +375,17 @@ QStringList ServiceDefinition::arguments(const QString &name) const {
       if (arg->optional())
         return;
 
-      rv << QString::fromStdString(arg->value());
+      rv.push_back(arg->value());
     });
   }
 
   return rv;
 }
 
-std::vector<std::string>
-ServiceDefinition::input_arguments(const std::string &a_name, bool a_optional) {
+string_list service_query::input_arguments(const std::string &a_name,
+                                           bool a_optional) {
   std::vector<std::string> rv;
-  service *srv = d->m_service_dict[a_name];
+  service *srv = ctx->m_service_dict[a_name];
 
   if (srv && srv->input()) {
     std::vector<service_input_argument *> argument_list =
@@ -409,9 +407,9 @@ ServiceDefinition::input_arguments(const std::string &a_name, bool a_optional) {
   return rv;
 }
 
-QStringList ServiceDefinition::optionalArguments(const QString &name) const {
+QStringList service_query::optional_arguments(const std::string &name) const {
   QStringList rv;
-  service *srv = d->m_service_dict[name.toStdString()];
+  service *srv = ctx->m_service_dict[name];
 
   if (srv && srv->input()) {
     std::vector<service_input_argument *> argument_list =
@@ -428,103 +426,105 @@ QStringList ServiceDefinition::optionalArguments(const QString &name) const {
   return rv;
 }
 
-QString ServiceDefinition::argumentType(const QString &serviceName,
-                                        const QString &argument) const {
-  QDomNode node = d->mInputArguments[serviceName][argument];
+QString service_query::argument_type(const QString &serviceName,
+                                     const QString &argument) const {
+  QDomNode node = ctx->mInputArguments[serviceName][argument];
 
   if (node.hasAttributes()) {
-    QDomAttr attr = d->getAttributeFromNode(node, "type");
+    QDomAttr attr = ctx->getAttributeFromNode(node, "type");
     return attr.nodeValue();
   }
 
   return "";
 }
 
-QUrl ServiceDefinition::queryURL(const QString &method,
-                                 const QVariantMap &data) const {
-  QUrl url;
-  QString sUrl = endpoint(method);
-  QUrl serviceURL = QUrl(sUrl);
-
-  QUrlQuery queryArg;
-
-  Q_FOREACH(const QString & key, d->mDefaultInputArgument[method].keys()) {
-    queryArg.addQueryItem(key, d->defaultValue(method, key));
-  }
-
-  Q_FOREACH(const QString & key, d->mInputArguments[method].keys()) {
-    // a given argument is invalid if the mandertory arguments are not
-    // set. so we return since the required key=value pares are missing in the
-    // input data (data).
-    if (!data.keys().contains(key)) {
-      return url;
-    }
-
-    if (d->hasDefaultValue(method, key)) {
-      queryArg.addQueryItem(key, d->defaultValue(method, key));
-    } else {
-      queryArg.addQueryItem(key, data[key].toString());
-    }
-  }
-
-  // load the optional data provided
-  Q_FOREACH(const QString & key, data.keys()) {
-    if (!d->mInputArguments[method].keys().contains(key)) {
-      queryArg.addQueryItem(key, data[key].toString());
-    }
-  }
-
-  serviceURL.setQuery(queryArg);
-  return serviceURL;
-}
-
-std::string
-ServiceDefinition::service_url(const std::string &a_method,
+std::string service_query::url(const std::string &a_method,
                                service_query_parameters *a_params) const {
   std::string rv;
+  std::vector<std::string> default_query_list;
+  bool has_errors = false;
 
-  rv = endpoint(a_method.c_str()).toStdString();
+  rv = endpoint(a_method);
 
   if (a_params) {
-    /*
-    std::vector<std::string> input_keys = a_params->keys();
 
-    bool key_found = std::find(input_keys.begin(), input_keys.end(), item) !=
-    input_keys.end();
-
-    if (key_found) {
-
-    }
-    */
-
-    service *srv = d->m_service_dict.at(a_method);
+    service *srv = ctx->m_service_dict.at(a_method);
 
     if (srv && srv->input()) {
       service_input *input = srv->input();
+      std::vector<service_input_argument *> list = input->argument_list();
+
+      std::for_each(std::begin(list), std::end(list),
+                    [&](service_input_argument *arg) {
+        if (!arg)
+          return;
+        std::string arg_value = arg->value();
+        std::vector<std::string> input_keys = a_params->keys();
+
+        bool key_found = std::find(input_keys.begin(), input_keys.end(),
+                                   arg_value) != input_keys.end();
+
+        // assign default values first.
+        if (!arg->default_value().empty()) {
+          social_kit::url_encode *encoded_str =
+              new social_kit::url_encode(arg->default_value());
+          std::string query_item = arg_value + "=" + encoded_str->to_string();
+          delete encoded_str;
+          default_query_list.push_back(query_item);
+        }
+
+        if (key_found) {
+          social_kit::url_encode *encoded_str =
+              new social_kit::url_encode(a_params->value(arg_value));
+          std::string query_item = arg_value + "=" + encoded_str->to_string();
+          delete encoded_str;
+          default_query_list.push_back(query_item);
+        } else {
+          if (arg->optional() == 0) {
+            has_errors = true;
+            return;
+          }
+        }
+      });
+    } else {
+      qDebug() << Q_FUNC_INFO << "Something Wrong";
     }
   }
+
+  std::string query_str = "?";
+
+  std::vector<std::string>::iterator it;
+
+  for (it = default_query_list.begin(); it < default_query_list.end(); it++) {
+    if (it == (default_query_list.end() - 1))
+      query_str += *it;
+    else
+      query_str += *it + "&";
+  }
+
+  rv += query_str;
+
+  if (has_errors)
+    return std::string();
 
   return rv;
 }
 
 QMultiMap<QString, QVariantMap>
-ServiceDefinition::queryResult(const QString &method,
-                               const QString &data) const {
+service_query::queryResult(const QString &method, const QString &data) const {
   // QVariantMap rv;
 
-  QHash<QString, PrivateResultQuery> result = d->queryForMethod(method);
+  QHash<QString, PrivateResultQuery> result = ctx->queryForMethod(method);
   QStringList queries = result.keys();
 
   QMultiMap<QString, QVariantMap> tagData;
 
-  uint docType = d->documentType(method);
-
-  qDebug() << Q_FUNC_INFO << "Doc Type :" << (docType);
+  uint docType = ctx->documentType(method);
 
   if (docType == 0) {
     QDomDocument dataRoot;
     if (dataRoot.setContent(data)) {
-      Q_FOREACH(const QString & keyString, queries) {
+      Q_FOREACH (const QString &keyString, queries) {
         QDomNodeList filteredNodeList =
             dataRoot.elementsByTagName(result[keyString].tagName);
 
@@ -533,12 +533,12 @@ ServiceDefinition::queryResult(const QString &method,
           QDomNamedNodeMap dataNodeAttributes = dataNode.attributes();
           QVariantMap attributeData;
 
-          Q_FOREACH(const QString & attrString, result[keyString].attributes) {
+          Q_FOREACH (const QString &attrString, result[keyString].attributes) {
             attributeData[attrString] =
                 dataNodeAttributes.namedItem(attrString).nodeValue();
           }
           if (dataNode.isText()) {
-            QVariant textValue = d->getTextValueFromNode(dataNode);
+            QVariant textValue = ctx->getTextValueFromNode(dataNode);
             attributeData["NodeValue"] = textValue;
           } else {
             attributeData["NodeValue"] = QVariant();
@@ -560,8 +560,8 @@ ServiceDefinition::queryResult(const QString &method,
       qDebug() << Q_FUNC_INFO << "No Error";
       QJsonObject rootObject = jsonDoc.object();
 
-      Q_FOREACH(const QString & keyString, queries) {
-        QJsonValue v = d->findJsonObject(rootObject, keyString);
+      Q_FOREACH (const QString &keyString, queries) {
+        QJsonValue v = ctx->findJsonObject(rootObject, keyString);
         QVariantMap attributeData;
         qDebug() << Q_FUNC_INFO << v.type();
         if (v.isArray()) {
@@ -570,9 +570,9 @@ ServiceDefinition::queryResult(const QString &method,
           for (int i = 0; i < v.toArray().count(); i++) {
             QJsonValue o = v.toArray().at(i);
 
-            Q_FOREACH(const QString & attrKey, o.toObject().keys()) {
+            Q_FOREACH (const QString &attrKey, o.toObject().keys()) {
               attributeData[attrKey] =
-                  d->JsonValueToVariant(o.toObject()[attrKey]);
+                  ctx->JsonValueToVariant(o.toObject()[attrKey]);
             }
 
             tagData.insert(result[keyString].identifier, attributeData);
@@ -590,8 +590,8 @@ ServiceDefinition::queryResult(const QString &method,
         } else {
           qDebug() << Q_FUNC_INFO << keyString
                    << " --> Object Type: " << v.type();
-          Q_FOREACH(const QString & attrKey, v.toObject().keys()) {
-            attributeData[attrKey] = d->JsonValueToVariant(
+          Q_FOREACH (const QString &attrKey, v.toObject().keys()) {
+            attributeData[attrKey] = ctx->JsonValueToVariant(
                 v.toObject()[attrKey]); // v.toObject()[attrKey].toString();
           }
 
@@ -610,11 +610,11 @@ ServiceDefinition::queryResult(const QString &method,
   return tagData;
 }
 
-ServiceDefinition::definition_error_t ServiceDefinition::error() const {
-  return d->m_current_error;
+service_query::definition_error_t service_query::error() const {
+  return ctx->m_current_error;
 }
 
-QVariant ServiceDefinition::PrivateServiceDefinition::JsonValueToVariant(
+QVariant service_query::service_query_context::JsonValueToVariant(
     const QJsonValue &object) {
   QVariant rv;
 
@@ -635,15 +635,16 @@ QVariant ServiceDefinition::PrivateServiceDefinition::JsonValueToVariant(
   return rv;
 }
 
-QJsonValue ServiceDefinition::PrivateServiceDefinition::findJsonObject(
-    const QJsonObject &root, const QString &key) {
+QJsonValue
+service_query::service_query_context::findJsonObject(const QJsonObject &root,
+                                                        const QString &key) {
   QJsonValue rv;
 
   if (root.keys().contains(key)) {
     return root[key];
   }
 
-  Q_FOREACH(const QString & subKey, root.keys()) {
+  Q_FOREACH (const QString &subKey, root.keys()) {
     if (root[subKey].isObject()) {
       QJsonObject v = root[subKey].toObject();
       return findJsonObject(v, key);
@@ -682,8 +683,10 @@ service_input_argument *get_input_argument(tinyxml2::XMLElement *a_element) {
     rv->set_default_value(default_value);
   }
 
+  /*
   std::cout << __FUNCTION__ << " ARG :  ....... [" << txt_node_value << "]"
             << std::endl;
+  */
   return rv;
 }
 
@@ -700,8 +703,10 @@ service_input *get_service_input(tinyxml2::XMLElement *a_element) {
     /* load url */
     if (url_value) {
       rv->set_url(url_value);
+      /*
       std::cout << __FUNCTION__ << " URL :  ....... [" << rv->url() << "]"
                 << std::endl;
+      */
     }
     /* load type */
     if (request_value) {
@@ -710,8 +715,10 @@ service_input *get_service_input(tinyxml2::XMLElement *a_element) {
       } else if (strcmp(request_value, "POST") == 0) {
         rv->set_request_type(service_input::kPOSTRequest);
       }
+      /*
       std::cout << __FUNCTION__ << " Type :  ....... [" << rv->request_type()
                 << "]" << std::endl;
+      */
     }
     /* load input query*/
     tinyxml2::XMLElement *args = element->FirstChildElement("arg");
@@ -815,15 +822,15 @@ service_result *get_service_result(tinyxml2::XMLElement *a_element) {
   return rv;
 }
 
-void ServiceDefinition::load_services() {
+void service_query::load_services() {
   if (error() != kNoError)
     return;
 
-  tinyxml2::XMLElement *root = d->m_xml_root_doc.FirstChildElement("services");
+  tinyxml2::XMLElement *root = ctx->m_xml_root_doc.FirstChildElement("services");
 
   if (!root) {
     std::cout << "Error No Root Element" << std::endl;
-    d->m_current_error = kDefinitionLoadError;
+    ctx->m_current_error = kDefinitionLoadError;
     return;
   }
 
@@ -833,8 +840,9 @@ void ServiceDefinition::load_services() {
     const char *value = service_element->Attribute("name");
 
     if (value) {
-      std::cout << __FUNCTION__ << " Load Eelement ....... [" << value << "]"
-                << std::endl;
+      // std::cout << __FUNCTION__ << " Load Eelement ....... [" << value << "]"
+      //          << std::endl;
+
       service *srv = new service();
       srv->set_name(value);
 
@@ -850,56 +858,26 @@ void ServiceDefinition::load_services() {
       // todo
 
       /* cache parsed results */
-      d->m_service_dict[std::string(value)] = srv;
+      ctx->m_service_dict[std::string(value)] = srv;
     }
 
     service_element = service_element->NextSiblingElement("service");
   }
 }
 
-void ServiceDefinition::buildServiceDefs() {
-  QDomNodeList serviceNodes = d->mRootDoc.elementsByTagName("service");
-
-  for (int i = 0; i < serviceNodes.count(); i++) {
-    QDomNode node = serviceNodes.at(i);
-    if (node.hasAttributes()) {
-
-      QDomAttr attr = d->getAttributeFromNode(node, "name");
-      d->mSeriviceMap[attr.nodeValue()] = node;
-
-      // build input def;
-      if (node.hasChildNodes()) {
-        DefinitionMapType map;
-        QDomNodeList definitionList = node.childNodes();
-
-        for (int j = 0; j < definitionList.count(); j++) {
-          QDomNode defNode = definitionList.at(j);
-          map[defNode.nodeName()] = defNode;
-        }
-
-        d->mDefMap[attr.nodeValue()] = map;
-      }
-    }
-  }
-
-  Q_FOREACH(const QString & serviceName, this->knownServices()) {
-    d->buildServiceInputDefs(serviceName);
-  }
-}
-
 DefinitionMapType
-ServiceDefinition::PrivateServiceDefinition::definitionsOfServiceName(
+service_query::service_query_context::definitionsOfServiceName(
     const QString &name) {
   return mDefMap[name];
 }
 
-QDomAttr ServiceDefinition::PrivateServiceDefinition::getAttributeFromNode(
+QDomAttr service_query::service_query_context::getAttributeFromNode(
     const QDomNode &node, const QString &key) const {
   QDomNamedNodeMap attrMap = node.attributes();
   return attrMap.namedItem(key).toAttr();
 }
 
-QString ServiceDefinition::PrivateServiceDefinition::getTextValueFromNode(
+QString service_query::service_query_context::getTextValueFromNode(
     const QDomNode &node) const {
   QString rv;
 
@@ -913,7 +891,7 @@ QString ServiceDefinition::PrivateServiceDefinition::getTextValueFromNode(
   return rv;
 }
 
-void ServiceDefinition::PrivateServiceDefinition::buildServiceInputDefs(
+void service_query::service_query_context::buildServiceInputDefs(
     const QString &name) {
   QDomNode node = definitionsOfServiceName(name)["input"];
   QDomNodeList childNodes = node.childNodes();
@@ -945,12 +923,12 @@ void ServiceDefinition::PrivateServiceDefinition::buildServiceInputDefs(
   mDefaultInputArgument[name] = defaultValueMap;
 }
 
-bool ServiceDefinition::PrivateServiceDefinition::hasDefaultValue(
+bool service_query::service_query_context::hasDefaultValue(
     const QString &service, const QString &key) const {
   return mDefaultInputArgument[service].keys().contains(key);
 }
 
-QString ServiceDefinition::PrivateServiceDefinition::defaultValue(
+QString service_query::service_query_context::defaultValue(
     const QString &service, const QString &key) const {
   if (hasDefaultValue(service, key)) {
     QDomNode node = mDefaultInputArgument[service][key];
@@ -963,12 +941,11 @@ QString ServiceDefinition::PrivateServiceDefinition::defaultValue(
   return "";
 }
 
-int
-ServiceDefinition::PrivateServiceDefinition::nativeType(const QString &type) {
+int service_query::service_query_context::nativeType(const QString &type) {
   return mTypeMap[type];
 }
 
-void ServiceDefinition::PrivateServiceDefinition::buildArgTypes() {
+void service_query::service_query_context::buildArgTypes() {
   mTypeMap["string"] = 1;
   mTypeMap["int"] = 2;
   mTypeMap["flaot"] = 3;
@@ -976,8 +953,8 @@ void ServiceDefinition::PrivateServiceDefinition::buildArgTypes() {
   mTypeMap["binary_base64"] = 5;
 }
 
-uint ServiceDefinition::PrivateServiceDefinition::documentType(
-    const QString &method) {
+uint
+service_query::service_query_context::documentType(const QString &method) {
   QDomNode resultNode = definitionsOfServiceName(method)["result"];
   QDomNodeList queryNodeList = resultNode.childNodes();
 
@@ -994,8 +971,7 @@ uint ServiceDefinition::PrivateServiceDefinition::documentType(
 }
 
 QHash<QString, PrivateResultQuery>
-ServiceDefinition::PrivateServiceDefinition::queryForMethod(
-    const QString &method) {
+service_query::service_query_context::queryForMethod(const QString &method) {
   QHash<QString, PrivateResultQuery> mQueryData;
   QDomNode resultNode = definitionsOfServiceName(method)["result"];
   QDomNodeList queryNodeList = resultNode.childNodes();

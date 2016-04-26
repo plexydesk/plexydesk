@@ -327,7 +327,9 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
   args["tag_mode"] = "all";
   args["page"] = QString::number(1);
 
-  service->queryService("flickr.photos.search", args);
+  social_kit::service_query_parameters input_data;
+
+  service->queryService("flickr.photos.search", &input_data);
 
   connect(service, SIGNAL(finished(social_kit::WebService *)), this,
           SLOT(onServiceCompleteJson(social_kit::WebService *)));
@@ -343,7 +345,11 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
   args["api_key"] = K_SOCIAL_KIT_FLICKR_API_KEY;
   args["photo_id"] = photoID;
 
-  service->queryService("flickr.photos.getSizes", args);
+  social_kit::service_query_parameters input_data;
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("photo_id", photoID.toStdString());
+
+  service->queryService("flickr.photos.getSizes", &input_data);
 
   connect(service, SIGNAL(finished(social_kit::WebService *)), this,
           SLOT(onSizeServiceCompleteJson(social_kit::WebService *)));
@@ -449,8 +455,8 @@ NoteWidget::onSizeServiceCompleteJson(social_kit::WebService *service) {
       QVariantMap metaData;
       metaData["method"] = service->methodName();
       metaData["id"] =
-          service->inputArgumentForMethod(service->methodName())["photo_id"];
-      metaData["data"] = service->inputArgumentForMethod(service->methodName());
+          service->inputArgumentForMethod(service->methodName()).value("photo_id").c_str();
+      //metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
       downloader->setUrl(map["source"].toString());

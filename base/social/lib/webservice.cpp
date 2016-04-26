@@ -39,6 +39,8 @@ public:
   PrivateWebService() {}
   ~PrivateWebService() {
     // qDebug() << Q_FUNC_INFO;
+      if (m_service_def)
+          delete m_service_def;
   }
 
   QString mSocialDefPrefix;
@@ -50,7 +52,9 @@ public:
   QMultiMap<QString, QVariantMap> mProcessedData;
   QMap<QString, QVariantMap> mInputArguments;
 
-  ServiceDefinition *mServiceDef;
+  std::map<std::string, service_query_parameters> m_input_argument_map;
+
+  service_query *m_service_def;
   QNetworkAccessManager *mNetworkManager;
 };
 
@@ -72,22 +76,23 @@ void WebService::create(const QString &serviceName) {
       QString("%1/%2.xml").arg(d->mSocialDefPrefix).arg(serviceName));
   // qDebug() << Q_FUNC_INFO << d->mSocialDefPath;
 
-  d->mServiceDef = new ServiceDefinition(d->mSocialDefPath, this);
+  d->m_service_def = new service_query(d->mSocialDefPath);
 }
 
 QString WebService::serviceName() const { return d->mServiceName; }
 
 void WebService::queryService(const QString &method,
-                              const QVariantMap &arguments,
+                              service_query_parameters *a_params,
                               QHttpMultiPart *data,
                               const QByteArray &headerName,
                               const QByteArray &headerValue) {
-  if (d->mServiceDef) {
-    QUrl url = d->mServiceDef->queryURL(method, arguments);
-    uint requestType = d->mServiceDef->requestType(method);
+  if (d->m_service_def) {
+    QUrl url = QUrl(d->m_service_def->url(method.toStdString(), a_params).c_str());
+    uint requestType = d->m_service_def->method(method);
 
     d->mMethodName = method;
-    d->mInputArguments[method] = arguments;
+    d->m_input_argument_map[method.toStdString()]= *a_params;
+
     if (d->mNetworkManager) {
       QNetworkRequest request;
       qDebug() << Q_FUNC_INFO << url;
@@ -105,8 +110,8 @@ void WebService::queryService(const QString &method,
   }
 }
 
-QVariantMap WebService::inputArgumentForMethod(const QString &str) {
-  return d->mInputArguments[str];
+service_query_parameters WebService::inputArgumentForMethod(const QString &str) {
+  return d->m_input_argument_map[str.toStdString()];
 }
 
 QVariantMap WebService::serviceData() const {
@@ -140,7 +145,7 @@ void WebService::onNetworkRequestFinished(QNetworkReply *reply) {
     d->mServiceData = reply->readAll();
     reply->deleteLater();
     d->mProcessedData =
-        d->mServiceDef->queryResult(d->mMethodName, d->mServiceData);
+        d->m_service_def->queryResult(d->mMethodName, d->mServiceData);
   }
 
   Q_EMIT finished(this);
