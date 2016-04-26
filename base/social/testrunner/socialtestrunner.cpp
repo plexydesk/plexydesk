@@ -82,7 +82,7 @@ void SocialTestRunner::check_url_request_loader() {
 
 void SocialTestRunner::check_service_file() {
   social_kit::service_query def(
-      "/home/siraj/projects/plexydesk/code/upstream/plexydesk/"
+      "/Users/siraj/projects/plexydesk/code/plexydesk/"
       "/base/social/data/"
       "com.flikr.api.xml");
 
