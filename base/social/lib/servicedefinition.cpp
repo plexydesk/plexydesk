@@ -35,7 +35,7 @@
 #include <sys/stat.h>
 
 #include <algorithm>
-#include <iostream>
+//#include <iostream>
 #include <string>
 #include <tinyxml2.h>
 
@@ -309,8 +309,8 @@ service_query::service_query(const QString &input)
     tinyxml2::XMLError error =
         ctx->m_xml_root_doc.LoadFile(input.toStdString().c_str());
     if (error != tinyxml2::XML_NO_ERROR) {
-      std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
-                << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
+      //std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
+       //         << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
       ctx->m_current_error = kDefinitionLoadError;
     } else {
       ctx->m_current_error = kNoError;
@@ -318,9 +318,9 @@ service_query::service_query(const QString &input)
     }
   } else {
     qWarning() << Q_FUNC_INFO << "No Input File Found at: " << input;
-    std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
-              << "Service Definistion File Not Found : " << input.toStdString()
-              << std::endl;
+    //std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
+     //         << "Service Definistion File Not Found : " << input.toStdString()
+     //         << std::endl;
     ctx->m_current_error = kDefinitionLoadError;
   }
 }
@@ -829,7 +829,7 @@ void service_query::load_services() {
   tinyxml2::XMLElement *root = ctx->m_xml_root_doc.FirstChildElement("services");
 
   if (!root) {
-    std::cout << "Error No Root Element" << std::endl;
+    //std::cout << "Error No Root Element" << std::endl;
     ctx->m_current_error = kDefinitionLoadError;
     return;
   }

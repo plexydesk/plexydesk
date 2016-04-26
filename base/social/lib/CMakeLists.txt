@@ -63,6 +63,15 @@ INCLUDE_DIRECTORIES (
         ${CMAKE_SOURCE_DIR}/deps/tinyxml2/
 )
 
+if (UNIX AND NOT APPLE)
+	set (PLATFORM_SOURCE_FILES ck_url_request_linux.cpp)
+	set (PLATFORM_HEADERS_FILES ck_url_request_linux.h)
+endif()
+
+if (APPLE)
+	set (PLATFORM_SOURCE_FILES ck_url_request_mac.mm)
+	set (PLATFORM_HEADERS_FILES ck_url_request_mac.h)
+endif()
 set(sourceFiles
     ck_url.cpp
     webservice.cpp
@@ -72,8 +81,7 @@ set(sourceFiles
     asyncdatadownloader.cpp
     webserver.cpp
     webcontentinterface.cpp
-    #linux
-    ck_url_request_linux.cpp
+		${PLATFORM_SOURCE_FILES}
    )
 
 set(headerFiles
@@ -85,7 +93,7 @@ set(headerFiles
     asyncdatadownloader.h
     webserver.h
     webcontentinterface.h
-    ck_url_request_linux.h
+		${PLATFORM_HEADERS_FILES}
    )
 
 if (APPLE)
@@ -93,10 +101,14 @@ if (APPLE)
    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
    FIND_LIBRARY(GLUT_LIBRARY GLUT)
    FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
+	 FIND_LIBRARY(CoreServices APPLE_CORE_SERVICE_FRAMEWORK_LIBRARY)
    MARK_AS_ADVANCED (COCOA_LIBRARY
                      GLUT_LIBRARY
-                     OpenGL_LIBRARY)
-   set(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY})
+                     OpenGL_LIBRARY
+										 APPLE_CORE_SERVICE_FRAMEWORK_LIBRARY
+										 )
+   set(APPLE_OSX_PLATFORM_LINK_LIBRARIES ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY} 
+		   ${APPLE_CORE_SERVICE_FRAMEWORK_LIBRARY})
 endif(APPLE)
 
 set(sourceFiles ${sourceFiles} ${headerFiles})
@@ -136,7 +148,7 @@ if (UNIX AND NOT LINUX)
     set(PLATFORM_LINK_LIBRARIES ${LIBSOUP_LIBRARIES})
 endif()
 
-TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${MAC_LIBS} ${libs} ${PLATFORM_LINK_LIBRARIES} tinyxml2)
+TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${APPLE_OSX_PLATFORM_LINK_LIBRARIES} ${libs} ${PLATFORM_LINK_LIBRARIES} tinyxml2)
 
 QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
 

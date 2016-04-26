@@ -1,9 +1,16 @@
 #include "ck_url.h"
 
+#include <config.h>
+
+#include <stdlib.h>
 #include <cstring>
 
 #ifdef __GNU_LINUX_PLATFORM__
 #include "ck_url_request_linux.h"
+#endif
+
+#ifdef __APPLE_PLATFORM__
+#include "ck_url_request_mac.h"
 #endif
 
 namespace social_kit {
@@ -84,7 +91,7 @@ url_request::url_request() : ctx(new platform_url_request) {}
 url_request::~url_request() { delete ctx; }
 
 void url_request::send_message(url_request::url_request_type_t a_type,
-                               const std::__cxx11::string &a_message) {
+                               const std::string &a_message) {
   ctx->send_message_async(a_type, a_message);
 }
 
