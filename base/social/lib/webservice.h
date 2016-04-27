@@ -28,9 +28,9 @@
 
 namespace social_kit {
 
-class service_query;
+class remote_service;
 
-typedef QSharedPointer<service_query> ServiceDefinitionPtr;
+typedef QSharedPointer<remote_service> ServiceDefinitionPtr;
 
 class QuetzalSocialKitQt_EXPORT WebService : public QObject {
   Q_OBJECT

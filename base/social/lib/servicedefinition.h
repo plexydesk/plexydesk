@@ -23,11 +23,12 @@
 #include <QVariant>
 #include <QMap>
 
-
 #include <algorithm>
 #include <vector>
 #include <map>
 #include <string>
+
+#include "ck_url.h"
 
 #include <social_kit_export.h>
 
@@ -69,12 +70,32 @@ private:
   std::map<std::string, std::string> m_parameter_map;
 };
 
-class DECL_SOCIAL_KIT_EXPORT service_query {
+class DECL_SOCIAL_KIT_EXPORT remote_service_response {
+public:
+  typedef std::map<std::string, std::string> data_container_t;
+
+  remote_service_response();
+  remote_service_response(const remote_service_response &a_copy);
+
+  ~remote_service_response();
+
+  void insert(const std::string &a_key, const data_container_t &a_data);
+
+  data_container_t data(const std::string &a_key) const;
+
+  string_list query_list() const;
+
+private:
+  std::map<std::string, data_container_t> m_data;
+  string_list m_query_list;
+};
+
+class DECL_SOCIAL_KIT_EXPORT remote_service {
 public:
   typedef enum { kDefinitionLoadError, kNoError } definition_error_t;
 
-  service_query(const QString &input);
-  virtual ~service_query();
+  remote_service(const QString &input);
+  virtual ~remote_service();
 
   QStringList service_list() const;
 
@@ -85,14 +106,17 @@ public:
   string_list arguments(const QString &name) const;
 
   string_list input_arguments(const std::string &a_name,
-                                           bool a_optional = false);
+                              bool a_optional = false);
   QStringList optional_arguments(const std::string &name) const;
 
   QString argument_type(const QString &serviceName,
-                       const QString &argument) const;
+                        const QString &argument) const;
 
   std::string url(const std::string &a_method,
                   service_query_parameters *a_params) const;
+
+  remote_service_response response(const std::string &a_method_name,
+                                   const url_response &a_response);
 
   QMultiMap<QString, QVariantMap> queryResult(const QString &method,
                                               const QString &data) const;
@@ -103,8 +127,8 @@ protected:
   void load_services();
 
 private:
-  class service_query_context;
-  service_query_context *const ctx;
+  class remote_service_context;
+  remote_service_context *const ctx;
 };
 }
 

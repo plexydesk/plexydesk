@@ -61,28 +61,37 @@ void SocialTestRunner::check_url_encode() {
 void SocialTestRunner::check_url_request_loader() {
   social_kit::url_request *request = new social_kit::url_request();
 
-  request->on_response_ready([this](const social_kit::url_response &response) {
+  request->on_response_ready([&](const social_kit::url_response &response) {
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
     CK_ASSERT(response.http_version() == "HTTP 1.0",
               "Invalid Response From Server");
-    CK_ASSERT(response.data_buffer_size() == 132, "Size Mismatch");
+    CK_ASSERT(response.data_buffer_size() == 5320,
+              "Size Mismatch : " << response.data_buffer_size());
     CK_ASSERT(response.data_buffer()[0] == '<', "Not XML Data");
     CK_ASSERT(response.data_buffer()[1] == '?', "Not XML Data");
     CK_ASSERT(response.data_buffer()[2] == 'x', "Not XML Data");
     CK_ASSERT(response.data_buffer()[3] == 'm', "Not XML Data");
     CK_ASSERT(response.data_buffer()[4] == 'l', "Not XML Data");
+
+    social_kit::remote_service srv_query(
+      "/home/siraj/projects/plexydesk/code/upstream/plexydesk/"
+      "/base/social/data/"
+      "com.flikr.api.xml");
+    srv_query.response("flickr.photos.search", response);
   });
 
-  request->send_message(social_kit::url_request::kGETRequest,
-                        "http://api.flickr.com/services/rest/"
-                        "?method=flickr.photos.search&api_key=&text=sky&format="
-                        "rest&tags=wallpapers%2cwallpaper&tag_mode=all&safe_"
-                        "search=1&in_gallery=true&per_page=30&page=1");
+  request->send_message(
+      social_kit::url_request::kGETRequest,
+      "https://api.flickr.com/services/rest/"
+      "?method=flickr.photos.search&api_key=" K_SOCIAL_KIT_FLICKR_API_KEY
+      "&text=sky&format="
+      "rest&tags=wallpapers%2cwallpaper&tag_mode=all&safe_"
+      "search=1&in_gallery=true&per_page=30&page=1");
 }
 
 void SocialTestRunner::check_service_file() {
-  social_kit::service_query def(
-      "/Users/siraj/projects/plexydesk/code/plexydesk/"
+  social_kit::remote_service srv_query(
+      "/home/siraj/projects/plexydesk/code/upstream/plexydesk/"
       "/base/social/data/"
       "com.flikr.api.xml");
 
@@ -96,16 +105,16 @@ void SocialTestRunner::check_service_file() {
   input_data.insert("tag_mode", "all");
   input_data.insert("page", "1");
 
-  CK_ASSERT(def.method("flickr.photos.search") == 1,
+  CK_ASSERT(srv_query.method("flickr.photos.search") == 1,
             "Invalid Request Type");
-  CK_ASSERT(def.endpoint("flickr.photos.search") ==
-                "http://api.flickr.com/services/rest/",
+  CK_ASSERT(srv_query.endpoint("flickr.photos.search") ==
+                "https://api.flickr.com/services/rest/",
             "Invalid Result");
 
   social_kit::string_list argument_list =
-      def.input_arguments("flickr.photos.search");
+      srv_query.input_arguments("flickr.photos.search");
   social_kit::string_list argument_list_opt =
-      def.input_arguments("flickr.photos.search", true);
+      srv_query.input_arguments("flickr.photos.search", true);
 
   std::for_each(std::begin(argument_list), std::end(argument_list),
                 [](std::string value) {
@@ -117,14 +126,16 @@ void SocialTestRunner::check_service_file() {
     // qDebug() << Q_FUNC_INFO << value.c_str();
   });
 
-  QString expected_query_url("http://api.flickr.com/services/rest/"
-                             "?method=flickr.photos.search&api_key=&text=sky&"
-                             "format=rest&tags=wallpapers%2cwallpaper&tag_mode="
-                             "all&safe_search=1&in_gallery=true&per_page=30&"
-                             "page=1");
+  QString expected_query_url(
+      "https://api.flickr.com/services/rest/"
+      "?method=flickr.photos.search&api_key=" K_SOCIAL_KIT_FLICKR_API_KEY
+      "&text=sky&"
+      "format=rest&tags=wallpapers%2cwallpaper&tag_mode="
+      "all&safe_search=1&in_gallery=true&per_page=30&"
+      "page=1");
 
   CK_ASSERT(expected_query_url.toStdString() ==
-                def.url("flickr.photos.search", &input_data),
+                srv_query.url("flickr.photos.search", &input_data),
             "Invalid Query URL");
 }
 
