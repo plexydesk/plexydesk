@@ -19,8 +19,16 @@
 #ifndef SERVICEINPUTDEFINITION_H
 #define SERVICEINPUTDEFINITION_H
 
-#include <QObject>
-#include <QUrl>
+#include <QString>
+#include <QVariant>
+#include <QMap>
+
+
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <string>
+
 #include <social_kit_export.h>
 
 namespace social_kit {

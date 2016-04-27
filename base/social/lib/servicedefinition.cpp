@@ -29,6 +29,8 @@
 #include <QJsonDocument>
 #include <QUrlQuery>
 #include <QtGui>
+#include <QObject>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -512,8 +514,6 @@ std::string service_query::url(const std::string &a_method,
 
 QMultiMap<QString, QVariantMap>
 service_query::queryResult(const QString &method, const QString &data) const {
-  // QVariantMap rv;
-
   QHash<QString, PrivateResultQuery> result = ctx->queryForMethod(method);
   QStringList queries = result.keys();
 
