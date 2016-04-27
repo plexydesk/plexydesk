@@ -37,7 +37,7 @@
 #include <sys/stat.h>
 
 #include <algorithm>
-//#include <iostream>
+#include <iostream>
 #include <string>
 #include <tinyxml2.h>
 
@@ -177,7 +177,7 @@ private:
 class service_result {
 public:
   typedef enum {
-    kXMLData,
+    kXMLData = 0,
     kJSONData,
     kTextData,
     kBinaryData,
@@ -191,6 +191,12 @@ public:
     m_result_format = a_result;
   }
   service_result_t result_format() const { return m_result_format; }
+
+  std::vector<service_result_query *> query_list() { return m_query_list; }
+
+  void insert(service_result_query *a_query) {
+    m_query_list.push_back(a_query);
+  }
 
 private:
   service_result_t m_result_format;
@@ -227,7 +233,7 @@ public:
   service_input *input() const;
   void set_input(service_input *input);
 
-  service_result *result() const;
+  service_result *result() const { return m_result; }
   void set_service_result(service_result *a_result) { m_result = a_result; }
 
   void set_name(const std::string &a_name) { m_name = a_name; }
@@ -244,10 +250,10 @@ private:
 typedef std::map<std::string, service *> service_map_t;
 typedef service_map_t::iterator service_map_iterator_t;
 
-class service_query::service_query_context {
+class remote_service::remote_service_context {
 public:
-  service_query_context() : m_current_error(service_query::kNoError) {}
-  ~service_query_context() {
+  remote_service_context() : m_current_error(remote_service::kNoError) {}
+  ~remote_service_context() {
     for (service_map_iterator_t iterator = m_service_dict.begin();
          iterator != m_service_dict.end(); iterator++) {
 
@@ -305,14 +311,14 @@ bool ck_file_exisits(const std::string &a_file_name) {
   return (stat(a_file_name.c_str(), &buffer) == 0);
 }
 
-service_query::service_query(const QString &input)
-    : ctx(new service_query_context) {
+remote_service::remote_service(const QString &input)
+    : ctx(new remote_service_context) {
   if (ck_file_exisits(input.toLatin1().data())) {
     tinyxml2::XMLError error =
         ctx->m_xml_root_doc.LoadFile(input.toStdString().c_str());
     if (error != tinyxml2::XML_NO_ERROR) {
-      //std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
-       //         << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
+      // std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
+      //         << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
       ctx->m_current_error = kDefinitionLoadError;
     } else {
       ctx->m_current_error = kNoError;
@@ -320,16 +326,16 @@ service_query::service_query(const QString &input)
     }
   } else {
     qWarning() << Q_FUNC_INFO << "No Input File Found at: " << input;
-    //std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
-     //         << "Service Definistion File Not Found : " << input.toStdString()
-     //         << std::endl;
+    // std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
+    //         << "Service Definistion File Not Found : " << input.toStdString()
+    //         << std::endl;
     ctx->m_current_error = kDefinitionLoadError;
   }
 }
 
-service_query::~service_query() { delete ctx; }
+remote_service::~remote_service() { delete ctx; }
 
-QStringList service_query::service_list() const {
+QStringList remote_service::service_list() const {
   QStringList rv;
   for (service_map_iterator_t iterator = ctx->m_service_dict.begin();
        iterator != ctx->m_service_dict.end(); iterator++) {
@@ -340,8 +346,7 @@ QStringList service_query::service_list() const {
 }
 
 // fetch the url from the <input> tag
-std::string
-service_query::endpoint(const std::string &a_name) const {
+std::string remote_service::endpoint(const std::string &a_name) const {
   std::string rv;
 
   service *srv = ctx->m_service_dict[a_name];
@@ -353,7 +358,7 @@ service_query::endpoint(const std::string &a_name) const {
   return rv;
 }
 
-uint service_query::method(const QString &name) const {
+uint remote_service::method(const QString &name) const {
   uint rv = service_input::kUndefinedRequest;
 
   service *srv = ctx->m_service_dict[name.toStdString()];
@@ -365,7 +370,7 @@ uint service_query::method(const QString &name) const {
   return rv;
 }
 
-string_list service_query::arguments(const QString &name) const {
+string_list remote_service::arguments(const QString &name) const {
   string_list rv;
   service *srv = ctx->m_service_dict[name.toStdString()];
 
@@ -384,7 +389,7 @@ string_list service_query::arguments(const QString &name) const {
   return rv;
 }
 
-string_list service_query::input_arguments(const std::string &a_name,
+string_list remote_service::input_arguments(const std::string &a_name,
                                            bool a_optional) {
   std::vector<std::string> rv;
   service *srv = ctx->m_service_dict[a_name];
@@ -409,7 +414,7 @@ string_list service_query::input_arguments(const std::string &a_name,
   return rv;
 }
 
-QStringList service_query::optional_arguments(const std::string &name) const {
+QStringList remote_service::optional_arguments(const std::string &name) const {
   QStringList rv;
   service *srv = ctx->m_service_dict[name];
 
@@ -428,7 +433,7 @@ QStringList service_query::optional_arguments(const std::string &name) const {
   return rv;
 }
 
-QString service_query::argument_type(const QString &serviceName,
+QString remote_service::argument_type(const QString &serviceName,
                                      const QString &argument) const {
   QDomNode node = ctx->mInputArguments[serviceName][argument];
 
@@ -440,7 +445,7 @@ QString service_query::argument_type(const QString &serviceName,
   return "";
 }
 
-std::string service_query::url(const std::string &a_method,
+std::string remote_service::url(const std::string &a_method,
                                service_query_parameters *a_params) const {
   std::string rv;
   std::vector<std::string> default_query_list;
@@ -512,8 +517,61 @@ std::string service_query::url(const std::string &a_method,
   return rv;
 }
 
+remote_service_response remote_service::response(const std::string &a_method_name,
+                                          const url_response &a_response) {
+  remote_service_response rv;
+  service *srv = ctx->m_service_dict[a_method_name];
+  service_result *srv_result = 0;
+
+  if (!srv) {
+    std::cout << "Error method name" << std::endl;
+    return rv;
+  }
+
+  srv_result = srv->result();
+
+  if (!srv_result) {
+    std::cout << "No Result Object" << std::endl;
+    return rv;
+  }
+
+  std::cout << __FUNCTION__ << " : begin result processing .... [ok]"
+            << std::endl;
+  std::cout << __FUNCTION__ << " : begin result processing .... [ok]"
+            << srv_result->result_format() << std::endl;
+  if (srv_result->result_format() == service_result::kXMLData) {
+    // xml data;
+    std::vector<service_result_query *> list = srv_result->query_list();
+    tinyxml2::XMLDocument doc;
+    if (doc.Parse(a_response.data_buffer(), a_response.data_buffer_size()) !=
+        tinyxml2::XML_NO_ERROR) {
+      return rv;
+    }
+
+    std::cout << "result query size : " << list.size() << std::endl;
+    std::for_each(std::begin(list), std::end(list),
+                  [&](service_result_query *query) {
+      if (query) {
+        std::string tag_name = query->tag_name();
+        qDebug() << Q_FUNC_INFO << "<" << tag_name.c_str() << "/>";
+        // get tag_name :
+        tinyxml2::XMLElement *element = doc.FirstChildElement(tag_name.c_str());
+
+        if (!element)
+          return;
+      }
+    });
+
+  } else if (srv_result->result_format() == service_result::kJSONData) {
+  } else {
+    // unknown data ?
+  }
+
+  return rv;
+}
+
 QMultiMap<QString, QVariantMap>
-service_query::queryResult(const QString &method, const QString &data) const {
+remote_service::queryResult(const QString &method, const QString &data) const {
   QHash<QString, PrivateResultQuery> result = ctx->queryForMethod(method);
   QStringList queries = result.keys();
 
@@ -610,11 +668,11 @@ service_query::queryResult(const QString &method, const QString &data) const {
   return tagData;
 }
 
-service_query::definition_error_t service_query::error() const {
+remote_service::definition_error_t remote_service::error() const {
   return ctx->m_current_error;
 }
 
-QVariant service_query::service_query_context::JsonValueToVariant(
+QVariant remote_service::remote_service_context::JsonValueToVariant(
     const QJsonValue &object) {
   QVariant rv;
 
@@ -636,8 +694,8 @@ QVariant service_query::service_query_context::JsonValueToVariant(
 }
 
 QJsonValue
-service_query::service_query_context::findJsonObject(const QJsonObject &root,
-                                                        const QString &key) {
+remote_service::remote_service_context::findJsonObject(const QJsonObject &root,
+                                                     const QString &key) {
   QJsonValue rv;
 
   if (root.keys().contains(key)) {
@@ -762,15 +820,14 @@ get_service_result_query_attribute(tinyxml2::XMLElement *a_element) {
   return rv;
 }
 
-service_result_query *
-get_service_result_query(tinyxml2::XMLElement *a_element) {
-  service_result_query *rv = new service_result_query();
-
+void get_service_result_query(tinyxml2::XMLElement *a_element,
+                              service_result *a_result) {
   tinyxml2::XMLElement *element = a_element->FirstChildElement("query");
 
   while (element != 0) {
     const char *name_value = element->Attribute("name");
     const char *tag_value = element->Attribute("tag");
+    service_result_query *rv = new service_result_query();
 
     if (name_value) {
       rv->set_name(name_value);
@@ -792,10 +849,11 @@ get_service_result_query(tinyxml2::XMLElement *a_element) {
       attr_element = attr_element->NextSiblingElement("attr");
     }
 
+    if (a_result) {
+      a_result->insert(rv);
+    }
     element = element->NextSiblingElement("query");
   }
-
-  return rv;
 }
 
 service_result *get_service_result(tinyxml2::XMLElement *a_element) {
@@ -807,29 +865,32 @@ service_result *get_service_result(tinyxml2::XMLElement *a_element) {
     const char *format_value = element->Attribute("format");
 
     if (format_value) {
-      if (strcmp(format_value, "xml")) {
+      if (strcmp(format_value, "xml") == 0) {
         rv->set_result_format(service_result::kXMLData);
-      } else if (strcmp(format_value, "json")) {
+      } else if (strcmp(format_value, "json") == 0) {
         rv->set_result_format(service_result::kJSONData);
-      } else if (strcmp(format_value, "binary")) {
+      } else if (strcmp(format_value, "binary") == 0) {
         rv->set_result_format(service_result::kBinaryData);
       } else {
         rv->set_result_format(service_result::kUnknown);
       }
     }
+
+    get_service_result_query(element, rv);
   }
 
   return rv;
 }
 
-void service_query::load_services() {
+void remote_service::load_services() {
   if (error() != kNoError)
     return;
 
-  tinyxml2::XMLElement *root = ctx->m_xml_root_doc.FirstChildElement("services");
+  tinyxml2::XMLElement *root =
+      ctx->m_xml_root_doc.FirstChildElement("services");
 
   if (!root) {
-    //std::cout << "Error No Root Element" << std::endl;
+    // std::cout << "Error No Root Element" << std::endl;
     ctx->m_current_error = kDefinitionLoadError;
     return;
   }
@@ -866,18 +927,18 @@ void service_query::load_services() {
 }
 
 DefinitionMapType
-service_query::service_query_context::definitionsOfServiceName(
+remote_service::remote_service_context::definitionsOfServiceName(
     const QString &name) {
   return mDefMap[name];
 }
 
-QDomAttr service_query::service_query_context::getAttributeFromNode(
+QDomAttr remote_service::remote_service_context::getAttributeFromNode(
     const QDomNode &node, const QString &key) const {
   QDomNamedNodeMap attrMap = node.attributes();
   return attrMap.namedItem(key).toAttr();
 }
 
-QString service_query::service_query_context::getTextValueFromNode(
+QString remote_service::remote_service_context::getTextValueFromNode(
     const QDomNode &node) const {
   QString rv;
 
@@ -891,7 +952,7 @@ QString service_query::service_query_context::getTextValueFromNode(
   return rv;
 }
 
-void service_query::service_query_context::buildServiceInputDefs(
+void remote_service::remote_service_context::buildServiceInputDefs(
     const QString &name) {
   QDomNode node = definitionsOfServiceName(name)["input"];
   QDomNodeList childNodes = node.childNodes();
@@ -923,13 +984,14 @@ void service_query::service_query_context::buildServiceInputDefs(
   mDefaultInputArgument[name] = defaultValueMap;
 }
 
-bool service_query::service_query_context::hasDefaultValue(
+bool remote_service::remote_service_context::hasDefaultValue(
     const QString &service, const QString &key) const {
   return mDefaultInputArgument[service].keys().contains(key);
 }
 
-QString service_query::service_query_context::defaultValue(
-    const QString &service, const QString &key) const {
+QString
+remote_service::remote_service_context::defaultValue(const QString &service,
+                                                   const QString &key) const {
   if (hasDefaultValue(service, key)) {
     QDomNode node = mDefaultInputArgument[service][key];
     QDomAttr defaultValue = getAttributeFromNode(node, "default");
@@ -941,11 +1003,11 @@ QString service_query::service_query_context::defaultValue(
   return "";
 }
 
-int service_query::service_query_context::nativeType(const QString &type) {
+int remote_service::remote_service_context::nativeType(const QString &type) {
   return mTypeMap[type];
 }
 
-void service_query::service_query_context::buildArgTypes() {
+void remote_service::remote_service_context::buildArgTypes() {
   mTypeMap["string"] = 1;
   mTypeMap["int"] = 2;
   mTypeMap["flaot"] = 3;
@@ -953,8 +1015,7 @@ void service_query::service_query_context::buildArgTypes() {
   mTypeMap["binary_base64"] = 5;
 }
 
-uint
-service_query::service_query_context::documentType(const QString &method) {
+uint remote_service::remote_service_context::documentType(const QString &method) {
   QDomNode resultNode = definitionsOfServiceName(method)["result"];
   QDomNodeList queryNodeList = resultNode.childNodes();
 
@@ -971,7 +1032,7 @@ service_query::service_query_context::documentType(const QString &method) {
 }
 
 QHash<QString, PrivateResultQuery>
-service_query::service_query_context::queryForMethod(const QString &method) {
+remote_service::remote_service_context::queryForMethod(const QString &method) {
   QHash<QString, PrivateResultQuery> mQueryData;
   QDomNode resultNode = definitionsOfServiceName(method)["result"];
   QDomNodeList queryNodeList = resultNode.childNodes();
@@ -1042,6 +1103,7 @@ service_data_type_t service_input_argument::type() const { return m_type; }
 void service_input_argument::set_type(const service_data_type_t &type) {
   m_type = type;
 }
+
 std::string service_input_argument::default_value() const {
   return m_default_value;
 }
@@ -1063,5 +1125,28 @@ service_data_type_t service_result_query_attribute::type() const {
 
 void service_result_query_attribute::set_type(const service_data_type_t &type) {
   m_type = type;
+}
+
+remote_service_response::remote_service_response() {}
+
+remote_service_response::remote_service_response(const remote_service_response &a_copy) {
+  m_data = a_copy.m_data;
+}
+
+remote_service_response::~remote_service_response() { m_data.clear(); }
+
+void remote_service_response::insert(
+    const std::string &a_key,
+    const remote_service_response::data_container_t &a_data) {
+  m_data[a_key] = a_data;
+}
+
+remote_service_response::data_container_t
+remote_service_response::data(const std::string &a_key) const {
+    return m_data.at(a_key);
+}
+
+string_list remote_service_response::query_list() const {
+  return m_query_list;
 }
 }

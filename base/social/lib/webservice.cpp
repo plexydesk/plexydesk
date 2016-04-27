@@ -54,7 +54,7 @@ public:
 
   std::map<std::string, service_query_parameters> m_input_argument_map;
 
-  service_query *m_service_def;
+  remote_service *m_service_def;
   QNetworkAccessManager *mNetworkManager;
 };
 
@@ -76,7 +76,7 @@ void WebService::create(const QString &serviceName) {
       QString("%1/%2.xml").arg(d->mSocialDefPrefix).arg(serviceName));
   // qDebug() << Q_FUNC_INFO << d->mSocialDefPath;
 
-  d->m_service_def = new service_query(d->mSocialDefPath);
+  d->m_service_def = new remote_service(d->mSocialDefPath);
 }
 
 QString WebService::serviceName() const { return d->mServiceName; }

@@ -2,7 +2,7 @@
 <!--Document created by: PlexyDesk, http://www.plexydesk.org for Social Framework -->
 <services>
 <service name="flickr.photos.search">
-    <input url="http://api.flickr.com/services/rest/" type="GET" request="GET">
+    <input url="https://api.flickr.com/services/rest/" type="GET" request="GET">
             <arg type="string" optional="true" default="flickr.photos.search">method</arg>
             <arg type="string" optional="false">api_key</arg>
             <arg type="string" optional="false">text</arg>
@@ -70,7 +70,7 @@
 </service>
 
 <service name="flickr.photos.getSizes">
-    <input url="http://api.flickr.com/services/rest/" type="GET">
+    <input url="https://api.flickr.com/services/rest/" type="GET">
             <arg type="string" optional="true" default="flickr.photos.getSizes">method</arg>
             <arg type="string" optional="false">api_key</arg>
             <arg type="string" optional="false">photo_id</arg>
