@@ -67,7 +67,7 @@ private:
 };
 
 //<attr ... >
-class DECL_SOCIAL_KIT_EXPORT remote_result_attribute {
+class DECL_SOCIAL_KIT_EXPORT remote_data_attribute {
 public:
   typedef enum {
     kBoolProperty,
@@ -77,14 +77,14 @@ public:
     kRealProerpy
   } property_type_t;
 
-  remote_result_attribute();
-  remote_result_attribute(const remote_result_attribute &a_copy) {
+  remote_data_attribute();
+  remote_data_attribute(const remote_data_attribute &a_copy) {
     m_key = a_copy.m_key;
     m_value = a_copy.m_value;
     m_value_type = a_copy.m_value_type;
   }
 
-  virtual ~remote_result_attribute();
+  virtual ~remote_data_attribute();
 
   property_type_t type() const;
   void set_type(property_type_t a_type);
@@ -102,50 +102,48 @@ private:
 };
 
 //<query>
-typedef std::vector<remote_result_attribute> attribute_list_t;
-class DECL_SOCIAL_KIT_EXPORT remote_result_query {
+typedef std::vector<remote_data_attribute> attribute_list_t;
+class DECL_SOCIAL_KIT_EXPORT remote_result_data {
 public:
-  remote_result_query();
-  remote_result_query(const remote_result_query &a_copy) {
+  remote_result_data();
+  remote_result_data(const remote_result_data &a_copy) {
     m_name = a_copy.m_name;
     m_propery_list = a_copy.m_propery_list;
   }
 
-  virtual ~remote_result_query();
+  virtual ~remote_result_data();
 
   std::string name() const { return m_name; }
 
   void set_name(const std::string &a_name) { m_name = a_name; }
 
-  void insert(remote_result_attribute &a_attrib) {
+  void insert(remote_data_attribute &a_attrib) {
     m_propery_list.push_back(a_attrib);
   }
 
-  remote_result_attribute get(const std::string &a_attribute_name);
+  remote_data_attribute get(const std::string &a_attribute_name);
 
 private:
-  std::vector<remote_result_attribute> m_propery_list;
+  std::vector<remote_data_attribute> m_propery_list;
   std::string m_name;
 };
 
 //<result>
-typedef std::vector<remote_result_query> result_list_t;
+typedef std::vector<remote_result_data> result_list_t;
 class DECL_SOCIAL_KIT_EXPORT remote_result {
 public:
-  typedef std::map<std::string, std::string> data_container_t;
-
   remote_result();
   remote_result(const remote_result &a_copy);
   ~remote_result();
 
-  void insert(const remote_result_query &a_data);
+  void insert(const remote_result_data &a_data);
 
-  std::vector<remote_result_query> query() const { return m_query_list; }
+  std::vector<remote_result_data> query() const { return m_query_list; }
 
   result_list_t get(const std::string &a_name) const;
 
 private:
-  std::vector<remote_result_query> m_query_list;
+  std::vector<remote_result_data> m_query_list;
 };
 
 class DECL_SOCIAL_KIT_EXPORT remote_service {
@@ -175,11 +173,6 @@ public:
 
   remote_result response(const std::string &a_method_name,
                          const url_response &a_response) const;
-
-  /*
-  QMultiMap<QString, QVariantMap> queryResult(const QString &method,
-                                              const QString &data) const;
-                                              */
 
   definition_error_t error() const;
 

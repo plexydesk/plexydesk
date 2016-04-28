@@ -81,7 +81,7 @@ void SocialTestRunner::check_url_request_loader() {
             srv_query.response("flickr.photos.search", response);
     CK_ASSERT(result.get("photo").size() == 30, "expected 30 but got : "
               << result.get("photo").size());
-    social_kit::remote_result_query query = result.get("rsp").at(0);
+    social_kit::remote_result_data query = result.get("rsp").at(0);
 
     //todo
     CK_ASSERT(query.get("stat").value() == "ok", "expected OK but got : "

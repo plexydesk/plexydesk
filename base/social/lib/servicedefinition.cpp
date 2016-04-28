@@ -233,7 +233,6 @@ public:
     m_service_dict.clear();
   }
 
-
   definition_error_t m_current_error;
   tinyxml2::XMLDocument m_xml_root_doc;
   service_map_t m_service_dict;
@@ -251,8 +250,7 @@ bool ck_file_exisits(const std::string &a_file_name) {
 remote_service::remote_service(const std::string &input)
     : ctx(new remote_service_context) {
   if (ck_file_exisits(input.c_str())) {
-    tinyxml2::XMLError error =
-        ctx->m_xml_root_doc.LoadFile(input.c_str());
+    tinyxml2::XMLError error = ctx->m_xml_root_doc.LoadFile(input.c_str());
     if (error != tinyxml2::XML_NO_ERROR) {
       // std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
       //         << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
@@ -262,7 +260,7 @@ remote_service::remote_service(const std::string &input)
       load_services();
     }
   } else {
-    //qWarning() << Q_FUNC_INFO << "No Input File Found at: " << input.c_str();
+    // qWarning() << Q_FUNC_INFO << "No Input File Found at: " << input.c_str();
     // std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
     //         << "Service Definistion File Not Found : " << input.toStdString()
     //         << std::endl;
@@ -419,7 +417,7 @@ std::string remote_service::url(const std::string &a_method,
         }
       });
     } else {
-      //qDebug() << Q_FUNC_INFO << "Something Wrong";
+      // qDebug() << Q_FUNC_INFO << "Something Wrong";
     }
   }
 
@@ -443,13 +441,13 @@ std::string remote_service::url(const std::string &a_method,
 }
 
 const char *get_attribute_value(tinyxml2::XMLElement *element,
-                       const std::string &a_attribute_name) {
-    if (!element || a_attribute_name.empty())
-        return NULL;
+                                const std::string &a_attribute_name) {
+  if (!element || a_attribute_name.empty())
+    return NULL;
 
-    const char *value = element->Attribute(a_attribute_name.c_str());
+  const char *value = element->Attribute(a_attribute_name.c_str());
 
-    return value;
+  return value;
 }
 
 void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
@@ -466,20 +464,19 @@ void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
   const char *keyword = query->tag_name().c_str();
 
   if (keyword && strcmp(node->Name(), keyword) == 0) {
-    remote_result_query result;
+    remote_result_data result;
     result.set_name(node->Name());
     service_result_query::attribute_list_t list = query->attribute_list();
 
     std::for_each(std::begin(list), std::end(list),
                   [&](service_result_query_attribute *attrib) {
-       const char *attribute_value =
-               get_attribute_value(node, attrib->value());
-       if (attribute_value) {
-           remote_result_attribute attribute;
-           attribute.set_key(attrib->value());
-           attribute.set_value(attribute_value);
-           result.insert(attribute);
-       }
+      const char *attribute_value = get_attribute_value(node, attrib->value());
+      if (attribute_value) {
+        remote_data_attribute attribute;
+        attribute.set_key(attrib->value());
+        attribute.set_value(attribute_value);
+        result.insert(attribute);
+      }
     });
     a_result->insert(result);
   }
@@ -912,59 +909,60 @@ remote_result::remote_result(const remote_result &a_copy) {
 
 remote_result::~remote_result() { m_query_list.clear(); }
 
-void remote_result::insert(const remote_result_query &a_data) {
-    m_query_list.push_back(a_data);
+void remote_result::insert(const remote_result_data &a_data) {
+  m_query_list.push_back(a_data);
 }
 
 result_list_t remote_result::get(const std::string &a_name) const {
-   result_list_t rv;
-   std::for_each(std::begin(m_query_list), std::end(m_query_list),
-                 [&](remote_result_query query) {
-      if (a_name == query.name())
-       rv.push_back(query);
-   }) ;
+  result_list_t rv;
+  std::for_each(std::begin(m_query_list), std::end(m_query_list),
+                [&](remote_result_data query) {
+    if (a_name == query.name())
+      rv.push_back(query);
+  });
 
-   return rv;
+  return rv;
 }
 
-remote_result_query::remote_result_query() {}
+remote_result_data::remote_result_data() {}
 
-remote_result_query::~remote_result_query() {}
+remote_result_data::~remote_result_data() {}
 
-remote_result_attribute remote_result_query::get(const std::string &a_attribute_name) {
-    remote_result_attribute rv;
-    std::for_each(std::begin(m_propery_list), std::end(m_propery_list),
-                  [&](remote_result_attribute attribute) {
-       if (a_attribute_name == attribute.key()) {
-           rv = attribute;
-       }
-    });
+remote_data_attribute
+remote_result_data::get(const std::string &a_attribute_name) {
+  remote_data_attribute rv;
+  std::for_each(std::begin(m_propery_list), std::end(m_propery_list),
+                [&](remote_data_attribute attribute) {
+    if (a_attribute_name == attribute.key()) {
+      rv = attribute;
+    }
+  });
 
-    return rv;
+  return rv;
 }
 
-remote_result_attribute::remote_result_attribute() {}
+remote_data_attribute::remote_data_attribute() {}
 
-remote_result_attribute::~remote_result_attribute() {}
+remote_data_attribute::~remote_data_attribute() {}
 
-remote_result_attribute::property_type_t remote_result_attribute::type() const {
+remote_data_attribute::property_type_t remote_data_attribute::type() const {
   return m_value_type;
 }
 
-void remote_result_attribute::set_type(
-    remote_result_attribute::property_type_t a_type) {
+void remote_data_attribute::set_type(
+    remote_data_attribute::property_type_t a_type) {
   m_value_type = a_type;
 }
 
-std::string remote_result_attribute::key() const { return m_key; }
+std::string remote_data_attribute::key() const { return m_key; }
 
-void remote_result_attribute::set_key(const std::string &a_key) {
+void remote_data_attribute::set_key(const std::string &a_key) {
   m_key = a_key;
 }
 
-std::string remote_result_attribute::value() const { return m_value; }
+std::string remote_data_attribute::value() const { return m_value; }
 
-void remote_result_attribute::set_value(const std::string &a_value) {
+void remote_data_attribute::set_value(const std::string &a_value) {
   m_value = a_value;
 }
 }
