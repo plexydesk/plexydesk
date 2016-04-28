@@ -76,7 +76,7 @@ void WebService::create(const QString &serviceName) {
       QString("%1/%2.xml").arg(d->mSocialDefPrefix).arg(serviceName));
   // qDebug() << Q_FUNC_INFO << d->mSocialDefPath;
 
-  d->m_service_def = new remote_service(d->mSocialDefPath);
+  d->m_service_def = new remote_service(d->mSocialDefPath.toStdString());
 }
 
 QString WebService::serviceName() const { return d->mServiceName; }
@@ -88,7 +88,7 @@ void WebService::queryService(const QString &method,
                               const QByteArray &headerValue) {
   if (d->m_service_def) {
     QUrl url = QUrl(d->m_service_def->url(method.toStdString(), a_params).c_str());
-    uint requestType = d->m_service_def->method(method);
+    uint requestType = d->m_service_def->method(method.toStdString());
 
     d->mMethodName = method;
     d->m_input_argument_map[method.toStdString()]= *a_params;
@@ -141,6 +141,7 @@ QStringList WebService::availableData() const {
 }
 
 void WebService::onNetworkRequestFinished(QNetworkReply *reply) {
+  /*
   if (reply) {
     d->mServiceData = reply->readAll();
     reply->deleteLater();
@@ -149,6 +150,7 @@ void WebService::onNetworkRequestFinished(QNetworkReply *reply) {
   }
 
   Q_EMIT finished(this);
+  */
 }
 
 void WebService::onDownloadRequestComplete() {

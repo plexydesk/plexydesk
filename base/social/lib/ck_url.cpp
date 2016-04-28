@@ -13,6 +13,10 @@
 #include "ck_url_request_mac.h"
 #endif
 
+#ifdef __WINDOWS_PLATFORM__
+#error "Error: Not Implemented for Windows";
+#endif
+
 namespace social_kit {
 
 /* Converts a hex character to its integer value */
@@ -76,7 +80,7 @@ public:
 url_encode::url_encode(const std::string &a_str)
     : ctx(new platform_url_handle) {
   const char *const_data = a_str.c_str();
-  char *data = (char *)malloc(strlen(const_data) + 1);
+  char *data = (char *)malloc(strlen(const_data));
   strcpy(data, const_data);
   ctx->m_url_data = std::string(ck_url_encode(data));
   free(data);
