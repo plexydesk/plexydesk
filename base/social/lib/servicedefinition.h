@@ -19,10 +19,6 @@
 #ifndef SERVICEINPUTDEFINITION_H
 #define SERVICEINPUTDEFINITION_H
 
-#include <QString>
-#include <QVariant>
-#include <QMap>
-
 #include <algorithm>
 #include <vector>
 #include <map>
@@ -159,23 +155,20 @@ public:
     kNoError
   } definition_error_t;
 
-  remote_service(const QString &input);
+  remote_service(const std::string &input);
   virtual ~remote_service();
 
-  QStringList service_list() const;
+  string_list service_list() const;
 
   std::string endpoint(const std::string &a_name) const;
 
-  uint method(const QString &name) const;
+  uint method(const std::string &name) const;
 
-  string_list arguments(const QString &name) const;
+  string_list arguments(const std::string &name) const;
 
   string_list input_arguments(const std::string &a_name,
                               bool a_optional = false);
-  QStringList optional_arguments(const std::string &name) const;
-
-  QString argument_type(const QString &serviceName,
-                        const QString &argument) const;
+  string_list optional_arguments(const std::string &name) const;
 
   std::string url(const std::string &a_method,
                   service_query_parameters *a_params) const;
@@ -183,8 +176,10 @@ public:
   remote_result response(const std::string &a_method_name,
                          const url_response &a_response) const;
 
+  /*
   QMultiMap<QString, QVariantMap> queryResult(const QString &method,
                                               const QString &data) const;
+                                              */
 
   definition_error_t error() const;
 
