@@ -74,10 +74,18 @@ void SocialTestRunner::check_url_request_loader() {
     CK_ASSERT(response.data_buffer()[4] == 'l', "Not XML Data");
 
     social_kit::remote_service srv_query(
-      "/home/siraj/projects/plexydesk/code/upstream/plexydesk/"
+      "/home/siraj/projects/plexydesk/"
       "/base/social/data/"
       "com.flikr.api.xml");
-    srv_query.response("flickr.photos.search", response);
+    const social_kit::remote_result result =
+            srv_query.response("flickr.photos.search", response);
+    CK_ASSERT(result.get("photo").size() == 30, "expected 30 but got : "
+              << result.get("photo").size());
+    social_kit::remote_result_query query = result.get("rsp").at(0);
+
+    //todo
+    CK_ASSERT(query.get("stat").value() == "ok", "expected OK but got : "
+              << query.get("stat").value());
   });
 
   request->send_message(
@@ -91,7 +99,7 @@ void SocialTestRunner::check_url_request_loader() {
 
 void SocialTestRunner::check_service_file() {
   social_kit::remote_service srv_query(
-      "/home/siraj/projects/plexydesk/code/upstream/plexydesk/"
+      "/home/siraj/projects/plexydesk/"
       "/base/social/data/"
       "com.flikr.api.xml");
 

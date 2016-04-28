@@ -390,7 +390,7 @@ string_list remote_service::arguments(const QString &name) const {
 }
 
 string_list remote_service::input_arguments(const std::string &a_name,
-                                           bool a_optional) {
+                                            bool a_optional) {
   std::vector<std::string> rv;
   service *srv = ctx->m_service_dict[a_name];
 
@@ -434,7 +434,7 @@ QStringList remote_service::optional_arguments(const std::string &name) const {
 }
 
 QString remote_service::argument_type(const QString &serviceName,
-                                     const QString &argument) const {
+                                      const QString &argument) const {
   QDomNode node = ctx->mInputArguments[serviceName][argument];
 
   if (node.hasAttributes()) {
@@ -446,7 +446,7 @@ QString remote_service::argument_type(const QString &serviceName,
 }
 
 std::string remote_service::url(const std::string &a_method,
-                               service_query_parameters *a_params) const {
+                                service_query_parameters *a_params) const {
   std::string rv;
   std::vector<std::string> default_query_list;
   bool has_errors = false;
@@ -517,9 +517,52 @@ std::string remote_service::url(const std::string &a_method,
   return rv;
 }
 
-remote_service_response remote_service::response(const std::string &a_method_name,
-                                          const url_response &a_response) {
-  remote_service_response rv;
+const char *get_attribute_value(tinyxml2::XMLElement *element,
+                       const std::string &a_attribute_name) {
+    if (!element || a_attribute_name.empty())
+        return NULL;
+
+    const char *value = element->Attribute(a_attribute_name.c_str());
+
+    return value;
+}
+
+void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
+                    remote_result *a_result) {
+  if (!node)
+    return;
+
+  for (tinyxml2::XMLElement *child_element = node->FirstChildElement();
+       child_element != NULL;
+       child_element = child_element->NextSiblingElement()) {
+    lookup_element(child_element, query, a_result);
+  }
+
+  const char *keyword = query->tag_name().c_str();
+
+  if (keyword && strcmp(node->Name(), keyword) == 0) {
+    remote_result_query result;
+    result.set_name(node->Name());
+    service_result_query::attribute_list_t list = query->attribute_list();
+
+    std::for_each(std::begin(list), std::end(list),
+                  [&](service_result_query_attribute *attrib) {
+       const char *attribute_value =
+               get_attribute_value(node, attrib->value());
+       if (attribute_value) {
+           remote_result_attribute attribute;
+           attribute.set_key(attrib->value());
+           attribute.set_value(attribute_value);
+           result.insert(attribute);
+       }
+    });
+    a_result->insert(result);
+  }
+}
+
+remote_result remote_service::response(const std::string &a_method_name,
+                                       const url_response &a_response) const {
+  remote_result rv;
   service *srv = ctx->m_service_dict[a_method_name];
   service_result *srv_result = 0;
 
@@ -535,10 +578,6 @@ remote_service_response remote_service::response(const std::string &a_method_nam
     return rv;
   }
 
-  std::cout << __FUNCTION__ << " : begin result processing .... [ok]"
-            << std::endl;
-  std::cout << __FUNCTION__ << " : begin result processing .... [ok]"
-            << srv_result->result_format() << std::endl;
   if (srv_result->result_format() == service_result::kXMLData) {
     // xml data;
     std::vector<service_result_query *> list = srv_result->query_list();
@@ -552,13 +591,8 @@ remote_service_response remote_service::response(const std::string &a_method_nam
     std::for_each(std::begin(list), std::end(list),
                   [&](service_result_query *query) {
       if (query) {
-        std::string tag_name = query->tag_name();
-        qDebug() << Q_FUNC_INFO << "<" << tag_name.c_str() << "/>";
-        // get tag_name :
-        tinyxml2::XMLElement *element = doc.FirstChildElement(tag_name.c_str());
-
-        if (!element)
-          return;
+        tinyxml2::XMLElement *element = doc.FirstChildElement();
+        lookup_element(element, query, &rv);
       }
     });
 
@@ -582,7 +616,7 @@ remote_service::queryResult(const QString &method, const QString &data) const {
   if (docType == 0) {
     QDomDocument dataRoot;
     if (dataRoot.setContent(data)) {
-      Q_FOREACH (const QString &keyString, queries) {
+      Q_FOREACH(const QString & keyString, queries) {
         QDomNodeList filteredNodeList =
             dataRoot.elementsByTagName(result[keyString].tagName);
 
@@ -591,7 +625,7 @@ remote_service::queryResult(const QString &method, const QString &data) const {
           QDomNamedNodeMap dataNodeAttributes = dataNode.attributes();
           QVariantMap attributeData;
 
-          Q_FOREACH (const QString &attrString, result[keyString].attributes) {
+          Q_FOREACH(const QString & attrString, result[keyString].attributes) {
             attributeData[attrString] =
                 dataNodeAttributes.namedItem(attrString).nodeValue();
           }
@@ -618,7 +652,7 @@ remote_service::queryResult(const QString &method, const QString &data) const {
       qDebug() << Q_FUNC_INFO << "No Error";
       QJsonObject rootObject = jsonDoc.object();
 
-      Q_FOREACH (const QString &keyString, queries) {
+      Q_FOREACH(const QString & keyString, queries) {
         QJsonValue v = ctx->findJsonObject(rootObject, keyString);
         QVariantMap attributeData;
         qDebug() << Q_FUNC_INFO << v.type();
@@ -628,7 +662,7 @@ remote_service::queryResult(const QString &method, const QString &data) const {
           for (int i = 0; i < v.toArray().count(); i++) {
             QJsonValue o = v.toArray().at(i);
 
-            Q_FOREACH (const QString &attrKey, o.toObject().keys()) {
+            Q_FOREACH(const QString & attrKey, o.toObject().keys()) {
               attributeData[attrKey] =
                   ctx->JsonValueToVariant(o.toObject()[attrKey]);
             }
@@ -648,7 +682,7 @@ remote_service::queryResult(const QString &method, const QString &data) const {
         } else {
           qDebug() << Q_FUNC_INFO << keyString
                    << " --> Object Type: " << v.type();
-          Q_FOREACH (const QString &attrKey, v.toObject().keys()) {
+          Q_FOREACH(const QString & attrKey, v.toObject().keys()) {
             attributeData[attrKey] = ctx->JsonValueToVariant(
                 v.toObject()[attrKey]); // v.toObject()[attrKey].toString();
           }
@@ -695,14 +729,14 @@ QVariant remote_service::remote_service_context::JsonValueToVariant(
 
 QJsonValue
 remote_service::remote_service_context::findJsonObject(const QJsonObject &root,
-                                                     const QString &key) {
+                                                       const QString &key) {
   QJsonValue rv;
 
   if (root.keys().contains(key)) {
     return root[key];
   }
 
-  Q_FOREACH (const QString &subKey, root.keys()) {
+  Q_FOREACH(const QString & subKey, root.keys()) {
     if (root[subKey].isObject()) {
       QJsonObject v = root[subKey].toObject();
       return findJsonObject(v, key);
@@ -991,7 +1025,7 @@ bool remote_service::remote_service_context::hasDefaultValue(
 
 QString
 remote_service::remote_service_context::defaultValue(const QString &service,
-                                                   const QString &key) const {
+                                                     const QString &key) const {
   if (hasDefaultValue(service, key)) {
     QDomNode node = mDefaultInputArgument[service][key];
     QDomAttr defaultValue = getAttributeFromNode(node, "default");
@@ -1015,7 +1049,8 @@ void remote_service::remote_service_context::buildArgTypes() {
   mTypeMap["binary_base64"] = 5;
 }
 
-uint remote_service::remote_service_context::documentType(const QString &method) {
+uint
+remote_service::remote_service_context::documentType(const QString &method) {
   QDomNode resultNode = definitionsOfServiceName(method)["result"];
   QDomNodeList queryNodeList = resultNode.childNodes();
 
@@ -1127,26 +1162,67 @@ void service_result_query_attribute::set_type(const service_data_type_t &type) {
   m_type = type;
 }
 
-remote_service_response::remote_service_response() {}
+remote_result::remote_result() {}
 
-remote_service_response::remote_service_response(const remote_service_response &a_copy) {
-  m_data = a_copy.m_data;
+remote_result::remote_result(const remote_result &a_copy) {
+  m_query_list = a_copy.m_query_list;
 }
 
-remote_service_response::~remote_service_response() { m_data.clear(); }
+remote_result::~remote_result() { m_query_list.clear(); }
 
-void remote_service_response::insert(
-    const std::string &a_key,
-    const remote_service_response::data_container_t &a_data) {
-  m_data[a_key] = a_data;
+void remote_result::insert(const remote_result_query &a_data) {
+    m_query_list.push_back(a_data);
 }
 
-remote_service_response::data_container_t
-remote_service_response::data(const std::string &a_key) const {
-    return m_data.at(a_key);
+result_list_t remote_result::get(const std::string &a_name) const {
+   result_list_t rv;
+   std::for_each(std::begin(m_query_list), std::end(m_query_list),
+                 [&](remote_result_query query) {
+      if (a_name == query.name())
+       rv.push_back(query);
+   }) ;
+
+   return rv;
 }
 
-string_list remote_service_response::query_list() const {
-  return m_query_list;
+remote_result_query::remote_result_query() {}
+
+remote_result_query::~remote_result_query() {}
+
+remote_result_attribute remote_result_query::get(const std::string &a_attribute_name) {
+    remote_result_attribute rv;
+    std::for_each(std::begin(m_propery_list), std::end(m_propery_list),
+                  [&](remote_result_attribute attribute) {
+       if (a_attribute_name == attribute.key()) {
+           rv = attribute;
+       }
+    });
+
+    return rv;
+}
+
+remote_result_attribute::remote_result_attribute() {}
+
+remote_result_attribute::~remote_result_attribute() {}
+
+remote_result_attribute::property_type_t remote_result_attribute::type() const {
+  return m_value_type;
+}
+
+void remote_result_attribute::set_type(
+    remote_result_attribute::property_type_t a_type) {
+  m_value_type = a_type;
+}
+
+std::string remote_result_attribute::key() const { return m_key; }
+
+void remote_result_attribute::set_key(const std::string &a_key) {
+  m_key = a_key;
+}
+
+std::string remote_result_attribute::value() const { return m_value; }
+
+void remote_result_attribute::set_value(const std::string &a_value) {
+  m_value = a_value;
 }
 }
