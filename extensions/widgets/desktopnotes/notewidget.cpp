@@ -313,8 +313,8 @@ void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
-  social_kit::WebService *service =
-      new social_kit::WebService(this);
+  social_kit::web_service *service =
+      new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
@@ -329,15 +329,15 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
 
   social_kit::service_query_parameters input_data;
 
-  service->queryService("flickr.photos.search", &input_data);
+  service->submit("flickr.photos.search", &input_data);
 
-  connect(service, SIGNAL(finished(social_kit::WebService *)), this,
-          SLOT(onServiceCompleteJson(social_kit::WebService *)));
+  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
+          SLOT(onServiceCompleteJson(social_kit::web_service *)));
 }
 
 void NoteWidget::requestPhotoSizes(const QString &photoID) {
-  social_kit::WebService *service =
-      new social_kit::WebService(this);
+  social_kit::web_service *service =
+      new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
@@ -349,10 +349,10 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
   input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
   input_data.insert("photo_id", photoID.toStdString());
 
-  service->queryService("flickr.photos.getSizes", &input_data);
+  service->submit("flickr.photos.getSizes", &input_data);
 
-  connect(service, SIGNAL(finished(social_kit::WebService *)), this,
-          SLOT(onSizeServiceCompleteJson(social_kit::WebService *)));
+  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
+          SLOT(onSizeServiceCompleteJson(social_kit::web_service *)));
 }
 
 void NoteWidget::onClicked() { Q_EMIT clicked(this); }
@@ -431,7 +431,7 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
   }
 }
 
-void NoteWidget::onServiceCompleteJson(social_kit::WebService *service) {
+void NoteWidget::onServiceCompleteJson(social_kit::web_service *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
   Q_FOREACH (const QVariantMap &map, photoList) {
@@ -442,7 +442,7 @@ void NoteWidget::onServiceCompleteJson(social_kit::WebService *service) {
 }
 
 void
-NoteWidget::onSizeServiceCompleteJson(social_kit::WebService *service) {
+NoteWidget::onSizeServiceCompleteJson(social_kit::web_service *service) {
   Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -453,9 +453,9 @@ NoteWidget::onSizeServiceCompleteJson(social_kit::WebService *service) {
           new social_kit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
-      metaData["method"] = service->methodName();
+      metaData["method"] = service->query();
       metaData["id"] =
-          service->inputArgumentForMethod(service->methodName()).value("photo_id").c_str();
+          service->inputArgumentForMethod(service->query()).value("photo_id").c_str();
       //metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
@@ -467,7 +467,7 @@ NoteWidget::onSizeServiceCompleteJson(social_kit::WebService *service) {
   service->deleteLater();
 }
 
-void NoteWidget::onDownloadCompleteJson(social_kit::WebService *service) {
+void NoteWidget::onDownloadCompleteJson(social_kit::web_service *service) {
 }
 
 void NoteWidget::onImageReady() {

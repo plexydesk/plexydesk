@@ -39,17 +39,17 @@ signals:
 
 public
 slots:
-  void onServiceComplete(social_kit::WebService *service);
-  void onSizeServiceComplete(social_kit::WebService *service);
-  void onDownloadComplete(social_kit::WebService *service);
+  void onServiceComplete(social_kit::web_service *service);
+  void onSizeServiceComplete(social_kit::web_service *service);
+  void onDownloadComplete(social_kit::web_service *service);
   void onImageReady();
   void onImageSaveReady();
   void onImageReady(const QString &fileName);
 
   // json
-  void onServiceCompleteJson(social_kit::WebService *service);
-  void onSizeServiceCompleteJson(social_kit::WebService *service);
-  void onDownloadCompleteJson(social_kit::WebService *service);
+  void onServiceCompleteJson(const social_kit::web_service *service);
+  void onSizeServiceCompleteJson(social_kit::web_service *service);
+  void onDownloadCompleteJson(social_kit::web_service *service);
   void onImageReadyJson();
   void onImageSaveReadyJson();
   void onImageReadyJson(const QString &fileName);
@@ -60,9 +60,9 @@ slots:
   void onFinished(QNetworkReply *reply);
 
   // dropbox
-  void onDropBoxAuthServiceComplete(social_kit::WebService *service);
+  void onDropBoxAuthServiceComplete(social_kit::web_service *service);
   void
-  onDropBoxAccountInfoServiceComplete(social_kit::WebService *service);
+  onDropBoxAccountInfoServiceComplete(social_kit::web_service *service);
 
 private:
   class PrivateSocialTestRunner;

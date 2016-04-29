@@ -17,6 +17,8 @@
 #error "Error: Not Implemented for Windows";
 #endif
 
+#include <iostream>
+
 namespace social_kit {
 
 /* Converts a hex character to its integer value */
@@ -92,7 +94,10 @@ std::string url_encode::to_string() const { return ctx->m_url_data; }
 
 url_request::url_request() : ctx(new platform_url_request) {}
 
-url_request::~url_request() { delete ctx; }
+url_request::~url_request() {
+  std::cout << "delete -> " << __FUNCTION__ << std::endl;
+  delete ctx;
+}
 
 void url_request::send_message(url_request::url_request_type_t a_type,
                                const std::string &a_message) {
@@ -114,8 +119,8 @@ url_response::url_response(const url_response &a_copy) {
   m_method = a_copy.m_method;
 
   if (a_copy.m_data_buffer && (m_data_buffer_size > 0)) {
-     m_data_buffer = (char *) malloc(m_data_buffer_size);
-     memcpy(m_data_buffer, a_copy.m_data_buffer, m_data_buffer_size);
+    m_data_buffer = (char *)malloc(m_data_buffer_size);
+    memcpy(m_data_buffer, a_copy.m_data_buffer, m_data_buffer_size);
   }
 }
 
@@ -153,26 +158,21 @@ std::string url_response::method() const { return m_method; }
 
 void url_response::set_method(const std::string &method) { m_method = method; }
 
-unsigned int url_response::data_buffer_size() const
-{
-    return m_data_buffer_size;
+unsigned int url_response::data_buffer_size() const {
+  return m_data_buffer_size;
 }
 
-void url_response::set_data_buffer_size(unsigned int data_buffer_size)
-{
-    m_data_buffer_size = data_buffer_size;
+void url_response::set_data_buffer_size(unsigned int data_buffer_size) {
+  m_data_buffer_size = data_buffer_size;
 }
 
-char *url_response::data_buffer() const
-{
-    return m_data_buffer;
-}
+char *url_response::data_buffer() const { return m_data_buffer; }
 
-void url_response::set_data_buffer(const char *data_buffer, unsigned int a_size)
-{
-    //m_data_buffer = data_buffer;
-    m_data_buffer = (char *) malloc(a_size);
-    memcpy(m_data_buffer, data_buffer, a_size);
-    m_data_buffer_size = a_size;
+void url_response::set_data_buffer(const char *data_buffer,
+                                   unsigned int a_size) {
+  // m_data_buffer = data_buffer;
+  m_data_buffer = (char *)malloc(a_size);
+  memcpy(m_data_buffer, data_buffer, a_size);
+  m_data_buffer_size = a_size;
 }
 }

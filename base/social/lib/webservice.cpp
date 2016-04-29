@@ -31,16 +31,23 @@
 
 #include "servicedefinition.h"
 
+#include <iostream>
+#include <memory>
+
 namespace social_kit {
 
-class WebService::PrivateWebService {
+class web_service::web_service_context {
 
 public:
-  PrivateWebService() {}
-  ~PrivateWebService() {
-    // qDebug() << Q_FUNC_INFO;
-      if (m_service_def)
-          delete m_service_def;
+  web_service_context() : m_service(0) {}
+  ~web_service_context() {
+    if (m_service)
+      delete m_service;
+
+    if (m_network_request)
+      delete m_network_request;
+
+    std::cout << "delete -> " << __FUNCTION__ << std::endl;
   }
 
   QString mSocialDefPrefix;
@@ -56,113 +63,79 @@ public:
 
   remote_service *m_service_def;
   QNetworkAccessManager *mNetworkManager;
+
+  /* new */
+  remote_service *m_service;
+  std::string m_method_name;
+  url_request *m_network_request;
+  std::vector<response_callback_t> m_callback_list;
+
+  void notify_observers(const remote_result &a_result,
+                        const web_service *a_service) {
+    std::for_each(std::begin(m_callback_list), std::end(m_callback_list),
+                  [&](response_callback_t a_callback) {
+      if (a_callback)
+        a_callback(a_result, a_service);
+    });
+  }
 };
 
-WebService::WebService(QObject *parent)
-    : QObject(parent), d(new PrivateWebService) {
-  d->mNetworkManager = new QNetworkAccessManager(this);
-  connect(d->mNetworkManager, SIGNAL(finished(QNetworkReply *)), this,
-          SLOT(onNetworkRequestFinished(QNetworkReply *)));
-
-  d->mSocialDefPrefix = QDir::toNativeSeparators(
-      QString("%1/%2").arg(installPrefix()).arg("/share/social/"));
+web_service::web_service(QObject *parent)
+    : QObject(parent), ctx(new web_service_context) {
+  ctx->m_network_request = new url_request();
+  ctx->m_network_request->on_response_ready([this](
+      const url_response &a_response) {
+    remote_result result =
+        ctx->m_service->response(ctx->m_method_name, a_response);
+    ctx->notify_observers(result, this);
+    //delete (this)
+    std::unique_ptr<web_service>(this);
+  });
 }
 
-WebService::~WebService() { delete d; }
+web_service::~web_service() { delete ctx; }
 
-void WebService::create(const QString &serviceName) {
-  d->mServiceName = serviceName;
-  d->mSocialDefPath = QDir::toNativeSeparators(
-      QString("%1/%2.xml").arg(d->mSocialDefPrefix).arg(serviceName));
-  // qDebug() << Q_FUNC_INFO << d->mSocialDefPath;
+void web_service::create(const std::string &serviceName) {
+  if (ctx->m_service)
+    delete ctx->m_service;
 
-  d->m_service_def = new remote_service(d->mSocialDefPath.toStdString());
+  ctx->m_service = new remote_service(serviceName);
 }
 
-QString WebService::serviceName() const { return d->mServiceName; }
+void web_service::submit(const QString &method,
+                         service_query_parameters *a_params,
+                         QHttpMultiPart *data, const QByteArray &headerName,
+                         const QByteArray &headerValue) {
+  if (!ctx->m_service)
+    return;
 
-void WebService::queryService(const QString &method,
-                              service_query_parameters *a_params,
-                              QHttpMultiPart *data,
-                              const QByteArray &headerName,
-                              const QByteArray &headerValue) {
-  if (d->m_service_def) {
-    QUrl url = QUrl(d->m_service_def->url(method.toStdString(), a_params).c_str());
-    uint requestType = d->m_service_def->method(method.toStdString());
+  ctx->m_method_name = method.toStdString();
+  std::string request_data =
+      ctx->m_service->url(method.toStdString(), a_params);
+  url_request::url_request_type_t request_url_method =
+      ctx->m_service->method(method.toStdString());
 
-    d->mMethodName = method;
-    d->m_input_argument_map[method.toStdString()]= *a_params;
-
-    if (d->mNetworkManager) {
-      QNetworkRequest request;
-      qDebug() << Q_FUNC_INFO << url;
-      request.setRawHeader(headerName, headerValue);
-
-      request.setUrl(url);
-
-      if (requestType == 0) {
-        d->mNetworkManager->get(request);
-      } else if (requestType == 1 && data != 0) {
-        qDebug() << Q_FUNC_INFO << "POST Data Found";
-        d->mNetworkManager->post(request, data);
-      }
-    }
-  }
+  ctx->m_input_argument_map[method.toStdString()] = *a_params;
+  ctx->m_network_request->send_message(request_url_method, request_data);
 }
 
-service_query_parameters WebService::inputArgumentForMethod(const QString &str) {
-  return d->m_input_argument_map[str.toStdString()];
+service_query_parameters
+web_service::inputArgumentForMethod(const QString &str) {
+  return ctx->m_input_argument_map[str.toStdString()];
 }
 
-QVariantMap WebService::serviceData() const {
-  QVariantMap rv;
+QString web_service::query() const { return ctx->mMethodName; }
 
-  return rv;
-}
-
-QByteArray WebService::rawServiceData() const { return d->mServiceData; }
-
-QString WebService::methodName() const { return d->mMethodName; }
-
-QList<QVariantMap> WebService::methodData(const QString &methodName) const {
+QList<QVariantMap> web_service::methodData(const QString &methodName) const {
   QList<QVariantMap> rv;
-  QMultiMap<QString, QVariantMap>::iterator i =
-      d->mProcessedData.find(methodName);
-  while (i != d->mProcessedData.end() && i.key() == methodName) {
-    rv.append(i.value());
-    ++i;
-  }
-
   return rv;
 }
 
-QStringList WebService::availableData() const {
-  return d->mProcessedData.keys();
+void web_service::on_response_ready(response_callback_t a_callback) {
+  ctx->m_callback_list.push_back(a_callback);
 }
 
-void WebService::onNetworkRequestFinished(QNetworkReply *reply) {
-  /*
-  if (reply) {
-    d->mServiceData = reply->readAll();
-    reply->deleteLater();
-    d->mProcessedData =
-        d->m_service_def->queryResult(d->mMethodName, d->mServiceData);
-  }
-
-  Q_EMIT finished(this);
-  */
-}
-
-void WebService::onDownloadRequestComplete() {
-  QNetworkReply *request = qobject_cast<QNetworkReply *>(sender());
-
-  if (request) {
-    d->mServiceData = request->readAll();
-    request->deleteLater();
-    Q_EMIT finished(this);
-  }
-}
-
+/*
 QString WebService::installPrefix() const {
 #ifndef Q_OS_WIN32
   QDir binaryPath(QCoreApplication::applicationDirPath());
@@ -193,4 +166,5 @@ QString WebService::installPrefix() const {
 
   return QString();
 }
+*/
 }

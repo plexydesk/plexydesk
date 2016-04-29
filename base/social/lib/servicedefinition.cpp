@@ -249,10 +249,11 @@ bool ck_file_exisits(const std::string &a_file_name) {
 
 remote_service::remote_service(const std::string &input)
     : ctx(new remote_service_context) {
-  std::string service_file =  data_prefix() + input;
+  std::string service_file = data_prefix() + input;
   std::cout << "def ->" << service_file << std::endl;
   if (ck_file_exisits(service_file.c_str())) {
-    tinyxml2::XMLError error = ctx->m_xml_root_doc.LoadFile(service_file.c_str());
+    tinyxml2::XMLError error =
+        ctx->m_xml_root_doc.LoadFile(service_file.c_str());
     if (error != tinyxml2::XML_NO_ERROR) {
       // std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
       //         << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
@@ -270,7 +271,10 @@ remote_service::remote_service(const std::string &input)
   }
 }
 
-remote_service::~remote_service() { delete ctx; }
+remote_service::~remote_service() {
+  std::cout << "delete -> " << __FUNCTION__ << std::endl;
+  delete ctx;
+}
 
 string_list remote_service::service_list() const {
   string_list rv;
@@ -295,13 +299,14 @@ std::string remote_service::endpoint(const std::string &a_name) const {
   return rv;
 }
 
-uint remote_service::method(const std::string &name) const {
-  uint rv = service_input::kUndefinedRequest;
+url_request::url_request_type_t
+remote_service::method(const std::string &name) const {
+  url_request::url_request_type_t rv = url_request::kUndefinedRequest;
 
   service *srv = ctx->m_service_dict[name];
 
   if (srv && srv->input()) {
-    rv = (uint)srv->input()->request_type();
+    rv = (url_request::url_request_type_t)srv->input()->request_type();
   }
 
   return rv;
@@ -491,7 +496,7 @@ remote_result remote_service::response(const std::string &a_method_name,
   service_result *srv_result = 0;
 
   if (!srv) {
-    std::cout << "Error method name" << std::endl;
+    std::cout << "Error : Method Not Found" << a_method_name << std::endl;
     return rv;
   }
 
@@ -846,14 +851,13 @@ void remote_service::load_services() {
   }
 }
 
-std::string remote_service::data_prefix() const
-{
+std::string remote_service::data_prefix() const {
 #ifdef __WINDOWS__
-   return std::string();
+  return std::string();
 #endif
 
 #ifdef __GNU_LINUX_PLATFORM__
-   return std::string(std::string(PLEXYPREFIX) + "/share/social/");
+  return std::string(std::string(PLEXYPREFIX) + "/share/social/");
 #endif
 }
 

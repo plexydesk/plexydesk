@@ -55,9 +55,9 @@ Q_SLOTS:
   void exec_toolbar_action(const QString &action);
 
   // web service
-  void onServiceCompleteJson(social_kit::WebService *service);
-  void onSizeServiceCompleteJson(social_kit::WebService *service);
-  void onDownloadCompleteJson(social_kit::WebService *service);
+  void onServiceCompleteJson(social_kit::web_service *service);
+  void onSizeServiceCompleteJson(social_kit::web_service *service);
+  void onDownloadCompleteJson(social_kit::web_service *service);
   void onImageReady();
   void onImageSaveReadyJson();
   void onImageReadyJson(const QString &fileName);
