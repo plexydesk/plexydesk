@@ -45,6 +45,8 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
   check_url_encode();
   check_url_request_loader();
 
+  testSocialPrefix();
+
   // testDirLoader("file:///Library/Desktop Pictures/");
 }
 
@@ -73,19 +75,16 @@ void SocialTestRunner::check_url_request_loader() {
     CK_ASSERT(response.data_buffer()[3] == 'm', "Not XML Data");
     CK_ASSERT(response.data_buffer()[4] == 'l', "Not XML Data");
 
-    social_kit::remote_service srv_query(
-      "/home/siraj/projects/plexydesk/"
-      "/base/social/data/"
-      "com.flikr.api.xml");
+    social_kit::remote_service srv_query("com.flikr.api.xml");
     const social_kit::remote_result result =
-            srv_query.response("flickr.photos.search", response);
-    CK_ASSERT(result.get("photo").size() == 30, "expected 30 but got : "
-              << result.get("photo").size());
+        srv_query.response("flickr.photos.search", response);
+    CK_ASSERT(result.get("photo").size() == 30,
+              "expected 30 but got : " << result.get("photo").size());
     social_kit::remote_result_data query = result.get("rsp").at(0);
 
-    //todo
-    CK_ASSERT(query.get("stat").value() == "ok", "expected OK but got : "
-              << query.get("stat").value());
+    // todo
+    CK_ASSERT(query.get("stat").value() == "ok",
+              "expected OK but got : " << query.get("stat").value());
   });
 
   request->send_message(
@@ -98,10 +97,7 @@ void SocialTestRunner::check_url_request_loader() {
 }
 
 void SocialTestRunner::check_service_file() {
-  social_kit::remote_service srv_query(
-      "/home/siraj/projects/plexydesk/"
-      "/base/social/data/"
-      "com.flikr.api.xml");
+  social_kit::remote_service srv_query("com.flikr.api.xml");
 
   /* service data */
   social_kit::service_query_parameters input_data;
@@ -113,11 +109,12 @@ void SocialTestRunner::check_service_file() {
   input_data.insert("tag_mode", "all");
   input_data.insert("page", "1");
 
-  CK_ASSERT(srv_query.method("flickr.photos.search") == 1,
-            "Invalid Request Type");
+  CK_ASSERT(
+      srv_query.method("flickr.photos.search") == 1,
+      "Invalid Request Type : " << srv_query.method("flickr.photos.search"));
   CK_ASSERT(srv_query.endpoint("flickr.photos.search") ==
                 "https://api.flickr.com/services/rest/",
-            "Invalid Result");
+            "Ivalid Input : " << srv_query.endpoint("flickr.photos.search"));
 
   social_kit::string_list argument_list =
       srv_query.input_arguments("flickr.photos.search");
@@ -148,11 +145,12 @@ void SocialTestRunner::check_service_file() {
 }
 
 void SocialTestRunner::testSocialPrefix() {
-  social_kit::WebService *service = new social_kit::WebService(this);
-
-  service->create("com.flikr.api");
-
+  social_kit::url_request *request = new social_kit::url_request();
   social_kit::service_query_parameters input_data;
+  social_kit::remote_service service("com.flikr.api.xml");
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+  });
 
   input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
   input_data.insert("text", "sky");
@@ -161,10 +159,9 @@ void SocialTestRunner::testSocialPrefix() {
   input_data.insert("tag_mode", "all");
   input_data.insert("page", "1");
 
-  service->queryService("flickr.photos.search", &input_data);
+  std::string url = service.url("flickr.photos.search", &input_data);
 
-  connect(service, SIGNAL(finished(social_kit::WebService *)), this,
-          SLOT(onServiceComplete(social_kit::WebService *)));
+  request->send_message(social_kit::url_request::kGETRequest, url);
 }
 
 void SocialTestRunner::testJSONHanlding() {
@@ -238,7 +235,7 @@ void SocialTestRunner::onServiceComplete(social_kit::WebService *service) {
 
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH (const QVariantMap &map, photoList) {
+  Q_FOREACH(const QVariantMap & map, photoList) {
     qDebug() << Q_FUNC_INFO << map["id"].toString();
     testSocialPhotoSizes(map["id"].toString());
   }
@@ -255,7 +252,7 @@ void SocialTestRunner::onSizeServiceComplete(social_kit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("sizes").count();
 
-  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
+  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     qDebug() << Q_FUNC_INFO << map;
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -337,7 +334,7 @@ void SocialTestRunner::onServiceCompleteJson(social_kit::WebService *service) {
 
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH (const QVariantMap &map, photoList) {
+  Q_FOREACH(const QVariantMap & map, photoList) {
     qDebug() << Q_FUNC_INFO << map["id"].toString();
     testsocialphotosizesJson(map["id"].toString());
   }
@@ -355,7 +352,7 @@ SocialTestRunner::onSizeServiceCompleteJson(social_kit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("sizes").count();
 
-  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
+  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     // qDebug() << Q_FUNC_INFO << map;
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||

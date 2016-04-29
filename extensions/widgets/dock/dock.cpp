@@ -53,9 +53,6 @@ public:
   QStringList m_controller_name_list;
   bool m_main_panel_is_hidden;
 
-  cherry_kit::icon_button *m_add_new_workspace_button_ptr;
-  cherry_kit::ui_action_list m_task_list;
-
   desktop_button *m_menu_btn;
   desktop_button *m_up_btn;
   desktop_button *m_down_btn;
@@ -112,56 +109,6 @@ void desktop_panel_controller_impl::create_dock_action(
 
 widget *desktop_panel_controller_impl::create_task_action(
     cherry_kit::ui_action &a_task) {
-  /*
-  QSizeF item_icon_size(viewport()->scaled_width(36),
-                        viewport()->scaled_height(36));
-  QSizeF item_label_size(viewport()->scaled_width(64),
-                         viewport()->scaled_height(24));
-
-  widget *l_rv = new widget();
-
-  cherry_kit::icon_button *l_image_view = new cherry_kit::icon_button(l_rv);
-  cherry_kit::label *l_action_label = new cherry_kit::label(l_rv);
-  l_action_label->set_text(a_task.name().c_str());
-  l_action_label->set_widget_name(a_task.name().c_str());
-
-  QPixmap l_view_pixmap(cherry_kit::resource_manager::instance()->drawable(
-      a_task.icon().c_str(), "mdpi"));
-
-  l_image_view->set_pixmap(l_view_pixmap);
-
-  //l_image_view->setMinimumSize(item_icon_size);
-  l_image_view->set_size(item_icon_size.toSize());
-
-  l_action_label->set_size(item_label_size.toSize());
-  l_action_label->setPos(0, l_image_view->geometry().height());
-
-  l_image_view->setPos(viewport()->scaled_width(14), 0);
-
-  l_rv->set_geometry(l_image_view->geometry());
-
-  QSizeF l_action_item_size;
-  l_action_item_size.setHeight(l_image_view->boundingRect().height() +
-                               l_action_label->boundingRect().height());
-  l_action_item_size.setWidth(l_action_label->boundingRect().width());
-
-  //l_rv->setMinimumSize(l_action_item_size);
-  l_rv->set_contents_geometry(0, 0, 96, 96);
-
-  a_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                         const cherry_kit::ui_task_data_t &a_data) {
-    ui_action_list child_actions = a_action_ref->sub_actions();
-
-    if (child_actions.size() > 0) {
-      ui_action copy(*a_action_ref);
-      insert_sub_action(copy);
-    }
-  });
-
-  l_image_view->on_click([=]() { a_task.execute(); });
-
-  return l_rv;
-  */
 
   cherry_kit::widget *rv = new cherry_kit::widget();
   cherry_kit::icon_button *btn = new cherry_kit::icon_button(rv);
@@ -385,41 +332,6 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
   if (!viewport()) {
     return;
   }
-
-  /*
-  vertical_dock *vdock = new vertical_dock();
-
-  vdock->create_dock_action(0, 0, "panel/ck_up_arrow.png",
-                            [=]() { exec_action("Up", vdock->window()); });
-
-  vdock->create_dock_action(1, 0, "panel/ck_add.png",
-                            [=]() { exec_action("Add", vdock->window()); });
-
-  vdock->create_dock_action(2, 0, "panel/ck_space.png",
-                            [=]() { exec_action("Expose", vdock->window()); });
-
-  vdock->create_dock_action(3, 0, "panel/ck_menu.png",
-                            [=]() { exec_action("Menu", vdock->window()); });
-
-  vdock->create_dock_action(4, 0, "panel/ck_expose.png", [=]() {
-    exec_action("Seamless", vdock->window());
-  });
-
-  vdock->create_dock_action(5, 0, "panel/ck_trash.png",
-                            [=]() { exec_action("Close", vdock->window()); });
-
-  vdock->create_dock_action(6, 0, "panel/ck_down_arrow.png",
-                            [=]() { exec_action("Down", vdock->window()); });
-
-  QPointF pos = (viewport()->center(vdock->window()->geometry(), QRectF(),
-                                    space::kCenterOnViewportLeft));
-
-  pos.setX(pos.x() + 48);
-  vdock->window()->setPos(pos);
-  insert(vdock->window());
-
-  vdock->window()->hide();
-  */
 
   // desktop button : experimental
   priv->m_menu_btn = new desktop_button();

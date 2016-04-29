@@ -249,8 +249,10 @@ bool ck_file_exisits(const std::string &a_file_name) {
 
 remote_service::remote_service(const std::string &input)
     : ctx(new remote_service_context) {
-  if (ck_file_exisits(input.c_str())) {
-    tinyxml2::XMLError error = ctx->m_xml_root_doc.LoadFile(input.c_str());
+  std::string service_file =  data_prefix() + input;
+  std::cout << "def ->" << service_file << std::endl;
+  if (ck_file_exisits(service_file.c_str())) {
+    tinyxml2::XMLError error = ctx->m_xml_root_doc.LoadFile(service_file.c_str());
     if (error != tinyxml2::XML_NO_ERROR) {
       // std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
       //         << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
@@ -844,6 +846,17 @@ void remote_service::load_services() {
   }
 }
 
+std::string remote_service::data_prefix() const
+{
+#ifdef __WINDOWS__
+   return std::string();
+#endif
+
+#ifdef __GNU_LINUX_PLATFORM__
+   return std::string(std::string(PLEXYPREFIX) + "/share/social/");
+#endif
+}
+
 service_input *service::input() const { return m_input; }
 
 void service::set_input(service_input *input) { m_input = input; }
@@ -949,16 +962,14 @@ remote_data_attribute::property_type_t remote_data_attribute::type() const {
   return m_value_type;
 }
 
-void remote_data_attribute::set_type(
-    remote_data_attribute::property_type_t a_type) {
+void
+remote_data_attribute::set_type(remote_data_attribute::property_type_t a_type) {
   m_value_type = a_type;
 }
 
 std::string remote_data_attribute::key() const { return m_key; }
 
-void remote_data_attribute::set_key(const std::string &a_key) {
-  m_key = a_key;
-}
+void remote_data_attribute::set_key(const std::string &a_key) { m_key = a_key; }
 
 std::string remote_data_attribute::value() const { return m_value; }
 
