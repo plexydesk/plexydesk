@@ -160,7 +160,7 @@ public:
 
   std::string endpoint(const std::string &a_name) const;
 
-  uint method(const std::string &name) const;
+  url_request::url_request_type_t method(const std::string &name) const;
 
   string_list arguments(const std::string &name) const;
 
