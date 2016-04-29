@@ -178,6 +178,7 @@ public:
 
 protected:
   void load_services();
+  std::string data_prefix() const;
 
 private:
   class remote_service_context;
