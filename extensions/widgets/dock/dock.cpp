@@ -225,8 +225,8 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   if (x_count < 2)
     menu_width = 4;
 
-  float window_width = (viewport()->scaled_width(96) * menu_width);
-  float window_height = (viewport()->scaled_width(96) * (row_count)) + 16;
+  float window_width = (96 * menu_width);
+  float window_height = (96 * (row_count)) + 16;
 
   sub_task_grid->set_view_geometry(QRectF(0, 0, window_width, window_height));
 
@@ -357,7 +357,6 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
       }
 
       if (priv->m_down_btn) {
-
         QPointF down_btn_location =
             viewport()->center(priv->m_down_btn->window()->geometry(), QRectF(),
                                space::kCenterOnViewportLeft);
@@ -595,7 +594,8 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   preview_list->set_column_count(11);
   preview_list->set_content_size(preview_width, preview_height);
   preview_list->set_view_geometry(
-      QRectF(0, 0, viewport()->geometry().width(), preview_height));
+      QRectF(0, 0, viewport()->geometry().width(),
+             preview_height + expose_window->window_title_height()));
 
   expose_window->set_window_title("");
   expose_window->set_geometry(
@@ -647,7 +647,6 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   button_item->set_view(btn);
   preview_list->insert(button_item);
 
-  qDebug() << Q_FUNC_INFO << preview_list->contents_geometry();
   expose_window->set_window_content(preview_list);
 
   QPointF menu_pos =
