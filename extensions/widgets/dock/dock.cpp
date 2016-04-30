@@ -119,6 +119,7 @@ widget *desktop_panel_controller_impl::create_task_action(
   int icon_size = viewport()->scaled_width(96);
   btn->set_pixmap(icon_pixmap);
   btn->set_size(QSize(icon_size, icon_size));
+  btn->set_geometry(QRectF(0, 0, icon_size, icon_size));
   rv->set_geometry(QRectF(0, 0, icon_size, icon_size));
 
   a_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
@@ -177,12 +178,11 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
 
   int row_count = (priv->m_task_grid->count()) / 4;
 
-  float window_width = (viewport()->scaled_width(96) * 4);
-  float window_height = (viewport()->scaled_height(96) * row_count);
+  float window_width = (96 * 4);
+  float window_height = (96 * row_count);
 
   priv->m_task_grid->set_view_geometry(
-      QRectF(0, 0, window_width,
-             window_height + viewport()->scaled_height(16)));
+      QRectF(0, 0, window_width, window_height + 16));
 
   priv->m_task_grid->insert(grid_item);
 

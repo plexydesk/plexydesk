@@ -132,7 +132,10 @@ QSizeF button::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
   return contents_geometry().size();
 }
 
-void button::set_geometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }
+void button::set_geometry(const QRectF &a_rect) {
+    setPos(a_rect.topLeft());
+    widget::set_geometry(a_rect);
+}
 
 void button::set_action_data(const QVariant &a_data) {
   priv->m_button_data = a_data;

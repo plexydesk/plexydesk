@@ -106,7 +106,6 @@ void workspace::move_to_screen(int a_screen_id) {
                  QPainter::TextAntialiasing);
 
   scale(width_factor, height_factor);
-  // scale(2,2);
 }
 
 void workspace::add_default_controller(const std::string &a_controller_name) {
