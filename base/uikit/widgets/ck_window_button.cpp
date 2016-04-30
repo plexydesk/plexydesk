@@ -36,7 +36,7 @@ public:
 
 window_button::window_button(widget *parent)
     : button(parent), priv(new PrivateWindowButton) {
-  //set_geometry(boundingRect());
+  // set_geometry(boundingRect());
   priv->mType = CLOSE;
 }
 
@@ -53,14 +53,14 @@ QRectF window_button::contents_geometry() const {
 
   return QRectF(0.0, 0.0, resource_manager::style()
                               ->attribute("frame", "window_close_button_width")
-                              .toFloat() * resource_manager::style()->scale_factor(),
+                              .toFloat(),
                 resource_manager::style()
                     ->attribute("frame", "window_close_button_height")
-                    .toFloat() * resource_manager::style()->scale_factor());
+                    .toFloat());
 }
 
 void window_button::paint_normal_button(QPainter *a_painter_ptr,
-                                       const QRectF &a_rect) {
+                                        const QRectF &a_rect) {
   style_data feature;
   feature.geometry = a_rect;
   feature.render_state = style_data::kRenderElement;
@@ -72,7 +72,7 @@ void window_button::paint_normal_button(QPainter *a_painter_ptr,
 }
 
 void window_button::paint_sunken_button(QPainter *a_painter_ptr,
-                                       const QRectF &a_rect) {
+                                        const QRectF &a_rect) {
   style_data feature;
   feature.geometry = a_rect;
   feature.render_state = style_data::kRenderRaised;
@@ -84,7 +84,7 @@ void window_button::paint_sunken_button(QPainter *a_painter_ptr,
 }
 
 void window_button::paint_hover_button(QPainter *a_painter,
-                                      const QRectF &a_rect) {
+                                       const QRectF &a_rect) {
   style_data feature;
   feature.geometry = a_rect;
   feature.render_state = style_data::kRenderRaised;

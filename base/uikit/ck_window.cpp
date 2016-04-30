@@ -104,11 +104,10 @@ float window::window_title_height() {
   if (cherry_kit::resource_manager::style()) {
     return cherry_kit::resource_manager::style()
         ->attribute("frame", "window_title_height")
-        .toFloat() *
-            cherry_kit::resource_manager::style()->scale_factor();
+        .toFloat();
   }
 
-  return 48 * cherry_kit::resource_manager::style()->scale_factor();
+  return 48;
 }
 
 void window::removeFocus() { invoke_window_visibility_action(0); }
@@ -167,7 +166,7 @@ void window::set_window_content(widget *a_widget_ptr) {
   } else if (priv->m_window_type == kPopupWindow) {
     priv->m_window_close_button->hide();
     set_geometry(content_geometry);
-    priv->m_window_content->set_coordinates(8, window_title_height());
+    priv->m_window_content->set_coordinates(0, window_title_height());
     /*
     priv->m_window_content->setPos(0, window_bordr_height);
 #ifdef __APPLE__
