@@ -29,7 +29,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-#include "servicedefinition.h"
+#include "ck_remote_service.h"
 
 #include <iostream>
 #include <memory>

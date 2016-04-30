@@ -9,7 +9,7 @@
 #include <asyncimagecreator.h>
 #include <asyncimageloader.h>
 #include <config.h>
-#include <servicedefinition.h>
+#include <ck_remote_service.h>
 #include <webserver.h>
 #include <webservice.h>
 
@@ -195,11 +195,10 @@ void SocialTestRunner::testSocialPhotoSizes(const QString &photoID) {
   input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
   input_data.insert("photo_id", photoID.toStdString());
 
+  service->on_response_ready([&] (const social_kit::remote_result &a_result,
+                             const social_kit::web_service *a_web_service) {
+  });
   service->submit("flickr.photos.getSizes", &input_data);
-  d->mSizeServicesPending.append(service);
-
-  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
-          SLOT(onSizeServiceComplete(social_kit::web_service *)));
 }
 
 void SocialTestRunner::testsocialphotosizesJson(const QString &photoID) {
