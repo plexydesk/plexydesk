@@ -312,9 +312,12 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/dist/windows
     ${CMAKE_SOURCE_DIR}/deps/mitie/mitielib/include
     ${CMAKE_SOURCE_DIR}/deps/mitie/dlib/
+    ${CMAKE_SOURCE_DIR}/deps/json-cpp/
+    ${CMAKE_SOURCE_DIR}/deps/json-cpp/json/
     ${QT_INCLUDE_DIR}
     )
 
+add_subdirectory(deps/json-cpp)
 add_subdirectory(deps/tinyxml2)
 
 if (WIN32)
