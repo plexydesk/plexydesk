@@ -384,9 +384,9 @@ fixed_layout::PrivateViewBuilder::calculate_cell_height(int a_row,
       if (!widget)
         continue;
 
-      max_height = (max_height > widget->boundingRect().height())
+      max_height = (max_height > widget->contents_geometry().height())
                        ? max_height
-                       : widget->boundingRect().height();
+                       : widget->contents_geometry().height();
     }
     return max_height - m_verticle_padding;
   }

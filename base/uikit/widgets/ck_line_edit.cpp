@@ -79,7 +79,7 @@ void line_edit::set_size(const QSizeF &a_size) {
 
 QSizeF line_edit::sizeHint(Qt::SizeHint which,
                            const QSizeF &a_constraint) const {
-  return boundingRect().size();
+  return contents_geometry().size();
 }
 
 void line_edit::on_insert(std::function<void(const QString &)> a_handler) {

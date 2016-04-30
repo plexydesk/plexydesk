@@ -114,16 +114,17 @@ float window::window_title_height() {
 void window::removeFocus() { invoke_window_visibility_action(0); }
 
 void window::set_window_content(widget *a_widget_ptr) {
-  if (priv->m_window_content) {
-    return;
-  }
 
   priv->m_window_content = a_widget_ptr;
   priv->m_window_content->setParentItem(this);
 
   float window_bordr_height = window_title_height();
 
-  QRectF content_geometry(a_widget_ptr->boundingRect());
+  QRectF content_geometry(a_widget_ptr->contents_geometry());
+
+  qDebug() << Q_FUNC_INFO << "window size " << content_geometry;
+  qDebug() << Q_FUNC_INFO << "window title hight" << window_title_height();
+
 #ifdef __APPLE__
   content_geometry.setHeight(content_geometry.height() + window_title_height() +
                              30);
@@ -166,12 +167,15 @@ void window::set_window_content(widget *a_widget_ptr) {
   } else if (priv->m_window_type == kPopupWindow) {
     priv->m_window_close_button->hide();
     set_geometry(content_geometry);
-    priv->m_window_content->setPos(0, window_bordr_height + window_title_height());
+    priv->m_window_content->set_coordinates(8, window_title_height());
+    /*
+    priv->m_window_content->setPos(0, window_bordr_height);
 #ifdef __APPLE__
-    priv->m_window_content->setPos(15, window_bordr_height + 10);
+    priv->m_window_content->setPos(15, window_bordr_height;
 #else
-    priv->m_window_content->setPos(0, window_bordr_height + 10);
+    priv->m_window_content->setPos(0, window_bordr_height);
 #endif
+    */
   } else {
     priv->m_window_close_button->hide();
     set_geometry(content_geometry);

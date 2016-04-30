@@ -129,12 +129,7 @@ void button::set_size(const QSizeF &a_size) {
 }
 
 QSizeF button::sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const {
-  return boundingRect().size();
-}
-
-QRectF button::boundingRect() const {
-  return QRectF(0, 0, priv->m_button_size.width(),
-                priv->m_button_size.height());
+  return contents_geometry().size();
 }
 
 void button::set_geometry(const QRectF &a_rect) { setPos(a_rect.topLeft()); }

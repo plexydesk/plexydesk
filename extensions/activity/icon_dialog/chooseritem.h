@@ -15,8 +15,6 @@ public:
            QGraphicsItem *a_parent_ptr = 0);
   ~GridIcon();
 
-  QRectF boundingRect() const;
-
   virtual QSizeF sizeHint(Qt::SizeHint hint, const QSizeF &size) const;
 
   void set_selected();

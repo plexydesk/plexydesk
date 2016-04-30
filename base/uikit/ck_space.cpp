@@ -192,9 +192,9 @@ void space::insert_window_to_view(window *a_window) {
   QPoint _widget_location;
 
   _widget_location.setX(_center_of_space_location.x() -
-                        a_window->boundingRect().width() / 2);
+                        a_window->contents_geometry().width() / 2);
   _widget_location.setY(_center_of_space_location.y() -
-                        a_window->boundingRect().height() / 2);
+                        a_window->contents_geometry().height() / 2);
 
   //set the screen id of the owner space.
   a_window->set_screen_id(owner_workspace()->screen_id());

@@ -206,7 +206,8 @@ time_segment *date_controller::insert_time_element(
     break;
   };
 
-  ck_base_view->set_contents_geometry(0, 0,a_view->boundingRect().width(), 32);
+  ck_base_view->set_contents_geometry(0, 0, a_view->contents_geometry().width(),
+                                      32);
   ck_item_lbl->set_alignment(Qt::AlignHCenter | Qt::AlignVCenter);
   ck_item_lbl->set_text(time_str);
   ck_item_lbl->set_size(QSize(64, 32));
@@ -271,12 +272,12 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
 
   ui->add_widget(0, 0, "calendar", ui_data, [=]() {});
   ck_model_view = dynamic_cast<cherry_kit::item_view *>(
-              ui->add_widget(1, 0, "model_view", ui_data, [=] () {}));
+      ui->add_widget(1, 0, "model_view", ui_data, [=]() {}));
   ck_model_view->set_content_size(320, 64);
 
-	ck_model_view->on_item_removed([=](cherry_kit::model_view_item *a_item) {
-    delete a_item;	
-	});
+  ck_model_view->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    delete a_item;
+  });
 
   time_segment_list_t time_segment_list;
 
@@ -403,7 +404,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
     a_session->unbind_window(aWindow);
     ck_model_view->clear();
     ck_timer->stop();
-		delete ui;
+    delete ui;
     delete ck_timer;
     delete aWindow;
   });
@@ -524,7 +525,7 @@ cherry_kit::window *time_segment::create_new() {
 
   ui_data["text"] = "";
   ck_note_editor = dynamic_cast<cherry_kit::text_editor *>(
-              ck_layout->add_widget(2, 0, "text_edit", ui_data, [=]() {}));
+      ck_layout->add_widget(2, 0, "text_edit", ui_data, [=]() {}));
 
   /* start adding first row of the layout */
   ui_data["label"] = "Start";
@@ -533,7 +534,7 @@ cherry_kit::window *time_segment::create_new() {
   ui_data["text"] = std::to_string(m_time_value) + ":00";
 
   ck_duration_editor = dynamic_cast<cherry_kit::line_edit *>(
-              ck_layout->add_widget(0, 1, "line_edit", ui_data, [=]() {}));
+      ck_layout->add_widget(0, 1, "line_edit", ui_data, [=]() {}));
   ck_duration_editor->set_readonly(true);
 
   ui_data["label"] = "+";
@@ -577,7 +578,7 @@ cherry_kit::window *time_segment::create_new() {
   ui_data["text"] = std::to_string(m_time_value) + ":00";
 
   ck_end_time_editor = dynamic_cast<cherry_kit::line_edit *>(
-              ck_layout->add_widget(1, 1, "line_edit", ui_data, [=]() {}));
+      ck_layout->add_widget(1, 1, "line_edit", ui_data, [=]() {}));
   ck_end_time_editor->set_readonly(true);
 
   ui_data["label"] = "+";

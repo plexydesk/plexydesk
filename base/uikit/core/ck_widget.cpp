@@ -206,8 +206,8 @@ void widget::paint(QPainter *a_painter_ptr,
     return;
   }
 
-  a_painter_ptr->setClipRect(boundingRect());
-  paint_view(a_painter_ptr, boundingRect());
+  a_painter_ptr->setClipRect(contents_geometry());
+  paint_view(a_painter_ptr, contents_geometry());
 }
 
 void widget::set_geometry(const QRectF &a_rect) {
@@ -245,7 +245,7 @@ void widget::set_contents_geometry(float a_x, float a_y, float a_width,
   /// setPos(mapFromScene(a_rect.topLeft()));
   setPos(a_rect.topLeft());
   priv->_invoke_geometry_func(scaled_rect);
-  setCacheMode(ItemCoordinateCache, boundingRect().size().toSize());
+  setCacheMode(ItemCoordinateCache, contents_geometry().size().toSize());
   request_update();
 }
 
@@ -305,11 +305,11 @@ void widget::focusOutEvent(QFocusEvent *event) {
 }
 
 float widget::scale_factor_for_width() const {
-  return geometry().width() / boundingRect().width();
+  return geometry().width() / contents_geometry().width();
 }
 
 float widget::scale_factor_for_height() const {
-  return geometry().height() / boundingRect().height();
+  return geometry().height() / contents_geometry().height();
 }
 
 void widget::set_child_widet_visibility(bool a_visibility) {
