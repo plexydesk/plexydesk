@@ -23,7 +23,7 @@
 #include <QNetworkReply>
 
 #include <social_kit_export.h>
-#include <servicedefinition.h>
+#include <ck_remote_service.h>
 
 #include <ck_url.h>
 

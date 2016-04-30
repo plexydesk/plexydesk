@@ -74,8 +74,8 @@ if (APPLE)
 endif()
 set(sourceFiles
     ck_url.cpp
+    ck_remote_service.cpp
     webservice.cpp
-    servicedefinition.cpp
     asyncimageloader.cpp
     asyncimagecreator.cpp
     asyncdatadownloader.cpp
@@ -86,8 +86,8 @@ set(sourceFiles
 
 set(headerFiles
     ck_url.h
+    ck_remote_service.h
     webservice.h
-    servicedefinition.h
     asyncimageloader.h
     asyncimagecreator.h
     asyncdatadownloader.h
@@ -148,7 +148,12 @@ if (UNIX AND NOT LINUX)
     set(PLATFORM_LINK_LIBRARIES ${LIBSOUP_LIBRARIES})
 endif()
 
-TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${APPLE_OSX_PLATFORM_LINK_LIBRARIES} ${libs} ${PLATFORM_LINK_LIBRARIES} tinyxml2)
+TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY}
+    ${APPLE_OSX_PLATFORM_LINK_LIBRARIES}
+    ${PLATFORM_LINK_LIBRARIES}
+    jsoncpp_ck
+    tinyxml2
+    )
 
 QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
 
