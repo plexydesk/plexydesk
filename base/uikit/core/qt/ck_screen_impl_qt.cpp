@@ -47,10 +47,10 @@ float cherry_kit::screen::platform_screen::desktop_height(int a_id) const
 
 float cherry_kit::screen::platform_screen::display_width(int a_id) const
 {
-  return qApp->desktop()->geometry().width() * 4;
+  return qApp->desktop()->geometry().width();
 }
 
 float cherry_kit::screen::platform_screen::display_height(int a_id) const
 {
-  return qApp->desktop()->geometry().height() * 4;
+  return qApp->desktop()->geometry().height();
 }
