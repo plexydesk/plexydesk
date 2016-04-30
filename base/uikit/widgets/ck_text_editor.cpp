@@ -144,7 +144,7 @@ void text_editor::set_geometry(const QRectF &a_rect) {
 }
 
 void text_editor::update_text_scale() {
-  QRectF bounds = boundingRect();
+  QRectF bounds = contents_geometry();
   const QRectF newBounds(bounds.x(), bounds.y(),
                          bounds.width() / priv->m_text_scale_factor,
                          bounds.height() / priv->m_text_scale_factor);

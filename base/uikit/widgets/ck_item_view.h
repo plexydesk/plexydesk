@@ -52,7 +52,7 @@ public:
 
   virtual void set_view_geometry(const QRectF &a_rect);
 
-  virtual QRectF boundingRect() const;
+  ///virtual QRectF boundingRect() const;
   virtual void set_geometry(const QRectF &a_rect);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;
 
