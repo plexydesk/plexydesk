@@ -162,15 +162,14 @@ void window::set_window_content(widget *a_widget_ptr) {
   } else if (priv->m_window_type == kPopupWindow) {
     priv->m_window_close_button->hide();
     set_geometry(content_geometry);
-    priv->m_window_content->set_coordinates(0, window_bordr_height);
     /*
-    priv->m_window_content->setPos(0, window_bordr_height);
-#ifdef __APPLE__
-    priv->m_window_content->setPos(15, window_bordr_height;
-#else
-    priv->m_window_content->setPos(0, window_bordr_height);
-#endif
+    priv->m_window_content->set_coordinates(0, window_bordr_height);
     */
+#ifdef __APPLE__
+    priv->m_window_content->set_coordinates(15, window_bordr_height);
+#else
+    priv->m_window_content->set_coordinates(0, window_bordr_height);
+#endif
   } else {
     priv->m_window_close_button->hide();
     set_geometry(content_geometry);
