@@ -122,7 +122,7 @@ void CocoaStyle::load_default_widget_style_properties() {
   QVariantMap _size_attributes;
   QVariantMap _button_attributes;
 
-  _frame_attributes["window_title_height"] = 32.0 * scale_factor();
+  _frame_attributes["window_title_height"] = 48.0;
   _frame_attributes["window_minimized_height"] = 128.0;
   _frame_attributes["window_minimized_width"] = 96.0;
   _frame_attributes["window_blur_radius"] = 12.0;
@@ -461,7 +461,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
   window *ck_window = dynamic_cast<window *>(features.style_object);
 
   if (ck_window && ck_window->window_type() != window::kPanelWindow) {
-    QRectF window_title_rect(12, 5, rect.width() - 16, 32.0 * scale_factor());
+    QRectF window_title_rect(12, 5, rect.width() - 16, 48);
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
@@ -475,7 +475,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
     // draw frame text;
     a_ctx->save();
 
-    d->set_default_font_size(a_ctx, 13.0, true);
+    d->set_default_font_size(a_ctx, 16.0, true);
     d->set_pen_color(a_ctx, resource_manager::kTextColor);
     a_ctx->drawText(window_title_rect, features.text_data,
                     QTextOption(Qt::AlignCenter));
