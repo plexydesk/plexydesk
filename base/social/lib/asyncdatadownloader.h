@@ -23,7 +23,7 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKitQt_export.h>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class QuetzalSocialKitQt_EXPORT AsyncDataDownloader : public QObject {
   Q_OBJECT

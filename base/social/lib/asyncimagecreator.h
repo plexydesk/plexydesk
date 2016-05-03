@@ -26,7 +26,7 @@
 #include <functional>
 #include <string>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class QuetzalSocialKitQt_EXPORT AsyncImageCreator : public QThread {
   Q_OBJECT

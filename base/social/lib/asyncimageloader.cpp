@@ -28,7 +28,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class AsyncImageLoader::PrivateAsyncImageLoader {
 public:

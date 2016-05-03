@@ -24,7 +24,7 @@
 #include <QNetworkReply>
 #include <QuetzalSocialKitQt_export.h>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class ServiceDefinition;
 
@@ -59,7 +59,7 @@ public:
   QStringList availableData() const;
 
 Q_SIGNALS:
-  void finished(QuetzalSocialKit::WebService *service);
+  void finished(social_kit::WebService *service);
 
 private
 Q_SLOTS:

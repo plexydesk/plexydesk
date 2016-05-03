@@ -90,7 +90,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
 
   priv->m_ck_layout = ck_ui;
 
-  ck_ui->set_content_margin(2, 2, 2, 2);
+  ck_ui->set_content_margin(4, 4, 4, 4);
   ck_ui->set_geometry(0, 0, a_window_geometry.width(),
                       a_window_geometry.height());
 

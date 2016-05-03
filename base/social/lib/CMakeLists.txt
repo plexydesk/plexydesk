@@ -56,6 +56,7 @@ ADD_DEFINITIONS(-DPLEXYPREFIX="${CMAKE_INSTALL_PREFIX}"
                )
 
 set(sourceFiles
+    ck_url.cpp
     webservice.cpp
     servicedefinition.cpp
     asyncimageloader.cpp
@@ -66,6 +67,7 @@ set(sourceFiles
    )
 
 set(headerFiles
+    ck_url.h
     webservice.h
     servicedefinition.h
     asyncimageloader.h
@@ -103,6 +105,14 @@ GENERATE_EXPORT_HEADER( ${QUETZAL_SOCIAL_KIT_LIBRARY}
              STATIC_DEFINE ${QUETZAL_SOCIAL_KIT_LIBRARY}_BUILT_AS_STATIC
 )
 
+GENERATE_EXPORT_HEADER( ${QUETZAL_SOCIAL_KIT_LIBRARY}
+             BASE_NAME ${QUETZAL_SOCIAL_KIT_LIBRARY}
+             EXPORT_MACRO_NAME DECL_SOCIAL_KIT_EXPORT
+             EXPORT_FILE_NAME social_kit_export.h
+             STATIC_DEFINE ${QUETZAL_SOCIAL_KIT_LIBRARY}_BUILT_AS_STATIC
+)
+
+
 if (MINGW)
     SET_TARGET_PROPERTIES(${QUETZAL_SOCIAL_KIT_LIBRARY} PROPERTIES
         IMPORT_SUFFIX ".lib"
@@ -111,7 +121,7 @@ if (MINGW)
    )
 endif(MINGW)
 
-TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${MAC_LIBS} ${libs})
+TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${MAC_LIBS} ${libs} tinyxml2)
 
 QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
 

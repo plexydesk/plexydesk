@@ -2,7 +2,7 @@
 <!--Document created by: PlexyDesk, http://www.plexydesk.org for Social Framework -->
 <services>
 <service name="flickr.photos.search">
-    <input url="http://api.flickr.com/services/rest/" request="GET">
+    <input url="http://api.flickr.com/services/rest/" type="GET" request="GET">
             <arg type="string" optional="true" default="flickr.photos.search">method</arg>
             <arg type="string" optional="false">api_key</arg>
             <arg type="string" optional="false">text</arg>

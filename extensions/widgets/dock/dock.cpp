@@ -80,7 +80,8 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
   });
 
   priv->m_task_grid = new item_view(priv->m_deskt_menu, item_view::kGridModel);
-  priv->m_task_grid->set_content_spacing(0);
+	priv->m_task_grid->set_content_margin(8, 0, 0, 0);
+  priv->m_task_grid->set_content_spacing(6);
 
   priv->m_task_grid->on_item_removed([](cherry_kit::model_view_item *a_item) {
     if (a_item)
