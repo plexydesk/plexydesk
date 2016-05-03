@@ -458,6 +458,79 @@ const char *get_attribute_value(tinyxml2::XMLElement *element,
   return value;
 }
 
+void read_json_value(Json::ValueIterator *node,
+                     service_result_query_attribute *attrib,
+                     remote_data_attribute *remote_attrib) {
+  Json::ValueIterator it;
+  for (it = (*node)->begin(); it != (*node)->end(); it++) {
+    if (it->isMember(attrib->value())) {
+      Json::Value null_value;
+      Json::Value object_value;
+
+      object_value = it->get(attrib->value(), null_value);
+
+      if (!object_value.isNull()) {
+        remote_attrib->set_key(attrib->value());
+        if (object_value.isString())
+            remote_attrib->set_value(object_value.asString());
+        if (object_value.isBool())
+            remote_attrib->set_value(std::to_string(object_value.asBool()));
+        if (object_value.isInt())
+            remote_attrib->set_value(std::to_string(object_value.asInt()));
+      }
+    }
+  }
+}
+
+void read_json_array_values(Json::ValueIterator *node,
+                            remote_result_data *a_data,
+                            service_result_query *a_query) {
+  service_result_query::attribute_list_t list = a_query->attribute_list();
+
+  std::for_each(std::begin(list), std::end(list),
+                [&](service_result_query_attribute *attribute) {
+    if (attribute) {
+      remote_data_attribute remote_attribute;
+      read_json_value(node, attribute, &remote_attribute);
+      a_data->insert(remote_attribute);
+    }
+  });
+}
+
+void lookup_json_data(Json::Value *node, service_result_query *query,
+                      remote_result *a_result) {
+  Json::ValueIterator it;
+
+  for (it = node->begin(); it != node->end(); it++) {
+    if (it.key().asString() == query->name()) {
+      if (&(*it) && it->isArray()) {
+        Json::ValueIterator array_it;
+        for (array_it = it->begin(); array_it != it->end(); array_it++) {
+          remote_result_data result;
+          result.set_name(it.key().asString());
+
+          read_json_array_values(&it, &result, query);
+          a_result->insert(result);
+        }
+      } else {
+        remote_result_data result;
+
+        result.set_name(it.key().asString());
+        if (it->isString()) {
+          remote_data_attribute attribute;
+          attribute.set_key(query->name());
+          attribute.set_value(it->asString());
+          result.insert(attribute);
+        }
+
+        a_result->insert(result);
+      }
+    } else {
+      lookup_json_data(&(*it), query, a_result);
+    }
+  }
+}
+
 void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
                     remote_result *a_result) {
   if (!node)
@@ -474,6 +547,7 @@ void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
   if (keyword && strcmp(node->Name(), keyword) == 0) {
     remote_result_data result;
     result.set_name(node->Name());
+
     service_result_query::attribute_list_t list = query->attribute_list();
 
     std::for_each(std::begin(list), std::end(list),
@@ -517,7 +591,6 @@ remote_result remote_service::response(const std::string &a_method_name,
       return rv;
     }
 
-    std::cout << "result query size : " << list.size() << std::endl;
     std::for_each(std::begin(list), std::end(list),
                   [&](service_result_query *query) {
       if (query) {
@@ -527,112 +600,31 @@ remote_result remote_service::response(const std::string &a_method_name,
     });
 
   } else if (srv_result->result_format() == service_result::kJSONData) {
+    // json data.
+    tinyxml2::XMLDocument doc;
+    Json::Value root;
+    Json::Reader reader;
+
+    if (reader.parse(a_response.data_buffer(), root)) {
+      std::cout << "parsed success fully" << std::endl;
+      std::vector<service_result_query *> list = srv_result->query_list();
+      std::for_each(std::begin(list), std::end(list),
+                    [&](service_result_query *query) {
+        if (query) {
+          lookup_json_data(&root, query, &rv);
+        }
+      });
+
+    } else {
+      std::cout << "error parsing json string :" << a_response.data_buffer()
+                << std::endl;
+    }
   } else {
-    // unknown data ?
+    // unknown dgata ?
   }
 
   return rv;
 }
-
-/*
-QMultiMap<QString, QVariantMap>
-remote_service::queryResult(const QString &method, const QString &data) const {
-  QHash<QString, PrivateResultQuery> result = ctx->queryForMethod(method);
-  QStringList queries = result.keys();
-
-  QMultiMap<QString, QVariantMap> tagData;
-
-  uint docType = ctx->documentType(method);
-
-  if (docType == 0) {
-    QDomDocument dataRoot;
-    if (dataRoot.setContent(data)) {
-      Q_FOREACH(const QString & keyString, queries) {
-        QDomNodeList filteredNodeList =
-            dataRoot.elementsByTagName(result[keyString].tagName);
-
-        for (int i = 0; i < filteredNodeList.count(); i++) {
-          QDomNode dataNode = filteredNodeList.at(i);
-          QDomNamedNodeMap dataNodeAttributes = dataNode.attributes();
-          QVariantMap attributeData;
-
-          Q_FOREACH(const QString & attrString, result[keyString].attributes) {
-            attributeData[attrString] =
-                dataNodeAttributes.namedItem(attrString).nodeValue();
-          }
-          if (dataNode.isText()) {
-            QVariant textValue = ctx->getTextValueFromNode(dataNode);
-            attributeData["NodeValue"] = textValue;
-          } else {
-            attributeData["NodeValue"] = QVariant();
-          }
-
-          tagData.insert(result[keyString].identifier, attributeData);
-        }
-      }
-    }
-  }
-
-  if (docType == 1) {
-    // qDebug() << Q_FUNC_INFO << "JSON Data" << data;
-    QJsonParseError error;
-    QJsonDocument jsonDoc =
-        QJsonDocument::fromJson(QByteArray(data.toLatin1()), &error);
-
-    if (error.error == QJsonParseError::NoError) {
-      qDebug() << Q_FUNC_INFO << "No Error";
-      QJsonObject rootObject = jsonDoc.object();
-
-      Q_FOREACH(const QString & keyString, queries) {
-        QJsonValue v = ctx->findJsonObject(rootObject, keyString);
-        QVariantMap attributeData;
-        qDebug() << Q_FUNC_INFO << v.type();
-        if (v.isArray()) {
-          // tagData.insert(result[keyString].identifier,
-          // _object.toVariantMap());
-          for (int i = 0; i < v.toArray().count(); i++) {
-            QJsonValue o = v.toArray().at(i);
-
-            Q_FOREACH(const QString & attrKey, o.toObject().keys()) {
-              attributeData[attrKey] =
-                  ctx->JsonValueToVariant(o.toObject()[attrKey]);
-            }
-
-            tagData.insert(result[keyString].identifier, attributeData);
-          }
-
-        } else if (v.type() == QJsonValue::String) {
-          qDebug() << Q_FUNC_INFO << "String Type Found";
-          attributeData[keyString] = v.toString();
-          tagData.insert(result[keyString].identifier, attributeData);
-        } else if (v.type() == QJsonValue::Double) {
-          qDebug() << Q_FUNC_INFO << keyString
-                   << " --> Object Type: " << v.type();
-          qDebug() << Q_FUNC_INFO << keyString
-                   << " --> Object Value: " << v.toDouble();
-        } else {
-          qDebug() << Q_FUNC_INFO << keyString
-                   << " --> Object Type: " << v.type();
-          Q_FOREACH(const QString & attrKey, v.toObject().keys()) {
-            attributeData[attrKey] = ctx->JsonValueToVariant(
-                v.toObject()[attrKey]); // v.toObject()[attrKey].toString();
-          }
-
-          qDebug() << Q_FUNC_INFO << "Data: -> " << attributeData;
-          tagData.insert(result[keyString].identifier, attributeData);
-        }
-      }
-    } else {
-      qDebug() << Q_FUNC_INFO << "Error:" << error.errorString();
-    }
-  }
-
-  result.clear();
-  queries.clear();
-
-  return tagData;
-}
-*/
 
 remote_service::definition_error_t remote_service::error() const {
   return ctx->m_current_error;
@@ -827,7 +819,8 @@ void remote_service::load_services() {
     const char *value = service_element->Attribute("name");
 
     if (value) {
-      // std::cout << __FUNCTION__ << " Load Eelement ....... [" << value << "]"
+      // std::cout << __FUNCTION__ << " Load Eelement ....... [" << value <<
+      // "]"
       //          << std::endl;
 
       service *srv = new service();
