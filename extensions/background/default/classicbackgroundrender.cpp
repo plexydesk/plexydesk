@@ -58,12 +58,12 @@ void ClassicBackgroundRender::setBackgroundMode(
 
   if (mode == FitHeight) {
     mBackgroundImageHeightScaled =
-        mBackgroundImage.scaledToHeight(this->boundingRect().height());
+        mBackgroundImage.scaledToHeight(this->contents_geometry().height());
   }
 
   if (mode == FitWidth) {
     mBackgroundImageWidthScaled =
-        mBackgroundImage.scaledToWidth(this->boundingRect().width());
+        mBackgroundImage.scaledToWidth(this->contents_geometry().width());
   }
 
   update();

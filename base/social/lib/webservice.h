@@ -20,58 +20,47 @@
 #define WEBSERVICE_H
 
 #include <QObject>
-#include <QSharedPointer>
 #include <QNetworkReply>
-#include <QuetzalSocialKitQt_export.h>
 
-namespace QuetzalSocialKit {
+#include <social_kit_export.h>
+#include <ck_remote_service.h>
 
-class ServiceDefinition;
+#include <ck_url.h>
 
-typedef QSharedPointer<ServiceDefinition> ServiceDefinitionPtr;
+#include <functional>
 
-class QuetzalSocialKitQt_EXPORT WebService : public QObject {
+namespace social_kit {
+
+class remote_service;
+class web_service;
+
+typedef std::function<void(const remote_result &, const web_service *)>
+response_callback_t;
+
+class DECL_SOCIAL_KIT_EXPORT web_service : public QObject {
   Q_OBJECT
 public:
-  explicit WebService(QObject *a_parent_ptr = 0);
+  explicit web_service(QObject *a_parent_ptr = 0);
+  virtual ~web_service();
 
-  virtual ~WebService();
+  void create(const std::string &serviceName);
 
-  void create(const QString &serviceName);
-
-  QString serviceName() const;
-
-  void queryService(const QString &method, const QVariantMap &arguments,
+  void submit(const QString &method, service_query_parameters *a_params,
                     QHttpMultiPart *data = 0,
                     const QByteArray &headerName = QByteArray(),
                     const QByteArray &headerValue = QByteArray());
 
-  QVariantMap inputArgumentForMethod(const QString &str);
+  service_query_parameters inputArgumentForMethod(const QString &str);
 
-  QVariantMap serviceData() const;
+  QString query() const;
 
-  QByteArray rawServiceData() const;
+  QList<QVariantMap> methodData(const QString &query) const;
 
-  QString methodName() const;
-
-  QList<QVariantMap> methodData(const QString &methodName) const;
-
-  QStringList availableData() const;
-
-Q_SIGNALS:
-  void finished(QuetzalSocialKit::WebService *service);
-
-private
-Q_SLOTS:
-  void onNetworkRequestFinished(QNetworkReply *reply);
-
-  void onDownloadRequestComplete();
+  void on_response_ready(response_callback_t a_callback);
 
 private:
-  QString installPrefix() const;
-
-  class PrivateWebService;
-  PrivateWebService *const d;
+  class web_service_context;
+  web_service_context *const ctx;
 };
 }
 #endif // WEBSERVICE_H

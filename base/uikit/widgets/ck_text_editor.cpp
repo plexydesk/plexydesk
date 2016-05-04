@@ -59,8 +59,7 @@ text_editor::text_editor(widget *parent)
     : cherry_kit::widget(parent), priv(new PrivateTextEditor) {
   priv->m_proxy_widget = new QGraphicsProxyWidget(this);
   priv->m_text_editor = new PrivateTextBrowser(0);
-  priv->m_text_editor->setFontPointSize(
-     14 * resource_manager::style()->scale_factor());
+  priv->m_text_editor->setFontPointSize(14);
   priv->m_text_editor->setReadOnly(false);
   priv->m_text_editor->setAcceptRichText(true);
   priv->m_text_editor->setAutoFormatting(QTextEdit::AutoAll);
@@ -144,7 +143,7 @@ void text_editor::set_geometry(const QRectF &a_rect) {
 }
 
 void text_editor::update_text_scale() {
-  QRectF bounds = boundingRect();
+  QRectF bounds = contents_geometry();
   const QRectF newBounds(bounds.x(), bounds.y(),
                          bounds.width() / priv->m_text_scale_factor,
                          bounds.height() / priv->m_text_scale_factor);

@@ -40,7 +40,7 @@ public:
 
   void set_button_type(WindowButtonType a_type);
 
-  virtual QRectF boundingRect() const;
+  virtual QRectF contents_geometry() const;
 
 protected:
   virtual void paint_normal_button(QPainter *a_painter_ptr,

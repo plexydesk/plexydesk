@@ -313,8 +313,8 @@ void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *service =
+      new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
@@ -327,15 +327,17 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
   args["tag_mode"] = "all";
   args["page"] = QString::number(1);
 
-  service->queryService("flickr.photos.search", args);
+  social_kit::service_query_parameters input_data;
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onServiceCompleteJson(QuetzalSocialKit::WebService *)));
+  service->submit("flickr.photos.search", &input_data);
+
+  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
+          SLOT(onServiceCompleteJson(social_kit::web_service *)));
 }
 
 void NoteWidget::requestPhotoSizes(const QString &photoID) {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *service =
+      new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
@@ -343,10 +345,14 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
   args["api_key"] = K_SOCIAL_KIT_FLICKR_API_KEY;
   args["photo_id"] = photoID;
 
-  service->queryService("flickr.photos.getSizes", args);
+  social_kit::service_query_parameters input_data;
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("photo_id", photoID.toStdString());
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onSizeServiceCompleteJson(QuetzalSocialKit::WebService *)));
+  service->submit("flickr.photos.getSizes", &input_data);
+
+  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
+          SLOT(onSizeServiceCompleteJson(social_kit::web_service *)));
 }
 
 void NoteWidget::onClicked() { Q_EMIT clicked(this); }
@@ -425,7 +431,7 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
   }
 }
 
-void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+void NoteWidget::onServiceCompleteJson(social_kit::web_service *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
   Q_FOREACH (const QVariantMap &map, photoList) {
@@ -436,21 +442,21 @@ void NoteWidget::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
 }
 
 void
-NoteWidget::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+NoteWidget::onSizeServiceCompleteJson(social_kit::web_service *service) {
   Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
         map["label"].toString() == "Original") {
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
-      QuetzalSocialKit::AsyncDataDownloader *downloader =
-          new QuetzalSocialKit::AsyncDataDownloader(this);
+      social_kit::AsyncDataDownloader *downloader =
+          new social_kit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
-      metaData["method"] = service->methodName();
+      metaData["method"] = service->query();
       metaData["id"] =
-          service->inputArgumentForMethod(service->methodName())["photo_id"];
-      metaData["data"] = service->inputArgumentForMethod(service->methodName());
+          service->inputArgumentForMethod(service->query()).value("photo_id").c_str();
+      //metaData["data"] = service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
       downloader->setUrl(map["source"].toString());
@@ -461,16 +467,16 @@ NoteWidget::onSizeServiceCompleteJson(QuetzalSocialKit::WebService *service) {
   service->deleteLater();
 }
 
-void NoteWidget::onDownloadCompleteJson(QuetzalSocialKit::WebService *service) {
+void NoteWidget::onDownloadCompleteJson(social_kit::web_service *service) {
 }
 
 void NoteWidget::onImageReady() {
-  QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+  social_kit::AsyncDataDownloader *downloader =
+      qobject_cast<social_kit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
-    QuetzalSocialKit::AsyncImageCreator *imageSave =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+    social_kit::AsyncImageCreator *imageSave =
+        new social_kit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReadyJson()));
 

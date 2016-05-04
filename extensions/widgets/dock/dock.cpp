@@ -53,9 +53,6 @@ public:
   QStringList m_controller_name_list;
   bool m_main_panel_is_hidden;
 
-  cherry_kit::icon_button *m_add_new_workspace_button_ptr;
-  cherry_kit::ui_action_list m_task_list;
-
   desktop_button *m_menu_btn;
   desktop_button *m_up_btn;
   desktop_button *m_down_btn;
@@ -80,8 +77,8 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
   });
 
   priv->m_task_grid = new item_view(priv->m_deskt_menu, item_view::kGridModel);
-	priv->m_task_grid->set_content_margin(8, 0, 0, 0);
-  priv->m_task_grid->set_content_spacing(6);
+  priv->m_task_grid->set_content_margin(0, 0, 0, 0);
+  priv->m_task_grid->set_content_spacing(0);
 
   priv->m_task_grid->on_item_removed([](cherry_kit::model_view_item *a_item) {
     if (a_item)
@@ -112,56 +109,6 @@ void desktop_panel_controller_impl::create_dock_action(
 
 widget *desktop_panel_controller_impl::create_task_action(
     cherry_kit::ui_action &a_task) {
-  /*
-  QSizeF item_icon_size(viewport()->scaled_width(36),
-                        viewport()->scaled_height(36));
-  QSizeF item_label_size(viewport()->scaled_width(64),
-                         viewport()->scaled_height(24));
-
-  widget *l_rv = new widget();
-
-  cherry_kit::icon_button *l_image_view = new cherry_kit::icon_button(l_rv);
-  cherry_kit::label *l_action_label = new cherry_kit::label(l_rv);
-  l_action_label->set_text(a_task.name().c_str());
-  l_action_label->set_widget_name(a_task.name().c_str());
-
-  QPixmap l_view_pixmap(cherry_kit::resource_manager::instance()->drawable(
-      a_task.icon().c_str(), "mdpi"));
-
-  l_image_view->set_pixmap(l_view_pixmap);
-
-  //l_image_view->setMinimumSize(item_icon_size);
-  l_image_view->set_size(item_icon_size.toSize());
-
-  l_action_label->set_size(item_label_size.toSize());
-  l_action_label->setPos(0, l_image_view->geometry().height());
-
-  l_image_view->setPos(viewport()->scaled_width(14), 0);
-
-  l_rv->set_geometry(l_image_view->geometry());
-
-  QSizeF l_action_item_size;
-  l_action_item_size.setHeight(l_image_view->boundingRect().height() +
-                               l_action_label->boundingRect().height());
-  l_action_item_size.setWidth(l_action_label->boundingRect().width());
-
-  //l_rv->setMinimumSize(l_action_item_size);
-  l_rv->set_contents_geometry(0, 0, 96, 96);
-
-  a_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
-                         const cherry_kit::ui_task_data_t &a_data) {
-    ui_action_list child_actions = a_action_ref->sub_actions();
-
-    if (child_actions.size() > 0) {
-      ui_action copy(*a_action_ref);
-      insert_sub_action(copy);
-    }
-  });
-
-  l_image_view->on_click([=]() { a_task.execute(); });
-
-  return l_rv;
-  */
 
   cherry_kit::widget *rv = new cherry_kit::widget();
   cherry_kit::icon_button *btn = new cherry_kit::icon_button(rv);
@@ -169,9 +116,11 @@ widget *desktop_panel_controller_impl::create_task_action(
   QPixmap icon_pixmap(cherry_kit::resource_manager::instance()->drawable(
       a_task.icon().c_str(), "mdpi"));
 
+  int icon_size = viewport()->scaled_width(96);
   btn->set_pixmap(icon_pixmap);
-  btn->set_size(QSize(96, 96));
-  rv->set_geometry(QRectF(0, 0, 96, 96));
+  btn->set_size(QSize(icon_size, icon_size));
+  btn->set_geometry(QRectF(0, 0, icon_size, icon_size));
+  rv->set_geometry(QRectF(0, 0, icon_size, icon_size));
 
   a_task.set_task([this](const cherry_kit::ui_action *a_action_ref,
                          const cherry_kit::ui_task_data_t &a_data) {
@@ -227,24 +176,16 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
   if (!priv->m_task_grid)
     return;
 
-  float row_count = (priv->m_task_grid->count() + 1) % 4;
+  int row_count = (priv->m_task_grid->count()) / 4;
 
-  if (row_count == 0)
-    row_count = (priv->m_task_grid->count() + 1) / 4;
+  float window_width = (96 * 4);
+  float window_height = (96 * row_count);
 
-  if (row_count != 0)
-    row_count = 1 + ((priv->m_task_grid->count() + 1) / 4);
-  else if (row_count == 0) {
-    row_count = (priv->m_task_grid->count() + 1) / 4;
-  }
-
-  float window_width = (viewport()->scaled_width(64) * 5);
-  float window_height = (viewport()->scaled_width(36) * row_count) +
-                        (viewport()->scaled_height(24) * row_count);
-  priv->m_task_grid->set_view_geometry(QRectF(
-      0, 0, window_width, window_height + viewport()->scaled_height(16)));
+  priv->m_task_grid->set_view_geometry(
+      QRectF(0, 0, window_width, window_height + 16));
 
   priv->m_task_grid->insert(grid_item);
+
   priv->m_deskt_menu->set_window_content(priv->m_task_grid);
 }
 
@@ -261,9 +202,9 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   cherry_kit::item_view *sub_task_grid =
       new cherry_kit::item_view(sub_menu, cherry_kit::item_view::kGridModel);
 
-	sub_task_grid->on_item_removed([=](cherry_kit::model_view_item *a_item) {
-	  delete a_item;
-	});
+  sub_task_grid->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    delete a_item;
+  });
 
   int x_count = child_actions.size();
 
@@ -284,14 +225,14 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   if (x_count < 2)
     menu_width = 4;
 
-  float window_width = (viewport()->scaled_width(72) * menu_width);
-  float window_height = (viewport()->scaled_width(64) * (row_count)) + 16;
+  float window_width = (96 * menu_width);
+  float window_height = (96 * (row_count)) + 16;
 
   sub_task_grid->set_view_geometry(QRectF(0, 0, window_width, window_height));
 
   sub_menu->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
     if (!a_visible) {
-		  sub_task_grid->clear();
+      sub_task_grid->clear();
       a_window_ref->close();
       // delete a_window_ref;
       delete sub_task_grid;
@@ -302,25 +243,24 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   if (child_actions.size() > 0) {
     std::for_each(std::begin(child_actions), std::end(child_actions),
                   [&](ui_action &a_action) {
-                    if (!a_action.is_visibile())
-                      return;
+      if (!a_action.is_visibile())
+        return;
 
-                    cherry_kit::model_view_item *grid_item =
-                        new cherry_kit::model_view_item();
+      cherry_kit::model_view_item *grid_item =
+          new cherry_kit::model_view_item();
 
-                    grid_item->set_view(create_task_action(a_action));
+      grid_item->set_view(create_task_action(a_action));
 
-                    grid_item->on_view_removed(
-                        [](cherry_kit::model_view_item *a_item) {
-                          if (a_item && a_item->view()) {
-                            cherry_kit::widget *view = a_item->view();
-                            if (view)
-                              delete view;
-                          }
-                        });
+      grid_item->on_view_removed([](cherry_kit::model_view_item *a_item) {
+        if (a_item && a_item->view()) {
+          cherry_kit::widget *view = a_item->view();
+          if (view)
+            delete view;
+        }
+      });
 
-                    sub_task_grid->insert(grid_item);
-                  });
+      sub_task_grid->insert(grid_item);
+    });
   }
 
   sub_menu->set_window_content(sub_task_grid);
@@ -348,21 +288,21 @@ ui_action desktop_panel_controller_impl::task() {
   menu_task.set_visible(0);
   menu_task.set_icon("ck_menu_icon.png");
   menu_task.set_controller(controller_name().toStdString());
-  menu_task.set_task(
-      [this](const ui_action *a_action_ref, const ui_task_data_t &a_data) {
-        if (priv->m_deskt_menu) {
+  menu_task.set_task([this](const ui_action *a_action_ref,
+                            const ui_task_data_t &a_data) {
+    if (priv->m_deskt_menu) {
 
-          QPointF menu_pos;
-          if (a_data.find("x") != a_data.end() &&
-              a_data.find("y") != a_data.end()) {
-            menu_pos.setX(std::stod(a_data.at("x")));
-            menu_pos.setY(std::stod(a_data.at("y")));
-          }
+      QPointF menu_pos;
+      if (a_data.find("x") != a_data.end() &&
+          a_data.find("y") != a_data.end()) {
+        menu_pos.setX(std::stod(a_data.at("x")));
+        menu_pos.setY(std::stod(a_data.at("y")));
+      }
 
-          priv->m_deskt_menu->setPos(menu_pos);
-          priv->m_deskt_menu->show();
-        }
-      });
+      priv->m_deskt_menu->setPos(menu_pos);
+      priv->m_deskt_menu->show();
+    }
+  });
 
   ui_action desktop_task;
   desktop_task.set_name("seamless");
@@ -370,10 +310,10 @@ ui_action desktop_panel_controller_impl::task() {
   desktop_task.set_visible(0);
   desktop_task.set_icon("ck_seamless_icon.png");
   desktop_task.set_controller(controller_name().toStdString());
-  desktop_task.set_task(
-      [this](const ui_action *a_action_ref, const ui_task_data_t &a_data) {
-        toggle_seamless();
-      });
+  desktop_task.set_task([this](const ui_action *a_action_ref,
+                               const ui_task_data_t &a_data) {
+    toggle_seamless();
+  });
 
   task.add_action(menu_task);
   task.add_action(desktop_task);
@@ -386,47 +326,13 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
     return;
   }
 
-  /*
-  vertical_dock *vdock = new vertical_dock();
-
-  vdock->create_dock_action(0, 0, "panel/ck_up_arrow.png",
-                            [=]() { exec_action("Up", vdock->window()); });
-
-  vdock->create_dock_action(1, 0, "panel/ck_add.png",
-                            [=]() { exec_action("Add", vdock->window()); });
-
-  vdock->create_dock_action(2, 0, "panel/ck_space.png",
-                            [=]() { exec_action("Expose", vdock->window()); });
-
-  vdock->create_dock_action(3, 0, "panel/ck_menu.png",
-                            [=]() { exec_action("Menu", vdock->window()); });
-
-  vdock->create_dock_action(4, 0, "panel/ck_expose.png", [=]() {
-    exec_action("Seamless", vdock->window());
-  });
-
-  vdock->create_dock_action(5, 0, "panel/ck_trash.png",
-                            [=]() { exec_action("Close", vdock->window()); });
-
-  vdock->create_dock_action(6, 0, "panel/ck_down_arrow.png",
-                            [=]() { exec_action("Down", vdock->window()); });
-
-  QPointF pos = (viewport()->center(vdock->window()->geometry(), QRectF(),
-                                    space::kCenterOnViewportLeft));
-
-  pos.setX(pos.x() + 48);
-  vdock->window()->setPos(pos);
-  insert(vdock->window());
-
-  vdock->window()->hide();
-  */
-
   // desktop button : experimental
   priv->m_menu_btn = new desktop_button();
   priv->m_menu_btn->set_icon("navigation/ck_nav.png");
   priv->m_menu_btn->set_label("Menu");
-  priv->m_menu_btn->set_action(
-      [=]() { exec_action("Menu", priv->m_menu_btn->window()); });
+  priv->m_menu_btn->set_action([=]() {
+    exec_action("Menu", priv->m_menu_btn->window());
+  });
 
   priv->m_menu_btn->window()->setPos(
       viewport()->center(priv->m_menu_btn->window()->geometry(), QRectF(),
@@ -434,40 +340,40 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 
   insert(priv->m_menu_btn->window());
 
-  viewport()->on_viewport_event_notify(
-      [=](space::ViewportNotificationType aType,
-          const cherry_kit::ui_task_data_t &a_data, const space *aSpace) {
+  viewport()->on_viewport_event_notify([=](
+      space::ViewportNotificationType aType,
+      const cherry_kit::ui_task_data_t &a_data, const space *aSpace) {
 
-        if (aType == space::kGeometryChangedNotification) {
-          priv->m_menu_btn->window()->setPos(
-              viewport()->center(priv->m_menu_btn->window()->geometry(),
-                                 QRectF(), space::kCenterOnViewportLeft));
-          if (priv->m_up_btn) {
-            QPointF up_btn_location =
-                viewport()->center(priv->m_up_btn->window()->geometry(),
-                                   QRectF(), space::kCenterOnViewportLeft);
-            up_btn_location.setY(up_btn_location.y() - 96);
-            priv->m_up_btn->window()->setPos(up_btn_location);
-          }
+    if (aType == space::kGeometryChangedNotification) {
+      priv->m_menu_btn->window()->setPos(
+          viewport()->center(priv->m_menu_btn->window()->geometry(), QRectF(),
+                             space::kCenterOnViewportLeft));
+      if (priv->m_up_btn) {
+        QPointF up_btn_location =
+            viewport()->center(priv->m_up_btn->window()->geometry(), QRectF(),
+                               space::kCenterOnViewportLeft);
+        up_btn_location.setY(up_btn_location.y() - 96);
+        priv->m_up_btn->window()->setPos(up_btn_location);
+      }
 
-          if (priv->m_down_btn) {
+      if (priv->m_down_btn) {
+        QPointF down_btn_location =
+            viewport()->center(priv->m_down_btn->window()->geometry(), QRectF(),
+                               space::kCenterOnViewportLeft);
 
-            QPointF down_btn_location =
-                viewport()->center(priv->m_down_btn->window()->geometry(),
-                                   QRectF(), space::kCenterOnViewportLeft);
-
-            down_btn_location.setY(down_btn_location.y() + 96);
-            priv->m_down_btn->window()->setPos(down_btn_location);
-          }
-        }
-      });
+        down_btn_location.setY(down_btn_location.y() + 96);
+        priv->m_down_btn->window()->setPos(down_btn_location);
+      }
+    }
+  });
 
   // move to next desktop button
   priv->m_up_btn = new desktop_button();
   priv->m_up_btn->set_icon("navigation/ck_up_arrow.png");
   priv->m_up_btn->set_label("Menu");
-  priv->m_up_btn->set_action(
-      [=]() { exec_action("Up", priv->m_up_btn->window()); });
+  priv->m_up_btn->set_action([=]() {
+    exec_action("Up", priv->m_up_btn->window());
+  });
 
   QPointF up_btn_location =
       viewport()->center(priv->m_up_btn->window()->geometry(), QRectF(),
@@ -485,8 +391,9 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
   priv->m_down_btn = new desktop_button();
   priv->m_down_btn->set_icon("navigation/ck_down_arrow.png");
   priv->m_down_btn->set_label("Menu");
-  priv->m_down_btn->set_action(
-      [=]() { exec_action("Down", priv->m_down_btn->window()); });
+  priv->m_down_btn->set_action([=]() {
+    exec_action("Down", priv->m_down_btn->window());
+  });
 
   QPointF down_btn_location =
       viewport()->center(priv->m_down_btn->window()->geometry(), QRectF(),
@@ -503,19 +410,19 @@ void desktop_panel_controller_impl::create_desktop_navigation_panel() {
 
 void desktop_panel_controller_impl::init() {
   // loads the controllers before dock was created
-  Q_FOREACH (const QString &name, viewport()->current_controller_list()) {
+  Q_FOREACH(const QString & name, viewport()->current_controller_list()) {
     discover_actions_from_controller(name);
   }
 
-  viewport()->on_viewport_event_notify(
-      [=](space::ViewportNotificationType aType,
-          const cherry_kit::ui_task_data_t &a_data, const space *aSpace) {
+  viewport()->on_viewport_event_notify([=](
+      space::ViewportNotificationType aType,
+      const cherry_kit::ui_task_data_t &a_data, const space *aSpace) {
 
-        if (aType == space::kControllerAddedNotification) {
-          discover_actions_from_controller(
-              QString::fromStdString(a_data.at("controller")));
-        }
-      });
+    if (aType == space::kControllerAddedNotification) {
+      discover_actions_from_controller(
+          QString::fromStdString(a_data.at("controller")));
+    }
+  });
 
   create_desktop_navigation_panel();
 
@@ -672,6 +579,7 @@ void desktop_panel_controller_impl::add_new_space() {
 }
 
 void desktop_panel_controller_impl::update_desktop_preview() {
+  qDebug() << Q_FUNC_INFO;
   if (!viewport())
     return;
 
@@ -686,7 +594,8 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   preview_list->set_column_count(11);
   preview_list->set_content_size(preview_width, preview_height);
   preview_list->set_view_geometry(
-      QRectF(0, 0, viewport()->geometry().width(), preview_height));
+      QRectF(0, 0, viewport()->geometry().width(),
+             preview_height + expose_window->window_title_height()));
 
   expose_window->set_window_title("");
   expose_window->set_geometry(
@@ -694,25 +603,25 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   expose_window->set_window_type(cherry_kit::window::kPopupWindow);
   expose_window->set_window_opacity(0.5);
 
-  expose_window->on_visibility_changed(
-      [=](window *a_window_ref, bool a_visible) {
-        if (!a_visible) {
-          preview_list->clear();
-          a_window_ref->close();
-          delete a_window_ref;
-        }
-      });
+  expose_window->on_visibility_changed([=](window *a_window_ref,
+                                           bool a_visible) {
+    if (!a_visible) {
+      preview_list->clear();
+      a_window_ref->close();
+      delete a_window_ref;
+    }
+  });
 
   // insert preview items.
-  foreach (cherry_kit::space *_space,
-           viewport()->owner_workspace()->current_spaces()) {
+  foreach(cherry_kit::space * _space,
+          viewport()->owner_workspace()->current_spaces()) {
     cherry_kit::model_view_item *item = new cherry_kit::model_view_item();
     cherry_kit::image_view *image_view = new cherry_kit::image_view();
     QPixmap preview = viewport()->owner_workspace()->thumbnail(_space);
 
-		image_view->on_click([=] () {
-		  viewport()->owner_workspace()->expose(_space->id());	
-		});
+    image_view->on_click([=]() {
+      viewport()->owner_workspace()->expose(_space->id());
+    });
 
     image_view->set_pixmap(preview);
     image_view->set_contents_geometry(0, 0, preview_width, preview_height);
@@ -727,15 +636,13 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     delete a_item;
   });
 
-	//insert button
+  // insert button
   cherry_kit::model_view_item *button_item = new cherry_kit::model_view_item();
   cherry_kit::icon_button *btn = new cherry_kit::icon_button();
 
   btn->set_contents_geometry(0, 0, 128, 128);
   btn->set_icon("navigation/ck_add.png");
-  btn->on_click([=]() {
-    add_new_space();
-  });
+  btn->on_click([=]() { add_new_space(); });
 
   button_item->set_view(btn);
   preview_list->insert(button_item);

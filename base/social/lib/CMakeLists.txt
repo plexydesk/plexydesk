@@ -27,10 +27,10 @@ if (NOT CMAKE_INSTALL_LIBDIR)
     INCLUDE(GNUInstallDirs)
 endif (NOT CMAKE_INSTALL_LIBDIR)
 
-INCLUDE_DIRECTORIES (
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_BINARY_DIR}
-)
+if (UNIX AND NOT APPLE)
+    find_package(LibSoup REQUIRED)
+    find_package(GLIB REQUIRED)
+endif()
 
 # Find Qt5
 if (NOT Qt5Core_FOUND)
@@ -55,24 +55,45 @@ ADD_DEFINITIONS(-DPLEXYPREFIX="${CMAKE_INSTALL_PREFIX}"
                 -DPLEXYRESOURCESDIR="${RESOURCES_DEST_DIR}"
                )
 
+INCLUDE_DIRECTORIES (
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${LIBSOUP_INCLUDE_DIRS}
+        ${GLIB_INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/deps/tinyxml2/
+)
+
+if (UNIX AND NOT APPLE)
+	set (PLATFORM_SOURCE_FILES ck_url_request_linux.cpp)
+	set (PLATFORM_HEADERS_FILES ck_url_request_linux.h)
+endif()
+
+if (APPLE)
+	set (PLATFORM_SOURCE_FILES ck_url_request_mac.mm)
+	set (PLATFORM_HEADERS_FILES ck_url_request_mac.h)
+endif()
 set(sourceFiles
+    ck_url.cpp
+    ck_remote_service.cpp
     webservice.cpp
-    servicedefinition.cpp
     asyncimageloader.cpp
     asyncimagecreator.cpp
     asyncdatadownloader.cpp
     webserver.cpp
     webcontentinterface.cpp
+		${PLATFORM_SOURCE_FILES}
    )
 
 set(headerFiles
+    ck_url.h
+    ck_remote_service.h
     webservice.h
-    servicedefinition.h
     asyncimageloader.h
     asyncimagecreator.h
     asyncdatadownloader.h
     webserver.h
     webcontentinterface.h
+		${PLATFORM_HEADERS_FILES}
    )
 
 if (APPLE)
@@ -80,10 +101,14 @@ if (APPLE)
    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
    FIND_LIBRARY(GLUT_LIBRARY GLUT)
    FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
+	 FIND_LIBRARY(CoreServices APPLE_CORE_SERVICE_FRAMEWORK_LIBRARY)
    MARK_AS_ADVANCED (COCOA_LIBRARY
                      GLUT_LIBRARY
-                     OpenGL_LIBRARY)
-   set(MAC_LIBS ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY})
+                     OpenGL_LIBRARY
+										 APPLE_CORE_SERVICE_FRAMEWORK_LIBRARY
+										 )
+   set(APPLE_OSX_PLATFORM_LINK_LIBRARIES ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY} 
+		   ${APPLE_CORE_SERVICE_FRAMEWORK_LIBRARY})
 endif(APPLE)
 
 set(sourceFiles ${sourceFiles} ${headerFiles})
@@ -103,6 +128,14 @@ GENERATE_EXPORT_HEADER( ${QUETZAL_SOCIAL_KIT_LIBRARY}
              STATIC_DEFINE ${QUETZAL_SOCIAL_KIT_LIBRARY}_BUILT_AS_STATIC
 )
 
+GENERATE_EXPORT_HEADER( ${QUETZAL_SOCIAL_KIT_LIBRARY}
+             BASE_NAME ${QUETZAL_SOCIAL_KIT_LIBRARY}
+             EXPORT_MACRO_NAME DECL_SOCIAL_KIT_EXPORT
+             EXPORT_FILE_NAME social_kit_export.h
+             STATIC_DEFINE ${QUETZAL_SOCIAL_KIT_LIBRARY}_BUILT_AS_STATIC
+)
+
+
 if (MINGW)
     SET_TARGET_PROPERTIES(${QUETZAL_SOCIAL_KIT_LIBRARY} PROPERTIES
         IMPORT_SUFFIX ".lib"
@@ -111,7 +144,16 @@ if (MINGW)
    )
 endif(MINGW)
 
-TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY} ${MAC_LIBS} ${libs})
+if (UNIX AND NOT LINUX)
+    set(PLATFORM_LINK_LIBRARIES ${LIBSOUP_LIBRARIES})
+endif()
+
+TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY}
+    ${APPLE_OSX_PLATFORM_LINK_LIBRARIES}
+    ${PLATFORM_LINK_LIBRARIES}
+    jsoncpp_ck
+    tinyxml2
+    )
 
 QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
 

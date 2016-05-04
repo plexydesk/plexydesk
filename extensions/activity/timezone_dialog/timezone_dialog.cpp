@@ -85,10 +85,10 @@ void timezone_dialog::create_window(const QRectF &aWindowGeometry,
   m_priv_ptr->m_timezone_browser_ptr->set_view_geometry(
       QRectF(0, 0, aWindowGeometry.width() - 16,
              aWindowGeometry.height() -
-                 m_priv_ptr->m_filter_widget_ptr->boundingRect().height()));
+                 m_priv_ptr->m_filter_widget_ptr->contents_geometry().height()));
 
   m_priv_ptr->m_timezone_browser_ptr->setPos(
-      18, m_priv_ptr->m_filter_widget_ptr->boundingRect().height() + 8);
+      18, m_priv_ptr->m_filter_widget_ptr->contents_geometry().height() + 8);
 
   m_priv_ptr->m_filter_widget_ptr->show();
 
@@ -195,7 +195,8 @@ void timezone_dialog::loadTimeZones() {
     //    m_priv_ptr->m_timezone_browser_ptr->geometry().width(), 32);
 
     lTimeZoneLabelPtr->set_size(
-        QSizeF(m_priv_ptr->m_timezone_browser_ptr->boundingRect().width(), 32));
+        QSizeF(m_priv_ptr->m_timezone_browser_ptr->contents_geometry().width(),
+               32));
     lTimeZoneLabelPtr->set_text(l_time_zone_lable_str);
     _item_list.push_back(l_item);
   }

@@ -1,36 +1,53 @@
-#include <config.h>
 #include "socialtestrunner.h"
 #include <QDebug>
-#include <QImage>
-#include <webservice.h>
-#include <asyncimageloader.h>
-#include <asyncimagecreator.h>
-#include <asyncdatadownloader.h>
-#include <webserver.h>
-#include <QUrlQuery>
 #include <QDesktopServices>
-#include <QtNetwork>
+#include <QImage>
 #include <QMap>
+#include <QUrlQuery>
+#include <QtNetwork>
+#include <asyncdatadownloader.h>
+#include <asyncimagecreator.h>
+#include <asyncimageloader.h>
+#include <config.h>
+#include <ck_remote_service.h>
+#include <webserver.h>
+#include <webservice.h>
+
+#include <iostream>
+
+#include <ck_url.h>
+
+#define CK_ASSERT(condition, message)                                          \
+  do {                                                                         \
+    if (!(condition)) {                                                        \
+      std::cerr << "Assertion `" #condition "` failed in " << __FILE__         \
+                << " line " << __LINE__ << ": " << message << std::endl;       \
+      std::exit(EXIT_FAILURE);                                                 \
+    } else {                                                                   \
+      std::cout << __LINE__ << " " << __func__ << "  " << #condition           \
+                << "  [PASS]" << std::endl;                                    \
+    }                                                                          \
+  } while (false)
 
 class SocialTestRunner::PrivateSocialTestRunner {
 public:
   PrivateSocialTestRunner() {}
   ~PrivateSocialTestRunner() {}
-  QList<QuetzalSocialKit::WebService *> mSizeServicesPending;
-  QList<QuetzalSocialKit::WebService *> mSizeServicesCompleted;
+  QList<social_kit::web_service *> mSizeServicesPending;
+  QList<social_kit::web_service *> mSizeServicesCompleted;
 };
 
 SocialTestRunner::SocialTestRunner(QObject *parent)
     : d(new PrivateSocialTestRunner), QObject(parent) {
   qDebug() << Q_FUNC_INFO << "Runner Started";
 
-  testSocialPrefix();
+  check_service_file();
+  check_url_encode();
+  check_xml_loader();
+  check_json_loader();
 
-  // testJSONHanlding();
-
-  // startWebServer();
-
-  // testDirLoader("file:///Library/Desktop Pictures/");
+  /* test social services */
+  check_pixabay_sd_photo_search();
 }
 
 SocialTestRunner::~SocialTestRunner() {
@@ -38,91 +55,244 @@ SocialTestRunner::~SocialTestRunner() {
   delete d;
 }
 
+void SocialTestRunner::check_url_encode() {
+  social_kit::url_encode url("siraj@gmail.com");
+  CK_ASSERT(url.to_string() == "siraj%40gmail.com", "Invalid Encoding");
+}
+
+void SocialTestRunner::check_xml_loader() {
+  social_kit::url_request *request = new social_kit::url_request();
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+    CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
+    CK_ASSERT(response.http_version() == "HTTP 1.0",
+              "Invalid Response From Server");
+
+    // CK_ASSERT(response.data_buffer_size() == 5320,
+    //          "Size Mismatch : " << response.data_buffer_size());
+    CK_ASSERT(response.data_buffer()[0] == '<', "Not XML Data");
+    CK_ASSERT(response.data_buffer()[1] == '?', "Not XML Data");
+    CK_ASSERT(response.data_buffer()[2] == 'x', "Not XML Data");
+    CK_ASSERT(response.data_buffer()[3] == 'm', "Not XML Data");
+    CK_ASSERT(response.data_buffer()[4] == 'l', "Not XML Data");
+
+    social_kit::remote_service srv_query("com.flikr.api.xml");
+    const social_kit::remote_result result =
+        srv_query.response("flickr.photos.search", response);
+    CK_ASSERT(result.get("photo").size() == 30,
+              "expected 30 but got : " << result.get("photo").size());
+    social_kit::remote_result_data query = result.get("rsp").at(0);
+
+    CK_ASSERT(query.get("stat").value() == "ok",
+              "expected OK but got : " << query.get("stat").value());
+
+    /* check photo element */
+    social_kit::remote_result_data photo_data = result.get("photo").at(0);
+
+    CK_ASSERT(photo_data.get("ispublic").value() == "1",
+              "expected (0) but got : " << photo_data.get("ispublic").value());
+
+  });
+
+  request->send_message(
+      social_kit::url_request::kGETRequest,
+      "https://api.flickr.com/services/rest/"
+      "?method=flickr.photos.search&api_key=" K_SOCIAL_KIT_FLICKR_API_KEY
+      "&text=sky&format="
+      "rest&tags=wallpapers%2cwallpaper&tag_mode=all&safe_"
+      "search=1&in_gallery=true&per_page=30&page=1");
+}
+
+void SocialTestRunner::check_json_loader() {
+  social_kit::url_request *request = new social_kit::url_request();
+  social_kit::remote_service srv_query("com.flickr.json.api.xml");
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+    CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
+    CK_ASSERT(response.http_version() == "HTTP 1.0",
+              "Invalid Response From Server");
+
+    // CK_ASSERT(response.data_buffer_size() == 5320,
+    //          "Size Mismatch : " << response.data_buffer_size());
+    CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[1] == '"', "Not jSON Data");
+    CK_ASSERT(response.data_buffer()[2] == 'p', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[3] == 'h', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[4] == 'o', "Not JSONh Data");
+
+    social_kit::remote_service srv_query("com.flickr.json.api.xml");
+    const social_kit::remote_result result =
+        srv_query.response("flickr.photos.search", response);
+    CK_ASSERT(result.get("photo").size() == 30,
+              "expected 30 but got : " << result.get("photo").size());
+
+    /* check photo element */
+    social_kit::remote_result_data photo_data = result.get("photo").at(0);
+
+    CK_ASSERT(photo_data.get("ispublic").value() == "1",
+              "expected (0) but got : " << photo_data.get("ispublic").value());
+
+    CK_ASSERT(photo_data.get("title").value().empty() == false,
+              "expected (false) but got : " << photo_data.get("title").value());
+
+    CK_ASSERT(result.get("stat").size() == 1,
+              "expected 1 but got : " << result.get("stat").size());
+
+    social_kit::remote_result_data query = result.get("stat").at(0);
+
+    CK_ASSERT(query.get("stat").value() == "ok",
+              "expected OK but got : " << query.get("stat").value());
+  });
+
+  /* service data */
+  social_kit::service_query_parameters input_data;
+
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("text", "sky");
+  input_data.insert("safe_search", "1");
+  input_data.insert("tags", "wallpapers,wallpaper");
+  input_data.insert("tag_mode", "all");
+  input_data.insert("page", "1");
+
+  qDebug() << Q_FUNC_INFO
+           << srv_query.url("flickr.photos.search", &input_data).c_str();
+
+  request->send_message(social_kit::url_request::kGETRequest,
+                        srv_query.url("flickr.photos.search", &input_data));
+}
+
+void SocialTestRunner::check_service_file() {
+  social_kit::remote_service srv_query("com.flikr.api.xml");
+
+  /* service data */
+  social_kit::service_query_parameters input_data;
+
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("text", "sky");
+  input_data.insert("safe_search", "1");
+  input_data.insert("tags", "wallpapers,wallpaper");
+  input_data.insert("tag_mode", "all");
+  input_data.insert("page", "1");
+
+  CK_ASSERT(
+      srv_query.method("flickr.photos.search") == 1,
+      "Invalid Request Type : " << srv_query.method("flickr.photos.search"));
+  CK_ASSERT(srv_query.endpoint("flickr.photos.search") ==
+                "https://api.flickr.com/services/rest/",
+            "Ivalid Input : " << srv_query.endpoint("flickr.photos.search"));
+
+  social_kit::string_list argument_list =
+      srv_query.input_arguments("flickr.photos.search");
+  social_kit::string_list argument_list_opt =
+      srv_query.input_arguments("flickr.photos.search", true);
+
+  std::for_each(std::begin(argument_list), std::end(argument_list),
+                [](std::string value) {
+    // qDebug() << Q_FUNC_INFO << value.c_str();
+  });
+
+  std::for_each(std::begin(argument_list_opt), std::end(argument_list_opt),
+                [](std::string value) {
+    // qDebug() << Q_FUNC_INFO << value.c_str();
+  });
+
+  QString expected_query_url(
+      "https://api.flickr.com/services/rest/"
+      "?method=flickr.photos.search&api_key=" K_SOCIAL_KIT_FLICKR_API_KEY
+      "&text=sky&"
+      "format=rest&tags=wallpapers%2cwallpaper&tag_mode="
+      "all&safe_search=1&in_gallery=true&per_page=30&"
+      "page=1");
+
+  CK_ASSERT(expected_query_url.toStdString() ==
+                srv_query.url("flickr.photos.search", &input_data),
+            "Invalid Query URL");
+}
+
 void SocialTestRunner::testSocialPrefix() {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *web_service = new social_kit::web_service(0);
+  social_kit::service_query_parameters input_data;
 
-  service->create("com.flikr.api");
+  web_service->create("com.flikr.api.xml");
+  web_service->on_response_ready([&](const social_kit::remote_result &result,
+                                     const social_kit::web_service *a_service) {
+    qDebug() << Q_FUNC_INFO << "done";
+  });
 
-  QVariantMap args;
-  args["api_key"] = K_SOCIAL_KIT_FLICKR_API_KEY;
-  args["text"] = "sky";
-  args["safe_search"] = "1";
-  args["tags"] = "wallpaper,wallpapers";
-  args["tag_mode"] = "all";
-  args["page"] = QString::number(1);
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("text", "sky");
+  input_data.insert("safe_search", "1");
+  input_data.insert("tags", "wallpapers,wallpaper");
+  input_data.insert("tag_mode", "all");
+  input_data.insert("page", "1");
 
-  service->queryService("flickr.photos.search", args);
-
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onServiceComplete(QuetzalSocialKit::WebService *)));
+  web_service->submit("flickr.photos.search", &input_data);
 }
 
 void SocialTestRunner::testJSONHanlding() {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
-  QVariantMap args;
-  args["api_key"] = K_SOCIAL_KIT_FLICKR_API_KEY;
-  args["text"] = "sky";
-  args["safe_search"] = "1";
-  args["tags"] = "wallpaper,wallpapers";
-  args["tag_mode"] = "all";
-  args["page"] = QString::number(1);
+  social_kit::service_query_parameters input_data;
 
-  service->queryService("flickr.photos.search", args);
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("text", "sky");
+  input_data.insert("safe_search", "1");
+  input_data.insert("tags", "wallpapers,wallpaper");
+  input_data.insert("tag_mode", "all");
+  input_data.insert("page", "1");
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onServiceCompleteJson(QuetzalSocialKit::WebService *)));
+  service->on_response_ready([&](const social_kit::remote_result &a_result,
+                                 const social_kit::web_service *a_web_service) {
+    qDebug() << Q_FUNC_INFO << "Done";
+    onServiceCompleteJson(a_web_service);
+  });
+
+  service->submit("flickr.photos.search", &input_data);
 }
 
 void SocialTestRunner::testSocialPhotoSizes(const QString &photoID) {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flikr.api");
 
-  QVariantMap args;
-  args["api_key"] = K_SOCIAL_KIT_FLICKR_API_KEY;
-  args["photo_id"] = photoID;
+  social_kit::service_query_parameters input_data;
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("photo_id", photoID.toStdString());
 
-  service->queryService("flickr.photos.getSizes", args);
-  d->mSizeServicesPending.append(service);
-
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onSizeServiceComplete(QuetzalSocialKit::WebService *)));
+  service->on_response_ready(
+      [&](const social_kit::remote_result &a_result,
+          const social_kit::web_service *a_web_service) {});
+  service->submit("flickr.photos.getSizes", &input_data);
 }
 
 void SocialTestRunner::testsocialphotosizesJson(const QString &photoID) {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
-  QVariantMap args;
-  args["api_key"] = K_SOCIAL_KIT_FLICKR_API_KEY;
-  args["photo_id"] = photoID;
+  social_kit::service_query_parameters input_data;
+  input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.insert("photo_id", photoID.toStdString());
 
-  service->queryService("flickr.photos.getSizes", args);
+  service->submit("flickr.photos.getSizes", &input_data);
+
   d->mSizeServicesPending.append(service);
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onSizeServiceCompleteJson(QuetzalSocialKit::WebService *)));
+  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
+          SLOT(onSizeServiceCompleteJson(social_kit::web_service *)));
 }
 
 void SocialTestRunner::testDirLoader(const QString &path) {
-  QuetzalSocialKit::AsyncImageLoader *loader =
-      new QuetzalSocialKit::AsyncImageLoader(this);
+  social_kit::AsyncImageLoader *loader = new social_kit::AsyncImageLoader(this);
   loader->setUrl(QUrl(path));
   loader->start();
 
   connect(loader, SIGNAL(ready()), this, SLOT(onImageReady()));
 }
 
-void
-SocialTestRunner::onServiceComplete(QuetzalSocialKit::WebService *service) {
+void SocialTestRunner::onServiceComplete(social_kit::web_service *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO
@@ -132,7 +302,7 @@ SocialTestRunner::onServiceComplete(QuetzalSocialKit::WebService *service) {
 
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH(const QVariantMap & map, photoList) {
+  Q_FOREACH (const QVariantMap &map, photoList) {
     qDebug() << Q_FUNC_INFO << map["id"].toString();
     testSocialPhotoSizes(map["id"].toString());
   }
@@ -141,8 +311,7 @@ SocialTestRunner::onServiceComplete(QuetzalSocialKit::WebService *service) {
   ;
 }
 
-void
-SocialTestRunner::onSizeServiceComplete(QuetzalSocialKit::WebService *service) {
+void SocialTestRunner::onSizeServiceComplete(social_kit::web_service *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("size").count();
   qDebug() << Q_FUNC_INFO
@@ -150,21 +319,23 @@ SocialTestRunner::onSizeServiceComplete(QuetzalSocialKit::WebService *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("sizes").count();
 
-  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
+  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
     qDebug() << Q_FUNC_INFO << map;
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
         map["label"].toString() == "Original") {
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
-      QuetzalSocialKit::AsyncDataDownloader *downloader =
-          new QuetzalSocialKit::AsyncDataDownloader(this);
+      social_kit::AsyncDataDownloader *downloader =
+          new social_kit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
-      metaData["method"] = service->methodName();
-      metaData["id"] =
-          service->inputArgumentForMethod(service->methodName())["photo_id"];
-      metaData["data"] = service->inputArgumentForMethod(service->methodName());
+      metaData["method"] = service->query();
+      metaData["id"] = service->inputArgumentForMethod(service->query())
+                           .value("photo_id")
+                           .c_str();
+      // metaData["data"] =
+      // service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
       downloader->setUrl(map["source"].toString());
@@ -175,29 +346,30 @@ SocialTestRunner::onSizeServiceComplete(QuetzalSocialKit::WebService *service) {
   service->deleteLater();
 }
 
-void
-SocialTestRunner::onDownloadComplete(QuetzalSocialKit::WebService *service) {
+void SocialTestRunner::onDownloadComplete(social_kit::web_service *service) {
   if (service) {
+    /*
     QByteArray data = service->rawServiceData();
 
-    QuetzalSocialKit::AsyncImageCreator *imageSave =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+    social_kit::AsyncImageCreator *imageSave =
+        new social_kit::AsyncImageCreator(this);
     imageSave->setData(data, "/Users/siraj/Desktop/", true);
     imageSave->start();
 
     qDebug() << Q_FUNC_INFO << "Download Complete";
+    */
   }
 
   service->deleteLater();
 }
 
 void SocialTestRunner::onImageReady() {
-  QuetzalSocialKit::AsyncDataDownloader *downloader =
-      qobject_cast<QuetzalSocialKit::AsyncDataDownloader *>(sender());
+  social_kit::AsyncDataDownloader *downloader =
+      qobject_cast<social_kit::AsyncDataDownloader *>(sender());
 
   if (downloader) {
-    QuetzalSocialKit::AsyncImageCreator *imageSave =
-        new QuetzalSocialKit::AsyncImageCreator(this);
+    social_kit::AsyncImageCreator *imageSave =
+        new social_kit::AsyncImageCreator(this);
 
     connect(imageSave, SIGNAL(ready()), this, SLOT(onImageSaveReady()));
 
@@ -209,8 +381,8 @@ void SocialTestRunner::onImageReady() {
 }
 
 void SocialTestRunner::onImageSaveReady() {
-  QuetzalSocialKit::AsyncImageCreator *c =
-      qobject_cast<QuetzalSocialKit::AsyncImageCreator *>(sender());
+  social_kit::AsyncImageCreator *c =
+      qobject_cast<social_kit::AsyncImageCreator *>(sender());
 
   if (c) {
     qDebug() << Q_FUNC_INFO << "File Saved to: " << c->imagePath();
@@ -221,8 +393,8 @@ void SocialTestRunner::onImageSaveReady() {
 
 void SocialTestRunner::onImageReady(const QString &fileName) {}
 
-void
-SocialTestRunner::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
+void SocialTestRunner::onServiceCompleteJson(
+    const social_kit::web_service *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("photo").count();
   qDebug() << Q_FUNC_INFO
@@ -232,17 +404,14 @@ SocialTestRunner::onServiceCompleteJson(QuetzalSocialKit::WebService *service) {
 
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH(const QVariantMap & map, photoList) {
+  Q_FOREACH (const QVariantMap &map, photoList) {
     qDebug() << Q_FUNC_INFO << map["id"].toString();
     testsocialphotosizesJson(map["id"].toString());
   }
-
-  service->deleteLater();
-  ;
 }
 
-void SocialTestRunner::onSizeServiceCompleteJson(
-    QuetzalSocialKit::WebService *service) {
+void
+SocialTestRunner::onSizeServiceCompleteJson(social_kit::web_service *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("size").count();
   qDebug() << Q_FUNC_INFO
@@ -250,21 +419,23 @@ void SocialTestRunner::onSizeServiceCompleteJson(
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("sizes").count();
 
-  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
+  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
     // qDebug() << Q_FUNC_INFO << map;
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
         map["label"].toString() == "Original") {
       qDebug() << Q_FUNC_INFO << map["label"].toString() << "->"
                << map["source"].toString();
-      QuetzalSocialKit::AsyncDataDownloader *downloader =
-          new QuetzalSocialKit::AsyncDataDownloader(this);
+      social_kit::AsyncDataDownloader *downloader =
+          new social_kit::AsyncDataDownloader(this);
 
       QVariantMap metaData;
-      metaData["method"] = service->methodName();
-      metaData["id"] =
-          service->inputArgumentForMethod(service->methodName())["photo_id"];
-      metaData["data"] = service->inputArgumentForMethod(service->methodName());
+      metaData["method"] = service->query();
+      metaData["id"] = service->inputArgumentForMethod(service->query())
+                           .value("photo_id")
+                           .c_str();
+      // metaData["data"] =
+      // service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
       downloader->setUrl(map["source"].toString());
@@ -275,8 +446,8 @@ void SocialTestRunner::onSizeServiceCompleteJson(
   service->deleteLater();
 }
 
-void SocialTestRunner::onDownloadCompleteJson(
-    QuetzalSocialKit::WebService *service) {}
+void
+SocialTestRunner::onDownloadCompleteJson(social_kit::web_service *service) {}
 
 void SocialTestRunner::onImageReadyJson() {}
 
@@ -312,22 +483,29 @@ void SocialTestRunner::onServerRequestCompleted(const QVariantMap &data) {
 
   // social
   qDebug() << Q_FUNC_INFO;
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.dropbox.api.v2");
 
+  /*
   QVariantMap args;
   args["code"] = data["code"].toString();
   args["client_id"] = "abxxj5vmfruyahu";
   args["client_secret"] = K_SOCIAL_KIT_DROPBOX_API_KEY;
   args["redirect_uri"] = "http://localhost:8081/";
+  */
+
+  social_kit::service_query_parameters input_data;
+  input_data.insert("code", data["code"].toString().toStdString());
+  input_data.insert("client_id", "abxxj5vmfruyahu");
+  input_data.insert("client_secret", K_SOCIAL_KIT_DROPBOX_API_KEY);
+  input_data.insert("redirect_uri", "http://localhost:8081/");
 
   QHttpMultiPart *mpart = new QHttpMultiPart(this);
-  service->queryService("dropbox.oauth2.token", args, mpart);
+  service->submit("dropbox.oauth2.token", &input_data, mpart);
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onDropBoxAuthServiceComplete(QuetzalSocialKit::WebService *)));
+  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
+          SLOT(onDropBoxAuthServiceComplete(social_kit::web_service *)));
 }
 
 void SocialTestRunner::onDropBoxRequestComplete(const QVariantMap &data) {
@@ -343,7 +521,7 @@ void SocialTestRunner::onFinished(QNetworkReply *reply) {
 }
 
 void SocialTestRunner::onDropBoxAuthServiceComplete(
-    QuetzalSocialKit::WebService *service) {
+    social_kit::web_service *service) {
   getDropBoxAccountInfo(
       service->methodData("access_token").at(0)["access_token"].toString(),
       service->methodData("uid").at(0)["uid"].toString());
@@ -354,8 +532,7 @@ void SocialTestRunner::onDropBoxAuthServiceComplete(
 }
 
 void SocialTestRunner::onDropBoxAccountInfoServiceComplete(
-    QuetzalSocialKit::WebService *service) {
-  qDebug() << Q_FUNC_INFO << "Done" << service->rawServiceData();
+    social_kit::web_service *service) {
   qDebug() << Q_FUNC_INFO
            << "Account Info:" << service->methodData("referral_link");
   qDebug() << Q_FUNC_INFO << "Account Info:" << service->methodData("team");
@@ -373,7 +550,7 @@ void SocialTestRunner::onDropBoxAccountInfoServiceComplete(
 void SocialTestRunner::startWebServer() {
   authDropBox();
 
-  QuetzalSocialKit::WebServer *server = new QuetzalSocialKit::WebServer(this);
+  social_kit::WebServer *server = new social_kit::WebServer(this);
   server->startService(8081);
 
   connect(server, SIGNAL(requestCompleted(QVariantMap)), this,
@@ -402,19 +579,81 @@ void SocialTestRunner::authDropBox() {
 
 void SocialTestRunner::getDropBoxAccountInfo(const QString &access_token,
                                              const QString &uid) {
-  QuetzalSocialKit::WebService *service =
-      new QuetzalSocialKit::WebService(this);
+  social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.dropbox.api.v2");
 
-  QVariantMap args;
   QHttpMultiPart *mpart = new QHttpMultiPart(this);
 
-  service->queryService("dropbox.oauth2.accountInfo", args, mpart,
-                        "Authorization",
-                        QString("Bearer " + access_token).toLatin1());
+  social_kit::service_query_parameters input_data;
 
-  connect(service, SIGNAL(finished(QuetzalSocialKit::WebService *)), this,
-          SLOT(onDropBoxAccountInfoServiceComplete(
-              QuetzalSocialKit::WebService *)));
+  service->submit("dropbox.oauth2.accountInfo", &input_data, mpart,
+                  "Authorization",
+                  QString("Bearer " + access_token).toLatin1());
+
+  connect(service, SIGNAL(finished(social_kit::web_service *)), this,
+          SLOT(onDropBoxAccountInfoServiceComplete(social_kit::web_service *)));
+}
+
+void SocialTestRunner::check_pixabay_sd_photo_search() {
+  social_kit::url_request *request = new social_kit::url_request();
+  social_kit::remote_service srv_query("com.pixabay.json.api.xml");
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+    CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
+    CK_ASSERT(response.http_version() == "HTTP 1.0",
+              "Invalid Response From Server");
+
+    CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[1] == '"', "Not jSON Data");
+    CK_ASSERT(response.data_buffer()[2] == 't', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[3] == 'o', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[4] == 't', "Not JSON Data");
+
+    social_kit::remote_service srv_query("com.pixabay.json.api.xml");
+    const social_kit::remote_result result =
+        srv_query.response("pixabay.photo.search", response);
+    CK_ASSERT(result.get("hits").size() == 30,
+              "expected 30 but got : " << result.get("hits").size());
+
+    /* check photo element */
+    social_kit::remote_result_data photo_data = result.get("hits").at(0);
+
+    CK_ASSERT(photo_data.get("type").value() == "photo",
+              "expected (0) but got : " << photo_data.get("type").value());
+
+    CK_ASSERT(photo_data.get("previewURL").value().empty() == false,
+              "expected (false) but got : " << photo_data.get("previewURL").value());
+
+    CK_ASSERT(result.get("total").size() == 1,
+              "expected 1 but got : " << result.get("total").size());
+
+    social_kit::remote_result_data query = result.get("totalHits").at(0);
+
+    CK_ASSERT(query.get("totalHits").value() == "500",
+              "expected 500 but got : " << query.get("totalHits").value());
+  });
+
+  /* service data */
+  social_kit::service_query_parameters input_data;
+
+  input_data.insert("key", K_SOCIAL_KIT_PIXABAY_API_KEY);
+  input_data.insert("q", "sky");
+  input_data.insert("safesearch", "1");
+  input_data.insert("tag_mode", "all");
+  input_data.insert("per_page", "30");
+
+  qDebug() << Q_FUNC_INFO
+           << "url -> "
+           << srv_query.url("pixabay.photo.search", &input_data).c_str();
+
+  qDebug() << Q_FUNC_INFO
+           << "endpoint -> "
+           << srv_query.endpoint("pixabay.photo.search").c_str();
+
+  CK_ASSERT(srv_query.url("pixabay.photo.search", &input_data).c_str() != "?",
+            "expected url but got something else");
+
+  request->send_message(social_kit::url_request::kGETRequest,
+                        srv_query.url("pixabay.photo.search", &input_data));
 }

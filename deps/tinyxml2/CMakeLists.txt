@@ -1,3 +1,4 @@
+
 IF(BIICODE)
 	ADD_BIICODE_TARGETS()
 	if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources)
@@ -5,8 +6,11 @@ IF(BIICODE)
     ENDIF()
     RETURN()
 ENDIF(BIICODE)
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-cmake_policy(VERSION 2.6)
+
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.1)
+include (GenerateExportHeader)
+CMAKE_POLICY(SET CMP0043 NEW)
+
 
 project(tinyxml2)
 include(GNUInstallDirs)
@@ -31,17 +35,17 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/.")
 
 set(TARGET_DATA_COPY DATA_COPY)
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-	add_custom_target(
-		${TARGET_DATA_COPY}
-	 	COMMAND ${CMAKE_COMMAND} -E echo "In source build")
+        add_custom_target(
+                ${TARGET_DATA_COPY}
+                COMMAND ${CMAKE_COMMAND} -E echo "In source build")
 else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-	make_directory(${CMAKE_CURRENT_BINARY_DIR}/resources/)
-	add_custom_target(
-		${TARGET_DATA_COPY}
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/dream.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/empty.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/utf8test.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/utf8testverify.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/)
+        make_directory(${CMAKE_CURRENT_BINARY_DIR}/resources/)
+        add_custom_target(
+                ${TARGET_DATA_COPY}
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/dream.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/empty.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/utf8test.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/utf8testverify.xml ${CMAKE_CURRENT_BINARY_DIR}/resources/)
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 
 ################################
@@ -67,11 +71,20 @@ add_dependencies(xmltest tinyxml2)
 add_dependencies(xmltest ${TARGET_DATA_COPY})
 target_link_libraries(xmltest tinyxml2)
 
-
+if (NOT APPLE)
 install(TARGETS tinyxml2
         RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
+
+
+if (APPLE)
+    INSTALL(TARGETS tinyxml2 
+			LIBRARY DESTINATION plexydesk.app/Contents/Frameworks
+                    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                    FRAMEWORK DESTINATION plexydesk.app/Contents/Frameworks)
+endif(APPLE)
 
 install(FILES tinyxml2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 

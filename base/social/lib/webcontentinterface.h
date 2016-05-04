@@ -22,7 +22,7 @@
 #include <QTextStream>
 #include <QuetzalSocialKitQt_export.h>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class QuetzalSocialKitQt_EXPORT WebContentInterface {
 public:

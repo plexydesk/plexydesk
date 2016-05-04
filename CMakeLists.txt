@@ -46,16 +46,20 @@ if(COMPILER_SUPPORTS_CXX11_EXTENSIONS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11-extensions")
     message(STATUS "The compiler ${CMAKE_CXX_COMPILER} supports C++11-extensions")
 else()
-    message(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11-extensions support. Please use a different C++ compiler.")
+    message(WARNING " The compiler ${CMAKE_CXX_COMPILER} has no C++11-extensions support. Please use a different C++ compiler.")
 endif()
 
 #cmake options.
 if (NOT SOCIAL_KIT_FLICKR_API_KEY)
-   message(ERROR " Flickr Developer key not defined by SOCIAL_KIT_FLICKR_API_KEY, Image Search will not function")
+   message(FATAL_ERROR " Flickr Developer key not defined by SOCIAL_KIT_FLICKR_API_KEY, Image Search will not function")
 endif()
 
 if (NOT SOCIAL_KIT_DROPBOX_API_KEY)
-   message(ERROR " Dropbox Developer key not defined by SOCIAL_KIT_DROPBOX_API_KEY, Remote Storage will not function")
+   message(FATAL_ERROR " Dropbox Developer key not defined by SOCIAL_KIT_DROPBOX_API_KEY, Remote Storage will not function")
+endif()
+
+if (NOT SOCIAL_KIT_PIXABAY_API_KEY)
+   message(FATAL_ERROR " Pixabay Developer key not defined by SOCIAL_KIT_PIXBAY_API_KEY, Pixbay Wallpaper search will not function")
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmakemodules)
@@ -87,6 +91,16 @@ if (UNIX AND NOT APPLE)
     add_definitions(-D__X11_PLATFORM__)
   endif()
 endif(UNIX AND NOT APPLE)
+
+if (UNIX AND NOT APPLE)
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        add_definitions(-D__GNU_LINUX_PLATFORM__)
+    endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+    if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+        add_definitions(-D__FREE_BSD_PLATFORM__)
+    endif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+endif()
 
 if (APPLE)
   add_definitions(-D__APPLE_PLATFORM__)
@@ -302,9 +316,12 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/dist/windows
     ${CMAKE_SOURCE_DIR}/deps/mitie/mitielib/include
     ${CMAKE_SOURCE_DIR}/deps/mitie/dlib/
+    ${CMAKE_SOURCE_DIR}/deps/json-cpp/
+    ${CMAKE_SOURCE_DIR}/deps/json-cpp/json/
     ${QT_INCLUDE_DIR}
     )
 
+add_subdirectory(deps/json-cpp)
 add_subdirectory(deps/tinyxml2)
 
 if (WIN32)
@@ -345,9 +362,13 @@ add_subdirectory(extensions/data/httpserver)
 add_subdirectory(extensions/widgets/desktopnotes)
 add_subdirectory(extensions/widgets/date)
 add_subdirectory(extensions/widgets/template)
+
+if (${ENABLE_JEFF})
 add_subdirectory(extensions/widgets/nlp)
 add_subdirectory(extensions/widgets/nlp/tools/query_jeff)
 add_subdirectory(extensions/widgets/nlp/tools/train_jeff)
+endif()
+
 add_subdirectory(extensions/widgets/dock)
 
 add_subdirectory(extensions/data/rest)

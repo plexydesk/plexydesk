@@ -20,6 +20,8 @@ set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
 
 ADD_EXECUTABLE(plexydesk ${APP_TYPE} ${sourceFiles} ${resourceFiles} ${QT_MOC_SRCS})
 
+set_target_properties(jsoncpp_ck PROPERTIES SKIP_BUILD_RPATH 0)
+set_target_properties(jsoncpp_ck PROPERTIES SKIP_INSTALL_RPATH 0)
 set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SKIP_BUILD_RPATH 0)
 set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SKIP_INSTALL_RPATH 0)
 
@@ -33,7 +35,7 @@ SET_TARGET_PROPERTIES(plexydesk PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOUR
 #rpath specific properties
 #set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
 
-TARGET_LINK_LIBRARIES(plexydesk LINK_PUBLIC ${PLEXY_UI_CORE_LIBRARY} ${MAC_LIBS})
+TARGET_LINK_LIBRARIES(plexydesk LINK_PUBLIC jsoncpp_ck ${PLEXY_UI_CORE_LIBRARY} ${MAC_LIBS})
 #QT5_USE_MODULES(plexydesk Widgets Xml Core)
 
 install(FILES ${OSX_ICON_FILES} DESTINATION plexydesk.app/Contents/Resources)

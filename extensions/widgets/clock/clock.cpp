@@ -172,9 +172,7 @@ cherry_kit::ui_action time_controller::task() {
     //
     QPointF window_location;
     if (viewport()) {
-      window_location =
-          viewport()->center(QRectF(0, 0, viewport()->scaled_width(320),
-                                    viewport()->scaled_height(320 + 48)));
+      window_location = viewport()->center(QRectF(0, 0, 320, 320 + 48));
     }
 
     QVariantMap session_args;
@@ -188,9 +186,8 @@ cherry_kit::ui_action time_controller::task() {
     start_session("Clock", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
-                    priv->setup_create_clock_ui((time_controller *)a_controller,
-                                                a_session);
-                  });
+      priv->setup_create_clock_ui((time_controller *)a_controller, a_session);
+    });
   });
 
   cherry_kit::ui_action timer_task;
@@ -219,9 +216,8 @@ cherry_kit::ui_action time_controller::task() {
     start_session("Timer", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
-                    priv->setup_create_timer_ui((time_controller *)a_controller,
-                                                a_session);
-                  });
+      priv->setup_create_timer_ui((time_controller *)a_controller, a_session);
+    });
   });
 
   task.add_action(time_task);
@@ -250,9 +246,8 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::icon_button *ck_location_btn = 0;
   cherry_kit::clock_view *ck_clock = 0;
 
-  ck_ui->set_content_margin(10, 10, 10, 10);
-  ck_ui->set_geometry(0, 0, a_controller->viewport()->scaled_width(240),
-                      a_controller->viewport()->scaled_height(240));
+  ck_ui->set_content_margin(0, 0, 0, 0);
+  ck_ui->set_geometry(0, 0, 240, 240);
 
   ck_ui->add_rows(2);
 
@@ -283,7 +278,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   a_session->bind_to_window(ck_window);
   ck_window->on_window_discarded([=](cherry_kit::window *aWindow) {
     a_session->unbind_window(ck_window);
-		delete ck_ui;
+    delete ck_ui;
     delete aWindow;
   });
 
@@ -375,7 +370,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
     if (timer->is_active())
       timer->stop();
     delete timer;
-		delete ck_ui;
+    delete ck_ui;
     delete aWindow;
   });
 

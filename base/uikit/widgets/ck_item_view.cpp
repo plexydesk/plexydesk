@@ -241,7 +241,6 @@ float item_view::content_height() const {
 }
 
 void item_view::insert_to_grid_view(widget *a_widget_ref) {
-
   a_widget_ref->setParentItem(d->m_frame);
 
   a_widget_ref->set_widget_id(d->m_item_count++);
@@ -407,9 +406,10 @@ void item_view::clear() {
 
 void item_view::set_view_geometry(const QRectF &a_rect) {
   d->m_viewport_geometry = a_rect;
-  // if (d->m_model_view_type == kGridModel)
 
   d->m_frame->set_geometry(a_rect);
+  set_geometry(a_rect);
+
   d->m_verticle_scrollbar->set_size(QSizeF(16, a_rect.height()));
 
   int page_step = a_rect.height();
@@ -423,7 +423,7 @@ void item_view::set_view_geometry(const QRectF &a_rect) {
   check_needs_scrolling();
 }
 
-QRectF item_view::boundingRect() const { return d->m_viewport_geometry; }
+//QRectF item_view::boundingRect() const { return d->m_viewport_geometry; }
 
 void item_view::check_needs_scrolling() {
   if (!d->m_needs_scrollbars)
@@ -448,8 +448,7 @@ void item_view::adjust_scrollbar(const QRectF &a_rect) {
 void item_view::set_geometry(const QRectF &a_rect) {
   set_contents_geometry(a_rect.x(), a_rect.y(), a_rect.width(),
                         a_rect.height());
-  setPos(a_rect.topLeft());
-
+  //setPos(a_rect.topLeft());
   adjust_scrollbar(a_rect);
   check_needs_scrolling();
 }

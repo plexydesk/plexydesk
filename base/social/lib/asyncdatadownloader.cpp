@@ -23,7 +23,7 @@
 #include <QVariantMap>
 #include <QDebug>
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class AsyncDataDownloader::PrivateAsyncDataDownloader {
 public:

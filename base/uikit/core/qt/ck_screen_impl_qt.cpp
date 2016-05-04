@@ -27,7 +27,7 @@ float cherry_kit::screen::platform_screen::scale_factor(int a_id) const
     return 1.0f / desktop_scale;
   }
 
-  return 1.0f;
+  return desktop_scale;
 }
 
 float cherry_kit::screen::platform_screen::desktop_width(int a_id) const

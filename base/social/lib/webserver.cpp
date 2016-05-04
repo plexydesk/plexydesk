@@ -26,7 +26,7 @@
 
 #include "webcontentinterface.h"
 
-namespace QuetzalSocialKit {
+namespace social_kit {
 
 class WebServer::PrivateWebServer {
 
