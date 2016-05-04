@@ -37,6 +37,10 @@ public:
 
   void getDropBoxAccountInfo(const QString &access_token, const QString &uid);
 
+
+  //web service checks.
+  void check_pixabay_sd_photo_search();
+
 signals:
 
 public

@@ -521,6 +521,11 @@ void lookup_json_data(Json::Value *node, service_result_query *query,
           attribute.set_key(query->name());
           attribute.set_value(it->asString());
           result.insert(attribute);
+        } else if (it->isInt()) {
+          remote_data_attribute attribute;
+          attribute.set_key(query->name());
+          attribute.set_value(std::to_string(it->asInt()));
+          result.insert(attribute);
         }
 
         a_result->insert(result);

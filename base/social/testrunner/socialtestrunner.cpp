@@ -46,9 +46,8 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
   check_xml_loader();
   check_json_loader();
 
-  testSocialPrefix();
-
-  // testDirLoader("file:///Library/Desktop Pictures/");
+  /* test social services */
+  check_pixabay_sd_photo_search();
 }
 
 SocialTestRunner::~SocialTestRunner() {
@@ -594,4 +593,67 @@ void SocialTestRunner::getDropBoxAccountInfo(const QString &access_token,
 
   connect(service, SIGNAL(finished(social_kit::web_service *)), this,
           SLOT(onDropBoxAccountInfoServiceComplete(social_kit::web_service *)));
+}
+
+void SocialTestRunner::check_pixabay_sd_photo_search() {
+  social_kit::url_request *request = new social_kit::url_request();
+  social_kit::remote_service srv_query("com.pixabay.json.api.xml");
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+    CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
+    CK_ASSERT(response.http_version() == "HTTP 1.0",
+              "Invalid Response From Server");
+
+    CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[1] == '"', "Not jSON Data");
+    CK_ASSERT(response.data_buffer()[2] == 't', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[3] == 'o', "Not JSON Data");
+    CK_ASSERT(response.data_buffer()[4] == 't', "Not JSON Data");
+
+    social_kit::remote_service srv_query("com.pixabay.json.api.xml");
+    const social_kit::remote_result result =
+        srv_query.response("pixabay.photo.search", response);
+    CK_ASSERT(result.get("hits").size() == 30,
+              "expected 30 but got : " << result.get("hits").size());
+
+    /* check photo element */
+    social_kit::remote_result_data photo_data = result.get("hits").at(0);
+
+    CK_ASSERT(photo_data.get("type").value() == "photo",
+              "expected (0) but got : " << photo_data.get("type").value());
+
+    CK_ASSERT(photo_data.get("previewURL").value().empty() == false,
+              "expected (false) but got : " << photo_data.get("previewURL").value());
+
+    CK_ASSERT(result.get("total").size() == 1,
+              "expected 1 but got : " << result.get("total").size());
+
+    social_kit::remote_result_data query = result.get("totalHits").at(0);
+
+    CK_ASSERT(query.get("totalHits").value() == "500",
+              "expected 500 but got : " << query.get("totalHits").value());
+  });
+
+  /* service data */
+  social_kit::service_query_parameters input_data;
+
+  input_data.insert("key", K_SOCIAL_KIT_PIXABAY_API_KEY);
+  input_data.insert("q", "sky");
+  input_data.insert("safesearch", "1");
+  input_data.insert("tag_mode", "all");
+  input_data.insert("per_page", "30");
+
+  qDebug() << Q_FUNC_INFO
+           << "url -> "
+           << srv_query.url("pixabay.photo.search", &input_data).c_str();
+
+  qDebug() << Q_FUNC_INFO
+           << "endpoint -> "
+           << srv_query.endpoint("pixabay.photo.search").c_str();
+
+  CK_ASSERT(srv_query.url("pixabay.photo.search", &input_data).c_str() != "?",
+            "expected url but got something else");
+
+  request->send_message(social_kit::url_request::kGETRequest,
+                        srv_query.url("pixabay.photo.search", &input_data));
 }
