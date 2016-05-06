@@ -21,10 +21,9 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_dialog> desktop_settings_plugin_impl::activity() {
-  QSharedPointer<cherry_kit::desktop_dialog> obj =
-      QSharedPointer<cherry_kit::desktop_dialog>(new desktop_settings_dialog(),
-                                                 &QObject::deleteLater);
+cherry_kit::desktop_dialog_ref desktop_settings_plugin_impl::activity() {
+  cherry_kit::desktop_dialog_ref obj =
+      cherry_kit::desktop_dialog_ref(new desktop_settings_dialog());
 
   return obj;
 }

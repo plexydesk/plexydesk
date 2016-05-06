@@ -136,9 +136,8 @@ void space::update_session_value(const QString &a_controller_name,
     if (!a_found) {
       cherry_kit::sync_object obj;
       obj.set_name("AppSession");
-      obj.set_property(
-          "name",
-          o_space->session_controller_name(a_controller_name).toStdString());
+      obj.set_property("name", o_space->session_controller_name(
+                                            a_controller_name).toStdString());
 
       sync->add_object(obj);
     }
@@ -196,10 +195,10 @@ void space::insert_window_to_view(window *a_window) {
   _widget_location.setY(_center_of_space_location.y() -
                         a_window->contents_geometry().height() / 2);
 
-  //set the screen id of the owner space.
+  // set the screen id of the owner space.
   a_window->set_screen_id(owner_workspace()->screen_id());
 
-  //introduce the item to the graphicsview system
+  // introduce the item to the graphicsview system
   o_space->m_native_scene->addItem(a_window);
 
   if (a_window->window_type() == window::kApplicationWindow)
@@ -227,30 +226,29 @@ void space::insert_window_to_view(window *a_window) {
 
     std::for_each(std::begin(o_space->m_window_list),
                   std::end(o_space->m_window_list), [&](window *a_win) {
-                    if (a_win->window_type() == window::kFramelessWindow) {
-                      a_win->setZValue(kMinimumZOrder);
-                    }
+      if (a_win->window_type() == window::kFramelessWindow) {
+        a_win->setZValue(kMinimumZOrder);
+      }
 
-                    if (a_win->window_type() == window::kPanelWindow) {
-                      a_win->setZValue(kMaximumZOrder + 2);
-                    }
+      if (a_win->window_type() == window::kPanelWindow) {
+        a_win->setZValue(kMaximumZOrder + 2);
+      }
 
-                    if (a_win->window_type() == window::kPopupWindow) {
-                      a_win->setZValue(kMaximumZOrder + 1);
-                      if (a_win != a_window) {
-                        a_win->hide();
-                        a_win->removeFocus();
-                        // if window gets deleted we shoudln't proceed further.
-                        return;
-                      }
-                    }
+      if (a_win->window_type() == window::kPopupWindow) {
+        a_win->setZValue(kMaximumZOrder + 1);
+        if (a_win != a_window) {
+          a_win->hide();
+          a_win->removeFocus();
+          // if window gets deleted we shoudln't proceed further.
+          return;
+        }
+      }
 
-                    if (a_win->window_type() == window::kApplicationWindow) {
-                      if (a_win->zValue() == kMaximumZOrder &&
-                          a_win != a_window)
-                        a_win->setZValue((kMaximumZOrder - 1));
-                    }
-                  });
+      if (a_win->window_type() == window::kApplicationWindow) {
+        if (a_win->zValue() == kMaximumZOrder && a_win != a_window)
+          a_win->setZValue((kMaximumZOrder - 1));
+      }
+    });
 
     if (a_window->window_type() == window::kApplicationWindow)
       a_window->setZValue(kMaximumZOrder);
@@ -289,8 +287,7 @@ void space::remove_window_from_view(window *a_window) {
 
 void space::on_viewport_event_notify(
     std::function<void(ViewportNotificationType, const ui_task_data_t &a_data,
-                       const space *)>
-        a_notify_handler) {
+                       const space *)> a_notify_handler) {
   o_space->m_notify_chain.append(a_notify_handler);
 }
 
@@ -299,14 +296,15 @@ void space::on_activity_finished(const desktop_dialog *a_activity) {
     int i = 0;
     foreach (desktop_dialog_ref _activity, o_space->m_activity_list) {
       // todo : enable runtime identification of activities.
-      if (_activity.data() == a_activity) {
-        _activity.clear();
+      if (_activity.get() == a_activity) {
+        qDebug() << Q_FUNC_INFO << "Before Crash";
         qDebug() << Q_FUNC_INFO
                  << "Before :" << o_space->m_activity_list.count();
         o_space->m_activity_list.removeAt(i);
-        o_space->m_activity_list.removeAll(_activity);
+        // o_space->m_activity_list.removeAll(_activity);
         qDebug() << Q_FUNC_INFO
                  << "After :" << o_space->m_activity_list.count();
+        _activity.reset();
       }
       i++;
     }
@@ -341,55 +339,54 @@ void space::draw() {
       std::begin(o_space->m_window_list), std::end(o_space->m_window_list),
       [&](window *a_a, window *a_b) { return a_a->zValue() < a_b->zValue(); });
 
-  std::for_each(
-      std::begin(o_space->m_window_list), std::end(o_space->m_window_list),
-      [&](window *a_win) {
+  std::for_each(std::begin(o_space->m_window_list),
+                std::end(o_space->m_window_list), [&](window *a_win) {
 
-        if (!a_win)
-          return;
+    if (!a_win)
+      return;
 
-        if (!a_win->isVisible())
-          return;
+    if (!a_win->isVisible())
+      return;
 
-        a_win->draw();
+    a_win->draw();
 
-        qDebug() << Q_FUNC_INFO << " Z Index" << a_win->zValue()
-                 << " TITLE : " << a_win->window_title()
-                 << " Geometry: " << a_win->geometry()
-                 << " Bounding Rect : " << a_win->geometry()
-                 << " (x : " << a_win->x() << " (y :)  " << a_win->y();
+    qDebug() << Q_FUNC_INFO << " Z Index" << a_win->zValue()
+             << " TITLE : " << a_win->window_title()
+             << " Geometry: " << a_win->geometry()
+             << " Bounding Rect : " << a_win->geometry()
+             << " (x : " << a_win->x() << " (y :)  " << a_win->y();
 
-        GraphicsSurface *window_surface = a_win->surface();
+    GraphicsSurface *window_surface = a_win->surface();
 
-        if (!(*window_surface))
-          return;
+    if (!(*window_surface))
+      return;
 
-        for (int w = 0; w < geometry().width(); w++) {
-          for (int h = 0; h < geometry().height(); h++) {
-            // qDebug() << Q_FUNC_INFO << "(" << w << "," << h << ")";
-            if (w >= a_win->geometry().width())
-              continue;
-            if (h >= a_win->geometry().height())
-              continue;
+    for (int w = 0; w < geometry().width(); w++) {
+      for (int h = 0; h < geometry().height(); h++) {
+        // qDebug() << Q_FUNC_INFO << "(" << w << "," << h << ")";
+        if (w >= a_win->geometry().width())
+          continue;
+        if (h >= a_win->geometry().height())
+          continue;
 
-            int red = qtz_read_color_value_at_pos(
-                window_surface, a_win->geometry().width(), w, h, 0);
-            int green = qtz_read_color_value_at_pos(
-                window_surface, a_win->geometry().width(), w, h, 1);
-            int blue = qtz_read_color_value_at_pos(
-                window_surface, a_win->geometry().width(), w, h, 2);
-            int alpha = qtz_read_color_value_at_pos(
-                window_surface, a_win->geometry().width(), w, h, 3);
+        int red = qtz_read_color_value_at_pos(
+            window_surface, a_win->geometry().width(), w, h, 0);
+        int green = qtz_read_color_value_at_pos(
+            window_surface, a_win->geometry().width(), w, h, 1);
+        int blue = qtz_read_color_value_at_pos(
+            window_surface, a_win->geometry().width(), w, h, 2);
+        int alpha = qtz_read_color_value_at_pos(
+            window_surface, a_win->geometry().width(), w, h, 3);
 
-            if (alpha < 255)
-              continue;
+        if (alpha < 255)
+          continue;
 
-            qtz_set_color_value_at_pos(&o_space->m_surface, geometry().width(),
-                                       (a_win->x() + w), (a_win->y() + h), red,
-                                       green, blue, alpha);
-          }
-        }
-      });
+        qtz_set_color_value_at_pos(&o_space->m_surface, geometry().width(),
+                                   (a_win->x() + w), (a_win->y() + h), red,
+                                   green, blue, alpha);
+      }
+    }
+  });
 }
 
 GraphicsSurface *space::surface() { return &o_space->m_surface; }
@@ -417,8 +414,8 @@ void space::save_controller_to_session(const QString &a_controller_name) {
   delete sync;
 }
 
-void space::revoke_controller_session_attributes(
-    const QString &a_controller_name) {
+void
+space::revoke_controller_session_attributes(const QString &a_controller_name) {
   cherry_kit::data_sync *sync = new cherry_kit::data_sync(
       o_space->session_controller_name(a_controller_name).toStdString());
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
@@ -497,9 +494,8 @@ QString space::PrivateSpace::session_name_of_space() {
 
 QString
 space::PrivateSpace::session_controller_name(const QString &controllerName) {
-  return QString("%1_Controller_%2")
-      .arg(session_name_of_space())
-      .arg(controllerName);
+  return QString("%1_Controller_%2").arg(session_name_of_space()).arg(
+      controllerName);
 }
 
 QString space::session_name() const { return o_space->session_name_of_space(); }
@@ -611,20 +607,20 @@ QPointF space::center(const QRectF &a_view_geometry,
 
 float space::scaled_width(float a_value) {
   return a_value * screen::get()->scale_factor(owner_workspace()->screen_id());
-/*
-  if (!owner_workspace())
+  /*
+    if (!owner_workspace())
+      return a_value;
+
+    float scale_factor = owner_workspace()->desktop_horizontal_scale_factor();
+
+    if (scale_factor < 1.0f) {
+      a_value = a_value / scale_factor;
+    } else {
+      a_value = scale_factor * a_value;
+    }
+
     return a_value;
-
-  float scale_factor = owner_workspace()->desktop_horizontal_scale_factor();
-
-  if (scale_factor < 1.0f) {
-    a_value = a_value / scale_factor;
-  } else {
-    a_value = scale_factor * a_value;
-  }
-
-  return a_value;
-  */
+    */
 }
 
 float space::scaled_height(float a_value) {
@@ -668,14 +664,14 @@ int space::id() const { return o_space->m_id; }
 void space::reset_focus() {
   std::for_each(std::begin(o_space->m_window_list),
                 std::end(o_space->m_window_list), [&](window *a_win) {
-                  if (!a_win)
-                    return;
+    if (!a_win)
+      return;
 
-                  if (a_win->window_type() == window::kPopupWindow) {
-                    a_win->hide();
-                    a_win->removeFocus();
-                  }
-                });
+    if (a_win->window_type() == window::kPopupWindow) {
+      a_win->hide();
+      a_win->removeFocus();
+    }
+  });
 }
 
 void space::setGeometry(const QRectF &a_geometry) {

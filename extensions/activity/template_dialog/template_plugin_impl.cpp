@@ -21,10 +21,9 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_dialog> template_plugin_impl::activity() {
-  QSharedPointer<cherry_kit::desktop_dialog> obj =
-      QSharedPointer<cherry_kit::desktop_dialog>(new template_dialog(),
-                                                 &QObject::deleteLater);
+cherry_kit::desktop_dialog_ref template_plugin_impl::activity() {
+  cherry_kit::desktop_dialog_ref obj =
+      cherry_kit::desktop_dialog_ref(new template_dialog());
 
   return obj;
 }

@@ -144,7 +144,7 @@ desktop_dialog_ref extension_manager::activity(const QString &a_name) {
     }
   }
 
-  return QSharedPointer<desktop_dialog>();
+  return std::shared_ptr<desktop_dialog>();
 }
 
 StylePtr extension_manager::style(const QString &a_name) {

@@ -20,6 +20,7 @@
 #define ACTIVITY_INTERFACE_H
 
 #include <plexydesk_ui_exports.h>
+#include <ck_desktop_dialog.h>
 
 namespace cherry_kit {
 
@@ -29,7 +30,7 @@ class DECL_UI_KIT_EXPORT dialog_plugin_interface {
 public:
   explicit dialog_plugin_interface() {}
 
-  virtual QSharedPointer<cherry_kit::desktop_dialog> activity() = 0;
+  virtual desktop_dialog_ref activity() = 0;
 };
 } // namespace PlexyDesk
 

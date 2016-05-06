@@ -26,6 +26,11 @@
 
 #include <plexydesk_ui_exports.h>
 
+#include <memory>
+#include <thread>
+#include <chrono>
+#include <mutex>
+
 namespace cherry_kit {
 
 class desktop_controller_interface;
@@ -103,6 +108,6 @@ private:
   PrivateDesktopActivity *const priv;
 };
 
-typedef QSharedPointer<desktop_dialog> desktop_dialog_ref;
+typedef std::shared_ptr<desktop_dialog> desktop_dialog_ref;
 }
 #endif // DESKTOPACTIVITY_H

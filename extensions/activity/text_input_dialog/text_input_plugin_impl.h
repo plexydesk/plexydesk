@@ -35,7 +35,7 @@ public:
   virtual ~text_input_plugin_impl() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<cherry_kit::desktop_dialog> activity();
+  cherry_kit::desktop_dialog_ref activity();
 };
 
 #endif

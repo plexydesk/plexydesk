@@ -21,10 +21,9 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_dialog> icon_dialog_plugin_impl::activity() {
-  QSharedPointer<cherry_kit::desktop_dialog> obj =
-      QSharedPointer<cherry_kit::desktop_dialog>(new icon_dialog(),
-                                                 &QObject::deleteLater);
+cherry_kit::desktop_dialog_ref icon_dialog_plugin_impl::activity() {
+  cherry_kit::desktop_dialog_ref obj =
+      cherry_kit::desktop_dialog_ref(new icon_dialog());
 
   return obj;
 }

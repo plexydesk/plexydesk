@@ -21,12 +21,9 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_dialog> date_dialog_plugin_impl::activity() {
-  QSharedPointer<cherry_kit::desktop_dialog> obj =
-      QSharedPointer<cherry_kit::desktop_dialog>(new date_dialog(),
-                                                 &QObject::deleteLater);
+cherry_kit::desktop_dialog_ref date_dialog_plugin_impl::activity() {
+  cherry_kit::desktop_dialog_ref obj =
+      cherry_kit::desktop_dialog_ref (new date_dialog());
 
   return obj;
 }
-
-// Q_EXPORT_PLUGIN2(datepickerengine, DatePickerInterface)
