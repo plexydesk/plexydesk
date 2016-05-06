@@ -3,7 +3,7 @@ include (GenerateExportHeader)
 set(CMAKE_AUTOMOC ON)
 CMAKE_POLICY(SET CMP0043 NEW)
 
-project(json-cpp-ck)
+#project(json-cpp-ck)
 include(GNUInstallDirs)
 
 ################################
@@ -29,8 +29,12 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 ################################
 # Add targets
 option(BUILD_SHARED_LIBS "build shared or static libraries" ON)
+add_library(jsoncpp_ck STATIC jsoncpp.cpp)
+set_target_properties(jsoncpp_ck PROPERTIES
+        COMPILE_DEFINITIONS "JSONCPP_EXPORT"
+        VERSION "${GENERIC_LIB_VERSION}"
+        SOVERSION "${GENERIC_LIB_SOVERSION}")
 
-add_library(jsoncpp_ck SHARED jsoncpp.cpp)
 
 if (NOT APPLE)
 install(TARGETS jsoncpp_ck
