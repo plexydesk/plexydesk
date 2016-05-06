@@ -37,7 +37,7 @@ typedef enum {
   kUnknown
 } service_data_type_t;
 
-class service_input_argument {
+class DECL_SOCIAL_KIT_EXPORT service_input_argument {
 public:
   service_input_argument() : m_optional(0) {}
   ~service_input_argument() {}
@@ -63,7 +63,7 @@ private:
 
 typedef std::vector<service_input_argument *> input_arg_t;
 
-class service_input {
+class DECL_SOCIAL_KIT_EXPORT service_input {
 public:
   typedef enum {
     kPOSTRequest,
@@ -103,7 +103,7 @@ private:
   request_type_t m_request_type;
 };
 
-class service_result_query_attribute {
+class DECL_SOCIAL_KIT_EXPORT service_result_query_attribute {
 public:
   service_result_query_attribute() {}
   ~service_result_query_attribute() {}
@@ -119,7 +119,7 @@ private:
   std::string m_value;
 };
 
-class service_result_query {
+class DECL_SOCIAL_KIT_EXPORT service_result_query {
 public:
   typedef std::vector<service_result_query_attribute *> attribute_list_t;
 
@@ -144,7 +144,7 @@ private:
 };
 
 /* result of the service */
-class service_result {
+class DECL_SOCIAL_KIT_EXPORT service_result {
 public:
   typedef enum {
     kXMLData = 0,
@@ -189,7 +189,7 @@ private:
 
          the parsed xml meta data will be stored in this class for easy access.
  */
-class service {
+class DECL_SOCIAL_KIT_EXPORT service {
 public:
   service() : m_input(0) {}
   ~service() {
@@ -220,7 +220,7 @@ private:
 typedef std::map<std::string, service *> service_map_t;
 typedef service_map_t::iterator service_map_iterator_t;
 
-class remote_service::remote_service_context {
+class DECL_SOCIAL_KIT_EXPORT remote_service::remote_service_context {
 public:
   remote_service_context() : m_current_error(remote_service::kNoError) {}
   ~remote_service_context() {
