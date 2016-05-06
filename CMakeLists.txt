@@ -28,6 +28,7 @@ endif()
 #check if the compiler support c++11
 include(CheckCXXCompilerFlag)
 
+if (NOT WIN32)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 CHECK_CXX_COMPILER_FLAG("-std=c++11-extensions" COMPILER_SUPPORTS_CXX11_EXTENSIONS)
@@ -60,6 +61,7 @@ endif()
 
 if (NOT SOCIAL_KIT_PIXABAY_API_KEY)
    message(FATAL_ERROR " Pixabay Developer key not defined by SOCIAL_KIT_PIXBAY_API_KEY, Pixbay Wallpaper search will not function")
+endif()
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmakemodules)
