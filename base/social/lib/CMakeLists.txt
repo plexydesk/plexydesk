@@ -64,14 +64,20 @@ INCLUDE_DIRECTORIES (
 )
 
 if (UNIX AND NOT APPLE)
-	set (PLATFORM_SOURCE_FILES ck_url_request_linux.cpp)
-	set (PLATFORM_HEADERS_FILES ck_url_request_linux.h)
+  set (PLATFORM_SOURCE_FILES ck_url_request_linux.cpp)
+  set (PLATFORM_HEADERS_FILES ck_url_request_linux.h)
 endif()
 
 if (APPLE)
-	set (PLATFORM_SOURCE_FILES ck_url_request_mac.mm)
-	set (PLATFORM_HEADERS_FILES ck_url_request_mac.h)
+  set (PLATFORM_SOURCE_FILES ck_url_request_mac.mm)
+  set (PLATFORM_HEADERS_FILES ck_url_request_mac.h)
 endif()
+
+if(WIN32)
+  set (PLATFORM_SOURCE_FILES ck_url_request_windows.cpp)
+  set (PLATFORM_HEADERS_FILES ck_url_request_windows.h)
+endif()
+
 set(sourceFiles
     ck_url.cpp
     ck_remote_service.cpp

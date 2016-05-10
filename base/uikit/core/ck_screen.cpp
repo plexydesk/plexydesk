@@ -1,4 +1,5 @@
 #include "ck_screen.h"
+#include <config.h>
 
 #ifdef __X11_PLATFORM__
 #include <core/qt/ck_screen_impl_qt.h>
@@ -8,8 +9,9 @@
 #include <core/mac/ck_screen_impl_mac.h>
 #endif
 
-#ifdef __WINDOWS__PLATFORM__
-#error "Windows Platform Screen Support not Implemented"
+#ifdef __WINDOWS_PLATFORM__
+//#error "Windows Platform Screen Support not Implemented"
+#include <core/qt/ck_screen_impl_qt.h>
 #endif
 
 namespace cherry_kit {

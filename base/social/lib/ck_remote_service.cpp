@@ -851,7 +851,7 @@ void remote_service::load_services() {
 }
 
 std::string remote_service::data_prefix() const {
-#ifdef __WINDOWS__
+#ifdef __WINDOWS_PLATFORM__
   return std::string();
 #endif
 

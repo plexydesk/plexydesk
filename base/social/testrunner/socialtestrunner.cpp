@@ -24,7 +24,7 @@
                 << " line " << __LINE__ << ": " << message << std::endl;       \
       std::exit(EXIT_FAILURE);                                                 \
     } else {                                                                   \
-      std::cout << __LINE__ << " " << __func__ << "  " << #condition           \
+      std::cout << __LINE__ << " " << __FUNCTION__ << "  " << #condition           \
                 << "  [PASS]" << std::endl;                                    \
     }                                                                          \
   } while (false)

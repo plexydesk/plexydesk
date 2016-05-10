@@ -14,7 +14,7 @@
 #endif
 
 #ifdef __WINDOWS_PLATFORM__
-#error "Error: Not Implemented for Windows";
+#include "ck_url_request_windows.h"
 #endif
 
 #include <iostream>

@@ -54,6 +54,13 @@ if(UNIX AND NOT APPLE)
       )
 endif()
 
+if(WIN32)
+  set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
+       core/qt/ck_screen_impl_qt.cpp
+      )
+endif()
+
+
 set(CORE_LIBRARY_INTERFACE_FILES
     core/ck_desktop_controller_interface.h
     core/ck_desktop_plugin_interface.h
