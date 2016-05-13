@@ -52,8 +52,11 @@ char *ck_url_encode(char *str) {
 
 /* Returns a url-decoded version of str */
 /* IMPORTANT: be sure to free() the returned string after use */
-char *ck_url_decode(char *str) {
-  char *pstr = str, *buf = (char *)malloc(strlen(str) + 1), *pbuf = buf;
+static char *ck_url_decode(char *str) {
+  char *pstr = str;
+  char *buf = (char *)malloc(strlen(str) + 1);
+  char *pbuf = buf;
+
   while (*pstr) {
     if (*pstr == '%') {
       if (pstr[1] && pstr[2]) {
@@ -82,8 +85,12 @@ public:
 url_encode::url_encode(const std::string &a_str)
     : ctx(new platform_url_handle) {
   const char *const_data = a_str.c_str();
-  char *data = (char *)malloc(strlen(const_data));
+  char *data = (char *)malloc(strlen(const_data) + 1);
+#ifdef __WINDOWS_PLATFORM__
+  strcpy_s(data, strlen(const_data) + 1, const_data);
+#else
   strcpy(data, const_data);
+#endif
   ctx->m_url_data = std::string(ck_url_encode(data));
   free(data);
 }
