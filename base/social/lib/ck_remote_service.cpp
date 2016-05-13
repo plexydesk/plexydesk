@@ -19,6 +19,8 @@
 #include "ck_url.h"
 #include "ck_remote_service.h"
 
+#include <config.h>
+
 #include <sys/stat.h>
 
 #include <algorithm>
@@ -232,6 +234,7 @@ public:
     }
 
     m_service_dict.clear();
+    std::cout << __FUNCTION__ << " Deleted " << std::endl;
   }
 
   definition_error_t m_current_error;
@@ -251,7 +254,9 @@ bool ck_file_exisits(const std::string &a_file_name) {
 remote_service::remote_service(const std::string &input)
     : ctx(new remote_service_context) {
   std::string service_file = data_prefix() + input;
+#ifdef __CK_RUNTIME_DEBUG_MESSAGES_ENABLED__
   std::cout << "def ->" << service_file << std::endl;
+#endif
   if (ck_file_exisits(service_file.c_str())) {
     tinyxml2::XMLError error =
         ctx->m_xml_root_doc.LoadFile(service_file.c_str());
@@ -273,7 +278,9 @@ remote_service::remote_service(const std::string &input)
 }
 
 remote_service::~remote_service() {
+#ifdef __CK_RUNTIME_DEBUG_MESSAGES_ENABLED__
   std::cout << "delete -> " << __FUNCTION__ << std::endl;
+#endif
   delete ctx;
 }
 
@@ -852,7 +859,7 @@ void remote_service::load_services() {
 
 std::string remote_service::data_prefix() const {
 #ifdef __WINDOWS_PLATFORM__
-  return std::string();
+  return std::string(CK_INSTALL_PREFIX + std::string("\\share\\social\\"));
 #endif
 
 #ifdef __GNU_LINUX_PLATFORM__
