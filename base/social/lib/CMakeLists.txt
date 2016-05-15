@@ -159,6 +159,7 @@ TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY}
     ${PLATFORM_LINK_LIBRARIES}
     jsoncpp_ck
     tinyxml2
+    winhttp
     )
 
 QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
