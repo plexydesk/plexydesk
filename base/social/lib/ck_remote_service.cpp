@@ -554,7 +554,8 @@ void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
     lookup_element(child_element, query, a_result);
   }
 
-  const char *keyword = query->tag_name().c_str();
+  char *keyword = (char *) malloc(query->tag_name().size() + 1);
+  std::strcpy(keyword, query->tag_name().c_str());
 
   if (keyword && strcmp(node->Name(), keyword) == 0) {
     remote_result_data result;
@@ -600,6 +601,7 @@ remote_result remote_service::response(const std::string &a_method_name,
     tinyxml2::XMLDocument doc;
     if (doc.Parse(a_response.data_buffer(), a_response.data_buffer_size()) !=
         tinyxml2::XML_NO_ERROR) {
+      std::cout << __FUNCTION__ << "xml parse error .... [fail]" << std::endl;
       return rv;
     }
 
@@ -617,6 +619,7 @@ remote_result remote_service::response(const std::string &a_method_name,
     Json::Value root;
     Json::Reader reader;
 
+    std::cout << __FUNCTION__ << "Initiate Json Parser" << std::endl;
     if (reader.parse(a_response.data_buffer(), root)) {
       std::cout << "parsed success fully" << std::endl;
       std::vector<service_result_query *> list = srv_result->query_list();
