@@ -21,6 +21,22 @@ public:
         delete [] m_header_data;
 
       m_header_size = 0;
+
+      if (m_http_request) {
+        WinHttpSetStatusCallback(m_http_request, NULL, NULL, NULL);
+        WinHttpCloseHandle(m_http_request);
+        m_http_request = NULL;
+      }
+
+      if (m_http_connection) {
+          WinHttpCloseHandle(m_http_connection);
+          m_http_connection = NULL;
+      }
+
+      if (m_http_session) {
+          WinHttpCloseHandle(m_http_session);
+          m_http_session = NULL;
+      }
   }
 
   void notify_listners(
@@ -78,19 +94,13 @@ void __stdcall _http_response_func( HINTERNET hInternet, DWORD_PTR dwContext,
                               DWORD dwStatusInformationLength) {
   url_request::platform_url_request::private_context *ctx;
   ctx = (url_request::platform_url_request::private_context*)dwContext;
-  WINHTTP_ASYNC_RESULT *rv;
-
-  //std::cout << __FUNCTION__ << " response .... [in-progress]" << std::endl;
 
   switch(dwInternetStatus) {
       case WINHTTP_CALLBACK_STATUS_SENDREQUEST_COMPLETE:
-      //std::cout << __FUNCTION__ << " request_complete" << std::endl;
       if (WinHttpReceiveResponse(ctx->m_http_request, NULL) == FALSE) {
-         std::cout << __FUNCTION__ << " Initate Cleanup" << std::endl;
       }
       break;
       case WINHTTP_CALLBACK_STATUS_HEADERS_AVAILABLE:
-        std::cout << __FUNCTION__ << " header available" << std::endl;
         ctx->parse_http_header();
         ctx->get_http_status_code();
 
@@ -102,7 +112,6 @@ void __stdcall _http_response_func( HINTERNET hInternet, DWORD_PTR dwContext,
         }
       break;
       case WINHTTP_CALLBACK_STATUS_DATA_AVAILABLE:
-      std::cout << __FUNCTION__ << " data available" << std::endl;
       ctx->m_current_block_size = *((LPDWORD)lpvStatusInformation);
       if (ctx->m_current_block_size == 0) {
           if (ctx->m_total_block_size) {
@@ -130,7 +139,6 @@ void __stdcall _http_response_func( HINTERNET hInternet, DWORD_PTR dwContext,
 
       break;
       case WINHTTP_CALLBACK_STATUS_READ_COMPLETE:
-      std::cout << __FUNCTION__ << " read complete" << std::endl;
       if (dwStatusInformationLength != 0) {
         //update internal data buffer;
         ctx->update_buffer((LPSTR) lpvStatusInformation,
@@ -215,8 +223,6 @@ void url_request::platform_url_request::send_message_async(
       std::cout << __FUNCTION__ << " sending request .... [fail]" << std::endl;
       return;
   }
-
-  std::cout << __FUNCTION__ << " sending request .... [success]" << std::endl;
 }
 
 void url_request::platform_url_request::private_context::parse_http_header() {
@@ -241,8 +247,10 @@ void url_request::platform_url_request::private_context::parse_http_header() {
                          &m_header_size, WINHTTP_NO_HEADER_INDEX)) {
    std::cout << __FUNCTION__ << "Header Query .... [fail]" << std::endl;
   } else {
-      std::string MyString = CW2A ((LPWSTR) m_header_data);
-      std::cout << "header data : " << MyString <<  std::endl;
+#ifdef __DEBUG_BUILD__
+      std::string header_data = CW2A ((LPWSTR) m_header_data);
+      std::cout << "header data : " << header_data <<  std::endl;
+#endif
   }
 }
 
