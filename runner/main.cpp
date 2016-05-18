@@ -231,22 +231,58 @@ public:
 #endif
       workspace->show();
 
+
 #ifdef Q_OS_WIN32
+      typedef HWND window_handle_t;
+
+      /*
+      window_handle_t desktop_window = GetShellWindow();
+
+      if (desktop_window) {
+          if (!SetParent((window_handle_t) workspace->winId(), desktop_window)) {
+            qDebug() << Q_FUNC_INFO << "Error Reparengint...........";
+            qApp->quit();
+          } else {
+            qDebug() << Q_FUNC_INFO << "-----Loading Windows desktop ---------";
+          }
+      } else {
+          qDebug() << Q_FUNC_INFO << "-------Error Loading desktop ---------";
+          qApp->quit();
+      }
+      */
+
+      //find the Shell Window
+      window_handle_t shell_window = FindWindowEx(GetShellWindow(),
+                                                  NULL,
+                                                  _T("SHELLDLL_DefView"),
+                                                  NULL);
+      qDebug() << Q_FUNC_INFO << "Shell Window" << shell_window;
+      qDebug() << Q_FUNC_INFO << "Shell Window" << GetShellWindow();
+
+      cherry_kit::device_window *d_window =
+              cherry_kit::system_window_context::get()->find_window(
+                  "FolderView", "SysListView32");
+      qDebug() << Q_FUNC_INFO << "WIndow ID Found : " << d_window->handle();
+      SetParent((window_handle_t)workspace->winId(), d_window->handle());
+#endif
+
+#ifdef Q_OS_WIN32_NON
       HWND hShellWnd = GetShellWindow();
       HWND hDefView =
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
       HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
       HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
+      //HWND aero_shell_hwnd = FindWindow("CabinetWClass", "Personalization");
 
       if (!folderView)
           qApp->quit();
 
-      if (check_windows_version() < 6){
+      if (check_windows_version() < 5){
          if (SetParent((HWND)workspace->winId(), folderView) == NULL)
           qApp->quit();
          return;
       } else {
-         if (SetParent((HWND)workspace->winId(), ProgmanHwnd) == NULL)
+         if (SetParent((HWND)workspace->winId(), hDefView) == NULL)
           qApp->quit();
       }
 
@@ -360,6 +396,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
                                QLatin1String("/share/plexy/ext/groups/")),
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/plexyext/")));
+
 
   Runtime runtime(runtime_platform_name);
 
