@@ -19,7 +19,7 @@ public:
                                const std::string &a_window_class);
     bool reparent(device_window *a_child, device_window *a_parent) {return 0;}
 
-    device_window *desktop() { return 0;}
+    device_window *desktop();
 
     bool convert_to_popup_window(device_window *a_window) {return false;}
     bool convert_to_panel_window(device_window *a_window) {return false;}
@@ -33,7 +33,6 @@ public:
 
 private:
     int get_windows_major_version();
-
 };
 
 }

@@ -61,7 +61,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 #endif
 
 #ifdef Q_OS_WIN32
-  // setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint);
+  setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint);
   //setCacheMode(QGraphicsView::CacheNone);
   //setOptimizationFlags(QGraphicsView::DontSavePainterState);
   //setOptimizationFlag(QGraphicsView::DontClipPainter);

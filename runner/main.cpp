@@ -232,14 +232,8 @@ public:
       workspace->show();
 
 #ifdef Q_OS_WIN32
-      //find the Shell Window
-      window_handle_t shell_window = FindWindowEx(GetShellWindow(),
-                                                  NULL,
-                                                  _T("SHELLDLL_DefView"),
-                                                  NULL);
       cherry_kit::device_window *d_window =
-              cherry_kit::system_window_context::get()->find_window(
-                  "FolderView", "SysListView32");
+              cherry_kit::system_window_context::get()->desktop();
       SetParent((window_handle_t)workspace->winId(), d_window->handle());
 #endif
 
