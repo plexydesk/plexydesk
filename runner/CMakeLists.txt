@@ -1,3 +1,6 @@
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP true)
+include(InstallRequiredSystemLibraries)
+
 if(UNIX)
   INCLUDE_DIRECTORIES(
     ${X11_INCLUDE_DIR}
@@ -84,5 +87,111 @@ if(UNIX)
 endif()
 
 if(WIN32)
-  install(TARGETS plexydesk RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  install(TARGETS plexydesk RUNTIME DESTINATION .)
+  INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+                                        DESTINATION . COMPONENT Libraries)
+endif()
+
+
+
+if (WIN32)
+get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
+get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
+
+install(FILES
+  ${QT_DLL_DIR}/Qt5Core.dll
+  ${QT_DLL_DIR}/Qt5Gui.dll
+  ${QT_DLL_DIR}/Qt5Widgets.dll
+  ${QT_DLL_DIR}/opengl32sw.dll
+  ${QT_DLL_DIR}/libEGL.dll
+  ${QT_DLL_DIR}/D3Dcompiler_47.dll
+  ${QT_DLL_DIR}/libGLESV2.dll
+  ${QT_DLL_DIR}/Qt5Multimedia.dll
+  ${QT_DLL_DIR}/Qt5Svg.dll
+  ${QT_DLL_DIR}/Qt5Xml.dll
+  ${QT_DLL_DIR}/Qt5PrintSupport.dll
+  ${QT_DLL_DIR}/Qt5OpenGL.dll
+  ${QT_DLL_DIR}/Qt5Network.dll
+
+  DESTINATION .
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/audio/qtaudio_windows.dll
+  DESTINATION audio
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/mediaservice/dsengine.dll
+  ${QT_DLL_DIR}/../plugins/mediaservice/qtmedia_audioengine.dll
+  ${QT_DLL_DIR}/../plugins/mediaservice/wmfengine.dll
+
+  DESTINATION mediaservice
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/platforms/qwindows.dll
+
+  DESTINATION platforms
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/printsupport/windowsprintersupport.dll
+
+  DESTINATION printsupport
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/imageformats/qdds.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qicns.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qjp2.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qwbmp.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qtga.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qsvg.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qmng.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qwebp.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qtiff.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qjpeg.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qico.dll
+  ${QT_DLL_DIR}/../plugins/imageformats/qgif.dll
+
+  DESTINATION imageformats
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/iconengines/qsvgicon.dll
+
+  DESTINATION iconengines
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/bearer/qgenericbearer.dll
+  ${QT_DLL_DIR}/../plugins/bearer/qnativewifibearer.dll
+
+  DESTINATION bearer
+)
+
+install(FILES
+  ${QT_DLL_DIR}/../plugins/playlistformats/qtmultimedia_m3u.dll
+
+  DESTINATION playlistformats
+)
+install(FILES
+  ${QT_DLL_DIR}/../translations/qt_ca.qm
+  ${QT_DLL_DIR}/../translations/qt_cs.qm
+  ${QT_DLL_DIR}/../translations/qt_de.qm
+  ${QT_DLL_DIR}/../translations/qt_fi.qm
+  ${QT_DLL_DIR}/../translations/qt_fr.qm
+  ${QT_DLL_DIR}/../translations/qt_hu.qm
+  ${QT_DLL_DIR}/../translations/qt_it.qm
+  ${QT_DLL_DIR}/../translations/qt_ja.qm
+  ${QT_DLL_DIR}/../translations/qt_ko.qm
+  ${QT_DLL_DIR}/../translations/qt_lt.qm
+  ${QT_DLL_DIR}/../translations/qt_ru.qm
+  ${QT_DLL_DIR}/../translations/qt_sk.qm
+  ${QT_DLL_DIR}/../translations/qt_uk.qm
+
+  DESTINATION translations
+)
+
 endif()

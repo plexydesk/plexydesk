@@ -255,5 +255,8 @@ endif(APPLE)
 
 if(WIN32)
     # installs to the same path as the binary
-    install(TARGETS ${PLEXY_UI_CORE_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX})
+    install(TARGETS ${PLEXY_UI_CORE_LIBRARY}
+                                   RUNTIME DESTINATION .
+                                   LIBRARY DESTINATION .
+                                   ARCHIVE DESTINATION sdk)
 endif()

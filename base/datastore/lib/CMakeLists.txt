@@ -120,15 +120,16 @@ endif(MINGW OR WIN32)
 if  (UNIX AND NOT APPLE)
 	set(THREAD_LIBS pthread)
 endif()
+
 TARGET_LINK_LIBRARIES(${QUETZAL_DATA_KIT_LIBRARY} ${MAC_LIBS} ${libs} 
 	 ${THREAD_LIBS})
 
 QT5_USE_MODULES(${QUETZAL_DATA_KIT_LIBRARY} Core Widgets Xml)
 
 
-if (NOT APPLE)
+if (UNIX AND NOT APPLE)
     INSTALL(TARGETS ${QUETZAL_DATA_KIT_LIBRARY} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-endif(NOT APPLE)
+endif(UNIX AND NOT APPLE)
 
 if (APPLE)
    SET_TARGET_PROPERTIES(${QUETZAL_DATA_KIT_LIBRARY} PROPERTIES SKIP_BUILD_RPATH 0)
@@ -140,6 +141,7 @@ endif(APPLE)
 
 if(WIN32)
     # installs to the same path as the binary
-    install(TARGETS ${QUETZAL_DATA_KIT_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX})
+    install(TARGETS ${QUETZAL_DATA_KIT_LIBRARY}
+                                               DESTINATION .
+                                               ARCHIVE DESTINATION sdk)
 endif()
-
