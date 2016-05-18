@@ -3,18 +3,61 @@
 #include <Windows.h>
 #include <tchar.h>
 #include <clrdata.h>
+#include <ck_device_window.h>
+
+#include <QDebug>
+
+typedef struct {
+  std::string window_name;
+  std::string window_class;
+  cherry_kit::window_handle_t window_handle;
+} window_lookup_data_t;
+
+BOOL CALLBACK __match_window_hanlde(cherry_kit::window_handle_t a_id,
+                                    LPARAM a_ctx) {
+ window_lookup_data_t *query = (window_lookup_data_t *)a_ctx;
+ char _window_class_name[100];
+ char *_window_text = NULL;
+
+ if (!query)
+     return TRUE;
+
+ int window_title_size = GetWindowTextLength(a_id);
+ _window_text = (char *) malloc(window_title_size + 1);
+
+ RealGetWindowClass(a_id, _window_class_name, 100);
+ GetWindowText(a_id, _window_text, window_title_size + 1);
+
+ if ((std::strcmp(query->window_name.c_str(), _window_text) == 0) &&
+     (std::strcmp(query->window_class.c_str(), _window_class_name) == 0)) {
+   query->window_handle = a_id;
+   return FALSE;
+ }
+
+ return TRUE;
+}
 
 namespace cherry_kit {
-win32_window_context::win32_window_context()
-{
+win32_window_context::win32_window_context() {
 }
 
-win32_window_context::~win32_window_context()
-{
+win32_window_context::~win32_window_context() {
 }
 
-device_window *win32_window_context::find_window(const std::string &a_title) {
-  device_window *rv = 0;
+device_window *win32_window_context::find_window(
+        const std::string &a_title, const std::string &a_window_class) {
+  cherry_kit::device_window *rv = new device_window();
+  cherry_kit::window_handle_t window_handle = 0;
+  window_lookup_data_t data;
+
+  data.window_class = a_window_class;
+  data.window_name = a_title;
+
+  EnumChildWindows(GetDesktopWindow(),
+                   __match_window_hanlde,
+                   reinterpret_cast<LPARAM>(&data));
+
+  rv->set_handle(data.window_handle);
   return rv;
 }
 

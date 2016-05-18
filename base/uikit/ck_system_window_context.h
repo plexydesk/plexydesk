@@ -27,7 +27,8 @@ public:
     static system_window_context *get();
     virtual ~system_window_context();
 
-    virtual device_window *find_window(const std::string &a_title) = 0;
+    virtual device_window *find_window(const std::string &a_title,
+                                       const std::string &a_window_class) = 0;
     virtual bool reparent(device_window *a_child, device_window *a_parent) = 0;
 
     virtual device_window *desktop() = 0;

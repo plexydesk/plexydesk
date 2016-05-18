@@ -15,7 +15,8 @@ public:
     win32_window_context();
     ~win32_window_context();
 
-    device_window *find_window(const std::string &a_title);
+    device_window *find_window(const std::string &a_title,
+                               const std::string &a_window_class);
     bool reparent(device_window *a_child, device_window *a_parent) {return 0;}
 
     device_window *desktop() { return 0;}

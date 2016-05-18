@@ -9,7 +9,8 @@ class null_windows_context : public system_window_context {
 public:
     null_windows_context() {}
 
-    device_window *find_window(const std::string &a_title)  { return 0;}
+    device_window *find_window(const std::string &a_title,
+                               const std::string &a_window_class)  { return 0;}
     bool reparent(device_window *a_child, device_window *a_parent) {return 0;}
 
     device_window *desktop() { return 0;}
