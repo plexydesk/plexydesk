@@ -102,7 +102,9 @@ std::string config::icon_resource_prefix_path()
 #endif
 
 #ifdef Q_OS_WIN32
-  rv = QDir::toNativeSeparators(prefix_path + "/resources/icons/");
+  //rv = QDir::toNativeSeparators(prefix_path + "/resources/icons/");
+  QDir binaryPath(QCoreApplication::applicationDirPath());
+  rv = QDir::toNativeSeparators(binaryPath.canonicalPath() + "/resources/icons");
 #endif
   return rv.toStdString();
 }
