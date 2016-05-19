@@ -24,7 +24,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 ################################
 # Add targets
 option(BUILD_SHARED_LIBS "build shared or static libraries" ON)
-add_library(jsoncpp_ck STATIC jsoncpp.cpp)
+add_library(jsoncpp_ck jsoncpp.cpp)
 
 
 if (NOT APPLE)
