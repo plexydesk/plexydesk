@@ -63,17 +63,22 @@ device_window *win32_window_context::find_window(
 
 device_window *win32_window_context::desktop() {
   cherry_kit::device_window *rv = new device_window();
+  cherry_kit::device_window *shell_view = 0;
   cherry_kit::window_handle_t window_handle = 0;
   window_lookup_data_t data;
 
   data.window_name = "FolderView";
   data.window_class = "SysListView32";
 
-  EnumChildWindows(GetShellWindow(),
-                   __match_window_hanlde,
-                   reinterpret_cast<LPARAM>(&data));
+  shell_view = find_window("", "SHELLDLL_DefView");
 
-  rv->set_handle(data.window_handle);
+  if (shell_view) {
+    EnumChildWindows(shell_view->handle(),
+                     __match_window_hanlde,
+                     reinterpret_cast<LPARAM>(&data));
+
+     rv->set_handle(data.window_handle);
+  }
   return rv;
 }
 
