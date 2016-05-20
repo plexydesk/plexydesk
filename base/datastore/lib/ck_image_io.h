@@ -36,6 +36,8 @@ public:
   // io_surface(const io_surface &copy);
   virtual ~io_surface();
 
+  virtual image_data_ref copy();
+
   int width;
   int height;
   image_data_ref buffer;

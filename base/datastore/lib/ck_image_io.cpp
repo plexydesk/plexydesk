@@ -125,7 +125,15 @@ io_surface::io_surface(const io_surface &copy)
 
 io_surface::~io_surface() {
   if (buffer)
-    free(buffer);
+      free(buffer);
+}
+
+image_data_ref io_surface::copy() {
+  size_t buffer_size = 4 * width * height;
+  image_data_ref buffer_copy = (image_data_ref) malloc(buffer_size);
+  memcpy(buffer_copy, buffer, buffer_size);
+
+  return buffer_copy;
 }
 }
 
