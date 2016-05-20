@@ -9,7 +9,7 @@ namespace cherry_kit {
 class DECL_UI_KIT_EXPORT style_interface {
 public:
   style_interface() {}
-  virtual QSharedPointer<cherry_kit::style> style() = 0;
+  virtual style_ref style() = 0;
 };
 }
 

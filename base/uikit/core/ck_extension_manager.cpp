@@ -147,7 +147,7 @@ desktop_dialog_ref extension_manager::activity(const QString &a_name) {
   return std::shared_ptr<desktop_dialog>();
 }
 
-StylePtr extension_manager::style(const QString &a_name) {
+style_ref extension_manager::style(const QString &a_name) {
   if (o_extension_manager->mStyles[a_name]) {
     return o_extension_manager->mStyles[a_name]->style();
   } else {
@@ -157,7 +157,7 @@ StylePtr extension_manager::style(const QString &a_name) {
     }
   }
 
-  return QSharedPointer<cherry_kit::style>();
+  return style_ref();
 }
 
 QString extension_manager::desktop_controller_extension_info(

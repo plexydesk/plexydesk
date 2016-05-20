@@ -23,11 +23,8 @@
 
 static void destroyStyle(cherry_kit::style *style) { delete style; }
 
-QSharedPointer<cherry_kit::style> CocoaInterface::style() {
-  m_instence_ref = QSharedPointer<cherry_kit::style>(
-      (cherry_kit::style *)new CocoaStyle(), &destroyStyle);
-
+cherry_kit::style_ref CocoaInterface::style() {
+  m_instence_ref = cherry_kit::style_ref(new CocoaStyle());
   return m_instence_ref;
 }
 
-// Q_EXPORT_PLUGIN2(cocoaengine, CocoaInterface)

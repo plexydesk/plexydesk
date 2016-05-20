@@ -45,7 +45,7 @@ void image_view::set_image(const QImage &a_image) {
     update();
 }
 
-StylePtr image_view::style() const { return resource_manager::style(); }
+style_ref image_view::style() const { return resource_manager::style(); }
 
 void image_view::mouseMoveEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
   Q_EMIT mouseOver();

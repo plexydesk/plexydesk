@@ -34,7 +34,7 @@ public:
   virtual void set_text(const QString &a_txt);
   virtual QString text() const;
 
-  virtual void style(StylePtr a_style);
+  virtual void style(style_ref a_style);
 
   virtual void set_size(const QSizeF &a_size);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;

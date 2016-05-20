@@ -23,11 +23,7 @@
 
 static void destroyStyle(cherry_kit::style *style) { delete style; }
 
-QSharedPointer<cherry_kit::style> SimpleGrayInterface::style() {
-  m_instence_ref = QSharedPointer<cherry_kit::style>(
-      (cherry_kit::style *)new SimpleGrayStyle(), &destroyStyle);
-
+cherry_kit::style_ref SimpleGrayInterface::style() {
+  m_instence_ref = cherry_kit::style_ref(new SimpleGrayStyle());
   return m_instence_ref;
 }
-
-// Q_EXPORT_PLUGIN2(cocoaengine, SimpleGrayInterface)

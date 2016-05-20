@@ -40,7 +40,7 @@ public:
 
   virtual void setIcon(const QImage &a_img);
 
-  virtual StylePtr style() const;
+  virtual style_ref style() const;
 
   virtual void set_size(const QSizeF &a_size);
   virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &a_constraint) const;

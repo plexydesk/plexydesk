@@ -33,7 +33,7 @@ public:
 
   virtual void set_theme_name(const QString &a_name);
 
-  static StylePtr style();
+  static style_ref style();
 
   virtual QPixmap drawable(const QString &a_fileName, const QString &a_dpi);
   virtual QString drawable_file_name(const QString &a_dpi,
@@ -57,7 +57,7 @@ public:
 
 private:
   void scane_resources();
-  StylePtr default_desktop_style();
+  style_ref default_desktop_style();
   void load_default_color_values();
 
   class ThemepackLoaderPrivate;

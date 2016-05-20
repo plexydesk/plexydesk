@@ -49,7 +49,7 @@ public:
   virtual table_view_item *itemAt(uint i);
   virtual uint count() const;
 
-  virtual StylePtr style() const;
+  virtual style_ref style() const;
 
   virtual void set_item_activation_callback(
       std::function<void(table_view_item *a_item_ptr)> a_callback);

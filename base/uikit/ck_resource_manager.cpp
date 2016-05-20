@@ -45,7 +45,7 @@ public:
   ThemepackLoaderPrivate() {}
   ~ThemepackLoaderPrivate() {
     if (m_current_style_ref) {
-      m_current_style_ref.clear();
+      m_current_style_ref.reset();
     }
   }
 
@@ -58,7 +58,7 @@ public:
   QHash<QString, QPixmap> m_image_cache;
   std::map<ColorName, std::string> m_color_map;
 
-  StylePtr m_current_style_ref;
+  style_ref m_current_style_ref;
 };
 
 resource_manager::resource_manager(const QString &a_theme_name)
@@ -83,11 +83,11 @@ resource_manager::~resource_manager() {
   delete priv;
 }
 
-StylePtr resource_manager::default_desktop_style() {
+style_ref resource_manager::default_desktop_style() {
   return priv->m_current_style_ref;
 }
 
-StylePtr resource_manager::style() {
+style_ref resource_manager::style() {
   return instance()->default_desktop_style();
 }
 

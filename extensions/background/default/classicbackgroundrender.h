@@ -32,7 +32,7 @@ public:
 
   void setBackgroundMode(ScalingMode mode);
 
-  StylePtr style() const;
+  cherry_kit::style_ref style() const;
 
   bool isSeamlessModeSet() const;
 

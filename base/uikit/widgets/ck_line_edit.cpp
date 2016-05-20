@@ -31,7 +31,7 @@ public:
                         const QStyleOptionGraphicsItem *option);
 
   EditState mState;
-  StylePtr mStyle;
+  style_ref mStyle;
   QString m_editor_text;
 
   int mLastKey;
@@ -71,7 +71,7 @@ void line_edit::set_text(const QString &a_txt) {
 
 QString line_edit::text() const { return priv->m_editor_text; }
 
-void line_edit::style(StylePtr a_style) { priv->mStyle = a_style; }
+void line_edit::style(style_ref a_style) { priv->mStyle = a_style; }
 
 void line_edit::set_size(const QSizeF &a_size) {
   set_geometry(QRectF(0, 0, a_size.width(), a_size.height()));

@@ -88,7 +88,7 @@ public:
   virtual void set_widget_id(unsigned int a_id);
   virtual unsigned widget_id() const;
 
-  virtual StylePtr style() const;
+  virtual style_ref style() const;
 
   virtual RenderLevel layer_type() const;
   virtual void set_layer_type(RenderLevel a_level);

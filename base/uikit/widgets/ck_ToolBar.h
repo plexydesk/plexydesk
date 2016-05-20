@@ -20,7 +20,7 @@ public:
   virtual void set_icon_resolution(const QString &a_res);
   virtual void set_icon_size(const QSize &a_size);
 
-  virtual StylePtr style() const;
+  virtual style_ref style() const;
 
   virtual void set_geometry(const QRectF &a_rect);
   virtual QRectF contents_geometry() const;

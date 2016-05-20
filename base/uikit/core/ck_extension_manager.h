@@ -105,7 +105,7 @@ public:
       * @param name
       * @return StylePtr
       */
-  StylePtr style(const QString &a_name);
+  style_ref style(const QString &a_name);
   /**
     * @brief
     *

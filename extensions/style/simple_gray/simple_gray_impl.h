@@ -30,15 +30,14 @@ class SimpleGrayInterface : public QObject, public cherry_kit::style_interface {
 
 public:
   virtual ~SimpleGrayInterface() {
-        qDebug() << Q_FUNC_INFO;
-        m_instence_ref.clear();
+        m_instence_ref.reset();
     }
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<cherry_kit::style> style();
+  cherry_kit::style_ref style();
 
 private:
-  QSharedPointer<cherry_kit::style> m_instence_ref;
+  cherry_kit::style_ref m_instence_ref;
 };
 
 #endif

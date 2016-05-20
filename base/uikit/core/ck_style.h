@@ -25,6 +25,8 @@
 #include <QPainter>
 #include <QObject>
 
+#include <memory>
+
 namespace cherry_kit {
 class widget;
 
@@ -49,7 +51,8 @@ protected:
   virtual QVariantMap attribute_map(const QString &a_type) const = 0;
   virtual QVariantMap color_scheme_map() const = 0;
 };
+
+typedef std::shared_ptr<cherry_kit::style> style_ref;
 }
 
-typedef QSharedPointer<cherry_kit::style> StylePtr;
 #endif // STYLE_H

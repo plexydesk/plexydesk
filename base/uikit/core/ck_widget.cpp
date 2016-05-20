@@ -185,7 +185,7 @@ void widget::set_widget_id(unsigned int a_id) { priv->m_identifier = a_id; }
 
 unsigned widget::widget_id() const { return priv->m_identifier; }
 
-StylePtr widget::style() const { return resource_manager::style(); }
+style_ref widget::style() const { return resource_manager::style(); }
 
 widget::RenderLevel widget::layer_type() const {
   return priv->m_current_layer_type;

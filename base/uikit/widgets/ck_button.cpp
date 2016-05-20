@@ -120,7 +120,7 @@ void button::paint_hover_button(QPainter *a_painter, const QRectF &a_rect) {
   }
 }
 
-StylePtr button::style() const { return cherry_kit::resource_manager::style(); }
+style_ref button::style() const { return cherry_kit::resource_manager::style(); }
 
 void button::set_size(const QSizeF &a_size) {
   prepareGeometryChange();

@@ -42,7 +42,7 @@ public:
   virtual QString text() const;
 
   void set_background_color(const QColor &a_color);
-  virtual StylePtr style() const;
+  virtual style_ref style() const;
 
 protected:
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);

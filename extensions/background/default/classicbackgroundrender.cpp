@@ -69,7 +69,7 @@ void ClassicBackgroundRender::setBackgroundMode(
   update();
 }
 
-StylePtr ClassicBackgroundRender::style() const {
+cherry_kit::style_ref ClassicBackgroundRender::style() const {
   return cherry_kit::resource_manager::style();
 }
 

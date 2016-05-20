@@ -30,7 +30,7 @@ void icon_button::set_background_color(const QColor &a_color) {
   update();
 }
 
-StylePtr icon_button::style() const { return resource_manager::style(); }
+style_ref icon_button::style() const { return resource_manager::style(); }
 
 icon_button::icon_button(widget *a_parent_ptr)
     : widget(a_parent_ptr), o_image_button(new PrivateImageButton) {
