@@ -89,18 +89,18 @@ void desktop_dialog::show_activity() {
   }
 }
 
-void desktop_dialog::discard_activity() {
+void desktop_dialog::discard_activity() { 
+  hide();
+
+  if (dialog_window()) {
+    purge();
+  }
+
   foreach(std::function<void(const desktop_dialog *)> func,
           priv->m_discard_handler_list) {
     if (func) {
       func(this);
     }
-  }
-
-  hide();
-
-  if (dialog_window()) {
-    purge();
   }
 }
 

@@ -305,6 +305,7 @@ void space::on_activity_finished(const desktop_dialog *a_activity) {
         qDebug() << Q_FUNC_INFO
                  << "After :" << o_space->m_activity_list.count();
         _activity.reset();
+        break;
       }
       i++;
     }
