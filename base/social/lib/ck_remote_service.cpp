@@ -29,6 +29,11 @@
 #include <tinyxml2.h>
 #include <json.h>
 
+#ifdef __WINDOWS_PLATFORM__
+#include <Windows.h>
+#include <direct.h>
+#endif
+
 namespace social_kit {
 
 typedef enum {
@@ -254,9 +259,9 @@ bool ck_file_exisits(const std::string &a_file_name) {
 remote_service::remote_service(const std::string &input)
     : ctx(new remote_service_context) {
   std::string service_file = data_prefix() + input;
-#ifdef __CK_RUNTIME_DEBUG_MESSAGES_ENABLED__
+//#ifdef __CK_RUNTIME_DEBUG_MESSAGES_ENABLED__
   std::cout << "def ->" << service_file << std::endl;
-#endif
+//#endif
   if (ck_file_exisits(service_file.c_str())) {
     tinyxml2::XMLError error =
         ctx->m_xml_root_doc.LoadFile(service_file.c_str());
@@ -862,7 +867,15 @@ void remote_service::load_services() {
 
 std::string remote_service::data_prefix() const {
 #ifdef __WINDOWS_PLATFORM__
-  return std::string(CK_INSTALL_PREFIX + std::string("\\share\\social\\"));
+  char *_path_str = NULL;
+
+  if((_path_str = _getcwd(NULL, 0)) == NULL) {
+      return std::string();
+  }
+
+  std::string rv = std::string(_path_str, strlen(_path_str));
+  free(_path_str);
+  return rv + std::string("\\share\\social\\");
 #endif
 
 #ifdef __GNU_LINUX_PLATFORM__
