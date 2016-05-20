@@ -19,13 +19,15 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)
 
+ADD_DEFINITIONS(-DJSON_DLL_BUILD)
+
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 ################################
 # Add targets
 option(BUILD_SHARED_LIBS "build shared or static libraries" ON)
-add_library(jsoncpp_ck jsoncpp.cpp)
-
+add_library(jsoncpp_ck SHARED jsoncpp.cpp)
+#SET_TARGET_PROPERTIES (jsoncpp_ck PROPERTIES DEFINE_SYMBOL  "JSON_API" )
 
 if (NOT APPLE)
 if (NOT WIN32)
