@@ -46,6 +46,7 @@
 #include <X11/Xutil.h>
 
 #include <netwm.h>
+
 #endif
 
 #include "desktopmanager.h"

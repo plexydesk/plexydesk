@@ -16,6 +16,10 @@ option(BUILD_WITH_QT "Enable Qt ToolKit to Build PlexyDesk" ON)
 option(BUILD_OPTIMIZED "Enable Compiler Optimizations" OFF)
 
 if (WIN32)
+  #set(CPACK_SEddT_DESTDIR true)
+  set(CPACK_INSTALL_PREFIX "c:/cpack_root")
+endif()
+if (WIN32)
  FILE (TO_NATIVE_PATH ${CMAKE_INSTALL_PREFIX} CMAKE_INSTALL_NATIVE_PREFIX)
  MESSAGE(STATUS ${CMAKE_INSTALL_NATIVE_PREFIX})
 endif()
@@ -127,6 +131,22 @@ set(APPLICATION_DATE 2015-01-01)
 # Auto defined project variables
 set(APPLICATION_NAME "${PROJECT_NAME}")
 set(APPLICATION_MAIN_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
+
+
+#look for windows signtool
+if (WIN32)
+
+  GET_FILENAME_COMPONENT(WINSDK_DIR
+        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows;CurrentInstallFolder]" REALPATH CACHE)
+  find_program(SIGNTOOL signtool
+    PATHS
+    ${WINSDK_DIR}/bin)
+  if (SIGNTOOL)
+     message(STATUS "signtool.exe found .... [success]")
+  else()
+     message(FATAL_ERROR "signtool.exe is not found in your computer")
+  endif()
+endif()
 
 #Library Names
 if (BUILD_WITH_QT)
@@ -327,6 +347,28 @@ INCLUDE_DIRECTORIES(
     ${QT_INCLUDE_DIR}
     )
 
+set(CPACK_GENERATOR WIX)
+set(CPACK_WIX_TEMPLATE "${CMAKE_SOURCE_DIR}/cmakemodules/plexydesk-windows-installer.in.txt")
+set(CPACK_PACKAGE_NAME "plexydesk")
+set(CPACK_PACKAGE_VENDOR "plexydesk.org")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Super Charged Desktop Widgets")
+set(CPACK_PACKAGE_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${LIB_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${LIB_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${LIB_RELEASE}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "PlexyDesk")
+set(CPACK_CREATE_DESKTOP_LINKS plexydesk)
+set(CPACK_PACKAGE_EXECUTABLES plexydesk "PlexyDesk (Cherry)")
+set(CPACK_WIX_UPGRADE_GUID ${PACKAGE_GUID})
+set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/artwork/icons/plexydesk.ico")
+set(CPACK_WIX_UI_DIALOG "${CMAKE_CURRENT_SOURCE_DIR}/artwork/icons/wix_install_side_banner.bmp")
+set(CPACK_WIX_UI_BANNER "${CMAKE_CURRENT_SOURCE_DIR}/artwork/icons/wix_install_top_banner.bmp")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/License.txt")
+set(CPACK_WIX_PROGRAM_MENU_FOLDER "PlexyDesk")
+#set(CPACK_WIX_UI_REF "WixUI_Advanced")
+
+INCLUDE(CPack)
+
 add_subdirectory(deps/json-cpp)
 add_subdirectory(deps/tinyxml2)
 
@@ -397,25 +439,3 @@ endif()
 add_subdirectory(extensions/style/simple_gray)
 
 add_subdirectory(artwork/packs/)
-
-set(CPACK_GENERATOR WIX)
-set(CPACK_WIX_TEMPLATE "${CMAKE_SOURCE_DIR}/cmakemodules/plexydesk-windows-installer.in.txt")
-set(CPACK_PACKAGE_NAME "plexydesk")
-set(CPACK_PACKAGE_VENDOR "plexydesk.org")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Super Charged Desktop Widgets")
-set(CPACK_PACKAGE_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
-set(CPACK_PACKAGE_VERSION_MAJOR "${LIB_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${LIB_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${LIB_RELEASE}")
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "PlexyDesk")
-set(CPACK_CREATE_DESKTOP_LINKS plexydesk)
-set(CPACK_PACKAGE_EXECUTABLES plexydesk "PlexyDesk (Cherry)")
-set(CPACK_WIX_UPGRADE_GUID "1e6ff8f9-9b69-4e64-b409-d41299c20f73")
-set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/artwork/icons/plexydesk.ico")
-set(CPACK_WIX_UI_DIALOG "${CMAKE_CURRENT_SOURCE_DIR}/artwork/icons/wix_install_side_banner.bmp")
-set(CPACK_WIX_UI_BANNER "${CMAKE_CURRENT_SOURCE_DIR}/artwork/icons/wix_install_top_banner.bmp")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/License.txt")
-set(CPACK_WIX_PROGRAM_MENU_FOLDER "PlexyDesk")
-#set(CPACK_WIX_UI_REF "WixUI_Advanced")
-
-INCLUDE(CPack)
