@@ -59,9 +59,6 @@ public:
   cherry_kit::item_view *m_image_view;
   cherry_kit::fixed_layout *m_ck_layout;
 
-  std::vector<QImage> m_io_surface_list;
-  std::vector<cherry_kit::image_io *> m_service_list;
-
   QRectF m_geometry;
   QVariantMap m_activity_result;
 
@@ -103,12 +100,14 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
 
   cherry_kit::widget_properties_t ui_data;
 
-  cherry_kit::widget *ck_icon_gird = ck_ui->add_widget(0, 0, "widget", ui_data, [=]() {});
+  cherry_kit::widget *ck_icon_gird =
+      ck_ui->add_widget(0, 0, "widget", ui_data, [=]() {});
   priv->m_image_view = new cherry_kit::item_view(
       ck_icon_gird, cherry_kit::item_view::kGridModel);
 
-	priv->m_image_view->on_item_removed(
-			[=](cherry_kit::model_view_item *a_item) {delete a_item;});
+  priv->m_image_view->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    delete a_item;
+  });
 
   priv->m_image_view->set_content_size(128, 128);
   priv->m_image_view->set_column_count(5);
@@ -170,32 +169,27 @@ window *desktop_settings_dialog::dialog_window() const {
 }
 
 void desktop_settings_dialog::purge() {
-  if (priv->m_image_view)
+  if (priv->m_image_view) {
     priv->m_image_view->clear();
+    delete priv->m_image_view;
+  }
 
-  if (priv->m_ck_layout)
+  if (priv->m_progress_widget)
+      delete priv->m_progress_widget;
+
+  if (priv->m_progress_window) {
+    delete priv->m_progress_window;
+  }
+
+  if (priv->m_ck_layout) {
     delete priv->m_ck_layout;
+  }
 
   if (priv->m_window) {
     delete priv->m_window;
+    priv->m_window = 0;
   }
 
-  if (priv->m_io_surface_list.size() > 0) {
-    priv->m_io_surface_list.erase(std::end(priv->m_io_surface_list));
-    priv->m_io_surface_list.clear();
-  }
-
-  std::for_each(std::begin(priv->m_service_list),
-                std::end(priv->m_service_list),
-                [this](cherry_kit::image_io *a_service) {
-    if (a_service) {
-      delete a_service;
-    }
-  });
-
-  priv->m_service_list.clear();
-
-  priv->m_window = 0;
 }
 
 void
@@ -240,7 +234,7 @@ void desktop_settings_dialog::invoke_image_loader() {
   std::for_each(std::begin(current_file_list), std::end(current_file_list),
                 [&](const std::string &a_file) {
     cherry_kit::image_io *ck_image_service = new cherry_kit::image_io(0, 0);
-    priv->m_service_list.push_back(ck_image_service);
+    //priv->m_service_list.push_back(ck_image_service);
 
     ck_image_service->on_ready([&](
         cherry_kit::image_io::buffer_load_status_t a_status,
@@ -252,7 +246,7 @@ void desktop_settings_dialog::invoke_image_loader() {
       }
 
       cherry_kit::io_surface *ck_surface_ref = a_image_io->surface();
-      QImage image_buffer(ck_surface_ref->buffer, ck_surface_ref->width,
+      QImage image_buffer(ck_surface_ref->copy(), ck_surface_ref->width,
                           ck_surface_ref->height, QImage::Format_ARGB32);
       insert_image_to_grid(image_buffer, a_image_io->url());
       if (priv->m_progress_widget && priv->m_progress_window) {
@@ -260,6 +254,7 @@ void desktop_settings_dialog::invoke_image_loader() {
         priv->m_progress_window->set_window_title(QString(
             "Optimizing Images : %1%").arg(priv->m_progress_widget->value()));
       }
+      delete a_image_io;
     });
 
     ck_image_service->preview_image(a_file);

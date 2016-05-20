@@ -34,9 +34,9 @@ public:
   ~PrivateDatePicker() {}
 
   cherry_kit::window *m_activity_window;
-  cherry_kit::widget *m_window_content;
   cherry_kit::button *m_done_btn;
   cherry_kit::calendar_view *m_cal_widget;
+  cherry_kit::fixed_layout *m_layout;
 };
 
 date_dialog::date_dialog(QObject *object)
@@ -51,29 +51,29 @@ void date_dialog::create_window(const QRectF &window_geometry,
   priv->m_activity_window->set_geometry(window_geometry);
   priv->m_activity_window->set_window_title(window_title);
 
-  cherry_kit::fixed_layout *view =
+  priv->m_layout =
       new cherry_kit::fixed_layout(priv->m_activity_window);
 
-  view->set_content_margin(5, 5, 5, 5);
-  view->set_geometry(0, 0, window_geometry.width(), window_geometry.height());
+  priv->m_layout->set_content_margin(5, 5, 5, 5);
+  priv->m_layout->set_geometry(0, 0, window_geometry.width(), window_geometry.height());
 
-  view->add_rows(2);
-  view->add_segments(0, 1);
-  view->add_segments(1, 3);
+  priv->m_layout->add_rows(2);
+  priv->m_layout->add_segments(0, 1);
+  priv->m_layout->add_segments(1, 3);
 
-  view->set_row_height(0, "90%");
-  view->set_row_height(1, "10%");
+  priv->m_layout->set_row_height(0, "90%");
+  priv->m_layout->set_row_height(1, "10%");
 
   cherry_kit::widget_properties_t prop;
   prop["label"] = "Apply";
 
   priv->m_cal_widget = dynamic_cast<cherry_kit::calendar_view *>(
-      view->add_widget(0, 0, "calendar", prop, [=]() {}));
+      priv->m_layout->add_widget(0, 0, "calendar", prop, [=]() {}));
 
   priv->m_done_btn = dynamic_cast<cherry_kit::button *>(
-      view->add_widget(1, 1, "button", prop, [=]() {}));
+      priv->m_layout->add_widget(1, 1, "button", prop, [=]() {}));
 
-  priv->m_activity_window->set_window_content(view->viewport());
+  priv->m_activity_window->set_window_content(priv->m_layout->viewport());
 
   priv->m_done_btn->on_click([this]() {
     notify_calendar_value();
@@ -86,9 +86,14 @@ cherry_kit::window *date_dialog::dialog_window() const {
 }
 
 void date_dialog::purge() {
-  if (priv->m_activity_window) {
+  if (priv->m_cal_widget)
+    delete priv->m_cal_widget;
+  if (priv->m_done_btn)
+    delete priv->m_done_btn;
+  if (priv->m_done_btn)
+     delete priv->m_layout;
+  if (priv->m_activity_window)
     delete priv->m_activity_window;
-  }
 
   priv->m_activity_window = 0;
 }
