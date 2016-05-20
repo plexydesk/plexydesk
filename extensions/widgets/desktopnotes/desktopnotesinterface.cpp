@@ -21,13 +21,9 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_controller_interface>
-task_plugin_impl::controller() {
-  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
-      QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new desktop_task_controller_impl(this), &QObject::deleteLater);
+cherry_kit::desktop_controller_ref task_plugin_impl::controller() {
+  cherry_kit::desktop_controller_ref obj = cherry_kit::desktop_controller_ref(
+      new desktop_task_controller_impl(this));
 
   return obj;
 }
-
-// Q_EXPORT_PLUGIN2(desktopnotesengine, DesktopNotesInterface)

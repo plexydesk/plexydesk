@@ -130,7 +130,7 @@ desktop_controller_ref extension_manager::controller(const QString &a_name) {
     }
   }
 
-  return QSharedPointer<desktop_controller_interface>();
+  return desktop_controller_ref();
 }
 
 desktop_dialog_ref extension_manager::activity(const QString &a_name) {

@@ -36,7 +36,7 @@ namespace cherry_kit {
 class desktop_controller_interface;
 class space;
 class widget;
-typedef QSharedPointer<desktop_controller_interface> desktop_controller_ref;
+typedef std::shared_ptr<desktop_controller_interface> desktop_controller_ref;
 typedef std::function<void(const std::string &, const std::string &)>
 dialog_message_t;
 

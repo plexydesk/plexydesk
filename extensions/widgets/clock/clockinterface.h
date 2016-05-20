@@ -33,7 +33,7 @@ class time_controller_impl : public QObject,
   Q_PLUGIN_METADATA(IID "org.qt-project.clock")
 
 public:
-  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
+  cherry_kit::desktop_controller_ref controller();
 
 private:
   time_controller *mClock;

@@ -69,6 +69,6 @@ private:
   PrivateViewControllerPlugin *const priv;
 };
 
-typedef QSharedPointer<desktop_controller_interface> desktop_controller_ref;
+typedef std::shared_ptr<desktop_controller_interface> desktop_controller_ref;
 }
 #endif

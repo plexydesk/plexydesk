@@ -20,11 +20,9 @@
 #include "templateinterface.h"
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_controller_interface>
-template_plugin_impl::controller() {
-  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
-      QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new template_controller(this), &QObject::deleteLater);
+cherry_kit::desktop_controller_ref template_plugin_impl::controller() {
+  cherry_kit::desktop_controller_ref obj =
+      cherry_kit::desktop_controller_ref(new template_controller(this));
 
   return obj;
 }

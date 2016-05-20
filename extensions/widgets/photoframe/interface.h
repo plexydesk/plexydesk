@@ -27,7 +27,7 @@ class photo_plugin_impl : public QObject, public cherry_kit::desktop_plugin_inte
   Q_PLUGIN_METADATA(IID "org.qt-project.foo")
 
 public:
-  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
+  cherry_kit::desktop_controller_ref controller();
 };
 
 #endif

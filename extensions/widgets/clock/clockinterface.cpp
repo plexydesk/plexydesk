@@ -1,13 +1,9 @@
 #include "clockinterface.h"
 #include "clock.h"
 
-QSharedPointer<cherry_kit::desktop_controller_interface>
-time_controller_impl::controller() {
-  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
-      QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new time_controller(), &QObject::deleteLater);
+cherry_kit::desktop_controller_ref time_controller_impl::controller() {
+  cherry_kit::desktop_controller_ref obj =
+      cherry_kit::desktop_controller_ref(new time_controller());
 
   return obj;
 }
-
-// Q_EXPORT_PLUGIN2(plexyclock, ClockInterface)

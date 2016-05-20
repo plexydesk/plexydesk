@@ -21,11 +21,11 @@
 #include <ck_widget.h>
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_controller_interface>
+cherry_kit::desktop_controller_ref
 panel_plugin_impl::controller() {
-  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
-      QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new desktop_panel_controller_impl(0), &QObject::deleteLater);
+  cherry_kit::desktop_controller_ref obj =
+      desktop_controller_ref(
+          new desktop_panel_controller_impl(0));
 
   return obj;
 }

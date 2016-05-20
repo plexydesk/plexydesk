@@ -20,11 +20,9 @@
 #include "dateinterface.h"
 #include <ck_config.h>
 
-QSharedPointer<cherry_kit::desktop_controller_interface>
-date_plugin_impl::controller() {
-  QSharedPointer<cherry_kit::desktop_controller_interface> obj =
-      QSharedPointer<cherry_kit::desktop_controller_interface>(
-          new date_controller(this), &QObject::deleteLater);
+cherry_kit::desktop_controller_ref date_plugin_impl::controller() {
+  cherry_kit::desktop_controller_ref obj =
+      cherry_kit::desktop_controller_ref(new date_controller(this));
 
   return obj;
 }

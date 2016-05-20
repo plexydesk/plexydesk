@@ -14,7 +14,7 @@ public:
   desktop_plugin_interface() {}
   virtual ~desktop_plugin_interface() {};
 
-  virtual QSharedPointer<desktop_controller_interface> controller() = 0;
+  virtual desktop_controller_ref controller() = 0;
 };
 }
 

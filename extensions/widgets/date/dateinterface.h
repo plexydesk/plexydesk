@@ -34,7 +34,7 @@ public:
   virtual ~date_plugin_impl() {}
 
   /* this will return a valid data plugin pointer*/
-  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
+  cherry_kit::desktop_controller_ref controller();
 };
 
 #endif

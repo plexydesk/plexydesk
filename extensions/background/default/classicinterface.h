@@ -33,10 +33,10 @@ public:
   ClassicBackdrop(QObject *a_parent_ptr = 0);
   virtual ~ClassicBackdrop();
 
-  QSharedPointer<cherry_kit::desktop_controller_interface> controller();
+  cherry_kit::desktop_controller_ref controller();
 
 private:
-  QSharedPointer<cherry_kit::desktop_controller_interface> m_instance_ref;
+  cherry_kit::desktop_controller_ref m_instance_ref;
 
 };
 

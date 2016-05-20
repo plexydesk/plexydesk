@@ -67,7 +67,7 @@ void space::add_controller(const QString &a_name) {
     return;
   }
 
-  QSharedPointer<desktop_controller_interface> controllerPtr =
+  desktop_controller_ref controllerPtr =
       (cherry_kit::extension_manager::instance()->controller(a_name));
 
   if (!controllerPtr) {

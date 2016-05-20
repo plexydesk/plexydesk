@@ -16,7 +16,7 @@ public:
 
   ~PrivateDesktopActivity() {
     if (m_controller_ptr) {
-      m_controller_ptr.clear();
+      m_controller_ptr.reset();
     }
   }
 
@@ -148,7 +148,7 @@ void desktop_dialog::on_notify(dialog_message_t callback) {
 }
 
 void desktop_dialog::update_action() {
-  if (!priv->m_controller_ptr.data()) {
+  if (!priv->m_controller_ptr.get()) {
     qWarning() << Q_FUNC_INFO << "Error: Controller Not Set";
     return;
   }
