@@ -14,6 +14,7 @@ CMAKE_POLICY(SET CMP0043 NEW)
 #handle platform options
 option(BUILD_WITH_QT "Enable Qt ToolKit to Build PlexyDesk" ON)
 option(BUILD_OPTIMIZED "Enable Compiler Optimizations" OFF)
+option(ENABLE_DEVELOPER_BUILD "Build PlexyDesk without Code Signing" ON)
 
 if (WIN32)
   #set(CPACK_SEddT_DESTDIR true)
