@@ -37,7 +37,7 @@ public:
 
   io_surface *m_surface;
   std::function<void(buffer_load_status_t, image_io *)> m_call_on_ready;
-  std::string m_url;
+  cherry_kit::string m_url;
 };
 
 image_io::image_io(int a_width, int a_height)
@@ -53,7 +53,7 @@ void image_io::create(int a_width, int a_height) {}
 
 void image_io::create(image_data_ref a_buffer, int a_width, int a_height) {}
 
-void image_io::create(const std::string &a_file_name) {
+void image_io::create(const cherry_kit::string &a_file_name) {
   priv->m_url = a_file_name;
   o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
                                            buffer_load_status_t a_status) {
@@ -77,9 +77,9 @@ void image_io::create(const std::string &a_file_name) {
   o_surface_proxy->load_from_file(a_file_name);
 }
 
-std::string image_io::url() const { return priv->m_url; }
+cherry_kit::string image_io::url() const { return priv->m_url; }
 
-void image_io::preview_image(const std::string &a_file_name) {
+void image_io::preview_image(const cherry_kit::string &a_file_name) {
   priv->m_url = a_file_name;
   o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
                                            buffer_load_status_t a_status) {
@@ -108,7 +108,7 @@ io_surface *image_io::surface() const { return priv->m_surface; }
 io_surface *image_io::add_task(image_io::image_operation_t a_method,
                               const image_io::scale_options &arg) { return nullptr;}
 
-void image_io::set_filter(const std::string &a_filter_name, int a_flag) {}
+void image_io::set_filter(const cherry_kit::string &a_filter_name, int a_flag) {}
 
 void image_io::on_ready(
     std::function<void(buffer_load_status_t, image_io *)> a_callback) {

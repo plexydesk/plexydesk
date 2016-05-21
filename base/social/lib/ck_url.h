@@ -1,7 +1,7 @@
 #ifndef URL_H
 #define URL_H
 
-#include <string>
+#include <config.h>
 #include <social_kit_export.h>
 
 #include <functional>
@@ -14,10 +14,10 @@ typedef std::function<void(const url_response &)> response_ready_callbcak_t;
 
 class DECL_SOCIAL_KIT_EXPORT url_encode {
 public:
-  url_encode(const std::string &a_str);
+  url_encode(const cherry_kit::string &a_str);
   virtual ~url_encode();
 
-  virtual std::string to_string() const;
+  virtual cherry_kit::string to_string() const;
 
 private:
   class platform_url_handle;
@@ -33,20 +33,20 @@ public:
   int status_code() const;
   void set_status_code(int status_code);
 
-  std::string uri() const;
-  void set_uri(const std::string &uri);
+  cherry_kit::string uri() const;
+  void set_uri(const cherry_kit::string &uri);
 
-  std::string response_body() const;
-  void set_response_body(const std::string &response_body);
+  cherry_kit::string response_body() const;
+  void set_response_body(const cherry_kit::string &response_body);
 
-  std::string request_body() const;
-  void set_request_body(const std::string &request_body);
+  cherry_kit::string request_body() const;
+  void set_request_body(const cherry_kit::string &request_body);
 
-  std::string http_version() const;
-  void set_http_version(const std::string &http_version);
+  cherry_kit::string http_version() const;
+  void set_http_version(const cherry_kit::string &http_version);
 
-  std::string method() const;
-  void set_method(const std::string &method);
+  cherry_kit::string method() const;
+  void set_method(const cherry_kit::string &method);
 
   unsigned int data_buffer_size() const;
   void set_data_buffer_size(unsigned int data_buffer_size);
@@ -56,11 +56,11 @@ public:
 
 private:
   int m_status_code;
-  std::string m_uri;
-  std::string m_response_body;
-  std::string m_request_body;
-  std::string m_http_version;
-  std::string m_method;
+  cherry_kit::string m_uri;
+  cherry_kit::string m_response_body;
+  cherry_kit::string m_request_body;
+  cherry_kit::string m_http_version;
+  cherry_kit::string m_method;
 
   unsigned int m_data_buffer_size;
   char * m_data_buffer;
@@ -82,7 +82,7 @@ public:
   url_request();
   virtual ~url_request();
 
-  void send_message(url_request_type_t a_type, const std::string &a_message);
+  void send_message(url_request_type_t a_type, const cherry_kit::string &a_message);
   void on_response_ready(response_ready_callbcak_t a_callback);
 
   class platform_url_request;

@@ -13,7 +13,7 @@ public:
 
   cherry_kit::window *window();
 
-  void create_dock_action(int row, int column, const std::string &icon,
+  void create_dock_action(int row, int column, const cherry_kit::string &icon,
                           std::function<void()> a_button_action_func);
 
 private:

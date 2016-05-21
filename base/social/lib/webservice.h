@@ -43,7 +43,7 @@ public:
   explicit web_service(QObject *a_parent_ptr = 0);
   virtual ~web_service();
 
-  void create(const std::string &serviceName);
+  void create(const cherry_kit::string &serviceName);
 
   void submit(const QString &method, service_query_parameters *a_params,
                     QHttpMultiPart *data = 0,

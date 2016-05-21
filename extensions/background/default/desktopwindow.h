@@ -1,6 +1,7 @@
 #ifndef DESKTOPWINDOW_H
 #define DESKTOPWINDOW_H
 
+#include <config.h>
 #include <ck_window.h>
 
 class QPainter;
@@ -20,7 +21,7 @@ public:
   desktop_window();
   virtual ~desktop_window();
 
-  void set_background(const std::string &a_image_name);
+  void set_background(const cherry_kit::string &a_image_name);
   void set_background(const QImage &a_image_name);
   void reset_window_background();
 

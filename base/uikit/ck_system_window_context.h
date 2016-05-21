@@ -27,8 +27,8 @@ public:
     static system_window_context *get();
     virtual ~system_window_context();
 
-    virtual device_window *find_window(const std::string &a_title,
-                                       const std::string &a_window_class) = 0;
+    virtual device_window *find_window(const cherry_kit::string &a_title,
+                                       const cherry_kit::string &a_window_class) = 0;
     virtual bool reparent(device_window *a_child, device_window *a_parent) = 0;
 
     virtual device_window *desktop() = 0;
@@ -43,8 +43,8 @@ public:
 
     virtual void on_change(window_change_callback_t a_callback);
 
-    virtual void post_notifycation(const std::string &icon,
-                                   const std::string &msg) = 0;
+    virtual void post_notifycation(const cherry_kit::string &icon,
+                                   const cherry_kit::string &msg) = 0;
 
 protected:
     static system_window_context *_self;

@@ -29,7 +29,7 @@ public:
   int m_space_count;
   int m_current_activty_space_id;
   float m_workspace_left_margine;
-  std::vector<std::string> m_default_controller_name_list;
+  std::vector<cherry_kit::string> m_default_controller_name_list;
   bool m_opengl_on;
   int m_screen_id;
 };
@@ -106,7 +106,7 @@ void workspace::move_to_screen(int a_screen_id) {
   scale(width_factor, height_factor);
 }
 
-void workspace::add_default_controller(const std::string &a_controller_name) {
+void workspace::add_default_controller(const cherry_kit::string &a_controller_name) {
   priv->m_default_controller_name_list.push_back(a_controller_name);
 }
 
@@ -440,8 +440,8 @@ void workspace::update_space_geometry(space *a_space_ptr,
   }
 }
 
-std::string workspace::workspace_instance_name() {
-  std::string workspace_name =
+cherry_kit::string workspace::workspace_instance_name() {
+  cherry_kit::string workspace_name =
       "org.workspace.space_" + std::to_string(priv->m_screen_id);
 
   return workspace_name;
@@ -550,7 +550,7 @@ void workspace::add_default_space() {
 
   std::for_each(std::begin(priv->m_default_controller_name_list),
                 std::end(priv->m_default_controller_name_list),
-                [=](std::string &a_controller_name) {
+                [=](cherry_kit::string &a_controller_name) {
                   _space->add_controller(
                       QString::fromStdString(a_controller_name));
                 });
@@ -594,7 +594,7 @@ void workspace::restore_session() {
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const std::string &a_app_name, bool a_found) {
+                            const cherry_kit::string &a_app_name, bool a_found) {
     if (a_found) {
       QString _space_name = a_object.property("name").c_str();
       revoke_space(_space_name, a_object.key());

@@ -19,6 +19,8 @@
 #ifndef SYNCOBJECT_H
 #define SYNCOBJECT_H
 
+#include <config.h>
+
 #include <QuetzalDataKitQt_export.h>
 #include <vector>
 #include <string>
@@ -28,7 +30,7 @@ namespace cherry_kit {
 
 class sync_object;
 
-typedef std::vector<std::string> ck_string_list;
+typedef std::vector<cherry_kit::string> ck_string_list;
 typedef std::vector<sync_object *> sync_object_list;
 
 class data_sync;
@@ -78,14 +80,14 @@ public:
       *
       * @param name
       */
-  void set_name(const std::string &name);
+  void set_name(const cherry_kit::string &name);
 
   /**
       * @brief
       *
       * @return QString
       */
-  std::string name() const;
+  cherry_kit::string name() const;
 
   void set_key(unsigned int key);
   unsigned int key() const;
@@ -93,10 +95,10 @@ public:
   sync_object *parent() const;
   void set_parent(sync_object *a_parent_ptr);
 
-  void set_property(const std::string &name, const std::string &property);
-  std::string property(const std::string &name) const;
+  void set_property(const cherry_kit::string &name, const cherry_kit::string &property);
+  cherry_kit::string property(const cherry_kit::string &name) const;
   ck_string_list property_list() const;
-  bool has_property(const std::string &a_property) const;
+  bool has_property(const cherry_kit::string &a_property) const;
 
   bool has_children() const;
   unsigned int child_count() const;
@@ -104,9 +106,9 @@ public:
 
   sync_object_list child_objects() const;
   sync_object *childObject(unsigned int key);
-  sync_object *childObject(const std::string &name);
-  void linksToObject(const std::string &dataStoreName,
-                     const std::string &objectName);
+  sync_object *childObject(const cherry_kit::string &name);
+  void linksToObject(const cherry_kit::string &dataStoreName,
+                     const cherry_kit::string &objectName);
 
   void update_time_stamp();
 
@@ -116,8 +118,8 @@ public:
   virtual void sync();
 
   // protected:
-  sync_object *create_new(const std::string &name);
-  std::string dump_content() const;
+  sync_object *create_new(const cherry_kit::string &name);
+  cherry_kit::string dump_content() const;
   bool contains(sync_object *object);
   bool is_similar(sync_object *object);
   void replace(sync_object *object);

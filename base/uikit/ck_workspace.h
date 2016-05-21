@@ -39,7 +39,7 @@ public:
 
   virtual void move_to_screen(int a_screen_id);
 
-  virtual void add_default_controller(const std::string &a_controller_name);
+  virtual void add_default_controller(const cherry_kit::string &a_controller_name);
 
   virtual space *create_blank_space();
   virtual void add_default_space();
@@ -65,7 +65,7 @@ public:
   virtual void set_accelerated_rendering(bool a_on = true);
   virtual bool is_accelerated_rendering_on() const;
 
-  std::string workspace_instance_name();
+  cherry_kit::string workspace_instance_name();
   float desktop_verticle_scale_factor();
   float desktop_horizontal_scale_factor();
 

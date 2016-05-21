@@ -20,18 +20,18 @@
 #define CONTROLLER_ACTION_H
 
 #include <cstring>
-#include <string>
 #include <algorithm>
 #include <functional>
 #include <map>
 #include <vector>
 
+#include <config.h>
 #include <plexydesk_ui_exports.h>
 
 namespace cherry_kit {
 class ui_action;
 typedef std::vector<ui_action> ui_action_list;
-typedef std::map<std::string, std::string> ui_task_data_t;
+typedef std::map<cherry_kit::string, cherry_kit::string> ui_task_data_t;
 typedef std::function<void(const ui_action *, const ui_task_data_t &)>
 ui_task_callback_t;
 
@@ -42,11 +42,11 @@ public:
 
   virtual ~ui_action();
 
-  virtual std::string name() const;
-  virtual void set_name(const std::string &a_name);
+  virtual cherry_kit::string name() const;
+  virtual void set_name(const cherry_kit::string &a_name);
 
-  virtual std::string controller() const;
-  virtual void set_controller(const std::string &a_name);
+  virtual cherry_kit::string controller() const;
+  virtual void set_controller(const cherry_kit::string &a_name);
 
   virtual unsigned int id() const;
   virtual void set_id(unsigned int a_id);
@@ -54,15 +54,15 @@ public:
   virtual void set_visible(bool a_visibility = true);
   virtual bool is_visibile() const;
 
-  virtual void set_icon(const std::string a_icon);
-  virtual std::string icon() const;
+  virtual void set_icon(const cherry_kit::string a_icon);
+  virtual cherry_kit::string icon() const;
 
   virtual void add_action(const ui_action &action);
   virtual ui_action_list sub_actions() const;
 
   virtual void set_task(ui_task_callback_t callback);
   virtual void execute(const ui_task_data_t &a_data = ui_task_data_t()) const;
-  virtual void execute(const std::string &a_task_name,
+  virtual void execute(const cherry_kit::string &a_task_name,
                        const ui_task_data_t &a_data = ui_task_data_t());
 
 private:

@@ -90,7 +90,7 @@ desktop_window::desktop_window()
 
 desktop_window::~desktop_window() { delete priv; }
 
-void desktop_window::set_background(const std::string &a_image_name) {
+void desktop_window::set_background(const cherry_kit::string &a_image_name) {
   /*
   QImage background(a_image_name);
   p_window->m_background_width = background.width();

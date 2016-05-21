@@ -26,7 +26,7 @@ desktop_controller_interface::desktop_controller_interface(QObject *parent)
 }
 
 void desktop_controller_interface::revoke_previous_session(
-    const std::string &a_session_object_name,
+    const cherry_kit::string &a_session_object_name,
     std::function<void(desktop_controller_interface *, session_sync *)>
         a_callback) {
   cherry_kit::data_sync *sync =
@@ -35,14 +35,14 @@ void desktop_controller_interface::revoke_previous_session(
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const std::string &a_app_name, bool a_found) {
+                            const cherry_kit::string &a_app_name, bool a_found) {
     if (a_found) {
       QVariantMap session_data;
 
       cherry_kit::ck_string_list prop_list = a_object.property_list();
 
       std::for_each(std::begin(prop_list), std::end(prop_list),
-                    [&](const std::string &a_prop) {
+                    [&](const cherry_kit::string &a_prop) {
         session_data[a_prop.c_str()] = a_object.property(a_prop).c_str();
       });
 
@@ -59,9 +59,9 @@ void desktop_controller_interface::revoke_previous_session(
 }
 
 void desktop_controller_interface::write_session_data(
-    const std::string &a_session_name) {
-  std::string session_name = session_store_name(a_session_name);
-  std::string key_name = a_session_name;
+    const cherry_kit::string &a_session_name) {
+  cherry_kit::string session_name = session_store_name(a_session_name);
+  cherry_kit::string key_name = a_session_name;
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
   key_name += "_id";
 
@@ -85,11 +85,11 @@ void desktop_controller_interface::write_session_data(
     Q_FOREACH(const QString & a_key, session_ref->session_keys()) {
       clock_session_obj.set_property(
           a_key.toStdString(),
-          std::string(session_ref->session_data(a_key).toByteArray()));
+          cherry_kit::string(session_ref->session_data(a_key).toByteArray()));
     }
 
     sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                              const std::string &a_app_name, bool a_found) {
+                              const cherry_kit::string &a_app_name, bool a_found) {
       if (!a_found) {
         sync->add_object(clock_session_obj);
       } else {
@@ -119,7 +119,7 @@ space *desktop_controller_interface::viewport() const {
 }
 
 void desktop_controller_interface::start_session(
-    const std::string &a_session_name, const QVariantMap &a_data,
+    const cherry_kit::string &a_session_name, const QVariantMap &a_data,
     bool a_restore, std::function<void(desktop_controller_interface *,
                                        session_sync *)> a_callback) {
   cherry_kit::session_sync *session_ref =
@@ -140,12 +140,12 @@ void desktop_controller_interface::start_session(
   }
 }
 
-std::string desktop_controller_interface::session_store_name(
-    const std::string &a_name) const {
-  std::string key_name = a_name;
+cherry_kit::string desktop_controller_interface::session_store_name(
+    const cherry_kit::string &a_name) const {
+  cherry_kit::string key_name = a_name;
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
-  std::string session_db_name =
+  cherry_kit::string session_db_name =
       priv->m_viewport->session_name_for_controller(
                                          controller_name()).toStdString() +
       "_org." + key_name + ".data";

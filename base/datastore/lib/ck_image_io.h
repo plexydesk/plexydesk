@@ -19,6 +19,8 @@
 #ifndef CHERRY_IMAGE_IO_H
 #define CHERRY_IMAGE_IO_H
 
+#include <config.h>
+
 #include <string>
 #include <iostream>
 #include <cstdint>
@@ -73,17 +75,17 @@ public:
   virtual void create(int a_width, int a_height);
   virtual void create(image_data_ref a_buffer, int a_width, int a_height);
 
-  virtual void create(const std::string &a_file_name);
-  virtual std::string url() const;
+  virtual void create(const cherry_kit::string &a_file_name);
+  virtual cherry_kit::string url() const;
 
-  virtual void preview_image(const std::string &a_file_name);
+  virtual void preview_image(const cherry_kit::string &a_file_name);
 
   virtual io_surface *surface() const;
 
   virtual io_surface *add_task(image_operation_t a_method,
                               const scale_options &arg);
 
-  virtual void set_filter(const std::string &a_filter_name, int a_flag);
+  virtual void set_filter(const cherry_kit::string &a_filter_name, int a_flag);
 
   virtual void
   on_ready(std::function<void(buffer_load_status_t, image_io *)> a_callback);

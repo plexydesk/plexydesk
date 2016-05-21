@@ -32,17 +32,17 @@ public:
 
   virtual void setEngineName(const QString &name);
 
-  void set_app_name(const std::string &a_app_name);
+  void set_app_name(const cherry_kit::string &a_app_name);
 
   void insert_request(const sync_object &a_obj);
   void update_request(const sync_object &a_obj);
-  void delete_request(const std::string &a_object_name,
-                      const std::string &a_key, const std::string &a_value);
+  void delete_request(const cherry_kit::string &a_object_name,
+                      const cherry_kit::string &a_key, const cherry_kit::string &a_value);
 
   virtual QString data(const QString &fileName);
 
-  virtual void find(const std::string &a_object_name,
-                    const std::string &a_attrib, const std::string &a_value);
+  virtual void find(const cherry_kit::string &a_object_name,
+                    const cherry_kit::string &a_attrib, const cherry_kit::string &a_value);
   virtual void sync(const QString &datqstoreName, const QString &data);
 
   virtual bool hasLock();

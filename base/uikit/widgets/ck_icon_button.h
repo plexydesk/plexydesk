@@ -19,6 +19,8 @@
 #ifndef IMAGEBUTTON_H
 #define IMAGEBUTTON_H
 
+#include <config.h>
+
 #include <QGraphicsLayoutItem>
 #include <QGraphicsObject>
 #include <ck_widget.h>
@@ -36,7 +38,7 @@ public:
                           const QSizeF &a_constraint = QSizeF()) const;
 
   virtual void set_pixmap(const QPixmap &a_pixmap);
-  virtual void set_icon(const std::string &a_icon_name);
+  virtual void set_icon(const cherry_kit::string &a_icon_name);
 
   virtual void set_lable(const QString &a_text);
   virtual QString text() const;

@@ -19,7 +19,7 @@ desktop_button::~desktop_button() {
     m_window->close();
 }
 
-void desktop_button::set_icon(const std::string &a_icon_name) {
+void desktop_button::set_icon(const cherry_kit::string &a_icon_name) {
   if (!m_button)
     return;
 
@@ -28,7 +28,7 @@ void desktop_button::set_icon(const std::string &a_icon_name) {
   m_button->set_pixmap(pixmap);
 }
 
-void desktop_button::set_label(const std::string &a_text_label) {
+void desktop_button::set_label(const cherry_kit::string &a_text_label) {
   if (!m_button)
     return;
 

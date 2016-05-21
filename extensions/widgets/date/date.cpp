@@ -44,20 +44,20 @@ public:
   int duration() const;
   void set_duration(int duration);
 
-  std::string name() const;
-  void set_name(const std::string &name);
+  cherry_kit::string name() const;
+  void set_name(const cherry_kit::string &name);
 
-  std::string note() const;
-  void set_note(const std::string &note);
+  cherry_kit::string note() const;
+  void set_note(const cherry_kit::string &note);
 
-  std::string start_time() const;
-  void set_start_time(const std::string &start_time);
+  cherry_kit::string start_time() const;
+  void set_start_time(const cherry_kit::string &start_time);
 
 private:
   int m_duration;
-  std::string m_name;
-  std::string m_note;
-  std::string m_start_time;
+  cherry_kit::string m_name;
+  cherry_kit::string m_note;
+  cherry_kit::string m_start_time;
 };
 
 typedef std::vector<time_event> event_list_t;
@@ -173,8 +173,8 @@ cherry_kit::ui_action date_controller::task() {
 
 cherry_kit::widget *
 date_controller::add_action_button(cherry_kit::fixed_layout *ui, int a_row,
-                                   int a_col, const std::string &a_label,
-                                   const std::string &a_icon) {
+                                   int a_col, const cherry_kit::string &a_label,
+                                   const cherry_kit::string &a_icon) {
   cherry_kit::widget_properties_t ui_data;
   ui_data["label"] = a_label;
   ui_data["icon"] = "toolbar/" + a_icon + ".png";
@@ -644,14 +644,14 @@ void time_segment::set_time_value(int time_value) { m_time_value = time_value; }
 int time_event::duration() const { return m_duration; }
 
 void time_event::set_duration(int duration) { m_duration = duration; }
-std::string time_event::name() const { return m_name; }
+cherry_kit::string time_event::name() const { return m_name; }
 
-void time_event::set_name(const std::string &name) { m_name = name; }
-std::string time_event::note() const { return m_note; }
+void time_event::set_name(const cherry_kit::string &name) { m_name = name; }
+cherry_kit::string time_event::note() const { return m_note; }
 
-void time_event::set_note(const std::string &note) { m_note = note; }
-std::string time_event::start_time() const { return m_start_time; }
+void time_event::set_note(const cherry_kit::string &note) { m_note = note; }
+cherry_kit::string time_event::start_time() const { return m_start_time; }
 
-void time_event::set_start_time(const std::string &start_time) {
+void time_event::set_start_time(const cherry_kit::string &start_time) {
   m_start_time = start_time;
 }

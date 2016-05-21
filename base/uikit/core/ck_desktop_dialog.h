@@ -19,17 +19,19 @@
 #ifndef DESKTOPACTIVITY_H
 #define DESKTOPACTIVITY_H
 
-#include <QCursor>
+#include <config.h>
+#include <plexydesk_ui_exports.h>
 
 #include <ck_widget.h>
 #include <ck_window.h>
 
-#include <plexydesk_ui_exports.h>
 
 #include <memory>
 #include <thread>
 #include <chrono>
 #include <mutex>
+
+#include <QCursor>
 
 namespace cherry_kit {
 
@@ -37,7 +39,7 @@ class desktop_controller_interface;
 class space;
 class widget;
 typedef std::shared_ptr<desktop_controller_interface> desktop_controller_ref;
-typedef std::function<void(const std::string &, const std::string &)>
+typedef std::function<void(const cherry_kit::string &, const cherry_kit::string &)>
 dialog_message_t;
 
 class DECL_UI_KIT_EXPORT desktop_dialog : public QObject {
@@ -95,8 +97,8 @@ protected:
   virtual void set_geometry(const QRectF &a_geometry);
   virtual void update_content_geometry(widget *a_widget_ptr);
   virtual void notify_done();
-  virtual void notify_message(const std::string &a_key,
-                              const std::string &a_value) const;
+  virtual void notify_message(const cherry_kit::string &a_key,
+                              const cherry_kit::string &a_value) const;
 
 Q_SIGNALS:
   void canceled();

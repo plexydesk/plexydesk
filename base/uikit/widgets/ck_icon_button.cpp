@@ -58,7 +58,7 @@ void icon_button::set_pixmap(const QPixmap &a_pixmap) {
   update();
 }
 
-void icon_button::set_icon(const std::string &a_icon_name) {
+void icon_button::set_icon(const cherry_kit::string &a_icon_name) {
   QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
       a_icon_name.c_str(), "mdpi");
 

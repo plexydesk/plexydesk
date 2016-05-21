@@ -38,3 +38,10 @@
 #else
 #error "Run with -DBUILD_WITH_{toolkit_name}, for example -DBUILD_WITH_QT=ON"
 #endif
+
+#ifndef __STRING_DEFINE__
+#include <string>
+namespace cherry_kit {
+  typedef std::string string;
+}
+#endif

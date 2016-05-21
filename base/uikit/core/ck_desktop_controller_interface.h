@@ -45,19 +45,19 @@ public:
 protected:
   explicit desktop_controller_interface(QObject *a_parent_ptr = 0);
   virtual void
-  revoke_previous_session(const std::string &a_session_object_name,
+  revoke_previous_session(const cherry_kit::string &a_session_object_name,
                           std::function<void(desktop_controller_interface *,
                                              session_sync *)> a_callback);
-  virtual void write_session_data(const std::string &a_session_name);
+  virtual void write_session_data(const cherry_kit::string &a_session_name);
   virtual int session_count() const;
 
   virtual void session_data_ready(const cherry_kit::sync_object &a_root) = 0;
   virtual void submit_session_data(cherry_kit::sync_object *a_root_obj) = 0;
-  virtual void start_session(const std::string &a_session_name,
+  virtual void start_session(const cherry_kit::string &a_session_name,
                              const QVariantMap &a_data, bool a_restore,
                              std::function<void(desktop_controller_interface *,
                                                 session_sync *)> a_callback);
-  virtual std::string session_store_name(const std::string &a_name) const;
+  virtual cherry_kit::string session_store_name(const cherry_kit::string &a_name) const;
 
   virtual void handle_drop_event(widget *a_widget_ptr, QDropEvent *a_event_ptr);
 

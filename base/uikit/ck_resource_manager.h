@@ -19,6 +19,8 @@
 #ifndef RESOURCE_MANAGER_H
 #define RESOURCE_MANAGER_H
 
+#include <config.h>
+
 #include <plexydesk_ui_exports.h>
 
 #include <ck_style.h>
@@ -51,8 +53,8 @@ public:
   } ColorName;
 
   static const char *color(ColorName a_name);
-  virtual void set_color_scheme(const std::string &a_name);
-  virtual std::string color_scheme() const;
+  virtual void set_color_scheme(const cherry_kit::string &a_name);
+  virtual cherry_kit::string color_scheme() const;
   virtual const char *color_code(ColorName a_name);
 
 private:

@@ -19,6 +19,8 @@
 #ifndef VIEWBUILDER_H
 #define VIEWBUILDER_H
 
+#include <config.h>
+
 #include <iostream>
 #include <ck_widget.h>
 
@@ -28,7 +30,7 @@ class label;
 class button;
 class icon_button;
 
-typedef std::map<std::string, std::string> widget_properties_t;
+typedef std::map<cherry_kit::string, cherry_kit::string> widget_properties_t;
 typedef std::function<void ()> widget_handler_callback_t;
 
 class DECL_UI_KIT_EXPORT fixed_layout {
@@ -70,17 +72,17 @@ public:
 
   virtual void add_rows(int a_count);
 
-  virtual void set_row_height(int a_row, const std::string &a_height);
+  virtual void set_row_height(int a_row, const cherry_kit::string &a_height);
 
   virtual void add_segments(int a_index, int a_count);
   virtual void set_segment_width(int a_row, int a_column,
-                                 const std::string &a_width);
+                                 const cherry_kit::string &a_width);
 
   virtual widget *viewport() const;
   virtual widget *at(int a_row, int a_column);
 
   virtual widget *add_widget(int a_row, int a_column,
-                             const std::string &a_widget,
+                             const cherry_kit::string &a_widget,
                              const widget_properties_t &a_properties,
                              widget_handler_callback_t a_callback = 0);
   virtual void update_property(int a_row, int a_column,

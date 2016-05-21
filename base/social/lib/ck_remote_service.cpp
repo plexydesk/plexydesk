@@ -52,19 +52,19 @@ public:
   bool optional() const;
   void set_optional(bool optional);
 
-  std::string value() const;
-  void set_value(const std::string &value);
+  cherry_kit::string value() const;
+  void set_value(const cherry_kit::string &value);
 
   service_data_type_t type() const;
   void set_type(const service_data_type_t &type);
 
-  std::string default_value() const;
-  void set_default_value(const std::string &default_value);
+  cherry_kit::string default_value() const;
+  void set_default_value(const cherry_kit::string &default_value);
 
 private:
   bool m_optional;
-  std::string m_value;
-  std::string m_default_value;
+  cherry_kit::string m_value;
+  cherry_kit::string m_default_value;
   service_data_type_t m_type;
 };
 
@@ -93,8 +93,8 @@ public:
     m_argument_list.clear();
   }
 
-  std::string url() const;
-  void set_url(const std::string &url);
+  cherry_kit::string url() const;
+  void set_url(const cherry_kit::string &url);
 
   input_arg_t argument_list() const;
   void insert_argument(service_input_argument *a_arg) {
@@ -106,7 +106,7 @@ public:
 
 private:
   input_arg_t m_argument_list;
-  std::string m_url;
+  cherry_kit::string m_url;
   request_type_t m_request_type;
 };
 
@@ -115,15 +115,15 @@ public:
   service_result_query_attribute() {}
   ~service_result_query_attribute() {}
 
-  std::string value() const;
-  void set_value(const std::string &value);
+  cherry_kit::string value() const;
+  void set_value(const cherry_kit::string &value);
 
   service_data_type_t type() const;
   void set_type(const service_data_type_t &type);
 
 private:
   service_data_type_t m_type;
-  std::string m_value;
+  cherry_kit::string m_value;
 };
 
 class DECL_SOCIAL_KIT_EXPORT service_result_query {
@@ -133,11 +133,11 @@ public:
   service_result_query() {}
   ~service_result_query() {}
 
-  std::string name() const { return m_name; }
-  void set_name(const std::string &a_name) { m_name = a_name; }
+  cherry_kit::string name() const { return m_name; }
+  void set_name(const cherry_kit::string &a_name) { m_name = a_name; }
 
-  std::string tag_name() const { return m_tag_name; }
-  void set_tag_name(const std::string &a_tag_name) { m_tag_name = a_tag_name; }
+  cherry_kit::string tag_name() const { return m_tag_name; }
+  void set_tag_name(const cherry_kit::string &a_tag_name) { m_tag_name = a_tag_name; }
 
   void insert_attribute(service_result_query_attribute *a_attr) {
     m_attribute_list.push_back(a_attr);
@@ -145,8 +145,8 @@ public:
   attribute_list_t attribute_list() const { return m_attribute_list; }
 
 private:
-  std::string m_name;
-  std::string m_tag_name;
+  cherry_kit::string m_name;
+  cherry_kit::string m_tag_name;
   std::vector<service_result_query_attribute *> m_attribute_list;
 };
 
@@ -185,8 +185,8 @@ public:
   service_error() {}
 
 private:
-  std::string m_format;
-  std::string m_error_message;
+  cherry_kit::string m_format;
+  cherry_kit::string m_error_message;
   int m_error_code;
 };
 /* service definition structure contains following three things
@@ -213,18 +213,18 @@ public:
   service_result *result() const { return m_result; }
   void set_service_result(service_result *a_result) { m_result = a_result; }
 
-  void set_name(const std::string &a_name) { m_name = a_name; }
-  std::string name() const { return m_name; }
+  void set_name(const cherry_kit::string &a_name) { m_name = a_name; }
+  cherry_kit::string name() const { return m_name; }
 
 private:
   service_input *m_input;
   service_error *m_error;
   service_result *m_result;
 
-  std::string m_name;
+  cherry_kit::string m_name;
 };
 
-typedef std::map<std::string, service *> service_map_t;
+typedef std::map<cherry_kit::string, service *> service_map_t;
 typedef service_map_t::iterator service_map_iterator_t;
 
 class DECL_SOCIAL_KIT_EXPORT remote_service::remote_service_context {
@@ -249,16 +249,16 @@ public:
 
 /* utility functions till we refactor this class properly */
 
-extern bool ck_file_exisits(const std::string &a_file_name);
+extern bool ck_file_exisits(const cherry_kit::string &a_file_name);
 
-bool ck_file_exisits(const std::string &a_file_name) {
+bool ck_file_exisits(const cherry_kit::string &a_file_name) {
   struct stat buffer;
   return (stat(a_file_name.c_str(), &buffer) == 0);
 }
 
-remote_service::remote_service(const std::string &input)
+remote_service::remote_service(const cherry_kit::string &input)
     : ctx(new remote_service_context) {
-  std::string service_file = data_prefix() + input;
+  cherry_kit::string service_file = data_prefix() + input;
 //#ifdef __CK_RUNTIME_DEBUG_MESSAGES_ENABLED__
   std::cout << "def ->" << service_file << std::endl;
 //#endif
@@ -300,8 +300,8 @@ string_list remote_service::service_list() const {
 }
 
 // fetch the url from the <input> tag
-std::string remote_service::endpoint(const std::string &a_name) const {
-  std::string rv;
+cherry_kit::string remote_service::endpoint(const cherry_kit::string &a_name) const {
+  cherry_kit::string rv;
 
   service *srv = ctx->m_service_dict[a_name];
 
@@ -313,7 +313,7 @@ std::string remote_service::endpoint(const std::string &a_name) const {
 }
 
 url_request::url_request_type_t
-remote_service::method(const std::string &name) const {
+remote_service::method(const cherry_kit::string &name) const {
   url_request::url_request_type_t rv = url_request::kUndefinedRequest;
 
   service *srv = ctx->m_service_dict[name];
@@ -325,7 +325,7 @@ remote_service::method(const std::string &name) const {
   return rv;
 }
 
-string_list remote_service::arguments(const std::string &name) const {
+string_list remote_service::arguments(const cherry_kit::string &name) const {
   string_list rv;
   service *srv = ctx->m_service_dict[name];
 
@@ -344,9 +344,9 @@ string_list remote_service::arguments(const std::string &name) const {
   return rv;
 }
 
-string_list remote_service::input_arguments(const std::string &a_name,
+string_list remote_service::input_arguments(const cherry_kit::string &a_name,
                                             bool a_optional) {
-  std::vector<std::string> rv;
+  std::vector<cherry_kit::string> rv;
   service *srv = ctx->m_service_dict[a_name];
 
   if (srv && srv->input()) {
@@ -369,7 +369,7 @@ string_list remote_service::input_arguments(const std::string &a_name,
   return rv;
 }
 
-string_list remote_service::optional_arguments(const std::string &name) const {
+string_list remote_service::optional_arguments(const cherry_kit::string &name) const {
   string_list rv;
   service *srv = ctx->m_service_dict[name];
 
@@ -388,10 +388,10 @@ string_list remote_service::optional_arguments(const std::string &name) const {
   return rv;
 }
 
-std::string remote_service::url(const std::string &a_method,
+cherry_kit::string remote_service::url(const cherry_kit::string &a_method,
                                 service_query_parameters *a_params) const {
-  std::string rv;
-  std::vector<std::string> default_query_list;
+  cherry_kit::string rv;
+  std::vector<cherry_kit::string> default_query_list;
   bool has_errors = false;
 
   rv = endpoint(a_method);
@@ -408,8 +408,8 @@ std::string remote_service::url(const std::string &a_method,
                     [&](service_input_argument *arg) {
         if (!arg)
           return;
-        std::string arg_value = arg->value();
-        std::vector<std::string> input_keys = a_params->keys();
+        cherry_kit::string arg_value = arg->value();
+        std::vector<cherry_kit::string> input_keys = a_params->keys();
 
         bool key_found = std::find(input_keys.begin(), input_keys.end(),
                                    arg_value) != input_keys.end();
@@ -418,7 +418,7 @@ std::string remote_service::url(const std::string &a_method,
         if (!arg->default_value().empty()) {
           social_kit::url_encode *encoded_str =
               new social_kit::url_encode(arg->default_value());
-          std::string query_item = arg_value + "=" + encoded_str->to_string();
+          cherry_kit::string query_item = arg_value + "=" + encoded_str->to_string();
           delete encoded_str;
           default_query_list.push_back(query_item);
         }
@@ -426,7 +426,7 @@ std::string remote_service::url(const std::string &a_method,
         if (key_found) {
           social_kit::url_encode *encoded_str =
               new social_kit::url_encode(a_params->value(arg_value));
-          std::string query_item = arg_value + "=" + encoded_str->to_string();
+          cherry_kit::string query_item = arg_value + "=" + encoded_str->to_string();
           delete encoded_str;
           default_query_list.push_back(query_item);
         } else {
@@ -441,9 +441,9 @@ std::string remote_service::url(const std::string &a_method,
     }
   }
 
-  std::string query_str = "?";
+  cherry_kit::string query_str = "?";
 
-  std::vector<std::string>::iterator it;
+  std::vector<cherry_kit::string>::iterator it;
 
   for (it = default_query_list.begin(); it < default_query_list.end(); it++) {
     if (it == (default_query_list.end() - 1))
@@ -455,13 +455,13 @@ std::string remote_service::url(const std::string &a_method,
   rv += query_str;
 
   if (has_errors)
-    return std::string();
+    return cherry_kit::string();
 
   return rv;
 }
 
 const char *get_attribute_value(tinyxml2::XMLElement *element,
-                                const std::string &a_attribute_name) {
+                                const cherry_kit::string &a_attribute_name) {
   if (!element || a_attribute_name.empty())
     return NULL;
 
@@ -582,7 +582,7 @@ void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
   }
 }
 
-remote_result remote_service::response(const std::string &a_method_name,
+remote_result remote_service::response(const cherry_kit::string &a_method_name,
                                        const url_response &a_response) const {
   remote_result rv;
   service *srv = ctx->m_service_dict[a_method_name];
@@ -752,7 +752,7 @@ get_service_result_query_attribute(tinyxml2::XMLElement *a_element) {
   if (txt_value) {
     rv->set_value(txt_value);
   } else {
-    rv->set_value(std::string());
+    rv->set_value(cherry_kit::string());
   }
 
   return rv;
@@ -858,37 +858,37 @@ void remote_service::load_services() {
       // todo
 
       /* cache parsed results */
-      ctx->m_service_dict[std::string(value)] = srv;
+      ctx->m_service_dict[cherry_kit::string(value)] = srv;
     }
 
     service_element = service_element->NextSiblingElement("service");
   }
 }
 
-std::string remote_service::data_prefix() const {
+cherry_kit::string remote_service::data_prefix() const {
 #ifdef __WINDOWS_PLATFORM__
   char *_path_str = NULL;
 
   if((_path_str = _getcwd(NULL, 0)) == NULL) {
-      return std::string();
+      return cherry_kit::string();
   }
 
-  std::string rv = std::string(_path_str, strlen(_path_str));
+  cherry_kit::string rv = cherry_kit::string(_path_str, strlen(_path_str));
   free(_path_str);
-  return rv + std::string("\\share\\social\\");
+  return rv + cherry_kit::string("\\share\\social\\");
 #endif
 
 #ifdef __GNU_LINUX_PLATFORM__
-  return std::string(std::string(PLEXYPREFIX) + "/share/social/");
+  return cherry_kit::string(cherry_kit::string(PLEXYPREFIX) + "/share/social/");
 #endif
 }
 
 service_input *service::input() const { return m_input; }
 
 void service::set_input(service_input *input) { m_input = input; }
-std::string service_input::url() const { return m_url; }
+cherry_kit::string service_input::url() const { return m_url; }
 
-void service_input::set_url(const std::string &url) { m_url = url; }
+void service_input::set_url(const cherry_kit::string &url) { m_url = url; }
 input_arg_t service_input::argument_list() const { return m_argument_list; }
 
 service_input::request_type_t service_input::request_type() const {
@@ -905,9 +905,9 @@ bool service_input_argument::optional() const { return m_optional; }
 void service_input_argument::set_optional(bool optional) {
   m_optional = optional;
 }
-std::string service_input_argument::value() const { return m_value; }
+cherry_kit::string service_input_argument::value() const { return m_value; }
 
-void service_input_argument::set_value(const std::string &value) {
+void service_input_argument::set_value(const cherry_kit::string &value) {
   m_value = value;
 }
 
@@ -917,18 +917,18 @@ void service_input_argument::set_type(const service_data_type_t &type) {
   m_type = type;
 }
 
-std::string service_input_argument::default_value() const {
+cherry_kit::string service_input_argument::default_value() const {
   return m_default_value;
 }
 
 void
-service_input_argument::set_default_value(const std::string &default_value) {
+service_input_argument::set_default_value(const cherry_kit::string &default_value) {
   m_default_value = default_value;
 }
 
-std::string service_result_query_attribute::value() const { return m_value; }
+cherry_kit::string service_result_query_attribute::value() const { return m_value; }
 
-void service_result_query_attribute::set_value(const std::string &value) {
+void service_result_query_attribute::set_value(const cherry_kit::string &value) {
   m_value = value;
 }
 
@@ -952,7 +952,7 @@ void remote_result::insert(const remote_result_data &a_data) {
   m_query_list.push_back(a_data);
 }
 
-result_list_t remote_result::get(const std::string &a_name) const {
+result_list_t remote_result::get(const cherry_kit::string &a_name) const {
   result_list_t rv;
   std::for_each(std::begin(m_query_list), std::end(m_query_list),
                 [&](remote_result_data query) {
@@ -968,7 +968,7 @@ remote_result_data::remote_result_data() {}
 remote_result_data::~remote_result_data() {}
 
 remote_data_attribute
-remote_result_data::get(const std::string &a_attribute_name) {
+remote_result_data::get(const cherry_kit::string &a_attribute_name) {
   remote_data_attribute rv;
   std::for_each(std::begin(m_propery_list), std::end(m_propery_list),
                 [&](remote_data_attribute attribute) {
@@ -993,13 +993,13 @@ remote_data_attribute::set_type(remote_data_attribute::property_type_t a_type) {
   m_value_type = a_type;
 }
 
-std::string remote_data_attribute::key() const { return m_key; }
+cherry_kit::string remote_data_attribute::key() const { return m_key; }
 
-void remote_data_attribute::set_key(const std::string &a_key) { m_key = a_key; }
+void remote_data_attribute::set_key(const cherry_kit::string &a_key) { m_key = a_key; }
 
-std::string remote_data_attribute::value() const { return m_value; }
+cherry_kit::string remote_data_attribute::value() const { return m_value; }
 
-void remote_data_attribute::set_value(const std::string &a_value) {
+void remote_data_attribute::set_value(const cherry_kit::string &a_value) {
   m_value = a_value;
 }
 }
