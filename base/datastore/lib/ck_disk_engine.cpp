@@ -172,7 +172,7 @@ void disk_engine::insert_request(const sync_object &a_obj) {
   // create xml
   QDomDocument dom_doc(QString::fromStdString(d->m_app_name));
   dom_doc.appendChild(dom_doc.createProcessingInstruction(
-      "xml", "version=\"1.0\" encoding=\"utf-8\""));
+      "xml", "version=\"1.0\" encoding=\"iso-8859-1\""));
   QDomElement root_element =
       dom_doc.createElement(QString::fromStdString(d->m_app_name));
   dom_doc.appendChild(root_element);
@@ -332,7 +332,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
   // create xml
   QDomDocument dom_doc(QString::fromStdString(d->m_app_name));
   dom_doc.appendChild(dom_doc.createProcessingInstruction(
-      "xml", "version=\"1.0\" encoding=\"utf-8\""));
+      "xml", "version=\"1.0\" encoding=\"iso-8859-1\""));
   QDomElement root_element =
       dom_doc.createElement(QString::fromStdString(d->m_app_name));
   dom_doc.appendChild(root_element);
