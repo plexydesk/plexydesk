@@ -19,7 +19,7 @@ vertical_dock::vertical_dock() {
     delete aWindow;
   });
 
-  cherry_kit::string default_height =
+  std::string default_height =
       std::to_string((icon_size / (icon_size * 7)) * 100) + "%";
 
   for (int i = 0; i < 7; i++) {
@@ -39,7 +39,7 @@ vertical_dock::~vertical_dock() {
 cherry_kit::window *vertical_dock::window() { return m_window; }
 
 void vertical_dock::create_dock_action(
-    int row, int column, const cherry_kit::string &icon,
+    int row, int column, const std::string &icon,
     std::function<void()> a_button_action_func) {
   cherry_kit::widget_properties_t prop;
   cherry_kit::widget *ck_widget;

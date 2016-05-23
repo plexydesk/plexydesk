@@ -93,7 +93,7 @@ desktop_panel_controller_impl::~desktop_panel_controller_impl() {
 
 void desktop_panel_controller_impl::create_dock_action(
     cherry_kit::fixed_layout *m_fixed_panel_layout, int row, int column,
-    const cherry_kit::string &icon, std::function<void()> a_button_action_func) {
+    const std::string &icon, std::function<void()> a_button_action_func) {
   cherry_kit::widget_properties_t prop;
   cherry_kit::widget *ck_widget;
   prop["label"] = "";

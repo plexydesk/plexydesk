@@ -49,14 +49,14 @@ public:
     }
   }
 
-  cherry_kit::string get_dpi() const;
+  std::string get_dpi() const;
 
 
   QString m_resource_name;
   QString m_resource_group;
 
   QHash<QString, QPixmap> m_image_cache;
-  std::map<ColorName, cherry_kit::string> m_color_map;
+  std::map<ColorName, std::string> m_color_map;
 
   style_ref m_current_style_ref;
 };
@@ -148,14 +148,14 @@ void resource_manager::load_default_color_values() {
   priv->m_color_map[kDividerColor] = "#B6B6B6";
 }
 
-void resource_manager::set_color_scheme(const cherry_kit::string &a_name) {
+void resource_manager::set_color_scheme(const std::string &a_name) {
   cherry_kit::data_sync *sync = new cherry_kit::data_sync("Palette");
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       load_default_color_values();
       return;
@@ -164,7 +164,7 @@ void resource_manager::set_color_scheme(const cherry_kit::string &a_name) {
     priv->m_color_map[kDarkPrimaryColor] =
         a_object.property("dark_primary_color");
     priv->m_color_map[kPrimaryColor] =
-        cherry_kit::string(a_object.property("primary_color"));
+        std::string(a_object.property("primary_color"));
     priv->m_color_map[kLightPrimaryColor] =
         a_object.property("light_primary_color");
     priv->m_color_map[kTextBackground] =
@@ -184,10 +184,10 @@ void resource_manager::set_color_scheme(const cherry_kit::string &a_name) {
   delete sync;
 }
 
-cherry_kit::string resource_manager::color_scheme() const { return cherry_kit::string(); }
+std::string resource_manager::color_scheme() const { return std::string(); }
 
 const char *resource_manager::color_code(resource_manager::ColorName a_name) {
-  cherry_kit::string error_rv = "#000000";
+  std::string error_rv = "#000000";
   const char *rv;
 
   if (priv->m_color_map.find(a_name) ==
@@ -205,8 +205,8 @@ void resource_manager::set_theme_name(const QString &a_name) {
   Q_UNUSED(a_name);
 }
 
-cherry_kit::string resource_manager::ThemepackLoaderPrivate::get_dpi() const {
-   cherry_kit::string rv = "mdpi";
+std::string resource_manager::ThemepackLoaderPrivate::get_dpi() const {
+   std::string rv = "mdpi";
    int base_dpi = 240;
 
    if (base_dpi <= 120) {

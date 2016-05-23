@@ -188,12 +188,12 @@ void SocialTestRunner::check_service_file() {
       srv_query.input_arguments("flickr.photos.search", true);
 
   std::for_each(std::begin(argument_list), std::end(argument_list),
-                [](cherry_kit::string value) {
+                [](std::string value) {
     // qDebug() << Q_FUNC_INFO << value.c_str();
   });
 
   std::for_each(std::begin(argument_list_opt), std::end(argument_list_opt),
-                [](cherry_kit::string value) {
+                [](std::string value) {
     // qDebug() << Q_FUNC_INFO << value.c_str();
   });
   */
@@ -206,7 +206,7 @@ void SocialTestRunner::check_service_file() {
       "all&safe_search=1&in_gallery=true&per_page=30&"
       "page=1");
 
-  cherry_kit::string test = expected_query_url.toStdString();
+  std::string test = expected_query_url.toStdString();
 
   /*
   CK_ASSERT(expected_query_url.toStdString() ==

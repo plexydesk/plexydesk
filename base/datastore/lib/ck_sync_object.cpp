@@ -42,12 +42,12 @@ public:
 
   uint m_time_stamp;
   // QMap<QString, QVariant> m_property_dict;
-  std::map<cherry_kit::string, cherry_kit::string> m_property_dict;
+  std::map<std::string, std::string> m_property_dict;
   std::map<uint, sync_object *> m_child_map;
   sync_object *m_parent;
   uint m_child_count;
 
-  cherry_kit::string m_object_name;
+  std::string m_object_name;
   uint m_object_key;
 
   data_sync *m_sync_store;
@@ -92,11 +92,11 @@ void sync_object::set_time_stamp(unsigned int timestamp) {
 
 unsigned int sync_object::update_time_stamp() const { return 0;}
 
-void sync_object::set_name(const cherry_kit::string &name) {
+void sync_object::set_name(const std::string &name) {
   p_object->m_object_name = name;
 }
 
-cherry_kit::string sync_object::name() const { return p_object->m_object_name; }
+std::string sync_object::name() const { return p_object->m_object_name; }
 
 void sync_object::set_key(unsigned int key) { p_object->m_object_key = key; }
 
@@ -108,8 +108,8 @@ void sync_object::set_parent(sync_object *parent) {
   p_object->m_parent = parent;
 }
 
-void sync_object::set_property(const cherry_kit::string &name,
-                               const cherry_kit::string &value) {
+void sync_object::set_property(const std::string &name,
+                               const std::string &value) {
   p_object->m_property_dict[name] = value;
   update_time_stamp();
 }
@@ -136,7 +136,7 @@ ck_string_list sync_object::property_list() const {
   return rv;
 }
 
-bool sync_object::has_property(const cherry_kit::string &a_property) const {
+bool sync_object::has_property(const std::string &a_property) const {
   if (p_object->m_property_dict.find(a_property) ==
       p_object->m_property_dict.end())
     return 0;
@@ -144,9 +144,9 @@ bool sync_object::has_property(const cherry_kit::string &a_property) const {
   return 1;
 }
 
-cherry_kit::string sync_object::property(const cherry_kit::string &name) const {
+std::string sync_object::property(const std::string &name) const {
   if (!has_property(name))
-    return cherry_kit::string();
+    return std::string();
 
   return p_object->m_property_dict.at(name);
 }
@@ -168,7 +168,7 @@ sync_object *sync_object::childObject(unsigned int key) {
   return nullptr;
 }
 
-sync_object *sync_object::create_new(const cherry_kit::string &name) {
+sync_object *sync_object::create_new(const std::string &name) {
   sync_object *rv = new sync_object(this);
   rv->set_name(name);
   p_object->m_child_count = p_object->m_child_count + 1;
@@ -178,7 +178,7 @@ sync_object *sync_object::create_new(const cherry_kit::string &name) {
   return rv;
 }
 
-cherry_kit::string sync_object::dump_content() const { return ""; }
+std::string sync_object::dump_content() const { return ""; }
 
 bool sync_object::contains(sync_object *object) {
   if (!this->has_children()) {
@@ -213,7 +213,7 @@ bool sync_object::is_similar(sync_object *object) {
   ck_string_list ck_prop_list = object->property_list();
 
   for (int p = 0; p < ck_prop_list.size(); p++) {
-    cherry_kit::string prop = ck_prop_list.at(p);
+    std::string prop = ck_prop_list.at(p);
 
     if (prop == "timestamp" || prop == "key") {
       continue;
@@ -234,7 +234,7 @@ bool sync_object::is_similar(sync_object *object) {
 
 void sync_object::replace(sync_object *object) {}
 
-sync_object *sync_object::childObject(const cherry_kit::string &name) {
+sync_object *sync_object::childObject(const std::string &name) {
   if (!this->has_children()) {
     sync_object *rv = create_new(name);
     return rv;
@@ -255,8 +255,8 @@ sync_object *sync_object::childObject(const cherry_kit::string &name) {
   return 0;
 }
 
-void sync_object::linksToObject(const cherry_kit::string &dataStoreName,
-                                const cherry_kit::string &objectName) {}
+void sync_object::linksToObject(const std::string &dataStoreName,
+                                const std::string &objectName) {}
 
 bool sync_object::has_children() const {
   if (child_count() > 0) {

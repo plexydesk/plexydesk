@@ -244,7 +244,7 @@ void desktop_task_controller_impl::createReminderUI(
 
   if (a_session->session_keys().contains("text")) {
     text_editor_prop["text"] =
-        cherry_kit::string(a_session->session_data("text").toByteArray());
+        std::string(a_session->session_data("text").toByteArray());
   }
 
   cherry_kit::widget_properties_t accept_button_prop;

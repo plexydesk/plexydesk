@@ -64,7 +64,7 @@ void test_object_update() {
 
   // test update
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     CK_ASSERT(a_found == 1, "Expected True");
     CK_ASSERT(a_object.name().compare("clock") == 0, "Expected clock");
     a_object.set_property("zone_id", "North/Africa");
@@ -83,7 +83,7 @@ void test_object_find() {
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 1, "Expected True");
     CK_ASSERT(a_app_name.compare("Clock") == 0, "Expected Clock");
@@ -104,7 +104,7 @@ void test_object_find_fail() {
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
   });
@@ -123,7 +123,7 @@ void test_object_delete_matching() {
   sync->remove_object("clock", "zone_id", "Asia/South");
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
   });
@@ -142,7 +142,7 @@ void test_object_delete() {
   sync->remove_object("clock", "", "");
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
 
     CK_ASSERT(a_found == 0, "Expected pected False : Got " << a_found);
   });
@@ -183,7 +183,7 @@ void test_object_add_child() {
   delete sync;
 }
 
-void test_save_controller_to_session(const cherry_kit::string &a_controller_name) {
+void test_save_controller_to_session(const std::string &a_controller_name) {
   cherry_kit::data_sync *sync =
       new cherry_kit::data_sync("test_default_space_0");
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
@@ -191,7 +191,7 @@ void test_save_controller_to_session(const cherry_kit::string &a_controller_name
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       cherry_kit::sync_object obj;
       obj.set_name("Controller");
@@ -215,7 +215,7 @@ void test_find_all() {
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     CK_ASSERT(a_found == 1, "All Items are Found");
   });
 
@@ -252,7 +252,7 @@ void test_sync_object_delete() {
 }
 
 void test_session_list() {
-  std::vector<cherry_kit::string> test_data_list;
+  std::vector<std::string> test_data_list;
 
   test_data_list.push_back("classicbackdrop");
   test_data_list.push_back("desktopclock");
@@ -264,7 +264,7 @@ void test_session_list() {
 
   std::for_each(
       std::begin(test_data_list), std::end(test_data_list),
-      [&](const cherry_kit::string &data) { test_save_controller_to_session(data); });
+      [&](const std::string &data) { test_save_controller_to_session(data); });
 }
 
 void test_image_io_surface_null_surface() {

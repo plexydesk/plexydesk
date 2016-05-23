@@ -26,22 +26,22 @@
 namespace cherry_kit {
 class QuetzalDataKitQt_EXPORT data_sync {
 public:
-  data_sync(const cherry_kit::string &a_app_name);
+  data_sync(const std::string &a_app_name);
   virtual ~data_sync();
 
   virtual void set_sync_engine(sync_engine_interface *a_iface);
 
   virtual void add_object(const sync_object &a_obj);
   virtual void save_object(const sync_object &a_obj);
-  virtual void remove_object(const cherry_kit::string &a_object_name,
-                             const cherry_kit::string &a_key,
-                             const cherry_kit::string &a_value);
+  virtual void remove_object(const std::string &a_object_name,
+                             const std::string &a_key,
+                             const std::string &a_value);
 
-  virtual void find(const cherry_kit::string &a_object_name,
-                    const cherry_kit::string &a_attrib, const cherry_kit::string &a_value);
+  virtual void find(const std::string &a_object_name,
+                    const std::string &a_attrib, const std::string &a_value);
 
   virtual void on_object_found(
-      std::function<void(sync_object &, const cherry_kit::string &, bool)> a_handler);
+      std::function<void(sync_object &, const std::string &, bool)> a_handler);
   virtual void
   on_object_saved(std::function<void(const sync_object &a_object)> a_handler);
 

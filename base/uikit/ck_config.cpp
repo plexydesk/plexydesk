@@ -88,7 +88,7 @@ QString config::cache_dir(const QString &a_folder) {
   return rv;
 }
 
-cherry_kit::string config::icon_resource_prefix_path()
+std::string config::icon_resource_prefix_path()
 {
   QString prefix_path = PLEXYPREFIX;
   QString rv = prefix_path;

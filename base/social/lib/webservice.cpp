@@ -59,14 +59,14 @@ public:
   QMultiMap<QString, QVariantMap> mProcessedData;
   QMap<QString, QVariantMap> mInputArguments;
 
-  std::map<cherry_kit::string, service_query_parameters> m_input_argument_map;
+  std::map<std::string, service_query_parameters> m_input_argument_map;
 
   remote_service *m_service_def;
   QNetworkAccessManager *mNetworkManager;
 
   /* new */
   remote_service *m_service;
-  cherry_kit::string m_method_name;
+  std::string m_method_name;
   url_request *m_network_request;
   std::vector<response_callback_t> m_callback_list;
 
@@ -95,7 +95,7 @@ web_service::web_service(QObject *parent)
 
 web_service::~web_service() { delete ctx; }
 
-void web_service::create(const cherry_kit::string &serviceName) {
+void web_service::create(const std::string &serviceName) {
   if (ctx->m_service)
     delete ctx->m_service;
 
@@ -110,7 +110,7 @@ void web_service::submit(const QString &method,
     return;
 
   ctx->m_method_name = method.toStdString();
-  cherry_kit::string request_data =
+  std::string request_data =
       ctx->m_service->url(method.toStdString(), a_params);
   url_request::url_request_type_t request_url_method =
       ctx->m_service->method(method.toStdString());

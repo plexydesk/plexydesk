@@ -20,8 +20,6 @@
 #ifndef PLEXY_CONIFG_LINUX_QT_H
 #define PLEXY_CONIFG_LINUX_QT_H
 
-#include <config.h>
-
 #include <QString>
 
 #include <plexydesk_ui_exports.h>
@@ -34,7 +32,7 @@ public:
 
   static QString prefix();
   static QString cache_dir(const QString &a_folder = QString());
-  static cherry_kit::string icon_resource_prefix_path();
+  static std::string icon_resource_prefix_path();
 
 private:
   config();

@@ -15,7 +15,7 @@ public:
 
   void on_response_ready(response_ready_callbcak_t a_callback);
   void send_message_async(url_request::url_request_type_t a_type,
-                          const cherry_kit::string &a_message);
+                          const std::string &a_message);
   class private_context;
 private:
   private_context * const ctx;

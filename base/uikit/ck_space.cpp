@@ -132,7 +132,7 @@ void space::update_session_value(const QString &a_controller_name,
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       cherry_kit::sync_object obj;
       obj.set_name("AppSession");
@@ -400,7 +400,7 @@ void space::save_controller_to_session(const QString &a_controller_name) {
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     if (!a_found) {
       cherry_kit::sync_object obj;
       obj.set_name("Controller");
@@ -424,7 +424,7 @@ space::revoke_controller_session_attributes(const QString &a_controller_name) {
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     qDebug() << Q_FUNC_INFO << "Restore Session For Controllers"
              << a_controller_name;
 
@@ -461,7 +461,7 @@ void space::PrivateSpace::init_session_registry(space *space) {
   sync->set_sync_engine(engine);
 
   sync->on_object_found([&](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     if (a_found) {
       QString _current_controller_name = a_object.property("name").c_str();
 

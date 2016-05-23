@@ -15,12 +15,12 @@ public:
   private_platform_image() {}
   ~private_platform_image() {}
 
-  bool check_in_cache(const cherry_kit::string &a_file_name);
-  QString cache_file_name(const cherry_kit::string &a_file_name);
+  bool check_in_cache(const std::string &a_file_name);
+  QString cache_file_name(const std::string &a_file_name);
 
   std::function<void(io_surface *, image_io::buffer_load_status_t)>
   m_on_ready_call;
-  cherry_kit::string m_file_url;
+  std::string m_file_url;
   std::thread m_io_task;
 
   std::future<io_surface *> m_async_task_result;
@@ -36,7 +36,7 @@ image_io::platform_image::~platform_image() {
   delete priv;
 }
 
-void image_io::platform_image::load_from_file(const cherry_kit::string &a_file_name) {
+void image_io::platform_image::load_from_file(const std::string &a_file_name) {
   priv->m_file_url = a_file_name;
   priv->m_async_task_result = std::async(
       std::launch::async, &image_io::platform_image::image_decoder, this);
@@ -53,7 +53,7 @@ void image_io::platform_image::load_from_file(const cherry_kit::string &a_file_n
 }
 
 void
-image_io::platform_image::load_image_preview(const cherry_kit::string &a_file_name) {
+image_io::platform_image::load_image_preview(const std::string &a_file_name) {
   priv->m_file_url = a_file_name;
   priv->m_async_task_result =
       std::async(std::launch::async,
@@ -231,7 +231,7 @@ image_io::platform_image::wait_for_signal(image_io::platform_image *instance) {
 }
 
 bool image_io::platform_image::private_platform_image::check_in_cache(
-    const cherry_kit::string &a_file_name) {
+    const std::string &a_file_name) {
   QString hashed_name = QCryptographicHash::hash(
       a_file_name.c_str(), QCryptographicHash::Md5).toHex();
   QString thumbnail_path =
@@ -245,7 +245,7 @@ bool image_io::platform_image::private_platform_image::check_in_cache(
 }
 
 QString image_io::platform_image::private_platform_image::cache_file_name(
-    const cherry_kit::string &a_file_name) {
+    const std::string &a_file_name) {
   QString hashed_name = QCryptographicHash::hash(
       a_file_name.c_str(), QCryptographicHash::Md5).toHex();
   QString thumbnail_path =

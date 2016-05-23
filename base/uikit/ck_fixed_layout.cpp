@@ -50,8 +50,8 @@ public:
   float get_x(int a_row, int a_column);
   float get_y(int a_row, int a_column);
 
-  Value get_value_type(const cherry_kit::string &a_value) const;
-  float get_percentage(const cherry_kit::string &a_value) const;
+  Value get_value_type(const std::string &a_value) const;
+  float get_percentage(const std::string &a_value) const;
 
   widget *add_new_label_at(int a_row, int a_col,
                            const widget_properties_t &a_props,
@@ -93,12 +93,12 @@ public:
 
   std::map<int, int> m_column_data;
   std::map<int, int> m_row_data;
-  std::map<int, cherry_kit::string> m_row_height_data;
-  std::map<GridPos, cherry_kit::string> m_column_width_data;
+  std::map<int, std::string> m_row_height_data;
+  std::map<GridPos, std::string> m_column_width_data;
 
   std::map<GridPos, widget *> m_widget_grid;
   std::map<GridPos, int> m_ui_type_dict;
-  std::map<cherry_kit::string, int> m_ui_dict;
+  std::map<std::string, int> m_ui_dict;
 
   cherry_kit::widget *m_content_frame;
   QRectF m_grid_geometry;
@@ -186,12 +186,12 @@ void fixed_layout::add_segments(int a_index, int a_count) {
   }
 }
 
-void fixed_layout::set_row_height(int a_row, const cherry_kit::string &a_height) {
+void fixed_layout::set_row_height(int a_row, const std::string &a_height) {
   priv->m_row_height_data[a_row] = a_height;
 }
 
 void fixed_layout::set_segment_width(int a_row, int a_column,
-                                     const cherry_kit::string &a_width) {
+                                     const std::string &a_width) {
   GridPos pos = std::make_pair(a_row, a_column);
   priv->m_column_width_data[pos] = a_width;
 }
@@ -247,7 +247,7 @@ widget *fixed_layout::add_new_label_at(int a_col, int a_row,
 void fixed_layout::layout() { priv->layout(); }
 
 widget *fixed_layout::add_widget(int a_row, int a_column,
-                                 const cherry_kit::string &a_widget,
+                                 const std::string &a_widget,
                                  const widget_properties_t &a_properties,
                                  widget_handler_callback_t a_callback) {
   widget *rv = 0;
@@ -427,7 +427,7 @@ float fixed_layout::PrivateViewBuilder::get_y(int a_row, int a_column) {
 }
 
 fixed_layout::PrivateViewBuilder::Value
-fixed_layout::PrivateViewBuilder::get_value_type(const cherry_kit::string &a_value)
+fixed_layout::PrivateViewBuilder::get_value_type(const std::string &a_value)
     const {
 
   if (a_value.empty())
@@ -443,11 +443,11 @@ fixed_layout::PrivateViewBuilder::get_value_type(const cherry_kit::string &a_val
 }
 
 float fixed_layout::PrivateViewBuilder::get_percentage(
-    const cherry_kit::string &a_value) const {
+    const std::string &a_value) const {
   if (get_value_type(a_value) == kAutoValue)
     return 0;
 
-  cherry_kit::string value_digits = a_value.substr(0, a_value.size() - 1);
+  std::string value_digits = a_value.substr(0, a_value.size() - 1);
   return (float)std::stoi(value_digits);
 }
 

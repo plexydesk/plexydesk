@@ -9,8 +9,8 @@ class null_windows_context : public system_window_context {
 public:
     null_windows_context() {}
 
-    device_window *find_window(const cherry_kit::string &a_title,
-                               const cherry_kit::string &a_window_class)  { return 0;}
+    device_window *find_window(const std::string &a_title,
+                               const std::string &a_window_class)  { return 0;}
     bool reparent(device_window *a_child, device_window *a_parent) {return 0;}
 
     device_window *desktop() { return 0;}
@@ -21,7 +21,7 @@ public:
     bool convert_to_frameless_window(device_window *a_window) {return false;}
     bool convert_to_transparent_window(device_window *a_window) {return false;}
     bool convert_to_notification_window(device_window *a_window) {return false;}
-    void post_notifycation(const cherry_kit::string &icon, const cherry_kit::string &msg) {}
+    void post_notifycation(const std::string &icon, const std::string &msg) {}
     bool hide_native_desktop() {}
 
 };

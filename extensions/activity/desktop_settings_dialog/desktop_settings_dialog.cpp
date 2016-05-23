@@ -49,7 +49,7 @@ public:
   PrivatePhotoSearch() {}
   ~PrivatePhotoSearch() {}
 
-  std::vector<cherry_kit::string> locate_system_images();
+  std::vector<std::string> locate_system_images();
 
   cherry_kit::window *m_window;
 
@@ -194,7 +194,7 @@ void desktop_settings_dialog::purge() {
 
 void
 desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
-                                              const cherry_kit::string &a_file_url) {
+                                              const std::string &a_file_url) {
   if (ck_preview_pixmap.isNull()) {
     qWarning() << Q_FUNC_INFO << "Null image in list";
     return;
@@ -224,7 +224,7 @@ desktop_settings_dialog::insert_image_to_grid(const QImage &ck_preview_pixmap,
 void desktop_settings_dialog::load_images() {}
 
 void desktop_settings_dialog::invoke_image_loader() {
-  std::vector<cherry_kit::string> current_file_list = priv->locate_system_images();
+  std::vector<std::string> current_file_list = priv->locate_system_images();
 
   int load_progress = 0;
 
@@ -232,7 +232,7 @@ void desktop_settings_dialog::invoke_image_loader() {
     priv->m_progress_widget->set_range(0, current_file_list.size());
 
   std::for_each(std::begin(current_file_list), std::end(current_file_list),
-                [&](const cherry_kit::string &a_file) {
+                [&](const std::string &a_file) {
     cherry_kit::image_io *ck_image_service = new cherry_kit::image_io(0, 0);
     //priv->m_service_list.push_back(ck_image_service);
 
@@ -268,10 +268,10 @@ void desktop_settings_dialog::invoke_image_loader() {
   }
 }
 
-std::vector<cherry_kit::string>
+std::vector<std::string>
 desktop_settings_dialog::PrivatePhotoSearch::locate_system_images() {
-  std::vector<cherry_kit::string> image_path_list;
-  std::vector<cherry_kit::string> rv_list;
+  std::vector<std::string> image_path_list;
+  std::vector<std::string> rv_list;
 
 #ifdef Q_OS_LINUX
   image_path_list.push_back("/usr/share/backgrounds/");
@@ -288,7 +288,7 @@ desktop_settings_dialog::PrivatePhotoSearch::locate_system_images() {
       cherry_kit::config::cache_dir("wallpaper").toStdString());
 
   std::for_each(std::begin(image_path_list), std::end(image_path_list),
-                [&](const cherry_kit::string &a_path) {
+                [&](const std::string &a_path) {
     QFileInfo path_meta_data(a_path.c_str());
 
     if (path_meta_data.isDir()) {

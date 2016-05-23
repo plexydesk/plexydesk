@@ -10,9 +10,9 @@ public:
 
   unsigned int m_action_id;
 
-  cherry_kit::string m_action_name;
-  cherry_kit::string m_action_icon;
-  cherry_kit::string m_controller_name;
+  std::string m_action_name;
+  std::string m_action_icon;
+  std::string m_controller_name;
 
   bool m_action_visibility;
 
@@ -45,16 +45,16 @@ ui_action::ui_action(const ui_action &copy)
 
 cherry_kit::ui_action::~ui_action() { delete priv; }
 
-cherry_kit::string ui_action::name() const { return priv->m_action_name; }
+std::string ui_action::name() const { return priv->m_action_name; }
 
-void ui_action::set_name(const cherry_kit::string &a_name) {
+void ui_action::set_name(const std::string &a_name) {
   priv->m_action_name.clear();
   priv->m_action_name = a_name;
 }
 
-cherry_kit::string ui_action::controller() const { return priv->m_controller_name; }
+std::string ui_action::controller() const { return priv->m_controller_name; }
 
-void ui_action::set_controller(const cherry_kit::string &a_name) {
+void ui_action::set_controller(const std::string &a_name) {
   priv->m_controller_name = a_name;
 }
 
@@ -68,12 +68,12 @@ void ui_action::set_visible(bool a_visibility) {
 
 bool ui_action::is_visibile() const { return priv->m_action_visibility; }
 
-void ui_action::set_icon(const cherry_kit::string a_icon) {
+void ui_action::set_icon(const std::string a_icon) {
   priv->m_action_icon.clear();
   priv->m_action_icon = a_icon;
 }
 
-cherry_kit::string ui_action::icon() const { return priv->m_action_icon; }
+std::string ui_action::icon() const { return priv->m_action_icon; }
 
 void ui_action::add_action(const ui_action &action) {
   priv->m_child_action_list.push_back(action);
@@ -97,7 +97,7 @@ void ui_action::execute(const ui_task_data_t &a_data) const {
   });
 }
 
-void ui_action::execute(const cherry_kit::string &a_task_name,
+void ui_action::execute(const std::string &a_task_name,
                         const ui_task_data_t &a_data) {
   if (priv->m_action_name.compare(a_task_name) == 0) {
     execute(a_data);

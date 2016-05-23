@@ -32,7 +32,7 @@ public:
 
   int m_session_id;
   QVariantMap m_session_data;
-  cherry_kit::string m_session_group_name;
+  std::string m_session_group_name;
   bool m_purged;
 
   std::function<void()> m_on_session_init_func;
@@ -40,7 +40,7 @@ public:
   std::function<void()> m_on_session_end_func;
 };
 
-session_sync::session_sync(const cherry_kit::string &a_session_name,
+session_sync::session_sync(const std::string &a_session_name,
                            const QVariantMap &a_data)
     : d(new PrivSessionSync) {
 
@@ -78,7 +78,7 @@ void session_sync::set_session_id(int a_id) { d->m_session_id = a_id; }
 
 int session_sync::session_id() { return d->m_session_id; }
 
-cherry_kit::string session_sync::session_id_to_string() const {
+std::string session_sync::session_id_to_string() const {
   return QString("%1").arg(d->m_session_id).toStdString();
 }
 
@@ -87,8 +87,8 @@ void session_sync::update_session() {
     d->m_on_session_update_func();
 }
 
-cherry_kit::string session_sync::session_group_key() const {
-  cherry_kit::string key_name = d->m_session_group_name;
+std::string session_sync::session_group_key() const {
+  std::string key_name = d->m_session_group_name;
   std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
   return key_name + "_id";
 }
@@ -104,7 +104,7 @@ void session_sync::bind_to_window(cherry_kit::window *a_window) {
   */
 
   a_window->on_window_moved([this](const QPointF &a_pos) {
-    cherry_kit::string db_name(session_data("database_name").toByteArray().data());
+    std::string db_name(session_data("database_name").toByteArray().data());
 
     if (db_name.empty()) {
       qWarning() << Q_FUNC_INFO << "Null session database name";
@@ -122,7 +122,7 @@ void session_sync::bind_to_window(cherry_kit::window *a_window) {
 }
 
 void session_sync::unbind_window(const window *a_windows) {
-  cherry_kit::string db_name(session_data("database_name").toByteArray().data());
+  std::string db_name(session_data("database_name").toByteArray().data());
 
   purge();
 
@@ -135,10 +135,10 @@ void session_sync::unbind_window(const window *a_windows) {
                       session_id_to_string());
 }
 
-void session_sync::delete_session_data(const cherry_kit::string &a_session_name,
-                                       const cherry_kit::string &a_object_name,
-                                       const cherry_kit::string &a_object_key,
-                                       const cherry_kit::string &a_object_value) {
+void session_sync::delete_session_data(const std::string &a_session_name,
+                                       const std::string &a_object_name,
+                                       const std::string &a_object_key,
+                                       const std::string &a_object_value) {
   cherry_kit::data_sync *sync = new cherry_kit::data_sync(a_session_name);
 
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
@@ -149,18 +149,18 @@ void session_sync::delete_session_data(const cherry_kit::string &a_session_name,
   delete sync;
 }
 
-void session_sync::save_session_attribute(const cherry_kit::string &a_session_name,
-                                          const cherry_kit::string &a_object_name,
-                                          const cherry_kit::string &a_object_key,
-                                          const cherry_kit::string &a_object_value,
-                                          const cherry_kit::string &a_key,
-                                          const cherry_kit::string &a_value) {
+void session_sync::save_session_attribute(const std::string &a_session_name,
+                                          const std::string &a_object_name,
+                                          const std::string &a_object_key,
+                                          const std::string &a_object_value,
+                                          const std::string &a_key,
+                                          const std::string &a_value) {
   cherry_kit::data_sync *sync = new cherry_kit::data_sync(a_session_name);
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
   sync->set_sync_engine(engine);
 
   sync->on_object_found([=](cherry_kit::sync_object &a_object,
-                            const cherry_kit::string &a_app_name, bool a_found) {
+                            const std::string &a_app_name, bool a_found) {
     if (a_found) {
       a_object.set_property(a_key, a_value);
       sync->save_object(a_object);

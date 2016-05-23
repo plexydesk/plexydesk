@@ -231,7 +231,7 @@ QString NoteWidget::id() { return d->m_note_id; }
 
 QString NoteWidget::noteContent() const { return d->mStatusMessage; }
 
-void NoteWidget::attach_image(const cherry_kit::string &a_url) {
+void NoteWidget::attach_image(const std::string &a_url) {
 
   QPixmap pixmap(a_url.c_str());
 

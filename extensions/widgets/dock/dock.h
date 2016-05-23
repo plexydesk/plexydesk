@@ -61,7 +61,7 @@ protected:
   void update_desktop_preview();
 
   void create_dock_action(cherry_kit::fixed_layout *build, int row, int column,
-                          const cherry_kit::string &icon,
+                          const std::string &icon,
                           std::function<void()> a_button_action_func);
 
   void switch_to_previous_space();

@@ -11,9 +11,9 @@ public:
     desktop_button();
     ~desktop_button();
 
-    void set_icon(const cherry_kit::string &a_icon_name);
+    void set_icon(const std::string &a_icon_name);
 
-    void set_label(const cherry_kit::string &a_text_label);
+    void set_label(const std::string &a_text_label);
 
     cherry_kit::window *window();
 

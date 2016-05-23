@@ -59,7 +59,7 @@ public:
 
   void updateProgress(float progress);
 
-  cherry_kit::string m_background_texture;
+  std::string m_background_texture;
   desktop_window *m_background_window;
 
   cherry_kit::ui_action m_supported_action;
@@ -130,7 +130,7 @@ void desktop_controller_impl::session_data_ready(
       !a_session_root.has_property("mode"))
     return;
 
-  cherry_kit::string background_url_str = a_session_root.property("background");
+  std::string background_url_str = a_session_root.property("background");
   QUrl qt_background_url = QUrl(background_url_str.c_str());
   QString qt_mode_string = a_session_root.property("mode").c_str();
 
@@ -179,7 +179,7 @@ void desktop_controller_impl::create_task_group() const {
                                         dialog_window_geometry, QVariantMap());
 
     ck_activity->on_notify(
-        [=](const cherry_kit::string &key, const cherry_kit::string &value) {
+        [=](const std::string &key, const std::string &value) {
           if (key.compare("url") == 0) {
             o_ctr->m_background_window->set_background(value);
             o_ctr->m_background_texture = "file:///" + value;
@@ -314,8 +314,8 @@ void desktop_controller_impl::request_action(const QString &actionName,
                                         qt_activity_window_location,
                                         dialog_window_geometry, QVariantMap());
 
-    ck_activity->on_notify([&](const cherry_kit::string &key,
-                               const cherry_kit::string &value) {
+    ck_activity->on_notify([&](const std::string &key,
+                               const std::string &value) {
       qDebug() << Q_FUNC_INFO << key.c_str() << " = " << value.c_str();
       o_ctr->m_background_window->set_background(value);
     });

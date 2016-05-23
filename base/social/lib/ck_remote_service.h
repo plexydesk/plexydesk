@@ -30,8 +30,8 @@
 
 namespace social_kit {
 
-typedef std::map<cherry_kit::string, cherry_kit::string> query_parameter_map_t;
-typedef std::vector<cherry_kit::string> string_list;
+typedef std::map<std::string, std::string> query_parameter_map_t;
+typedef std::vector<std::string> string_list;
 
 class DECL_SOCIAL_KIT_EXPORT service_query_parameters {
 public:
@@ -42,14 +42,14 @@ public:
 
   virtual ~service_query_parameters() { m_parameter_map.clear(); }
 
-  void insert(const cherry_kit::string &a_key, const cherry_kit::string &a_value) {
+  void insert(const std::string &a_key, const std::string &a_value) {
     m_parameter_map[a_key] = a_value;
   }
 
-  std::vector<cherry_kit::string> keys() {
-    std::vector<cherry_kit::string> rv;
+  std::vector<std::string> keys() {
+    std::vector<std::string> rv;
 
-    for (std::map<cherry_kit::string, cherry_kit::string>::iterator it =
+    for (std::map<std::string, std::string>::iterator it =
              m_parameter_map.begin();
          it != m_parameter_map.end(); ++it) {
       rv.push_back(it->first);
@@ -58,12 +58,12 @@ public:
     return rv;
   }
 
-  cherry_kit::string value(const cherry_kit::string &a_key) { return m_parameter_map[a_key]; }
+  std::string value(const std::string &a_key) { return m_parameter_map[a_key]; }
 
   query_parameter_map_t data() const { return m_parameter_map; }
 
 private:
-  std::map<cherry_kit::string, cherry_kit::string> m_parameter_map;
+  std::map<std::string, std::string> m_parameter_map;
 };
 
 //<attr ... >
@@ -89,15 +89,15 @@ public:
   property_type_t type() const;
   void set_type(property_type_t a_type);
 
-  cherry_kit::string key() const;
-  void set_key(const cherry_kit::string &a_key);
+  std::string key() const;
+  void set_key(const std::string &a_key);
 
-  cherry_kit::string value() const;
-  void set_value(const cherry_kit::string &a_value);
+  std::string value() const;
+  void set_value(const std::string &a_value);
 
 private:
-  cherry_kit::string m_key;
-  cherry_kit::string m_value;
+  std::string m_key;
+  std::string m_value;
   property_type_t m_value_type;
 };
 
@@ -113,19 +113,19 @@ public:
 
   virtual ~remote_result_data();
 
-  cherry_kit::string name() const { return m_name; }
+  std::string name() const { return m_name; }
 
-  void set_name(const cherry_kit::string &a_name) { m_name = a_name; }
+  void set_name(const std::string &a_name) { m_name = a_name; }
 
   void insert(remote_data_attribute &a_attrib) {
     m_propery_list.push_back(a_attrib);
   }
 
-  remote_data_attribute get(const cherry_kit::string &a_attribute_name);
+  remote_data_attribute get(const std::string &a_attribute_name);
 
 private:
   std::vector<remote_data_attribute> m_propery_list;
-  cherry_kit::string m_name;
+  std::string m_name;
 };
 
 //<result>
@@ -140,7 +140,7 @@ public:
 
   std::vector<remote_result_data> query() const { return m_query_list; }
 
-  result_list_t get(const cherry_kit::string &a_name) const;
+  result_list_t get(const std::string &a_name) const;
 
 private:
   std::vector<remote_result_data> m_query_list;
@@ -153,32 +153,32 @@ public:
     kNoError
   } definition_error_t;
 
-  remote_service(const cherry_kit::string &input);
+  remote_service(const std::string &input);
   virtual ~remote_service();
 
   string_list service_list() const;
 
-  cherry_kit::string endpoint(const cherry_kit::string &a_name) const;
+  std::string endpoint(const std::string &a_name) const;
 
-  url_request::url_request_type_t method(const cherry_kit::string &name) const;
+  url_request::url_request_type_t method(const std::string &name) const;
 
-  string_list arguments(const cherry_kit::string &name) const;
+  string_list arguments(const std::string &name) const;
 
-  string_list input_arguments(const cherry_kit::string &a_name,
+  string_list input_arguments(const std::string &a_name,
                               bool a_optional = false);
-  string_list optional_arguments(const cherry_kit::string &name) const;
+  string_list optional_arguments(const std::string &name) const;
 
-  cherry_kit::string url(const cherry_kit::string &a_method,
+  std::string url(const std::string &a_method,
                   service_query_parameters *a_params) const;
 
-  remote_result response(const cherry_kit::string &a_method_name,
+  remote_result response(const std::string &a_method_name,
                          const url_response &a_response) const;
 
   definition_error_t error() const;
 
 protected:
   void load_services();
-  cherry_kit::string data_prefix() const;
+  std::string data_prefix() const;
 
 private:
   class remote_service_context;

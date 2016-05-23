@@ -58,8 +58,8 @@ public:
                              cherry_kit::session_sync *a_session);
   cherry_kit::icon_button *add_action_button(cherry_kit::fixed_layout *ui,
                                              int a_row, int a_col,
-                                             const cherry_kit::string &a_label,
-                                             const cherry_kit::string &a_icon);
+                                             const std::string &a_label,
+                                             const std::string &a_icon);
   void setup_create_timer_ui(time_controller *a_controller,
                              cherry_kit::session_sync *a_session);
 
@@ -228,7 +228,7 @@ cherry_kit::ui_action time_controller::task() {
 cherry_kit::icon_button *
 time_controller::PrivateClockController::add_action_button(
     cherry_kit::fixed_layout *ui, int a_row, int a_col,
-    const cherry_kit::string &a_label, const cherry_kit::string &a_icon) {
+    const std::string &a_label, const std::string &a_icon) {
   cherry_kit::icon_button *ck_rv = 0;
   cherry_kit::widget_properties_t ck_ui_data;
   ck_ui_data["label"] = a_label;
@@ -312,7 +312,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
         ck_clock->set_timezone_id(a_data["zone_id"].toByteArray());
         ck_window->set_window_title(a_data["zone_id"].toString());
 
-        cherry_kit::string zone_id(a_data["zone_id"].toByteArray().data());
+        std::string zone_id(a_data["zone_id"].toByteArray().data());
 
         a_session->save_session_attribute(
             a_controller->session_store_name("clock"), "Clock", "clock_id",

@@ -79,10 +79,10 @@ public:
   platform_url_handle() {}
   ~platform_url_handle() {}
 
-  cherry_kit::string m_url_data;
+  std::string m_url_data;
 };
 
-url_encode::url_encode(const cherry_kit::string &a_str)
+url_encode::url_encode(const std::string &a_str)
     : ctx(new platform_url_handle) {
   const char *const_data = a_str.c_str();
   char *data = (char *)malloc(strlen(const_data) + 1);
@@ -91,13 +91,13 @@ url_encode::url_encode(const cherry_kit::string &a_str)
 #else
   strcpy(data, const_data);
 #endif
-  ctx->m_url_data = cherry_kit::string(ck_url_encode(data));
+  ctx->m_url_data = std::string(ck_url_encode(data));
   free(data);
 }
 
 url_encode::~url_encode() { delete ctx; }
 
-cherry_kit::string url_encode::to_string() const { return ctx->m_url_data; }
+std::string url_encode::to_string() const { return ctx->m_url_data; }
 
 url_request::url_request() : ctx(new platform_url_request) {}
 
@@ -107,7 +107,7 @@ url_request::~url_request() {
 }
 
 void url_request::send_message(url_request::url_request_type_t a_type,
-                               const cherry_kit::string &a_message) {
+                               const std::string &a_message) {
   ctx->send_message_async(a_type, a_message);
 }
 
@@ -139,31 +139,31 @@ void url_response::set_status_code(int status_code) {
   m_status_code = status_code;
 }
 
-cherry_kit::string url_response::uri() const { return m_uri; }
+std::string url_response::uri() const { return m_uri; }
 
-void url_response::set_uri(const cherry_kit::string &uri) { m_uri = uri; }
+void url_response::set_uri(const std::string &uri) { m_uri = uri; }
 
-cherry_kit::string url_response::response_body() const { return m_response_body; }
+std::string url_response::response_body() const { return m_response_body; }
 
-void url_response::set_response_body(const cherry_kit::string &response_body) {
+void url_response::set_response_body(const std::string &response_body) {
   m_response_body = response_body;
 }
 
-cherry_kit::string url_response::request_body() const { return m_request_body; }
+std::string url_response::request_body() const { return m_request_body; }
 
-void url_response::set_request_body(const cherry_kit::string &request_body) {
+void url_response::set_request_body(const std::string &request_body) {
   m_request_body = request_body;
 }
 
-cherry_kit::string url_response::http_version() const { return m_http_version; }
+std::string url_response::http_version() const { return m_http_version; }
 
-void url_response::set_http_version(const cherry_kit::string &http_version) {
+void url_response::set_http_version(const std::string &http_version) {
   m_http_version = http_version;
 }
 
-cherry_kit::string url_response::method() const { return m_method; }
+std::string url_response::method() const { return m_method; }
 
-void url_response::set_method(const cherry_kit::string &method) { m_method = method; }
+void url_response::set_method(const std::string &method) { m_method = method; }
 
 unsigned int url_response::data_buffer_size() const {
   return m_data_buffer_size;

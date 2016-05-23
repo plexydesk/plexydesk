@@ -37,7 +37,7 @@ public:
   QFileSystemWatcher *mFileWatch;
   QFile *mFile;
   QString mCurrentEngine;
-  cherry_kit::string m_app_name;
+  std::string m_app_name;
 };
 
 disk_engine::disk_engine(QObject *parent)
@@ -79,7 +79,7 @@ void disk_engine::setEngineName(const QString &name) {
   }
 }
 
-void disk_engine::set_app_name(const cherry_kit::string &a_app_name) {
+void disk_engine::set_app_name(const std::string &a_app_name) {
   d->m_app_name = a_app_name;
 }
 
@@ -141,7 +141,7 @@ void disk_engine::insert_request(const sync_object &a_obj) {
     ck_string_list ck_prop_list = a_obj.property_list();
 
     std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
-                  [&](const cherry_kit::string &a_prop) {
+                  [&](const std::string &a_prop) {
       main_element.setAttribute(a_prop.c_str(), a_obj.property(a_prop).c_str());
     });
 
@@ -181,7 +181,7 @@ void disk_engine::insert_request(const sync_object &a_obj) {
   ck_string_list prop_list = a_obj.property_list();
 
   std::for_each(std::begin(prop_list), std::end(prop_list),
-                [&](const cherry_kit::string &a_key) {
+                [&](const std::string &a_key) {
     main_element.setAttribute(a_key.c_str(), a_obj.property(a_key).c_str());
   });
 
@@ -288,7 +288,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
             ck_string_list ck_prop_list = a_obj.property_list();
 
             std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
-                          [&](const cherry_kit::string &a_prop) {
+                          [&](const std::string &a_prop) {
               child_element.setAttribute(a_prop.c_str(),
                                          a_obj.property(a_prop).c_str());
             });
@@ -301,7 +301,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
       ck_string_list ck_prop_list = a_obj.property_list();
 
       std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
-                    [&](const cherry_kit::string &a_prop) {
+                    [&](const std::string &a_prop) {
         main_element.setAttribute(a_prop.c_str(),
                                   a_obj.property(a_prop).c_str());
       });
@@ -342,7 +342,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
   ck_string_list ck_prop_list = a_obj.property_list();
 
   std::for_each(std::begin(ck_prop_list), std::end(ck_prop_list),
-                [&](const cherry_kit::string &a_prop) {
+                [&](const std::string &a_prop) {
     main_element.setAttribute(a_prop.c_str(), a_obj.property(a_prop).c_str());
   });
 
@@ -370,9 +370,9 @@ void disk_engine::update_request(const sync_object &a_obj) {
   qDebug() << Q_FUNC_INFO << "Done";
 }
 
-void disk_engine::delete_request(const cherry_kit::string &a_object_name,
-                                 const cherry_kit::string &a_key,
-                                 const cherry_kit::string &a_value) {
+void disk_engine::delete_request(const std::string &a_object_name,
+                                 const std::string &a_key,
+                                 const std::string &a_value) {
   QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
 
@@ -495,9 +495,9 @@ QString disk_engine::data(const QString &fileName) {
   return data;
 }
 
-void disk_engine::find(const cherry_kit::string &a_object_name,
-                       const cherry_kit::string &a_attrib,
-                       const cherry_kit::string &a_value) {
+void disk_engine::find(const std::string &a_object_name,
+                       const std::string &a_attrib,
+                       const std::string &a_value) {
   bool match_found = false;
   QString home_path = db_home_path();
   QFileInfo fileInfo(home_path);
@@ -576,7 +576,7 @@ void disk_engine::find(const cherry_kit::string &a_object_name,
 
             QDomNode value_node =
                 attrMap.namedItem(QString::fromStdString(a_attrib));
-            cherry_kit::string node_value_str = value_node.nodeValue().toStdString();
+            std::string node_value_str = value_node.nodeValue().toStdString();
 
             if (node_value_str.compare(a_value) != 0)
               continue;

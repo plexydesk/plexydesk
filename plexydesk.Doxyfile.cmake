@@ -300,11 +300,11 @@ MARKDOWN_SUPPORT       = YES
 
 AUTOLINK_SUPPORT       = YES
 
-# If you use STL classes (i.e. cherry_kit::string, std::vector, etc.) but do not want
+# If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
 # to include (a tag file for) the STL sources as input, then you should set this
 # tag to YES in order to let doxygen match functions declarations and
-# definitions whose arguments contain STL classes (e.g. func(cherry_kit::string);
-# versus func(cherry_kit::string) {}). This also make the inheritance and collaboration
+# definitions whose arguments contain STL classes (e.g. func(std::string);
+# versus func(std::string) {}). This also make the inheritance and collaboration
 # diagrams that involve STL classes more complete and accurate.
 # The default value is: NO.
 

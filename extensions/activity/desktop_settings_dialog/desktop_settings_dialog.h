@@ -46,7 +46,7 @@ public:
   void purge();
 
   void insert_image_to_grid(const QImage &ck_preview_pixmap,
-                            const cherry_kit::string &a_file_url);
+                            const std::string &a_file_url);
 
 private
 Q_SLOTS:

@@ -185,8 +185,8 @@ void desktop_dialog::notify_done() {
   */
 }
 
-void desktop_dialog::notify_message(const cherry_kit::string &a_key,
-                                    const cherry_kit::string &a_value) const{
+void desktop_dialog::notify_message(const std::string &a_key,
+                                    const std::string &a_value) const{
   std::for_each(std::begin(priv->m_notify_chain),
                 std::end(priv->m_notify_chain), [&](dialog_message_t a_func) {
 
