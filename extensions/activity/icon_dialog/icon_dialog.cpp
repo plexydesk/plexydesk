@@ -93,6 +93,7 @@ void icon_dialog::create_window(const QRectF &window_geometry,
 
   priv->window_ref = new cherry_kit::window();
   priv->window_ref->set_window_title(window_title);
+
   priv->window_ref->set_geometry(window_geometry);
 
   priv->m_grid_view = new cherry_kit::item_view(
@@ -160,8 +161,6 @@ void icon_dialog::create_window(const QRectF &window_geometry,
       priv->window_ref->resize(_content_rect.width(), _content_rect.height());
     }
   });
-
-  exec(window_pos);
 }
 
 QVariantMap icon_dialog::result() const {

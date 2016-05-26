@@ -49,6 +49,9 @@ public:
   void prepare_removal();
   void create_task_group() const;
 
+  void open_background_dialog() const;
+  
+  void open_online_dialog() const;
 private Q_SLOTS:
   void image_locally_available();
   void on_image_data_available();

@@ -423,13 +423,6 @@ add_subdirectory(extensions/widgets/dock)
 add_subdirectory(extensions/data/rest)
 add_subdirectory(extensions/data/timer)
 
-#add_subdirectory(extensions/activity/text_input_dialog)
-#add_subdirectory(extensions/activity/icon_dialog)
-#add_subdirectory(extensions/activity/desktop_settings_dialog)
-#add_subdirectory(extensions/activity/progress_dialog)
-#add_subdirectory(extensions/activity/date_dialog)
-#add_subdirectory(extensions/activity/timezone_dialog)
-#add_subdirectory(extensions/activity/template_dialog)
 add_subdirectory(extensions/activity/)
 
 if (APPLE)

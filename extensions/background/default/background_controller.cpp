@@ -152,21 +152,8 @@ void desktop_controller_impl::submit_session_data(
   a_object->set_property("mode", "scale");
 }
 
-void desktop_controller_impl::create_task_group() const {
-  o_ctr->m_supported_action.set_name("Configure");
-  o_ctr->m_supported_action.set_icon("navigation/ck_configure.png");
-  o_ctr->m_supported_action.set_visible(1);
-  o_ctr->m_supported_action.set_controller(controller_name().toStdString());
-
-  cherry_kit::ui_action bg_task;
-  bg_task.set_name("Desktop");
-  bg_task.set_icon("navigation/ck_add.png");
-  bg_task.set_visible(true);
-  bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
-                       const cherry_kit::ui_task_data_t &a_data) {
-    if (!viewport())
-      return;
-
+void desktop_controller_impl::open_background_dialog() const
+{
     QRectF dialog_window_geometry(0, 0, 672, 340);
     QPointF qt_activity_window_location = viewport()->center(
         dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
@@ -186,6 +173,48 @@ void desktop_controller_impl::create_task_group() const {
             viewport()->update_session_value(controller_name(), "", "");
           }
         });
+}
+
+void desktop_controller_impl::open_online_dialog() const
+{
+    QRectF dialog_window_geometry(0, 0, 672, 340);
+    QPointF qt_activity_window_location = viewport()->center(
+        dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
+
+    qDebug() << Q_FUNC_INFO
+             << "Desktop Settings Dialog : " << qt_activity_window_location;
+    cherry_kit::desktop_dialog_ref ck_activity =
+        viewport()->open_desktop_dialog("pixabay_dialog", "Online",
+                                        qt_activity_window_location,
+                                        dialog_window_geometry, QVariantMap());
+
+    ck_activity->on_notify(
+        [=](const std::string &key, const std::string &value) {
+          if (key.compare("url") == 0) {
+            o_ctr->m_background_window->set_background(value);
+            o_ctr->m_background_texture = "file:///" + value;
+            viewport()->update_session_value(controller_name(), "", "");
+          }
+        });
+}
+
+
+void desktop_controller_impl::create_task_group() const {
+  o_ctr->m_supported_action.set_name("Configure");
+  o_ctr->m_supported_action.set_icon("navigation/ck_configure.png");
+  o_ctr->m_supported_action.set_visible(1);
+  o_ctr->m_supported_action.set_controller(controller_name().toStdString());
+
+  cherry_kit::ui_action bg_task;
+  bg_task.set_name("Desktop");
+  bg_task.set_icon("navigation/ck_add.png");
+  bg_task.set_visible(true);
+  bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
+                       const cherry_kit::ui_task_data_t &a_data) {
+    if (!viewport())
+      return;
+
+    open_background_dialog();
   });
 
   cherry_kit::ui_action seamless_task;
@@ -197,6 +226,17 @@ void desktop_controller_impl::create_task_group() const {
                                 const cherry_kit::ui_task_data_t &a_data) {
     expose_platform_desktop();
   });
+
+  cherry_kit::ui_action online_task;
+  online_task.set_name("Online");
+  online_task.set_icon("navigation/ck_configure.png");
+  online_task.set_id(1);
+  online_task.set_visible(1);
+  online_task.set_task([this](const cherry_kit::ui_action *a_ref,
+                                const cherry_kit::ui_task_data_t &a_data) {
+      open_online_dialog();
+  });
+
 
   cherry_kit::ui_action dock_task;
   dock_task.set_name("Dock");
@@ -262,6 +302,7 @@ void desktop_controller_impl::create_task_group() const {
   });
 
   o_ctr->m_supported_action.add_action(bg_task);
+  o_ctr->m_supported_action.add_action(online_task);
   o_ctr->m_supported_action.add_action(dock_task);
   o_ctr->m_supported_action.add_action(seamless_task);
 }

@@ -24,7 +24,7 @@
                 << " line " << __LINE__ << ": " << message << std::endl;       \
       std::exit(EXIT_FAILURE);                                                 \
     } else {                                                                   \
-      std::cout << __LINE__ << " " << __FUNCTION__ << "  " << #condition           \
+      std::cout << __LINE__ << " " << __FUNCTION__ << "  " << #condition       \
                 << "  [PASS]" << std::endl;                                    \
     }                                                                          \
   } while (false)
@@ -91,7 +91,6 @@ void SocialTestRunner::check_xml_loader() {
 
     CK_ASSERT(photo_data.get("ispublic").value() == "1",
               "expected (0) but got : " << photo_data.get("ispublic").value());
-
   });
 
   request->send_message(
@@ -199,8 +198,7 @@ void SocialTestRunner::check_service_file() {
   */
   QString expected_query_url(
       "https://api.flickr.com/services/rest/"
-      "?method=flickr.photos.search&api_key="
-      K_SOCIAL_KIT_FLICKR_API_KEY
+      "?method=flickr.photos.search&api_key=" K_SOCIAL_KIT_FLICKR_API_KEY
       "&text=sky&"
       "format=rest&tags=wallpapers%2cwallpaper&tag_mode="
       "all&safe_search=1&in_gallery=true&per_page=30&"
@@ -267,9 +265,9 @@ void SocialTestRunner::testSocialPhotoSizes(const QString &photoID) {
   input_data.insert("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
   input_data.insert("photo_id", photoID.toStdString());
 
-  service->on_response_ready(
-      [&](const social_kit::remote_result &a_result,
-          const social_kit::web_service *a_web_service) {});
+  service->on_response_ready([&](const social_kit::remote_result &a_result,
+                                 const social_kit::web_service *a_web_service) {
+  });
   service->submit("flickr.photos.getSizes", &input_data);
 }
 
@@ -308,7 +306,7 @@ void SocialTestRunner::onServiceComplete(social_kit::web_service *service) {
 
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH (const QVariantMap &map, photoList) {
+  Q_FOREACH(const QVariantMap & map, photoList) {
     qDebug() << Q_FUNC_INFO << map["id"].toString();
     testSocialPhotoSizes(map["id"].toString());
   }
@@ -325,7 +323,7 @@ void SocialTestRunner::onSizeServiceComplete(social_kit::web_service *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("sizes").count();
 
-  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
+  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     qDebug() << Q_FUNC_INFO << map;
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -410,7 +408,7 @@ void SocialTestRunner::onServiceCompleteJson(
 
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH (const QVariantMap &map, photoList) {
+  Q_FOREACH(const QVariantMap & map, photoList) {
     qDebug() << Q_FUNC_INFO << map["id"].toString();
     testsocialphotosizesJson(map["id"].toString());
   }
@@ -425,7 +423,7 @@ SocialTestRunner::onSizeServiceCompleteJson(social_kit::web_service *service) {
   qDebug() << Q_FUNC_INFO
            << "Service Complete :" << service->methodData("sizes").count();
 
-  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
+  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     // qDebug() << Q_FUNC_INFO << map;
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
@@ -628,8 +626,9 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
     CK_ASSERT(photo_data.get("type").value() == "photo",
               "expected (0) but got : " << photo_data.get("type").value());
 
-    CK_ASSERT(photo_data.get("previewURL").value().empty() == false,
-              "expected (false) but got : " << photo_data.get("previewURL").value());
+    CK_ASSERT(
+        photo_data.get("previewURL").value().empty() == false,
+        "expected (false) but got : " << photo_data.get("previewURL").value());
 
     CK_ASSERT(result.get("total").size() == 1,
               "expected 1 but got : " << result.get("total").size());
@@ -649,12 +648,10 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
   input_data.insert("tag_mode", "all");
   input_data.insert("per_page", "30");
 
-  qDebug() << Q_FUNC_INFO
-           << "url -> "
+  qDebug() << Q_FUNC_INFO << "url -> "
            << srv_query.url("pixabay.photo.search", &input_data).c_str();
 
-  qDebug() << Q_FUNC_INFO
-           << "endpoint -> "
+  qDebug() << Q_FUNC_INFO << "endpoint -> "
            << srv_query.endpoint("pixabay.photo.search").c_str();
 
   CK_ASSERT(srv_query.url("pixabay.photo.search", &input_data).c_str() != "?",

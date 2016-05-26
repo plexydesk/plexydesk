@@ -20,9 +20,6 @@
 #include "clock.h"
 #include "ck_clock_view.h"
 
-#include <QApplication>
-#include <QDebug>
-
 // uikit
 #include <ck_ToolBar.h>
 #include <ck_desktop_controller_interface.h>
