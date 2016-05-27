@@ -108,6 +108,7 @@ public:
   int m_web_format_url_height;
   int m_views;
   int m_downloads;
+  int m_favorites;
   int m_likes;
   int m_comments;
   std::string m_user_id;
@@ -122,6 +123,24 @@ pixabay_service_hit_result::pixabay_service_hit_result(
     const pixabay_service_hit_result &a_copy)
     : ctx(new pixabay_service_hit_result_context) {
   ctx->m_data = a_copy.ctx->m_data;
+  ctx->m_id = a_copy.ctx->m_id;
+  ctx->m_page_url = a_copy.ctx->m_page_url;
+  ctx->m_type = a_copy.ctx->m_type;
+  ctx->m_tags = a_copy.ctx->m_tags;
+  ctx->m_preview_url = a_copy.ctx->m_preview_url;
+  ctx->m_preview_height = a_copy.ctx->m_preview_height;
+  ctx->m_preview_width = a_copy.ctx->m_preview_width;
+  ctx->m_web_format_url = a_copy.ctx->m_web_format_url;
+  ctx->m_web_format_url_height = a_copy.ctx->m_web_format_url_height;
+  ctx->m_web_format_url_width = a_copy.ctx->m_web_format_url_width;
+  ctx->m_views = a_copy.ctx->m_views;
+  ctx->m_downloads = a_copy.ctx->m_downloads;
+  ctx->m_favorites = a_copy.ctx->m_favorites;
+  ctx->m_likes = a_copy.ctx->m_likes;
+  ctx->m_comments = a_copy.ctx->m_comments;
+  ctx->m_user_id = a_copy.ctx->m_user_id;
+  ctx->m_user_name = a_copy.ctx->m_user_name;
+  ctx->m_user_image_url = a_copy.ctx->m_user_image_url;
 }
 
 pixabay_service_hit_result::~pixabay_service_hit_result() { delete ctx; }
@@ -133,9 +152,21 @@ void pixabay_service_hit_result::set_remote_data(
   ctx->m_id = ctx->m_data.get("id").value();
   ctx->m_page_url = ctx->m_data.get("pageURL").value();
   ctx->m_type = ctx->m_data.get("type").value();
-  ctx->m_tags  = ctx->m_data.get("tags").value();
+  ctx->m_tags = ctx->m_data.get("tags").value();
   ctx->m_preview_url = ctx->m_data.get("previewURL").value();
   ctx->m_preview_height = std::stoi(ctx->m_data.get("previewHeight").value());
   ctx->m_preview_width = std::stoi(ctx->m_data.get("previewWidth").value());
-
+  ctx->m_web_format_url = ctx->m_data.get("webformatURL").value();
+  ctx->m_web_format_url_width =
+      std::stoi(ctx->m_data.get("webformatWidth").value());
+  ctx->m_web_format_url_height =
+      std::stoi(ctx->m_data.get("webformatHeight").value());
+  ctx->m_views = std::stoi(ctx->m_data.get("views").value());
+  ctx->m_downloads = std::stoi(ctx->m_data.get("downloads").value());
+  ctx->m_favorites = std::stoi(ctx->m_data.get("favorites").value());
+  ctx->m_likes = std::stoi(ctx->m_data.get("likes").value());
+  ctx->m_comments = std::stoi(ctx->m_data.get("comments").value());
+  ctx->m_user_id = ctx->m_data.get("user_id").value();
+  ctx->m_user_name = ctx->m_data.get("user").value();
+  ctx->m_user_image_url = ctx->m_data.get("userImageURL").value();
 }
