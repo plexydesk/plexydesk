@@ -123,6 +123,8 @@ public:
 
   remote_data_attribute get(const std::string &a_attribute_name);
 
+  attribute_list_t attributes() { return m_propery_list; }
+
 private:
   std::vector<remote_data_attribute> m_propery_list;
   std::string m_name;

@@ -259,9 +259,9 @@ bool ck_file_exisits(const std::string &a_file_name) {
 remote_service::remote_service(const std::string &input)
     : ctx(new remote_service_context) {
   std::string service_file = data_prefix() + input;
-//#ifdef __CK_RUNTIME_DEBUG_MESSAGES_ENABLED__
+  //#ifdef __CK_RUNTIME_DEBUG_MESSAGES_ENABLED__
   std::cout << "def ->" << service_file << std::endl;
-//#endif
+  //#endif
   if (ck_file_exisits(service_file.c_str())) {
     tinyxml2::XMLError error =
         ctx->m_xml_root_doc.LoadFile(service_file.c_str());
@@ -470,43 +470,51 @@ const char *get_attribute_value(tinyxml2::XMLElement *element,
   return value;
 }
 
-void read_json_value(Json::ValueIterator *node,
-                     service_result_query_attribute *attrib,
-                     remote_data_attribute *remote_attrib) {
-  Json::ValueIterator it;
-  for (it = (*node)->begin(); it != (*node)->end(); it++) {
-    if (it->isMember(attrib->value())) {
-      Json::Value null_value;
-      Json::Value object_value;
+void read_json_value(Json::ValueIterator *node, remote_result *a_data,
+                     service_result_query *a_query) {
+  if ((*node)->isArray()) {
+    Json::Value null_value;
+    for (int i = 0; i < (*node)->size(); i++) {
+      Json::Value object_value = (*node)->get(i, null_value);
+      remote_result_data data;
+      data.set_name(node->name());
 
-      object_value = it->get(attrib->value(), null_value);
+      if (object_value.isObject()) {
+        Json::Value::Members list = object_value.getMemberNames();
+        Json::Value null_value;
 
-      if (!object_value.isNull()) {
-        remote_attrib->set_key(attrib->value());
-        if (object_value.isString())
-            remote_attrib->set_value(object_value.asString());
-        if (object_value.isBool())
-            remote_attrib->set_value(std::to_string(object_value.asBool()));
-        if (object_value.isInt())
-            remote_attrib->set_value(std::to_string(object_value.asInt()));
+        std::for_each(std::begin(list), std::end(list),
+                      [&](const std::string &key) {
+            Json::Value value = object_value[key];
+            remote_data_attribute remote_attribute;
+
+            remote_attribute.set_key(key);
+
+            if (value.isInt()) {
+                remote_attribute.set_value(std::to_string(value.asInt()));
+            }
+
+            if (value.isString()) {
+                remote_attribute.set_value(value.asString());
+            }
+
+            if (value.isBool()) {
+                remote_attribute.set_value(std::to_string(value.asBool()));
+            }
+
+            data.insert(remote_attribute);
+        });
+
+         a_data->insert(data);
       }
     }
   }
 }
 
 void read_json_array_values(Json::ValueIterator *node,
-                            remote_result_data *a_data,
+                            remote_result *a_data,
                             service_result_query *a_query) {
-  service_result_query::attribute_list_t list = a_query->attribute_list();
-
-  std::for_each(std::begin(list), std::end(list),
-                [&](service_result_query_attribute *attribute) {
-    if (attribute) {
-      remote_data_attribute remote_attribute;
-      read_json_value(node, attribute, &remote_attribute);
-      a_data->insert(remote_attribute);
-    }
-  });
+  read_json_value(node, a_data, a_query);
 }
 
 void lookup_json_data(Json::Value *node, service_result_query *query,
@@ -514,16 +522,9 @@ void lookup_json_data(Json::Value *node, service_result_query *query,
   Json::ValueIterator it;
 
   for (it = node->begin(); it != node->end(); it++) {
-    if (it.key().asString() == query->name()) {
+    if (it.name() == query->name()) {
       if (&(*it) && it->isArray()) {
-        Json::ValueIterator array_it;
-        for (array_it = it->begin(); array_it != it->end(); array_it++) {
-          remote_result_data result;
-          result.set_name(it.key().asString());
-
-          read_json_array_values(&it, &result, query);
-          a_result->insert(result);
-        }
+        read_json_array_values(&it, a_result, query);
       } else {
         remote_result_data result;
 
@@ -559,7 +560,7 @@ void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
     lookup_element(child_element, query, a_result);
   }
 
-  char *keyword = (char *) malloc(query->tag_name().size() + 1);
+  char *keyword = (char *)malloc(query->tag_name().size() + 1);
   std::strcpy(keyword, query->tag_name().c_str());
 
   if (keyword && strcmp(node->Name(), keyword) == 0) {
@@ -604,8 +605,8 @@ remote_result remote_service::response(const std::string &a_method_name,
     // xml data;
     std::vector<service_result_query *> list = srv_result->query_list();
     tinyxml2::XMLDocument doc;
-    if (doc.Parse(a_response.data_buffer(), a_response.data_buffer_size()) !=
-        tinyxml2::XML_NO_ERROR) {
+    if (doc.Parse((const char *)a_response.data_buffer(),
+                  a_response.data_buffer_size()) != tinyxml2::XML_NO_ERROR) {
       std::cout << __FUNCTION__ << "xml parse error .... [fail]" << std::endl;
       return rv;
     }
@@ -620,23 +621,24 @@ remote_result remote_service::response(const std::string &a_method_name,
 
   } else if (srv_result->result_format() == service_result::kJSONData) {
     // json data.
-    tinyxml2::XMLDocument doc;
     Json::Value root;
     Json::Reader reader;
 
     std::cout << __FUNCTION__ << "Initiate Json Parser" << std::endl;
-    if (reader.parse(a_response.data_buffer(), root)) {
+    if (reader.parse((const char *)a_response.data_buffer(), root)) {
       std::cout << "parsed success fully" << std::endl;
       std::vector<service_result_query *> list = srv_result->query_list();
       std::for_each(std::begin(list), std::end(list),
                     [&](service_result_query *query) {
         if (query) {
+          std::cout << "lookup :" << query->name() << std::endl;
           lookup_json_data(&root, query, &rv);
         }
       });
 
     } else {
-      std::cout << "error parsing json string :" << a_response.data_buffer()
+      std::cout << "Error parsing json string :"
+                << a_response.data_buffer()
                 << std::endl;
     }
   } else {
@@ -869,8 +871,8 @@ std::string remote_service::data_prefix() const {
 #ifdef __WINDOWS_PLATFORM__
   char *_path_str = NULL;
 
-  if((_path_str = _getcwd(NULL, 0)) == NULL) {
-      return std::string();
+  if ((_path_str = _getcwd(NULL, 0)) == NULL) {
+    return std::string();
   }
 
   std::string rv = std::string(_path_str, strlen(_path_str));
@@ -954,6 +956,7 @@ void remote_result::insert(const remote_result_data &a_data) {
 
 result_list_t remote_result::get(const std::string &a_name) const {
   result_list_t rv;
+
   std::for_each(std::begin(m_query_list), std::end(m_query_list),
                 [&](remote_result_data query) {
     if (a_name == query.name())
