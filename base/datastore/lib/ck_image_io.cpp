@@ -51,9 +51,36 @@ image_io::~image_io() {
 
 void image_io::create(int a_width, int a_height) {}
 
-void image_io::create(image_data_ref a_buffer, int a_width, int a_height) {}
+void image_io::create(image_data_ref a_buffer, const size_t size) {
+  o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
+                                           buffer_load_status_t a_status) {
 
-void image_io::create(const std::string &a_file_name) {
+    if (a_status != kSuccess) {
+      if (priv->m_call_on_ready)
+        priv->m_call_on_ready(a_status, this);
+      return;
+    }
+
+    if (priv->m_surface) {
+      delete priv->m_surface;
+      priv->m_surface = nullptr;
+    }
+
+    priv->m_surface = a_surface;
+
+    if (priv->m_call_on_ready)
+      priv->m_call_on_ready(kSuccess, this);
+  });
+
+  o_surface_proxy->load_from_buffer(a_buffer, size);
+}
+
+void image_io::create(const std::string &a_file_name, bool a_preview) {
+  if (a_preview) {
+    preview_image(a_file_name);
+    return;
+  }
+
   priv->m_url = a_file_name;
   o_surface_proxy->on_surface_ready([this](io_surface *a_surface,
                                            buffer_load_status_t a_status) {
@@ -106,7 +133,9 @@ void image_io::preview_image(const std::string &a_file_name) {
 io_surface *image_io::surface() const { return priv->m_surface; }
 
 io_surface *image_io::add_task(image_io::image_operation_t a_method,
-                              const image_io::scale_options &arg) { return nullptr;}
+                               const image_io::scale_options &arg) {
+  return nullptr;
+}
 
 void image_io::set_filter(const std::string &a_filter_name, int a_flag) {}
 
@@ -125,12 +154,12 @@ io_surface::io_surface(const io_surface &copy)
 
 io_surface::~io_surface() {
   if (buffer)
-      free(buffer);
+    free(buffer);
 }
 
 image_data_ref io_surface::copy() {
   size_t buffer_size = 4 * width * height;
-  image_data_ref buffer_copy = (image_data_ref) malloc(buffer_size);
+  image_data_ref buffer_copy = (image_data_ref)malloc(buffer_size);
   memcpy(buffer_copy, buffer, buffer_size);
 
   return buffer_copy;

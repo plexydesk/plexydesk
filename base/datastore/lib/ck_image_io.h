@@ -71,9 +71,9 @@ public:
   virtual ~image_io();
 
   virtual void create(int a_width, int a_height);
-  virtual void create(image_data_ref a_buffer, int a_width, int a_height);
+  virtual void create(image_data_ref a_buffer, const size_t size);
+  virtual void create(const std::string &a_file_name, bool a_preview = false);
 
-  virtual void create(const std::string &a_file_name);
   virtual std::string url() const;
 
   virtual void preview_image(const std::string &a_file_name);
