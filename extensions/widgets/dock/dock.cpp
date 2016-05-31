@@ -36,6 +36,7 @@
 #include <ck_resource_manager.h>
 #include <ck_screen.h>
 
+
 using namespace cherry_kit;
 
 class desktop_panel_controller_impl::PrivateDock {

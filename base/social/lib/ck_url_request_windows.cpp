@@ -124,7 +124,8 @@ void __stdcall _http_response_func( HINTERNET hInternet, DWORD_PTR dwContext,
               }
 
               response.set_data_buffer_size(ctx->m_total_block_size);
-              response.set_data_buffer((const char *)ctx->m_data_buffer,
+              response.set_data_buffer(
+                          (const unsigned char *)ctx->m_data_buffer,
                                        ctx->m_total_block_size);
 
               ctx->notify_listners(ctx, response);

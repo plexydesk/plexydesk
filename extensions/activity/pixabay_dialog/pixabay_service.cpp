@@ -295,7 +295,7 @@ int pixabay_service_hit_result::preview_width() const {
 }
 
 cherry_kit::io_surface *pixabay_service_hit_result::preview_image() const {
-  ctx->m_preview_img->surface();
+  return ctx->m_preview_img->surface();
 }
 
 std::string pixabay_service_hit_result::web_format_url() const {
