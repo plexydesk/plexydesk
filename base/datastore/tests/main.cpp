@@ -348,8 +348,8 @@ void test_image_io_surface_preview_from_file() {
     px_bench_print(&data, Q_FUNC_INFO);
   });
 
-  ck_img.preview_image(
-      "/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
+  ck_img.create(
+      "/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg", true);
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
   std::this_thread::sleep_for(std::chrono::seconds(4));
