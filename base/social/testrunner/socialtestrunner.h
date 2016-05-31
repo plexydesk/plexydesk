@@ -11,6 +11,8 @@ public:
 
   virtual ~SocialTestRunner();
 
+  void check_data_download();
+
   void check_url_encode();
 
   void check_xml_loader();

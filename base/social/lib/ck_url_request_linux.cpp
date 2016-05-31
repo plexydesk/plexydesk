@@ -60,7 +60,7 @@ static void platform_request_soup_stream_ready_cb(SoupSession *a_session,
   }
 
   response.set_data_buffer_size(a_msg->response_body->length);
-  response.set_data_buffer(a_msg->response_body->data,
+  response.set_data_buffer((const unsigned char *) a_msg->response_body->data,
                            response.data_buffer_size());
 
   ctx->notify_listners(ctx, response);

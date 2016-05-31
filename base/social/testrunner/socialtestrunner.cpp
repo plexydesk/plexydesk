@@ -15,6 +15,7 @@
 
 #include <iostream>
 
+#include <ck_image_io.h>
 #include <ck_url.h>
 
 #define CK_ASSERT(condition, message)                                          \
@@ -41,18 +42,56 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
     : d(new PrivateSocialTestRunner), QObject(parent) {
   qDebug() << Q_FUNC_INFO << "Runner Started";
 
+  /*
   check_service_file();
   check_url_encode();
   check_xml_loader();
   check_json_loader();
+  */
 
   /* test social services */
   check_pixabay_sd_photo_search();
+  //check_data_download();
 }
 
 SocialTestRunner::~SocialTestRunner() {
   qDebug() << Q_FUNC_INFO << "Runner Ended";
   delete d;
+}
+
+void SocialTestRunner::check_data_download() {
+  social_kit::url_request *request = new social_kit::url_request();
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+    CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
+
+    QImage img = QImage::fromData((const uchar *)response.data_buffer(),
+                                  response.data_buffer_size());
+
+    CK_ASSERT(img.isNull() != true, "expected image, got null image");
+
+    cherry_kit::image_io *image = new cherry_kit::image_io(0, 0);
+
+    image->on_ready([](cherry_kit::image_io::buffer_load_status_t s,
+                       cherry_kit::image_io *a_img) {
+      CK_ASSERT(s == cherry_kit::image_io::kSuccess,
+                "Expected Success, Got Somthing else");
+      cherry_kit::io_surface *surface = a_img->surface();
+
+      CK_ASSERT(surface != 0, "Expected a valid Image Surface Got Null");
+      CK_ASSERT(surface->width == 150, "Expected width 150 Got"
+                                           << surface->width);
+      CK_ASSERT(surface->height == 84, "Expected Height 84, Got"
+                                           << surface->height);
+      delete a_img;
+    });
+
+    image->create((response.data_buffer()), response.data_buffer_size());
+  });
+
+  request->send_message(social_kit::url_request::kGETRequest,
+                        "https://pixabay.com/static/uploads/photo/2015/03/26/"
+                        "09/47/sky-690293_150.jpg");
 }
 
 void SocialTestRunner::check_url_encode() {
@@ -617,11 +656,21 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
     social_kit::remote_service srv_query("com.pixabay.json.api.xml");
     const social_kit::remote_result result =
         srv_query.response("pixabay.photo.search", response);
-    CK_ASSERT(result.get("hits").size() == 30,
+    CK_ASSERT(result.get("hits").size() == 5,
               "expected 30 but got : " << result.get("hits").size());
 
     /* check photo element */
     social_kit::remote_result_data photo_data = result.get("hits").at(0);
+
+    social_kit::result_list_t list;
+
+    list = result.get("hits");
+
+    std::for_each(std::begin(list), std::end(list),
+                  [](social_kit::remote_result_data &data) {
+        //std::cout << data.get("id").value() << std::endl;
+        //std::cout << data.get("pageURL").value() << std::endl;
+    });
 
     CK_ASSERT(photo_data.get("type").value() == "photo",
               "expected (0) but got : " << photo_data.get("type").value());
@@ -646,13 +695,14 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
   input_data.insert("q", "sky");
   input_data.insert("safesearch", "1");
   input_data.insert("tag_mode", "all");
-  input_data.insert("per_page", "30");
+  input_data.insert("per_page", "5");
 
+  /*
   qDebug() << Q_FUNC_INFO << "url -> "
            << srv_query.url("pixabay.photo.search", &input_data).c_str();
-
   qDebug() << Q_FUNC_INFO << "endpoint -> "
            << srv_query.endpoint("pixabay.photo.search").c_str();
+  */
 
   CK_ASSERT(srv_query.url("pixabay.photo.search", &input_data).c_str() != "?",
             "expected url but got something else");
