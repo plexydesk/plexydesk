@@ -50,6 +50,7 @@ class DECL_UI_KIT_EXPORT fixed_layout {
     kProgressBar,
     kDivider,
     kModelView,
+    kGridModelView,
     kCalendar,
     kClock,
     kDialView,

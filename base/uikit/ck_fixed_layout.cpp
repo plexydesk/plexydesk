@@ -85,6 +85,11 @@ public:
   widget *add_new_model_view_at(int a_row, int a_col,
                                 const widget_properties_t &a_props,
                                 widget_handler_callback_t a_callback);
+
+  widget *add_new_grid_model_view_at(int a_row, int a_col,
+                                     const widget_properties_t &a_props,
+                                     widget_handler_callback_t a_callback);
+
   void layout();
 
   // members
@@ -161,7 +166,7 @@ void fixed_layout::PrivateViewBuilder::layout() {
 
       widget *widget = m_widget_grid[pos];
       widget->set_geometry(QRectF(0, 0, calculate_cell_width(row, i),
-                                 calculate_cell_height(row, i)));
+                                  calculate_cell_height(row, i)));
       widget->setPos(get_x(row, i), get_y(row, 0));
     }
   }
@@ -230,9 +235,9 @@ widget *fixed_layout::add_new_button_at(int a_row, int a_col,
 
   layout();
 
-  btn->on_click([=] (){
-      if (a_callback)
-          a_callback();
+  btn->on_click([=]() {
+    if (a_callback)
+      a_callback();
   });
 
   return btn;
@@ -284,6 +289,10 @@ widget *fixed_layout::add_widget(int a_row, int a_column,
   case kModelView:
     rv = priv->add_new_model_view_at(a_row, a_column, a_properties, a_callback);
     break;
+  case kGridModelView:
+    rv = priv->add_new_grid_model_view_at(a_row, a_column, a_properties,
+                                          a_callback);
+    break;
   case kLineEdit:
     rv = priv->add_new_line_edit_at(a_row, a_column, a_properties, a_callback);
     break;
@@ -322,6 +331,7 @@ void fixed_layout::PrivateViewBuilder::build_ui_map() {
   m_ui_dict["text_edit"] = fixed_layout::kTextEdit;
   m_ui_dict["progress_bar"] = fixed_layout::kProgressBar;
   m_ui_dict["model_view"] = fixed_layout::kModelView;
+  m_ui_dict["grid_model_view"] = fixed_layout::kGridModelView;
   m_ui_dict["divider"] = fixed_layout::kDivider;
   m_ui_dict["calendar"] = fixed_layout::kCalendar;
   m_ui_dict["clock"] = fixed_layout::kClock;
@@ -464,7 +474,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_label_at(
   ck_label->set_size(QSizeF(calculate_cell_width(a_row, a_col),
                             calculate_cell_height(a_row, a_col)));
   ck_label->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                               calculate_cell_height(a_row, a_col)));
+                                calculate_cell_height(a_row, a_col)));
   layout();
 
   return ck_label;
@@ -495,7 +505,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
   image_button->set_pixmap(pixmap);
 
   image_button->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                                   calculate_cell_height(a_row, a_col)));
+                                    calculate_cell_height(a_row, a_col)));
   /*
   image_button->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                      calculate_cell_height(a_row, a_col)));
@@ -515,7 +525,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_view_at(
   m_ui_type_dict[pos] = kImageButton;
 
   img_view->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                               calculate_cell_height(a_row, a_col)));
+                                calculate_cell_height(a_row, a_col)));
   /*
   img_view->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                  calculate_cell_height(a_row, a_col)));
@@ -576,7 +586,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_text_edit_at(
 
   editor->set_text(text);
   editor->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                             calculate_cell_height(a_row, a_col)));
+                              calculate_cell_height(a_row, a_col)));
   layout();
 
   return editor;
@@ -599,7 +609,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_line_edit_at(
 
   editor->set_text(text);
   editor->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                             calculate_cell_height(a_row, a_col)));
+                              calculate_cell_height(a_row, a_col)));
   /*
   editor->setMinimumSize(QSize(calculate_cell_width(a_row, a_col),
                                calculate_cell_height(a_row, a_col)));
@@ -619,7 +629,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_calendar_at(
   m_ui_type_dict[pos] = kCalendar;
 
   calendar->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                               calculate_cell_height(a_row, a_col)));
+                                calculate_cell_height(a_row, a_col)));
   layout();
 
   return calendar;
@@ -635,7 +645,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_clock_at(
   m_ui_type_dict[pos] = kClock;
 
   clock->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                            calculate_cell_height(a_row, a_col)));
+                             calculate_cell_height(a_row, a_col)));
   layout();
 
   return clock;
@@ -651,10 +661,30 @@ widget *fixed_layout::PrivateViewBuilder::add_new_dial_at(
   m_ui_type_dict[pos] = kClock;
 
   dial_widget->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                                  calculate_cell_height(a_row, a_col)));
+                                   calculate_cell_height(a_row, a_col)));
   layout();
 
   return dial_widget;
+}
+
+widget *fixed_layout::PrivateViewBuilder::add_new_grid_model_view_at(
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
+  cherry_kit::item_view *item_view = new cherry_kit::item_view(
+      m_content_frame, cherry_kit::item_view::kGridModel);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = item_view; //_widget;
+  m_ui_type_dict[pos] = kGridModelView;
+
+  item_view->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                                 calculate_cell_height(a_row, a_col)));
+
+  item_view->set_view_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                                      calculate_cell_height(a_row, a_col)));
+
+  layout();
+  return item_view;
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_model_view_at(
@@ -668,11 +698,12 @@ widget *fixed_layout::PrivateViewBuilder::add_new_model_view_at(
   m_ui_type_dict[pos] = kModelView;
 
   item_view->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
-                                calculate_cell_height(a_row, a_col)));
+                                 calculate_cell_height(a_row, a_col)));
 
   item_view->set_view_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                                       calculate_cell_height(a_row, a_col)));
 
+  layout();
   return item_view;
 }
 }
