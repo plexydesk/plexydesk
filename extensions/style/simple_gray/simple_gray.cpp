@@ -231,19 +231,19 @@ void SimpleGrayStyle::draw_push_button(const style_data &features,
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter);
+    d->set_default_font_size(painter, 12, true);
     painter->drawPath(button_background_path);
   } else if (features.render_state == style_data::kRenderRaised) {
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kDarkPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter, 8);
+    d->set_default_font_size(painter, 12, true);
     painter->drawPath(button_background_path);
   } else {
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kDarkPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter, 8);
+    d->set_default_font_size(painter, 12, true);
     painter->drawPath(button_background_path);
   }
 
@@ -841,7 +841,7 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features,
   painter->fillPath(background_path,
                     d->color(resource_manager::kTextBackground));
 
-  d->set_default_font_size(painter, 8);
+  d->set_default_font_size(painter, 14);
 
   if (features.render_state == style_data::kRenderRaised) {
     d->set_pen_color(painter, resource_manager::kDividerColor);
@@ -882,9 +882,9 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features,
   }
 
   if (ck_line_edit && !ck_line_edit->readonly()) {
-    QPointF line1(_text_cursor_width_to_left, 4 * scale_factor());
+    QPointF line1(_text_cursor_width_to_left, 8 * scale_factor());
     QPointF line2(_text_cursor_width_to_left,
-                  m.height() + (1 * scale_factor()));
+                  m.height() + (4 * scale_factor()));
 
     d->set_pen_color(painter, resource_manager::kPrimaryColor, 1);
     painter->drawLine(line1, line2);
