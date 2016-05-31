@@ -126,7 +126,7 @@ url_response::url_response(const url_response &a_copy) {
   m_method = a_copy.m_method;
 
   if (a_copy.m_data_buffer && (m_data_buffer_size > 0)) {
-    m_data_buffer = (char *)malloc(m_data_buffer_size);
+    m_data_buffer = (unsigned char *)malloc(m_data_buffer_size);
     memcpy(m_data_buffer, a_copy.m_data_buffer, m_data_buffer_size);
   }
 }
@@ -173,12 +173,12 @@ void url_response::set_data_buffer_size(unsigned int data_buffer_size) {
   m_data_buffer_size = data_buffer_size;
 }
 
-char *url_response::data_buffer() const { return m_data_buffer; }
+unsigned char *url_response::data_buffer() const { return m_data_buffer; }
 
-void url_response::set_data_buffer(const char *data_buffer,
+void url_response::set_data_buffer(const unsigned char *data_buffer,
                                    unsigned int a_size) {
   // m_data_buffer = data_buffer;
-  m_data_buffer = (char *)malloc(a_size);
+  m_data_buffer = (unsigned char *)malloc(a_size);
   memcpy(m_data_buffer, data_buffer, a_size);
   m_data_buffer_size = a_size;
 }

@@ -51,8 +51,8 @@ public:
   unsigned int data_buffer_size() const;
   void set_data_buffer_size(unsigned int data_buffer_size);
 
-  char *data_buffer() const;
-  void set_data_buffer(const char *data_buffer, unsigned int a_size);
+  unsigned char *data_buffer() const;
+  void set_data_buffer(const unsigned char *data_buffer, unsigned int a_size);
 
 private:
   int m_status_code;
@@ -63,7 +63,7 @@ private:
   std::string m_method;
 
   unsigned int m_data_buffer_size;
-  char * m_data_buffer;
+  unsigned char * m_data_buffer;
 };
 
 class DECL_SOCIAL_KIT_EXPORT url_request {
