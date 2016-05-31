@@ -32,9 +32,7 @@ public:
 
 image_io::platform_image::platform_image() : priv(new private_platform_image) {}
 
-image_io::platform_image::~platform_image() {
-  delete priv;
-}
+image_io::platform_image::~platform_image() { delete priv; }
 
 void image_io::platform_image::load_from_file(const std::string &a_file_name) {
   priv->m_file_url = a_file_name;
@@ -59,11 +57,41 @@ image_io::platform_image::load_image_preview(const std::string &a_file_name) {
       std::async(std::launch::async,
                  &image_io::platform_image::image_preview_decoder, this);
   QCoreApplication::processEvents();
-   io_surface *result = priv->m_async_task_result.get();
+  io_surface *result = priv->m_async_task_result.get();
   image_io::buffer_load_status_t status = image_io::kSuccess;
 
   if (!result)
     status = image_io::kDataError;
+
+  priv->m_on_ready_call(result, status);
+}
+
+void image_io::platform_image::load_from_buffer(const unsigned char *a_buffer,
+                                                const size_t size) {
+  io_surface *result = new io_surface();
+  QImage _qimage = QImage::fromData(a_buffer, (int)size);
+  image_io::buffer_load_status_t status = image_io::kSuccess;
+
+  if (_qimage.isNull()) {
+    status = image_io::kDataError;
+    delete result;
+    priv->m_on_ready_call(0, status);
+    return;
+  }
+
+  // result->buffer = (unsigned char *) malloc(size);
+  // memcpy(result->buffer, a_buffer, size);
+
+  result->buffer = (unsigned char *)malloc(
+      4 * _qimage.height() * _qimage.width() * sizeof(unsigned char));
+
+  memcpy(result->buffer, _qimage.constBits(),
+         4 * _qimage.height() * _qimage.width() * sizeof(unsigned char));
+
+  result->height = _qimage.height();
+  result->width = _qimage.width();
+
+  status = image_io::kSuccess;
 
   priv->m_on_ready_call(result, status);
 }
@@ -93,12 +121,12 @@ io_surface *image_io::platform_image::image_decoder() {
   ck_surface->width = ck_qt_image.width();
   ck_surface->height = ck_qt_image.height();
 
-
   ck_surface->buffer = (unsigned char *)malloc(
       4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
 
   memcpy(ck_surface->buffer, ck_qt_image.constBits(),
-      4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
+         4 * ck_qt_image.height() * ck_qt_image.width() *
+             sizeof(unsigned char));
 
   /*
   for (int x = 0; x < ck_qt_image.height(); ++x) {
@@ -187,7 +215,8 @@ io_surface *image_io::platform_image::image_preview_decoder() {
       4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
 
   memcpy(ck_surface->buffer, ck_qt_image.constBits(),
-      4 * ck_qt_image.height() * ck_qt_image.width() * sizeof(unsigned char));
+         4 * ck_qt_image.height() * ck_qt_image.width() *
+             sizeof(unsigned char));
 
   /*
   for (int x = 0; x < ck_qt_image.height(); ++x) {
