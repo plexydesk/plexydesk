@@ -95,11 +95,11 @@ void desktop_controller_impl::init() {
   o_ctr->m_background_window->set_background(
       default_wallpaper_file.toStdString());
 
-  o_ctr->m_background_window->on_window_discarded(
-      [this](cherry_kit::window *a_window) {
-        if (o_ctr->m_background_window)
-          delete o_ctr->m_background_window;
-      });
+  o_ctr->m_background_window->on_window_discarded([this](
+      cherry_kit::window *a_window) {
+    if (o_ctr->m_background_window)
+      delete o_ctr->m_background_window;
+  });
 
   qDebug() << Q_FUNC_INFO << "insert Window";
   insert(o_ctr->m_background_window);
@@ -152,52 +152,44 @@ void desktop_controller_impl::submit_session_data(
   a_object->set_property("mode", "scale");
 }
 
-void desktop_controller_impl::open_background_dialog() const
-{
-    QRectF dialog_window_geometry(0, 0, 672, 340);
-    QPointF qt_activity_window_location = viewport()->center(
-        dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
+void desktop_controller_impl::open_background_dialog() const {
+  QRectF dialog_window_geometry(0, 0, 672, 340);
+  QPointF qt_activity_window_location = viewport()->center(
+      dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
 
-    qDebug() << Q_FUNC_INFO
-             << "Desktop Settings Dialog : " << qt_activity_window_location;
-    cherry_kit::desktop_dialog_ref ck_activity =
-        viewport()->open_desktop_dialog("desktop_settings_dialog", "Desktop",
-                                        qt_activity_window_location,
-                                        dialog_window_geometry, QVariantMap());
+  qDebug() << Q_FUNC_INFO
+           << "Desktop Settings Dialog : " << qt_activity_window_location;
+  cherry_kit::desktop_dialog_ref ck_activity = viewport()->open_desktop_dialog(
+      "desktop_settings_dialog", "Desktop", qt_activity_window_location,
+      dialog_window_geometry, QVariantMap());
 
-    ck_activity->on_notify(
-        [=](const std::string &key, const std::string &value) {
-          if (key.compare("url") == 0) {
-            o_ctr->m_background_window->set_background(value);
-            o_ctr->m_background_texture = "file:///" + value;
-            viewport()->update_session_value(controller_name(), "", "");
-          }
-        });
+  ck_activity->on_notify([=](const std::string &key, const std::string &value) {
+    if (key.compare("url") == 0) {
+      o_ctr->m_background_window->set_background(value);
+      o_ctr->m_background_texture = "file:///" + value;
+      viewport()->update_session_value(controller_name(), "", "");
+    }
+  });
 }
 
-void desktop_controller_impl::open_online_dialog() const
-{
-    QRectF dialog_window_geometry(0, 0, 672, 340);
-    QPointF qt_activity_window_location = viewport()->center(
-        dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
+void desktop_controller_impl::open_online_dialog() const {
+  QRectF dialog_window_geometry(0, 0, 520, 340);
+  QPointF qt_activity_window_location = viewport()->center(
+      dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
 
-    qDebug() << Q_FUNC_INFO
-             << "Desktop Settings Dialog : " << qt_activity_window_location;
-    cherry_kit::desktop_dialog_ref ck_activity =
-        viewport()->open_desktop_dialog("pixabay_dialog", "Online",
-                                        qt_activity_window_location,
-                                        dialog_window_geometry, QVariantMap());
+  cherry_kit::desktop_dialog_ref ck_activity = viewport()->open_desktop_dialog(
+      "pixabay_dialog", "Online", qt_activity_window_location,
+      dialog_window_geometry, QVariantMap());
 
-    ck_activity->on_notify(
-        [=](const std::string &key, const std::string &value) {
-          if (key.compare("url") == 0) {
-            o_ctr->m_background_window->set_background(value);
-            o_ctr->m_background_texture = "file:///" + value;
-            viewport()->update_session_value(controller_name(), "", "");
-          }
-        });
+  ck_activity->on_notify([this](const std::string &key, const std::string &value) {
+    if (key.compare("url") == 0) {
+      //o_ctr->m_background_window->set_background(value);
+      //o_ctr->m_background_texture = "file:///" + value;
+      //viewport()->update_session_value(controller_name(), "", "");
+
+    }
+  });
 }
-
 
 void desktop_controller_impl::create_task_group() const {
   o_ctr->m_supported_action.set_name("Configure");
@@ -233,10 +225,9 @@ void desktop_controller_impl::create_task_group() const {
   online_task.set_id(1);
   online_task.set_visible(1);
   online_task.set_task([this](const cherry_kit::ui_action *a_ref,
-                                const cherry_kit::ui_task_data_t &a_data) {
-      open_online_dialog();
+                              const cherry_kit::ui_task_data_t &a_data) {
+    open_online_dialog();
   });
-
 
   cherry_kit::ui_action dock_task;
   dock_task.set_name("Dock");
@@ -371,7 +362,7 @@ void desktop_controller_impl::request_action(const QString &actionName,
 }
 */
 
-void desktop_controller_impl::download_image_from_url(QUrl fileUrl) {
+void desktop_controller_impl::download_image_from_url(const QUrl &fileUrl) {
   social_kit::AsyncDataDownloader *downloader =
       new social_kit::AsyncDataDownloader(this);
 
@@ -436,7 +427,7 @@ void desktop_controller_impl::set_view_rect(const QRectF &rect) {
 void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
                                                       const QString &source,
                                                       bool a_local_file) {
-  //todo:
+  // todo:
   // replace with image_io class.
   social_kit::AsyncImageCreator *ck_image_service =
       new social_kit::AsyncImageCreator(this);
@@ -502,9 +493,8 @@ void desktop_controller_impl::on_image_data_available() {
         sync_session_data("background",
                           ck_image_service->metaData()["url"].toString());
       } else {
-        o_ctr->m_background_texture =
-            QDir::toNativeSeparators("file:///" + ck_image_service->imagePath())
-                .toStdString();
+        o_ctr->m_background_texture = QDir::toNativeSeparators(
+            "file:///" + ck_image_service->imagePath()).toStdString();
         sync_session_data("background",
                           QDir::toNativeSeparators(
                               "file:///" + ck_image_service->imagePath()));

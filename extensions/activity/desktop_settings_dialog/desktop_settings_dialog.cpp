@@ -257,7 +257,7 @@ void desktop_settings_dialog::invoke_image_loader() {
       delete a_image_io;
     });
 
-    ck_image_service->preview_image(a_file);
+    ck_image_service->create(a_file, true);
   });
 
   // current_file_list.erase(std::end(current_file_list));

@@ -61,7 +61,7 @@ protected:
   void expose_platform_desktop() const;
 
 private:
-  void download_image_from_url(QUrl fileUrl);
+  void download_image_from_url(const QUrl &fileUrl);
   void revoke_session(const QVariantMap &args);
 
   void sync_image_data_to_disk(const QByteArray &data, const QString &source,
