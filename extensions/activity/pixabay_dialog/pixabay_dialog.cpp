@@ -33,10 +33,9 @@
 
 #include <atomic>
 
-
 class pixabay_dialog::Privatepixabay {
 public:
-  Privatepixabay() {}
+  Privatepixabay() : m_count(0) {}
   ~Privatepixabay() {}
 
   cherry_kit::window *m_main_window;
@@ -47,33 +46,34 @@ public:
   cherry_kit::window *m_progress_window;
   cherry_kit::progress_bar *m_progress_widget;
 
-
   std::atomic<int> m_count;
 
   std::vector<cherry_kit::image_view *> m_pool;
 
-
   void create_pool() {
-    for(int i = 0; i < 8 ; i++) {
-        cherry_kit::image_view *item = new cherry_kit::image_view(m_grid_view);
-        cherry_kit::model_view_item *ck_preview_item =
-            new cherry_kit::model_view_item();
-        int width = 128;
-        int height = 128;
+    for (int i = 0; i < 8; i++) {
+      cherry_kit::image_view *item = new cherry_kit::image_view(m_grid_view);
+      cherry_kit::model_view_item *ck_preview_item =
+          new cherry_kit::model_view_item();
+      
+      int width = 128;
+      int height = 128;
 
-        item->set_size(QSizeF(width, height));
-        item->set_contents_geometry(0, 0, width, height);
+      item->set_size(QSizeF(width, height));
+      item->set_contents_geometry(0, 0, width, height);
 
-        ck_preview_item->set_view(item);
+      ck_preview_item->set_view(item);
 
-        m_grid_view->insert(ck_preview_item);
+      m_grid_view->insert(ck_preview_item);
 
-        m_pool.push_back(item);
-      }
+      m_pool.push_back(item);
+    }
   }
 
   cherry_kit::image_view *get() {
-    cherry_kit::image_view * rv = m_pool.at(m_count);
+    std::cout << "get item : " << m_count << std::endl;
+
+    cherry_kit::image_view *rv = m_pool.at(m_count);
     m_count++;
 
     if (m_count >= 8)
@@ -81,7 +81,6 @@ public:
 
     return rv;
   }
-
 };
 
 pixabay_dialog::pixabay_dialog(QGraphicsObject *object)
@@ -165,8 +164,7 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   if (!_base_widget)
     return;
   priv->m_grid_view = new cherry_kit::item_view(
-        _base_widget, cherry_kit::item_view::kGridModel);
-
+      _base_widget, cherry_kit::item_view::kGridModel);
 
   _base_widget->on_geometry_changed([&](const QRectF &a_rect) {
     priv->m_grid_view->set_geometry(a_rect);
@@ -182,7 +180,6 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
     delete a_item;
   });
 
-
   priv->m_grid_view->set_view_geometry(_base_widget->geometry());
   priv->m_grid_view->set_coordinates(0, 0);
   priv->m_grid_view->set_content_size(128, 128);
@@ -191,20 +188,19 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   priv->m_grid_view->set_content_spacing(0);
 
   priv->m_service->on_progress([=](int a_value) {
-    if(!priv->m_progress_window)
+    if (!priv->m_progress_window)
       return;
 
     if (!priv->m_progress_widget)
       return;
 
     if (a_value > 80) {
-        priv->m_progress_window->hide();
-        return;
+      priv->m_progress_window->hide();
+      return;
     }
 
     priv->m_progress_window->show();
     priv->m_progress_widget->set_value(a_value);
-
   });
 
   priv->m_service->on_ready([=](const pixabay_service *a_service) {
