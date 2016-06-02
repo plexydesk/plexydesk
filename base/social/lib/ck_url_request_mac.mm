@@ -90,7 +90,7 @@ static void web_response_callback(CFReadStreamRef readStream,
                    response_body_data);
 
     response_notify.set_data_buffer_size(response_body_length);
-    response_notify.set_data_buffer((const char *)response_body_data,
+    response_notify.set_data_buffer((const unsigned char *)response_body_data,
                                     response_body_length);
     CFRelease(response);
     CFRelease(response_body);

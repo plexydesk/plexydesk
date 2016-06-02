@@ -50,8 +50,8 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
   */
 
   /* test social services */
-  check_pixabay_sd_photo_search();
-  //check_data_download();
+  //check_pixabay_sd_photo_search();
+  check_data_download();
 }
 
 SocialTestRunner::~SocialTestRunner() {
