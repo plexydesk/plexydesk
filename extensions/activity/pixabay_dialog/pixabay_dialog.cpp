@@ -31,6 +31,9 @@
 #include <ck_line_edit.h>
 #include <ck_progress_bar.h>
 
+#include <atomic>
+
+
 class pixabay_dialog::Privatepixabay {
 public:
   Privatepixabay() {}
@@ -43,6 +46,42 @@ public:
 
   cherry_kit::window *m_progress_window;
   cherry_kit::progress_bar *m_progress_widget;
+
+
+  std::atomic<int> m_count;
+
+  std::vector<cherry_kit::image_view *> m_pool;
+
+
+  void create_pool() {
+    for(int i = 0; i < 8 ; i++) {
+        cherry_kit::image_view *item = new cherry_kit::image_view(m_grid_view);
+        cherry_kit::model_view_item *ck_preview_item =
+            new cherry_kit::model_view_item();
+        int width = 128;
+        int height = 128;
+
+        item->set_size(QSizeF(width, height));
+        item->set_contents_geometry(0, 0, width, height);
+
+        ck_preview_item->set_view(item);
+
+        m_grid_view->insert(ck_preview_item);
+
+        m_pool.push_back(item);
+      }
+  }
+
+  cherry_kit::image_view *get() {
+    cherry_kit::image_view * rv = m_pool.at(m_count);
+    m_count++;
+
+    if (m_count >= 8)
+      m_count = 0;
+
+    return rv;
+  }
+
 };
 
 pixabay_dialog::pixabay_dialog(QGraphicsObject *object)
@@ -101,20 +140,37 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
       priv->m_layout->add_widget(0, 0, "line_edit", ui_data, [=]() {}));
 
   ui_data["label"] = "Search";
+
   cherry_kit::button *ck_search_btn = dynamic_cast<cherry_kit::button *>(
       priv->m_layout->add_widget(0, 1, "button", ui_data, [=]() {
         if (!editor) {
           qDebug() << Q_FUNC_INFO << "Invalid Editor";
           return;
         }
-        priv->m_grid_view->clear();
+
+        if (!priv->m_progress_window || !priv->m_progress_widget)
+          return;
+
+        priv->m_progress_window->show();
+        priv->m_progress_window->raise();
         priv->m_service->search(editor->text().toStdString());
         priv->m_progress_window->set_window_title("Search : " + editor->text());
+        priv->m_progress_window->setZValue(10000);
       }));
 
   /* grid view */
-  priv->m_grid_view = dynamic_cast<cherry_kit::item_view *>(
-      priv->m_layout->add_widget(1, 0, "grid_model_view", ui_data, [=]() {}));
+  cherry_kit::widget *_base_widget =
+      priv->m_layout->add_widget(1, 0, "widget", ui_data, [=]() {});
+
+  if (!_base_widget)
+    return;
+  priv->m_grid_view = new cherry_kit::item_view(
+        _base_widget, cherry_kit::item_view::kGridModel);
+
+
+  _base_widget->on_geometry_changed([&](const QRectF &a_rect) {
+    priv->m_grid_view->set_geometry(a_rect);
+  });
 
   /* the reset of the things */
   priv->m_main_window->set_window_content(priv->m_layout->viewport());
@@ -126,28 +182,38 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
     delete a_item;
   });
 
+
+  priv->m_grid_view->set_view_geometry(_base_widget->geometry());
+  priv->m_grid_view->set_coordinates(0, 0);
   priv->m_grid_view->set_content_size(128, 128);
   priv->m_grid_view->set_column_count(4);
   priv->m_grid_view->set_enable_scrollbars(false);
   priv->m_grid_view->set_content_spacing(0);
 
-  priv->m_service->on_progress([this](int a_value) {
-    qDebug() << Q_FUNC_INFO << "Progress : " << a_value;
+  priv->m_service->on_progress([=](int a_value) {
+    if(!priv->m_progress_window)
+      return;
 
     if (!priv->m_progress_widget)
       return;
 
+    if (a_value > 80) {
+        priv->m_progress_window->hide();
+        return;
+    }
+
     priv->m_progress_window->show();
     priv->m_progress_widget->set_value(a_value);
+
   });
 
-  priv->m_service->on_ready([this](const pixabay_service *a_service) {
+  priv->m_service->on_ready([=](const pixabay_service *a_service) {
     if (!a_service)
       return;
     service_result_list list = a_service->get();
 
     std::for_each(std::begin(list), std::end(list),
-                  [this](pixabay_service_hit_result *a_hit) {
+                  [=](pixabay_service_hit_result *a_hit) {
       if (!a_hit)
         return;
 
@@ -165,33 +231,23 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
         return;
       }
 
-      int width = 128;
-      int height = 128;
-      cherry_kit::image_view *ck_image_preview =
-          new cherry_kit::image_view(priv->m_grid_view);
-      cherry_kit::model_view_item *ck_preview_item =
-          new cherry_kit::model_view_item();
-
       QImage image_buffer(ck_surface_ref->copy(), ck_surface_ref->width,
                           ck_surface_ref->height, QImage::Format_ARGB32);
       image_buffer = image_buffer.scaledToHeight(128, Qt::SmoothTransformation);
 
-      ck_image_preview->on_click([=]() {
+      cherry_kit::image_view *ck_view = priv->get();
+
+      ck_view->set_image(image_buffer);
+      ck_view->on_click([=]() {
         notify_message("url", a_hit->web_format_url());
       });
-      ck_image_preview->set_image(image_buffer);
-      ck_image_preview->set_size(QSizeF(width, height));
-      ck_image_preview->set_contents_geometry(0, 0, width, height);
-
-      ck_preview_item->set_view(ck_image_preview);
-
-      priv->m_grid_view->insert(ck_preview_item);
     });
   });
 
   priv->m_progress_window->raise();
   priv->m_progress_widget->show();
 
+  priv->create_pool();
   priv->m_service->search("green leaf");
 }
 

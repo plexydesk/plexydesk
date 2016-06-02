@@ -36,6 +36,7 @@ DesktopManager::DesktopManager(QWidget *parent)
     : cherry_kit::workspace(0, parent),
       priv(new PrivateDesktopManager) {
     priv->m_scene = new QGraphicsScene(this);
+    priv->m_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
     setScene(priv->m_scene);
 }

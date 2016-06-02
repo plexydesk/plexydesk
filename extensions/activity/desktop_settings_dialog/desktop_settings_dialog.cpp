@@ -102,6 +102,7 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
 
   cherry_kit::widget *ck_icon_gird =
       ck_ui->add_widget(0, 0, "widget", ui_data, [=]() {});
+
   priv->m_image_view = new cherry_kit::item_view(
       ck_icon_gird, cherry_kit::item_view::kGridModel);
 
