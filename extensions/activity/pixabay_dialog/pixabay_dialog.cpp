@@ -110,7 +110,7 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   priv->m_progress_widget->set_value(0);
   priv->m_progress_window->setPos((window_geometry.width() / 2) - 120,
                                   (window_geometry.height() / 2) - 24);
-  priv->m_progress_window->set_window_title("Searching...");
+  priv->m_progress_window->set_window_title("Search Powered By Pixabay");
 
   priv->m_progress_window->show();
 
@@ -131,8 +131,17 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   priv->m_layout->set_segment_width(0, 0, "80%");
   priv->m_layout->set_segment_width(0, 1, "20%");
 
-  /*insert widgets to layout */
   cherry_kit::widget_properties_t ui_data;
+
+  /* navigation buttons */
+  ui_data["icon"] = "toolbar/ck_previous.png";
+  priv->m_layout->add_widget(2, 0, "image_button", ui_data, [=]() {});
+  ui_data["icon"] = "toolbar/ck_next.png";
+  priv->m_layout->add_widget(2, 1, "image_view", ui_data, [=]() {});
+  ui_data["icon"] = "toolbar/ck_next.png";
+  priv->m_layout->add_widget(2, 2, "image_button", ui_data, [=]() {});
+
+  /*insert widgets to layout */
 
   ui_data["text"] = "";
   cherry_kit::line_edit *editor = dynamic_cast<cherry_kit::line_edit *>(
