@@ -216,6 +216,7 @@ widget *fixed_layout::add_new_widget_at(int a_col, int a_row,
   priv->m_widget_grid[pos] = ck_widget;
   priv->m_ui_type_dict[pos] = kWidget;
 
+  layout();
   return ck_widget;
 }
 
