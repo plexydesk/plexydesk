@@ -178,7 +178,8 @@ void desktop_controller_impl::open_online_dialog() const {
       dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
 
   cherry_kit::desktop_dialog_ref ck_activity = viewport()->open_desktop_dialog(
-      "pixabay_dialog", "Online", qt_activity_window_location,
+      "pixabay_dialog", "PIXABAY SEARCH",
+              qt_activity_window_location,
       dialog_window_geometry, QVariantMap());
 
   ck_activity->on_notify([this](const std::string &key, const std::string &value) {

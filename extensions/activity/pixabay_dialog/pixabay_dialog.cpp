@@ -134,11 +134,11 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   cherry_kit::widget_properties_t ui_data;
 
   /* navigation buttons */
-  ui_data["icon"] = "toolbar/ck_previous.png";
+  ui_data["icon"] = "toolbar/ck_arrow-left.png";
   priv->m_layout->add_widget(2, 0, "image_button", ui_data, [=]() {});
-  ui_data["icon"] = "toolbar/ck_next.png";
-  priv->m_layout->add_widget(2, 1, "image_view", ui_data, [=]() {});
-  ui_data["icon"] = "toolbar/ck_next.png";
+  ui_data["icon"] = "branding/ck_pixabay_logo.png";
+  priv->m_layout->add_widget(2, 1, "image_button", ui_data, [=]() {});
+  ui_data["icon"] = "toolbar/ck_arrow-right.png";
   priv->m_layout->add_widget(2, 2, "image_button", ui_data, [=]() {});
 
   /*insert widgets to layout */
