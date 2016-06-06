@@ -100,6 +100,7 @@ public:
           a_callback);
 
   virtual void on_click(std::function<void()> a_callback);
+  virtual void reset_click_event();
 
   virtual void
   on_geometry_changed(std::function<void(const QRectF &)> a_callback);

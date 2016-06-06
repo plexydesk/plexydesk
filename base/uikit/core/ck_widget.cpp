@@ -113,7 +113,12 @@ void widget::on_input_event(
 }
 
 void widget::on_click(std::function<void()> a_callback) {
-  priv->m_on_click_handlers.push_back(a_callback);
+    priv->m_on_click_handlers.push_back(a_callback);
+}
+
+void widget::reset_click_event()
+{
+    priv->m_on_click_handlers.clear();
 }
 
 void widget::on_geometry_changed(

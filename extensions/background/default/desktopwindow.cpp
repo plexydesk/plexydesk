@@ -111,8 +111,9 @@ void desktop_window::set_background(const std::string &a_image_name) {
 }
 
 void desktop_window::set_background(const QImage &a_image_name) {
+  priv->m_background_texture = QImage();
   priv->m_background_texture = a_image_name;
-  setCacheMode(ItemCoordinateCache, a_image_name.size());
+  //setCacheMode(ItemCoordinateCache, a_image_name.size());
   update();
 }
 

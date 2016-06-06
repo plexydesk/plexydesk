@@ -47,11 +47,12 @@ public:
   void set_view_rect(const QRectF &rect);
 
   void prepare_removal();
-  void create_task_group() const;
+  void create_task_group();
 
   void open_background_dialog() const;
   
-  void open_online_dialog() const;
+  void open_online_dialog();
+  void download_image(const std::string &a_url);
 private Q_SLOTS:
   void image_locally_available();
   void on_image_data_available();

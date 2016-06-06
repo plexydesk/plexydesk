@@ -243,6 +243,7 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
       cherry_kit::image_view *ck_view = priv->get();
 
       ck_view->set_image(image_buffer);
+      ck_view->reset_click_event();
       ck_view->on_click([=]() {
         notify_message("url", a_hit->web_format_url());
       });

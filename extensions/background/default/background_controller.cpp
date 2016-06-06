@@ -42,6 +42,7 @@
 #include <ck_image_view.h>
 #include <ck_icon_button.h>
 #include <ck_system_window_context.h>
+#include <ck_image_io.h>
 
 #include "desktopwindow.h"
 
@@ -172,27 +173,56 @@ void desktop_controller_impl::open_background_dialog() const {
   });
 }
 
-void desktop_controller_impl::open_online_dialog() const {
+void desktop_controller_impl::download_image(const std::string &a_url) {
+  social_kit::url_request *request = new social_kit::url_request();
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+    if (response.status_code() == 200) {
+      cherry_kit::image_io *image = new cherry_kit::image_io(0, 0);
+
+      image->on_ready([&](cherry_kit::image_io::buffer_load_status_t s,
+                          cherry_kit::image_io *a_img) {
+        if (s == cherry_kit::image_io::kSuccess) {
+          cherry_kit::io_surface *surface = a_img->surface();
+
+          if (surface) {
+            QImage bg_image = QImage(surface->copy(), surface->width,
+                                     surface->height, QImage::Format_ARGB32);
+            o_ctr->m_background_window->set_background(bg_image);
+          }
+        } else {
+          std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;
+        }
+      });
+
+      image->create((response.data_buffer()), response.data_buffer_size());
+    } else {
+      std::cout << __FUNCTION__ << "Error downloading url :" << a_url
+                << std::endl;
+    }
+  });
+
+  request->send_message(social_kit::url_request::kGETRequest, a_url);
+}
+
+void desktop_controller_impl::open_online_dialog() {
   QRectF dialog_window_geometry(0, 0, 520, 340);
   QPointF qt_activity_window_location = viewport()->center(
       dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
 
   cherry_kit::desktop_dialog_ref ck_activity = viewport()->open_desktop_dialog(
-      "pixabay_dialog", "PIXABAY SEARCH",
-              qt_activity_window_location,
+      "pixabay_dialog", "PIXABAY SEARCH", qt_activity_window_location,
       dialog_window_geometry, QVariantMap());
 
-  ck_activity->on_notify([this](const std::string &key, const std::string &value) {
+  ck_activity->on_notify([=](const std::string &key, const std::string &value) {
     if (key.compare("url") == 0) {
-      //o_ctr->m_background_window->set_background(value);
-      //o_ctr->m_background_texture = "file:///" + value;
-      //viewport()->update_session_value(controller_name(), "", "");
-
+      std::cout << __FUNCTION__ << "url : " << value << std::endl;
+      download_image(value);
     }
   });
 }
 
-void desktop_controller_impl::create_task_group() const {
+void desktop_controller_impl::create_task_group() {
   o_ctr->m_supported_action.set_name("Configure");
   o_ctr->m_supported_action.set_icon("navigation/ck_configure.png");
   o_ctr->m_supported_action.set_visible(1);
