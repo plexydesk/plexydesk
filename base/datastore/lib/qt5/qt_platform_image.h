@@ -30,9 +30,9 @@ protected:
   io_surface *image_preview_decoder();
   void wait_for_signal(image_io::platform_image *instance);
 
-	void save_image(const io_surface *a_surface,
+  std::string save_image(const io_surface *a_surface,
 			const std::string &a_prefix);
-	void save_completed(const std::string &a_file_name);
+  void save_completed(const std::string &a_file_name);
 
 private:
   class private_platform_image;

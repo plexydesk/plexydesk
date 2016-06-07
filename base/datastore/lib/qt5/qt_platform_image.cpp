@@ -23,9 +23,9 @@ public:
   std::string m_file_url;
   std::thread m_io_task;
 
-	io_surface *m_current_surface;
+  io_surface *m_current_surface;
   std::future<io_surface *> m_async_task_result;
-  std::future<std::string> m_async_data_image_url;
+  std::future<void> m_async_data_image_url;
 
   std::condition_variable m_notify_condition_variable;
   std::mutex m_notify_lock_mutex;
@@ -74,7 +74,7 @@ void image_io::platform_image::load_image_preview(
 }
 
 void image_io::platform_image::load_from_buffer(const unsigned char *a_buffer,
-                                                const size_t size) {
+                                                const size_t size) {  
   io_surface *result = new io_surface();
   QImage _qimage = QImage::fromData(a_buffer, (int)size);
   image_io::buffer_load_status_t status = image_io::kSuccess;
@@ -119,14 +119,14 @@ void image_io::platform_image::save_completed(const std::string &a_file_name) {
 			});
 }
 
-void image_io::platform_image::save_image(const io_surface *a_surface,
+std::string image_io::platform_image::save_image(const io_surface *a_surface,
 		const std::string &a_prefix) {
 	std::string rv;
 
 	if (!a_surface || a_surface->buffer == 0) {
 		std::cout << "Null Image Data -> " <<  __FUNCTION__ << std::endl;
-	  save_completed(rv);
-		return;
+	    save_completed(rv);
+		return rv;
 	}
 
 	std::string target_file;
@@ -147,7 +147,7 @@ void image_io::platform_image::save_image(const io_surface *a_surface,
 		+ "/" + a_prefix + "/";
 	target_dir = QString::fromStdString(target_file); 
 
-  file_system = QDir(target_dir);
+    file_system = QDir(target_dir);
 
 	if (!file_system.exists()) {
 		file_system.mkpath(target_dir);
@@ -165,12 +165,16 @@ void image_io::platform_image::save_image(const io_surface *a_surface,
 	}
 
 	save_completed(target_file);
+	
+	return rv;
 }
 
 void image_io::platform_image::save(const io_surface *a_surface,
 		const std::string &a_prefix) {
 	std::cout << "Request -> " <<  __FUNCTION__ << std::endl;
-	save_image(a_surface, a_prefix);
+	priv->m_async_data_image_url = std::async(std::launch::async, [=](){
+		save_image(a_surface, a_prefix);
+	});
 }
 
 void image_io::platform_image::release() {

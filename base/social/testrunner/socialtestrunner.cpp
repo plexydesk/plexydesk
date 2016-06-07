@@ -50,8 +50,8 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
   //check_json_loader();
 
   /* test social services */
-  check_pixabay_sd_photo_search();
-  //check_data_download();
+  ///check_pixabay_sd_photo_search();
+  check_data_download();
 }
 
 SocialTestRunner::~SocialTestRunner() {
@@ -83,7 +83,9 @@ void SocialTestRunner::check_data_download() {
                                            << surface->width);
       CK_ASSERT(surface->height == 84, "Expected Height 84, Got"
                                            << surface->height);
+	  std::cout << __FUNCTION__ << "Before Saving ..." << std::endl;
 	  a_img->save(surface, "test_cases");
+	  std::cout << __FUNCTION__ << "After Saving ..." << std::endl;
       //delete a_img;
     });
 

@@ -265,7 +265,7 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 void pixabay_dialog::download_image(const std::string &a_url) {
   social_kit::url_request *request = new social_kit::url_request();
 
-  request->on_response_ready([&](const social_kit::url_response &response) {
+  request->on_response_ready([=](const social_kit::url_response &response) {
     if (response.status_code() == 200) {
       cherry_kit::image_io *image = new cherry_kit::image_io(0, 0);
 
@@ -275,7 +275,7 @@ void pixabay_dialog::download_image(const std::string &a_url) {
           cherry_kit::io_surface *surface = a_img->surface();
 
           if (surface) {
-			a_img->on_image_saved([&](const std::string &a_file_name) {
+			a_img->on_image_saved([=](const std::string &a_file_name) {
 			  priv->m_progress_widget->set_value(75);
 			  notify_message("url", a_file_name);
 			  

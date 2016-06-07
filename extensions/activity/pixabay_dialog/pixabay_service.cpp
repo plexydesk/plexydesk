@@ -51,11 +51,11 @@ void pixabay_service::get_hit_results() {
     return;
 
   std::for_each(std::begin(list), std::end(list),
-                [&](const social_kit::remote_result_data &data) {
+                [=](const social_kit::remote_result_data &data) {
     pixabay_service_hit_result *result = new pixabay_service_hit_result();
     ctx->m_service_list.push_back(result);
 
-    result->on_ready([this](pixabay_service_hit_result *result, bool a_valid) {
+    result->on_ready([=](pixabay_service_hit_result *result, bool a_valid) {
       if (!a_valid) {
         std::cout << "invalid hit result" << std::endl;
         std::unique_ptr<pixabay_service_hit_result>(result);
@@ -95,7 +95,7 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
 
   notify_progress(0);
 
-  request->on_response_ready([&](const social_kit::url_response &response) {
+  request->on_response_ready([=](const social_kit::url_response &response) {
     if (response.status_code() == 200) {
       social_kit::remote_service srv_query("com.pixabay.json.api.xml");
       ctx->m_current_result =
