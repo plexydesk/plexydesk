@@ -25,6 +25,7 @@
    <result format="json">
            <query name="hits" tag="hits">
                    <attr type="string">id</attr>
+				   <attr type="string">id_hash</attr>
                    <attr type="string">pageURL</attr>
                    <attr type="string">type</attr>
                    <attr type="string">tags</attr>
@@ -43,6 +44,11 @@
                    <attr type="int">comments</attr>
                    <attr type="int">user_id</attr>
                    <attr type="string">user</attr>
+				   <attr type="string">largeImageURL</attr>
+				   <attr type="string">fullHDURL</attr>
+				   <attr type="string">imageURL</attr>
+				   <attr type="int">imageWidth</attr>
+				   <attr type="int">imageHeight</attr>
                    <attr type="string">userImageURL</attr>
            </query>
 

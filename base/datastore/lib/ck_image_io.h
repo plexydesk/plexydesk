@@ -29,6 +29,7 @@
 
 namespace cherry_kit {
 typedef unsigned char *image_data_ref;
+typedef std::function<void(const std::string &)> on_save_callback_t;
 
 class QuetzalDataKitQt_EXPORT io_surface {
 public:
@@ -81,19 +82,23 @@ public:
   virtual io_surface *surface() const;
 
   virtual io_surface *add_task(image_operation_t a_method,
-                              const scale_options &arg);
+			const scale_options &arg);
 
   virtual void set_filter(const std::string &a_filter_name, int a_flag);
 
   virtual void
   on_ready(std::function<void(buffer_load_status_t, image_io *)> a_callback);
+  
+  virtual void on_image_saved(on_save_callback_t a_callback);
+  virtual void save(const io_surface *a_surface, 
+			const std::string &a_prefix);
 
 private:
   class platform_image;
   class private_io_image_impl;
 
   private_io_image_impl *const priv;
-  platform_image *const o_surface_proxy;
+  platform_image *const io_ctx;
 };
 }
 

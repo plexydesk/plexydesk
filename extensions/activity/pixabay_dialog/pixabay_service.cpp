@@ -126,6 +126,7 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
   input_data.insert("min_width", "1920");
   input_data.insert("min_height", "1080");
   input_data.insert("editors_choise", "true");
+  input_data.insert("response_group", "high_resolution");
 
   notify_progress(5);
   ctx->m_current_progress = 5;
@@ -177,6 +178,13 @@ public:
   std::string m_user_id;
   std::string m_user_name;
   std::string m_user_image_url;
+ 
+  std::string m_large_image_url;
+  std::string m_hd_image_url;
+  std::string m_original_image_url;
+  int m_original_image_width;
+  int m_original_image_height;
+  std::string m_image_hash;
 
   cherry_kit::image_io *m_preview_img;
   cherry_kit::image_io *m_image;
@@ -207,8 +215,15 @@ pixabay_service_hit_result::pixabay_service_hit_result(
   ctx->m_likes = a_copy.ctx->m_likes;
   ctx->m_comments = a_copy.ctx->m_comments;
   ctx->m_user_id = a_copy.ctx->m_user_id;
-  ctx->m_user_name = a_copy.ctx->m_user_name;
+  ctx->m_user_name = a_copy.ctx->m_user_name; 
   ctx->m_user_image_url = a_copy.ctx->m_user_image_url;
+  
+  ctx->m_large_image_url = a_copy.ctx->m_large_image_url;
+  ctx->m_original_image_height = a_copy.ctx->m_original_image_height;
+  ctx->m_original_image_url = a_copy.ctx->m_original_image_url;
+  ctx->m_original_image_width = a_copy.ctx->m_original_image_width;
+  ctx->m_hd_image_url = a_copy.ctx->m_hd_image_url;
+  ctx->m_image_hash = a_copy.ctx->m_image_hash;
 
   ctx->m_image = 0;
   ctx->m_preview_img = 0;
@@ -241,6 +256,11 @@ void pixabay_service_hit_result::set_remote_data(
   ctx->m_user_id = ctx->m_data.get("user_id").value();
   ctx->m_user_name = ctx->m_data.get("user").value();
   ctx->m_user_image_url = ctx->m_data.get("userImageURL").value();
+  ctx->m_original_image_url = ctx->m_data.get("imageURL").value();
+  ctx->m_original_image_width = std::stoi(ctx->m_data.get("imageWidth").value());
+  ctx->m_original_image_height = std::stoi(ctx->m_data.get("imageHeight").value());
+  ctx->m_hd_image_url = ctx->m_data.get("fullHDURL").value();;
+  ctx->m_large_image_url = ctx->m_data.get("largeImageURL").value();
 
   // ctx->m_preview_img = new cherry_kit::image_io(ctx->m_preview_width,
 

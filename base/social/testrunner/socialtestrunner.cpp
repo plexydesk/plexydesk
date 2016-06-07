@@ -42,16 +42,16 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
     : d(new PrivateSocialTestRunner), QObject(parent) {
   qDebug() << Q_FUNC_INFO << "Runner Started";
 
-  /*
+ 
   check_service_file();
   check_url_encode();
-  check_xml_loader();
-  check_json_loader();
-  */
+  //check_xml_loader();
+  
+  //check_json_loader();
 
   /* test social services */
-  //check_pixabay_sd_photo_search();
-  check_data_download();
+  check_pixabay_sd_photo_search();
+  //check_data_download();
 }
 
 SocialTestRunner::~SocialTestRunner() {
@@ -83,7 +83,8 @@ void SocialTestRunner::check_data_download() {
                                            << surface->width);
       CK_ASSERT(surface->height == 84, "Expected Height 84, Got"
                                            << surface->height);
-      delete a_img;
+	  a_img->save(surface, "test_cases");
+      //delete a_img;
     });
 
     image->create((response.data_buffer()), response.data_buffer_size());
@@ -150,6 +151,7 @@ void SocialTestRunner::check_json_loader() {
     CK_ASSERT(response.http_version() == "HTTP 1.0",
               "Invalid Response From Server");
 
+    qDebug() << Q_FUNC_INFO << response.data_buffer();
     // CK_ASSERT(response.data_buffer_size() == 5320,
     //          "Size Mismatch : " << response.data_buffer_size());
     CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
@@ -644,8 +646,8 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
 
   request->on_response_ready([&](const social_kit::url_response &response) {
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
-    CK_ASSERT(response.http_version() == "HTTP 1.0",
-              "Invalid Response From Server");
+    CK_ASSERT(response.http_version() == "HTTP 1.1",
+              "Invalid Response From Server" << response.http_version());
 
     CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
     CK_ASSERT(response.data_buffer()[1] == '"', "Not jSON Data");

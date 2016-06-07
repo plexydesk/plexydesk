@@ -83,7 +83,7 @@ QString config::prefix() {
 
 QString config::cache_dir(const QString &a_folder) {
   QString rv = QDir::toNativeSeparators(QDir::homePath() + "/" +
-                                        ".plexydesk/cache/" + a_folder);
+                                        ".socialkit/cache/" + a_folder);
   QDir(QDir::homePath()).mkpath(rv);
   return rv;
 }

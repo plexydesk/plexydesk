@@ -189,6 +189,13 @@ void desktop_controller_impl::download_image(const std::string &a_url) {
             QImage bg_image = QImage(surface->copy(), surface->width,
                                      surface->height, QImage::Format_ARGB32);
             o_ctr->m_background_window->set_background(bg_image);
+			
+			a_img->on_image_saved([&](const std::string &a_file_name) {
+		        o_ctr->m_background_texture = "file:///" + a_file_name;
+		        viewport()->update_session_value(controller_name(), "", "");
+			});
+			
+			a_img->save(surface, "wallpaper");
           }
         } else {
           std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;
