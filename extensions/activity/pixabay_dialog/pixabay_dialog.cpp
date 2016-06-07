@@ -316,16 +316,21 @@ void pixabay_dialog::download_image(const std::string &a_url) {
                           cherry_kit::image_io *a_img) {
         if (s == cherry_kit::image_io::kSuccess) {
           cherry_kit::io_surface *surface = a_img->surface();
+	  cherry_kit::image_io *sync_img = new cherry_kit::image_io(0, 0);
 
           if (surface) {
-            a_img->on_image_saved([=](const std::string &a_file_name) {
+            sync_img->on_image_saved([=](const std::string &a_file_name) {
               priv->m_progress_widget->set_value(75);
               notify_message("url", a_file_name);
 
               priv->m_progress_widget->set_value(100);
               priv->m_progress_window->hide();
+
+	      std::unique_ptr<cherry_kit::image_io>(a_img);
+	      std::unique_ptr<cherry_kit::image_io>(sync_img);
             });
-            a_img->save(surface, "wallpaper");
+
+            sync_img->save(surface, "wallpaper");
           }
         } else {
           std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;
