@@ -35,7 +35,7 @@
 
 class pixabay_dialog::Privatepixabay {
 public:
-  Privatepixabay() : m_count(0), m_in_progress(0), m_current_page(0){}
+  Privatepixabay() : m_count(0), m_in_progress(0), m_current_page(0) {}
   ~Privatepixabay() {}
 
   cherry_kit::window *m_main_window;
@@ -48,9 +48,9 @@ public:
 
   std::atomic<int> m_count;
   std::atomic<bool> m_in_progress;
-  
+
   int m_current_page;
-  
+
   cherry_kit::line_edit *m_editor;
 
   std::vector<cherry_kit::image_view *> m_pool;
@@ -60,7 +60,7 @@ public:
       cherry_kit::image_view *item = new cherry_kit::image_view(m_grid_view);
       cherry_kit::model_view_item *ck_preview_item =
           new cherry_kit::model_view_item();
-      
+
       int width = 128;
       int height = 128;
 
@@ -141,39 +141,43 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   /* navigation buttons */
   ui_data["icon"] = "toolbar/ck_arrow-left.png";
   priv->m_layout->add_widget(2, 0, "image_button", ui_data, [=]() {
-	  if (priv->m_current_page == 0 || priv->m_in_progress || !priv->m_editor)
-		  return;
-	   
-	  priv->m_current_page -= 1;
-	  
-	  if (priv->m_current_page < 0)
-		  priv->m_current_page = 0;
-	  
-	  priv->m_progress_window->show();
-	  priv->m_progress_window->raise();
-	  priv->m_progress_window->setZValue(1000);
-	  priv->m_progress_window->set_window_title(QString("Loading Page %1").arg(priv->m_current_page));
-	  
-	  priv->m_in_progress = true;
-	  priv->m_service->search(priv->m_editor->text().toStdString(), priv->m_current_page);
+    if (priv->m_current_page == 0 || priv->m_in_progress || !priv->m_editor)
+      return;
+
+    priv->m_current_page -= 1;
+
+    if (priv->m_current_page < 0)
+      priv->m_current_page = 0;
+
+    priv->m_progress_window->show();
+    priv->m_progress_window->raise();
+    priv->m_progress_window->setZValue(1000);
+    priv->m_progress_window->set_window_title(
+        QString("Loading Page %1").arg(priv->m_current_page));
+
+    priv->m_in_progress = true;
+    priv->m_service->search(priv->m_editor->text().toStdString(),
+                            priv->m_current_page);
   });
-  
+
   ui_data["icon"] = "branding/ck_pixabay_logo.png";
   priv->m_layout->add_widget(2, 1, "image_button", ui_data, [=]() {});
   ui_data["icon"] = "toolbar/ck_arrow-right.png";
   priv->m_layout->add_widget(2, 2, "image_button", ui_data, [=]() {
-	  if (priv->m_in_progress || !priv->m_editor)
-		  return;
-	  
-	  priv->m_current_page += 1;
-	  
-	  priv->m_progress_window->show();
-	  priv->m_progress_window->raise();
-	  priv->m_progress_window->setZValue(1000);
-	  priv->m_progress_window->set_window_title(QString("Loading Page %1").arg(priv->m_current_page));
-	  
-	  priv->m_in_progress = true;
-	  priv->m_service->search(priv->m_editor->text().toStdString(), priv->m_current_page);
+    if (priv->m_in_progress || !priv->m_editor)
+      return;
+
+    priv->m_current_page += 1;
+
+    priv->m_progress_window->show();
+    priv->m_progress_window->raise();
+    priv->m_progress_window->setZValue(1000);
+    priv->m_progress_window->set_window_title(
+        QString("Loading Page %1").arg(priv->m_current_page));
+
+    priv->m_in_progress = true;
+    priv->m_service->search(priv->m_editor->text().toStdString(),
+                            priv->m_current_page);
   });
 
   /*insert widgets to layout */
@@ -197,7 +201,8 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
         priv->m_progress_window->show();
         priv->m_progress_window->raise();
         priv->m_service->search(priv->m_editor->text().toStdString());
-        priv->m_progress_window->set_window_title("Search : " + priv->m_editor->text());
+        priv->m_progress_window->set_window_title("Search : " +
+                                                  priv->m_editor->text());
         priv->m_progress_window->setZValue(10000);
       }));
 
@@ -280,16 +285,17 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
       ck_view->set_image(image_buffer);
       ck_view->reset_click_event();
       ck_view->on_click([=]() {
-          priv->m_progress_window->show();
-          priv->m_progress_window->raise();
-          priv->m_progress_window->set_window_title("Setting Desktop Wallpaper...");
-          priv->m_progress_window->setZValue(10000);
-		  priv->m_progress_widget->set_value(10);
-		  download_image(a_hit->hd_image_url());
+        priv->m_progress_window->show();
+        priv->m_progress_window->raise();
+        priv->m_progress_window->set_window_title(
+            "Setting Desktop Wallpaper...");
+        priv->m_progress_window->setZValue(10000);
+        priv->m_progress_widget->set_value(10);
+        download_image(a_hit->hd_image_url());
       });
     });
-	
-	priv->m_in_progress = false;
+
+    priv->m_in_progress = false;
   });
 
   priv->m_progress_window->raise();
@@ -312,16 +318,14 @@ void pixabay_dialog::download_image(const std::string &a_url) {
           cherry_kit::io_surface *surface = a_img->surface();
 
           if (surface) {
-			a_img->on_image_saved([=](const std::string &a_file_name) {
-			  priv->m_progress_widget->set_value(75);
-			  notify_message("url", a_file_name);
-			  
-			  priv->m_progress_widget->set_value(100);
-			  priv->m_progress_window->hide();
-			  
-			  delete a_img;
-			});
-			a_img->save(surface, "wallpaper");
+            a_img->on_image_saved([=](const std::string &a_file_name) {
+              priv->m_progress_widget->set_value(75);
+              notify_message("url", a_file_name);
+
+              priv->m_progress_widget->set_value(100);
+              priv->m_progress_window->hide();
+            });
+            a_img->save(surface, "wallpaper");
           }
         } else {
           std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;
@@ -333,11 +337,11 @@ void pixabay_dialog::download_image(const std::string &a_url) {
     } else {
       std::cout << __FUNCTION__ << "Error downloading url :" << a_url
                 << std::endl;
-    }	
+    }
   });
-  
+
   priv->m_progress_widget->set_value(25);
-  
+
   request->send_message(social_kit::url_request::kGETRequest, a_url);
 }
 
