@@ -35,7 +35,7 @@
 
 class pixabay_dialog::Privatepixabay {
 public:
-  Privatepixabay() : m_count(0) {}
+  Privatepixabay() : m_count(0), m_in_progress(0), m_current_page(0){}
   ~Privatepixabay() {}
 
   cherry_kit::window *m_main_window;
@@ -47,6 +47,11 @@ public:
   cherry_kit::progress_bar *m_progress_widget;
 
   std::atomic<int> m_count;
+  std::atomic<bool> m_in_progress;
+  
+  int m_current_page;
+  
+  cherry_kit::line_edit *m_editor;
 
   std::vector<cherry_kit::image_view *> m_pool;
 
@@ -135,23 +140,53 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 
   /* navigation buttons */
   ui_data["icon"] = "toolbar/ck_arrow-left.png";
-  priv->m_layout->add_widget(2, 0, "image_button", ui_data, [=]() {});
+  priv->m_layout->add_widget(2, 0, "image_button", ui_data, [=]() {
+	  if (priv->m_current_page == 0 || priv->m_in_progress || !priv->m_editor)
+		  return;
+	   
+	  priv->m_current_page -= 1;
+	  
+	  if (priv->m_current_page < 0)
+		  priv->m_current_page = 0;
+	  
+	  priv->m_progress_window->show();
+	  priv->m_progress_window->raise();
+	  priv->m_progress_window->setZValue(1000);
+	  priv->m_progress_window->set_window_title(QString("Loading Page %1").arg(priv->m_current_page));
+	  
+	  priv->m_in_progress = true;
+	  priv->m_service->search(priv->m_editor->text().toStdString(), priv->m_current_page);
+  });
+  
   ui_data["icon"] = "branding/ck_pixabay_logo.png";
   priv->m_layout->add_widget(2, 1, "image_button", ui_data, [=]() {});
   ui_data["icon"] = "toolbar/ck_arrow-right.png";
-  priv->m_layout->add_widget(2, 2, "image_button", ui_data, [=]() {});
+  priv->m_layout->add_widget(2, 2, "image_button", ui_data, [=]() {
+	  if (priv->m_in_progress || !priv->m_editor)
+		  return;
+	  
+	  priv->m_current_page += 1;
+	  
+	  priv->m_progress_window->show();
+	  priv->m_progress_window->raise();
+	  priv->m_progress_window->setZValue(1000);
+	  priv->m_progress_window->set_window_title(QString("Loading Page %1").arg(priv->m_current_page));
+	  
+	  priv->m_in_progress = true;
+	  priv->m_service->search(priv->m_editor->text().toStdString(), priv->m_current_page);
+  });
 
   /*insert widgets to layout */
 
   ui_data["text"] = "";
-  cherry_kit::line_edit *editor = dynamic_cast<cherry_kit::line_edit *>(
+  priv->m_editor = dynamic_cast<cherry_kit::line_edit *>(
       priv->m_layout->add_widget(0, 0, "line_edit", ui_data, [=]() {}));
 
   ui_data["label"] = "Search";
 
   cherry_kit::button *ck_search_btn = dynamic_cast<cherry_kit::button *>(
       priv->m_layout->add_widget(0, 1, "button", ui_data, [=]() {
-        if (!editor) {
+        if (!priv->m_editor) {
           qDebug() << Q_FUNC_INFO << "Invalid Editor";
           return;
         }
@@ -161,8 +196,8 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 
         priv->m_progress_window->show();
         priv->m_progress_window->raise();
-        priv->m_service->search(editor->text().toStdString());
-        priv->m_progress_window->set_window_title("Search : " + editor->text());
+        priv->m_service->search(priv->m_editor->text().toStdString());
+        priv->m_progress_window->set_window_title("Search : " + priv->m_editor->text());
         priv->m_progress_window->setZValue(10000);
       }));
 
@@ -253,13 +288,15 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 		  download_image(a_hit->hd_image_url());
       });
     });
+	
+	priv->m_in_progress = false;
   });
 
   priv->m_progress_window->raise();
   priv->m_progress_widget->show();
 
   priv->create_pool();
-  priv->m_service->search("green leaf");
+  priv->m_service->search("montreal", 7);
 }
 
 void pixabay_dialog::download_image(const std::string &a_url) {
