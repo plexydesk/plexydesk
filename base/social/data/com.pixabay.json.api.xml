@@ -69,4 +69,63 @@
            </tag>
    </error>
 </service>
+
+<service name="pixabay.hd.photo.search">
+    <input url="https://pixabay.com/api/" type="GET">
+            <arg type="string" optional="false">key</arg>
+            <arg type="string" optional="false">q</arg>
+            <arg type="string" optional="true" default="en">lang</arg>
+            <arg type="string" optional="true">id</arg>
+            <arg type="string" optional="true">response_group</arg>
+            <arg type="string" optional="true">image_type</arg>
+            <arg type="string" optional="true">orientation</arg>
+            <arg type="string" optional="true">category</arg>
+            <arg type="string" optional="true">min_width</arg>
+            <arg type="string" optional="true">min_height</arg>
+            <arg type="string" optional="true">editors_choice</arg>
+            <arg type="string" optional="true">safesearch</arg>
+            <arg type="string" optional="true">order</arg>
+            <arg type="string" optional="true">page</arg>
+            <arg type="string" optional="true" default="20">per_page</arg>
+            <arg type="string" optional="true">callback</arg>
+            <arg type="string" optional="true" default="false">pretty</arg>
+    </input>
+
+   <result format="json">
+           <query name="hits" tag="hits">
+				   <attr type="string">id_hash</attr>
+                   <attr type="string">type</attr>
+                   <attr type="string">previewURL</attr>
+                   <attr type="int">previewWidth</attr>
+                   <attr type="int">previewHeight</attr>
+                   <attr type="string">webformatURL</attr>
+                   <attr type="int">webformatWidth</attr>
+                   <attr type="int">webformatHeight</attr>
+                   <attr type="int">imageWidth</attr>
+                   <attr type="int">imageHeight</attr>                   
+                   <attr type="string">imageURL</attr>
+                   <attr type="int">user_id</attr>
+                   <attr type="string">user</attr>
+				   <attr type="string">userImageURL</attr>
+				   <attr type="string">largeImageURL</attr>
+				   <attr type="string">fullHDURL</attr>
+           </query>
+
+           <query name="total" tag="total">
+                   <attr type="int">total</attr>
+           </query>
+
+           <query name="totalHits" tag="totalHits">
+                   <attr type="int">totalHits</attr>
+           </query>
+   </result>
+
+   <error format="xml">
+           <tag name="status" tag="rsp">
+                   <attr name="stat" type="string"/>
+                   <attr name="message" type="string"/>
+                   <attr name="code" type="integer" />
+           </tag>
+   </error>
+</service>
 </services>

@@ -224,7 +224,10 @@ void desktop_controller_impl::open_online_dialog() {
   ck_activity->on_notify([=](const std::string &key, const std::string &value) {
     if (key.compare("url") == 0) {
       std::cout << __FUNCTION__ << "url : " << value << std::endl;
-      download_image(value);
+	  
+      o_ctr->m_background_texture = "file:///" + value;
+	  o_ctr->m_background_window->set_background(value);
+      viewport()->update_session_value(controller_name(), "", "");
     }
   });
 }

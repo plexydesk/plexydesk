@@ -41,6 +41,7 @@ public:
   cherry_kit::window *dialog_window() const;
   void purge();
 
+  void download_image(const std::string &a_url);
 private:
   class Privatepixabay;
   Privatepixabay *const priv;

@@ -35,8 +35,12 @@ public:
   int web_format_url_height() const;
   int web_format_url_width() const;
 
+  std::string large_image_url() const;
+  std::string original_image_url() const;
+  std::string hd_image_url() const;
 
   void on_ready(on_data_ready_t a_callback);
+  
 private:
   class pixabay_service_hit_result_context;
   pixabay_service_hit_result_context *const ctx;

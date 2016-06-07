@@ -245,7 +245,12 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
       ck_view->set_image(image_buffer);
       ck_view->reset_click_event();
       ck_view->on_click([=]() {
-        notify_message("url", a_hit->web_format_url());
+          priv->m_progress_window->show();
+          priv->m_progress_window->raise();
+          priv->m_progress_window->set_window_title("Setting Desktop Wallpaper...");
+          priv->m_progress_window->setZValue(10000);
+		  priv->m_progress_widget->set_value(10);
+		  download_image(a_hit->hd_image_url());
       });
     });
   });
@@ -255,6 +260,48 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 
   priv->create_pool();
   priv->m_service->search("green leaf");
+}
+
+void pixabay_dialog::download_image(const std::string &a_url) {
+  social_kit::url_request *request = new social_kit::url_request();
+
+  request->on_response_ready([&](const social_kit::url_response &response) {
+    if (response.status_code() == 200) {
+      cherry_kit::image_io *image = new cherry_kit::image_io(0, 0);
+
+      image->on_ready([&](cherry_kit::image_io::buffer_load_status_t s,
+                          cherry_kit::image_io *a_img) {
+        if (s == cherry_kit::image_io::kSuccess) {
+          cherry_kit::io_surface *surface = a_img->surface();
+
+          if (surface) {
+			a_img->on_image_saved([&](const std::string &a_file_name) {
+			  priv->m_progress_widget->set_value(75);
+			  notify_message("url", a_file_name);
+			  
+			  priv->m_progress_widget->set_value(100);
+			  priv->m_progress_window->hide();
+			  
+			  delete a_img;
+			});
+			a_img->save(surface, "wallpaper");
+          }
+        } else {
+          std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;
+        }
+      });
+
+      priv->m_progress_widget->set_value(50);
+      image->create((response.data_buffer()), response.data_buffer_size());
+    } else {
+      std::cout << __FUNCTION__ << "Error downloading url :" << a_url
+                << std::endl;
+    }	
+  });
+  
+  priv->m_progress_widget->set_value(25);
+  
+  request->send_message(social_kit::url_request::kGETRequest, a_url);
 }
 
 void pixabay_dialog::update_attribute(const QString &name,

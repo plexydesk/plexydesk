@@ -99,7 +99,7 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
     if (response.status_code() == 200) {
       social_kit::remote_service srv_query("com.pixabay.json.api.xml");
       ctx->m_current_result =
-          srv_query.response("pixabay.photo.search", response);
+          srv_query.response("pixabay.hd.photo.search", response);
       notify_progress(10);
 
       get_page_count();
@@ -131,7 +131,7 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
   notify_progress(5);
   ctx->m_current_progress = 5;
   request->send_message(social_kit::url_request::kGETRequest,
-                        srv_query.url("pixabay.photo.search", &input_data));
+                        srv_query.url("pixabay.hd.photo.search", &input_data));
 }
 
 void pixabay_service::on_ready(on_search_ready_t a_func) {
@@ -239,7 +239,6 @@ void pixabay_service_hit_result::set_remote_data(
   ctx->m_id = ctx->m_data.get("id").value();
   ctx->m_page_url = ctx->m_data.get("pageURL").value();
   ctx->m_type = ctx->m_data.get("type").value();
-  ctx->m_tags = ctx->m_data.get("tags").value();
   ctx->m_preview_url = ctx->m_data.get("previewURL").value();
   ctx->m_preview_height = std::stoi(ctx->m_data.get("previewHeight").value());
   ctx->m_preview_width = std::stoi(ctx->m_data.get("previewWidth").value());
@@ -248,11 +247,6 @@ void pixabay_service_hit_result::set_remote_data(
       std::stoi(ctx->m_data.get("webformatWidth").value());
   ctx->m_web_format_url_height =
       std::stoi(ctx->m_data.get("webformatHeight").value());
-  ctx->m_views = std::stoi(ctx->m_data.get("views").value());
-  ctx->m_downloads = std::stoi(ctx->m_data.get("downloads").value());
-  ctx->m_favorites = std::stoi(ctx->m_data.get("favorites").value());
-  ctx->m_likes = std::stoi(ctx->m_data.get("likes").value());
-  ctx->m_comments = std::stoi(ctx->m_data.get("comments").value());
   ctx->m_user_id = ctx->m_data.get("user_id").value();
   ctx->m_user_name = ctx->m_data.get("user").value();
   ctx->m_user_image_url = ctx->m_data.get("userImageURL").value();
@@ -261,8 +255,6 @@ void pixabay_service_hit_result::set_remote_data(
   ctx->m_original_image_height = std::stoi(ctx->m_data.get("imageHeight").value());
   ctx->m_hd_image_url = ctx->m_data.get("fullHDURL").value();;
   ctx->m_large_image_url = ctx->m_data.get("largeImageURL").value();
-
-  // ctx->m_preview_img = new cherry_kit::image_io(ctx->m_preview_width,
 
   /* download Data */
   ctx->m_image = 0;
@@ -328,6 +320,18 @@ int pixabay_service_hit_result::web_format_url_height() const {
 
 int pixabay_service_hit_result::web_format_url_width() const {
   return ctx->m_web_format_url_width;
+}
+
+std::string pixabay_service_hit_result::large_image_url() const {
+	return ctx->m_large_image_url;
+}
+
+std::string pixabay_service_hit_result::original_image_url() const {
+	return ctx->m_original_image_url;
+}
+
+std::string pixabay_service_hit_result::hd_image_url() const {
+	return ctx->m_hd_image_url;
 }
 
 void pixabay_service_hit_result::on_ready(on_data_ready_t a_callback) {
