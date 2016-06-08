@@ -28,8 +28,12 @@
 #include <QuetzalDataKitQt_export.h>
 
 namespace cherry_kit {
+class image_io;
+class io_surface;
+
 typedef unsigned char *image_data_ref;
 typedef std::function<void(const std::string &)> on_save_callback_t;
+typedef std::function<void(io_surface *)> on_resize_callback_t;
 
 class QuetzalDataKitQt_EXPORT io_surface {
 public:
@@ -82,16 +86,18 @@ public:
   virtual io_surface *surface() const;
 
   virtual io_surface *add_task(image_operation_t a_method,
-			const scale_options &arg);
+                               const scale_options &arg);
 
   virtual void set_filter(const std::string &a_filter_name, int a_flag);
 
   virtual void
   on_ready(std::function<void(buffer_load_status_t, image_io *)> a_callback);
-  
+
   virtual void on_image_saved(on_save_callback_t a_callback);
-  virtual void save(const io_surface *a_surface, 
-			const std::string &a_prefix);
+  virtual void save(const io_surface *a_surface, const std::string &a_prefix);
+
+  virtual void resize(const io_surface *a_surface, int a_width, int a_height,
+                      on_resize_callback_t a_callback);
 
 private:
   class platform_image;

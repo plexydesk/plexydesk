@@ -146,12 +146,16 @@ void image_io::on_ready(
 }
 
 void image_io::on_image_saved(on_save_callback_t a_callback) {
-	io_ctx->on_save_ready(a_callback);
+  io_ctx->on_save_ready(a_callback);
 }
 
-void image_io::save(const io_surface *a_surface, 
-		const std::string &a_prefix) {
-	io_ctx->save(a_surface, a_prefix);
+void image_io::save(const io_surface *a_surface, const std::string &a_prefix) {
+  io_ctx->save(a_surface, a_prefix);
+}
+
+void image_io::resize(const io_surface *a_surface, int a_width, int a_height,
+                      on_resize_callback_t a_callback) {
+    io_ctx->resize(a_surface, a_width, a_height, a_callback);
 }
 
 io_surface::io_surface() : width(0), height(0), buffer(nullptr) {}

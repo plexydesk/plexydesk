@@ -9,14 +9,10 @@ class desktop_window::PrivateDesktopWindow {
 public:
   PrivateDesktopWindow()
       : m_background_buffer(0), m_background_width(0), m_background_height(0),
-        m_seamless(0), m_desktop_mode(kNone),
-        m_image_service(new cherry_kit::image_io(0, 0)) {}
+        m_seamless(0), m_desktop_mode(kNone) {}
   ~PrivateDesktopWindow() {
     if (m_background_buffer)
       free(m_background_buffer);
-
-    if (m_image_service)
-      delete m_image_service;
 
     qDebug() << Q_FUNC_INFO;
   }
@@ -26,7 +22,6 @@ public:
   int m_background_width;
   int m_background_height;
   bool m_seamless;
-  cherry_kit::image_io *m_image_service;
   DesktopScalingMode m_desktop_mode;
 };
 
@@ -55,22 +50,6 @@ desktop_window::desktop_window()
     : cherry_kit::window(0), priv(new PrivateDesktopWindow) {
   set_window_type(cherry_kit::window::kFramelessWindow);
 
-  priv->m_image_service->on_ready([this](
-      cherry_kit::image_io::buffer_load_status_t a_load_state,
-      cherry_kit::image_io *a_image_service) {
-
-    if (a_load_state == cherry_kit::image_io::kSuccess) {
-      cherry_kit::io_surface *ck_image_surface_ref = a_image_service->surface();
-
-      priv->m_background_texture = QImage(
-          ck_image_surface_ref->buffer, ck_image_surface_ref->width,
-          ck_image_surface_ref->height, QImage::Format_ARGB32_Premultiplied);
-      update();
-    } else {
-      qWarning() << Q_FUNC_INFO << "Failed loading image!";
-    }
-  });
-
   on_window_resized([this](window *a_window, int a_width, int a_height) {
     if (priv->m_background_buffer) {
       /*
@@ -85,35 +64,49 @@ desktop_window::desktop_window()
   });
 
   setCacheMode(ItemCoordinateCache);
-  //QPixmapCache::setCacheLimit(1920 * 1200 * 32);
+  // QPixmapCache::setCacheLimit(1920 * 1200 * 32);
 }
 
 desktop_window::~desktop_window() { delete priv; }
 
 void desktop_window::set_background(const std::string &a_image_name) {
-  /*
-  QImage background(a_image_name);
-  p_window->m_background_width = background.width();
-  p_window->m_background_height = background.height();
+  cherry_kit::image_io *ck_image = new cherry_kit::image_io(0, 0);
 
-  p_window->m_background_buffer = background.bits();
-  */
+  ck_image->on_ready([=](
+      cherry_kit::image_io::buffer_load_status_t a_load_state,
+      cherry_kit::image_io *a_image_service) {
+    if (a_load_state == cherry_kit::image_io::kSuccess) {
+      cherry_kit::io_surface *ck_image_surface_ref = a_image_service->surface();
 
-  // if (!o_window->m_background_texture.load(a_image_name))
-  // qDebug() << Q_FUNC_INFO << "Failed to load image";
+      cherry_kit::image_io *scale_service = new cherry_kit::image_io(0, 0);
 
-  // update();
+      scale_service->resize(ck_image_surface_ref, 1920, 1080,
+                            [=](cherry_kit::io_surface *surface) {
+        if (!surface)
+          return;
 
-  if (!priv->m_image_service)
-    return;
+        priv->m_background_texture =
+            QImage(surface->buffer, surface->width, surface->height,
+                   QImage::Format_ARGB32);
+        update();
 
-  priv->m_image_service->create(a_image_name);
+        delete ck_image_surface_ref;
+        delete scale_service;
+        delete a_image_service;
+      });
+
+    } else {
+      qWarning() << Q_FUNC_INFO << "Failed loading image!";
+    }
+  });
+
+  ck_image->create(a_image_name);
 }
 
 void desktop_window::set_background(const QImage &a_image_name) {
   priv->m_background_texture = QImage();
   priv->m_background_texture = a_image_name;
-  //setCacheMode(ItemCoordinateCache, a_image_name.size());
+  // setCacheMode(ItemCoordinateCache, a_image_name.size());
   update();
 }
 
@@ -134,6 +127,6 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   draw_rect.setWidth(a_rect.width());
   draw_rect.setHeight(a_rect.height());
 
-  a_ctx->drawImage(draw_rect, priv->m_background_texture, draw_rect);
+  a_ctx->drawImage(draw_rect, priv->m_background_texture);
   a_ctx->restore();
 }

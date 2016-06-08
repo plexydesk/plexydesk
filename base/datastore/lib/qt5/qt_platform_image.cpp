@@ -12,7 +12,7 @@ namespace cherry_kit {
 
 class image_io::platform_image::private_platform_image {
 public:
-  private_platform_image() : m_current_surface(0){}
+  private_platform_image() : m_current_surface(0) {}
   ~private_platform_image() {}
 
   bool check_in_cache(const std::string &a_file_name);
@@ -26,6 +26,7 @@ public:
   io_surface *m_current_surface;
   std::future<io_surface *> m_async_task_result;
   std::future<void> m_async_data_image_url;
+  std::future<void> m_async_resize_image_result;
 
   std::condition_variable m_notify_condition_variable;
   std::mutex m_notify_lock_mutex;
@@ -47,7 +48,7 @@ void image_io::platform_image::load_from_file(const std::string &a_file_name) {
   QCoreApplication::processEvents();
 
   io_surface *result = priv->m_async_task_result.get();
-	priv->m_current_surface = result;
+  priv->m_current_surface = result;
 
   image_io::buffer_load_status_t status = image_io::kSuccess;
 
@@ -57,8 +58,8 @@ void image_io::platform_image::load_from_file(const std::string &a_file_name) {
   priv->m_on_ready_call(result, status);
 }
 
-void image_io::platform_image::load_image_preview(
-    const std::string &a_file_name) {
+void
+image_io::platform_image::load_image_preview(const std::string &a_file_name) {
   priv->m_file_url = a_file_name;
   priv->m_async_task_result =
       std::async(std::launch::async,
@@ -74,7 +75,7 @@ void image_io::platform_image::load_image_preview(
 }
 
 void image_io::platform_image::load_from_buffer(const unsigned char *a_buffer,
-                                                const size_t size) {  
+                                                const size_t size) {
   io_surface *result = new io_surface();
   QImage _qimage = QImage::fromData(a_buffer, (int)size);
   image_io::buffer_load_status_t status = image_io::kSuccess;
@@ -108,73 +109,103 @@ void image_io::platform_image::on_surface_ready(
 }
 
 void image_io::platform_image::on_save_ready(on_save_callback_t a_callback) {
-	priv->m_notify_save_list.push_back(a_callback);
+  priv->m_notify_save_list.push_back(a_callback);
 }
 
 void image_io::platform_image::save_completed(const std::string &a_file_name) {
-	std::for_each(priv->m_notify_save_list.begin(),
-			priv->m_notify_save_list.end(),[&] (on_save_callback_t a_func) {
-			 if (a_func)
-			   a_func(a_file_name);
-			});
+  std::for_each(priv->m_notify_save_list.begin(),
+                priv->m_notify_save_list.end(), [&](on_save_callback_t a_func) {
+    if (a_func)
+      a_func(a_file_name);
+  });
 }
 
 std::string image_io::platform_image::save_image(const io_surface *a_surface,
-		const std::string &a_prefix) {
-	std::string rv;
+                                                 const std::string &a_prefix) {
+  std::string rv;
 
-	if (!a_surface || a_surface->buffer == 0) {
-		std::cout << "Null Image Data -> " <<  __FUNCTION__ << std::endl;
-	    save_completed(rv);
-		return rv;
-	}
+  if (!a_surface || a_surface->buffer == 0) {
+    std::cout << "Null Image Data -> " << __FUNCTION__ << std::endl;
+    save_completed(rv);
+    return rv;
+  }
 
-	std::string target_file;
+  std::string target_file;
 
-	QDir file_system;
-	QFile target_device;
-	QString target_dir;
-	QCryptographicHash crypto(QCryptographicHash::Md5);
-	QImage qimage = QImage(a_surface->buffer,
-			a_surface->width, a_surface->height, QImage::Format_ARGB32); 
+  QDir file_system;
+  QFile target_device;
+  QString target_dir;
+  QCryptographicHash crypto(QCryptographicHash::Md5);
+  QImage qimage = QImage(a_surface->buffer, a_surface->width, a_surface->height,
+                         QImage::Format_ARGB32);
 
-	crypto.addData((const char *)a_surface->buffer,
-			(a_surface->width * a_surface->height * 4)); 
-	
-	std::string data_hash(crypto.result().toHex());
+  crypto.addData((const char *)a_surface->buffer,
+                 (a_surface->width * a_surface->height * 4));
 
-	target_file = QDir::homePath().toStdString() + "/.socialkit/cache/" 
-		+ "/" + a_prefix + "/";
-	target_dir = QString::fromStdString(target_file); 
+  std::string data_hash(crypto.result().toHex());
 
-    file_system = QDir(target_dir);
+  target_file = QDir::homePath().toStdString() + "/.socialkit/cache/" + "/" +
+                a_prefix + "/";
+  target_dir = QString::fromStdString(target_file);
 
-	if (!file_system.exists()) {
-		file_system.mkpath(target_dir);
-	}
-	
-	target_file += data_hash + ".png";
+  file_system = QDir(target_dir);
 
-	std::cout << __FUNCTION__ << "target : " << target_file << std::endl;
+  if (!file_system.exists()) {
+    file_system.mkpath(target_dir);
+  }
 
-	target_device.setFileName(QDir::toNativeSeparators(
-			QString::fromStdString(target_file)));
+  target_file += data_hash + ".png";
 
-	if (target_device.open(QIODevice::WriteOnly)) {
-	  qimage.save(&target_device, "PNG", 100);
-	}
+  std::cout << __FUNCTION__ << "target : " << target_file << std::endl;
 
-	save_completed(target_file);
-	
-	return rv;
+  target_device.setFileName(
+      QDir::toNativeSeparators(QString::fromStdString(target_file)));
+
+  if (target_device.open(QIODevice::WriteOnly)) {
+    qimage.save(&target_device, "PNG", 100);
+  }
+
+  save_completed(target_file);
+
+  return rv;
 }
 
 void image_io::platform_image::save(const io_surface *a_surface,
-		const std::string &a_prefix) {
-	std::cout << "Request -> " <<  __FUNCTION__ << std::endl;
-	priv->m_async_data_image_url = std::async(std::launch::async, [=](){
-		save_image(a_surface, a_prefix);
-	});
+                                    const std::string &a_prefix) {
+  std::cout << "Request -> " << __FUNCTION__ << std::endl;
+  priv->m_async_data_image_url = std::async(
+      std::launch::async, [=]() { save_image(a_surface, a_prefix); });
+}
+
+io_surface *image_io::platform_image::resize_image(const io_surface *a_surface,
+                                                   int a_width, int a_height) {
+  io_surface *result = new io_surface();
+  QImage qimage = QImage(a_surface->buffer, a_surface->width, a_surface->height,
+                         QImage::Format_ARGB32);
+  qimage =
+      qimage.scaled(QSize(a_width, a_height), Qt::KeepAspectRatioByExpanding,
+                    Qt::SmoothTransformation);
+
+  result->width = qimage.width();
+  result->height = qimage.height();
+  result->buffer =
+      (unsigned char *)malloc((qimage.width()* qimage.height() * 4 * sizeof (unsigned char)));
+
+  memcpy(result->buffer, qimage.constBits(),
+         qimage.width() * qimage.height() * 4 * sizeof(unsigned char));
+
+  return result;
+}
+
+void image_io::platform_image::resize(const io_surface *a_surface, int a_width,
+                                      int a_height,
+                                      on_resize_callback_t a_callback) {
+  priv->m_async_resize_image_result = std::async(std::launch::async, [=]() {
+    if (a_callback) {
+      io_surface *result = resize_image(a_surface, a_width, a_height);
+      a_callback(result);
+    }
+  });
 }
 
 void image_io::platform_image::release() {
@@ -269,9 +300,9 @@ io_surface *image_io::platform_image::image_preview_decoder() {
       }
     }
 
-    QString cache_file_name = QCryptographicHash::hash(priv->m_file_url.c_str(),
-                                                       QCryptographicHash::Md5)
-                                  .toHex();
+    QString cache_file_name =
+        QCryptographicHash::hash(priv->m_file_url.c_str(),
+                                 QCryptographicHash::Md5).toHex();
     if (!ck_qt_image.save(
             QDir::toNativeSeparators(thumbnail_path + "/" + cache_file_name) +
             ".png")) {
@@ -328,8 +359,8 @@ void image_io::platform_image::emit_complete() {
   priv->m_on_ready_call(result, status);
 }
 
-void image_io::platform_image::wait_for_signal(
-    image_io::platform_image *instance) {
+void
+image_io::platform_image::wait_for_signal(image_io::platform_image *instance) {
   std::unique_lock<std::mutex> notify_lock(priv->m_notify_lock_mutex);
   priv->m_notify_condition_variable.wait(
       notify_lock, [this] { return priv->m_shared_lock_value == 1; });
