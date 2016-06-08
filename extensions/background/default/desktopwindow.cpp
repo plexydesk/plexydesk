@@ -134,6 +134,6 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   draw_rect.setWidth(a_rect.width());
   draw_rect.setHeight(a_rect.height());
 
-  a_ctx->drawImage(draw_rect, priv->m_background_texture);
+  a_ctx->drawImage(draw_rect, priv->m_background_texture, draw_rect);
   a_ctx->restore();
 }
