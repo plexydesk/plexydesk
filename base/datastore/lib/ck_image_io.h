@@ -96,7 +96,8 @@ public:
   virtual void on_image_saved(on_save_callback_t a_callback);
   virtual void save(const io_surface *a_surface, const std::string &a_prefix);
 
-  virtual void resize(const io_surface *a_surface, int a_width, int a_height,
+	virtual void on_resize(on_resize_callback_t a_callback);
+  virtual void resize(io_surface *a_surface, int a_width, int a_height,
                       on_resize_callback_t a_callback);
 
 private:

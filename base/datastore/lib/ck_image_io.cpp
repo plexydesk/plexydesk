@@ -153,7 +153,10 @@ void image_io::save(const io_surface *a_surface, const std::string &a_prefix) {
   io_ctx->save(a_surface, a_prefix);
 }
 
-void image_io::resize(const io_surface *a_surface, int a_width, int a_height,
+void image_io::on_resize(on_resize_callback_t a_callback) {
+	io_ctx->on_resize(a_callback);
+}
+void image_io::resize(io_surface *a_surface, int a_width, int a_height,
                       on_resize_callback_t a_callback) {
     io_ctx->resize(a_surface, a_width, a_height, a_callback);
 }

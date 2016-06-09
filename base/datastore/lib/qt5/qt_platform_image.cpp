@@ -32,6 +32,7 @@ public:
   std::mutex m_notify_lock_mutex;
 
   std::vector<on_save_callback_t> m_notify_save_list;
+	std::vector<on_resize_callback_t> m_on_resize_callback_list;
 
   int m_shared_lock_value;
 };
@@ -177,10 +178,20 @@ void image_io::platform_image::save(const io_surface *a_surface,
       std::launch::async, [=]() { save_image(a_surface, a_prefix); });
 }
 
-io_surface *image_io::platform_image::resize_image(const io_surface *a_surface,
+void image_io::platform_image::notify_resize(io_surface *a_surface)  {
+  std::for_each(std::begin(priv->m_on_resize_callback_list),
+			std::end(priv->m_on_resize_callback_list), [=] (on_resize_callback_t a_func) {
+			  if (a_func)
+				  a_func(a_surface);
+			});
+}
+
+io_surface *image_io::platform_image::resize_image(io_surface *a_surface,
                                                    int a_width, int a_height) {
   io_surface *result = new io_surface();
-  QImage qimage = QImage(a_surface->buffer, a_surface->width, a_surface->height,
+	const unsigned char *copy = a_surface->copy();
+
+  QImage qimage = QImage(copy, a_surface->width, a_surface->height,
                          QImage::Format_ARGB32);
   qimage =
       qimage.scaled(QSize(a_width, a_height), Qt::KeepAspectRatioByExpanding,
@@ -197,13 +208,17 @@ io_surface *image_io::platform_image::resize_image(const io_surface *a_surface,
   return result;
 }
 
-void image_io::platform_image::resize(const io_surface *a_surface, int a_width,
+void image_io::platform_image::on_resize(on_resize_callback_t a_callback) {
+	priv->m_on_resize_callback_list.push_back(a_callback);
+}
+void image_io::platform_image::resize(io_surface *a_surface, int a_width,
                                       int a_height,
                                       on_resize_callback_t a_callback) {
   priv->m_async_resize_image_result = std::async(std::launch::async, [=]() {
     if (a_callback) {
       io_surface *result = resize_image(a_surface, a_width, a_height);
-      a_callback(result);
+			notify_resize(result);
+      //a_callback(result);
     }
   });
 }
