@@ -174,8 +174,9 @@ std::string image_io::platform_image::save_image(const io_surface *a_surface,
 void image_io::platform_image::save(const io_surface *a_surface,
                                     const std::string &a_prefix) {
   std::cout << "Request -> " << __FUNCTION__ << std::endl;
-  priv->m_async_data_image_url = std::async(
-      std::launch::async, [=]() { save_image(a_surface, a_prefix); });
+  //priv->m_async_data_image_url = std::async(
+  //    std::launch::async, [=]() { save_image(a_surface, a_prefix); });
+  save_image(a_surface, a_prefix);
 }
 
 void image_io::platform_image::notify_resize(io_surface *a_surface) {

@@ -215,8 +215,9 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   priv->m_grid_view = new cherry_kit::item_view(
       _base_widget, cherry_kit::item_view::kGridModel);
 
-  _base_widget->on_geometry_changed(
-      [&](const QRectF &a_rect) { priv->m_grid_view->set_geometry(a_rect); });
+  _base_widget->on_geometry_changed([&](const QRectF &a_rect) {
+    priv->m_grid_view->set_geometry(a_rect);
+  });
 
   /* the reset of the things */
   priv->m_main_window->set_window_content(priv->m_layout->viewport());
@@ -224,8 +225,9 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 
   priv->m_service = new pixabay_service();
 
-  priv->m_grid_view->on_item_removed(
-      [=](cherry_kit::model_view_item *a_item) { delete a_item; });
+  priv->m_grid_view->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    delete a_item;
+  });
 
   priv->m_grid_view->set_view_geometry(_base_widget->geometry());
   priv->m_grid_view->set_coordinates(0, 0);
@@ -308,27 +310,33 @@ void pixabay_dialog::download_image(const std::string &a_url) {
 
   request->on_response_ready([=](const social_kit::url_response &response) {
     if (response.status_code() == 200) {
-      cherry_kit::image_io *image = new cherry_kit::image_io(0, 0);
+      std::unique_ptr<cherry_kit::image_io> image(
+         new cherry_kit::image_io(0, 0));
 
-      image->on_ready([&](cherry_kit::image_io::buffer_load_status_t s,
+      image->on_ready([=](cherry_kit::image_io::buffer_load_status_t s,
                           cherry_kit::image_io *a_img) {
         if (s == cherry_kit::image_io::kSuccess) {
           cherry_kit::io_surface *surface = a_img->surface();
-          cherry_kit::image_io *sync_img = new cherry_kit::image_io(0, 0);
+
+          std::unique_ptr<cherry_kit::image_io> sync_img(
+              new cherry_kit::image_io(0, 0));
 
           if (surface) {
-            sync_img->on_image_saved([=](const std::string &a_file_name) {
-              priv->m_progress_widget->set_value(75);
+            sync_img->on_image_saved([this](const std::string &a_file_name) {
+
               notify_message("url", a_file_name);
 
-              priv->m_progress_widget->set_value(100);
-              priv->m_progress_window->hide();
+              if (priv->m_progress_widget) {
+                priv->m_progress_widget->set_value(75);
+                priv->m_progress_widget->set_value(100);
+                priv->m_progress_window->hide();
+              }
 
               std::unique_ptr<cherry_kit::image_io>(a_img);
               std::unique_ptr<cherry_kit::image_io>(sync_img);
             });
 
-            sync_img->save(surface, "wallpaper");
+            sync_img->save(surface->dup(), "wallpaper");
           }
         } else {
           std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;

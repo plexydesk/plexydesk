@@ -44,6 +44,7 @@ public:
   std::string m_url;
 
   std::future<void> m_async_op;
+  std::future<void> m_async_sync_op;
 };
 
 image_io::image_io(int a_width, int a_height)
@@ -155,7 +156,9 @@ void image_io::on_image_saved(on_save_callback_t a_callback) {
 }
 
 void image_io::save(const io_surface *a_surface, const std::string &a_prefix) {
-  io_ctx->save(a_surface, a_prefix);
+  priv->m_async_sync_op = std::async(std::launch::async, [=]() {
+    io_ctx->save(a_surface, a_prefix);
+  });
 }
 
 void image_io::on_resize(on_resize_callback_t a_callback) {
