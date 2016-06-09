@@ -90,7 +90,6 @@ void desktop_window::set_background(const std::string &a_image_name) {
                    QImage::Format_ARGB32);
         update();
 
-        delete ck_image_surface_ref;
         delete scale_service;
         delete a_image_service;
       });
