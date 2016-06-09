@@ -36,7 +36,11 @@ namespace cherry_kit {
 class image_io::private_io_image_impl {
 public:
   private_io_image_impl() : m_surface(0) {}
-  ~private_io_image_impl() { delete m_surface; }
+  ~private_io_image_impl() {
+
+      if (m_surface)
+        delete m_surface;
+  }
 
   io_surface *m_surface;
   std::function<void(buffer_load_status_t, image_io *)> m_call_on_ready;
