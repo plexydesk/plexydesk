@@ -28,6 +28,9 @@
 #error "toolkit not set"
 #endif
 
+#include <future>
+#include <thread>
+
 namespace cherry_kit {
 
 class image_io::private_io_image_impl {
@@ -39,6 +42,8 @@ public:
   std::function<void(buffer_load_status_t, image_io *)> m_call_on_ready;
 
   std::string m_url;
+
+  std::future<void> m_async_op;
 };
 
 image_io::image_io(int a_width, int a_height)
@@ -158,7 +163,11 @@ void image_io::on_resize(on_resize_callback_t a_callback) {
 }
 void image_io::resize(io_surface *a_surface, int a_width, int a_height,
                       on_resize_callback_t a_callback) {
-    io_ctx->resize(a_surface, a_width, a_height, a_callback);
+  priv->m_async_op = std::async(std::launch::async, [=]() {
+    if (a_callback) {
+      io_ctx->resize(a_surface, a_width, a_height, a_callback);
+    }
+  });
 }
 
 io_surface::io_surface() : width(0), height(0), buffer(nullptr) {}
@@ -180,6 +189,17 @@ image_data_ref io_surface::copy() {
   memcpy(buffer_copy, buffer, buffer_size);
 
   return buffer_copy;
+}
+
+io_surface *io_surface::dup()
+{
+    io_surface *rv = new io_surface();
+
+    rv->width = width;
+    rv->height = height;
+    rv->buffer = copy();
+
+    return rv;
 }
 }
 

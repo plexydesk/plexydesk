@@ -78,7 +78,7 @@ void desktop_window::set_background(const std::string &a_image_name) {
     if (a_load_state == cherry_kit::image_io::kSuccess) {
       cherry_kit::io_surface *ck_image_surface_ref = a_image_service->surface();
 
-      cherry_kit::image_io *scale_service = new cherry_kit::image_io(0, 0);
+      std::unique_ptr<cherry_kit::image_io> scale_service(new cherry_kit::image_io(0,0));
 
       scale_service->on_resize([=](cherry_kit::io_surface *surface) {
         if (!surface)
@@ -88,19 +88,16 @@ void desktop_window::set_background(const std::string &a_image_name) {
         priv->m_background_texture = QImage(
             data_copy, surface->width, surface->height, QImage::Format_ARGB32);
         update();
-
-				delete scale_service;
-        delete ck_image;
-
-				//std::unique_ptr<cherry_kit::image_io>(scale_service);
-				//std::unique_ptr<cherry_kit::image_io>(ck_image);
       });
 
-      scale_service->resize(ck_image_surface_ref, 1920, 1080,
+      scale_service->resize(ck_image_surface_ref->dup(), 1920, 1080,
                             [=](cherry_kit::io_surface *surface) {});
+
+      std::unique_ptr<cherry_kit::image_io>(std::move(ck_image));
     } else {
       qWarning() << Q_FUNC_INFO << "Failed loading image!";
     }
+
   });
 
   ck_image->create(a_image_name);

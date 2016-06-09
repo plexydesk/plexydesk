@@ -43,6 +43,8 @@ public:
 
   virtual image_data_ref copy();
 
+  virtual io_surface *dup();
+
   int width;
   int height;
   image_data_ref buffer;
