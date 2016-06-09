@@ -85,13 +85,14 @@ void desktop_window::set_background(const std::string &a_image_name) {
         if (!surface)
           return;
 
+			  const unsigned char *data_copy = surface->copy();
         priv->m_background_texture =
-            QImage(surface->buffer, surface->width, surface->height,
+            QImage(data_copy, surface->width, surface->height,
                    QImage::Format_ARGB32);
         update();
 
         delete scale_service;
-        delete a_image_service;
+        delete ck_image;
       });
 
     } else {
