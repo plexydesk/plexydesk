@@ -296,14 +296,8 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
     if (a_controller && a_controller->viewport()) {
       cherry_kit::space *ck_space = a_controller->viewport();
 
-      QPointF _activity_window_location = ck_space->center(
-          QRectF(0, 0, 240, 240),
-          QRectF(ck_window->x(), ck_window->y(), ck_window->geometry().width(),
-                 ck_window->geometry().height()),
-          cherry_kit::space::kCenterOnWindow);
-      cherry_kit::desktop_dialog_ref activity = ck_space->open_desktop_dialog(
-          "timezone_dialog", "TimeZone", _activity_window_location,
-          QRectF(0, 0, 240, 240), QVariantMap());
+      cherry_kit::desktop_dialog_ref activity =
+              ck_space->create_child_activity("timezone_dialog", ck_window);
 
       activity->on_action_completed([=](const QVariantMap &a_data) {
         ck_clock->set_timezone_id(a_data["zone_id"].toByteArray());

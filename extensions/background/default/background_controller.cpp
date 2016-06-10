@@ -154,15 +154,8 @@ void desktop_controller_impl::submit_session_data(
 }
 
 void desktop_controller_impl::open_background_dialog() const {
-  QRectF dialog_window_geometry(0, 0, 672, 340);
-  QPointF qt_activity_window_location = viewport()->center(
-      dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
-
-  qDebug() << Q_FUNC_INFO
-           << "Desktop Settings Dialog : " << qt_activity_window_location;
-  cherry_kit::desktop_dialog_ref ck_activity = viewport()->open_desktop_dialog(
-      "desktop_settings_dialog", "Desktop", qt_activity_window_location,
-      dialog_window_geometry, QVariantMap());
+  cherry_kit::desktop_dialog_ref ck_activity =
+          viewport()->create_activity("desktop_settings_dialog");
 
   ck_activity->on_notify([=](const std::string &key, const std::string &value) {
     if (key.compare("url") == 0) {
@@ -217,9 +210,8 @@ void desktop_controller_impl::open_online_dialog() {
   QPointF qt_activity_window_location = viewport()->center(
       dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
 
-  cherry_kit::desktop_dialog_ref ck_activity = viewport()->open_desktop_dialog(
-      "pixabay_dialog", "PIXABAY SEARCH", qt_activity_window_location,
-      dialog_window_geometry, QVariantMap(), false);
+  cherry_kit::desktop_dialog_ref ck_activity =
+          viewport()->create_activity("pixabay_dialog");
 
   ck_activity->on_notify([=](const std::string &key, const std::string &value) {
     if (key.compare("url") == 0) {

@@ -96,31 +96,6 @@ void space::add_controller(const QString &a_name) {
   }
 }
 
-cherry_kit::desktop_dialog_ref
-space::open_desktop_dialog(const QString &a_activity, const QString &a_title,
-                           const QPointF &a_pos, const QRectF &a_rect,
-                           const QVariantMap &a_data_map, bool a_managed) {
-  cherry_kit::desktop_dialog_ref intent =
-      cherry_kit::extension_manager::instance()->activity(a_activity);
-
-  if (!intent) {
-    qWarning() << Q_FUNC_INFO << "No such Activity: " << a_activity;
-    return cherry_kit::desktop_dialog_ref();
-  }
-
-  intent->create_window();
-
-  if (intent->dialog_window()) {
-    intent->dialog_window()->set_window_title(a_title);
-    intent->dialog_window()->set_window_viewport(this);
-    intent->dialog_window()->setPos(a_pos);
-  }
-
-  add_activity(intent, a_managed);
-
-  return intent;
-}
-
 void space::update_session_value(const QString &a_controller_name,
                                  const QString &a_key, const QString &a_value) {
   cherry_kit::data_sync *sync = new cherry_kit::data_sync(
@@ -217,10 +192,10 @@ void space::insert_window_to_view(window *a_window, bool a_managed) {
   });
 
   if (a_managed) {
-  a_window->on_window_closed([this](window *window) {
-    qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
-    remove_window_from_view(window);
-  });
+    a_window->on_window_closed([this](window *window) {
+      qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
+      remove_window_from_view(window);
+    });
   }
 
   a_window->on_window_focused([this](window *a_window) {
@@ -674,8 +649,8 @@ void space::reset_focus() {
   });
 }
 
-desktop_dialog_ref space::create_activity(const std::string &a_name)
-{
+desktop_dialog_ref space::create_activity(const std::string &a_name,
+                                          ViewportLocation a_location) {
   cherry_kit::desktop_dialog_ref intent =
       cherry_kit::extension_manager::instance()->activity(a_name.c_str());
 
@@ -688,9 +663,53 @@ desktop_dialog_ref space::create_activity(const std::string &a_name)
 
   if (intent->dialog_window()) {
     intent->dialog_window()->set_window_viewport(this);
+
+    /* center on the viewport by default */
+    QPointF _center =
+        center(intent->dialog_window()->geometry(), QRectF(), a_location);
+    intent->dialog_window()->set_coordinates(_center.x(), _center.y());
   }
 
-  add_activity(intent, false);
+  add_activity(intent, true);
+
+  return intent;
+}
+
+desktop_dialog_ref space::create_child_activity(const std::string &a_name,
+                                                widget *a_window) {
+  cherry_kit::desktop_dialog_ref intent =
+      cherry_kit::extension_manager::instance()->activity(a_name.c_str());
+
+  if (!intent) {
+    qWarning() << Q_FUNC_INFO << "No such Activity: " << a_name.c_str();
+    return cherry_kit::desktop_dialog_ref();
+  }
+
+  intent->create_window();
+
+  if (intent->dialog_window()) {
+    intent->dialog_window()->set_window_viewport(this);
+
+    QRectF _child_geometry = QRectF();
+
+    ViewportLocation _location = kCenterOnWindow;
+
+    if (a_window) {
+      QPointF window_pos(a_window->mapToScene(QPointF()));
+      _child_geometry =
+          QRectF(window_pos.x(), window_pos.y(), a_window->geometry().width(),
+                 a_window->geometry().height());
+    } else {
+        _location = kCenterOnViewport;
+    }
+
+    /* center on the viewport by default */
+    QPointF _center = center(intent->dialog_window()->geometry(),
+                             _child_geometry, _location);
+    intent->dialog_window()->set_coordinates(_center.x(), _center.y());
+  }
+
+  add_activity(intent, true);
 
   return intent;
 }

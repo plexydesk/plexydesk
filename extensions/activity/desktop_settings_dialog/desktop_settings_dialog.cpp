@@ -74,7 +74,7 @@ desktop_settings_dialog::~desktop_settings_dialog() {
 }
 
 void desktop_settings_dialog::create_window() {
-  QRectF a_window_geometry(0, 0, 320, 320);
+  QRectF a_window_geometry(0, 0, 672, 340);
   priv->m_geometry = a_window_geometry;
   QString a_window_title = "Desktop Wallpapers";
 

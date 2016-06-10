@@ -159,6 +159,7 @@ void desktop_task_controller_impl::createNoteUI(
 
   NoteWidget *note = new NoteWidget(a_session, window);
   note->set_controller(this);
+  note->setWindow(window);
   note->setViewport(viewport());
   // window->setGeometry(note->geometry());
   window->set_window_title("Note");
@@ -371,18 +372,8 @@ void desktop_task_controller_impl::createReminderUI(
       if (!viewport())
         return;
 
-      QRectF parent_rect(window->x(), window->y(), window->geometry().width(),
-                         window->geometry().height());
-
-      QRectF dialog_rect(0, 0, 320, 320);
-
-      QPointF dialog_pos = viewport()->center(
-          dialog_rect, parent_rect, cherry_kit::space::kCenterOnWindow);
-
       cherry_kit::desktop_dialog_ref ck_date_dialog =
-          viewport()->open_desktop_dialog("date_dialog", "Date", dialog_pos,
-                                          dialog_rect, QVariantMap());
-      // todo handle dialog close.
+              viewport()->create_child_activity("date_dialog", window);
     };
 
     set_btn->on_click(func);
