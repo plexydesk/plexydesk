@@ -174,7 +174,7 @@ public:
                   service_query_parameters *a_params) const;
 
   remote_result response(const std::string &a_method_name,
-                         const url_response &a_response) const;
+                         const url_response &a_response);
 
   definition_error_t error() const;
 

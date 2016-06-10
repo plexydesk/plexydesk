@@ -50,7 +50,7 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
   //check_json_loader();
 
   /* test social services */
-  ///check_pixabay_sd_photo_search();
+  check_pixabay_sd_photo_search();
   check_data_download();
 }
 
@@ -649,7 +649,7 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
   request->on_response_ready([&](const social_kit::url_response &response) {
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
     CK_ASSERT(response.http_version() == "HTTP 1.1",
-              "Invalid Response From Server" << response.http_version());
+              "Invalid Response From Server " << response.http_version());
 
     CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
     CK_ASSERT(response.data_buffer()[1] == '"', "Not jSON Data");
@@ -708,6 +708,7 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
            << srv_query.endpoint("pixabay.photo.search").c_str();
   */
 
+  qDebug() << Q_FUNC_INFO << srv_query.url("pixabay.photo.search", &input_data).c_str();
   CK_ASSERT(srv_query.url("pixabay.photo.search", &input_data).c_str() != "?",
             "expected url but got something else");
 
