@@ -92,8 +92,7 @@ void desktop_window::set_background(const std::string &a_image_name) {
         delete ck_image;
       });
 
-      scale_service->resize(ck_image_surface_ref, 1920, 1080,
-                            [=](cherry_kit::io_surface *surface) {});
+      scale_service->resize(ck_image_surface_ref, 1920, 1080, nullptr);
 
     } else {
       qWarning() << Q_FUNC_INFO << "Failed loading image!";

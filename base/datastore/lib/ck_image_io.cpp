@@ -37,7 +37,6 @@ class image_io::private_io_image_impl {
 public:
   private_io_image_impl() : m_surface(0) {}
   ~private_io_image_impl() {
-
       if (m_surface)
         delete m_surface;
   }
@@ -47,7 +46,7 @@ public:
 
   std::string m_url;
 
-  std::future<void> m_async_op;
+  std::future<io_surface *> m_async_op;
   std::future<void> m_async_sync_op;
 };
 
@@ -56,8 +55,8 @@ image_io::image_io(int a_width, int a_height)
 
 image_io::~image_io() {
   qDebug() << Q_FUNC_INFO;
-  delete priv;
   delete io_ctx;
+  delete priv;
 }
 
 void image_io::create(int a_width, int a_height) {}
@@ -171,10 +170,12 @@ void image_io::on_resize(on_resize_callback_t a_callback) {
 void image_io::resize(io_surface *a_surface, int a_width, int a_height,
                       on_resize_callback_t a_callback) {
   priv->m_async_op = std::async(std::launch::async, [=]() {
-    if (a_callback) {
-      io_ctx->resize(a_surface, a_width, a_height, a_callback);
-    }
+      return io_ctx->resize(a_surface, a_width, a_height, a_callback);
   });
+
+  std::cout << "task status : " << std::endl;
+  io_surface *rv = priv->m_async_op.get();
+  io_ctx->notify_resize(rv);
 }
 
 io_surface::io_surface() : width(0), height(0), buffer(nullptr) {}

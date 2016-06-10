@@ -292,25 +292,31 @@ void test_image_io_surface_create_from_file() {
   PxBenchData data;
   px_bench_run(&data);
 
-  ck_img.on_ready([&](image_io::buffer_load_status_t a_status,
-                      image_io *a_img) {
-    ck_img_surface_ref = ck_img.surface();
+  ck_img
+      .on_ready([&](image_io::buffer_load_status_t a_status, image_io *a_img) {
+         ck_img_surface_ref = ck_img.surface();
 
-    CK_ASSERT(a_status == image_io::kSuccess, "Should return a Success");
-    CK_ASSERT(ck_img_surface_ref != nullptr, "Should return a Valid Surface");
-    CK_ASSERT(ck_img_surface_ref->width == 1680, "Expected to return 800");
-    CK_ASSERT(ck_img_surface_ref->height == 1050, "Expected to return 600");
-    QImage test_img(ck_img_surface_ref->buffer, ck_img_surface_ref->width,
-                    ck_img_surface_ref->height,
-                    QImage::Format_ARGB32_Premultiplied);
+         CK_ASSERT(a_status == image_io::kSuccess, "Should return a Success");
+         CK_ASSERT(ck_img_surface_ref != nullptr,
+                   "Should return a Valid Surface");
+         CK_ASSERT(ck_img_surface_ref->width == 1920,
+                   "Expected to return 800"
+                       << " got : " << ck_img_surface_ref->width);
+         CK_ASSERT(ck_img_surface_ref->height == 1770,
+                   "Expected to return 600"
+                       << "Got : " << ck_img_surface_ref->height);
+         QImage test_img(ck_img_surface_ref->buffer, ck_img_surface_ref->width,
+                         ck_img_surface_ref->height,
+                         QImage::Format_ARGB32_Premultiplied);
 
-    CK_ASSERT(test_img.isNull() == 0, "Expected non null qimage");
+         CK_ASSERT(test_img.isNull() == 0, "Expected non null qimage");
 
-    px_bench_stop(&data);
-    px_bench_print(&data, Q_FUNC_INFO);
-  });
+         px_bench_stop(&data);
+         px_bench_print(&data, Q_FUNC_INFO);
+       });
 
-  ck_img.create("/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
+  ck_img.create("/home/siraj/.socialkit/cache/wallpaper/"
+                "2a2c60c6aca5ae0563daa334b351134a.png");
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
   std::this_thread::sleep_for(std::chrono::seconds(4));
@@ -331,7 +337,7 @@ void test_image_io_surface_preview_from_file() {
     CK_ASSERT(a_status == image_io::kSuccess, "Should return a Success");
     CK_ASSERT(ck_img_surface_ref != nullptr, "Should return a Valid Surface");
     CK_ASSERT(
-        ck_img_surface_ref->width == 204, "Expected 204"
+        ck_img_surface_ref->width == 138, "Expected 204"
                                               << " Got :"
                                               << ck_img_surface_ref->width);
     CK_ASSERT(
@@ -348,8 +354,9 @@ void test_image_io_surface_preview_from_file() {
     px_bench_print(&data, Q_FUNC_INFO);
   });
 
-  ck_img.create(
-      "/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg", true);
+  ck_img.create("/home/siraj/.socialkit/cache/wallpaper/"
+                "2a2c60c6aca5ae0563daa334b351134a.png",
+                true);
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
   std::this_thread::sleep_for(std::chrono::seconds(4));
@@ -374,13 +381,71 @@ void test_image_io_surface_invalid_create_from_file() {
     px_bench_print(&data, Q_FUNC_INFO);
   });
 
-  ck_img.create("/root/home/siraj/Pictures/hard_and_soft_by_crazyivan969.jpg");
+  ck_img.create("/root/home/siraj/.socialkit/cache/wallpaper/"
+                "2a2c60c6aca5ae0563daa334b351134a.png");
 
   qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
   std::this_thread::sleep_for(std::chrono::seconds(4));
 
   qDebug() << Q_FUNC_INFO << "Main thread wakeup";
 }
+
+void test_image_io_save_image() {
+  std::string image_name = "/home/siraj/.socialkit/cache/wallpaper/"
+                           "2a2c60c6aca5ae0563daa334b351134a.png";
+
+  cherry_kit::image_io *ck_save = new cherry_kit::image_io(0, 0);
+
+  ck_save->on_ready([&](image_io::buffer_load_status_t a_status,
+                      image_io *a_img) {
+      CK_ASSERT(a_status == image_io::kSuccess, "Expected Success Got Fail");
+
+      delete a_img;
+  });
+
+
+  ck_save->create(image_name);
+
+  qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
+  std::this_thread::sleep_for(std::chrono::seconds(4));
+  qDebug() << Q_FUNC_INFO << "Main thread wakeup";
+}
+
+void test_image_io_resize_image() {
+  std::string image_name = "/home/siraj/.socialkit/cache/wallpaper/"
+                           "2a2c60c6aca5ae0563daa334b351134a.png";
+
+  cherry_kit::image_io *ck_save = new cherry_kit::image_io(0, 0);
+
+  ck_save->on_ready([=](image_io::buffer_load_status_t a_status,
+                      image_io *a_img) {
+      CK_ASSERT(a_status == image_io::kSuccess, "Expected Success Got Fail");
+
+
+      cherry_kit::image_io *ck_resize = new cherry_kit::image_io(0, 0);
+
+      ck_resize->on_resize([=](io_surface *ctx) {
+          qDebug() << Q_FUNC_INFO << "Image Resize Complete";
+          delete ctx;
+          //std::unique_ptr<cherry_kit::image_io> (std::move(ck_resize));
+          delete ck_resize;
+          delete a_img;
+      });
+
+      ck_resize->resize(a_img->surface(), 1920, 1080, nullptr);
+
+      qDebug() << Q_FUNC_INFO << "Image Save Complete";
+  });
+
+
+  ck_save->create(image_name);
+
+  qDebug() << Q_FUNC_INFO << "Sleep Till Async load is done";
+  std::this_thread::sleep_for(std::chrono::seconds(6));
+  qDebug() << Q_FUNC_INFO << "Main thread wakeup";
+}
+
+
 
 int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
@@ -404,7 +469,13 @@ int main(int argc, char *argv[]) {
   test_image_io_surface_preview_from_file();
   test_image_io_surface_create_from_file();
 
+  // image op
+  test_image_io_save_image();
+  test_image_io_resize_image();
+
   // app.quit();
 
   // return app.exec();
+
+  return EXIT_SUCCESS;
 }

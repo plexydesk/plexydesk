@@ -191,7 +191,7 @@ void image_io::platform_image::notify_resize(io_surface *a_surface) {
 io_surface *image_io::platform_image::resize_image(io_surface *a_surface,
                                                    int a_width, int a_height) {
   io_surface *result = new io_surface();
-  const unsigned char *copy = a_surface->copy();
+  unsigned char *copy = a_surface->copy();
 
   QImage qimage =
       QImage(copy, a_surface->width, a_surface->height, QImage::Format_ARGB32);
@@ -207,6 +207,8 @@ io_surface *image_io::platform_image::resize_image(io_surface *a_surface,
   memcpy(result->buffer, qimage.constBits(),
          qimage.width() * qimage.height() * 4 * sizeof(unsigned char));
 
+  free(copy);
+
   return result;
 }
 
@@ -214,11 +216,11 @@ void image_io::platform_image::on_resize(on_resize_callback_t a_callback) {
   priv->m_on_resize_callback_list.push_back(a_callback);
 }
 
-void image_io::platform_image::resize(io_surface *a_surface, int a_width,
+io_surface *image_io::platform_image::resize(io_surface *a_surface, int a_width,
                                       int a_height,
                                       on_resize_callback_t a_callback) {
   io_surface *result = resize_image(a_surface, a_width, a_height);
-  notify_resize(result);
+  return result;
 }
 
 void image_io::platform_image::release() {

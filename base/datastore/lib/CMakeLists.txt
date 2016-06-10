@@ -33,6 +33,12 @@ INCLUDE_DIRECTORIES (
         ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -O1")
+    endif()
+endif()
+
 # Find Qt5
 if (NOT Qt5Core_FOUND)
     FIND_PACKAGE(Qt5Core REQUIRED)
