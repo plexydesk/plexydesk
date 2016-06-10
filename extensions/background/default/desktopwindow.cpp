@@ -79,25 +79,25 @@ void desktop_window::set_background(const std::string &a_image_name) {
       cherry_kit::io_surface *ck_image_surface_ref = a_image_service->surface();
 
       cherry_kit::image_io *scale_service = new cherry_kit::image_io(0, 0);
+      std::unique_ptr<cherry_kit::image_io> p(std::move(scale_service));
 
-      scale_service->resize(ck_image_surface_ref, 1920, 1080,
-                            [=](cherry_kit::io_surface *surface) {
+      scale_service->on_resize([&](cherry_kit::io_surface *surface) {
         if (!surface)
           return;
 
-			  const unsigned char *data_copy = surface->copy();
-        priv->m_background_texture =
-            QImage(data_copy, surface->width, surface->height,
-                   QImage::Format_ARGB32);
+        priv->m_background_texture = QImage(
+            surface->buffer, surface->width, surface->height, QImage::Format_ARGB32);
         update();
 
-        delete scale_service;
         delete ck_image;
       });
+
+      scale_service->resize(ck_image_surface_ref, 1920, 1080, nullptr);
 
     } else {
       qWarning() << Q_FUNC_INFO << "Failed loading image!";
     }
+
   });
 
   ck_image->create(a_image_name);
@@ -127,6 +127,7 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   draw_rect.setWidth(a_rect.width());
   draw_rect.setHeight(a_rect.height());
 
-  a_ctx->drawImage(draw_rect, priv->m_background_texture, QRectF(0, 0, 1920, 1080));
+  a_ctx->drawImage(draw_rect, priv->m_background_texture,
+                   QRectF(0, 0, 1920, 1080));
   a_ctx->restore();
 }

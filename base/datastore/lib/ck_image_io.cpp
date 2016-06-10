@@ -28,17 +28,26 @@
 #error "toolkit not set"
 #endif
 
+#include <future>
+#include <thread>
+
 namespace cherry_kit {
 
 class image_io::private_io_image_impl {
 public:
   private_io_image_impl() : m_surface(0) {}
-  ~private_io_image_impl() { delete m_surface; }
+  ~private_io_image_impl() {
+      if (m_surface)
+        delete m_surface;
+  }
 
   io_surface *m_surface;
   std::function<void(buffer_load_status_t, image_io *)> m_call_on_ready;
 
   std::string m_url;
+
+  std::future<io_surface *> m_async_op;
+  std::future<std::string> m_async_sync_op;
 };
 
 image_io::image_io(int a_width, int a_height)
@@ -46,8 +55,8 @@ image_io::image_io(int a_width, int a_height)
 
 image_io::~image_io() {
   qDebug() << Q_FUNC_INFO;
-  delete priv;
   delete io_ctx;
+  delete priv;
 }
 
 void image_io::create(int a_width, int a_height) {}
@@ -150,15 +159,30 @@ void image_io::on_image_saved(on_save_callback_t a_callback) {
 }
 
 void image_io::save(const io_surface *a_surface, const std::string &a_prefix) {
-  io_ctx->save(a_surface, a_prefix);
+  priv->m_async_sync_op = std::async(std::launch::async, [=]() {
+    return io_ctx->save(a_surface, a_prefix);
+  });
+
+  io_ctx->notify_save(priv->m_async_sync_op.get());
 }
 
-void image_io::resize(const io_surface *a_surface, int a_width, int a_height,
+void image_io::on_resize(on_resize_callback_t a_callback) {
+	io_ctx->on_resize(a_callback);
+}
+
+void image_io::resize(io_surface *a_surface, int a_width, int a_height,
                       on_resize_callback_t a_callback) {
-    io_ctx->resize(a_surface, a_width, a_height, a_callback);
+  priv->m_async_op = std::async(std::launch::async, [=]() {
+      return io_ctx->resize(a_surface, a_width, a_height, a_callback);
+  });
+
+  std::cout << "task status : " << std::endl;
+  io_surface *rv = priv->m_async_op.get();
+  io_ctx->notify_resize(rv);
 }
 
 io_surface::io_surface() : width(0), height(0), buffer(nullptr) {}
+
 /*
 io_surface::io_surface(const io_surface &copy)
     : width(copy.width), height(copy.height) {
@@ -177,6 +201,17 @@ image_data_ref io_surface::copy() {
   memcpy(buffer_copy, buffer, buffer_size);
 
   return buffer_copy;
+}
+
+io_surface *io_surface::dup()
+{
+    io_surface *rv = new io_surface();
+
+    rv->width = width;
+    rv->height = height;
+    rv->buffer = copy();
+
+    return rv;
 }
 }
 

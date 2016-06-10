@@ -19,7 +19,7 @@ public:
   QString cache_file_name(const std::string &a_file_name);
 
   std::function<void(io_surface *, image_io::buffer_load_status_t)>
-      m_on_ready_call;
+  m_on_ready_call;
   std::string m_file_url;
   std::thread m_io_task;
 
@@ -32,6 +32,7 @@ public:
   std::mutex m_notify_lock_mutex;
 
   std::vector<on_save_callback_t> m_notify_save_list;
+  std::vector<on_resize_callback_t> m_on_resize_callback_list;
 
   int m_shared_lock_value;
 };
@@ -112,7 +113,7 @@ void image_io::platform_image::on_save_ready(on_save_callback_t a_callback) {
   priv->m_notify_save_list.push_back(a_callback);
 }
 
-void image_io::platform_image::save_completed(const std::string &a_file_name) {
+void image_io::platform_image::notify_save(const std::string &a_file_name) {
   std::for_each(priv->m_notify_save_list.begin(),
                 priv->m_notify_save_list.end(), [&](on_save_callback_t a_func) {
     if (a_func)
@@ -126,7 +127,7 @@ std::string image_io::platform_image::save_image(const io_surface *a_surface,
 
   if (!a_surface || a_surface->buffer == 0) {
     std::cout << "Null Image Data -> " << __FUNCTION__ << std::endl;
-    save_completed(rv);
+    notify_save(rv);
     return rv;
   }
 
@@ -165,47 +166,57 @@ std::string image_io::platform_image::save_image(const io_surface *a_surface,
     qimage.save(&target_device, "PNG", 100);
   }
 
-  save_completed(target_file);
-
-  return rv;
+  return target_file;
 }
 
-void image_io::platform_image::save(const io_surface *a_surface,
+std::string image_io::platform_image::save(const io_surface *a_surface,
                                     const std::string &a_prefix) {
   std::cout << "Request -> " << __FUNCTION__ << std::endl;
-  priv->m_async_data_image_url = std::async(
-      std::launch::async, [=]() { save_image(a_surface, a_prefix); });
+  return save_image(a_surface, a_prefix);
 }
 
-io_surface *image_io::platform_image::resize_image(const io_surface *a_surface,
+void image_io::platform_image::notify_resize(io_surface *a_surface) {
+  std::for_each(std::begin(priv->m_on_resize_callback_list),
+                std::end(priv->m_on_resize_callback_list),
+                [=](on_resize_callback_t a_func) {
+    if (a_func)
+      a_func(a_surface);
+  });
+}
+
+io_surface *image_io::platform_image::resize_image(io_surface *a_surface,
                                                    int a_width, int a_height) {
   io_surface *result = new io_surface();
-  QImage qimage = QImage(a_surface->buffer, a_surface->width, a_surface->height,
-                         QImage::Format_ARGB32);
+  unsigned char *copy = a_surface->copy();
+
+  QImage qimage =
+      QImage(copy, a_surface->width, a_surface->height, QImage::Format_ARGB32);
   qimage =
       qimage.scaled(QSize(a_width, a_height), Qt::KeepAspectRatioByExpanding,
                     Qt::SmoothTransformation);
 
   result->width = qimage.width();
   result->height = qimage.height();
-  result->buffer =
-      (unsigned char *)malloc((qimage.width()* qimage.height() * 4 * sizeof (unsigned char)));
+  result->buffer = (unsigned char *)malloc(
+      (qimage.width() * qimage.height() * 4 * sizeof(unsigned char)));
 
   memcpy(result->buffer, qimage.constBits(),
          qimage.width() * qimage.height() * 4 * sizeof(unsigned char));
 
+  free(copy);
+
   return result;
 }
 
-void image_io::platform_image::resize(const io_surface *a_surface, int a_width,
+void image_io::platform_image::on_resize(on_resize_callback_t a_callback) {
+  priv->m_on_resize_callback_list.push_back(a_callback);
+}
+
+io_surface *image_io::platform_image::resize(io_surface *a_surface, int a_width,
                                       int a_height,
                                       on_resize_callback_t a_callback) {
-  priv->m_async_resize_image_result = std::async(std::launch::async, [=]() {
-    if (a_callback) {
-      io_surface *result = resize_image(a_surface, a_width, a_height);
-      a_callback(result);
-    }
-  });
+  io_surface *result = resize_image(a_surface, a_width, a_height);
+  return result;
 }
 
 void image_io::platform_image::release() {
@@ -300,12 +311,11 @@ io_surface *image_io::platform_image::image_preview_decoder() {
       }
     }
 
-    QString cache_file_name =
-        QCryptographicHash::hash(priv->m_file_url.c_str(),
-                                 QCryptographicHash::Md5).toHex();
+    QString cache_file_name = QCryptographicHash::hash(
+        priv->m_file_url.c_str(), QCryptographicHash::Md5).toHex();
     if (!ck_qt_image.save(
-            QDir::toNativeSeparators(thumbnail_path + "/" + cache_file_name) +
-            ".png")) {
+             QDir::toNativeSeparators(thumbnail_path + "/" + cache_file_name) +
+             ".png")) {
       qWarning() << Q_FUNC_INFO << "Failed to Create :" << cache_file_name;
       return nullptr;
     }
@@ -369,9 +379,8 @@ image_io::platform_image::wait_for_signal(image_io::platform_image *instance) {
 
 bool image_io::platform_image::private_platform_image::check_in_cache(
     const std::string &a_file_name) {
-  QString hashed_name =
-      QCryptographicHash::hash(a_file_name.c_str(), QCryptographicHash::Md5)
-          .toHex();
+  QString hashed_name = QCryptographicHash::hash(
+      a_file_name.c_str(), QCryptographicHash::Md5).toHex();
   QString thumbnail_path =
       QDir::toNativeSeparators(QDir::homePath() + "/.cherry_io/cache/");
 
@@ -384,9 +393,8 @@ bool image_io::platform_image::private_platform_image::check_in_cache(
 
 QString image_io::platform_image::private_platform_image::cache_file_name(
     const std::string &a_file_name) {
-  QString hashed_name =
-      QCryptographicHash::hash(a_file_name.c_str(), QCryptographicHash::Md5)
-          .toHex();
+  QString hashed_name = QCryptographicHash::hash(
+      a_file_name.c_str(), QCryptographicHash::Md5).toHex();
   QString thumbnail_path =
       QDir::toNativeSeparators(QDir::homePath() + "/.cherry_io/cache/");
 

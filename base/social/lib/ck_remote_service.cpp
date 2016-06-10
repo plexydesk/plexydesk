@@ -590,7 +590,7 @@ void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
 }
 
 remote_result remote_service::response(const std::string &a_method_name,
-                                       const url_response &a_response) const {
+                                       const url_response &a_response) {
   remote_result rv;
   service *srv = ctx->m_service_dict[a_method_name];
   service_result *srv_result = 0;
@@ -630,8 +630,8 @@ remote_result remote_service::response(const std::string &a_method_name,
     Json::Value root;
     Json::Reader reader;
 
-    std::cout << __FUNCTION__ << "Initiate Json Parser" << std::endl;
-    if (reader.parse((const char *)a_response.data_buffer(), root)) {
+    std::string doc_data((const char *) a_response.data_buffer(), a_response.data_buffer_size());
+    if (reader.parse(doc_data, root)) {
       std::cout << "parsed success fully" << std::endl;
       std::vector<service_result_query *> list = srv_result->query_list();
       std::for_each(std::begin(list), std::end(list),

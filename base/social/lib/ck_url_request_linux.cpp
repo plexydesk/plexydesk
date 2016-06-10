@@ -4,6 +4,8 @@
 
 #include <libsoup/soup-session-async.h>
 
+#include <iostream>
+
 namespace social_kit {
 
 class url_request::platform_url_request::private_context {
@@ -40,14 +42,14 @@ static void platform_request_soup_stream_ready_cb(SoupSession *a_session,
   url_request::platform_url_request::private_context *ctx =
       (url_request::platform_url_request::private_context *)a_user_data;
   social_kit::url_response response;
-  SoupHTTPVersion http_version;
-  gint http_version_value;
+  SoupHTTPVersion http_version_value;
   guint request_status_code = a_msg->status_code;
 
   response.set_status_code(request_status_code);
 
   if (request_status_code == SOUP_STATUS_OK) {
-    http_version = soup_message_get_http_version(a_msg);
+    http_version_value = soup_message_get_http_version(a_msg);
+
     if (http_version_value == SOUP_HTTP_1_0) {
       response.set_http_version("HTTP 1.0");
     } else if (http_version_value == SOUP_HTTP_1_1) {
