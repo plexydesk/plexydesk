@@ -19,8 +19,9 @@ public:
   void on_surface_ready(std::function<
       void(io_surface *, image_io::buffer_load_status_t)> a_callback);
 
+  void notify_save(const std::string &a_file_name);
   void on_save_ready(on_save_callback_t a_callback);
-  void save(const io_surface *a_surface, const std::string &a_prefix = "data");
+  std::string save(const io_surface *a_surface, const std::string &a_prefix = "data");
 
   void on_resize(on_resize_callback_t a_callback);
   io_surface *resize(io_surface *a_surface, int a_width, int a_height,
@@ -36,7 +37,6 @@ protected:
 
   std::string save_image(const io_surface *a_surface,
                          const std::string &a_prefix);
-  void save_completed(const std::string &a_file_name);
 
   io_surface *resize_image(io_surface *a_surface, int a_width,
                            int a_height);

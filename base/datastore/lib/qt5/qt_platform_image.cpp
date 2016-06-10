@@ -113,7 +113,7 @@ void image_io::platform_image::on_save_ready(on_save_callback_t a_callback) {
   priv->m_notify_save_list.push_back(a_callback);
 }
 
-void image_io::platform_image::save_completed(const std::string &a_file_name) {
+void image_io::platform_image::notify_save(const std::string &a_file_name) {
   std::for_each(priv->m_notify_save_list.begin(),
                 priv->m_notify_save_list.end(), [&](on_save_callback_t a_func) {
     if (a_func)
@@ -127,7 +127,7 @@ std::string image_io::platform_image::save_image(const io_surface *a_surface,
 
   if (!a_surface || a_surface->buffer == 0) {
     std::cout << "Null Image Data -> " << __FUNCTION__ << std::endl;
-    save_completed(rv);
+    notify_save(rv);
     return rv;
   }
 
@@ -166,17 +166,13 @@ std::string image_io::platform_image::save_image(const io_surface *a_surface,
     qimage.save(&target_device, "PNG", 100);
   }
 
-  save_completed(target_file);
-
-  return rv;
+  return target_file;
 }
 
-void image_io::platform_image::save(const io_surface *a_surface,
+std::string image_io::platform_image::save(const io_surface *a_surface,
                                     const std::string &a_prefix) {
   std::cout << "Request -> " << __FUNCTION__ << std::endl;
-  //priv->m_async_data_image_url = std::async(
-  //    std::launch::async, [=]() { save_image(a_surface, a_prefix); });
-  save_image(a_surface, a_prefix);
+  return save_image(a_surface, a_prefix);
 }
 
 void image_io::platform_image::notify_resize(io_surface *a_surface) {
