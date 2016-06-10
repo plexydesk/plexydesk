@@ -240,7 +240,7 @@ void desktop_controller_impl::create_task_group() {
 
   cherry_kit::ui_action bg_task;
   bg_task.set_name("Desktop");
-  bg_task.set_icon("navigation/ck_add.png");
+  bg_task.set_icon("navigation/ck_configure.png");
   bg_task.set_visible(true);
   bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
                        const cherry_kit::ui_task_data_t &a_data) {
@@ -262,7 +262,7 @@ void desktop_controller_impl::create_task_group() {
 
   cherry_kit::ui_action online_task;
   online_task.set_name("Online");
-  online_task.set_icon("navigation/ck_configure.png");
+  online_task.set_icon("navigation/ck_pixabay.png");
   online_task.set_id(1);
   online_task.set_visible(1);
   online_task.set_task([this](const cherry_kit::ui_action *a_ref,
