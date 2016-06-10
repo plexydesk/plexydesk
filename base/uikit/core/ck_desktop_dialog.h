@@ -51,23 +51,15 @@ public:
   explicit desktop_dialog(QObject *a_parent_ptr = 0);
   virtual ~desktop_dialog();
 
-  virtual void create_window(const QRectF &a_window_geometry,
-                             const QString &a_window_title,
-                             const QPointF &a_window_pos) = 0;
+  virtual void create_window() = 0;
   virtual window *dialog_window() const = 0;
 
-  virtual void set_activity_attribute(const QString &a_name,
-                                      const QVariant &a_data);
-  virtual void update_attribute(const QString &a_name, const QVariant &a_data);
-  virtual bool has_attribute(const QString &a_arg);
-  virtual QVariantMap attributes() const;
+  /* discard */
+  virtual void on_arguments_updated(std::function<void()> a_handler);
 
-  virtual QString error_message() const;
-  virtual QVariantMap result() const { return QVariantMap();}
-
-  virtual void exec(const QPointF &a_pos = QCursor::pos());
-  virtual void show_activity();
+  /* to keep */
   virtual void hide();
+  virtual void show_activity();
 
   virtual void set_controller(const desktop_controller_ref &a_controller);
   virtual desktop_controller_ref controller() const;
@@ -75,9 +67,7 @@ public:
   virtual void set_viewport(space *a_viewport_ptr);
   virtual space *viewport() const;
 
-  virtual void purge() = 0;
-
-  virtual void on_arguments_updated(std::function<void()> a_handler);
+  virtual bool purge() = 0;
 
   virtual void
   on_action_completed(std::function<void(const QVariantMap &)> a_handler);
@@ -88,21 +78,10 @@ public:
   virtual void on_notify(dialog_message_t callback);
 
   virtual void discard_activity();
-
 protected:
-  virtual void update_action();
-  virtual QRectF geometry() const;
-  virtual void set_geometry(const QRectF &a_geometry);
-  virtual void update_content_geometry(widget *a_widget_ptr);
   virtual void notify_done();
   virtual void notify_message(const std::string &a_key,
                               const std::string &a_value);
-
-Q_SIGNALS:
-  void canceled();
-  void resultsReady();
-  void attribute_changed();
-
 private:
   class PrivateDesktopActivity;
   PrivateDesktopActivity *const priv;

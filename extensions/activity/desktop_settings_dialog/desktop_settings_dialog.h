@@ -35,15 +35,10 @@ public:
   desktop_settings_dialog(QGraphicsObject *object = 0);
   virtual ~desktop_settings_dialog();
 
-  void create_window(const QRectF &a_window_geometry,
-                     const QString &a_window_title, const QPointF &window_pos);
-
-  virtual QRectF geometry() const;
-
-  QVariantMap result() const;
+  void create_window();
 
   window *dialog_window() const;
-  void purge();
+  bool purge();
 
   void insert_image_to_grid(const QImage &ck_preview_pixmap,
                             const std::string &a_file_url);

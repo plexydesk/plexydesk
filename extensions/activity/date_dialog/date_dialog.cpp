@@ -44,9 +44,9 @@ date_dialog::date_dialog(QObject *object)
 
 date_dialog::~date_dialog() { delete priv; }
 
-void date_dialog::create_window(const QRectF &window_geometry,
-                                const QString &window_title,
-                                const QPointF &window_pos) {
+void date_dialog::create_window() {
+  QRectF window_geometry(0, 0, 320, 320);
+  QString window_title = "Date";
   priv->m_activity_window = new cherry_kit::window();
   priv->m_activity_window->set_geometry(window_geometry);
   priv->m_activity_window->set_window_title(window_title);
@@ -85,7 +85,7 @@ cherry_kit::window *date_dialog::dialog_window() const {
   return priv->m_activity_window;
 }
 
-void date_dialog::purge() {
+bool date_dialog::purge() {
   if (priv->m_cal_widget)
     delete priv->m_cal_widget;
   if (priv->m_done_btn)
@@ -96,6 +96,8 @@ void date_dialog::purge() {
     delete priv->m_activity_window;
 
   priv->m_activity_window = 0;
+
+  return true;
 }
 
 void date_dialog::notify_calendar_value() {

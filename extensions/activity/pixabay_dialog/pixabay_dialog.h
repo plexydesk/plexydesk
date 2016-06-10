@@ -33,15 +33,16 @@ public:
 
   virtual ~pixabay_dialog();
 
-  void create_window(const QRectF &window_geometry, const QString &window_title,
-                     const QPointF &window_pos);
-
-  virtual void update_attribute(const QString &name, const QVariant &data);
+  void create_window();
 
   cherry_kit::window *dialog_window() const;
-  void purge();
+  bool purge();
 
   void download_image(const std::string &a_url);
+
+protected:
+  void search(const std::string &a_query, int page_count);
+
 private:
   class Privatepixabay;
   Privatepixabay *const priv;

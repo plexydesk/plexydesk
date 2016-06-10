@@ -34,15 +34,10 @@ public:
 
   virtual ~progress_dialog_view();
 
-  void create_window(const QRectF &window_geometry, const QString &window_title,
-                     const QPointF &window_pos);
-
-  QVariantMap result() const;
-
-  virtual void update_attribute(const QString &name, const QVariant &data);
+  void create_window();
 
   cherry_kit::window *dialog_window() const;
-  void purge();
+  bool purge();
 
 private:
   class PrivateProgressDialog;

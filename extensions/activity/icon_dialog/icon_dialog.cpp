@@ -82,13 +82,13 @@ icon_dialog::~icon_dialog() {
   delete priv;
 }
 
-void icon_dialog::create_window(const QRectF &window_geometry,
-                                const QString &window_title,
-                                const QPointF &window_pos) {
+void icon_dialog::create_window() {
   if (priv->window_ref) {
     return;
   }
 
+  QRectF window_geometry(0, 0, 320, 240);
+  QString window_title = "Icon Dialog";
   priv->m_auto_scale_frame = false;
 
   priv->window_ref = new cherry_kit::window();
@@ -107,6 +107,7 @@ void icon_dialog::create_window(const QRectF &window_geometry,
 
   priv->window_ref->set_window_content(priv->m_grid_view);
 
+  /*
   on_arguments_updated([this]() {
     if (has_attribute("data")) {
       QVariantMap data = attributes()["data"].toMap();
@@ -120,7 +121,6 @@ void icon_dialog::create_window(const QRectF &window_geometry,
           priv->m_activity_result["controller"] = aAction->controller_name();
           priv->m_activity_result["action"] = aAction->label();
           priv->mSelection = aAction->label();
-          update_action();
         });
 
         cherry_kit::model_view_item *grid_item =
@@ -141,8 +141,6 @@ void icon_dialog::create_window(const QRectF &window_geometry,
         priv->m_grid_view->insert(grid_item);
         QRectF _content_rect = priv->m_grid_view->boundingRect();
 
-        set_geometry(_content_rect);
-
         priv->window_ref->set_geometry(_content_rect);
       }
     }
@@ -161,16 +159,12 @@ void icon_dialog::create_window(const QRectF &window_geometry,
       priv->window_ref->resize(_content_rect.width(), _content_rect.height());
     }
   });
-}
-
-QVariantMap icon_dialog::result() const {
-  priv->m_activity_result["action"] = priv->mSelection;
-  return priv->m_activity_result;
+  */
 }
 
 window *icon_dialog::dialog_window() const { return priv->window_ref; }
 
-void icon_dialog::purge() {
+bool icon_dialog::purge() {
   if (priv->m_grid_view)
     priv->m_grid_view->clear();
 
@@ -179,6 +173,8 @@ void icon_dialog::purge() {
   }
 
   priv->window_ref = 0;
+
+  return true;
 }
 
 /// action class impl

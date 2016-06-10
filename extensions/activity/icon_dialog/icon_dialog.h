@@ -37,11 +37,10 @@ public:
 
   virtual ~icon_dialog();
 
-  void create_window(const QRectF &window_geometry, const QString &window_title,
-                     const QPointF &window_pos);
-  QVariantMap result() const;
+  void create_window();
+
   window *dialog_window() const;
-  void purge();
+  bool purge();
 
 private:
   class PrivateIconGrid;

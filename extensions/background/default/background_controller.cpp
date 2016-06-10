@@ -219,7 +219,7 @@ void desktop_controller_impl::open_online_dialog() {
 
   cherry_kit::desktop_dialog_ref ck_activity = viewport()->open_desktop_dialog(
       "pixabay_dialog", "PIXABAY SEARCH", qt_activity_window_location,
-      dialog_window_geometry, QVariantMap());
+      dialog_window_geometry, QVariantMap(), false);
 
   ck_activity->on_notify([=](const std::string &key, const std::string &value) {
     if (key.compare("url") == 0) {

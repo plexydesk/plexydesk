@@ -75,7 +75,7 @@ public:
   cherry_kit::desktop_dialog_ref
   open_desktop_dialog(const QString &a_activity, const QString &a_title,
                       const QPointF &a_pos, const QRectF &a_rect,
-                      const QVariantMap &a_data_map);
+                      const QVariantMap &a_data_map, bool a_managed = true);
 
   virtual QPointF cursor_pos() const;
   virtual QPointF
@@ -96,12 +96,16 @@ public:
 
   virtual void reset_focus();
 
+  //new gen.
+
+  virtual desktop_dialog_ref create_activity(const std::string &a_name);
+
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
 
   virtual void remove_window_from_view(window *a_window);
-  virtual void insert_window_to_view(window *a_window);
+  virtual void insert_window_to_view(window *a_window, bool a_managed = true);
 
   virtual void drop_event_handler(QDropEvent *event, const QPointF &event_pos);
 
@@ -122,10 +126,10 @@ protected:
   virtual GraphicsSurface *surface();
 
 private:
-  void add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr);
+  void add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr, bool m_managed);
 
   class PrivateSpace;
-  PrivateSpace *const o_space;
+  PrivateSpace *const ctx;
 };
 }
 #endif // SPACE_H
