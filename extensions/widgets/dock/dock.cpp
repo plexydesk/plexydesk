@@ -168,9 +168,8 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
   float window_width = (96 * 4);
   float window_height = (96 * row_count);
 
-  priv->m_task_grid->set_view_geometry(
-      QRectF(0, 0, window_width, window_height +
-             viewport()->scaled_height(24)));
+  priv->m_task_grid->set_view_geometry(QRectF(
+      0, 0, window_width, window_height + 52));
 
   priv->m_task_grid->insert(grid_item);
 
@@ -262,9 +261,8 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   float window_width = (96 * menu_width);
   float window_height = (96 * (row_count));
 
-  sub_task_grid->set_view_geometry(QRectF(0, 0, window_width,
-                                          window_height +
-                                          viewport()->scaled_height(24)));
+  sub_task_grid->set_view_geometry(QRectF(
+      0, 0, window_width, window_height + viewport()->scaled_height(24)));
 
   sub_menu->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
     if (!a_visible) {
