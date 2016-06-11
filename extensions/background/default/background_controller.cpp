@@ -243,7 +243,7 @@ void desktop_controller_impl::create_task_group() {
   });
 
   cherry_kit::ui_action seamless_task;
-  seamless_task.set_name("Seamless");
+  seamless_task.set_name("Hide");
   seamless_task.set_icon("navigation/ck_expose.png");
   seamless_task.set_id(1);
   seamless_task.set_visible(1);
@@ -253,7 +253,7 @@ void desktop_controller_impl::create_task_group() {
   });
 
   cherry_kit::ui_action online_task;
-  online_task.set_name("Online");
+  online_task.set_name("Pixabay");
   online_task.set_icon("navigation/ck_pixabay.png");
   online_task.set_id(1);
   online_task.set_visible(1);

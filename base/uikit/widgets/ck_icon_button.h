@@ -38,7 +38,7 @@ public:
   virtual void set_pixmap(const QPixmap &a_pixmap);
   virtual void set_icon(const std::string &a_icon_name);
 
-  virtual void set_lable(const QString &a_text);
+  virtual void set_text(const QString &a_text);
   virtual QString text() const;
 
   void set_background_color(const QColor &a_color);

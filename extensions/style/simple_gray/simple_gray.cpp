@@ -314,11 +314,10 @@ CGContextRef _create_cg_context(int pixelsWide, int pixelsHigh) {
     fprintf(stderr, "Memory not allocated!");
     return NULL;
   }
-  context = CGBitmapContextCreate(bitmapData, // 4
-                                  pixelsWide, pixelsHigh,
-                                  8, // bits per component
-                                  bitmapBytesPerRow, colorSpace,
-                                  kCGImageAlphaPremultipliedLast);
+  context = CGBitmapContextCreate(
+      bitmapData,                // 4
+      pixelsWide, pixelsHigh, 8, // bits per component
+      bitmapBytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);
   if (context == NULL) {
     free(bitmapData); // 5
     fprintf(stderr, "Context not created!");
@@ -1066,31 +1065,27 @@ void SimpleGrayStyle::draw_image_button(const style_data &a_features,
     qWarning() << Q_FUNC_INFO << "Unknown State";
   }
 
-  //QRect icon_rect = a_rect.toRect();
-  QRect icon_rect = a_features.image_data.rect();
-  if (a_features.text_data.isNull() || a_features.text_data.isEmpty()) {
-    icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
-    icon_rect.setY(a_rect.center().y() - (icon_rect.height() / 2));
-    icon_rect.setWidth(a_features.image_data.width());
-    icon_rect.setHeight(a_features.image_data.height());
-  } else {
-    icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
-  }
-  icon_rect.setWidth(icon_rect.height());
-
-  QRect text_rect = a_rect.toRect();
-  text_rect.setX(icon_rect.width() + 5);
-
+  QRect expose_area = a_rect.toRect();
+  QRect icon_area = a_features.image_data.rect();
+  QRect icon_draw_rect = QRect((expose_area.width() - icon_area.width()) / 2,
+                               (expose_area.height() - icon_area.height()) / 2,
+                               icon_area.width(), icon_area.height());
+  QRect text_draw_rect = QRect(0,
+                               (icon_area.height() + 12),
+                               expose_area.width(),
+                               (expose_area.height() - icon_area.height())
+                               );
   a_ctx->save();
   set_default_painter_hints(a_ctx);
-  a_ctx->drawPixmap(icon_rect, a_features.image_data);
+  a_ctx->drawPixmap(icon_draw_rect, a_features.image_data);
+
+  d->set_default_font_size(a_ctx, 12, true);
+  d->set_pen_color(a_ctx, resource_manager::kTextColor);
+  a_ctx->drawText(text_draw_rect, a_features.text_data,
+                  Qt::AlignCenter | Qt::AlignVCenter);
+
   a_ctx->restore();
 
-  if (!a_features.text_data.isNull()) {
-    d->set_default_font_size(a_ctx, 8);
-    a_ctx->drawText(text_rect, a_features.text_data,
-                    Qt::AlignLeft | Qt::AlignVCenter);
-  }
   a_ctx->restore();
 }
 
