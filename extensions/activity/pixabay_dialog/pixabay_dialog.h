@@ -37,6 +37,7 @@ public:
 
   cherry_kit::window *dialog_window() const;
   bool purge();
+  bool busy();
 
   void download_image(const std::string &a_url);
 

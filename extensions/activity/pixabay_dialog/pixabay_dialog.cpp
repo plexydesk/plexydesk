@@ -384,24 +384,8 @@ cherry_kit::window *pixabay_dialog::dialog_window() const {
 
 bool pixabay_dialog::purge() {
   if (priv->m_in_progress) {
-      /*
-      priv->m_busy_wait = std::async(std::launch::async, [=]() {
-          while(priv->m_in_progress);
-          std::cout << "Ready for Deletion ..." << std::endl;
-          discard_activity();
-          return true;
-      });
-      */
     return false;
   }
-
-  /*
-  if (priv->m_busy_wait.get() == true) {
-      std::cout << "Purge Dialog  ..." << std::endl;
-  }
-  */
-
-  std::cout << "Purge Dialog  ..." << std::endl;
   /* clean up progress window */
   if (priv->m_progress_window) {
     priv->m_progress_window->hide();
@@ -435,4 +419,9 @@ bool pixabay_dialog::purge() {
   priv->m_main_window = 0;
 
   return true;
+}
+
+bool pixabay_dialog::busy()
+{
+    return priv->m_in_progress;
 }

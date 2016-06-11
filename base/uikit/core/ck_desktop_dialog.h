@@ -68,16 +68,19 @@ public:
   virtual space *viewport() const;
 
   virtual bool purge() = 0;
+  virtual bool busy();
 
   virtual void
   on_action_completed(std::function<void(const QVariantMap &)> a_handler);
 
   virtual void
-  on_discarded(std::function<void(const desktop_dialog *)> a_handler);
+  on_discarded(std::function<void(desktop_dialog *)> a_handler);
 
   virtual void on_notify(dialog_message_t callback);
 
   virtual void discard_activity();
+  void notify_exit();
+
 protected:
   virtual void notify_done();
   virtual void notify_message(const std::string &a_key,

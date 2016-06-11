@@ -163,7 +163,7 @@ window *desktop_settings_dialog::dialog_window() const {
 
 bool desktop_settings_dialog::purge() {
   if (priv->m_image_view) {
-    priv->m_image_view->clear();
+     priv->m_image_view->clear();
     delete priv->m_image_view;
   }
 

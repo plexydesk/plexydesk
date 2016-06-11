@@ -130,12 +130,19 @@ void space::add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr,
     return;
   }
 
-  a_activity_ptr->on_discarded([&](const desktop_dialog *a_activity) {
+  a_activity_ptr->dialog_window()->on_window_closed([=](window *window) {
+      qDebug() << Q_FUNC_INFO << "Request Window Removal from Space";
+      if(!a_activity_ptr->busy())
+        remove_window_from_view(window);
+  });
+
+  a_activity_ptr->on_discarded([this](desktop_dialog *a_activity) {
     on_activity_finished(a_activity);
   });
 
   if (m_managed) {
-    a_activity_ptr->dialog_window()->on_window_discarded([=](window *a_window) {
+    a_activity_ptr->dialog_window()->on_window_discarded([=](
+        window *a_window) {
       a_activity_ptr->discard_activity();
     });
   }
@@ -150,7 +157,7 @@ void space::add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr,
 
     a_activity_ptr->set_viewport(this);
 
-    insert_window_to_view(a_activity_ptr->dialog_window(), m_managed);
+    insert_window_to_view(a_activity_ptr->dialog_window(), false);
   }
 }
 
@@ -198,13 +205,13 @@ void space::insert_window_to_view(window *a_window, bool a_managed) {
     });
   }
 
-  a_window->on_window_focused([this](window *a_window) {
+  a_window->on_window_focused([=](window *a_window) {
     if (!a_window) {
       return;
     }
 
     std::for_each(std::begin(ctx->m_window_list), std::end(ctx->m_window_list),
-                  [&](window *a_win) {
+                  [=](window *a_win) {
       if (a_win->window_type() == window::kFramelessWindow) {
         a_win->setZValue(kMinimumZOrder);
       }
@@ -254,12 +261,9 @@ void space::remove_window_from_view(window *a_window) {
 
   ctx->m_native_scene->removeItem(a_window);
 
-  qDebug() << Q_FUNC_INFO << "Before :" << ctx->m_window_list.size();
   ctx->m_window_list.erase(std::remove(ctx->m_window_list.begin(),
                                        ctx->m_window_list.end(), a_window),
                            ctx->m_window_list.end());
-  qDebug() << Q_FUNC_INFO << "After:" << ctx->m_window_list.size();
-
   a_window->discard();
 }
 
@@ -700,12 +704,12 @@ desktop_dialog_ref space::create_child_activity(const std::string &a_name,
           QRectF(window_pos.x(), window_pos.y(), a_window->geometry().width(),
                  a_window->geometry().height());
     } else {
-        _location = kCenterOnViewport;
+      _location = kCenterOnViewport;
     }
 
     /* center on the viewport by default */
-    QPointF _center = center(intent->dialog_window()->geometry(),
-                             _child_geometry, _location);
+    QPointF _center =
+        center(intent->dialog_window()->geometry(), _child_geometry, _location);
     intent->dialog_window()->set_coordinates(_center.x(), _center.y());
   }
 
