@@ -60,10 +60,6 @@ protected:
   void toggle_panel();
   void update_desktop_preview();
 
-  void create_dock_action(cherry_kit::fixed_layout *build, int row, int column,
-                          const std::string &icon,
-                          std::function<void()> a_button_action_func);
-
   void switch_to_previous_space();
   void switch_to_next_space();
   void toggle_seamless();

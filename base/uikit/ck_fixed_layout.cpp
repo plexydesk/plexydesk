@@ -501,7 +501,7 @@ widget *fixed_layout::PrivateViewBuilder::add_new_image_button_at(
     icon = QString::fromStdString(a_props.at("icon"));
   }
 
-  image_button->set_lable(text);
+  image_button->set_text(text);
   QPixmap pixmap = resource_manager::instance()->drawable(icon, "mdpi");
   image_button->set_pixmap(pixmap);
   image_button->on_click(a_callback);
@@ -566,7 +566,7 @@ void fixed_layout::PrivateViewBuilder::update_image_button_properties(
 
   QPixmap pixmap = resource_manager::instance()->drawable(icon, "mdpi");
 
-  image_button->set_lable(text);
+  image_button->set_text(text);
   image_button->set_pixmap(pixmap);
 }
 

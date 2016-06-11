@@ -65,7 +65,7 @@ void icon_button::set_icon(const std::string &a_icon_name) {
   set_pixmap(pixmap);
 }
 
-void icon_button::set_lable(const QString &a_text) {
+void icon_button::set_text(const QString &a_text) {
   o_image_button->m_button_text = a_text;
   update();
 }
