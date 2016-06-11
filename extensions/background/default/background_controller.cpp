@@ -264,7 +264,7 @@ void desktop_controller_impl::create_task_group() {
 
   cherry_kit::ui_action dock_task;
   dock_task.set_name("Dock");
-  dock_task.set_icon("navigation/ck_add.png");
+  dock_task.set_icon("navigation/ck_computer.png");
   dock_task.set_id(1);
   dock_task.set_visible(1);
   dock_task.set_task([this](const cherry_kit::ui_action *a_ref,
