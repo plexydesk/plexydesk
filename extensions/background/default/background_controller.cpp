@@ -232,7 +232,7 @@ void desktop_controller_impl::create_task_group() {
 
   cherry_kit::ui_action bg_task;
   bg_task.set_name("Desktop");
-  bg_task.set_icon("navigation/ck_configure.png");
+  bg_task.set_icon("navigation/ck_desktop.png");
   bg_task.set_visible(true);
   bg_task.set_task([=](const cherry_kit::ui_action *a_action_ref,
                        const cherry_kit::ui_task_data_t &a_data) {
