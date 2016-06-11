@@ -112,6 +112,7 @@ void pixabay_dialog::create_window() {
   const QRectF window_geometry(0, 0, 520, 340);
   priv->m_main_window = new cherry_kit::window();
   priv->m_main_window->set_window_title("Pixabay Search");
+  priv->m_main_window->set_geometry(window_geometry);
 
   /* progress window */
   priv->m_progress_window = new cherry_kit::window(priv->m_main_window);

@@ -42,8 +42,11 @@ public:
   workspace *m_workspace;
   QGraphicsScene *m_native_scene;
   QList<cherry_kit::desktop_dialog_ref> m_activity_list;
+
+  std::vector<cherry_kit::desktop_dialog_ref> m_current_activity_list;
   std::vector<cherry_kit::window *> m_window_list;
   QMap<QString, desktop_controller_ref> m_current_controller_list;
+
   QList<desktop_controller_ref> m_controller_list;
 
   QList<NotifyFunc> m_notify_chain;
