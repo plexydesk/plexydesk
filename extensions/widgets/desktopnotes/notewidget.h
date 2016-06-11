@@ -37,6 +37,7 @@ public:
   void resize(const QSizeF &size);
   void createToolBar();
 
+  void setWindow(cherry_kit::window *a_window);
   void setViewport(cherry_kit::space *space);
 
   void on_text_data_changed(std::function<void(const QString &)> a_callback);

@@ -34,20 +34,14 @@ public:
   text_input_dialog(QGraphicsObject *object = 0);
   virtual ~text_input_dialog();
 
-  void create_window(const QRectF &window_geometry, const QString &window_title,
-                     const QPointF &window_pos);
-
-  virtual QString error_message() const;
+  void create_window();
 
   virtual QVariantMap activityResult() const;
-  virtual QRectF geometry() const;
 
   void containsArg();
 
-  QVariantMap result() const;
-
   cherry_kit::window *dialog_window() const;
-  void purge();
+  bool purge();
 
 private
 Q_SLOTS:

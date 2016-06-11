@@ -35,9 +35,7 @@ template_dialog::template_dialog(QGraphicsObject *object)
 
 template_dialog::~template_dialog() { delete priv; }
 
-void template_dialog::create_window(const QRectF &window_geometry,
-                                     const QString &window_title,
-                                     const QPointF &window_pos) {
+void template_dialog::create_window() {
   priv->m_main_window = new cherry_kit::window();
 
   priv->m_main_window->set_widget_flag(
@@ -46,25 +44,17 @@ void template_dialog::create_window(const QRectF &window_geometry,
       cherry_kit::widget::kConvertToWindowType);
   priv->m_main_window->set_widget_flag(
       cherry_kit::widget::kRenderDropShadow);
-
-  set_geometry(window_geometry);
-  update_content_geometry(priv->m_main_window);
-
-  exec(window_pos);
 }
-
-QVariantMap template_dialog::result() const { return QVariantMap(); }
-
-void template_dialog::update_attribute(const QString &name,
-                                        const QVariant &data) {}
 
 cherry_kit::window *template_dialog::dialog_window() const {
   return priv->m_main_window;
 }
 
-void template_dialog::purge() {
+bool template_dialog::purge() {
   if (priv->m_main_window) {
     delete priv->m_main_window;
   }
   priv->m_main_window = 0;
+
+  return true;
 }

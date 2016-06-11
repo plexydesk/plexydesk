@@ -71,12 +71,6 @@ public:
   virtual void update_session_value(const QString &a_controller_name,
                                     const QString &a_key,
                                     const QString &a_value);
-
-  cherry_kit::desktop_dialog_ref
-  open_desktop_dialog(const QString &a_activity, const QString &a_title,
-                      const QPointF &a_pos, const QRectF &a_rect,
-                      const QVariantMap &a_data_map);
-
   virtual QPointF cursor_pos() const;
   virtual QPointF
   center(const QRectF &a_view_geometry,
@@ -88,20 +82,26 @@ public:
 
   virtual void on_viewport_event_notify(
       std::function<void(ViewportNotificationType, const ui_task_data_t &a_data,
-                         const space *)>
-          a_notify_handler);
+                         const space *)> a_notify_handler);
   virtual void on_activity_finished(const desktop_dialog *a_activity);
 
   virtual int id() const;
 
   virtual void reset_focus();
 
+  // new gen.
+
+  virtual desktop_dialog_ref
+  create_activity(const std::string &a_name,
+                  ViewportLocation a_location = kCenterOnViewport);
+  virtual desktop_dialog_ref
+  create_child_activity(const std::string &a_name, widget *a_window);
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
 
   virtual void remove_window_from_view(window *a_window);
-  virtual void insert_window_to_view(window *a_window);
+  virtual void insert_window_to_view(window *a_window, bool a_managed = true);
 
   virtual void drop_event_handler(QDropEvent *event, const QPointF &event_pos);
 
@@ -122,10 +122,11 @@ protected:
   virtual GraphicsSurface *surface();
 
 private:
-  void add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr);
+  void add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr,
+                    bool m_managed);
 
   class PrivateSpace;
-  PrivateSpace *const o_space;
+  PrivateSpace *const ctx;
 };
 }
 #endif // SPACE_H

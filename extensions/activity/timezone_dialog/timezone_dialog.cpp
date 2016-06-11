@@ -57,9 +57,11 @@ timezone_dialog::timezone_dialog(QGraphicsObject *aParent)
 
 timezone_dialog::~timezone_dialog() { delete m_priv_ptr; }
 
-void timezone_dialog::create_window(const QRectF &aWindowGeometry,
-                                     const QString &aWindowTitle,
-                                     const QPointF &aWindowPos) {
+void timezone_dialog::create_window() {
+
+  const QString aWindowTitle = "TimeZone";
+  const QRectF aWindowGeometry(0, 0, 320, 480);
+
   m_priv_ptr->m_window_ptr = new cherry_kit::window();
   m_priv_ptr->m_window_ptr->set_window_title(aWindowTitle);
 
@@ -95,10 +97,6 @@ void timezone_dialog::create_window(const QRectF &aWindowGeometry,
   m_priv_ptr->m_window_ptr->set_window_content(
       m_priv_ptr->m_content_widget_ptr);
 
-  set_geometry(aWindowGeometry);
-
-  exec(aWindowPos);
-
   m_priv_ptr->m_filter_widget_ptr->on_insert([&](const QString &a_txt) {
     m_priv_ptr->m_timezone_browser_ptr->set_filter(a_txt);
   });
@@ -121,25 +119,21 @@ void timezone_dialog::create_window(const QRectF &aWindowGeometry,
   loadTimeZones();
 }
 
-QVariantMap timezone_dialog::result() const {
-  return m_priv_ptr->m_result_data;
-}
-
-void timezone_dialog::update_attribute(const QString &aName,
-                                        const QVariant &aVariantData) {}
-
 cherry_kit::window *timezone_dialog::dialog_window() const {
   return m_priv_ptr->m_window_ptr;
 }
 
-void timezone_dialog::purge() {
+bool timezone_dialog::purge() {
   if (m_priv_ptr->m_timezone_browser_ptr)
     m_priv_ptr->m_timezone_browser_ptr->clear();
 
   if (m_priv_ptr->m_window_ptr) {
     delete m_priv_ptr->m_window_ptr;
   }
+
   m_priv_ptr->m_window_ptr = 0;
+
+  return true;
 }
 
 void timezone_dialog::loadTimeZones() {

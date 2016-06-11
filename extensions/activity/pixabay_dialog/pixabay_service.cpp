@@ -12,7 +12,11 @@ public:
   pixabay_service_context()
       : m_current_progress(20), m_completion_count(0), m_page_count(0),
         m_per_page_count(8) {}
-  ~pixabay_service_context() {}
+  ~pixabay_service_context() {
+      m_search_ready_listners.clear();
+      m_progress_listners.clear();
+      std::cout << __FUNCTION__ << std::endl;
+  }
 
   void notify(const pixabay_service *a_srv);
 

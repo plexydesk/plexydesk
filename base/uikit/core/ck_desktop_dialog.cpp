@@ -29,7 +29,7 @@ public:
   QList<std::function<void()> > m_arg_handler_list;
   QList<std::function<void(const QVariantMap &a_result)> >
   m_action_completed_list;
-  QList<std::function<void(const desktop_dialog *)> > m_discard_handler_list;
+  std::vector<std::function<void(desktop_dialog *)> > m_discard_handler_list;
   std::future<void> m_async_notification_result;
 
   std::vector<dialog_message_t> m_notify_chain;
@@ -42,66 +42,34 @@ desktop_dialog::desktop_dialog(QObject *parent)
 
 desktop_dialog::~desktop_dialog() { delete priv; }
 
-void desktop_dialog::set_activity_attribute(const QString &a_name,
-                                            const QVariant &a_data) {
-  priv->m_arguments[a_name] = a_data;
-}
-
-QVariantMap desktop_dialog::attributes() const { return priv->m_arguments; }
-
-void desktop_dialog::update_attribute(const QString &a_name,
-                                      const QVariant &a_data) {
-  set_activity_attribute(a_name, a_data);
-  Q_EMIT attribute_changed();
-
-  foreach(std::function<void()> l_handler, priv->m_arg_handler_list) {
-    if (l_handler) {
-      l_handler();
-    }
-  }
-}
-
-QString desktop_dialog::error_message() const { return QString(); }
-
-void desktop_dialog::set_geometry(const QRectF &a_geometry) {
-  priv->m_geometry = a_geometry;
-
-  if (dialog_window()) {
-    dialog_window()->set_geometry(a_geometry);
-  }
-}
-
-QRectF desktop_dialog::geometry() const { return priv->m_geometry; }
-
-bool desktop_dialog::has_attribute(const QString &a_arg) {
-  return priv->m_arguments.keys().contains(a_arg);
-}
-
-void desktop_dialog::exec(const QPointF &a_pos) {
-  if (dialog_window()) {
-    dialog_window()->setPos(dialog_window()->mapFromScene(a_pos));
-  }
-}
-
 void desktop_dialog::show_activity() {
   if (dialog_window()) {
     dialog_window()->show();
   }
 }
 
-void desktop_dialog::discard_activity() { 
+void desktop_dialog::notify_exit() {
+  std::for_each(std::begin(priv->m_discard_handler_list),
+                std::end(priv->m_discard_handler_list),
+                [this](std::function<void(desktop_dialog *)> a_func) {
+
+    if (a_func) {
+      a_func(this);
+    }
+  });
+}
+
+void desktop_dialog::discard_activity() {
   hide();
 
   if (dialog_window()) {
-    purge();
-  }
-
-  foreach(std::function<void(const desktop_dialog *)> func,
-          priv->m_discard_handler_list) {
-    if (func) {
-      func(this);
+    if (!purge()) {
+      show_activity();
+      return;
     }
   }
+
+  notify_exit();
 }
 
 void desktop_dialog::hide() {
@@ -129,6 +97,8 @@ void desktop_dialog::set_viewport(space *a_viewport_ptr) {
 
 space *desktop_dialog::viewport() const { return priv->m_current_viewport; }
 
+bool desktop_dialog::busy() { return false; }
+
 void desktop_dialog::on_arguments_updated(std::function<void()> a_handler) {
   priv->m_arg_handler_list.append(a_handler);
 }
@@ -138,52 +108,16 @@ void desktop_dialog::on_action_completed(
   priv->m_action_completed_list.append(a_handler);
 }
 
-void desktop_dialog::on_discarded(
-    std::function<void(const desktop_dialog *)> a_handler) {
-  priv->m_discard_handler_list.append(a_handler);
+void
+desktop_dialog::on_discarded(std::function<void(desktop_dialog *)> a_handler) {
+  priv->m_discard_handler_list.push_back(a_handler);
 }
 
 void desktop_dialog::on_notify(dialog_message_t callback) {
   priv->m_notify_chain.push_back(callback);
 }
 
-void desktop_dialog::update_action() {
-  if (!priv->m_controller_ptr.get()) {
-    qWarning() << Q_FUNC_INFO << "Error: Controller Not Set";
-    return;
-  }
-
-  /*
-  priv->m_controller_ptr->request_action(result()["action"].toString(),
-                                         result());
-                                         */
-}
-
-// todo: remove this
-void desktop_dialog::update_content_geometry(widget *a_widget_ptr) {
-  if (!a_widget_ptr) {
-    return;
-  }
-
-  a_widget_ptr->set_geometry(geometry());
-}
-
-void desktop_dialog::notify_done() {
-  foreach(std::function<void(const QVariantMap & l_data)> l_func,
-          priv->m_action_completed_list) {
-    if (l_func) {
-      l_func(result());
-    }
-  }
-
-  dialog_window()->close();
-  /*
-  priv->m_async_notification_result = std::async(std::launch::async, [this]() {
-    if (dialog_window())
-      dialog_window()->close();
-  });
-  */
-}
+void desktop_dialog::notify_done() {}
 
 void desktop_dialog::notify_message(const std::string &a_key,
                                     const std::string &a_value) {

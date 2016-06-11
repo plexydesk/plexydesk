@@ -70,9 +70,7 @@ text_input_dialog::text_input_dialog(QGraphicsObject *object)
 
 text_input_dialog::~text_input_dialog() { delete priv; }
 
-void text_input_dialog::create_window(const QRectF &window_geometry,
-                                            const QString &window_title,
-                                            const QPointF &window_pos) {
+void text_input_dialog::create_window() {
   /*
   if (has_attribute("geometry")) {
     priv->mBoundingRect = attributes()["geometry"].toRect();
@@ -152,30 +150,24 @@ void text_input_dialog::create_window(const QRectF &window_geometry,
   */
 }
 
-QString text_input_dialog::error_message() const { return QString(); }
-
 QVariantMap text_input_dialog::activityResult() const {
   QVariantMap rv;
   rv["text"] = QVariant(priv->mCurrentText);
   return rv;
 }
 
-QRectF text_input_dialog::geometry() const {
-  return priv->mBoundingRect;
-}
-
-QVariantMap text_input_dialog::result() const { return QVariantMap(); }
-
 cherry_kit::window *text_input_dialog::dialog_window() const {
   return priv->mFrame;
 }
 
-void text_input_dialog::purge() {
+bool text_input_dialog::purge() {
   if (priv->mFrame) {
     delete priv->mFrame;
   }
 
   priv->mFrame = 0;
+
+  return true;
 }
 
 void text_input_dialog::onWidgetClosed(cherry_kit::widget *widget) {

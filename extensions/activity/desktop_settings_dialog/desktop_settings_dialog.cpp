@@ -73,10 +73,10 @@ desktop_settings_dialog::~desktop_settings_dialog() {
   delete priv;
 }
 
-void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
-                                            const QString &a_window_title,
-                                            const QPointF &window_pos) {
+void desktop_settings_dialog::create_window() {
+  QRectF a_window_geometry(0, 0, 672, 340);
   priv->m_geometry = a_window_geometry;
+  QString a_window_title = "Desktop Wallpapers";
 
   priv->m_window = new cherry_kit::window();
   priv->m_window->set_geometry(a_window_geometry);
@@ -155,23 +155,15 @@ void desktop_settings_dialog::create_window(const QRectF &a_window_geometry,
     QTimer::singleShot(0, this, SLOT(invoke_image_loader()));
   else
     invoke_image_loader();
-
-  exec(window_pos);
-}
-
-QRectF desktop_settings_dialog::geometry() const { return priv->m_geometry; }
-
-QVariantMap desktop_settings_dialog::result() const {
-  return priv->m_activity_result;
 }
 
 window *desktop_settings_dialog::dialog_window() const {
   return priv->m_window;
 }
 
-void desktop_settings_dialog::purge() {
+bool desktop_settings_dialog::purge() {
   if (priv->m_image_view) {
-    priv->m_image_view->clear();
+     priv->m_image_view->clear();
     delete priv->m_image_view;
   }
 
@@ -191,6 +183,7 @@ void desktop_settings_dialog::purge() {
     priv->m_window = 0;
   }
 
+  return true;
 }
 
 void

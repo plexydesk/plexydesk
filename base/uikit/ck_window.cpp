@@ -51,7 +51,7 @@ public:
 void window::invoke_window_closed_action() {
   std::for_each(std::begin(priv->m_window_close_callback_list),
                 std::end(priv->m_window_close_callback_list),
-                [&](std::function<void(window *)> a_func) {
+                [=](std::function<void(window *)> a_func) {
     if (a_func)
       a_func(this);
   });

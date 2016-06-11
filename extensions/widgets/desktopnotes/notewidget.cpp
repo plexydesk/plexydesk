@@ -23,15 +23,15 @@
 
 typedef std::function<void(const QString &)> on_title_callback_func;
 typedef std::function<void(const QString &, const QString &)>
-    on_config_callback_func;
+on_config_callback_func;
 
 class NoteWidget::PrivateNoteWidget {
 public:
   PrivateNoteWidget() {}
   ~PrivateNoteWidget() {
-		if (m_ui)
-			delete m_ui;
-	}
+    if (m_ui)
+      delete m_ui;
+  }
 
   void initDataStore();
 
@@ -60,6 +60,8 @@ public:
   cherry_kit::fixed_layout *m_ui;
 
   std::function<void()> m_on_delete_func;
+
+  cherry_kit::window *m_parent_window;
 };
 
 void NoteWidget::createToolBar() {
@@ -82,6 +84,10 @@ d->m_note_toolbar_widget->add_action("black",
 d->m_note_toolbar_widget->add_action("delete", "actions/pd_delete.png",
                                      false);
                                      */
+}
+
+void NoteWidget::setWindow(cherry_kit::window *a_window) {
+  d->m_parent_window = a_window;
 }
 
 void NoteWidget::setViewport(cherry_kit::space *space) {
@@ -194,7 +200,7 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   set_geometry(parent->geometry());
 
   d->m_image_attachment_view = new cherry_kit::image_view(this);
-  //d->m_image_attachment_view->setMinimumSize(0, 0);
+  // d->m_image_attachment_view->setMinimumSize(0, 0);
 }
 
 NoteWidget::~NoteWidget() { delete d; }
@@ -243,7 +249,7 @@ void NoteWidget::attach_image(const std::string &a_url) {
     float image_height = pixmap.height() * image_width_ratio;
     float image_width = pixmap.width() * image_width_ratio;
 
-    //d->m_image_attachment_view->setMinimumSize(image_width, image_height);
+    // d->m_image_attachment_view->setMinimumSize(image_width, image_height);
 
     d->m_image_attachment_view->set_pixmap(
         pixmap.scaled(image_width, image_height));
@@ -253,11 +259,11 @@ void NoteWidget::attach_image(const std::string &a_url) {
     d->m_image_attachment_view->set_size(QSizeF(image_width, image_height));
     d->m_image_attachment_view->setPos(1, 0);
     d->m_image_attachment_view->update();
-    //d->m_image_attachment_view->updateGeometry();
+    // d->m_image_attachment_view->updateGeometry();
     d->m_image_attachment_view->show();
 
     if (d->m_text_editor_widget) {
-      //d->m_text_editor_widget->setMinimumWidth(image_width + 1);
+      // d->m_text_editor_widget->setMinimumWidth(image_width + 1);
       d->m_ui->viewport()->setPos(1, image_height);
     }
 
@@ -313,8 +319,7 @@ void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
-  social_kit::web_service *service =
-      new social_kit::web_service(this);
+  social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
@@ -336,8 +341,7 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
 }
 
 void NoteWidget::requestPhotoSizes(const QString &photoID) {
-  social_kit::web_service *service =
-      new social_kit::web_service(this);
+  social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
 
@@ -380,18 +384,9 @@ void NoteWidget::onDocuemntTitleAvailable(const QString &title) {
 void NoteWidget::exec_toolbar_action(const QString &action) {
   qDebug() << Q_FUNC_INFO << action;
   if (action == tr("date")) {
-
     if (d->m_viewport) {
-      QPointF window_pos(mapToScene(QPointF()));
-      QRectF window_geometry(window_pos.x(), window_pos.y(), 300, 348);
-
-      d->m_viewport->open_desktop_dialog(
-          "datepickeractivity", tr("Calendar"),
-          d->m_viewport->center(window_geometry, window_geometry,
-                                cherry_kit::space::kCenterOnWindow),
-          window_geometry, QVariantMap());
+      d->m_viewport->create_child_activity("datepickeractivity", this);
     }
-
   } else if (action == tr("list")) {
     d->m_text_editor_widget->begin_list();
   } else if (action == tr("link")) {
@@ -434,16 +429,15 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
 void NoteWidget::onServiceCompleteJson(social_kit::web_service *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
-  Q_FOREACH (const QVariantMap &map, photoList) {
+  Q_FOREACH(const QVariantMap & map, photoList) {
     requestPhotoSizes(map["id"].toString());
   }
 
   service->deleteLater();
 }
 
-void
-NoteWidget::onSizeServiceCompleteJson(social_kit::web_service *service) {
-  Q_FOREACH (const QVariantMap &map, service->methodData("size")) {
+void NoteWidget::onSizeServiceCompleteJson(social_kit::web_service *service) {
+  Q_FOREACH(const QVariantMap & map, service->methodData("size")) {
     if (map["label"].toString() == "Large" ||
         map["label"].toString() == "Large 1600" ||
         map["label"].toString() == "Original") {
@@ -454,9 +448,11 @@ NoteWidget::onSizeServiceCompleteJson(social_kit::web_service *service) {
 
       QVariantMap metaData;
       metaData["method"] = service->query();
-      metaData["id"] =
-          service->inputArgumentForMethod(service->query()).value("photo_id").c_str();
-      //metaData["data"] = service->inputArgumentForMethod(service->methodName());
+      metaData["id"] = service->inputArgumentForMethod(service->query())
+                           .value("photo_id")
+                           .c_str();
+      // metaData["data"] =
+      // service->inputArgumentForMethod(service->methodName());
 
       downloader->setMetaData(metaData);
       downloader->setUrl(map["source"].toString());
@@ -467,8 +463,7 @@ NoteWidget::onSizeServiceCompleteJson(social_kit::web_service *service) {
   service->deleteLater();
 }
 
-void NoteWidget::onDownloadCompleteJson(social_kit::web_service *service) {
-}
+void NoteWidget::onDownloadCompleteJson(social_kit::web_service *service) {}
 
 void NoteWidget::onImageReady() {
   social_kit::AsyncDataDownloader *downloader =

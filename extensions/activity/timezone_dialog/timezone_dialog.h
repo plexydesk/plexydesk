@@ -32,15 +32,10 @@ public:
   timezone_dialog(QGraphicsObject *aParent = 0);
   virtual ~timezone_dialog();
 
-  void create_window(const QRectF &aWindowGeometry, const QString &aWindowTitle,
-                     const QPointF &aWindowPos);
+  void create_window();
   cherry_kit::window *dialog_window() const;
-  void purge();
 
-  QVariantMap result() const;
-  virtual void update_attribute(const QString &aName,
-                                const QVariant &aVariantData);
-
+  bool purge();
 private:
   class PrivateTimeZone;
   PrivateTimeZone *const m_priv_ptr;

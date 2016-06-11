@@ -32,6 +32,9 @@
 #include <ck_progress_bar.h>
 
 #include <atomic>
+#include <memory>
+#include <thread>
+#include <future>
 
 class pixabay_dialog::Privatepixabay {
 public:
@@ -40,7 +43,6 @@ public:
 
   cherry_kit::window *m_main_window;
   cherry_kit::fixed_layout *m_layout;
-  pixabay_service *m_service;
   cherry_kit::item_view *m_grid_view;
 
   cherry_kit::window *m_progress_window;
@@ -48,6 +50,7 @@ public:
 
   std::atomic<int> m_count;
   std::atomic<bool> m_in_progress;
+  std::future<bool> m_busy_wait;
 
   int m_current_page;
 
@@ -76,7 +79,11 @@ public:
   }
 
   cherry_kit::image_view *get() {
+    std::cout << "Pool Size : " << m_pool.size() << std::endl;
     std::cout << "get item : " << m_count << std::endl;
+
+    if (m_pool.size() <= 0)
+      return 0;
 
     cherry_kit::image_view *rv = m_pool.at(m_count);
     m_count++;
@@ -86,20 +93,26 @@ public:
 
     return rv;
   }
+
+  void release_pool() {
+    m_pool.erase(m_pool.begin(), m_pool.end());
+    m_pool.clear();
+  }
 };
 
 pixabay_dialog::pixabay_dialog(QGraphicsObject *object)
     : cherry_kit::desktop_dialog(object), priv(new Privatepixabay) {}
 
-pixabay_dialog::~pixabay_dialog() { delete priv; }
+pixabay_dialog::~pixabay_dialog() {
+    std::cout << __FUNCTION__ << std::endl;
+    delete priv;
+}
 
-void pixabay_dialog::create_window(const QRectF &window_geometry,
-                                   const QString &window_title,
-                                   const QPointF &window_pos) {
+void pixabay_dialog::create_window() {
+  const QRectF window_geometry(0, 0, 520, 340);
   priv->m_main_window = new cherry_kit::window();
-
-  set_geometry(window_geometry);
-  update_content_geometry(priv->m_main_window);
+  priv->m_main_window->set_window_title("Pixabay Search");
+  priv->m_main_window->set_geometry(window_geometry);
 
   /* progress window */
   priv->m_progress_window = new cherry_kit::window(priv->m_main_window);
@@ -156,7 +169,7 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
         QString("Loading Page %1").arg(priv->m_current_page));
 
     priv->m_in_progress = true;
-    priv->m_service->search(priv->m_editor->text().toStdString(),
+    search(priv->m_editor->text().toStdString(),
                             priv->m_current_page);
   });
 
@@ -176,7 +189,7 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
         QString("Loading Page %1").arg(priv->m_current_page));
 
     priv->m_in_progress = true;
-    priv->m_service->search(priv->m_editor->text().toStdString(),
+    search(priv->m_editor->text().toStdString(),
                             priv->m_current_page);
   });
 
@@ -200,7 +213,9 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 
         priv->m_progress_window->show();
         priv->m_progress_window->raise();
-        priv->m_service->search(priv->m_editor->text().toStdString());
+        priv->m_current_page = 0;
+        search(priv->m_editor->text().toStdString(),
+               priv->m_current_page);
         priv->m_progress_window->set_window_title("Search : " +
                                                   priv->m_editor->text());
         priv->m_progress_window->setZValue(10000);
@@ -221,9 +236,6 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
 
   /* the reset of the things */
   priv->m_main_window->set_window_content(priv->m_layout->viewport());
-  exec(window_pos);
-
-  priv->m_service = new pixabay_service();
 
   priv->m_grid_view->on_item_removed([=](cherry_kit::model_view_item *a_item) {
     delete a_item;
@@ -236,73 +248,11 @@ void pixabay_dialog::create_window(const QRectF &window_geometry,
   priv->m_grid_view->set_enable_scrollbars(false);
   priv->m_grid_view->set_content_spacing(0);
 
-  priv->m_service->on_progress([=](int a_value) {
-    if (!priv->m_progress_window)
-      return;
-
-    if (!priv->m_progress_widget)
-      return;
-
-    if (a_value > 80) {
-      priv->m_progress_window->hide();
-      return;
-    }
-
-    priv->m_progress_window->show();
-    priv->m_progress_widget->set_value(a_value);
-  });
-
-  priv->m_service->on_ready([=](const pixabay_service *a_service) {
-    if (!a_service)
-      return;
-    service_result_list list = a_service->get();
-
-    std::for_each(std::begin(list), std::end(list),
-                  [=](pixabay_service_hit_result *a_hit) {
-      if (!a_hit)
-        return;
-
-      if (!priv->m_grid_view) {
-        qDebug() << Q_FUNC_INFO << "Invalid Grid Model"
-                 << a_hit->preview_url().c_str();
-        return;
-      }
-
-      cherry_kit::io_surface *ck_surface_ref = a_hit->preview_image();
-
-      if (!ck_surface_ref) {
-        qDebug() << Q_FUNC_INFO << "Invalid Surface"
-                 << a_hit->preview_url().c_str();
-        return;
-      }
-
-      QImage image_buffer(ck_surface_ref->copy(), ck_surface_ref->width,
-                          ck_surface_ref->height, QImage::Format_ARGB32);
-      image_buffer = image_buffer.scaledToHeight(128, Qt::SmoothTransformation);
-
-      cherry_kit::image_view *ck_view = priv->get();
-
-      ck_view->set_image(image_buffer);
-      ck_view->reset_click_event();
-      ck_view->on_click([=]() {
-        priv->m_progress_window->show();
-        priv->m_progress_window->raise();
-        priv->m_progress_window->set_window_title(
-            "Setting Desktop Wallpaper...");
-        priv->m_progress_window->setZValue(10000);
-        priv->m_progress_widget->set_value(10);
-        download_image(a_hit->hd_image_url());
-      });
-    });
-
-    priv->m_in_progress = false;
-  });
-
   priv->m_progress_window->raise();
   priv->m_progress_widget->show();
 
   priv->create_pool();
-  priv->m_service->search("montreal", 7);
+  search("montreal", 7);
 }
 
 void pixabay_dialog::download_image(const std::string &a_url) {
@@ -311,7 +261,7 @@ void pixabay_dialog::download_image(const std::string &a_url) {
   request->on_response_ready([=](const social_kit::url_response &response) {
     if (response.status_code() == 200) {
       std::unique_ptr<cherry_kit::image_io> image(
-         new cherry_kit::image_io(0, 0));
+          new cherry_kit::image_io(0, 0));
 
       image->on_ready([=](cherry_kit::image_io::buffer_load_status_t s,
                           cherry_kit::image_io *a_img) {
@@ -356,16 +306,123 @@ void pixabay_dialog::download_image(const std::string &a_url) {
   request->send_message(social_kit::url_request::kGETRequest, a_url);
 }
 
-void pixabay_dialog::update_attribute(const QString &name,
-                                      const QVariant &data) {}
+void pixabay_dialog::search(const std::string &a_query, int page_count) {
+  pixabay_service *srv = new pixabay_service();
+
+  srv->on_progress([=](int a_value) {
+    if (!priv->m_progress_window)
+      return;
+
+    if (!priv->m_progress_widget)
+      return;
+
+    if (a_value > 80) {
+      priv->m_progress_window->hide();
+      return;
+    }
+
+    priv->m_progress_window->show();
+    priv->m_progress_widget->set_value(a_value);
+  });
+
+  srv->on_ready([=](const pixabay_service *a_service) {
+    if (!a_service)
+      return;
+    service_result_list list = a_service->get();
+
+    std::for_each(std::begin(list), std::end(list),
+                  [=](pixabay_service_hit_result *a_hit) {
+      if (!a_hit)
+        return;
+
+      if (!priv->m_grid_view) {
+        qDebug() << Q_FUNC_INFO << "Invalid Grid Model"
+                 << a_hit->preview_url().c_str();
+        return;
+      }
+
+      cherry_kit::io_surface *ck_surface_ref = a_hit->preview_image();
+
+      if (!ck_surface_ref) {
+        qDebug() << Q_FUNC_INFO << "Invalid Surface"
+                 << a_hit->preview_url().c_str();
+        return;
+      }
+
+      QImage image_buffer(ck_surface_ref->copy(), ck_surface_ref->width,
+                          ck_surface_ref->height, QImage::Format_ARGB32);
+      image_buffer = image_buffer.scaledToHeight(128, Qt::SmoothTransformation);
+
+      cherry_kit::image_view *ck_view = priv->get();
+
+      if (!ck_view)
+        return;
+
+      ck_view->set_image(image_buffer);
+      ck_view->reset_click_event();
+      ck_view->on_click([=]() {
+        priv->m_progress_window->show();
+        priv->m_progress_window->raise();
+        priv->m_progress_window->set_window_title(
+            "Setting Desktop Wallpaper...");
+        priv->m_progress_window->setZValue(10000);
+        priv->m_progress_widget->set_value(10);
+        download_image(a_hit->hd_image_url());
+      });
+    });
+
+    delete srv;
+    priv->m_in_progress = false;
+  });
+
+  priv->m_in_progress = true;
+  srv->search(a_query, page_count);
+}
 
 cherry_kit::window *pixabay_dialog::dialog_window() const {
   return priv->m_main_window;
 }
 
-void pixabay_dialog::purge() {
-  if (priv->m_main_window) {
-    delete priv->m_main_window;
+bool pixabay_dialog::purge() {
+  if (priv->m_in_progress) {
+    return false;
   }
+  /* clean up progress window */
+  if (priv->m_progress_window) {
+    priv->m_progress_window->hide();
+
+    if (priv->m_progress_widget)
+      delete priv->m_progress_widget;
+
+    priv->m_progress_widget = 0;
+
+    delete priv->m_progress_window;
+
+    priv->m_progress_window = 0;
+  }
+
+  /* cleanup layout */
+
+  priv->release_pool();
+
+  if (priv->m_grid_view) {
+    delete priv->m_grid_view;
+  }
+
+  if (priv->m_layout) {
+    delete priv->m_layout;
+  }
+
+  if (priv->m_main_window) {
+      delete priv->m_main_window;
+  }
+
   priv->m_main_window = 0;
+
+  return true;
+}
+
+bool pixabay_dialog::busy()
+{
+    return priv->m_in_progress;
 }

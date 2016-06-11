@@ -27,11 +27,10 @@ public:
   date_dialog(QObject *object = 0);
   virtual ~date_dialog();
 
-  void create_window(const QRectF &window_geometry, const QString &window_title,
-                     const QPointF &window_pos);
+  void create_window();
   cherry_kit::window *dialog_window() const;
 
-  void purge();
+  bool purge();
 
 private:
   void notify_calendar_value();
