@@ -298,7 +298,7 @@ date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
   }
 
   ck_add_button = dynamic_cast<cherry_kit::icon_button *>(
-      add_action_button(ui, 2, 0, "", "ck_person_add"));
+      add_action_button(ui, 2, 0, "", "ck_plus"));
 
   window->set_window_title("Appointments");
   window->set_window_content(ui->viewport());
@@ -484,7 +484,6 @@ void time_segment::add_event(const time_event &a_event) {
 event_list_t time_segment::events() const { return m_events; }
 
 cherry_kit::window *time_segment::create_new() {
-  qDebug() << Q_FUNC_INFO << "What ?";
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_layout = new cherry_kit::fixed_layout(ck_window);
   cherry_kit::line_edit *ck_duration_editor = 0;

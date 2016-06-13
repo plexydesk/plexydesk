@@ -104,7 +104,7 @@ calendar_view::calendar_view(widget *parent)
   });
 
   ui_data["label"] = "";
-  ui_data["icon"] = "toolbar/ck_previous.png";
+  ui_data["icon"] = "toolbar/ck_arrow-left.png";
   icon_button *ck_prev_btn = dynamic_cast<icon_button*>
           (priv->m_ui->add_widget(0, 0, "image_button", ui_data, [=]() {}));
   ck_prev_btn->on_click([=] (){
@@ -115,7 +115,7 @@ calendar_view::calendar_view(widget *parent)
   //priv->m_ui->add_widget(0, 1, "label", ui_data);
 
   ui_data["label"] = "";
-  ui_data["icon"] = "toolbar/ck_next.png";
+  ui_data["icon"] = "toolbar/ck_arrow-right.png";
   icon_button *ck_next_btn = dynamic_cast<icon_button*>
           (priv->m_ui->add_widget(0, 2, "image_button", ui_data, [=]() {}));
   ck_next_btn->on_click([=]() {
