@@ -24,6 +24,7 @@
 #include <ck_item_view.h>
 
 class time_segment;
+class time_event;
 
 class date_controller : public cherry_kit::desktop_controller_interface {
 public:
@@ -41,17 +42,28 @@ public:
 
   cherry_kit::ui_action task();
 
-  cherry_kit::widget *add_action_button(cherry_kit::fixed_layout *ui, int a_row, int a_col,
-                         const std::string &a_label, const std::string &a_icon);
+  cherry_kit::widget *add_action_button(cherry_kit::fixed_layout *ui, int a_row,
+                                        int a_col, const std::string &a_label,
+                                        const std::string &a_icon);
 
-  time_segment *insert_time_element(cherry_kit::item_view *a_view, int a_value,
+  time_segment *insert_time_element(cherry_kit::session_sync *a_session,
+                                    cherry_kit::item_view *a_view, int a_value,
                                     int a_type, cherry_kit::window *a_window,
                                     const date_controller *a_controller_ref);
+
+  void save_to_store(cherry_kit::session_sync *a_session,
+                     const std::string &a_key, const std::string &a_value,
+                     int a_id);
+  void
+  new_event_store(const std::string &a_value, const std::string &a_key,
+                  int a_id,
+                  std::function<void(cherry_kit::desktop_controller_interface *,
+                                     cherry_kit::session_sync *)> a_callback);
 
 private:
   void create_ui_calendar_ui(cherry_kit::session_sync *a_session);
 
-  class PrivateDate;
-  PrivateDate *const priv;
+  class date_controller_context;
+  date_controller_context *const priv;
 };
 #endif

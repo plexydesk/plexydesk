@@ -1,9 +1,13 @@
 set(sourceFiles
+    time_event.cpp
+    time_segment.cpp
     date.cpp
     dateinterface.cpp
     )
 
 set(headerFiles
+    time_event.h
+    time_segment.h
     date.h
     dateinterface.h
     )

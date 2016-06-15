@@ -15,6 +15,8 @@
 #include "ck_window.h"
 #include "ck_workspace.h"
 
+#include <iostream>
+
 namespace cherry_kit {
 #define kMaximumZOrder 10000
 #define kMinimumZOrder 100
@@ -116,6 +118,8 @@ void space::update_session_value(const QString &a_controller_name,
                                    .toStdString());
 
       sync->add_object(obj);
+    } else {
+       std::cout << "Adding Object :" << std::endl;
     }
 
     controller(a_controller_name)->submit_session_data(&a_object);
