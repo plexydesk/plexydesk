@@ -237,8 +237,6 @@ void time_segment::create_new(new_event_callback_t a_callback) {
 
           int session_id = m_events.size();
 
-          std::cout << "event count : " << session_id << std::endl;
-
           m_controller->save_to_store(a_session, "name", event->name(),
                                       session_id);
           m_controller->save_to_store(a_session, "note", event->note(),
