@@ -1,6 +1,7 @@
 set(sourceFiles
     time_event.cpp
     time_segment.cpp
+    event_browser_ui.cpp
     date.cpp
     dateinterface.cpp
     )
@@ -8,6 +9,7 @@ set(sourceFiles
 set(headerFiles
     time_event.h
     time_segment.h
+    event_browser_ui.h
     date.h
     dateinterface.h
     )

@@ -42,15 +42,6 @@ public:
 
   cherry_kit::ui_action task();
 
-  cherry_kit::widget *add_action_button(cherry_kit::fixed_layout *ui, int a_row,
-                                        int a_col, const std::string &a_label,
-                                        const std::string &a_icon);
-
-  time_segment *insert_time_element(cherry_kit::session_sync *a_session,
-                                    cherry_kit::item_view *a_view, int a_value,
-                                    int a_type, cherry_kit::window *a_window,
-                                    const date_controller *a_controller_ref);
-
   void save_to_store(cherry_kit::session_sync *a_session,
                      const std::string &a_key, const std::string &a_value,
                      int a_id);

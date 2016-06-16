@@ -19,9 +19,8 @@ public:
     kNoonTime
   } segment_t;
   time_segment(date_controller *a_controller,
-               cherry_kit::session_sync *a_session,
                cherry_kit::widget *a_parent_ref = 0)
-      : m_controller(a_controller), m_session(a_session),
+      : m_controller(a_controller),
         cherry_kit::widget(a_parent_ref), m_heighlight(0), m_duration(0) {}
   virtual ~time_segment() {}
 
@@ -50,7 +49,6 @@ private:
 
   event_list_t m_events;
 
-  cherry_kit::session_sync *m_session;
   date_controller *m_controller;
 };
 
