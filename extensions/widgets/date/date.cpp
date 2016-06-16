@@ -41,8 +41,10 @@
 
 class date_controller::date_controller_context {
 public:
-  date_controller_context() {}
+  date_controller_context() : m_event_count (0){}
   ~date_controller_context() {}
+
+  int m_event_count;
 };
 
 date_controller::date_controller(QObject *object)
@@ -202,6 +204,16 @@ void date_controller::new_event_store(
   session_args["database_name"] = session_store_name("event").c_str();
 
   start_session("Event", session_args, false, a_callback);
+}
+
+int date_controller::event_count()
+{
+    return priv->m_event_count;
+}
+
+void date_controller::update_event_count()
+{
+    priv->m_event_count++;
 }
 
 void date_controller::save_to_store(cherry_kit::session_sync *a_session,

@@ -60,6 +60,9 @@ public:
                   std::function<void(cherry_kit::desktop_controller_interface *,
                                      cherry_kit::session_sync *)> a_callback);
 
+  int event_count();
+  void update_event_count();
+
 private:
   void create_ui_calendar_ui(cherry_kit::session_sync *a_session);
 

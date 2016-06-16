@@ -134,10 +134,11 @@ void desktop_controller_interface::start_session(
 
   session_ref->on_session_init(on_session_callback);
 
-  session_ref->session_init();
   if (viewport() && a_restore == false) {
     viewport()->update_session_value(controller_name(), "", "");
   }
+
+  session_ref->session_init();
 }
 
 std::string desktop_controller_interface::session_store_name(

@@ -229,13 +229,13 @@ void time_segment::create_new(new_event_callback_t a_callback) {
     event->set_name("None");
 
     // save event to disk
-    int session_id = 0;
+    int session_id = m_controller->event_count();
     m_controller->new_event_store(
         "timeline", "true", session_id,
         [=](cherry_kit::desktop_controller_interface *x,
             cherry_kit::session_sync *a_session) {
 
-          int session_id = m_events.size();
+          int session_id = m_controller->event_count();
 
           m_controller->save_to_store(a_session, "name", event->name(),
                                       session_id);
@@ -250,6 +250,8 @@ void time_segment::create_new(new_event_callback_t a_callback) {
 
           m_duration = 0;
           ck_window->close();
+
+					m_controller->update_event_count();
         });
   });
 
