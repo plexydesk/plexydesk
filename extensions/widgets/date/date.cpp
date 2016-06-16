@@ -17,41 +17,39 @@
 *******************************************************************************/
 #include "date.h"
 
-#include <ck_calendar_view.h>
-#include <ck_item_view.h>
 #include <ck_ToolBar.h>
-#include <ck_label.h>
+#include <ck_calendar_view.h>
 #include <ck_config.h>
-#include <ck_session_sync.h>
-#include <ck_icon_button.h>
-#include <ck_resource_manager.h>
-#include <ck_window.h>
 #include <ck_fixed_layout.h>
+#include <ck_icon_button.h>
+#include <ck_item_view.h>
+#include <ck_label.h>
 #include <ck_model_view_item.h>
+#include <ck_resource_manager.h>
+#include <ck_session_sync.h>
 #include <ck_timer.h>
+#include <ck_window.h>
 
-#include <ctime>
 #include <chrono>
+#include <ctime>
 #include <memory>
 
 #include <ck_button.h>
 #include <ck_line_edit.h>
 #include <ck_text_editor.h>
 
+#include "event_browser_ui.h"
 #include "time_event.h"
 #include "time_segment.h"
-#include "event_browser_ui.h"
 
 class date_controller::date_controller_context {
 public:
-  date_controller_context() : m_event_count (0){}
-  ~date_controller_context() {
-    std::cout << __FUNCTION__ << std::endl;
-  }
+  date_controller_context() : m_event_count(0) {}
+  ~date_controller_context() { m_ui_list.clear(); }
 
   int m_event_count;
 
-  std::map<int, std::unique_ptr<event_browser_ui> > m_ui_list;
+  std::map<int, std::unique_ptr<event_browser_ui>> m_ui_list;
 };
 
 date_controller::date_controller(QObject *object)
@@ -69,11 +67,10 @@ void date_controller::session_data_ready(
                          cherry_kit::session_sync *a_session) {
         create_ui_calendar_ui(a_session);
       });
-  
-	revoke_previous_session(
+
+  revoke_previous_session(
       "Event", [this](cherry_kit::desktop_controller_interface *a_controller,
-                         cherry_kit::session_sync *a_session) {
-      });
+                      cherry_kit::session_sync *a_session) {});
 }
 
 void date_controller::submit_session_data(cherry_kit::sync_object *a_obj) {
@@ -84,7 +81,6 @@ void date_controller::submit_session_data(cherry_kit::sync_object *a_obj) {
 void date_controller::set_view_rect(const QRectF &a_rect) {}
 
 bool date_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
-  std::cout << __FUNCTION__ << std::endl;
   return false;
 }
 
@@ -117,8 +113,8 @@ cherry_kit::ui_action date_controller::task() {
     start_session("Calendar", session_args, false,
                   [this](cherry_kit::desktop_controller_interface *a_controller,
                          cherry_kit::session_sync *a_session) {
-      create_ui_calendar_ui(a_session);
-    });
+                    create_ui_calendar_ui(a_session);
+                  });
   });
 
   task.add_action(cal_task);
@@ -129,7 +125,8 @@ cherry_kit::ui_action date_controller::task() {
 void date_controller::new_event_store(
     const std::string &a_value, const std::string &a_key, int a_id,
     std::function<void(cherry_kit::desktop_controller_interface *,
-                       cherry_kit::session_sync *)> a_callback) {
+                       cherry_kit::session_sync *)>
+        a_callback) {
   QVariantMap session_args;
 
   session_args[a_key.c_str()] = a_value.c_str();
@@ -140,18 +137,14 @@ void date_controller::new_event_store(
   start_session("Event", session_args, false, a_callback);
 }
 
-int date_controller::event_count()
-{
-    return priv->m_event_count;
-}
+int date_controller::event_count() { return priv->m_event_count; }
 
-void date_controller::update_event_count()
-{
-    priv->m_event_count++;
-}
+void date_controller::update_event_count() { priv->m_event_count++; }
 
-void date_controller::create_ui_calendar_ui(cherry_kit::session_sync *a_session) {
-  std::unique_ptr<event_browser_ui> e_browser(new event_browser_ui(a_session, this));
+void date_controller::create_ui_calendar_ui(
+    cherry_kit::session_sync *a_session) {
+  std::unique_ptr<event_browser_ui> e_browser(
+      new event_browser_ui(a_session, this));
   priv->m_ui_list[e_browser->event_id()] = std::move(e_browser);
 }
 
@@ -159,7 +152,6 @@ void date_controller::save_to_store(cherry_kit::session_sync *a_session,
                                     const std::string &a_key,
                                     const std::string &a_value, int a_id) {
   a_session->save_session_attribute(session_store_name("event"), "Event",
-                                    "event_id",
-                                    std::to_string(a_id), a_key,
+                                    "event_id", std::to_string(a_id), a_key,
                                     a_value);
 }

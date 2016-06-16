@@ -18,12 +18,8 @@
 class event_browser_ui::evb_context {
 public:
   evb_context(cherry_kit::session_sync *a_session, date_controller *a_ctr)
-      : m_ctr(a_ctr), m_session(a_session), m_event_id(0) {
-    std::cout << __FUNCTION__ << std::endl;
-  }
-  ~evb_context() {
-    std::cout << __FUNCTION__ << std::endl;
-  }
+      : m_ctr(a_ctr), m_session(a_session), m_event_id(0) {}
+  ~evb_context() {}
 
   time_segment *insert_time_element(cherry_kit::session_sync *a_session,
                                     cherry_kit::item_view *a_view, int a_value,

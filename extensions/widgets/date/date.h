@@ -49,7 +49,8 @@ public:
   new_event_store(const std::string &a_value, const std::string &a_key,
                   int a_id,
                   std::function<void(cherry_kit::desktop_controller_interface *,
-                                     cherry_kit::session_sync *)> a_callback);
+                                     cherry_kit::session_sync *)>
+                      a_callback);
 
   int event_count();
   void update_event_count();
