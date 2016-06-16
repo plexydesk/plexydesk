@@ -62,6 +62,11 @@ void date_controller::session_data_ready(
                          cherry_kit::session_sync *a_session) {
         create_ui_calendar_ui(a_session);
       });
+  
+	revoke_previous_session(
+      "Event", [this](cherry_kit::desktop_controller_interface *a_controller,
+                         cherry_kit::session_sync *a_session) {
+      });
 }
 
 void date_controller::submit_session_data(cherry_kit::sync_object *a_obj) {
@@ -128,13 +133,13 @@ time_segment *date_controller::insert_time_element(
     int a_value, int a_type, cherry_kit::window *a_window_ref,
     const date_controller *a_controller_ref) {
   cherry_kit::model_view_item *ck_model_itm = new cherry_kit::model_view_item();
-  time_segment *ck_base_view = new time_segment(this, a_session, a_view);
-  ck_base_view->set_time_value(a_value);
-  ck_base_view->set_time_type((time_segment::segment_t)a_type);
+  time_segment *ck_time_seg = new time_segment(this, a_session, a_view);
+  ck_time_seg->set_time_value(a_value);
+  ck_time_seg->set_time_type((time_segment::segment_t)a_type);
 
-  cherry_kit::label *ck_item_lbl = new cherry_kit::label(ck_base_view);
+  cherry_kit::label *ck_item_lbl = new cherry_kit::label(ck_time_seg);
   cherry_kit::icon_button *ck_button =
-      new cherry_kit::icon_button(ck_base_view);
+      new cherry_kit::icon_button(ck_time_seg);
 
   QString time_str = "AM";
   switch (a_type) {
@@ -149,14 +154,14 @@ time_segment *date_controller::insert_time_element(
     break;
   };
 
-  ck_base_view->set_contents_geometry(0, 0, a_view->contents_geometry().width(),
+  ck_time_seg->set_contents_geometry(0, 0, a_view->contents_geometry().width(),
                                       32);
   ck_item_lbl->set_alignment(Qt::AlignHCenter | Qt::AlignVCenter);
   ck_item_lbl->set_text(time_str);
   ck_item_lbl->set_size(QSize(64, 32));
 
   ck_model_itm->on_activated([=](cherry_kit::model_view_item *a_item) {
-    ck_base_view->create_new([=](cherry_kit::window *ck_app_window) {
+    ck_time_seg->create_new([=](cherry_kit::window *ck_app_window) {
 
       ck_app_window->setPos(a_window_ref->pos());
       QPointF window_pos(a_window_ref->mapToScene(QPointF()));
@@ -177,7 +182,7 @@ time_segment *date_controller::insert_time_element(
     });
   });
 
-  ck_model_itm->set_view(ck_base_view);
+  ck_model_itm->set_view(ck_time_seg);
   a_view->insert(ck_model_itm);
 
   // event handlers.
@@ -189,7 +194,7 @@ time_segment *date_controller::insert_time_element(
     }
   });
 
-  return ck_base_view;
+  return ck_time_seg;
 }
 
 void date_controller::new_event_store(
