@@ -25,6 +25,8 @@
 namespace cherry_kit {
 class widget;
 
+typedef std::function<void ()> on_date_change_t;
+
 class DECL_UI_KIT_EXPORT calendar_view : public cherry_kit::widget {
 public:
   explicit calendar_view(widget *a_parent_ptr = 0);
@@ -34,17 +36,21 @@ public:
   virtual QDate selected_date() const;
 
   virtual void set_view_geometry(float a_x, float a_y, float a_width,
-                            float a_height);
+                                 float a_height);
   virtual QRectF geometry() const;
 
   virtual void next();
   virtual void previous();
 
+  virtual void on_date_change(on_date_change_t a_callback);
+
   void clear_selection();
 
- protected:
+protected:
   virtual void clear();
   virtual void reset();
+  virtual void notify();
+
   void next_view(label *ck_year_label);
   void previous_view(label *ck_year_label);
   void reset_view(label *ck_year_label);

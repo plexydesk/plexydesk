@@ -45,7 +45,10 @@
 class date_controller::date_controller_context {
 public:
   date_controller_context() : m_event_count(0) {}
-  ~date_controller_context() { m_ui_list.clear(); }
+  ~date_controller_context() {
+      m_ui_list.clear();
+      //std::for_each(m_ui_list.begin(), m_ui_list.end(), [])
+  }
 
   int m_event_count;
 

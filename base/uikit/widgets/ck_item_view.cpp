@@ -566,7 +566,10 @@ void linear_model_container::remove(widget_ref_t a_widget) {
   m_widget_list.erase(m_widget_list.begin() + item_index);
 }
 
-void linear_model_container::clear() { m_widget_list.clear(); }
+void linear_model_container::clear() {
+    m_height = 0;
+    m_widget_list.clear();
+}
 
 float linear_model_container::container_height() const { return m_height; }
 

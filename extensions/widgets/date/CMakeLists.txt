@@ -1,4 +1,5 @@
 set(sourceFiles
+    event_store.cpp
     time_event.cpp
     time_segment.cpp
     event_browser_ui.cpp
@@ -7,6 +8,7 @@ set(sourceFiles
     )
 
 set(headerFiles
+    event_store.h
     time_event.h
     time_segment.h
     event_browser_ui.h
@@ -55,3 +57,5 @@ if (APPLE)
    INSTALL(TARGETS datewidget LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES date.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR})
 endif(APPLE)
+
+add_subdirectory(test)

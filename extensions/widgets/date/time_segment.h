@@ -38,6 +38,15 @@ public:
 
   void create_new(new_event_callback_t a_callback);
 
+  int year() const;
+  void set_year(int year);
+
+  int month() const;
+  void set_month(int month);
+
+  int day() const;
+  void set_day(int day);
+
 protected:
   virtual void paint_view(QPainter *a_ctx, const QRectF &a_rect);
 
@@ -46,6 +55,10 @@ private:
   int m_duration;
   segment_t m_time_type;
   bool m_heighlight;
+
+  int m_year;
+  int m_month;
+  int m_day;
 
   event_list_t m_events;
 

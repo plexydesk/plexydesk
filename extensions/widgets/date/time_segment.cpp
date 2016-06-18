@@ -74,6 +74,36 @@ void time_segment::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   a_ctx->restore();
 }
 
+int time_segment::day() const
+{
+    return m_day;
+}
+
+void time_segment::set_day(int day)
+{
+    m_day = day;
+}
+
+int time_segment::month() const
+{
+    return m_month;
+}
+
+void time_segment::set_month(int month)
+{
+    m_month = month;
+}
+
+int time_segment::year() const
+{
+    return m_year;
+}
+
+void time_segment::set_year(int year)
+{
+    m_year = year;
+}
+
 bool time_segment::heighlight() const { return m_heighlight; }
 
 void time_segment::set_heighlight(bool a_is_enabled) {
@@ -245,13 +275,22 @@ void time_segment::create_new(new_event_callback_t a_callback) {
                                       std::to_string(m_time_value), session_id);
           m_controller->save_to_store(a_session, "duration",
                                       std::to_string(m_duration), session_id);
+          m_controller->save_to_store(a_session, "year",
+                                      std::to_string(m_year), session_id);
+          m_controller->save_to_store(a_session, "month",
+                                      std::to_string(m_month), session_id);
+          m_controller->save_to_store(a_session, "day",
+                                      std::to_string(m_day), session_id);
+
           add_event(*event);
           delete event;
 
           m_duration = 0;
           ck_window->close();
 
-					m_controller->update_event_count();
+          m_controller->update_event_count();
+
+          delete a_session;
         });
   });
 

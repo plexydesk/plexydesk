@@ -38,6 +38,8 @@ public:
 
   QDate m_current_date;
   cherry_kit::fixed_layout *m_ui;
+
+  std::vector<on_date_change_t> m_notification_list;
 };
 
 void calendar_view::next_view(label *ck_year_label)
@@ -212,6 +214,15 @@ void calendar_view::reset() {
   }
 }
 
+void calendar_view::notify()
+{
+    std::for_each(priv->m_notification_list.begin(),
+                  priv->m_notification_list.end(), [](on_date_change_t a_func) {
+        if (a_func)
+            a_func();
+    });
+}
+
 QDate calendar_view::selected_date() const { return priv->m_current_date; }
 
 void calendar_view::set_view_geometry(float a_x, float a_y, float a_width,
@@ -251,14 +262,22 @@ void calendar_view::set_date(const QDate &date) {
       label->set_highlight(1);
     label->set_text(QString("%1").arg(i));
   }
+
+  notify();
 }
 
 void calendar_view::next() {
   next_view(dynamic_cast<label*>(priv->m_ui->at(0,1)));
+  notify();
 }
 
 void calendar_view::previous() {
-  previous_view(dynamic_cast<label*>(priv->m_ui->at(0,1)));
+    previous_view(dynamic_cast<label*>(priv->m_ui->at(0,1)));
+    notify();
+}
+
+void calendar_view::on_date_change(on_date_change_t a_callback) {
+  priv->m_notification_list.push_back(a_callback);
 }
 
 void calendar_view::paint_view(QPainter *painter, const QRectF &rect) {}

@@ -11,7 +11,12 @@ public:
                    date_controller *a_ctr);
   ~event_browser_ui();
 
+  void insert_event();
+
   int event_id() const;
+
+  std::function<void ()> update_time_line();
+
 private:
   class evb_context;
   evb_context *const ctx;
