@@ -1,4 +1,6 @@
 set(sourceFiles
+	  event_date.cpp
+	  basic_event.cpp
     event_store.cpp
     time_event.cpp
     time_segment.cpp
@@ -8,6 +10,8 @@ set(sourceFiles
     )
 
 set(headerFiles
+	  event_date.h
+	  basic_event.h
     event_store.h
     time_event.h
     time_segment.h
