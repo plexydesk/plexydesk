@@ -1,22 +1,24 @@
 set(sourceFiles
-	  event_date.cpp
-	  basic_event.cpp
+    event_time.cpp
+    event_date.cpp
+    basic_event.cpp
     event_store.cpp
     time_event.cpp
     time_segment.cpp
     event_browser_ui.cpp
-    date.cpp
+    date_controller.cpp
     dateinterface.cpp
     )
 
 set(headerFiles
-	  event_date.h
-	  basic_event.h
+    event_time.h
+    event_date.h
+    basic_event.h
     event_store.h
     time_event.h
     time_segment.h
     event_browser_ui.h
-    date.h
+    date_controller.h
     dateinterface.h
     )
 

@@ -16,7 +16,7 @@
 *  You should have received a copy of the GNU General Public License
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
-#include "date.h"
+#include "date_controller.h"
 #include "dateinterface.h"
 #include <ck_config.h>
 

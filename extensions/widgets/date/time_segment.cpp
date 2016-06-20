@@ -19,7 +19,7 @@
 #include <ck_line_edit.h>
 #include <ck_text_editor.h>
 
-#include "date.h"
+#include "date_controller.h"
 
 #include "time_event.h"
 
