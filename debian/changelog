@@ -1,3 +1,51 @@
+plexydesk (1.0.0-3ubuntu3) xenial; urgency=medium
+
+  * Version Bump 
+
+ -- Siraj Razick <siraj@plexydesk.com>  Sat, 15 Oct 2016 07:45:14 -0400
+
+plexydesk (1.0.0-3ubuntu2) xenial; urgency=medium
+
+  * Add libsoup as a dep 
+
+ -- Siraj Razick <siraj@siraj-SH67H3>  Sat, 15 Oct 2016 07:33:51 -0400
+
+plexydesk (1.0.0-3ubuntu1) xenial; urgency=medium
+
+  * Version Bump 
+
+ -- Siraj Razick <siraj@plexydesk.com>  Sat, 15 Oct 2016 07:23:30 -0400
+
+plexydesk (1.0.0-2ubuntu3) xenial; urgency=medium
+
+  * Version Bump 
+
+ -- Siraj Razick <siraj@plexydesk.com>  Sat, 15 Oct 2016 06:39:29 -0400
+
+plexydesk (1.0.0-2ubuntu2) xenial; urgency=medium
+
+  * Build Test 
+
+ -- Siraj Razick <siraj@plexydesk.com>  Fri, 14 Oct 2016 16:29:02 -0400
+
+plexydesk (1.0.2) unstable; urgency=low
+
+  * Windows Build Support 
+  * Save Session Log to File on linux and windows.
+  * Fix Window Reparenting on Windows 10
+  * Fix Seamless Mode on Mac.
+  * Fix Wallpaper Path on Windows 10.
+  * Fix Plugin Loading Path on Linux.
+  * Improve rendering in low resolution screens.
+
+ -- Siraj Razick <siraj@plexydesk.com>  Wed, 23 Jan 2016 21:03:00 -0400
+
+plexydesk (1.0.1) unstable; urgency=low
+
+  * Debian Build Support. - Fixes Compilatoin and Linker issues on Linux
+
+ -- Siraj Razick <siraj@plexydesk.com>  Wed, 23 Jan 2016 21:03:00 -0400
+
 plexydesk (1.0.0) unstable; urgency=low
 
   * New upstream version

@@ -69,7 +69,7 @@ if (NOT SOCIAL_KIT_DROPBOX_API_KEY)
 endif()
 
 if (NOT SOCIAL_KIT_PIXABAY_API_KEY)
-   message(FATAL_ERROR " Pixabay Developer key not defined by SOCIAL_KIT_PIXBAY_API_KEY, Pixbay Wallpaper search will not function")
+	message(FATAL_ERROR " Pixabay Developer key not defined by SOCIAL_KIT_PIXABAY_API_KEY, Pixbay Wallpaper search will not function")
 endif()
 endif()
 

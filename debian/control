@@ -23,7 +23,8 @@ Build-Depends:  debhelper (>= 5),
                 libxext-dev,
                 libxcomposite-dev,
                 libxdamage-dev,
-                libxrender-dev
+                libxrender-dev,
+		libsoup2.4-dev
 Standards-Version: 3.9.1
 Homepage: http://www.plexyplanet.org
 
@@ -37,7 +38,8 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
 				 libqt5network5,
 				 libqt5xml5,
 				 libqt5xmlpatterns5,
-				 libqt5core5a
+				 libqt5core5a,
+				 libsoup2.4-1
 Description: A Desktop extension letting you efficiently organise and use your Desktop
  .
  PlexyDesk is a lightweight Desktop, and it's not a Desktop Environment like
