@@ -113,11 +113,18 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
     } else {
       // error
       notify_progress(100);
+      qDebug() << Q_FUNC_INFO << "Error In search result";
     }
   });
 
   /* service data */
   social_kit::service_query_parameters input_data;
+
+  // make sure we don't pass zero as page number
+  int page_num = a_page;
+
+  if (page_num <= 0)
+      page_num = 1;
 
   input_data.insert("key", K_SOCIAL_KIT_PIXABAY_API_KEY);
   input_data.insert("q", a_keyword);
@@ -125,7 +132,7 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
   input_data.insert("tag_mode", "all");
   input_data.insert("image_type", "photo");
   input_data.insert("orientation", "horizontal");
-  input_data.insert("page", std::to_string(a_page));
+  input_data.insert("page", std::to_string(page_num));
   input_data.insert("per_page", "8");
   input_data.insert("min_width", "1920");
   input_data.insert("min_height", "1080");
