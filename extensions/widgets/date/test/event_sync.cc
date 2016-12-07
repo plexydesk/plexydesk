@@ -10,6 +10,9 @@
 #include <iostream>
 #include <thread>
 
+#ifdef Q_OS_WIN
+#include <memory>
+#endif
 
 #include "../event_store.h"
 
