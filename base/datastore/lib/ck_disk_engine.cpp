@@ -34,7 +34,7 @@ public:
     }
   }
   QString mData;
-  QFileSystemWatcher *mFileWatch;
+  //QFileSystemWatcher *mFileWatch;
   QFile *mFile;
   QString mCurrentEngine;
   std::string m_app_name;
@@ -42,10 +42,10 @@ public:
 
 disk_engine::disk_engine(QObject *parent)
     : sync_engine_interface(parent), d(new Privatedisk_engine) {
-  d->mFileWatch = new QFileSystemWatcher(this);
+  //d->mFileWatch = new QFileSystemWatcher(this);
 
-  connect(d->mFileWatch, SIGNAL(fileChanged(QString)), this,
-          SIGNAL(modified()));
+  //connect(d->mFileWatch, SIGNAL(fileChanged(QString)), this,
+   //       SIGNAL(modified()));
 
   // setup file
   d->mFile = new QFile();
@@ -73,9 +73,11 @@ void disk_engine::setEngineName(const QString &name) {
 
   if (!info.exists()) {
     qDebug() << Q_FUNC_INFO << "Add watch" << homePath;
+    /*
     connect(d->mFileWatch, SIGNAL(directoryChanged(QString)), this,
             SLOT(onDirectoryChanged(QString)));
     d->mFileWatch->addPath(homePath);
+    */
   }
 }
 
@@ -480,9 +482,11 @@ QString disk_engine::data(const QString &fileName) {
   QString watchFile = QDir::toNativeSeparators(
       QDir::homePath() + "/.quetzal/datastore/" + fileName + ".xml");
 
+  /*
   if (!d->mFileWatch->files().contains(watchFile)) {
     d->mFileWatch->addPath(watchFile);
   }
+  */
 
   QTextStream in(&file);
   QString line = in.readLine();
