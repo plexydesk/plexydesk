@@ -35,6 +35,11 @@ set(sourceFiles
 
 if(WIN32)
   set(GUI_TYPE WIN32)
+
+  if (ENABLE_WINRT)
+      set(winrt_libs windowsapp.lib)
+  endif()
+
   ADD_DEFINITIONS(-DNODEFAULTLIB:library)
   set(libs
     ${QT_QTGUI_LIBRARY}
@@ -42,7 +47,7 @@ if(WIN32)
     ${QT_QTMAIN_LIBRARY}
     Qt5::WinMain
     runtimeobject.lib
-    windowsapp.lib
+    ${winrt_libs}
     )
 endif(WIN32)
 

@@ -14,8 +14,13 @@ set(sourceFiles
 
 if (WIN32)
     set(GUI_TYPE WIN32)
+
     ADD_DEFINITIONS(-DNODEFAULTLIB:library)
-    set(windows_library WindowsApp.lib)
+
+    if(ENABLE_WINRT)
+        set(windows_library WindowsApp.lib)
+    endif()
+
 endif(WIN32)
 
 if (UNIX AND NOT APPLE)

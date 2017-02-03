@@ -13,6 +13,10 @@ if (WIN32)
     ADD_DEFINITIONS(-DNODEFAULTLIB:library)
 endif(WIN32)
 
+if (ENABLE_WINRT)
+    set(winrt_libs WindowsApp.lib)
+endif()
+
 set(libs
     ${QT_QTGUI_LIBRARY}
     ${QT_QTCORE_LIBRARY}
@@ -27,7 +31,7 @@ set(libs
     ${QT_QTXMLPATTERNS_LIBRARY}
 		${X11_LIBRARIES}
     ${Qt5X11Extras_LIBRARIES}
-    WindowsApp.lib
+    ${winrt_libs}
     )
 
 

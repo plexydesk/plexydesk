@@ -24,9 +24,14 @@ if (WIN32)
  FILE (TO_NATIVE_PATH ${CMAKE_INSTALL_PREFIX} CMAKE_INSTALL_NATIVE_PREFIX)
  MESSAGE(STATUS ${CMAKE_INSTALL_NATIVE_PREFIX})
 endif()
+
 if(BUILD_WITH_QT)
   add_definitions(-DBUILD_WITH_QT=1)
   add_definitions(-D__QT_TOOLKIT__)
+endif()
+
+if (ENABLE_WINRT)
+    add_definitions(-DCK_UWP_BUILD)
 endif()
 
 if(BUILD_OPTIMIZED)
