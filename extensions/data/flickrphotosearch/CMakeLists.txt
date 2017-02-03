@@ -1,3 +1,5 @@
+set (CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     flickrphotosearch.cpp
     flickrphotosearchinterface.cpp
@@ -25,7 +27,7 @@ set(libs
     ${QUETZAL_SOCIAL_KIT_LIBRARY}
     )
 
-ADD_LIBRARY(flickrphotosearchengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(flickrphotosearchengine SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(flickrphotosearchengine PROPERTIES

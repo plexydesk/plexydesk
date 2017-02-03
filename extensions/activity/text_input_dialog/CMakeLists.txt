@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     text_input_dialog.cpp
     text_input_plugin_impl.cpp
@@ -24,7 +26,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(text_input_dialog SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(text_input_dialog SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(text_input_dialog PROPERTIES

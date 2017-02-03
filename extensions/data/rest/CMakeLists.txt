@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     rest.cpp
     restinterface.cpp
@@ -20,7 +22,7 @@ set(sourceFiles
     ${headerFiles}
     )
 
-ADD_LIBRARY(restengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(restengine SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(restengine PROPERTIES

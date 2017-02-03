@@ -12,7 +12,7 @@ namespace cherry_kit {
 class DECL_UI_KIT_EXPORT desktop_plugin_interface {
 public:
   desktop_plugin_interface() {}
-  virtual ~desktop_plugin_interface() {};
+  virtual ~desktop_plugin_interface() {}
 
   virtual desktop_controller_ref controller() = 0;
 };

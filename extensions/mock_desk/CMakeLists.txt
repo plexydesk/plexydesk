@@ -27,6 +27,7 @@ set(libs
     ${QT_QTXMLPATTERNS_LIBRARY}
 		${X11_LIBRARIES}
     ${Qt5X11Extras_LIBRARIES}
+    WindowsApp.lib
     )
 
 

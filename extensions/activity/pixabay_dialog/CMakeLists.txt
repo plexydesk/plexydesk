@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     pixabay_dialog.cpp
     pixabay_plugin_impl.cpp
@@ -26,7 +28,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(pixabay_dialog SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(pixabay_dialog SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(pixabay_dialog PROPERTIES

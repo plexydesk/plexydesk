@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     event_time.cpp
     event_date.cpp
@@ -37,7 +39,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(datewidget SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(datewidget SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(datewidget PROPERTIES

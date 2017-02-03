@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     httpserver.cpp
     httpserverinterface.cpp
@@ -24,7 +26,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(httpserverengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(httpserverengine SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(httpserverengine PROPERTIES

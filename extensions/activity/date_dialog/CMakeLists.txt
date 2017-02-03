@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     date_dialog.cpp
     date_dialog_plugin_impl.cpp
@@ -24,7 +26,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(date_dialog SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(date_dialog SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(date_dialog PROPERTIES

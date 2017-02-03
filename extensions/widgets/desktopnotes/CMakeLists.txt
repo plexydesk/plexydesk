@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     desktopnotes.cpp
     desktopnotesinterface.cpp
@@ -16,7 +18,7 @@ set(QTMOC_SRCS
     notewidget.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+QT5_WRAP_CPP(QT_MOC_SRCS)
 
 set(sourceFiles
     ${sourceFiles}

@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     simple_gray.cpp
     simple_gray_impl.cpp
@@ -23,7 +25,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(simplegray SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(simplegray SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(simplegray PROPERTIES

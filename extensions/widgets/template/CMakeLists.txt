@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     template.cpp
     templateinterface.cpp
@@ -24,7 +26,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(templatewidget SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(templatewidget SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(templatewidget PROPERTIES

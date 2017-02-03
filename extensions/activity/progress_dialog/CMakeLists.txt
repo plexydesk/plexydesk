@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     progress_dialog_view.cpp
     progress_dialog_plugin_impl.cpp
@@ -25,7 +27,7 @@ set(libs
     ${PLEXY_UI_CORE_LIBRARY}
     )
 
-ADD_LIBRARY(progress_dialog SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(progress_dialog SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(progress_dialog PROPERTIES
@@ -51,5 +53,4 @@ if (APPLE)
    INSTALL(TARGETS progress_dialog LIBRARY DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX} COMPONENT Framework)
    INSTALL(FILES progress_dialog.desktop DESTINATION ${CMAKE_PLEXYDESK_OSX_PLUGIN_DATA_DIR} )
 endif(APPLE)
-
 

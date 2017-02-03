@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     desktop_settings_dialog.cpp
     desktop_settings_plugin_impl.cpp
@@ -24,7 +26,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(desktop_settings_dialog SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(desktop_settings_dialog SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(desktop_settings_dialog PROPERTIES

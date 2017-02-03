@@ -238,7 +238,7 @@ target_link_libraries(${PLEXY_UI_CORE_LIBRARY}
     ${LIBRARY_LINK_TARGETS}
     ${LIBRARY_NATIVE_LINK_TARGETS})
 
-    qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Widgets Xml OpenGL  Core)
+    qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Widgets Xml OpenGL Core)
 
 if(UNIX AND NOT APPLE)
     set_target_properties(${PLEXY_UI_CORE_LIBRARY} PROPERTIES SOVERSION "1.0.0")

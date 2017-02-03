@@ -22,6 +22,7 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${QT_QTXMLPATTERNS_LIBRARY}
 		${X11_LIBRARIES}
     ${Qt5X11Extras_LIBRARIES}
+    WindowsApp.lib
     )
 
 

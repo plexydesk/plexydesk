@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     dock.cpp
     dockinterface.cpp
@@ -31,7 +33,7 @@ set(libs
     ${QT_QTCORE_LIBRARY}
     )
 
-ADD_LIBRARY(dockwidget SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(dockwidget SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(dockwidget PROPERTIES

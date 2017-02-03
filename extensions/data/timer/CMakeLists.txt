@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     timer.cpp
     timerinterface.cpp
@@ -20,7 +22,7 @@ set(sourceFiles
     ${headerFiles}
     )
 
-ADD_LIBRARY(timerengine SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(timerengine SHARED ${sourceFiles})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(timerengine PROPERTIES

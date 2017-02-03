@@ -1,3 +1,5 @@
+set (CMAKE_AUTOMOC ON)
+
 set(sourceFiles
     desktopwindow.cpp
     background_controller.cpp
@@ -25,7 +27,7 @@ set(sourceFiles
     ${headerFiles}
     )
 
-ADD_LIBRARY(classicbackdrop SHARED ${sourceFiles} ${QT_MOC_SRCS})
+ADD_LIBRARY(classicbackdrop SHARED ${sourceFiles})
 
 QT5_USE_MODULES(classicbackdrop Widgets Xml  Core )
 

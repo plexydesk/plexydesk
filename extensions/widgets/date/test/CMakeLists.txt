@@ -15,6 +15,7 @@ set(sourceFiles
 if (WIN32)
     set(GUI_TYPE WIN32)
     ADD_DEFINITIONS(-DNODEFAULTLIB:library)
+    set(windows_library WindowsApp.lib)
 endif(WIN32)
 
 if (UNIX AND NOT APPLE)
@@ -47,6 +48,7 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${THREAD_LIBS}
     ${X11_LIBRARIES}
     ${LIBRARY_NATIVE_LINK_TARGETS}
+    ${windows_library}
     )
 
 
