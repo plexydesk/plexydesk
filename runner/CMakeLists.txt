@@ -152,11 +152,6 @@ if (NOT ENABLE_WINRT)
 		)
 
 	install(FILES
-  		${QT_DLL_DIR}/../plugins/imageformats/qdds.dll
-  		DESTINATION imageformats
-		)
-
-	install(FILES
   		${QT_DLL_DIR}/../plugins/bearer/qgenericbearer.dll
   		${QT_DLL_DIR}/../plugins/bearer/qnativewifibearer.dll
   		DESTINATION bearer
@@ -165,11 +160,8 @@ endif()
 
 if (NOT ENABLE_WINRT)
 	install(FILES
-  		${QT_DLL_DIR}/../plugins/imageformats/qjp2.dll
   		${QT_DLL_DIR}/../plugins/imageformats/qtga.dll
-  		${QT_DLL_DIR}/../plugins/imageformats/qmng.dll
   		${QT_DLL_DIR}/../plugins/imageformats/qwebp.dll
-  		${QT_DLL_DIR}/../plugins/imageformats/qtiff.dll
 		DESTINATION platforms
 		)
 endif()
@@ -241,16 +233,16 @@ if (NOT ENABLE_WINRT)
 	windows_code_sign_deps(Qt5Multimedia.dll)
 	windows_code_sign_deps(mediaservice/dsengine.dll)
 	windows_code_sign_deps(mediaservice/qtmedia_audioengine.dll)
-	windows_code_sign_deps(imageformats/qdds.dll)
+#	windows_code_sign_deps(imageformats/qdds.dll)
 	windows_code_sign_deps(imageformats/qwebp.dll)
 	windows_code_sign_deps(imageformats/qtga.dll)
 	windows_code_sign_deps(imageformats/qsvg.dll)
 	windows_code_sign_deps(bearer/qnativewifibearer.dll)
 	windows_code_sign_deps(platforms/qwindows.dll)
 	windows_code_sign_deps(mediaservice/wmfengine.dll)
-	windows_code_sign_deps(imageformats/qmng.dll)
-	windows_code_sign_deps(imageformats/qtiff.dll)
-	windows_code_sign_deps(imageformats/qjp2.dll)
+#	windows_code_sign_deps(imageformats/qmng.dll)
+#n	windows_code_sign_deps(imageformats/qtiff.dll)
+#	windows_code_sign_deps(imageformats/qjp2.dll)
 endif()
 
 
@@ -268,7 +260,11 @@ windows_code_sign_deps(imageformats/qwbmp.dll)
 windows_code_sign_deps(imageformats/qjpeg.dll)
 windows_code_sign_deps(imageformats/qico.dll)
 windows_code_sign_deps(playlistformats/qtmultimedia_m3u.dll)
-windows_code_sign_deps(platforms/qwinrt.dll)
+
+if (ENABLE_WINRT)
+	windows_code_sign_deps(platforms/qwinrt.dll)
+endif()
+
 windows_code_sign_target(${APPLICATION_EXE_NAME} exe)
 
 endif()
