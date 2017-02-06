@@ -53,7 +53,7 @@ config *config::instance() {
 config::~config() { delete d; }
 
 QString config::prefix() {
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
   QDir binaryPath(QCoreApplication::applicationDirPath());
   return QDir::toNativeSeparators(binaryPath.canonicalPath() + "/lib/");
 #endif
@@ -101,7 +101,7 @@ std::string config::icon_resource_prefix_path()
   rv = prefix_path + "/share/icons/plexydesk/resources/icons/";
 #endif
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
   //rv = QDir::toNativeSeparators(prefix_path + "/resources/icons/");
   QDir binaryPath(QCoreApplication::applicationDirPath());
   rv = QDir::toNativeSeparators(binaryPath.canonicalPath() + "/resources/icons");

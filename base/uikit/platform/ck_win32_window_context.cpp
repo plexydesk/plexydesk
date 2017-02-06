@@ -1,8 +1,11 @@
 #include "ck_win32_window_context.h"
 
+#ifndef CK_UWP_BUILD
 #include <Windows.h>
 #include <tchar.h>
 #include <clrdata.h>
+#endif
+
 #include <ck_device_window.h>
 
 #include <QDebug>
@@ -22,6 +25,7 @@ BOOL CALLBACK __match_window_hanlde(cherry_kit::window_handle_t a_id,
  if (!query)
      return TRUE;
 
+#ifndef CK_UWP_BUILD 
  int window_title_size = GetWindowTextLength(a_id);
  _window_text = (char *) malloc(window_title_size + 1);
 
@@ -33,7 +37,7 @@ BOOL CALLBACK __match_window_hanlde(cherry_kit::window_handle_t a_id,
    query->window_handle = a_id;
    return FALSE;
  }
-
+#endif
  return TRUE;
 }
 
@@ -53,11 +57,13 @@ device_window *win32_window_context::find_window(
   data.window_class = a_window_class;
   data.window_name = a_title;
 
+#ifndef CK_UWP_BUILD
   EnumChildWindows(GetDesktopWindow(),
                    __match_window_hanlde,
                    reinterpret_cast<LPARAM>(&data));
 
   rv->set_handle(data.window_handle);
+#endif
   return rv;
 }
 
@@ -70,6 +76,8 @@ device_window *win32_window_context::desktop() {
   data.window_name = "FolderView";
   data.window_class = "SysListView32";
 
+#ifndef CK_UWP_BUILD
+    bool rv = 0;
   shell_view = find_window("", "SHELLDLL_DefView");
 
   if (shell_view) {
@@ -79,11 +87,13 @@ device_window *win32_window_context::desktop() {
 
      rv->set_handle(data.window_handle);
   }
+#endif
   return rv;
 }
 
 bool win32_window_context::hide_native_desktop()
 {
+#ifndef CK_UWP_BUILD
     bool rv = 0;
 
     HWND target_handle = NULL;
@@ -93,7 +103,7 @@ bool win32_window_context::hide_native_desktop()
     } else {
         HWND hShellWnd = GetShellWindow();
         //target_handle =
-        //        FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
+        //FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
         target_handle = FindWindow(_T("Progman"), _T("Program Manager"));
 
         if (target_handle == NULL) {
@@ -105,15 +115,22 @@ bool win32_window_context::hide_native_desktop()
 
     rv = 1;
     return rv;
+#else
+	return 0;
+#endif
 }
 
 int win32_window_context::get_windows_major_version()
 {
+#ifndef CK_UWP_BUILD
+    bool rv = 0;
     OSVERSIONINFO os_version_info;
     ZeroMemory(&os_version_info, sizeof(OSVERSIONINFO));
     os_version_info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionExA(&os_version_info);
     return os_version_info.dwMajorVersion;
+#else
+	return 0;
+#endif
 }
-
 }

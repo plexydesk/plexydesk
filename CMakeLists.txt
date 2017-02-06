@@ -11,6 +11,15 @@ CMAKE_POLICY(SET CMP0003 OLD)
 CMAKE_POLICY(SET CMP0020 NEW) #Windows warning link qtmain
 CMAKE_POLICY(SET CMP0043 NEW)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+if(MSVC_VERSION GREATER 1700)
+  set(COMPILER_VERSION "12")
+elseif(MSVC_VERSION GREATER 1600)
+  set(COMPILER_VERSION "11")
+endif()
+
+
 #handle platform options
 option(BUILD_WITH_QT "Enable Qt ToolKit to Build PlexyDesk" ON)
 option(BUILD_OPTIMIZED "Enable Compiler Optimizations" OFF)
@@ -239,7 +248,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(WIN_APPLICATION "")
 else(CMAKE_BUILD_TYPE MATCHES "Release")
     # Note: the WIN32 is ignored on other platforms than Windows
-    message(STATUS "Setting Release flags ...")
+    message(STATUS "-- Setting Release flags ...")
     set(WIN_APPLICATION "WIN32")
 endif()
 
@@ -267,8 +276,12 @@ INCLUDE_DIRECTORIES (
     )
 
 if (MSVC AND MSVC_VERSION GREATER 1500)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MD")
+
+    if (ENABLE_WINRT)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -DDEFINE_LITTLE_ENDIAN -DDEFINE_TRACE -DDEFINE_WINDOWS_UNIVERSAL -D_CRT_SECURE_NO_WARNINGS")
+    endif()
 endif(MSVC AND MSVC_VERSION GREATER 1500)
 
 if (WIN32)
@@ -387,24 +400,29 @@ endif(WIN32)
 add_subdirectory(base/uikit)
 
 if (NOT APPLE)
+  if (NOT ENABLE_WINRT)
     ADD_SUBDIRECTORY(runner)
+  endif()
 endif()
 
 if (APPLE)
     ADD_SUBDIRECTORY(runner/apple)
 endif()
 
-#todo build only on debug
-add_subdirectory(extensions/runtime)
-add_subdirectory(extensions/mock_desk)
+if (ENABLE_WINRT)
+   add_subdirectory(runner/windows_uwp/desktop/)
+endif()
 
+#todo build only on debug
 add_subdirectory(base/social/data)
 add_subdirectory(base/datastore/lib)
 add_subdirectory(base/social/lib)
 add_subdirectory(base/social/testrunner)
 
-if (NOT WIN32)
-add_subdirectory(base/datastore/tests)
+if (UNIX)
+	add_subdirectory(extensions/runtime)
+	add_subdirectory(base/datastore/tests)
+	add_subdirectory(extensions/mock_desk)
 endif ()
 
 add_subdirectory(extensions/widgets/clock)

@@ -55,12 +55,12 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
-#ifndef Q_OS_WIN32
+#ifndef Q_OS_WIN
   setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint |
                  Qt::WindowStaysOnBottomHint | Qt::NoDropShadowWindowHint);
 #endif
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
   /* do not change this unless it's a must */
   setWindowFlags(Qt::CustomizeWindowHint);
   setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);

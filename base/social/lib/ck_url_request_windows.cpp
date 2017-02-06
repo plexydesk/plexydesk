@@ -10,6 +10,7 @@
 #include <windows.h>
 #include <winhttp.h>
 
+
 namespace social_kit {
 
 class url_request::platform_url_request::private_context {

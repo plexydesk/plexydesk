@@ -74,8 +74,15 @@ if (APPLE)
 endif()
 
 if(WIN32)
-  set (PLATFORM_SOURCE_FILES ck_url_request_windows.cpp)
-  set (PLATFORM_HEADERS_FILES ck_url_request_windows.h)
+  if (NOT ENABLE_WINRT)
+  	set (PLATFORM_SOURCE_FILES ck_url_request_windows.cpp)
+  	set (PLATFORM_HEADERS_FILES ck_url_request_windows.h)
+  endif()
+
+  if (ENABLE_WINRT)
+     set (PLATFORM_HEADERS_FILES ck_url_request_windows.h)
+     set (PLATFORM_SOURCE_FILES ck_url_request_windows_uwp.cpp)
+  endif()
 endif()
 
 set(sourceFiles
@@ -87,7 +94,7 @@ set(sourceFiles
     asyncdatadownloader.cpp
     webserver.cpp
     webcontentinterface.cpp
-		${PLATFORM_SOURCE_FILES}
+    ${PLATFORM_SOURCE_FILES}
    )
 
 set(headerFiles
@@ -99,7 +106,7 @@ set(headerFiles
     asyncdatadownloader.h
     webserver.h
     webcontentinterface.h
-		${PLATFORM_HEADERS_FILES}
+    ${PLATFORM_HEADERS_FILES}
    )
 
 if (APPLE)

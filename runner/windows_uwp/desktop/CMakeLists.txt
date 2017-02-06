@@ -1,23 +1,12 @@
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP true)
+#include(InstallRequiredSystemLibraries)
 
-if (NOT ENABLE_WINRT)
-	include(InstallRequiredSystemLibraries)
-endif()
-
-if(UNIX)
-  INCLUDE_DIRECTORIES(
-    ${X11_INCLUDE_DIR}
-    ${Qt5X11Extras_INCLUDE_DIRS}
-    ${QT_QTGUI_INCLUDE_DIR}
-    ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
-
-  set(extra_libs Xcomposite Xdamage)
-endif(UNIX)
 
 if(WIN32)
   INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/dist/windows
         ${CMAKE_BINARY_DIR}/dist/windows)
+
   set(resourceFiles ${CMAKE_BINARY_DIR}/dist/windows/${APPLICATION_EXE_NAME}_windres.rc)
 endif(WIN32)
 
@@ -44,12 +33,12 @@ if(WIN32)
   endif()
 
   ADD_DEFINITIONS(-DNODEFAULTLIB:library)
+
   set(libs
     ${QT_QTGUI_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTMAIN_LIBRARY}
     Qt5::WinMain
-    runtimeobject.lib
     ${winrt_libs}
     )
 endif(WIN32)
@@ -66,19 +55,26 @@ if(UNIX)
 endif(UNIX)
 
 ########### Prepare files ###############
-message("Building for windows 32 ${APPLICATION_EXE_NAME} - ${WIN_APPLICATION}")
+message("-- Building for windows UWP ${APPLICATION_EXE_NAME}")
+
 ADD_EXECUTABLE(${APPLICATION_EXE_NAME} ${APP_TYPE} ${WIN_APPLICATION} ${sourceFiles} ${resourceFiles} ${QT_MOC_SRCS})
+
 set_property(TARGET ${APPLICATION_EXE_NAME} PROPERTY VS_WINRT_COMPONENT TRUE)
 
 #if(MSVC)
 #	MSVC_SET_PROPER_CONSOLE_HANDLING(${APPLICATION_EXE_NAME})
 #endif(MSVC)
 #SET_PROPERTY(TARGET ${APPLICATION_EXE_NAME} PROPERTY QT5_NO_LINK_QTMAIN ON)
+#SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
+#SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES MINSIZEREL "/SUBSYSTEM:WINDOWS")
 
-IF(WIN32)
-        SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
-        SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES MINSIZEREL "/SUBSYSTEM:WINDOWS")
-endif()
+
+ if (ENABLE_WINRT)
+                SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES LINK_FLAGS_RELEASE "/WINMD /OPT:REF /map Ws2_32.lib WindowsApp.lib /APPCONTAINER  /DYNAMICBASE /SUBSYSTEM:WINDOWS ")
+                SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES MINSIZEREL "/WINMD /SUBSYSTEM:WINDOWS /OPT:REF /map Ws2_32.lib WindowsApp.lib /APPCONTAINER  /DYNAMICBASE")
+        endif()
+
+#set_property(TARGET ${EXE_NAME} PROPERTY VS_WINRT_COMPONENT TRUE)
 
 TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME}
         ${libs}
@@ -224,50 +220,26 @@ install(FILES
 
 include(${CMAKE_SOURCE_DIR}/cmakemodules/windows-code-sign.cmake)
 
-
-if (NOT ENABLE_WINRT)
-	windows_code_sign_deps(opengl32sw.dll)
-	windows_code_sign_deps(libEGL.dll)
-	windows_code_sign_deps(audio/qtaudio_windows.dll)
-	windows_code_sign_deps(printsupport/windowsprintersupport.dll)
-	windows_code_sign_deps(imageformats/qgif.dll)
-	windows_code_sign_deps(D3Dcompiler_47.dll)
-	windows_code_sign_deps(libGLESV2.dll)
-	windows_code_sign_deps(Qt5Multimedia.dll)
-	windows_code_sign_deps(mediaservice/dsengine.dll)
-	windows_code_sign_deps(mediaservice/qtmedia_audioengine.dll)
-#	windows_code_sign_deps(imageformats/qdds.dll)
-	windows_code_sign_deps(imageformats/qwebp.dll)
-	windows_code_sign_deps(imageformats/qtga.dll)
-	windows_code_sign_deps(imageformats/qsvg.dll)
-	windows_code_sign_deps(bearer/qnativewifibearer.dll)
-	windows_code_sign_deps(platforms/qwindows.dll)
-	windows_code_sign_deps(mediaservice/wmfengine.dll)
-#	windows_code_sign_deps(imageformats/qmng.dll)
-#n	windows_code_sign_deps(imageformats/qtiff.dll)
-#	windows_code_sign_deps(imageformats/qjp2.dll)
 endif()
-
-
-windows_code_sign_deps(Qt5Core.dll)
-windows_code_sign_deps(Qt5Widgets.dll)
-windows_code_sign_deps(Qt5Gui.dll)
-windows_code_sign_deps(Qt5Svg.dll)
-windows_code_sign_deps(Qt5Xml.dll)
-windows_code_sign_deps(Qt5OpenGL.dll)
-windows_code_sign_deps(Qt5Network.dll)
-windows_code_sign_deps(iconengines/qsvgicon.dll)
-windows_code_sign_deps(bearer/qgenericbearer.dll)
-windows_code_sign_deps(imageformats/qicns.dll)
-windows_code_sign_deps(imageformats/qwbmp.dll)
-windows_code_sign_deps(imageformats/qjpeg.dll)
-windows_code_sign_deps(imageformats/qico.dll)
-windows_code_sign_deps(playlistformats/qtmultimedia_m3u.dll)
 
 if (ENABLE_WINRT)
-	windows_code_sign_deps(platforms/qwinrt.dll)
-endif()
+ set(APPX_PUBLISHER "PlexyDesk")
+ set(APPX_VERSION "1.0.3.0")
+ set(APPX_ARCH "x64")
+ set(APPX_BINARY "plexydesk")
+ set(APPX_DEVICE_FAMILY "Windows.Universal")
+ set(APPX_PRODUCT_DISPLAY_NAME "PlexyDesk Cherry")
+ set(APPX_PRODUCT_DESCRIPTION "PlexyDesk Desktop Manager")
 
-windows_code_sign_target(${APPLICATION_EXE_NAME} exe)
+ configure_file(${CMAKE_SOURCE_DIR}/dist/windows/appstore/AppxManifest.xml.in ${CMAKE_BINARY_DIR}/AppxManifest.xml)
+
+ install(FILES
+ 	${CMAKE_BINARY_DIR}/AppxManifest.xml
+  	DESTINATION .)
+
+  #install artwork
+  install(FILES assets/appstore-logo.scale44.png DESTINATION assets)
+  install(FILES assets/appstore-logo.scale150.png DESTINATION assets)
+  install(FILES assets/appstore-logo.scale400.png DESTINATION assets)
 
 endif()
