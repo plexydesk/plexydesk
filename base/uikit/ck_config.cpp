@@ -31,6 +31,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+#include <ck_sandbox.h>
+
 namespace cherry_kit {
 
 class config::Private {
@@ -82,9 +84,9 @@ QString config::prefix() {
 }
 
 QString config::cache_dir(const QString &a_folder) {
-  QString rv = QDir::toNativeSeparators(QDir::homePath() + "/" +
+  QString rv = QDir::toNativeSeparators(ck_sandbox_root() + "/" +
                                         ".socialkit/cache/" + a_folder);
-  QDir(QDir::homePath()).mkpath(rv);
+  QDir(ck_sandbox_root()).mkpath(rv);
   return rv;
 }
 

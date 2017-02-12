@@ -68,6 +68,8 @@ set(sourceFiles
     ck_sync_engine_interface.cpp
     ck_memory_sync_engine.cpp
     ck_disk_engine.cpp
+    ck_sandbox.cpp
+
     px_bench_impl.cpp
    )
 
@@ -78,6 +80,7 @@ set(headerFiles
     ck_memory_sync_engine.h
     ck_sync_engine_interface.h
     ck_disk_engine.h
+    ck_sandbox.h
     px_bench.h
    )
 

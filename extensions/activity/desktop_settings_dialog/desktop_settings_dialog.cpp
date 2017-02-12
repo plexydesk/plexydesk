@@ -39,6 +39,7 @@
 #include <ck_dial_view.h>
 #include <ck_item_view.h>
 #include <ck_image_io.h>
+#include <ck_sandbox.h>
 
 // stdlib
 #include <condition_variable>
@@ -151,7 +152,7 @@ void desktop_settings_dialog::create_window() {
 
   // todo: to check if this is the first time.
   // Fix this with true asynchronis signaling across threads.
-  if (!QFileInfo(QDir::homePath() + "/" + ".cherry_io/cache/").exists())
+  if (!QFileInfo(ck_sandbox_root() + "/" + ".cherry_io/cache/").exists())
     QTimer::singleShot(0, this, SLOT(invoke_image_loader()));
   else
     invoke_image_loader();
@@ -272,7 +273,7 @@ desktop_settings_dialog::PrivatePhotoSearch::locate_system_images() {
   image_path_list.push_back("/usr/share/backgrounds/gnome");
 #elif defined(Q_OS_MAC)
   image_path_list.push_back("/Library/Desktop Pictures/");
-#elif defined(Q_OS_WIN32)
+#elif defined(Q_OS_WIN)
   image_path_list.push_back("C:\\Windows\\Web\\Wallpaper\\Theme1\\");
   image_path_list.push_back("C:\\Windows\\Web\\Wallpaper\\Theme2\\");
   image_path_list.push_back("C:\\Windows\\Web\\Wallpaper\\Windows\\");

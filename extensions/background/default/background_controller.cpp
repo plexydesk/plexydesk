@@ -346,7 +346,7 @@ void desktop_controller_impl::expose_platform_desktop() const {
     cherry_kit::workspace *ck_workspace = viewport()->owner_workspace();
 
     if (ck_workspace) {
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
       cherry_kit::system_window_context::get()->hide_native_desktop();
 #endif
     }

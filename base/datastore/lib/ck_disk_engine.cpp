@@ -23,6 +23,8 @@
 #include <QDebug>
 #include <QDir>
 
+#include <ck_sandbox.h>
+
 namespace cherry_kit {
 
 class disk_engine::Privatedisk_engine {
@@ -59,7 +61,7 @@ disk_engine::~disk_engine() { delete d; }
 void disk_engine::setEngineName(const QString &name) {
   d->mCurrentEngine = name;
   QString homePath =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/");
   QFileInfo fileInfo(homePath);
 
   if (!fileInfo.exists()) {
@@ -67,7 +69,7 @@ void disk_engine::setEngineName(const QString &name) {
   }
 
   QString watchFile = QDir::toNativeSeparators(
-      QDir::homePath() + "/.quetzal/datastore/" + name + ".xml");
+      ck_sandbox_root() + "/.quetzal/datastore/" + name + ".xml");
   QFileInfo info(watchFile);
   qDebug() << Q_FUNC_INFO << watchFile;
 
@@ -106,7 +108,7 @@ void disk_engine::insert_request(const sync_object &a_obj) {
 
   QFile object_file;
   QString object_file_name =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/" +
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/" +
                                QString::fromStdString(d->m_app_name) + "/" +
                                QString::fromStdString(d->m_app_name) + ".xml");
 
@@ -210,14 +212,14 @@ void disk_engine::insert_request(const sync_object &a_obj) {
 
 QString disk_engine::db_home_path() {
   QString home_path =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/");
 
   return home_path;
 }
 
 QString disk_engine::db_app_path() {
   QString db_file_path =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/" +
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/" +
                                QString::fromStdString(d->m_app_name) + "/");
 
   return db_file_path;
@@ -244,7 +246,7 @@ void disk_engine::update_request(const sync_object &a_obj) {
 
   QFile object_file;
   QString object_file_name =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/" +
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/" +
                                QString::fromStdString(d->m_app_name) + "/" +
                                QString::fromStdString(d->m_app_name) + ".xml");
 
@@ -391,7 +393,7 @@ void disk_engine::delete_request(const std::string &a_object_name,
 
   QFile object_file;
   QString object_file_name =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/" +
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/" +
                                QString::fromStdString(d->m_app_name) + "/" +
                                QString::fromStdString(d->m_app_name) + ".xml");
 
@@ -469,7 +471,7 @@ void disk_engine::delete_request(const std::string &a_object_name,
 
 QString disk_engine::data(const QString &fileName) {
   QFile file(QDir::toNativeSeparators(
-      QDir::homePath() + "/.quetzal/datastore/" + fileName + ".xml"));
+      ck_sandbox_root() + "/.quetzal/datastore/" + fileName + ".xml"));
 
   // if (!file.exists())
   //   return QString();
@@ -480,7 +482,7 @@ QString disk_engine::data(const QString &fileName) {
   }
 
   QString watchFile = QDir::toNativeSeparators(
-      QDir::homePath() + "/.quetzal/datastore/" + fileName + ".xml");
+      ck_sandbox_root() + "/.quetzal/datastore/" + fileName + ".xml");
 
   /*
   if (!d->mFileWatch->files().contains(watchFile)) {
@@ -528,7 +530,7 @@ void disk_engine::find(const std::string &a_object_name,
 
   QFile object_file;
   QString object_file_name =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/" +
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/" +
                                QString::fromStdString(d->m_app_name) + "/" +
                                QString::fromStdString(d->m_app_name) + ".xml");
 
@@ -625,7 +627,7 @@ bool disk_engine::hasLock() { return false; }
 
 void disk_engine::saveDataToDisk(const QString &fileName, const QString &data) {
   QString homePath =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore");
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore");
   QFileInfo fileInfo(homePath);
 
   if (!fileInfo.exists()) {
@@ -633,7 +635,7 @@ void disk_engine::saveDataToDisk(const QString &fileName, const QString &data) {
   }
 
   QString watchFile = QDir::toNativeSeparators(
-      QDir::homePath() + "/.quetzal/datastore/" + fileName + ".xml");
+      ck_sandbox_root() + "/.quetzal/datastore/" + fileName + ".xml");
   d->mFile->setFileName(watchFile);
 
   connect(d->mFile, SIGNAL(bytesWritten(qint64)), this,
@@ -661,7 +663,7 @@ void disk_engine::onBytesWritten(qint64 bytes) {
 void disk_engine::onDirectoryChanged(const QString &name) {
   qDebug() << Q_FUNC_INFO << name;
   QString homePath =
-      QDir::toNativeSeparators(QDir::homePath() + "/.quetzal/datastore/");
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.quetzal/datastore/");
   if (homePath == name) {
     qDebug() << Q_FUNC_INFO << "New Dir Added";
     Q_EMIT modified();

@@ -8,6 +8,8 @@
 #include <future>
 #include <thread>
 
+#include <ck_sandbox.h>
+
 namespace cherry_kit {
 
 class image_io::platform_image::private_platform_image {
@@ -145,7 +147,7 @@ std::string image_io::platform_image::save_image(const io_surface *a_surface,
 
   std::string data_hash(crypto.result().toHex());
 
-  target_file = QDir::homePath().toStdString() + "/.socialkit/cache/" + "/" +
+  target_file = ck_sandbox_root().toStdString() + "/.socialkit/cache/" + "/" +
                 a_prefix + "/";
   target_dir = QString::fromStdString(target_file);
 
@@ -290,10 +292,10 @@ io_surface *image_io::platform_image::image_preview_decoder() {
 
   if (!load_from_cache) {
     QString cache_path =
-        QDir::toNativeSeparators(QDir::homePath() + "/.cherry_io/");
+        QDir::toNativeSeparators(ck_sandbox_root() + "/.cherry_io/");
 
     QString thumbnail_path =
-        QDir::toNativeSeparators(QDir::homePath() + "/.cherry_io/cache/");
+        QDir::toNativeSeparators(ck_sandbox_root() + "/.cherry_io/cache/");
 
     QDir cache_dir(cache_path);
     QDir thumbnail_dir(thumbnail_path);
@@ -382,7 +384,7 @@ bool image_io::platform_image::private_platform_image::check_in_cache(
   QString hashed_name = QCryptographicHash::hash(
       a_file_name.c_str(), QCryptographicHash::Md5).toHex();
   QString thumbnail_path =
-      QDir::toNativeSeparators(QDir::homePath() + "/.cherry_io/cache/");
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.cherry_io/cache/");
 
   QString cached_file =
       QDir::toNativeSeparators(thumbnail_path + "/" + hashed_name + ".png");
@@ -396,7 +398,7 @@ QString image_io::platform_image::private_platform_image::cache_file_name(
   QString hashed_name = QCryptographicHash::hash(
       a_file_name.c_str(), QCryptographicHash::Md5).toHex();
   QString thumbnail_path =
-      QDir::toNativeSeparators(QDir::homePath() + "/.cherry_io/cache/");
+      QDir::toNativeSeparators(ck_sandbox_root() + "/.cherry_io/cache/");
 
   QString cached_file =
       QDir::toNativeSeparators(thumbnail_path + "/" + hashed_name + ".png");

@@ -51,6 +51,7 @@
 
 #include "desktopmanager.h"
 #include <ck_screen.h>
+#include <ck_sandbox.h>
 
 #ifdef Q_OS_WIN
 extern void __reset_session_log();
@@ -67,7 +68,7 @@ void __sync_session_log(QtMsgType msg_type,
 
     QFile sync_file(
                 QDir::toNativeSeparators(
-                    QDir::homePath() + "/plexydesk-session-log.txt"));
+                    ck_sandbox_root() + "/plexydesk-session-log.txt"));
 
     sync_file.open(QIODevice::WriteOnly
                         | QIODevice::Text
@@ -87,7 +88,7 @@ void __sync_session_log(QtMsgType msg_type,
 void __reset_session_log() {
     QFile sync_file(
                 QDir::toNativeSeparators(
-                    QDir::homePath() + "/plexydesk-session-log.txt"));
+                    ck_sandbox_root() + "/plexydesk-session-log.txt"));
 
     sync_file.open(QIODevice::WriteOnly | QIODevice::Text);
 
@@ -197,6 +198,11 @@ public:
   Runtime(const char *a_platform_name = 0) {
     for (int i = 0; i < cherry_kit::screen::get()->screen_count() ; i++) {
       DesktopManager *workspace = new DesktopManager();
+
+#ifdef Q_OS_WIN
+      workspace->setWindowState(workspace->windowState() ^ Qt::WindowFullScreen);
+#endif
+
       //workspace->set_accelerated_rendering(true);
 
       workspace->move_to_screen(i);
@@ -231,7 +237,9 @@ public:
         // handle wayland
       }
 #endif
-      workspace->show();
+
+      workspace->showFullScreen();
+
 
 #ifdef Q_OS_WIN32
       cherry_kit::device_window *d_window =

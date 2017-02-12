@@ -38,7 +38,12 @@ void workspace::set_workspace_geometry(int a_screen_id) {
   QRect _current_desktop_geometry =
       QRect(0, 0, screen::get()->x_resolution(a_screen_id),
             screen::get()->y_resolution(a_screen_id));
+#ifdef Q_OS_WIN
+  qDebug() << Q_FUNC_INFO << "Screen : " << _current_desktop_geometry;
   setGeometry(_current_desktop_geometry);
+#else
+  setGeometry(_current_desktop_geometry);
+#endif
 }
 
 workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
