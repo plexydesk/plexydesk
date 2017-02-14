@@ -115,8 +115,8 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
     }
 
     // delete request;
-    delete request;
     qDebug() << Q_FUNC_INFO << "Deleteing request";
+    std::unique_ptr<social_kit::url_request>(result);
   });
 
   /* service data */
@@ -291,7 +291,6 @@ void pixabay_service_hit_result::set_remote_data(
     } else {
       emit_ready(false);
     }
-    delete request;
   });
 
   request->send_message(social_kit::url_request::kGETRequest,

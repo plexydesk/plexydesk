@@ -287,11 +287,14 @@ void pixabay_dialog::download_image(const std::string &a_url) {
             });
 
             sync_img->save(surface->dup(), "wallpaper");
-
           }
         } else {
           std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;
         }
+
+	qDebug() << Q_FUNC_INFO << "Delete request";
+        //std::unique_ptr<social_kit::url_request>(request);
+	delete request;
       });
 
       priv->m_progress_widget->set_value(50);
