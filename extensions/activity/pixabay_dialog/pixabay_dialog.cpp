@@ -287,6 +287,7 @@ void pixabay_dialog::download_image(const std::string &a_url) {
             });
 
             sync_img->save(surface->dup(), "wallpaper");
+
           }
         } else {
           std::cout << __FUNCTION__ << "Error creating Image:" << std::endl;
@@ -299,6 +300,7 @@ void pixabay_dialog::download_image(const std::string &a_url) {
       std::cout << __FUNCTION__ << "Error downloading url :" << a_url
                 << std::endl;
     }
+
   });
 
   priv->m_progress_widget->set_value(25);

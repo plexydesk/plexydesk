@@ -54,10 +54,19 @@ if(UNIX AND NOT APPLE)
       )
 endif()
 
-if(WIN32)
-  set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
-       core/qt/ck_screen_impl_qt.cpp
-      )
+
+if (NOT ENABLE_WINRT)
+  if(WIN32)
+    set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
+         core/qt/ck_screen_impl_qt.cpp
+        )
+  endif()
+endif()
+
+if (ENABLE_WINRT)
+ set(CORE_LIB_CXX_FILES ${CORE_LIB_CXX_FILES}
+         core/windows_uwp/ck_screen_impl_windows_uwp.cpp
+        )
 endif()
 
 

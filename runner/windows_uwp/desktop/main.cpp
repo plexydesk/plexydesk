@@ -204,6 +204,7 @@ public:
 #endif
 
       //workspace->set_accelerated_rendering(true);
+      workspace->showFullScreen();
 
       workspace->move_to_screen(i);
       m_workspace_list.push_back(workspace);
@@ -238,7 +239,6 @@ public:
       }
 #endif
 
-      workspace->showFullScreen();
 
 
 #ifdef Q_OS_WIN32

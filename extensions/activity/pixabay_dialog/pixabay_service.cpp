@@ -108,13 +108,15 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
 
       get_page_count();
       get_hit_results();
-
-      // delete request;
     } else {
       // error
       notify_progress(100);
       qDebug() << Q_FUNC_INFO << "Error In search result";
     }
+
+    // delete request;
+    delete request;
+    qDebug() << Q_FUNC_INFO << "Deleteing request";
   });
 
   /* service data */
@@ -289,6 +291,7 @@ void pixabay_service_hit_result::set_remote_data(
     } else {
       emit_ready(false);
     }
+    delete request;
   });
 
   request->send_message(social_kit::url_request::kGETRequest,

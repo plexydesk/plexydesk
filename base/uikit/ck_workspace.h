@@ -71,6 +71,8 @@ public:
 
   virtual int screen_id() const;
 
+  virtual void create_view(std::function <void(workspace *)>) {}
+
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);

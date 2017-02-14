@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <cstring>
 
+#include <QDebug>
+
 #ifdef __GNU_LINUX_PLATFORM__
 #include "ck_url_request_linux.h"
 #endif
@@ -103,6 +105,7 @@ url_request::url_request() : ctx(new platform_url_request) {}
 
 url_request::~url_request() {
   std::cout << "delete -> " << __FUNCTION__ << std::endl;
+  qDebug() << Q_FUNC_INFO;
   delete ctx;
 }
 

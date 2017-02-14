@@ -40,7 +40,7 @@ if(BUILD_WITH_QT)
 endif()
 
 if (ENABLE_WINRT)
-    add_definitions(-DCK_UWP_BUILD)
+    add_definitions(-D__WINDOWS_UWP_PLATFORM__)
 endif()
 
 if(BUILD_OPTIMIZED)

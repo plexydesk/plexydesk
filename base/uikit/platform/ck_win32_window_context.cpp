@@ -1,6 +1,6 @@
 #include "ck_win32_window_context.h"
 
-#ifndef CK_UWP_BUILD
+#ifndef __WINDOWS_UWP_PLATFORM__
 #include <Windows.h>
 #include <tchar.h>
 #include <clrdata.h>
@@ -25,7 +25,7 @@ BOOL CALLBACK __match_window_hanlde(cherry_kit::window_handle_t a_id,
  if (!query)
      return TRUE;
 
-#ifndef CK_UWP_BUILD 
+#ifndef __WINDOWS_UWP_PLATFORM__ 
  int window_title_size = GetWindowTextLength(a_id);
  _window_text = (char *) malloc(window_title_size + 1);
 
@@ -57,7 +57,7 @@ device_window *win32_window_context::find_window(
   data.window_class = a_window_class;
   data.window_name = a_title;
 
-#ifndef CK_UWP_BUILD
+#ifndef __WINDOWS_UWP_PLATFORM__
   EnumChildWindows(GetDesktopWindow(),
                    __match_window_hanlde,
                    reinterpret_cast<LPARAM>(&data));
@@ -76,8 +76,7 @@ device_window *win32_window_context::desktop() {
   data.window_name = "FolderView";
   data.window_class = "SysListView32";
 
-#ifndef CK_UWP_BUILD
-    bool rv = 0;
+#ifndef __WINDOWS_UWP_PLATFORM__
   shell_view = find_window("", "SHELLDLL_DefView");
 
   if (shell_view) {
@@ -93,7 +92,7 @@ device_window *win32_window_context::desktop() {
 
 bool win32_window_context::hide_native_desktop()
 {
-#ifndef CK_UWP_BUILD
+#ifndef __WINDOWS_UWP_PLATFORM__
     bool rv = 0;
 
     HWND target_handle = NULL;
@@ -122,7 +121,7 @@ bool win32_window_context::hide_native_desktop()
 
 int win32_window_context::get_windows_major_version()
 {
-#ifndef CK_UWP_BUILD
+#ifndef __WINDOWS_UWP_PLATFORM__
     bool rv = 0;
     OSVERSIONINFO os_version_info;
     ZeroMemory(&os_version_info, sizeof(OSVERSIONINFO));

@@ -14,9 +14,13 @@
 #include <ppl.h>
 #include <ppltasks.h>
 
+#include <QDebug>
+
 using namespace Windows::Foundation;
 using namespace Windows::Web::Http;
 using namespace concurrency;
+using namespace Windows::Networking;
+using namespace Windows::Networking::Connectivity;
 
 namespace social_kit {
 
@@ -29,6 +33,7 @@ public:
         delete [] m_header_data;
 
       m_header_size = 0;
+	  qDebug() << Q_FUNC_INFO << "Cleanup";
   }
 
   void notify_listners(
@@ -86,6 +91,9 @@ static std::string __cx_string_to_string(Platform::String^ ps) {
 }
 
 unsigned char *__cx_buffer_to_byte(::Windows::Storage::Streams::IBuffer^ a_buffer) {
+	if (!a_buffer)
+		return 0;
+
   auto reader = ::Windows::Storage::Streams::DataReader::FromBuffer(a_buffer);
   BYTE *_byte_buffer = new BYTE[a_buffer->Length];
 
@@ -95,8 +103,10 @@ unsigned char *__cx_buffer_to_byte(::Windows::Storage::Streams::IBuffer^ a_buffe
 
 void url_request::platform_url_request::send_message_async(
     url_request::url_request_type_t a_type, const std::string &a_message) {
-  if (a_message.empty()) {
-    return;
+  //todo: Check radio state and reachability 
+  ConnectionProfile^ _network_profile = NetworkInformation::GetInternetConnectionProfile();
+  if (a_message.empty() || !_network_profile || _network_profile->GetNetworkConnectivityLevel() != NetworkConnectivityLevel::InternetAccess) {
+	  return;
   }
 
   int len = MultiByteToWideChar(CP_UTF8, 0, a_message.c_str(), a_message.length(), NULL, 0);
@@ -104,32 +114,52 @@ void url_request::platform_url_request::send_message_async(
   wchar_t* pPSBuf = const_cast<wchar_t*>(ps->Data());
   MultiByteToWideChar(CP_UTF8, 0, a_message.c_str(), -1, pPSBuf, len);
 
-  ctx->m_current_uri = ref new Uri(ps);
+  qDebug() << "Network Backend - Request : " << a_message.c_str();
+
+  Uri ^current_uri = ref new Uri(ps);
 
   if (a_type == kGETRequest) {
     try {
       ctx->m_task_cancel = new cancellation_token_source();
 
-      auto hold_task = create_task(ctx->m_http_client->GetAsync(ctx->m_current_uri),
-        ctx->m_task_cancel->get_token());
+      ctx->m_hold_task = create_task(ctx->m_http_client->GetAsync(current_uri),
+		  ctx->m_task_cancel->get_token());
 
-      task<void>([hold_task, this]() {}).then([hold_task, this](task<void> p_task) {
-    	hold_task.then([this](Windows::Web::Http::HttpResponseMessage ^ a_response) {
-	  auto data_task = create_task(a_response->Content->ReadAsBufferAsync());
-	  data_task.then([this](Windows::Storage::Streams::IBuffer ^buffer) {
-	    unsigned char* data = __cx_buffer_to_byte(buffer);
+      task<void>([current_uri, this]() {}).then([this](task<void> p_task) {
+    	ctx->m_hold_task.then([this](Windows::Web::Http::HttpResponseMessage ^ a_response) {
 
-	    //we are done notify the caller with the data.
-            social_kit::url_response response;
+			if (!a_response || !a_response->Content || !a_response->IsSuccessStatusCode) {
+				qDebug() << "Network Backend - UWP WIndows - Server Connect .............[FAILED]";
+				return;
+			}
 
-            response.set_status_code(200);
-            response.set_http_version("HTTP 1.1");
-            response.set_data_buffer_size(buffer->Length);
-            response.set_data_buffer( (const unsigned char *)data, buffer->Length);
+			auto data_task = create_task(a_response->Content->ReadAsBufferAsync());
 
-            ctx->notify_listners(ctx, response);
-            delete data;
-	    });
+			data_task.then([this](Windows::Storage::Streams::IBuffer ^buffer) {
+				if (!buffer) {
+					qDebug() << "Network Backend - UWP WIndows - Blank Buffer .............[FAILED]";
+					return;
+				}
+
+				unsigned char* data = __cx_buffer_to_byte(buffer);
+
+				if (!data) {
+					qDebug() << "Network Backend - UWP WIndows - Null Data .............[FAILED]";
+					return;
+				}
+
+				//we are done notify the caller with the data.
+				social_kit::url_response response;
+
+				response.set_status_code(200);
+				response.set_http_version("HTTP 1.1");
+				response.set_data_buffer_size(buffer->Length);
+				response.set_data_buffer( (const unsigned char *)data, buffer->Length);
+
+				ctx->notify_listners(ctx, response);
+				delete data;
+				qDebug() << "Network Backend - UWP WIndows - Complete .............[ok]";
+			});
          });
       });
     } 
