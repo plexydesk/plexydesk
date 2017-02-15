@@ -13,10 +13,11 @@ public:
   private_context() {
     m_session = soup_session_new_with_options(SOUP_SESSION_USER_AGENT,
                                               "social-kit-restful", NULL);
+    g_object_ref(m_session);
   }
   ~private_context() {
-    g_object_ref(m_message);
-    g_object_ref(m_session);
+    g_object_unref(m_message);
+    g_object_unref(m_session);
   }
 
   void notify_listners(
@@ -66,6 +67,7 @@ static void platform_request_soup_stream_ready_cb(SoupSession *a_session,
                            response.data_buffer_size());
 
   ctx->notify_listners(ctx, response);
+  g_object_unref(a_msg);
 }
 
 url_request::platform_url_request::platform_url_request()
@@ -80,7 +82,15 @@ void url_request::platform_url_request::on_response_ready(
 
 void url_request::platform_url_request::send_message_async(
     url_request::url_request_type_t a_type, const std::string &a_message) {
-  ctx->m_message = soup_message_new(SOUP_METHOD_GET, a_message.c_str());
+  const char *_method = SOUP_METHOD_GET;
+
+  if (a_type == url_request::kPOSTRequest) {
+      _method = SOUP_METHOD_POST;
+  }
+
+  ctx->m_message = soup_message_new(_method, a_message.c_str());
+  g_object_ref(ctx->m_message);
+
   soup_session_queue_message(ctx->m_session, ctx->m_message,
                              platform_request_soup_stream_ready_cb, ctx);
 }
