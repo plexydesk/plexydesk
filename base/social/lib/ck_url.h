@@ -12,6 +12,19 @@ class url_response;
 
 typedef std::function<void(const url_response &)> response_ready_callbcak_t;
 
+class DECL_SOCIAL_KIT_EXPORT url_form_data {
+public:
+    url_form_data();
+    virtual ~url_form_data();
+
+    void add(const std::string &a_key, const std::string &a_value);
+    void add_file(const std::string &a_path, const std::string &a_mime_type);
+
+private:
+    class platform_multipart_data;
+    platform_multipart_data * const ctx;
+};
+
 class DECL_SOCIAL_KIT_EXPORT url_encode {
 public:
   url_encode(const std::string &a_str);
@@ -83,6 +96,8 @@ public:
   virtual ~url_request();
 
   void send_message(url_request_type_t a_type, const std::string &a_message);
+  void send_message(url_request_type_t a_type, const std::string &a_message,
+                    const std::string &a_form_data);
   void on_response_ready(response_ready_callbcak_t a_callback);
 
   class platform_url_request;

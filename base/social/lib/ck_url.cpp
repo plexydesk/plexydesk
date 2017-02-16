@@ -185,4 +185,34 @@ void url_response::set_data_buffer(const unsigned char *data_buffer,
   memcpy(m_data_buffer, data_buffer, a_size);
   m_data_buffer_size = a_size;
 }
+
+/* multi part form data handling */
+class url_form_data::platform_multipart_data {
+public:
+    platform_multipart_data() {}
+    ~platform_multipart_data() {
+        m_data.clear();
+    }
+
+    std::map<std::string, std::string> m_data;
+};
+
+url_form_data::url_form_data() :
+    ctx(new platform_multipart_data()) {
+}
+
+url_form_data::~url_form_data() {
+    delete ctx;
+}
+
+void url_form_data::add(const std::string &a_key,
+                                     const std::string &a_value)
+{
+    ctx->m_data[a_key] = a_value;
+}
+
+void url_form_data::add_file(const std::string &a_path,
+                                          const std::string &a_mime_type) {
+}
+
 }

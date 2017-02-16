@@ -52,6 +52,7 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
   /* test social services */
   check_pixabay_sd_photo_search();
   check_data_download();
+  validate_multipart_form_data();
 }
 
 SocialTestRunner::~SocialTestRunner() {
@@ -337,6 +338,18 @@ void SocialTestRunner::testDirLoader(const QString &path) {
   loader->start();
 
   connect(loader, SIGNAL(ready()), this, SLOT(onImageReady()));
+}
+
+void SocialTestRunner::validate_multipart_form_data()
+{
+    qDebug() << Q_FUNC_INFO << "validate start";
+    social_kit::url_form_data *_form_data =
+            new social_kit::url_form_data();
+
+    _form_data->add("username", "linux");
+    _form_data->add("password", "linux");
+
+    delete _form_data;
 }
 
 void SocialTestRunner::onServiceComplete(social_kit::web_service *service) {
