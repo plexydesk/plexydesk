@@ -1,6 +1,10 @@
 #include "pixabay_service.h"
 #include <ck_remote_service.h>
 #include <ck_image_io.h>
+#include <ck_sync_object.h>
+#include <ck_disk_engine.h>
+#include <ck_data_sync.h>
+
 #include <asyncdatadownloader.h>
 
 #include <string>
@@ -88,7 +92,10 @@ void pixabay_service::notify_progress(int a_value) {
   });
 }
 
-void pixabay_service::search(const std::string &a_keyword, int a_page) {
+void pixabay_service::remote_query(int a_page,
+                                   const std::string &a_keyword,
+                                   const std::string &a_social_key)
+{
   social_kit::url_request *request = new social_kit::url_request();
   social_kit::remote_service srv_query("com.pixabay.json.api.xml");
 
@@ -128,7 +135,7 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
   if (page_num <= 0)
       page_num = 1;
 
-  input_data.insert("key", K_SOCIAL_KIT_PIXABAY_API_KEY);
+  input_data.insert("key", a_social_key);
   input_data.insert("q", a_keyword);
   input_data.insert("safesearch", "1");
   input_data.insert("tag_mode", "all");
@@ -145,6 +152,33 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
   ctx->m_current_progress = 5;
   request->send_message(social_kit::url_request::kGETRequest,
                         srv_query.url("pixabay.hd.photo.search", &input_data));
+}
+
+void pixabay_service::search(const std::string &a_keyword, int a_page) {
+  std::string _client_key = K_SOCIAL_KIT_PIXABAY_API_KEY;
+
+  if (_client_key.empty()) {
+      cherry_kit::data_sync *sync = new cherry_kit::data_sync("socialkit");
+      cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
+
+      sync->set_sync_engine(engine);
+
+      sync->on_object_found([&](cherry_kit::sync_object &a_object,
+                            const std::string &a_app_name, bool a_found) {
+
+        if (a_found) {
+           _client_key = a_object.property("client_key");
+           remote_query(a_page, a_keyword, _client_key);
+        } else {
+           qDebug() << Q_FUNC_INFO << "Error : Social Key Not found ";
+        }
+        delete sync;
+      });
+
+      sync->find("social", "service_name", "pixabay");
+    } else {
+      remote_query(a_page, a_keyword, _client_key);
+    }
 }
 
 void pixabay_service::on_ready(on_search_ready_t a_func) {

@@ -62,6 +62,9 @@ public:
   void on_progress(on_progress_t a_callback);
 
   service_result_list get() const;
+  void remote_query(int a_page,
+                    const std::string &a_keyword,
+                    const std::string &a_social_key);
 private:
   class pixabay_service_context;
   pixabay_service_context *const ctx;
