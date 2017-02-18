@@ -5,6 +5,9 @@
 #include <social_kit_export.h>
 
 #include <functional>
+#include <map>
+#include <vector>
+#include <algorithm>
 
 namespace social_kit {
 
@@ -12,13 +15,27 @@ class url_response;
 
 typedef std::function<void(const url_response &)> response_ready_callbcak_t;
 
-class DECL_SOCIAL_KIT_EXPORT url_form_data {
+class DECL_SOCIAL_KIT_EXPORT url_file_info {
 public:
-    url_form_data();
-    virtual ~url_form_data();
+  url_file_info(){}
+  virtual ~url_file_info() {}
+
+  std::string m_path;
+  std::string m_base_name;
+  std::string m_mime_type;
+  std::string m_text;
+};
+
+class DECL_SOCIAL_KIT_EXPORT url_request_form_data {
+public:
+    url_request_form_data();
+    virtual ~url_request_form_data();
 
     void add(const std::string &a_key, const std::string &a_value);
-    void add_file(const std::string &a_path, const std::string &a_mime_type);
+    void add_file(const url_file_info &a_file);
+
+    std::map<std::string, std::string> multipart_data() const;
+    std::vector<url_file_info> file_list() const;
 
 private:
     class platform_multipart_data;
@@ -97,7 +114,7 @@ public:
 
   void send_message(url_request_type_t a_type, const std::string &a_message);
   void send_message(url_request_type_t a_type, const std::string &a_message,
-                    const std::string &a_form_data);
+                    const url_request_form_data &a_form_data);
   void on_response_ready(response_ready_callbcak_t a_callback);
 
   class platform_url_request;

@@ -3,9 +3,8 @@
 #include <config.h>
 
 #include <stdlib.h>
+#include <map>
 #include <cstring>
-
-#include <QDebug>
 
 #ifdef __GNU_LINUX_PLATFORM__
 #include "ck_url_request_linux.h"
@@ -105,13 +104,19 @@ url_request::url_request() : ctx(new platform_url_request) {}
 
 url_request::~url_request() {
   std::cout << "delete -> " << __FUNCTION__ << std::endl;
-  qDebug() << Q_FUNC_INFO;
   delete ctx;
 }
 
 void url_request::send_message(url_request::url_request_type_t a_type,
                                const std::string &a_message) {
-  ctx->send_message_async(a_type, a_message);
+    ctx->send_message_async(a_type, a_message);
+}
+
+void url_request::send_message(url_request::url_request_type_t a_type,
+                               const std::string &a_message,
+                               const url_request_form_data &a_form_data)
+{
+    ctx->send_message_async(a_type, a_message, a_form_data);
 }
 
 void url_request::on_response_ready(response_ready_callbcak_t a_callback) {
@@ -187,7 +192,7 @@ void url_response::set_data_buffer(const unsigned char *data_buffer,
 }
 
 /* multi part form data handling */
-class url_form_data::platform_multipart_data {
+class url_request_form_data::platform_multipart_data {
 public:
     platform_multipart_data() {}
     ~platform_multipart_data() {
@@ -195,24 +200,34 @@ public:
     }
 
     std::map<std::string, std::string> m_data;
+    std::vector<url_file_info> m_file_list;
 };
 
-url_form_data::url_form_data() :
+url_request_form_data::url_request_form_data() :
     ctx(new platform_multipart_data()) {
 }
 
-url_form_data::~url_form_data() {
-    delete ctx;
+url_request_form_data::~url_request_form_data() {
+  delete ctx;
 }
 
-void url_form_data::add(const std::string &a_key,
+void url_request_form_data::add(const std::string &a_key,
                                      const std::string &a_value)
 {
-    ctx->m_data[a_key] = a_value;
+  ctx->m_data[a_key] = a_value;
 }
 
-void url_form_data::add_file(const std::string &a_path,
-                                          const std::string &a_mime_type) {
+void url_request_form_data::add_file(const url_file_info &a_file) {
+  ctx->m_file_list.push_back(a_file);
 }
 
+std::map<std::string, std::string> url_request_form_data::multipart_data() const
+{
+  return ctx->m_data;
+}
+
+std::vector<url_file_info> url_request_form_data::file_list() const
+{
+  return ctx->m_file_list;
+}
 }

@@ -42,16 +42,15 @@ SocialTestRunner::SocialTestRunner(QObject *parent)
     : d(new PrivateSocialTestRunner), QObject(parent) {
   qDebug() << Q_FUNC_INFO << "Runner Started";
 
- 
-  check_service_file();
-  check_url_encode();
+  //check_service_file();
+  //check_url_encode();
   //check_xml_loader();
   
   //check_json_loader();
 
   /* test social services */
-  check_pixabay_sd_photo_search();
-  check_data_download();
+  //check_pixabay_sd_photo_search();
+  //check_data_download();
   validate_multipart_form_data();
 }
 
@@ -342,14 +341,63 @@ void SocialTestRunner::testDirLoader(const QString &path) {
 
 void SocialTestRunner::validate_multipart_form_data()
 {
-    qDebug() << Q_FUNC_INFO << "validate start";
-    social_kit::url_form_data *_form_data =
-            new social_kit::url_form_data();
+  qDebug() << Q_FUNC_INFO << "validate start";
+  social_kit::url_request *request = new social_kit::url_request();
+  social_kit::remote_service srv_query("com.flickr.json.api.xml");
 
-    _form_data->add("username", "linux");
-    _form_data->add("password", "linux");
+  request->on_response_ready([&](const social_kit::url_response &response) {
+      CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
+      CK_ASSERT(response.http_version() == "HTTP 1.0",
+                "Invalid Response From Server");
 
-    delete _form_data;
+      qDebug() << Q_FUNC_INFO << response.data_buffer();
+      // CK_ASSERT(response.data_buffer_size() == 5320,
+      //          "Size Mismatch : " << response.data_buffer_size());
+      CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
+      CK_ASSERT(response.data_buffer()[1] == '"', "Not jSON Data");
+      CK_ASSERT(response.data_buffer()[2] == 'p', "Not JSON Data");
+      CK_ASSERT(response.data_buffer()[3] == 'h', "Not JSON Data");
+      CK_ASSERT(response.data_buffer()[4] == 'o', "Not JSONh Data");
+
+      social_kit::remote_service srv_query("com.flickr.json.api.xml");
+      const social_kit::remote_result result =
+          srv_query.response("flickr.photos.search", response);
+      CK_ASSERT(result.get("photo").size() == 30,
+                "expected 30 but got : " << result.get("photo").size());
+
+      /* check photo element */
+      social_kit::remote_result_data photo_data = result.get("photo").at(0);
+
+      CK_ASSERT(photo_data.get("ispublic").value() == "1",
+                "expected (0) but got : " << photo_data.get("ispublic").value());
+
+      CK_ASSERT(photo_data.get("title").value().empty() == false,
+                "expected (false) but got : " << photo_data.get("title").value());
+
+      CK_ASSERT(result.get("stat").size() == 1,
+                "expected 1 but got : " << result.get("stat").size());
+
+      social_kit::remote_result_data query = result.get("stat").at(0);
+
+      CK_ASSERT(query.get("stat").value() == "ok",
+                "expected OK but got : " << query.get("stat").value());
+    });
+
+  /* service data */
+  social_kit::url_request_form_data input_data;//social_kit::url_request_form_data();
+
+  input_data.add("username", "linux");
+  input_data.add("password", "linux");
+  input_data.add("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
+  input_data.add("text", "sky");
+  input_data.add("safe_search", "1");
+  input_data.add("tags", "wallpapers,wallpaper");
+  input_data.add("tag_mode", "all");
+  input_data.add("page", "1");
+
+  request->send_message(social_kit::url_request::kPOSTRequest,
+                        "http://localhost:8000/",
+                        input_data);
 }
 
 void SocialTestRunner::onServiceComplete(social_kit::web_service *service) {

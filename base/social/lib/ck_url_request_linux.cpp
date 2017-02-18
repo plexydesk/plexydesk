@@ -2,9 +2,12 @@
 
 #include <algorithm>
 
+#include <libsoup/soup.h>
 #include <libsoup/soup-session-async.h>
 
 #include <iostream>
+
+#include <QDebug>
 
 namespace social_kit {
 
@@ -67,7 +70,12 @@ static void platform_request_soup_stream_ready_cb(SoupSession *a_session,
                            response.data_buffer_size());
 
   ctx->notify_listners(ctx, response);
-  g_object_unref(a_msg);
+  /*
+   * soup_session_queue_message is slightly unusual in that it s
+   * teals a reference to the message object,
+   * and unrefs it after the last callback is invoked on it.
+   * So when using this API, you should not unref the message yourself.
+   */
 }
 
 url_request::platform_url_request::platform_url_request()
@@ -89,9 +97,32 @@ void url_request::platform_url_request::send_message_async(
   }
 
   ctx->m_message = soup_message_new(_method, a_message.c_str());
-  g_object_ref(ctx->m_message);
 
   soup_session_queue_message(ctx->m_session, ctx->m_message,
                              platform_request_soup_stream_ready_cb, ctx);
+}
+
+void url_request::platform_url_request::send_message_async(url_request_type_t a_type,
+                                                     const std::string &a_url,
+                                                     const url_request_form_data &a_form_data) {
+  if (a_type == url_request::kPOSTRequest) {
+    SoupMultipart *_form_content = soup_multipart_new(SOUP_FORM_MIME_TYPE_MULTIPART);
+
+    std::map<std::string, std::string> _data = a_form_data.multipart_data();
+
+    typedef std::map<std::string, std::string>::iterator _it;
+
+    for(_it iterator = _data.begin(); iterator != _data.end(); iterator++) {
+      soup_multipart_append_form_string(_form_content, iterator->first.c_str(),
+                                        iterator->second.c_str());
+    }
+
+    soup_multipart_append_form_string(_form_content, "api_key", "38989489983");
+
+    ctx->m_message = soup_form_request_new_from_multipart(a_url.c_str(), _form_content);
+
+    soup_session_queue_message(ctx->m_session, ctx->m_message,
+                               platform_request_soup_stream_ready_cb, ctx);
+  }
 }
 }

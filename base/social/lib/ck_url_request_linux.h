@@ -16,6 +16,8 @@ public:
   void on_response_ready(response_ready_callbcak_t a_callback);
   void send_message_async(url_request::url_request_type_t a_type,
                           const std::string &a_message);
+  void send_message_async(url_request_type_t a_type, const std::string &a_url,
+                    const url_request_form_data &a_form_data);
   class private_context;
 private:
   private_context * const ctx;
