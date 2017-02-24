@@ -168,8 +168,6 @@ void test_url_post_request::validate_plexydesk_org_init() {
   service->on_response_ready([&](const social_kit::remote_result &a_result,
                                  const social_kit::web_service *a_web_service) {
 
-    qDebug() << Q_FUNC_INFO << "DONE";
-
     /* get access token */
     CK_ASSERT(a_result.get("access_token").size() != 0, "Empty result");
     social_kit::remote_result_data token_data =
@@ -198,8 +196,16 @@ void test_url_post_request::validate_account_register(
     CK_ASSERT(response.http_version() == "HTTP 1.0",
               "Wrong http version -> " + response.http_version());
 
-    qDebug() << std::string((const char *)response.data_buffer()).c_str();
     social_kit::remote_service srv_query("org.plexydesk.api.xml");
+
+    /* get access token */
+    const social_kit::remote_result result =
+        srv_query.response("plexydesk.pixabay.token", response);
+
+     social_kit::remote_result_data token_type =
+        result.get("key_id").at(0);
+     CK_ASSERT(token_type.get("key_id").value().compare("1") == 0,
+              "Invalid access token type");
   });
 
   /* service data */

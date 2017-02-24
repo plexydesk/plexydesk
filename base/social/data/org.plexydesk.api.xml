@@ -40,4 +40,28 @@
 			</tag>
 		</error>
 	</service>
+
+        <service name="plexydesk.pixabay.token">
+                <input url="http://localhost:8000/api/social/pixabay/token/" type="POST">
+                </input>
+
+                <result format="json">
+                        <query name="key_id" tag="access_token">
+                                <attr type="string">key_id</attr>
+                        </query>
+
+                        <query name="client_token" tag="client_token">
+                                <attr type="string">client_token</attr>
+                        </query>
+                </result>
+
+                <error format="json">
+                        <tag name="stat" tag="rsp">
+                                <attr name="stat" type="string"/>
+                                <attr name="message" type="string"/>
+                                <attr name="code" type="integer" />
+                        </tag>
+                </error>
+        </service>
+
 </services>
