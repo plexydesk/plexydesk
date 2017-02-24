@@ -202,7 +202,7 @@ void desktop_controller_impl::download_image(const std::string &a_url) {
     }
   });
 
-  request->send_message(social_kit::url_request::kGETRequest, a_url);
+  request->submit(social_kit::url_request::kGETRequest, a_url);
 }
 
 void desktop_controller_impl::open_online_dialog() {

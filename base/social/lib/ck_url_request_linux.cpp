@@ -9,13 +9,19 @@
 
 #include <QDebug>
 
+#define __USER_AGENT_STRING                                                    \
+  "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) "      \
+  "PlexyDesk/1.0.3.1"
+
 namespace social_kit {
+
+typedef std::map<std::string, std::string>::iterator _map_iterator_t;
 
 class url_request::platform_url_request::private_context {
 public:
   private_context() {
     m_session = soup_session_new_with_options(SOUP_SESSION_USER_AGENT,
-                                              "social-kit-restful", NULL);
+                                              __USER_AGENT_STRING, NULL);
     g_object_ref(m_session);
   }
   ~private_context() {
@@ -66,8 +72,8 @@ static void platform_request_soup_stream_ready_cb(SoupSession *a_session,
   }
 
   response.set_data_buffer_size(a_msg->response_body->length);
-  response.set_data_buffer((const unsigned char *) a_msg->response_body->data,
-                           response.data_buffer_size());
+  response.set_data_buffer((const unsigned char *)a_msg->response_body->data,
+                           a_msg->response_body->length);
 
   ctx->notify_listners(ctx, response);
   /*
@@ -93,7 +99,7 @@ void url_request::platform_url_request::send_message_async(
   const char *_method = SOUP_METHOD_GET;
 
   if (a_type == url_request::kPOSTRequest) {
-      _method = SOUP_METHOD_POST;
+    _method = SOUP_METHOD_POST;
   }
 
   ctx->m_message = soup_message_new(_method, a_message.c_str());
@@ -102,27 +108,73 @@ void url_request::platform_url_request::send_message_async(
                              platform_request_soup_stream_ready_cb, ctx);
 }
 
-void url_request::platform_url_request::send_message_async(url_request_type_t a_type,
-                                                     const std::string &a_url,
-                                                     const url_request_form_data &a_form_data) {
+void url_request::platform_url_request::append_headers(
+    std::map<std::string, std::string> _header_data) {
+  for (_map_iterator_t iterator = _header_data.begin();
+       iterator != _header_data.end(); iterator++) {
+    soup_message_headers_append(ctx->m_message->request_headers,
+                                iterator->first.c_str(),
+                                iterator->second.c_str());
+  }
+}
+
+void url_request::platform_url_request::append_multipart_data(
+    SoupMultipart *_form_content, std::map<std::string, std::string> _data) {
+  for (_map_iterator_t iterator = _data.begin(); iterator != _data.end();
+       iterator++) {
+    soup_multipart_append_form_string(_form_content, iterator->first.c_str(),
+                                      iterator->second.c_str());
+  }
+}
+
+void url_request::platform_url_request::send_message_async(
+    url_request_type_t a_type, const std::string &a_url,
+    const url_request_context &a_form_data) {
+  const char *_mime_type = 0;
+  std::map<std::string, std::string> _data = a_form_data.multipart_data();
+  std::map<std::string, std::string> _header_data = a_form_data.header();
+  SoupMultipart *_form_content = 0;
+  std::string _url = a_url + "?" + a_form_data.encode();
+  const char *_method = SOUP_METHOD_GET;
+
   if (a_type == url_request::kPOSTRequest) {
-    SoupMultipart *_form_content = soup_multipart_new(SOUP_FORM_MIME_TYPE_MULTIPART);
+    _method = SOUP_METHOD_POST;
+  }
 
-    std::map<std::string, std::string> _data = a_form_data.multipart_data();
+  if (a_form_data.mime_type() == url_request_context::kMimeTypeMultipart) {
+    _mime_type = SOUP_FORM_MIME_TYPE_MULTIPART;
+    _form_content = soup_multipart_new(_mime_type);
 
-    typedef std::map<std::string, std::string>::iterator _it;
+    append_multipart_data(_form_content, _data);
+    ctx->m_message =
+        soup_form_request_new_from_multipart(_url.c_str(), _form_content);
+    soup_multipart_free(_form_content);
+  } else {
+    _mime_type = SOUP_FORM_MIME_TYPE_URLENCODED;
+    ctx->m_message = soup_message_new(_method, a_url.c_str());
 
-    for(_it iterator = _data.begin(); iterator != _data.end(); iterator++) {
-      soup_multipart_append_form_string(_form_content, iterator->first.c_str(),
-                                        iterator->second.c_str());
-    }
+    append_headers(_header_data);
 
-    soup_multipart_append_form_string(_form_content, "api_key", "38989489983");
-
-    ctx->m_message = soup_form_request_new_from_multipart(a_url.c_str(), _form_content);
+    soup_message_set_request(
+        ctx->m_message, "application/x-www-form-urlencoded", SOUP_MEMORY_COPY,
+        a_form_data.encode().c_str(), a_form_data.encode().length());
 
     soup_session_queue_message(ctx->m_session, ctx->m_message,
                                platform_request_soup_stream_ready_cb, ctx);
+    return;
   }
+
+  if (!ctx->m_message) {
+    std::cout << "Error : failed to submit empty ctx->m_message" << std::endl;
+    return;
+  }
+
+  /* update request header */
+  append_headers(_header_data);
+
+  soup_session_queue_message(ctx->m_session, ctx->m_message,
+                             platform_request_soup_stream_ready_cb, ctx);
+
+  /* clean up */
 }
 }

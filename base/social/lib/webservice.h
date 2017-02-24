@@ -24,7 +24,6 @@
 
 #include <social_kit_export.h>
 #include <ck_remote_service.h>
-
 #include <ck_url.h>
 
 #include <functional>
@@ -45,10 +44,14 @@ public:
 
   void create(const std::string &serviceName);
 
+  /*
   void submit(const QString &method, service_query_parameters *a_params,
                     QHttpMultiPart *data = 0,
                     const QByteArray &headerName = QByteArray(),
                     const QByteArray &headerValue = QByteArray());
+                    */
+
+  void submit(const std::string &a_method, service_query_parameters *a_params);
 
   service_query_parameters inputArgumentForMethod(const QString &str);
 

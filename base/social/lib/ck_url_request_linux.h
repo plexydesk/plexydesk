@@ -6,6 +6,8 @@
 
 #include <functional>
 
+#include <libsoup/soup.h>
+
 namespace social_kit {
 
 class url_request::platform_url_request {
@@ -17,10 +19,14 @@ public:
   void send_message_async(url_request::url_request_type_t a_type,
                           const std::string &a_message);
   void send_message_async(url_request_type_t a_type, const std::string &a_url,
-                    const url_request_form_data &a_form_data);
+                          const url_request_context &a_form_data);
   class private_context;
+  void append_headers(std::map<std::string, std::string> _header_data);
+  void append_multipart_data(SoupMultipart *_form_content,
+                             std::map<std::string, std::string> _data);
+
 private:
-  private_context * const ctx;
+  private_context *const ctx;
 };
 }
 

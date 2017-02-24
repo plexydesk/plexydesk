@@ -7,7 +7,7 @@ public:
   PrivateVariant() {}
   ~PrivateVariant() {}
 
-  std::list<std::function<void(ValueMap)> > m_notify_list;
+  std::list<std::function<void(ValueMap)>> m_notify_list;
 };
 
 Variant::Variant() : d(new PrivateVariant) {}

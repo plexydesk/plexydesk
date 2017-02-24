@@ -40,14 +40,13 @@ public:
 
   void getDropBoxAccountInfo(const QString &access_token, const QString &uid);
 
-
-  //web service checks.
+  // web service checks.
   void check_pixabay_sd_photo_search();
 
+  void validate_multipart_form_data_header();
 signals:
 
-public
-slots:
+public slots:
   void onServiceComplete(social_kit::web_service *service);
   void onSizeServiceComplete(social_kit::web_service *service);
   void onDownloadComplete(social_kit::web_service *service);
@@ -70,8 +69,7 @@ slots:
 
   // dropbox
   void onDropBoxAuthServiceComplete(social_kit::web_service *service);
-  void
-  onDropBoxAccountInfoServiceComplete(social_kit::web_service *service);
+  void onDropBoxAccountInfoServiceComplete(social_kit::web_service *service);
 
 private:
   class PrivateSocialTestRunner;

@@ -17,7 +17,7 @@ typedef std::function<void(const url_response &)> response_ready_callbcak_t;
 
 class DECL_SOCIAL_KIT_EXPORT url_file_info {
 public:
-  url_file_info(){}
+  url_file_info() {}
   virtual ~url_file_info() {}
 
   std::string m_path;
@@ -26,20 +26,29 @@ public:
   std::string m_text;
 };
 
-class DECL_SOCIAL_KIT_EXPORT url_request_form_data {
+class DECL_SOCIAL_KIT_EXPORT url_request_context {
 public:
-    url_request_form_data();
-    virtual ~url_request_form_data();
+  typedef enum { kMimeTypeMultipart, kMimeTypeUrlEncoded } request_mime_type;
 
-    void add(const std::string &a_key, const std::string &a_value);
-    void add_file(const url_file_info &a_file);
+  url_request_context();
+  virtual ~url_request_context();
 
-    std::map<std::string, std::string> multipart_data() const;
-    std::vector<url_file_info> file_list() const;
+  void set_mime_type(request_mime_type a_mime_type);
+  request_mime_type mime_type() const;
+
+  void add_header(const std::string &a_key, const std::string &a_value);
+  void add(const std::string &a_key, const std::string &a_value);
+  void add_file(const url_file_info &a_file);
+
+  std::string encode() const;
+
+  std::map<std::string, std::string> multipart_data() const;
+  std::vector<url_file_info> file_list() const;
+  std::map<std::string, std::string> header() const;
 
 private:
-    class platform_multipart_data;
-    platform_multipart_data * const ctx;
+  class platform_multipart_data;
+  platform_multipart_data *const ctx;
 };
 
 class DECL_SOCIAL_KIT_EXPORT url_encode {
@@ -93,7 +102,7 @@ private:
   std::string m_method;
 
   unsigned int m_data_buffer_size;
-  unsigned char * m_data_buffer;
+  unsigned char *m_data_buffer;
 };
 
 class DECL_SOCIAL_KIT_EXPORT url_request {
@@ -112,9 +121,9 @@ public:
   url_request();
   virtual ~url_request();
 
-  void send_message(url_request_type_t a_type, const std::string &a_message);
-  void send_message(url_request_type_t a_type, const std::string &a_message,
-                    const url_request_form_data &a_form_data);
+  void submit(url_request_type_t a_type, const std::string &a_message);
+  void submit(url_request_type_t a_type, const std::string &a_url,
+              const url_request_context &a_form_data);
   void on_response_ready(response_ready_callbcak_t a_callback);
 
   class platform_url_request;

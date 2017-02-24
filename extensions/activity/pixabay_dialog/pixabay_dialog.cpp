@@ -308,7 +308,7 @@ void pixabay_dialog::download_image(const std::string &a_url) {
 
   priv->m_progress_widget->set_value(25);
 
-  request->send_message(social_kit::url_request::kGETRequest, a_url);
+  request->submit(social_kit::url_request::kGETRequest, a_url);
 }
 
 void pixabay_dialog::search(const std::string &a_query, int page_count) {

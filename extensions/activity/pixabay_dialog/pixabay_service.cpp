@@ -150,7 +150,7 @@ void pixabay_service::remote_query(int a_page,
 
   notify_progress(5);
   ctx->m_current_progress = 5;
-  request->send_message(social_kit::url_request::kGETRequest,
+  request->submit(social_kit::url_request::kGETRequest,
                         srv_query.url("pixabay.hd.photo.search", &input_data));
 }
 
@@ -327,7 +327,7 @@ void pixabay_service_hit_result::set_remote_data(
     }
   });
 
-  request->send_message(social_kit::url_request::kGETRequest,
+  request->submit(social_kit::url_request::kGETRequest,
                         ctx->m_preview_url);
 }
 

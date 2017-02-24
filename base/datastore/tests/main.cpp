@@ -445,7 +445,35 @@ void test_image_io_resize_image() {
   qDebug() << Q_FUNC_INFO << "Main thread wakeup";
 }
 
+void test_object_social_find() {
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("test_Global0");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
+                            const std::string &a_app_name, bool a_found) {
+
+    CK_ASSERT(a_found == 1, "Expected True");
+    CK_ASSERT(a_app_name.compare("test_Global0") == 0, "Expected Global");
+    CK_ASSERT(a_object.name().compare("social") == 0, "Expected global");
+    CK_ASSERT(a_object.property("service_name").compare("dropbox") == 0, "Expected service_name == dropbox");
+    CK_ASSERT(a_object.property("app_key").compare("xxx") == 0, "Expected api_key == xxx");
+
+    sync->remove_object("social", "service_name", "dropbox");
+    delete sync;
+  });
+
+  cherry_kit::sync_object *obj = new cherry_kit::sync_object();
+  obj->set_name("social");
+
+  obj->set_property("service_name", "dropbox");
+  obj->set_property("app_key", "xxx");
+
+  sync->add_object(*obj);
+
+  sync->find("social", "service_name", "dropbox");
+}
 
 int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
@@ -465,17 +493,19 @@ int main(int argc, char *argv[]) {
   // image surface tests.
   // test_image_io_surface_null_surface();
   // test_image_io_surface_create_with_size();
-  test_image_io_surface_invalid_create_from_file();
-  test_image_io_surface_preview_from_file();
-  test_image_io_surface_create_from_file();
+  //test_image_io_surface_invalid_create_from_file();
+  //test_image_io_surface_preview_from_file();
+  //test_image_io_surface_create_from_file();
 
   // image op
-  test_image_io_save_image();
-  test_image_io_resize_image();
+  //test_image_io_save_image();
+  //test_image_io_resize_image();
 
   // app.quit();
 
   // return app.exec();
+
+  test_object_social_find();
 
   return EXIT_SUCCESS;
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Document created by: PlexyDesk, http://www.plexydesk.org for Social Framework QuetzalSocialKit -->
+<services>
+	<service name="plexydesk.oauth2.token">
+		<input url="http://localhost:8000/o/token/" type="POST">
+                        <arg type="string" optional="false">grant_type</arg>
+                        <arg type="string" optional="false">client_id</arg>
+                        <arg type="string" optional="false">client_secret</arg>
+                        <arg type="string" optional="false">username</arg>
+                        <arg type="string" optional="false">password</arg>
+		</input>
+
+		<result format="json">
+                        <query name="access_token" tag="access_token">
+                                <attr type="string">access_token</attr>
+                        </query>
+
+                        <query name="token_type" tag="token_type">
+                                <attr type="string">token_type</attr>
+                        </query>
+
+                        <query name="refresh_token" tag="refresh_token">
+                                <attr type="string">refresh_token</attr>
+                        </query>
+
+                        <query name="scope" tag="scope">
+                                <attr type="string">scope</attr>
+                        </query>
+
+                        <query name="expires_in" tag="expires_in">
+                                <attr type="string">expires_in</attr>
+                        </query>
+                </result>
+
+		<error format="json">
+			<tag name="stat" tag="rsp">
+				<attr name="stat" type="string"/>
+				<attr name="message" type="string"/>
+				<attr name="code" type="integer" />
+			</tag>
+		</error>
+	</service>
+</services>

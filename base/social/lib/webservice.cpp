@@ -18,13 +18,6 @@
 *******************************************************************************/
 #include "webservice.h"
 
-#include <QDebug>
-#include <QCoreApplication>
-#include <QDir>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QtNetwork>
-
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -83,14 +76,14 @@ public:
 web_service::web_service(QObject *parent)
     : QObject(parent), ctx(new web_service_context) {
   ctx->m_network_request = new url_request();
-  ctx->m_network_request->on_response_ready([this](
-      const url_response &a_response) {
-    remote_result result =
-        ctx->m_service->response(ctx->m_method_name, a_response);
-    ctx->notify_observers(result, this);
-    //delete (this)
-    std::unique_ptr<web_service>(this);
-  });
+  ctx->m_network_request->on_response_ready(
+      [this](const url_response &a_response) {
+        remote_result result =
+            ctx->m_service->response(ctx->m_method_name, a_response);
+        ctx->notify_observers(result, this);
+        // delete (this)
+        std::unique_ptr<web_service>(this);
+      });
 }
 
 web_service::~web_service() { delete ctx; }
@@ -102,6 +95,7 @@ void web_service::create(const std::string &serviceName) {
   ctx->m_service = new remote_service(serviceName);
 }
 
+/*
 void web_service::submit(const QString &method,
                          service_query_parameters *a_params,
                          QHttpMultiPart *data, const QByteArray &headerName,
@@ -116,7 +110,26 @@ void web_service::submit(const QString &method,
       ctx->m_service->method(method.toStdString());
 
   ctx->m_input_argument_map[method.toStdString()] = *a_params;
-  ctx->m_network_request->send_message(request_url_method, request_data);
+  ctx->m_network_request->submit(request_url_method, request_data);
+}
+*/
+
+void web_service::submit(const std::string &a_method,
+                         service_query_parameters *a_params) {
+  if (!ctx->m_service)
+    return;
+
+  url_request_context web_ctx;
+  ctx->m_method_name = a_method;
+  std::string request_url = ctx->m_service->url(a_method, a_params);
+  url_request::url_request_type_t request_url_method =
+      ctx->m_service->method(a_method);
+
+  a_params->copy_to_url_context(&web_ctx);
+
+  ctx->m_input_argument_map[a_method] = *a_params;
+
+  ctx->m_network_request->submit(request_url_method, request_url, web_ctx);
 }
 
 service_query_parameters

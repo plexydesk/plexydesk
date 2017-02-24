@@ -93,7 +93,7 @@ void AsyncImageLoader::run() {
 
       QStringList localPictureList = localPictureDir.entryList();
 
-      Q_FOREACH(const QString & pictureName, localPictureList) {
+      Q_FOREACH (const QString &pictureName, localPictureList) {
         QImage wallpaperImage(QDir::toNativeSeparators(
             localPictureDir.absolutePath() + "/" + pictureName));
         if (!wallpaperImage.isNull()) {

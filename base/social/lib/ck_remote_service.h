@@ -58,12 +58,42 @@ public:
     return rv;
   }
 
+  void append_to_header(const std::string &a_key, const std::string &a_value) {
+    m_request_header_map[a_key] = a_value;
+  }
+
+  void copy_to_url_context(url_request_context *a_ctx) {
+   if (!a_ctx)
+     return;
+
+   for (std::map<std::string, std::string>::iterator it =
+             m_parameter_map.begin();
+         it != m_parameter_map.end(); ++it) {
+       a_ctx->add(it->first, it->second);
+    }
+
+    for (std::map<std::string, std::string>::iterator it =
+             m_request_header_map.begin();
+         it != m_request_header_map.end(); ++it) {
+       a_ctx->add_header(it->first, it->second);
+    }
+
+    a_ctx->set_mime_type(m_mime_type);
+  }
+
+  void set_mime_type(
+      social_kit::url_request_context::request_mime_type a_type) {
+    m_mime_type = a_type;
+  }
+
   std::string value(const std::string &a_key) { return m_parameter_map[a_key]; }
 
   query_parameter_map_t data() const { return m_parameter_map; }
 
 private:
   std::map<std::string, std::string> m_parameter_map;
+  std::map<std::string, std::string> m_request_header_map;
+  social_kit::url_request_context::request_mime_type m_mime_type;
 };
 
 //<attr ... >

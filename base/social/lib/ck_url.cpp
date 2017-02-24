@@ -107,16 +107,15 @@ url_request::~url_request() {
   delete ctx;
 }
 
-void url_request::send_message(url_request::url_request_type_t a_type,
-                               const std::string &a_message) {
-    ctx->send_message_async(a_type, a_message);
+void url_request::submit(url_request::url_request_type_t a_type,
+                         const std::string &a_message) {
+  ctx->send_message_async(a_type, a_message);
 }
 
-void url_request::send_message(url_request::url_request_type_t a_type,
-                               const std::string &a_message,
-                               const url_request_form_data &a_form_data)
-{
-    ctx->send_message_async(a_type, a_message, a_form_data);
+void url_request::submit(url_request::url_request_type_t a_type,
+                         const std::string &a_url,
+                         const url_request_context &a_form_data) {
+  ctx->send_message_async(a_type, a_url, a_form_data);
 }
 
 void url_request::on_response_ready(response_ready_callbcak_t a_callback) {
@@ -192,42 +191,71 @@ void url_response::set_data_buffer(const unsigned char *data_buffer,
 }
 
 /* multi part form data handling */
-class url_request_form_data::platform_multipart_data {
+class url_request_context::platform_multipart_data {
 public:
-    platform_multipart_data() {}
-    ~platform_multipart_data() {
-        m_data.clear();
-    }
+  platform_multipart_data() {}
+  ~platform_multipart_data() { m_data.clear(); }
 
-    std::map<std::string, std::string> m_data;
-    std::vector<url_file_info> m_file_list;
+  std::map<std::string, std::string> m_data;
+  std::vector<url_file_info> m_file_list;
+  std::map<std::string, std::string> m_header;
+
+  request_mime_type m_mime_type;
 };
 
-url_request_form_data::url_request_form_data() :
-    ctx(new platform_multipart_data()) {
+url_request_context::url_request_context()
+    : ctx(new platform_multipart_data()) {}
+url_request_context::~url_request_context() { delete ctx; }
+
+void url_request_context::set_mime_type(
+    url_request_context::request_mime_type a_mime_type) {
+  ctx->m_mime_type = a_mime_type;
 }
 
-url_request_form_data::~url_request_form_data() {
-  delete ctx;
+url_request_context::request_mime_type url_request_context::mime_type() const {
+  return ctx->m_mime_type;
 }
 
-void url_request_form_data::add(const std::string &a_key,
-                                     const std::string &a_value)
-{
+void url_request_context::add_header(const std::string &a_key,
+                                     const std::string &a_value) {
+  ctx->m_header[a_key] = a_value;
+}
+
+void url_request_context::add(const std::string &a_key,
+                              const std::string &a_value) {
   ctx->m_data[a_key] = a_value;
 }
 
-void url_request_form_data::add_file(const url_file_info &a_file) {
+void url_request_context::add_file(const url_file_info &a_file) {
   ctx->m_file_list.push_back(a_file);
 }
 
-std::map<std::string, std::string> url_request_form_data::multipart_data() const
-{
+std::string url_request_context::encode() const {
+  std::string rv;
+  typedef std::map<std::string, std::string>::iterator __map_iterator_t;
+
+  for (__map_iterator_t iterator = ctx->m_data.begin();
+       iterator != ctx->m_data.end(); iterator++) {
+    social_kit::url_encode encoded_value(iterator->second);
+
+    if (rv.empty())
+      rv += iterator->first + "=" + encoded_value.to_string();
+    else
+      rv += "&" + iterator->first + "=" + encoded_value.to_string();
+  }
+
+  return rv;
+}
+
+std::map<std::string, std::string> url_request_context::multipart_data() const {
   return ctx->m_data;
 }
 
-std::vector<url_file_info> url_request_form_data::file_list() const
-{
+std::vector<url_file_info> url_request_context::file_list() const {
   return ctx->m_file_list;
+}
+
+std::map<std::string, std::string> url_request_context::header() const {
+  return ctx->m_header;
 }
 }

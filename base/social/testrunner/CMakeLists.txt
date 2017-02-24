@@ -4,6 +4,7 @@ set(CMAKE_AUTOMOC ON)
 set(sourceFiles
     main.cpp
     socialtestrunner.cpp
+    test_url_post_request.cpp
     )
 
 if (WIN32)

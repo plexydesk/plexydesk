@@ -28,6 +28,7 @@
 #include <json.h>
 #include <string>
 #include <tinyxml2.h>
+#include <QDebug>
 
 #ifdef __WINDOWS_PLATFORM__
 #include <Windows.h>
@@ -91,9 +92,9 @@ public:
   ~service_input() {
     std::for_each(std::begin(m_argument_list), std::end(m_argument_list),
                   [this](service_input_argument *value) {
-                    if (value)
-                      delete value;
-                  });
+      if (value)
+        delete value;
+    });
     m_argument_list.clear();
   }
 
@@ -338,11 +339,11 @@ string_list remote_service::arguments(const std::string &name) const {
         srv->input()->argument_list();
     std::for_each(std::begin(argument_list), std::end(argument_list),
                   [&](service_input_argument *arg) {
-                    if (arg->optional())
-                      return;
+      if (arg->optional())
+        return;
 
-                    rv.push_back(arg->value());
-                  });
+      rv.push_back(arg->value());
+    });
   }
 
   return rv;
@@ -358,16 +359,16 @@ string_list remote_service::input_arguments(const std::string &a_name,
         srv->input()->argument_list();
     std::for_each(std::begin(argument_list), std::end(argument_list),
                   [&](service_input_argument *arg) {
-                    if ((a_optional == false) && arg->optional()) {
-                      return;
-                    }
+      if ((a_optional == false) && arg->optional()) {
+        return;
+      }
 
-                    if ((a_optional == true) && !arg->optional()) {
-                      return;
-                    }
+      if ((a_optional == true) && !arg->optional()) {
+        return;
+      }
 
-                    rv.push_back(arg->value());
-                  });
+      rv.push_back(arg->value());
+    });
   }
 
   return rv;
@@ -382,11 +383,11 @@ string_list remote_service::optional_arguments(const std::string &name) const {
         srv->input()->argument_list();
     std::for_each(std::begin(argument_list), std::end(argument_list),
                   [&](service_input_argument *arg) {
-                    if (!arg->optional())
-                      return;
+      if (!arg->optional())
+        return;
 
-                    rv.push_back(arg->value());
-                  });
+      rv.push_back(arg->value());
+    });
   }
 
   return rv;
@@ -397,8 +398,15 @@ std::string remote_service::url(const std::string &a_method,
   std::string rv;
   std::vector<std::string> default_query_list;
   bool has_errors = false;
+  url_request::url_request_type_t type;
 
+  type = method(a_method);
   rv = endpoint(a_method);
+
+  /* if it's a post type, the context has the required parements not the url */
+  if (type == url_request::kPOSTRequest) {
+    return rv;
+  }
 
   if (a_params) {
 
@@ -408,40 +416,38 @@ std::string remote_service::url(const std::string &a_method,
       service_input *input = srv->input();
       std::vector<service_input_argument *> list = input->argument_list();
 
-      std::for_each(
-          std::begin(list), std::end(list), [&](service_input_argument *arg) {
-            if (!arg)
-              return;
-            std::string arg_value = arg->value();
-            std::vector<std::string> input_keys = a_params->keys();
+      std::for_each(std::begin(list), std::end(list),
+                    [&](service_input_argument *arg) {
+        if (!arg)
+          return;
+        std::string arg_value = arg->value();
+        std::vector<std::string> input_keys = a_params->keys();
 
-            bool key_found = std::find(input_keys.begin(), input_keys.end(),
-                                       arg_value) != input_keys.end();
+        bool key_found = std::find(input_keys.begin(), input_keys.end(),
+                                   arg_value) != input_keys.end();
 
-            // assign default values first.
-            if (!arg->default_value().empty()) {
-              social_kit::url_encode *encoded_str =
-                  new social_kit::url_encode(arg->default_value());
-              std::string query_item =
-                  arg_value + "=" + encoded_str->to_string();
-              delete encoded_str;
-              default_query_list.push_back(query_item);
-            }
+        // assign default values first.
+        if (!arg->default_value().empty()) {
+          social_kit::url_encode *encoded_str =
+              new social_kit::url_encode(arg->default_value());
+          std::string query_item = arg_value + "=" + encoded_str->to_string();
+          delete encoded_str;
+          default_query_list.push_back(query_item);
+        }
 
-            if (key_found) {
-              social_kit::url_encode *encoded_str =
-                  new social_kit::url_encode(a_params->value(arg_value));
-              std::string query_item =
-                  arg_value + "=" + encoded_str->to_string();
-              delete encoded_str;
-              default_query_list.push_back(query_item);
-            } else {
-              if (arg->optional() == 0) {
-                has_errors = true;
-                return;
-              }
-            }
-          });
+        if (key_found) {
+          social_kit::url_encode *encoded_str =
+              new social_kit::url_encode(a_params->value(arg_value));
+          std::string query_item = arg_value + "=" + encoded_str->to_string();
+          delete encoded_str;
+          default_query_list.push_back(query_item);
+        } else {
+          if (arg->optional() == 0) {
+            has_errors = true;
+            return;
+          }
+        }
+      });
     } else {
       // qDebug() << Q_FUNC_INFO << "Something Wrong";
     }
@@ -460,8 +466,10 @@ std::string remote_service::url(const std::string &a_method,
 
   rv += query_str;
 
-  if (has_errors)
-    return std::string();
+  if (has_errors) {
+    qDebug() << Q_FUNC_INFO << "Has Errors";
+    return rv;
+  }
 
   return rv;
 }
@@ -489,27 +497,27 @@ void read_json_value(Json::ValueIterator *node, remote_result *a_data,
         Json::Value::Members list = object_value.getMemberNames();
         Json::Value null_value;
 
-        std::for_each(
-            std::begin(list), std::end(list), [&](const std::string &key) {
-              Json::Value value = object_value[key];
-              remote_data_attribute remote_attribute;
+        std::for_each(std::begin(list), std::end(list),
+                      [&](const std::string &key) {
+          Json::Value value = object_value[key];
+          remote_data_attribute remote_attribute;
 
-              remote_attribute.set_key(key);
+          remote_attribute.set_key(key);
 
-              if (value.isInt()) {
-                remote_attribute.set_value(std::to_string(value.asInt()));
-              }
+          if (value.isInt()) {
+            remote_attribute.set_value(std::to_string(value.asInt()));
+          }
 
-              if (value.isString()) {
-                remote_attribute.set_value(value.asString());
-              }
+          if (value.isString()) {
+            remote_attribute.set_value(value.asString());
+          }
 
-              if (value.isBool()) {
-                remote_attribute.set_value(std::to_string(value.asBool()));
-              }
+          if (value.isBool()) {
+            remote_attribute.set_value(std::to_string(value.asBool()));
+          }
 
-              data.insert(remote_attribute);
-            });
+          data.insert(remote_attribute);
+        });
 
         a_data->insert(data);
       }
@@ -576,15 +584,14 @@ void lookup_element(tinyxml2::XMLElement *node, service_result_query *query,
 
     std::for_each(std::begin(list), std::end(list),
                   [&](service_result_query_attribute *attrib) {
-                    const char *attribute_value =
-                        get_attribute_value(node, attrib->value());
-                    if (attribute_value) {
-                      remote_data_attribute attribute;
-                      attribute.set_key(attrib->value());
-                      attribute.set_value(attribute_value);
-                      result.insert(attribute);
-                    }
-                  });
+      const char *attribute_value = get_attribute_value(node, attrib->value());
+      if (attribute_value) {
+        remote_data_attribute attribute;
+        attribute.set_key(attrib->value());
+        attribute.set_value(attribute_value);
+        result.insert(attribute);
+      }
+    });
     a_result->insert(result);
   }
 }
@@ -619,28 +626,29 @@ remote_result remote_service::response(const std::string &a_method_name,
 
     std::for_each(std::begin(list), std::end(list),
                   [&](service_result_query *query) {
-                    if (query) {
-                      tinyxml2::XMLElement *element = doc.FirstChildElement();
-                      lookup_element(element, query, &rv);
-                    }
-                  });
+      if (query) {
+        tinyxml2::XMLElement *element = doc.FirstChildElement();
+        lookup_element(element, query, &rv);
+      }
+    });
 
   } else if (srv_result->result_format() == service_result::kJSONData) {
     // json data.
     Json::Value root;
     Json::Reader reader;
 
-    std::string doc_data((const char *) a_response.data_buffer(), a_response.data_buffer_size());
+    std::string doc_data((const char *)a_response.data_buffer(),
+                         a_response.data_buffer_size());
     if (reader.parse(doc_data, root)) {
       std::cout << "parsed success fully" << std::endl;
       std::vector<service_result_query *> list = srv_result->query_list();
       std::for_each(std::begin(list), std::end(list),
                     [&](service_result_query *query) {
-                      if (query) {
-                        std::cout << "lookup :" << query->name() << std::endl;
-                        lookup_json_data(&root, query, &rv);
-                      }
-                    });
+        if (query) {
+          std::cout << "lookup :" << query->name() << std::endl;
+          lookup_json_data(&root, query, &rv);
+        }
+      });
 
     } else {
       std::cout << "Error parsing json string :" << a_response.data_buffer()
@@ -913,8 +921,8 @@ service_input::request_type_t service_input::request_type() const {
   return m_request_type;
 }
 
-void service_input::set_request_type(
-    service_input::request_type_t request_type) {
+void
+service_input::set_request_type(service_input::request_type_t request_type) {
   m_request_type = request_type;
 }
 
@@ -939,8 +947,8 @@ std::string service_input_argument::default_value() const {
   return m_default_value;
 }
 
-void service_input_argument::set_default_value(
-    const std::string &default_value) {
+void
+service_input_argument::set_default_value(const std::string &default_value) {
   m_default_value = default_value;
 }
 
@@ -975,9 +983,9 @@ result_list_t remote_result::get(const std::string &a_name) const {
 
   std::for_each(std::begin(m_query_list), std::end(m_query_list),
                 [&](remote_result_data query) {
-                  if (a_name == query.name())
-                    rv.push_back(query);
-                });
+    if (a_name == query.name())
+      rv.push_back(query);
+  });
 
   return rv;
 }
@@ -991,10 +999,10 @@ remote_result_data::get(const std::string &a_attribute_name) {
   remote_data_attribute rv;
   std::for_each(std::begin(m_propery_list), std::end(m_propery_list),
                 [&](remote_data_attribute attribute) {
-                  if (a_attribute_name == attribute.key()) {
-                    rv = attribute;
-                  }
-                });
+    if (a_attribute_name == attribute.key()) {
+      rv = attribute;
+    }
+  });
 
   return rv;
 }
@@ -1007,8 +1015,8 @@ remote_data_attribute::property_type_t remote_data_attribute::type() const {
   return m_value_type;
 }
 
-void remote_data_attribute::set_type(
-    remote_data_attribute::property_type_t a_type) {
+void
+remote_data_attribute::set_type(remote_data_attribute::property_type_t a_type) {
   m_value_type = a_type;
 }
 
