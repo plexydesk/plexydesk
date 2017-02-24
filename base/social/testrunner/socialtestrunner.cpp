@@ -18,6 +18,21 @@
 #include <ck_image_io.h>
 #include <ck_url.h>
 
+
+#ifdef __WINDOWS_UWP_PLATFORM__
+#define CK_ASSERT(condition, message)                                          \
+  do {                                                                         \
+    if (!(condition)) {                                                        \
+      qDebug() << "Assertion `" #condition "` failed in "         \
+                << " line " << Q_FUNC_INFO << ": " << QString::fromStdString(std::string(message));       \
+    } else {                                                                   \
+      qDebug() << Q_FUNC_INFO << "  " << #condition       \
+                << "  [PASS]";                                    \
+    }                                                                          \
+  } while (false)
+
+#else
+
 #define CK_ASSERT(condition, message)                                          \
   do {                                                                         \
     if (!(condition)) {                                                        \
@@ -29,6 +44,8 @@
                 << "  [PASS]" << std::endl;                                    \
     }                                                                          \
   } while (false)
+#endif
+
 
 class SocialTestRunner::PrivateSocialTestRunner {
 public:
@@ -80,10 +97,8 @@ void SocialTestRunner::check_data_download() {
       cherry_kit::io_surface *surface = a_img->surface();
 
       CK_ASSERT(surface != 0, "Expected a valid Image Surface Got Null");
-      CK_ASSERT(surface->width == 150, "Expected width 150 Got"
-                                           << surface->width);
-      CK_ASSERT(surface->height == 84, "Expected Height 84, Got"
-                                           << surface->height);
+      CK_ASSERT(surface->width == 150, "Expected width 150 Got");
+      CK_ASSERT(surface->height == 84, "Expected Height 84, Got");
       std::cout << __FUNCTION__ << "Before Saving ..." << std::endl;
       a_img->save(surface, "test_cases");
       std::cout << __FUNCTION__ << "After Saving ..." << std::endl;
@@ -123,17 +138,17 @@ void SocialTestRunner::check_xml_loader() {
     const social_kit::remote_result result =
         srv_query.response("flickr.photos.search", response);
     CK_ASSERT(result.get("photo").size() == 30,
-              "expected 30 but got : " << result.get("photo").size());
+              "expected 30 but got : ");
     social_kit::remote_result_data query = result.get("rsp").at(0);
 
     CK_ASSERT(query.get("stat").value() == "ok",
-              "expected OK but got : " << query.get("stat").value());
+              "expected OK but got : ");
 
     /* check photo element */
     social_kit::remote_result_data photo_data = result.get("photo").at(0);
 
     CK_ASSERT(photo_data.get("ispublic").value() == "1",
-              "expected (0) but got : " << photo_data.get("ispublic").value());
+              "expected (0) but got : ");
   });
 
   request->submit(
@@ -167,24 +182,24 @@ void SocialTestRunner::check_json_loader() {
     const social_kit::remote_result result =
         srv_query.response("flickr.photos.search", response);
     CK_ASSERT(result.get("photo").size() == 30,
-              "expected 30 but got : " << result.get("photo").size());
+              "expected 30 but got : ");
 
     /* check photo element */
     social_kit::remote_result_data photo_data = result.get("photo").at(0);
 
     CK_ASSERT(photo_data.get("ispublic").value() == "1",
-              "expected (0) but got : " << photo_data.get("ispublic").value());
+              "expected (0) but got : " );
 
     CK_ASSERT(photo_data.get("title").value().empty() == false,
-              "expected (false) but got : " << photo_data.get("title").value());
+              "expected (false) but got : " );
 
     CK_ASSERT(result.get("stat").size() == 1,
-              "expected 1 but got : " << result.get("stat").size());
+              "expected 1 but got : ");
 
     social_kit::remote_result_data query = result.get("stat").at(0);
 
     CK_ASSERT(query.get("stat").value() == "ok",
-              "expected OK but got : " << query.get("stat").value());
+              "expected OK but got : ");
   });
 
   /* service data */
@@ -219,10 +234,10 @@ void SocialTestRunner::check_service_file() {
 
   CK_ASSERT(
       srv_query.method("flickr.photos.search") == 1,
-      "Invalid Request Type : " << srv_query.method("flickr.photos.search"));
+      "Invalid Request Type : ");
   CK_ASSERT(srv_query.endpoint("flickr.photos.search") ==
                 "https://api.flickr.com/services/rest/",
-            "Invalid Input : " << srv_query.endpoint("flickr.photos.search"));
+            "Invalid Input : ");
 
   /*
   social_kit::string_list argument_list =
@@ -710,7 +725,7 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
   request->on_response_ready([&](const social_kit::url_response &response) {
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
     CK_ASSERT(response.http_version() == "HTTP 1.1",
-              "Invalid Response From Server " << response.http_version());
+              "Invalid Response From Server ");
 
     CK_ASSERT(response.data_buffer()[0] == '{', "Not JSON Data");
     CK_ASSERT(response.data_buffer()[1] == '"', "Not jSON Data");
@@ -722,7 +737,7 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
     const social_kit::remote_result result =
         srv_query.response("pixabay.photo.search", response);
     CK_ASSERT(result.get("hits").size() == 5,
-              "expected 30 but got : " << result.get("hits").size());
+              "expected 30 but got : ");
 
     /* check photo element */
     social_kit::remote_result_data photo_data = result.get("hits").at(0);
@@ -738,19 +753,19 @@ void SocialTestRunner::check_pixabay_sd_photo_search() {
     });
 
     CK_ASSERT(photo_data.get("type").value() == "photo",
-              "expected (0) but got : " << photo_data.get("type").value());
+              "expected (0) but got : " );
 
     CK_ASSERT(
         photo_data.get("previewURL").value().empty() == false,
-        "expected (false) but got : " << photo_data.get("previewURL").value());
+        "expected (false) but got : ");
 
     CK_ASSERT(result.get("total").size() == 1,
-              "expected 1 but got : " << result.get("total").size());
+              "expected 1 but got : " );
 
     social_kit::remote_result_data query = result.get("totalHits").at(0);
 
     CK_ASSERT(query.get("totalHits").value() == "500",
-              "expected 500 but got : " << query.get("totalHits").value());
+              "expected 500 but got : ");
   });
 
   /* service data */

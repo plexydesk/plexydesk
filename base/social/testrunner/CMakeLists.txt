@@ -32,21 +32,63 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 
 
 ########### prepare files ###############
-ADD_EXECUTABLE(social_runtime ${WIN_APPLICATION} ${sourceFiles})
-SET_PROPERTY(TARGET social_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
+
+
+ADD_EXECUTABLE(social_runtime WIN32 ${WIN_APPLICATION} ${sourceFiles})
+
+
+if (ENABLE_WINRT)
+                SET_TARGET_PROPERTIES(social_runtime PROPERTIES LINK_FLAGS_RELEASE "/WINMD /OPT:REF /map Ws2_32.lib WindowsApp.lib /APPCONTAINER  /DYNAMICBASE /SUBSYSTEM:WINDOWS ")
+                SET_TARGET_PROPERTIES(social_runtime PROPERTIES MINSIZEREL "/WINMD /SUBSYSTEM:WINDOWS /OPT:REF /map Ws2_32.lib WindowsApp.lib /APPCONTAINER  /DYNAMICBASE")
+		set_property(TARGET social_runtime PROPERTY VS_WINRT_COMPONENT TRUE)
+endif()
+
+
+#SET_PROPERTY(TARGET social_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
+
 QT5_USE_MODULES(social_runtime Widgets Xml  Core)
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(social_runtime)
 endif(MSVC)
 
+if (ENABLE_WINRT)
+      set(winrt_libs windowsapp.lib)
+endif()
+
+
+
 TARGET_LINK_LIBRARIES(social_runtime
     ${PLEXY_UI_CORE_LIBRARY}
     ${QUETZAL_SOCIAL_KIT_LIBRARY}
+    ${QT_QTMAIN_LIBRARY}
     ${libs}
+    ${winrt_libs}
     )
 
  #DBUS_ADD_ACTIVATION_SERVICE(org.plexydesk.social.service.in)
 
 ########### Install files ###############
+if(UNIX)
 INSTALL(TARGETS social_runtime DESTINATION bin)
+endif(UNIX)
+
+if (ENABLE_WINRT)
+ set(APPX_PUBLISHER "PlexyDesk Social Runtime")
+ set(APPX_VERSION "1.0.3.0")
+ set(APPX_ARCH "x64")
+ set(APPX_BINARY "social_runtime")
+ set(APPX_DEVICE_FAMILY "Windows.Universal")
+ set(APPX_PRODUCT_DISPLAY_NAME "Social Runtime")
+ set(APPX_PRODUCT_DESCRIPTION "Social Manager")
+
+ configure_file(${CMAKE_SOURCE_DIR}/base/social/testrunner/AppxManifest.xml.in ${CMAKE_BINARY_DIR}/base/social/testrunner/AppxManifest.xml)
+
+ install(FILES
+ 	${CMAKE_BINARY_DIR}/base/social/testrunner/AppxManifest.xml
+  	DESTINATION social)
+
+  #install artwork
+  INSTALL(TARGETS social_runtime DESTINATION social)
+
+endif()

@@ -2,7 +2,7 @@
 <!--Document created by: PlexyDesk, http://www.plexydesk.org for Social Framework QuetzalSocialKit -->
 <services>
 	<service name="plexydesk.oauth2.token">
-		<input url="http://localhost:8000/o/token/" type="POST">
+		<input url="http://192.168.1.7:8000/o/token/" type="POST">
                         <arg type="string" optional="false">grant_type</arg>
                         <arg type="string" optional="false">client_id</arg>
                         <arg type="string" optional="false">client_secret</arg>
@@ -42,7 +42,7 @@
 	</service>
 
         <service name="plexydesk.pixabay.token">
-                <input url="http://localhost:8000/api/social/pixabay/token/" type="POST">
+                <input url="http://192.168.1.7:8000/api/social/pixabay/token/" type="POST">
                 </input>
 
                 <result format="json">

@@ -159,6 +159,12 @@ void __stdcall _http_response_func(HINTERNET hInternet, DWORD_PTR dwContext,
 }
 
 void url_request::platform_url_request::send_message_async(
+    url_request_type_t a_type, const std::string &a_url,
+    const url_request_context &a_form_data) {
+    #error "Not Implemented"
+}
+
+void url_request::platform_url_request::send_message_async(
     url_request::url_request_type_t a_type, const std::string &a_message) {
   std::cout << "begin request " << a_message << std::endl;
   USES_CONVERSION;

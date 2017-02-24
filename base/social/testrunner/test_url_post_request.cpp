@@ -20,6 +20,21 @@
 #include <ck_url.h>
 #include <string>
 
+#ifdef __WINDOWS_UWP_PLATFORM__
+#define CK_ASSERT(condition, message)                                          \
+  do {                                                                         \
+    if (!(condition)) {                                                        \
+      qDebug() << "Assertion `" #condition "` failed in "         \
+                << " line " << Q_FUNC_INFO << ": " << QString::fromStdString(std::string(message));       \
+      std::exit(EXIT_FAILURE);                                                 \
+    } else {                                                                   \
+      qDebug() << Q_FUNC_INFO << "  " << #condition       \
+                << "  [PASS]";                                    \
+    }                                                                          \
+  } while (false)
+
+#else
+
 #define CK_ASSERT(condition, message)                                          \
   do {                                                                         \
     if (!(condition)) {                                                        \
@@ -31,13 +46,14 @@
                 << "  [PASS]" << std::endl;                                    \
     }                                                                          \
   } while (false)
+#endif
 
 test_url_post_request::test_url_post_request() {}
 
 void test_url_post_request::run() {
-  // validate_encoded_post_request();
-  // validate_auth_token();
-  validate_plexydesk_org_init();
+   //validate_encoded_post_request();
+   validate_auth_token();
+   validate_plexydesk_org_init();
 }
 
 void test_url_post_request::validate_encoded_post_request() {
@@ -69,7 +85,7 @@ void test_url_post_request::validate_encoded_post_request() {
       social_kit::url_request_context::kMimeTypeUrlEncoded);
 
   request->submit(social_kit::url_request::kPOSTRequest,
-                  "http://localhost:8000/o/token/", input_data);
+                  "http://192.168.1.7:8000/o/token/", input_data);
 }
 
 void test_url_post_request::validate_header_submit() {
@@ -85,7 +101,7 @@ void test_url_post_request::validate_header_submit() {
   /* service data */
   social_kit::url_request_context
       input_data; // social_kit::url_request_form_data();
-
+ 
   input_data.add("username", "linux");
   input_data.add("password", "linux");
   input_data.add("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
@@ -101,7 +117,7 @@ void test_url_post_request::validate_header_submit() {
   input_data.add_header("Authorization", "Bearer 000000");
 
   request->submit(social_kit::url_request::kGETRequest,
-                  "http://localhost:8000/", input_data);
+                  "http://192.168.1.7:8000/", input_data);
 }
 
 void test_url_post_request::validate_auth_token() {
@@ -145,7 +161,7 @@ void test_url_post_request::validate_auth_token() {
       social_kit::url_request_context::kMimeTypeUrlEncoded);
 
   request->submit(social_kit::url_request::kPOSTRequest,
-                  "http://localhost:8000/o/token/", input_data);
+                  "http://192.168.1.7:8000/o/token/", input_data);
 }
 
 void test_url_post_request::validate_plexydesk_org_init() {
@@ -216,6 +232,6 @@ void test_url_post_request::validate_account_register(
       social_kit::url_request_context::kMimeTypeUrlEncoded);
 
   request->submit(social_kit::url_request::kPOSTRequest,
-                  "http://localhost:8000/api/social/pixabay/token/",
+                  "http://192.168.1.7:8000/api/social/pixabay/token/",
                   input_data);
 }
