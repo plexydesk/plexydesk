@@ -18,7 +18,7 @@
   <Properties>
     <DisplayName>plexydesk</DisplayName>
     <PublisherDisplayName>${APPX_PUBLISHER}</PublisherDisplayName>
-    <Logo>assets\appstore-logo.scale400.png</Logo>
+    <Logo>assets\icon_50x50.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -43,7 +43,7 @@
         Square150x150Logo="assets/appstore-logo.scale150.png"
         Square44x44Logo="assets/appstore-logo.scale44.png">
 
-        <uap:SplashScreen Image="resources/icons/default/mdpi/desktop/ck_default_wallpaper.png" />
+        <uap:SplashScreen Image="assets/startup_logo.png" />
       </uap:VisualElements>
     </Application>
   </Applications>

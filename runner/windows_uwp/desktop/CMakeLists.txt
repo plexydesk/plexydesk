@@ -237,8 +237,10 @@ if (ENABLE_WINRT)
   	DESTINATION .)
 
   #install artwork
+  install(FILES assets/startup_logo.png DESTINATION assets)
   install(FILES assets/appstore-logo.scale44.png DESTINATION assets)
   install(FILES assets/appstore-logo.scale150.png DESTINATION assets)
   install(FILES assets/appstore-logo.scale400.png DESTINATION assets)
+  install(FILES assets/icon_50x50.png DESTINATION assets)
 
 endif()
