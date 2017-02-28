@@ -47,6 +47,7 @@ date_dialog::~date_dialog() { delete priv; }
 void date_dialog::create_window() {
   QRectF window_geometry(0, 0, 320, 320);
   QString window_title = "Date";
+
   priv->m_activity_window = new cherry_kit::window();
   priv->m_activity_window->set_geometry(window_geometry);
   priv->m_activity_window->set_window_title(window_title);

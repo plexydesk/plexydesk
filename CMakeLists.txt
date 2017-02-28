@@ -72,6 +72,7 @@ if(COMPILER_SUPPORTS_CXX11_EXTENSIONS)
 else()
     message(WARNING " The compiler ${CMAKE_CXX_COMPILER} has no C++11-extensions support. Please use a different C++ compiler.")
 endif()
+endif()
 
 #cmake options.
 if (NOT SOCIAL_KIT_FLICKR_API_KEY)
@@ -83,9 +84,17 @@ if (NOT SOCIAL_KIT_DROPBOX_API_KEY)
 endif()
 
 if (NOT SOCIAL_KIT_PIXABAY_API_KEY)
-        message(WARNING " Pixabay Developer key not defined by SOCIAL_KIT_PIXABAY_API_KEY, Pixbay Wallpaper search will not function")
+   message(WARNING " Pixabay Developer key not defined by SOCIAL_KIT_PIXABAY_API_KEY, Pixbay Wallpaper search will not function")
 endif()
+
+if (NOT SOCIAL_KIT_CLIENT_ID)
+   message(WARNING "SOCIAL_KIT_CLIENT_ID Not defined Social Authentication will not function")
 endif()
+
+if (NOT SOCIAL_KIT_CLIENT_SECRET)
+   message(WARNING "SOCIAL_KIT_CLIENT_SECRET Not defined Social Authentication will not function")
+endif()
+
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmakemodules)
 
@@ -217,7 +226,6 @@ endif (NOT WIN32)
 if (APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gdwarf-2")
 endif (APPLE)
-
 
 
 # Global variable CMAKE_BUILD_TYPE handling
@@ -433,6 +441,7 @@ add_subdirectory(extensions/data/flickrphotosearch)
 add_subdirectory(extensions/data/httpserver)
 add_subdirectory(extensions/widgets/desktopnotes)
 add_subdirectory(extensions/widgets/date)
+add_subdirectory(extensions/widgets/desksync)
 add_subdirectory(extensions/widgets/template)
 
 if (${ENABLE_JEFF})

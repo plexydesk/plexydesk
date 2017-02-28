@@ -20,6 +20,8 @@
 #include <ck_url.h>
 #include <string>
 
+#include <config.h>
+
 #ifdef __WINDOWS_UWP_PLATFORM__
 #define CK_ASSERT(condition, message)                                          \
   do {                                                                         \
@@ -65,7 +67,7 @@ void test_url_post_request::validate_encoded_post_request() {
     std::string buffer((const char *)data);
     qDebug() << Q_FUNC_INFO << buffer.c_str();
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
-    CK_ASSERT(response.http_version() == "HTTP 1.0",
+    CK_ASSERT(response.http_version() == "HTTP 1.1",
               "Wrong http version -> " + response.http_version());
   });
 
@@ -73,19 +75,16 @@ void test_url_post_request::validate_encoded_post_request() {
   social_kit::url_request_context input_data;
 
   input_data.add("grant_type", "password");
-  input_data.add("username", "linux");
-  input_data.add("password", "linux12345");
-  input_data.add("client_id", "ik88pJ4nczWUtaPloOa9Oiwlty3hsZTD7enS2xY6");
-  input_data.add("client_secret",
-                 "tllaBpCgFXQQkovBDIdV8YVOuQNuUPpN1B"
-                 "cZfTQ3XqQQHa2K5OUcSfZD7dxL8QEezl5E7KgPOhWkx0dZzQoPVB3yO4ItABY"
-                 "  IAwlD3JiPhqfwF9AIQ4o4WcLbpEK0z5Ge");
+  input_data.add("username", K_SOCIAL_KIT_ACCOUNT_USERNAME);
+  input_data.add("password", K_SOCIAL_KIT_ACCOUNT_PASSWORD);
+  input_data.add("client_id", K_SOCIAL_KIT_CLIENT_ID);
+  input_data.add("client_secret", K_SOCIAL_KIT_CLIENT_SECRET);
 
   input_data.set_mime_type(
       social_kit::url_request_context::kMimeTypeUrlEncoded);
 
   request->submit(social_kit::url_request::kPOSTRequest,
-                  "http://192.168.1.7:8000/o/token/", input_data);
+                  "https://plexydesk.org/o/token/", input_data);
 }
 
 void test_url_post_request::validate_header_submit() {
@@ -101,9 +100,9 @@ void test_url_post_request::validate_header_submit() {
   /* service data */
   social_kit::url_request_context
       input_data; // social_kit::url_request_form_data();
- 
-  input_data.add("username", "linux");
-  input_data.add("password", "linux");
+
+  input_data.add("username", K_SOCIAL_KIT_ACCOUNT_USERNAME);
+  input_data.add("password", K_SOCIAL_KIT_ACCOUNT_PASSWORD);
   input_data.add("api_key", K_SOCIAL_KIT_FLICKR_API_KEY);
   input_data.add("text", "sky");
   input_data.add("safe_search", "1");
@@ -117,7 +116,7 @@ void test_url_post_request::validate_header_submit() {
   input_data.add_header("Authorization", "Bearer 000000");
 
   request->submit(social_kit::url_request::kGETRequest,
-                  "http://192.168.1.7:8000/", input_data);
+                  "https://plexydesk.org", input_data);
 }
 
 void test_url_post_request::validate_auth_token() {
@@ -125,7 +124,7 @@ void test_url_post_request::validate_auth_token() {
 
   request->on_response_ready([&](const social_kit::url_response &response) {
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
-    CK_ASSERT(response.http_version() == "HTTP 1.0",
+    CK_ASSERT(response.http_version() == "HTTP 1.1",
               "Wrong http version -> " + response.http_version());
 
     social_kit::remote_service srv_query("org.plexydesk.api.xml");
@@ -143,6 +142,7 @@ void test_url_post_request::validate_auth_token() {
     CK_ASSERT(token_type.get("token_type").value().compare("Bearer") == 0,
               "Invalid access token type");
 
+    //qDebug() << Q_FUNC_INFO << token_data.get("access_token").value().c_str();
     validate_account_register(token_data.get("access_token").value());
   });
 
@@ -150,18 +150,16 @@ void test_url_post_request::validate_auth_token() {
   social_kit::url_request_context input_data;
 
   input_data.add("grant_type", "password");
-  input_data.add("username", "linux");
-  input_data.add("password", "linux12345");
-  input_data.add("client_id", "ik88pJ4nczWUtaPloOa9Oiwlty3hsZTD7enS2xY6");
-  input_data.add("client_secret", "tllaBpCgFXQQkovBDIdV8YVOuQNuUPpN1BcZfTQ3XqQQ"
-                                  "Ha2K5OUcSfZD7dxL8QEezl5E7KgPOhWkx0dZzQoPVB3y"
-                                  "O4ItABYIAwlD3JiPhqfwF9AIQ4o4WcLbpEK0z5Ge");
+  input_data.add("username", K_SOCIAL_KIT_ACCOUNT_USERNAME);
+  input_data.add("password", K_SOCIAL_KIT_ACCOUNT_PASSWORD);
+  input_data.add("client_id", K_SOCIAL_KIT_CLIENT_ID);
+  input_data.add("client_secret", K_SOCIAL_KIT_CLIENT_SECRET);
 
   input_data.set_mime_type(
       social_kit::url_request_context::kMimeTypeUrlEncoded);
 
   request->submit(social_kit::url_request::kPOSTRequest,
-                  "http://192.168.1.7:8000/o/token/", input_data);
+                  "https://plexydesk.org/o/token/", input_data);
 }
 
 void test_url_post_request::validate_plexydesk_org_init() {
@@ -171,13 +169,11 @@ void test_url_post_request::validate_plexydesk_org_init() {
   service->create("org.plexydesk.api.xml");
 
   input_data.insert("grant_type", "password");
-  input_data.insert("username", "linux");
-  input_data.insert("password", "linux12345");
-  input_data.insert("client_id", "ik88pJ4nczWUtaPloOa9Oiwlty3hsZTD7enS2xY6");
-  input_data.insert("client_secret",
-                    "tllaBpCgFXQQkovBDIdV8YVOuQNuUPpN1BcZfTQ3XqQQ"
-                    "Ha2K5OUcSfZD7dxL8QEezl5E7KgPOhWkx0dZzQoPVB3y"
-                    "O4ItABYIAwlD3JiPhqfwF9AIQ4o4WcLbpEK0z5Ge");
+  input_data.insert("username", K_SOCIAL_KIT_ACCOUNT_USERNAME);
+  input_data.insert("password", K_SOCIAL_KIT_ACCOUNT_PASSWORD);
+  input_data.insert("client_id", K_SOCIAL_KIT_CLIENT_ID);
+  input_data.insert("client_secret", K_SOCIAL_KIT_CLIENT_SECRET);
+
   input_data.set_mime_type(
       social_kit::url_request_context::kMimeTypeUrlEncoded);
 
@@ -208,8 +204,9 @@ void test_url_post_request::validate_account_register(
   social_kit::url_request *request = new social_kit::url_request();
 
   request->on_response_ready([&](const social_kit::url_response &response) {
+    qDebug() << QString((const char *)response.data_buffer());
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
-    CK_ASSERT(response.http_version() == "HTTP 1.0",
+    CK_ASSERT(response.http_version() == "HTTP 1.1",
               "Wrong http version -> " + response.http_version());
 
     social_kit::remote_service srv_query("org.plexydesk.api.xml");
@@ -226,12 +223,18 @@ void test_url_post_request::validate_account_register(
 
   /* service data */
   social_kit::url_request_context input_data;
+  input_data.add("grant_type", "password");
+  input_data.add("username", K_SOCIAL_KIT_ACCOUNT_USERNAME);
+  input_data.add("password", K_SOCIAL_KIT_ACCOUNT_PASSWORD);
+  input_data.add("client_id", K_SOCIAL_KIT_CLIENT_ID);
+  input_data.add("client_secret", K_SOCIAL_KIT_CLIENT_SECRET);
+
 
   input_data.add_header("Authorization", "Bearer " + a_access_token);
   input_data.set_mime_type(
       social_kit::url_request_context::kMimeTypeUrlEncoded);
 
   request->submit(social_kit::url_request::kPOSTRequest,
-                  "http://192.168.1.7:8000/api/social/pixabay/token/",
+                  "https://plexydesk.org/api/social/pixabay/token/",
                   input_data);
 }

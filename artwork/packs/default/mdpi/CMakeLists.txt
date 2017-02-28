@@ -7,7 +7,6 @@ file(GLOB panel_icons panel/*.png)
 file(GLOB desktop_icons desktop/*.png)
 file(GLOB branding_icons branding/*.png)
 
-
 install(FILES ${action_icons} DESTINATION ${RESOURCES_DEST_DIR}/default/${icon_dpi}/actions/)
 install(FILES ${toolbar_icons} DESTINATION ${RESOURCES_DEST_DIR}/default/${icon_dpi}/toolbar/)
 install(FILES ${navigation_icons} DESTINATION ${RESOURCES_DEST_DIR}/default/${icon_dpi}/navigation/)

@@ -4,7 +4,6 @@ CONFIGURE_FILE(com.pixabay.json.api.xml ${CMAKE_BINARY_DIR}/base/social/share/so
 CONFIGURE_FILE(com.dropbox.api.v2.xml ${CMAKE_BINARY_DIR}/base/social/share/social/com.dropbox.api.v2.xml)
 CONFIGURE_FILE(org.plexydesk.api.xml ${CMAKE_BINARY_DIR}/base/social/share/social/org.plexydesk.api.xml)
 
-
 #todo: install this file to prefix.
 if (NOT APPLE)
 INSTALL(FILES com.flikr.api.xml DESTINATION share/social/)
