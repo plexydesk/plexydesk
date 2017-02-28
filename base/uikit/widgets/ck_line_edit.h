@@ -45,6 +45,10 @@ public:
 
    virtual bool readonly();
    virtual void set_readonly(bool a_value);
+
+   virtual bool is_password_input();
+   virtual void set_password_input(bool a_secure);
+
 Q_SIGNALS:
   void submit();
   void text(const QString &a_text);

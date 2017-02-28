@@ -20,7 +20,7 @@ public:
     HOVER
   } EditState;
 
-  PrivateLineEdit() : m_is_readonly(0) {}
+  PrivateLineEdit() : m_is_readonly(0), m_password_input(0) {}
 
   ~PrivateLineEdit() {}
 
@@ -38,6 +38,7 @@ public:
   int m_text_cursor;
   int m_text_selection_cursor;
   bool m_text_selection_mode;
+  bool m_password_input;
 
   QList<std::function<void(const QString &)> > m_text_handler_list;
 
@@ -108,6 +109,14 @@ QString line_edit::current_text_selection() const {
 bool line_edit::readonly() { return priv->m_is_readonly; }
 
 void line_edit::set_readonly(bool a_value) { priv->m_is_readonly = a_value; }
+
+bool line_edit::is_password_input() {
+  return priv->m_password_input;
+}
+
+void line_edit::set_password_input(bool a_secure) {
+    priv->m_password_input = a_secure;
+}
 
 QRectF line_edit::current_text_rect(QPainter *a_painter) const {
   int text_cursor_x = 10;
