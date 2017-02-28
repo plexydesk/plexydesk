@@ -1,2 +1,2 @@
-![PlexyDesk Screenshot](http://plexydesk.org/static/images/20140813081911-laptop.png)
-![PlexyDesk Features](http://plexydesk.org/static/images/20140813143025-PlexyDesk_Features.png)
+![PlexyDesk Screenshot](http://plexydesk.org/static/images/tumblr_static_c2h153uu9cocwwowg0owgwg4s_2048_v2.png)
+![PlexyDesk Features](https://static.storekit.org/pexydesk.org/uploaded_media/20140813143025-PlexyDesk_Features.png)
