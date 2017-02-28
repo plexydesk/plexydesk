@@ -109,6 +109,7 @@ void auth_dialog::create_window() {
   prop["text"] = "";
   priv->m_password = dynamic_cast<cherry_kit::line_edit *>(
       priv->m_layout->add_widget(2, 1, "line_edit", prop, [=]() {}));
+  priv->m_password->set_password_input(true);
 
   priv->m_logo = dynamic_cast<cherry_kit::image_view *>(
       priv->m_layout->add_widget(0, 0, "image_view", prop, [=]() {}));

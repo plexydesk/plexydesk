@@ -830,6 +830,10 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features,
                                      const widget *a_widget) {
   cherry_kit::line_edit *ck_line_edit =
       dynamic_cast<cherry_kit::line_edit *>(features.style_object);
+
+  if (!ck_line_edit)
+      return;
+
   QRectF rect = features.geometry.adjusted(0, 0, 0, 0);
 
   set_default_painter_hints(painter);
@@ -854,9 +858,21 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features,
   painter->save();
 
   d->set_pen_color(painter, resource_manager::kTextColor);
-  painter->drawText(
-      features.geometry.adjusted(4.0 * scale_factor(), 0.0, 0.0, 0.0),
-      Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
+
+  if (!ck_line_edit->is_password_input()) {
+    painter->drawText(
+        features.geometry.adjusted(4.0 * scale_factor(), 0.0, 0.0, 0.0),
+        Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
+  } else {
+      float x_pos = 10 * features.text_data.count();
+      for (int x = 0; x < features.text_data.count(); x++) {
+        int y_pos = features.geometry.adjusted(
+                    (6.0 * scale_factor())+ x_pos, 0.0, 0.0, 0.0).center().toPoint().y();
+        QPainterPath password_dot;
+        password_dot.addEllipse(QPoint(8 + (x * 10), y_pos), 4, 4);
+        painter->fillPath(password_dot, d->color(resource_manager::kPrimaryColor));
+      }
+  }
   // cursor handling.
   int cursor_pos = features.attributes["cursor_location"].toInt();
   int selection_cursor = features.attributes["selection_cursor"].toInt();
@@ -880,12 +896,23 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features,
         m.width(features.text_data.left(selection_cursor));
   }
 
-  if (ck_line_edit && !ck_line_edit->readonly()) {
-    QPointF line1(_text_cursor_width_to_left, 8 * scale_factor());
-    QPointF line2(_text_cursor_width_to_left,
+  if (ck_line_edit && !ck_line_edit->readonly()
+          && !ck_line_edit->is_password_input()) {
+    QPointF line1(_text_cursor_width_to_left + 2, 10 * scale_factor());
+    QPointF line2(_text_cursor_width_to_left + 2,
+                  m.height() + (5 * scale_factor()));
+
+    d->set_pen_color(painter, resource_manager::kPrimaryColor, 1);
+
+    painter->drawLine(line1, line2);
+  } else if (ck_line_edit->is_password_input()) {
+    QPointF line1(4 + (features.text_data.count() * 10) * scale_factor(),
+                  8 * scale_factor());
+    QPointF line2(4 + (features.text_data.count() * 10) * scale_factor(),
                   m.height() + (4 * scale_factor()));
 
     d->set_pen_color(painter, resource_manager::kPrimaryColor, 1);
+
     painter->drawLine(line1, line2);
   }
 
