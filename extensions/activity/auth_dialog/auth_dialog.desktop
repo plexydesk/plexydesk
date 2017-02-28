@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=auth
+Type=Activity
+Comment=Account Authentication Dialog
+X-PLEXYDESK-Library=auth_dialog
