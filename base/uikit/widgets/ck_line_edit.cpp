@@ -20,7 +20,8 @@ public:
     HOVER
   } EditState;
 
-  PrivateLineEdit() : m_is_readonly(0), m_password_input(0) {}
+  PrivateLineEdit() : m_is_readonly(0), m_password_input(0)
+    , m_has_key_focus(0) {}
 
   ~PrivateLineEdit() {}
 
@@ -39,6 +40,7 @@ public:
   int m_text_selection_cursor;
   bool m_text_selection_mode;
   bool m_password_input;
+  bool m_has_key_focus;
 
   QList<std::function<void(const QString &)> > m_text_handler_list;
 
@@ -61,6 +63,13 @@ line_edit::line_edit(widget *parent)
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
   setAcceptHoverEvents(true);
+
+  on_input_event([this](widget::InputEvent a_type, const widget *a_widget) {
+      if (a_type == widget::kFocusOutEvent) {
+        priv->m_has_key_focus = false;
+        update();
+     }
+  });
 }
 
 line_edit::~line_edit() { delete priv; }
@@ -117,6 +126,19 @@ bool line_edit::is_password_input() {
 void line_edit::set_password_input(bool a_secure) {
     priv->m_password_input = a_secure;
 }
+
+bool line_edit::has_input_focus() const
+{
+    return priv->m_has_key_focus;
+}
+
+void line_edit::set_input_focus(bool a_focus)
+{
+   priv->m_has_key_focus = a_focus;
+
+   update();
+}
+
 
 QRectF line_edit::current_text_rect(QPainter *a_painter) const {
   int text_cursor_x = 10;
@@ -179,6 +201,8 @@ void line_edit::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {
 }
 
 void line_edit::mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr) {
+  priv->m_has_key_focus = true;
+
   a_event_ptr->accept();
   if (!priv->m_is_readonly) {
     priv->mState = PrivateLineEdit::FOCUSED;
@@ -213,6 +237,9 @@ void line_edit::hoverEnterEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
 }
 
 void line_edit::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+
+  priv->m_has_key_focus = false;
+
   if (!priv->m_is_readonly) {
     ungrabKeyboard();
     priv->mState = PrivateLineEdit::NORMAL;
@@ -220,6 +247,7 @@ void line_edit::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     update();
   }
   widget::hoverLeaveEvent(event);
+  update();
 }
 
 void line_edit::hoverMoveEvent(QGraphicsSceneHoverEvent *a_event_ptr) {
@@ -247,6 +275,8 @@ bool line_edit::eventFilter(QObject *object, QEvent *a_event_ptr) {
 void line_edit::keyPressEvent(QKeyEvent *a_event_ptr) {
   if (priv->m_is_readonly)
     return;
+
+  priv->m_has_key_focus = true;
 
   if (a_event_ptr->key() == Qt::Key_Shift) {
     widget::keyPressEvent(a_event_ptr);
@@ -307,11 +337,12 @@ void line_edit::keyPressEvent(QKeyEvent *a_event_ptr) {
     Q_EMIT submit();
     return;
   }
+
   priv->m_editor_text.insert(priv->m_text_cursor, a_event_ptr->text());
 
   priv->m_text_cursor++;
 
-  Q_EMIT text(priv->m_editor_text);
+  //Q_EMIT text(priv->m_editor_text);
 
   foreach(std::function<void(const QString &)> _func,
           priv->m_text_handler_list) {

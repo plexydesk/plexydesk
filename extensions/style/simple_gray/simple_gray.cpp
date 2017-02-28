@@ -897,7 +897,8 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features,
   }
 
   if (ck_line_edit && !ck_line_edit->readonly()
-          && !ck_line_edit->is_password_input()) {
+          && !ck_line_edit->is_password_input()
+          && ck_line_edit->has_input_focus()) {
     QPointF line1(_text_cursor_width_to_left + 2, 10 * scale_factor());
     QPointF line2(_text_cursor_width_to_left + 2,
                   m.height() + (5 * scale_factor()));
@@ -905,7 +906,8 @@ void SimpleGrayStyle::draw_line_edit(const style_data &features,
     d->set_pen_color(painter, resource_manager::kPrimaryColor, 1);
 
     painter->drawLine(line1, line2);
-  } else if (ck_line_edit->is_password_input()) {
+  } else if (ck_line_edit->is_password_input()
+             && ck_line_edit->has_input_focus()) {
     QPointF line1(4 + (features.text_data.count() * 10) * scale_factor(),
                   8 * scale_factor());
     QPointF line2(4 + (features.text_data.count() * 10) * scale_factor(),

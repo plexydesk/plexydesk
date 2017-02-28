@@ -49,6 +49,9 @@ public:
    virtual bool is_password_input();
    virtual void set_password_input(bool a_secure);
 
+   virtual bool has_input_focus() const;
+   virtual void set_input_focus(bool a_focus);
+
 Q_SIGNALS:
   void submit();
   void text(const QString &a_text);
