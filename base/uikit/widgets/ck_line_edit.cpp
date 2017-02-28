@@ -62,13 +62,20 @@ line_edit::line_edit(widget *parent)
           .toInt()));
 
   setFlag(QGraphicsItem::ItemIsMovable, false);
+  setFlag(QGraphicsItem::ItemIsFocusable, true);
   setAcceptHoverEvents(true);
 
   on_input_event([this](widget::InputEvent a_type, const widget *a_widget) {
       if (a_type == widget::kFocusOutEvent) {
         priv->m_has_key_focus = false;
         update();
-     }
+        ungrabKeyboard();
+     } else if (a_type == widget::kFocusInEvent) {
+          priv->m_has_key_focus = true;
+          setFocus(Qt::TabFocusReason);
+          grabKeyboard();
+          update();
+      }
   });
 }
 

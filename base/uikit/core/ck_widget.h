@@ -119,6 +119,10 @@ public:
   virtual void set_screen_id(int a_screen_id);
   virtual int screen_id() const;
 
+  virtual void set_focus_buddy(widget *a_buddy);
+  virtual widget *focus_buddy() const;
+
+  virtual void request_focus();
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
   virtual void paint(QPainter *a_painter_ptr,
@@ -129,6 +133,7 @@ protected:
                           const QSizeF &a_constraint = QSizeF()) const;
 
   virtual void focusOutEvent(QFocusEvent *a_event_ptr);
+  virtual void focusInEvent(QFocusEvent *a_event_ptr);
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
 

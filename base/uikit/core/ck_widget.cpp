@@ -34,7 +34,8 @@ typedef std::function<void(widget::InputEvent, const widget *)>
 class widget::PrivateWidget {
 public:
   PrivateWidget()
-      : m_surface(0), m_widget_controller(0), m_identifier(0), m_screen_id(0) {}
+      : m_surface(0), m_widget_controller(0), m_identifier(0), m_screen_id(0),
+  m_focus_next(0) {}
   ~PrivateWidget() {
     if (m_surface)
       free(m_surface);
@@ -55,12 +56,15 @@ public:
   std::vector<UpdateCallback> m_update_monitor_list;
   std::vector<std::function<void()>> m_on_click_handlers;
 
+
   WidgetList m_child_list;
   unsigned char *m_surface;
 
   QRectF m_content_rect;
 
   int m_screen_id;
+
+  widget *m_focus_next;
 };
 
 widget::widget(widget *parent)
@@ -178,6 +182,18 @@ void widget::set_screen_id(int a_screen_id) {
 }
 
 int widget::screen_id() const { return priv->m_screen_id; }
+
+void widget::set_focus_buddy(widget *a_buddy) {
+  priv->m_focus_next = a_buddy;
+}
+
+widget *widget::focus_buddy() const {
+    return priv->m_focus_next;
+}
+
+void widget::request_focus() {
+    setFocus(Qt::TabFocusReason);
+}
 
 void widget::set_widget_name(const QString &a_name) {
   priv->m_name = a_name;
@@ -307,6 +323,13 @@ void widget::focusOutEvent(QFocusEvent *event) {
 
   exec_func(kFocusOutEvent, this);
   QGraphicsObject::focusOutEvent(event);
+}
+
+void widget::focusInEvent(QFocusEvent *a_event_ptr)
+{
+  a_event_ptr->accept();
+  exec_func(kFocusInEvent, this);
+  QGraphicsObject::focusInEvent(a_event_ptr);
 }
 
 float widget::scale_factor_for_width() const {

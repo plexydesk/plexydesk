@@ -273,7 +273,35 @@ void workspace::wheelEvent(QWheelEvent *a_event_ptr) {
 
 void workspace::focusOutEvent(QFocusEvent *a_event_ref) {
   if (current_active_space())
-    current_active_space()->reset_focus();
+      current_active_space()->reset_focus();
+}
+
+bool workspace::event(QEvent *a_event)
+{
+    switch (a_event->type()) {
+        case QEvent::KeyPress: {
+            QKeyEvent *k = (QKeyEvent *)a_event;
+            QGraphicsView::keyPressEvent(k);
+            if (k->key() == Qt::Key_Backtab
+                || (k->key() == Qt::Key_Tab && (k->modifiers() & Qt::ShiftModifier))
+                || (k->key() == Qt::Key_Tab) ) {
+                a_event->accept();
+                QGraphicsItem *item = scene()->focusItem();
+
+                if (item) {
+                   item->clearFocus();
+                   widget *_current_widget = dynamic_cast<widget*>(item);
+                   if (_current_widget && _current_widget->focus_buddy()) {
+                      _current_widget->focus_buddy()->setFocus(
+                                  Qt::TabFocusReason);
+                   }
+                }
+            }
+            return true;
+        }
+        default:
+            return QGraphicsView::event( a_event );
+    }
 }
 
 float workspace::desktop_verticle_scale_factor() {

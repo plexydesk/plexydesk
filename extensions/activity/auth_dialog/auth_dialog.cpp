@@ -119,9 +119,11 @@ void auth_dialog::create_window() {
       cherry_kit::resource_manager::instance()->drawable_file_name(
           "mdpi", "desktop/ck_login_ui_logo.png");
 
-      QPixmap pixmap(default_wallpaper_file);
       priv->m_logo->set_pixmap(default_wallpaper_file);
   }
+
+  priv->m_username->set_focus_buddy(priv->m_password);
+  priv->m_password->set_focus_buddy(priv->m_username);
 
   priv->m_main_window->set_window_content(priv->m_layout->viewport());
 }

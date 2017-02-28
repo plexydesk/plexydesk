@@ -81,6 +81,8 @@ protected:
   virtual void wheelEvent(QWheelEvent *a_event_ptr);
   virtual void focusOutEvent(QFocusEvent *a_event_ref);
 
+  virtual bool event(QEvent *a_event);
+
 private:
   class PrivateWorkSpace;
   PrivateWorkSpace *const priv;
