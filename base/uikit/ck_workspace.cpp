@@ -512,13 +512,14 @@ void workspace::remove(space *a_space_ptr) {
 
   priv->m_space_count = priv->m_space_count - 1;
 
-  delete a_space_ptr;
 
   // adjust geometry of the remaining spaces.
   update_space_geometry(a_space_ptr, _deleted_geometry);
 
   // update the removed spaces into session
   save_space_removal_session_data(_space_ref);
+
+  delete a_space_ptr;
 }
 
 QPixmap workspace::thumbnail(space *a_space, int a_scale_factor) {

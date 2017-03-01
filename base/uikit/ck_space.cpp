@@ -143,9 +143,9 @@ void space::add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr,
         remove_window_from_view(window);
   });
 
-  a_activity_ptr->on_discarded([this](desktop_dialog *a_activity) {
-    on_activity_finished(a_activity);
-  });
+ a_activity_ptr->on_discarded([=](desktop_dialog *a_activity) {
+     on_activity_finished(a_activity);
+ });
 
   if (m_managed) {
     a_activity_ptr->dialog_window()->on_window_discarded([=](
@@ -492,6 +492,7 @@ QString space::session_name_for_controller(const QString &a_controller_name) {
 }
 
 void space::clear() {
+  /*
   int i = 0;
   foreach(desktop_dialog_ref _activity, ctx->m_activity_list) {
     qDebug() << Q_FUNC_INFO << "Remove Activity: ";
@@ -500,6 +501,7 @@ void space::clear() {
     }
     i++;
   }
+  */
 
   // delete owner widgets
   for (window *_widget : ctx->m_window_list) {

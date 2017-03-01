@@ -133,9 +133,15 @@ cherry_kit::window *auth_dialog::dialog_window() const {
 }
 
 bool auth_dialog::purge() {
+  if (priv->m_layout) {
+      qDebug() << Q_FUNC_INFO << "Delete Layout";
+      delete priv->m_layout;
+  }
+
   if (priv->m_main_window) {
     delete priv->m_main_window;
   }
+
   priv->m_main_window = 0;
 
   return true;
