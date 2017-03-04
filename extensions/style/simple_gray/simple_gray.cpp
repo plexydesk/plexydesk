@@ -248,6 +248,7 @@ void SimpleGrayStyle::draw_push_button(const style_data &features,
   }
 
   painter->drawText(features.geometry, Qt::AlignCenter, features.text_data);
+
   painter->restore();
 }
 
@@ -270,6 +271,11 @@ void SimpleGrayStyle::draw_window_button(const style_data &features,
   background.addRoundedRect(rect, 4.0 * scale_factor(), 4.0 * scale_factor());
 
   if (features.render_state == style_data::kRenderElement) {
+    painter->save();
+    painter->setPen(QColor("#ffffff"));
+    painter->setOpacity(0.5);
+    painter->drawPath(background);
+    painter->restore();
     painter->fillPath(background, d->color(resource_manager::kTextColor));
   } else {
     painter->fillPath(background, d->color(resource_manager::kAccentColor));
@@ -444,6 +450,17 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
 
   if (ck_window && ck_window->window_type() != window::kPanelWindow) {
     QRectF window_title_rect(12, 5, rect.width() - 16, 48.0 * scale_factor());
+    QRectF window_title_fill(0, 0, rect.width() , 48.0 * scale_factor());
+
+    /* window border */
+    QPainterPath border_path;
+    border_path.addRoundedRect(window_title_fill, 4.0, 4.0);
+
+    a_ctx->save();
+    a_ctx->setPen(QColor("#ffffff"));
+    a_ctx->setOpacity(0.8);
+    a_ctx->drawPath(window_background_path);
+    a_ctx->restore();
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
