@@ -10,6 +10,7 @@
 #include <ck_line_edit.h>
 #include <ck_calendar_view.h>
 #include <ck_clock_view.h>
+#include <ck_progress_bar.h>
 
 #include <ck_dial_view.h>
 #include <ck_image_view.h>
@@ -67,6 +68,9 @@ public:
                                       const widget_properties_t &a_props);
 
   widget *add_new_text_edit_at(int a_row, int a_col,
+                               const widget_properties_t &a_props,
+                               widget_handler_callback_t a_callback);
+  widget *add_new_progress_bar_at(int a_row, int a_col,
                                const widget_properties_t &a_props,
                                widget_handler_callback_t a_callback);
   widget *add_new_line_edit_at(int a_row, int a_col,
@@ -296,6 +300,9 @@ widget *fixed_layout::add_widget(int a_row, int a_column,
     break;
   case kLineEdit:
     rv = priv->add_new_line_edit_at(a_row, a_column, a_properties, a_callback);
+    break;
+  case kProgressBar:
+    rv = priv->add_new_progress_bar_at(a_row, a_column, a_properties, a_callback);
     break;
   default:
     rv = 0;
@@ -592,6 +599,28 @@ widget *fixed_layout::PrivateViewBuilder::add_new_text_edit_at(
   layout();
 
   return editor;
+}
+
+widget *fixed_layout::PrivateViewBuilder::add_new_progress_bar_at(int a_row,
+                                                                  int a_col,
+                                                                  const widget_properties_t &a_props,
+                                                                  widget_handler_callback_t a_callback) {
+  cherry_kit::progress_bar *_progress_widget =
+          new cherry_kit::progress_bar(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = _progress_widget;
+  m_ui_type_dict[pos] = kProgressBar;
+
+  _progress_widget->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                              calculate_cell_height(a_row, a_col)));
+  _progress_widget->set_size(
+              QSizeF(calculate_cell_width(a_row, a_col),
+              calculate_cell_height(a_row, a_col))
+              );
+  layout();
+
+  return _progress_widget;
 }
 
 widget *fixed_layout::PrivateViewBuilder::add_new_line_edit_at(
