@@ -60,15 +60,6 @@ void desksync_controller::set_view_rect(const QRectF &a_rect) {
     delete sync;
   });
 
-  /*
-  cherry_kit::sync_object *obj = new cherry_kit::sync_object();
-  obj->set_name("social");
-
-  obj->set_property("service_name", "plexydesk");
-  obj->set_property("app_key", "xxx");
-
-  sync->add_object(*obj);
-  */
 
   sync->find("social", "service_name", "plexydesk");
 }
@@ -86,13 +77,5 @@ void desksync_controller::show_auth_dialog() {
           viewport()->create_activity("auth_dialog");
 
   ck_activity->on_notify([=](const std::string &key, const std::string &value) {
-    if (key.compare("token") == 0) {
-        qDebug() << Q_FUNC_INFO << "Token :" << value.c_str();
-
-
-      //o_ctr->m_background_texture = "file:///" + value;
-      //o_ctr->m_background_window->set_background(value);
-      //viewport()->update_session_value(controller_name(), "", "");
-    }
   });
 }
