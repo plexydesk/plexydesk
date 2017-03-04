@@ -38,6 +38,8 @@ public:
   cherry_kit::window *dialog_window() const;
   bool purge();
 
+  void request_login();
+
 private:
   class Privateauth;
   Privateauth *const priv;
