@@ -38,12 +38,15 @@ void desksync_controller::init() {}
 
 void desksync_controller::session_data_ready(
     const cherry_kit::sync_object &a_session_root) {
-
 }
 
 void desksync_controller::submit_session_data(cherry_kit::sync_object *a_obj) {}
 
 void desksync_controller::set_view_rect(const QRectF &a_rect) {
+  if (a_rect.width() < 1 && a_rect.height() < 1) {
+    return;
+  }
+
   cherry_kit::data_sync *sync = new cherry_kit::data_sync("Global");
   cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
@@ -53,13 +56,11 @@ void desksync_controller::set_view_rect(const QRectF &a_rect) {
                             const std::string &a_app_name, bool a_found) {
 
     if (!a_found) {
-        //call ui
         show_auth_dialog();
     }
 
     delete sync;
   });
-
 
   sync->find("social", "service_name", "plexydesk");
 }
@@ -69,10 +70,6 @@ bool desksync_controller::remove_widget(cherry_kit::widget *a_widget_ptr) {
 }
 
 void desksync_controller::show_auth_dialog() {
-  QRectF dialog_window_geometry(0, 0, 520, 340);
-  QPointF qt_activity_window_location = viewport()->center(
-      dialog_window_geometry, QRectF(), cherry_kit::space::kCenterOnViewport);
-
   cherry_kit::desktop_dialog_ref ck_activity =
           viewport()->create_activity("auth_dialog");
 
