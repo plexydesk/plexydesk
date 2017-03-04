@@ -180,10 +180,10 @@ void window::set_window_content(widget *a_widget_ptr) {
   if (priv->m_window_type != kFramelessWindow) {
 #ifndef __APPLE__
     QGraphicsDropShadowEffect *lEffect = new QGraphicsDropShadowEffect(this);
-    lEffect->setColor(QColor("#111111"));
-    lEffect->setBlurRadius(8);
-    lEffect->setXOffset(1);
-    lEffect->setYOffset(1);
+    lEffect->setColor(QColor("#000000"));
+    lEffect->setBlurRadius(22);
+    lEffect->setXOffset(0);
+    lEffect->setYOffset(0);
     setGraphicsEffect(lEffect);
 #endif
   }
