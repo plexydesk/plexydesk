@@ -138,9 +138,9 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
 }
 
 void resource_manager::load_default_color_values() {
-  priv->m_color_map[kDarkPrimaryColor] = "#1976D2";
+  priv->m_color_map[kDarkPrimaryColor] = "#5CAFE5";
   priv->m_color_map[kPrimaryColor] = "#2196F3";
-  priv->m_color_map[kLightPrimaryColor] = "#F0F0F0";
+  priv->m_color_map[kLightPrimaryColor] = "#EFEFEF";
   priv->m_color_map[kTextBackground] = "#FFFFFF";
   priv->m_color_map[kAccentColor] = "#FF4081";
   priv->m_color_map[kTextColor] = "#757D85";
