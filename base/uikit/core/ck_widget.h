@@ -73,7 +73,6 @@ public:
   virtual void set_contents_geometry(float a_x, float a_y, float a_width,
                                      float a_height);
   virtual QRectF boundingRect() const;
-  virtual void setGeometry(const QRectF &rect);
 
   virtual void set_coordinates(float a_x, float a_y);
   // todo : pos() ?
@@ -144,6 +143,7 @@ protected:
   virtual void exec_func(InputEvent a_type, const widget *a_widget_ptr);
   virtual void invoke_click_handlers();
 
+  virtual void setGeometry(const QRectF &rect);
 private:
   class PrivateWidget;
   PrivateWidget *const priv;

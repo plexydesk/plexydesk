@@ -56,7 +56,8 @@ void date_dialog::create_window() {
       new cherry_kit::fixed_layout(priv->m_activity_window);
 
   priv->m_layout->set_content_margin(5, 5, 5, 5);
-  priv->m_layout->set_geometry(0, 0, window_geometry.width(), window_geometry.height());
+  priv->m_layout->set_geometry(0, 0, window_geometry.width(),
+                               window_geometry.height());
 
   priv->m_layout->add_rows(2);
   priv->m_layout->add_segments(0, 1);
