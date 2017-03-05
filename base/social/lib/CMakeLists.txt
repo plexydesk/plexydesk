@@ -93,6 +93,8 @@ endif()
 set(sourceFiles
     ck_url.cpp
     ck_remote_service.cpp
+    ck_remote_account.cpp
+    ck_remote_account_sync.cpp
     webservice.cpp
     asyncimageloader.cpp
     asyncimagecreator.cpp
@@ -105,6 +107,8 @@ set(sourceFiles
 set(headerFiles
     ck_url.h
     ck_remote_service.h
+    ck_remote_account.h
+    ck_remote_account_sync.h
     webservice.h
     asyncimageloader.h
     asyncimagecreator.h
