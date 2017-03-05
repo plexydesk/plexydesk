@@ -66,7 +66,6 @@ if(UNIX)
 endif(UNIX)
 
 ########### Prepare files ###############
-message("Building for windows 32 ${APPLICATION_EXE_NAME} - ${WIN_APPLICATION}")
 ADD_EXECUTABLE(${APPLICATION_EXE_NAME} ${APP_TYPE} ${WIN_APPLICATION} ${sourceFiles} ${resourceFiles} ${QT_MOC_SRCS})
 set_property(TARGET ${APPLICATION_EXE_NAME} PROPERTY VS_WINRT_COMPONENT TRUE)
 

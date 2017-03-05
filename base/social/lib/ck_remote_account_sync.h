@@ -21,8 +21,12 @@ public:
   ck_remote_account_sync *instance();
   virtual ~ck_remote_account_sync();
 
-  virtual void on_account_discovered(discovery_notify_t a_callable);
+  virtual void add_account(const ck_remote_account &a_account);
+  virtual ck_remote_account account(const std::string &a_account_name);
 
+  virtual void on_account_discovered(discovery_notify_t a_callable);
+  virtual void on_account_changed(discovery_notify_t a_callable);
+  virtual void on_account_ready(discovery_notify_t a_callable);
 private:
   ck_remote_account_sync();
 

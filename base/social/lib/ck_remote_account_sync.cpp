@@ -40,9 +40,26 @@ ck_remote_account_sync::~ck_remote_account_sync()
   g_sync = 0;
 }
 
+void ck_remote_account_sync::add_account(const ck_remote_account &a_account) {
+}
+
+ck_remote_account ck_remote_account_sync::account(
+    const std::string &a_account_name)
+{
+}
+
 void ck_remote_account_sync::on_account_discovered(
     discovery_notify_t a_callable)
 {
   ctx->m_discovery_notify_callables.push_back(a_callable);
+}
+
+void ck_remote_account_sync::on_account_changed(discovery_notify_t a_callable)
+{
+}
+
+void ck_remote_account_sync::on_account_ready(discovery_notify_t a_callable)
+{
+
 }
 }

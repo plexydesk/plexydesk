@@ -26,7 +26,6 @@ if(BUILD_WITH_QT)
   add_definitions(-D__QT_TOOLKIT__)
 endif()
 
-
 if(BUILD_OPTIMIZED)
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native")
@@ -47,14 +46,14 @@ elseif(COMPILER_SUPPORTS_CXX0X)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
     message(STATUS "The compiler ${CMAKE_CXX_COMPILER} supports C++10x")
 else()
-    message(WARNING " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+	message(STATUS " The compiler ${CMAKE_CXX_COMPILER} supports c++11 - no")
 endif()
 
 if(COMPILER_SUPPORTS_CXX11_EXTENSIONS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11-extensions")
     message(STATUS "The compiler ${CMAKE_CXX_COMPILER} supports C++11-extensions")
 else()
-    message(WARNING " The compiler ${CMAKE_CXX_COMPILER} has no C++11-extensions support. Please use a different C++ compiler.")
+	message(STATUS "The compiler ${CMAKE_CXX_COMPILER}  C++11-extensions support - no")
 endif()
 endif()
 
@@ -103,10 +102,10 @@ find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED Gui Core Xml Widgets Network)
 if (UNIX AND NOT APPLE)
   find_package(Threads REQUIRED)
   find_package(X11 REQUIRED)
-  find_package(Qt5X11Extras)
 
   if (${X11_FOUND})
     add_definitions(-D__X11_PLATFORM__)
+    find_package(Qt5X11Extras)
   endif()
 endif(UNIX AND NOT APPLE)
 
@@ -212,13 +211,13 @@ endif()
 INCLUDE(PkgConfigGetVar)
 INCLUDE(GNUInstallDirs)
 
-set(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
+#set(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
 
 # On Windows we use a predefined QT_IMPORTS_INSTALL_DIR
 if (NOT WIN32)
     # Workaround for platforms that do not provide it (Ubuntu)
     IF(NOT QT_IMPORTS_DIR)
-        MESSAGE("QT_IMPORTS_DIR not present...\nUsing a built in one: ${CMAKE_INSTALL_FULL_LIBDIR}/qt4/imports")
+	    MESSAGE(STATUS "QT_IMPORTS_DIR not present... use fallback: ${CMAKE_INSTALL_FULL_LIBDIR}/qt5/imports")
         set(QT_IMPORTS_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/imports)
     ELSE(NOT QT_IMPORTS_DIR)
         # Making QT_IMPORTS_INSTALL_DIR relative. This is a dirty hack but should work
