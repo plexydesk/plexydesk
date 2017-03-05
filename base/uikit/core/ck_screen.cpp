@@ -9,7 +9,7 @@
 #include <core/mac/ck_screen_impl_mac.h>
 #endif
 
-#ifdef __WINDOWS_PLATFORM__
+#if defined(__WINDOWS_PLATFORM__) || defined(__WINDOWS_UWP_PLATFORM__)
 //#error "Windows Platform Screen Support not Implemented"
 #include <core/qt/ck_screen_impl_qt.h>
 #endif

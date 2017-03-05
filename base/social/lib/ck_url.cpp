@@ -18,6 +18,11 @@
 #include "ck_url_request_windows.h"
 #endif
 
+#ifdef __WINDOWS_UWP_PLATFORM__
+#include "ck_url_request_windows.h"
+#endif
+
+
 #include <iostream>
 
 namespace social_kit {

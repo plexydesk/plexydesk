@@ -13,40 +13,24 @@ CMAKE_POLICY(SET CMP0043 NEW)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if(MSVC_VERSION GREATER 1700)
-  set(COMPILER_VERSION "12")
-elseif(MSVC_VERSION GREATER 1600)
-  set(COMPILER_VERSION "11")
-endif()
-
+#Windows Pre Configure
+include(configure_windows.cmake)
 
 #handle platform options
 option(BUILD_WITH_QT "Enable Qt ToolKit to Build PlexyDesk" ON)
 option(BUILD_OPTIMIZED "Enable Compiler Optimizations" OFF)
 option(ENABLE_DEVELOPER_BUILD "Build PlexyDesk without Code Signing" ON)
 
-if (WIN32)
-  #set(CPACK_SEddT_DESTDIR true)
-  set(CPACK_INSTALL_PREFIX "c:/cpack_root")
-endif()
-if (WIN32)
- FILE (TO_NATIVE_PATH ${CMAKE_INSTALL_PREFIX} CMAKE_INSTALL_NATIVE_PREFIX)
- MESSAGE(STATUS ${CMAKE_INSTALL_NATIVE_PREFIX})
-endif()
-
 if(BUILD_WITH_QT)
   add_definitions(-DBUILD_WITH_QT=1)
   add_definitions(-D__QT_TOOLKIT__)
 endif()
 
-if (ENABLE_WINRT)
-    add_definitions(-D__WINDOWS_UWP_PLATFORM__)
-endif()
 
 if(BUILD_OPTIMIZED)
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native")
-        endif()
+  endif()
 endif()
 #check if the compiler support c++11
 include(CheckCXXCompilerFlag)
@@ -63,7 +47,7 @@ elseif(COMPILER_SUPPORTS_CXX0X)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
     message(STATUS "The compiler ${CMAKE_CXX_COMPILER} supports C++10x")
 else()
-    message(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+    message(WARNING " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
 if(COMPILER_SUPPORTS_CXX11_EXTENSIONS)
@@ -140,10 +124,6 @@ if (APPLE)
   add_definitions(-D__APPLE_PLATFORM__)
 endif()
 
-if (WIN32)
-  add_definitions(-D__WINDOWS_PLATFORM__)
-endif()
-
 # Project variables that need to be defined manually
 set(LIB_MAJOR 1)
 set(LIB_MINOR 0)
@@ -155,22 +135,6 @@ set(APPLICATION_DATE 2015-01-01)
 # Auto defined project variables
 set(APPLICATION_NAME "${PROJECT_NAME}")
 set(APPLICATION_MAIN_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
-
-
-#look for windows signtool
-if (WIN32)
-
-  GET_FILENAME_COMPONENT(WINSDK_DIR
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows;CurrentInstallFolder]" REALPATH CACHE)
-  find_program(SIGNTOOL signtool
-    PATHS
-    ${WINSDK_DIR}/bin)
-  if (SIGNTOOL)
-     message(STATUS "signtool.exe found .... [success]")
-  else()
-     message(FATAL_ERROR "signtool.exe is not found in your computer")
-  endif()
-endif()
 
 #Library Names
 if (BUILD_WITH_QT)
@@ -184,17 +148,6 @@ else()
   set(QUETZAL_SOCIAL_KIT_LIBRARY QuetzalSocialKit)
   set(QUETZAL_DATA_KIT_LIBRARY QuetzalDataKit)
 endif()
-
-# Check on Windows if we have used CMAKE_INSTALL_PREFIX or default it to
-# outsource special ready path
-# Set the install prefix
-if (WIN32)
-    IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-        set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${APPLICATION_EXE_NAME}-ready-build" CACHE PATH "default install path" FORCE)
-    endif()
-    STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
-    MESSAGE(STATUS "CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}")
-endif(WIN32)
 
 if (APPLE)
     set(MACOSX_BUNDLE_EXECUTABLE_NAME "plexydesk")
@@ -213,10 +166,6 @@ endif (APPLE)
 if (NOT APPLE AND UNIX)
     set(RESOURCES_DEST_DIR share/icons/plexydesk/resources/icons/)
 endif ()
-
-if (WIN32)
-    set(RESOURCES_DEST_DIR resources/icons/)
-endif()
 
 #set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS})
 if (NOT WIN32)
@@ -291,12 +240,6 @@ if (MSVC AND MSVC_VERSION GREATER 1500)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /ZW -DDEFINE_LITTLE_ENDIAN -DDEFINE_TRACE -DDEFINE_WINDOWS_UNIVERSAL -D_CRT_SECURE_NO_WARNINGS")
     endif()
 endif(MSVC AND MSVC_VERSION GREATER 1500)
-
-if (WIN32)
-    set(FFMPEG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/win32/ffmpeg/include)
-    set(FFMPEG_LIBRARIES avcodec avdevice avformat avutil)
-    set(FFMPEG_FOUND TRUE)
-endif(WIN32)
 
 CONFIGURE_FILE(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
@@ -374,26 +317,6 @@ INCLUDE_DIRECTORIES(
     ${QT_INCLUDE_DIR}
     )
 
-set(CPACK_GENERATOR WIX)
-set(CPACK_WIX_TEMPLATE "${CMAKE_SOURCE_DIR}/cmakemodules/plexydesk-windows-installer.in.txt")
-set(CPACK_PACKAGE_NAME "plexydesk")
-set(CPACK_PACKAGE_VENDOR "plexydesk.org")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Super Charged Desktop Widgets")
-set(CPACK_PACKAGE_VERSION "${LIB_MAJOR}.${LIB_MINOR}.${LIB_RELEASE}")
-set(CPACK_PACKAGE_VERSION_MAJOR "${LIB_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${LIB_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${LIB_RELEASE}")
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "PlexyDesk")
-set(CPACK_CREATE_DESKTOP_LINKS plexydesk)
-set(CPACK_PACKAGE_EXECUTABLES plexydesk "PlexyDesk (Cherry)")
-set(CPACK_WIX_UPGRADE_GUID ${PACKAGE_GUID})
-set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/artwork/icons/plexydesk.ico")
-set(CPACK_WIX_UI_DIALOG "${CMAKE_CURRENT_SOURCE_DIR}/artwork/icons/wix_install_side_banner.bmp")
-set(CPACK_WIX_UI_BANNER "${CMAKE_CURRENT_SOURCE_DIR}/artwork/icons/wix_install_top_banner.bmp")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/License.txt")
-set(CPACK_WIX_PROGRAM_MENU_FOLDER "PlexyDesk")
-#set(CPACK_WIX_UI_REF "WixUI_Advanced")
-
 INCLUDE(CPack)
 
 add_subdirectory(deps/json-cpp)
@@ -402,6 +325,7 @@ add_subdirectory(deps/tinyxml2)
 if (WIN32)
     ADD_SUBDIRECTORY(dist/windows)
 endif(WIN32)
+
 
 # *** ALL PLATFORMS ***
 #ADD_SUBDIRECTORY(base/core)

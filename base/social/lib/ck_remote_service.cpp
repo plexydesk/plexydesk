@@ -30,7 +30,7 @@
 #include <tinyxml2.h>
 #include <QDebug>
 
-#ifdef __WINDOWS_PLATFORM__
+#if defined(__WINDOWS_PLATFORM__) || defined(__WINDOWS_UWP_PLATFORM__)
 #include <Windows.h>
 #include <direct.h>
 #endif
@@ -881,7 +881,7 @@ void remote_service::load_services() {
 }
 
 std::string remote_service::data_prefix() const {
-#ifdef __WINDOWS_PLATFORM__
+#if defined(__WINDOWS_PLATFORM__) || defined(__WINDOWS_UWP_PLATFORM__)
   char *_path_str = NULL;
 
   if ((_path_str = _getcwd(NULL, 0)) == NULL) {

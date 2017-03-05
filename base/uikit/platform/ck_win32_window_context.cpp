@@ -16,6 +16,7 @@ typedef struct {
   cherry_kit::window_handle_t window_handle;
 } window_lookup_data_t;
 
+#ifndef __WINDOWS_UWP_PLATFORM__ 
 BOOL CALLBACK __match_window_hanlde(cherry_kit::window_handle_t a_id,
                                     LPARAM a_ctx) {
  window_lookup_data_t *query = (window_lookup_data_t *)a_ctx;
@@ -25,7 +26,6 @@ BOOL CALLBACK __match_window_hanlde(cherry_kit::window_handle_t a_id,
  if (!query)
      return TRUE;
 
-#ifndef __WINDOWS_UWP_PLATFORM__ 
  int window_title_size = GetWindowTextLength(a_id);
  _window_text = (char *) malloc(window_title_size + 1);
 
@@ -37,9 +37,9 @@ BOOL CALLBACK __match_window_hanlde(cherry_kit::window_handle_t a_id,
    query->window_handle = a_id;
    return FALSE;
  }
-#endif
  return TRUE;
 }
+#endif
 
 namespace cherry_kit {
 win32_window_context::win32_window_context() {
