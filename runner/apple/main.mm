@@ -106,6 +106,7 @@ public:
       workspace->add_default_controller("photoframe");
       workspace->add_default_controller("datewidget");
       workspace->add_default_controller("dockwidget");
+      workspace->add_default_controller("desksyncwidget");
 
       workspace->restore_session();
 

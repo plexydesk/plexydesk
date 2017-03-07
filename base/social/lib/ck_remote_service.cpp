@@ -28,7 +28,6 @@
 #include <json.h>
 #include <string>
 #include <tinyxml2.h>
-#include <QDebug>
 
 #if defined(__WINDOWS_PLATFORM__) || defined(__WINDOWS_UWP_PLATFORM__)
 #include <Windows.h>
@@ -467,7 +466,6 @@ std::string remote_service::url(const std::string &a_method,
   rv += query_str;
 
   if (has_errors) {
-    qDebug() << Q_FUNC_INFO << "Has Errors";
     return rv;
   }
 

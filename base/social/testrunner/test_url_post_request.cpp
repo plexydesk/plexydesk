@@ -122,6 +122,7 @@ void test_url_post_request::validate_auth_token() {
   social_kit::url_request *request = new social_kit::url_request();
 
   request->on_response_ready([&](const social_kit::url_response &response) {
+    qDebug() << Q_FUNC_INFO << QString((const char *)response.data_buffer());
     CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
     CK_ASSERT(response.http_version() == "HTTP 1.1",
               "Wrong http version -> " + response.http_version());
