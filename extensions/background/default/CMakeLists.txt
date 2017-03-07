@@ -1,3 +1,4 @@
+project(PlexyDesk)
 set (CMAKE_AUTOMOC ON)
 
 set(sourceFiles

@@ -20,14 +20,13 @@
 #define PLEXY_CLASSIC_BACKDROP_I
 
 #include <ck_extension_manager.h>
-
 #include <ck_desktop_plugin_interface.h>
 
 class ClassicBackdrop : public QObject,
                         public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
-#ifdef __QT5__TOOLKIT__
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.classicbackground")
 #endif
 

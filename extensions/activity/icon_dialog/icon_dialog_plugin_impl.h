@@ -29,7 +29,7 @@ class icon_dialog_plugin_impl : public QObject,
   Q_OBJECT
   Q_INTERFACES(cherry_kit::dialog_plugin_interface)
 
-#ifdef __QT5__TOOLKIT__
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.icon_dialog")
 #endif
 

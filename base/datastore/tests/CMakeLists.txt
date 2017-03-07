@@ -66,11 +66,20 @@ if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(datasync_runtime)
 endif(MSVC)
 
+if (ENABLE_QT4)
 TARGET_LINK_LIBRARIES(datasync_runtime LINK_PUBLIC
     ${QUETZAL_DATA_KIT_LIBRARY}
 		${libs}
     Qt4::QtGui Qt4::QtXml
     )
+endif()
+
+if (ENABLE_QT5)
+TARGET_LINK_LIBRARIES(datasync_runtime LINK_PUBLIC
+    ${QUETZAL_DATA_KIT_LIBRARY}
+    ${libs}
+    )
+endif()
 
 
 ########### Install files ###############

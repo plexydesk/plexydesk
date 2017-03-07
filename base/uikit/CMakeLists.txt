@@ -251,7 +251,7 @@ if (ENABLE_QT5)
   qt5_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Widgets Xml OpenGL Core)
 endif()
 
-if (ENABLE_QT5)
+if (ENABLE_QT4)
   qt4_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Widgets Xml OpenGL Core)
 endif()
 

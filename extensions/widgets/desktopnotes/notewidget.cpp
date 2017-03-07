@@ -321,7 +321,7 @@ void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
-#ifdef __QT5__TOOLKIT__
+#ifdef __QT5_TOOLKIT__
   social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
@@ -345,7 +345,7 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
 }
 
 void NoteWidget::requestPhotoSizes(const QString &photoID) {
-#ifdef __QT5__TOOLKIT__
+#ifdef __QT5_TOOLKIT__
   social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");

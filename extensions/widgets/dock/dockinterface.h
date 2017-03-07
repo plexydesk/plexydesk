@@ -28,7 +28,7 @@ class panel_plugin_impl : public QObject,
                       public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
-#ifdef __QT5__TOOLKIT__
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.dock")
 #endif
 

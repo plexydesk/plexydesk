@@ -10,6 +10,11 @@
 #include <ck_desktop_dialog.h>
 #include <ck_session_sync.h>
 
+#ifdef __QT5_TOOLKIT__
+#include <webservice.h>
+#endif
+
+
 class NoteWidget : public cherry_kit::widget {
   Q_OBJECT
 public:
