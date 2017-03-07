@@ -46,6 +46,7 @@ void ck_remote_account_sync::add_account(const ck_remote_account &a_account) {
 ck_remote_account ck_remote_account_sync::account(
     const std::string &a_account_name)
 {
+  return ck_remote_account();
 }
 
 void ck_remote_account_sync::on_account_discovered(
@@ -60,6 +61,5 @@ void ck_remote_account_sync::on_account_changed(discovery_notify_t a_callable)
 
 void ck_remote_account_sync::on_account_ready(discovery_notify_t a_callable)
 {
-
 }
 }
