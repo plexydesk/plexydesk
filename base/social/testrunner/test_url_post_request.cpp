@@ -4,15 +4,13 @@
 #include <QDesktopServices>
 #include <QImage>
 #include <QMap>
-#include <QUrlQuery>
-#include <QtNetwork>
+
 #include <asyncdatadownloader.h>
 #include <asyncimagecreator.h>
 #include <asyncimageloader.h>
 #include <config.h>
 
 #include <ck_remote_service.h>
-#include <webserver.h>
 #include <webservice.h>
 
 #include <iostream>

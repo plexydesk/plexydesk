@@ -20,7 +20,7 @@
 #define WEBSERVICE_H
 
 #include <QObject>
-#include <QNetworkReply>
+#include <QVariantMap>
 
 #include <social_kit_export.h>
 #include <ck_remote_service.h>

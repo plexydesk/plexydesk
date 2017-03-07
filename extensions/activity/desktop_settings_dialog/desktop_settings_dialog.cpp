@@ -30,8 +30,11 @@
 #include <ck_desktop_controller_interface.h>
 #include <ck_progress_bar.h>
 
+#ifdef __QT5_TOOLKIT__
 #include <asyncimageloader.h>
 #include <asyncimagecreator.h>
+#endif
+
 #include <ck_image_view.h>
 
 #include <ck_fixed_layout.h>

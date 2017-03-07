@@ -21,6 +21,8 @@
 
 #include <QThread>
 #include <QImage>
+#include <QVariant>
+#include <QVariantMap>
 #include <QuetzalSocialKitQt_export.h>
 
 #include <functional>

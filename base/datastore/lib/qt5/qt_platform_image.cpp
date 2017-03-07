@@ -229,6 +229,7 @@ void image_io::platform_image::release() {
 }
 
 io_surface *image_io::platform_image::image_decoder() {
+  qDebug() << Q_FUNC_INFO << "Request Image : " << priv->m_file_url.c_str();
   QImage ck_qt_image(priv->m_file_url.c_str());
   io_surface *ck_surface = nullptr;
 

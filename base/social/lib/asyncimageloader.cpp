@@ -131,7 +131,7 @@ void AsyncImageLoader::onNetworkRequestFinished(QNetworkReply *reply) {
   if (reply) {
     QByteArray data = reply->readAll();
 
-    QImage *img = new QImage(data);
+    QImage *img = new QImage(data.constData());
     if (!img->isNull()) {
       d->mThumbData[reply->url().toString()] = img->scaledToWidth(72);
       d->mPathData[reply->url().toString()] = reply->url().toString();

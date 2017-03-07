@@ -19,10 +19,7 @@
 #ifndef PROGRESSDIALOG_ACTIVITY_H
 #define PROGRESSDIALOG_ACTIVITY_H
 
-#include <QtCore>
-
 #include <ck_data_source.h>
-#include <QtNetwork>
 #include <ck_window.h>
 #include <ck_desktop_dialog.h>
 

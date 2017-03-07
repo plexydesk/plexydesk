@@ -17,7 +17,9 @@ set(QTMOC_SRCS
     pixabay_plugin_impl.h
     )
 
+if (ENABLE_QT5)
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles
     ${sourceFiles}
@@ -43,7 +45,9 @@ TARGET_LINK_LIBRARIES(pixabay_dialog
     ${libs}
     )
 
+if (ENABLE_QT5)
 QT5_USE_MODULES(pixabay_dialog Widgets Core)
+endif()
 
 if (NOT APPLE)
 INSTALL(TARGETS pixabay_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

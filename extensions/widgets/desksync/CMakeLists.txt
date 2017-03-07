@@ -15,7 +15,9 @@ set(QTMOC_SRCS
     desksyncinterface.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+if (ENABLE_QT5)
+  QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles
     ${sourceFiles}
@@ -41,7 +43,9 @@ TARGET_LINK_LIBRARIES(desksyncwidget
     ${libs}
     )
 
-QT5_USE_MODULES(desksyncwidget Widgets Xml Core  )
+if (ENABLE_QT5)
+  QT5_USE_MODULES(desksyncwidget Widgets Xml Core  )
+endif()
 
 if (NOT APPLE)
     INSTALL(TARGETS desksyncwidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

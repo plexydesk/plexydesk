@@ -28,7 +28,9 @@ class template_plugin_impl : public QObject,
                           public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.plexydesk.template")
+#endif
 
 public:
   virtual ~template_plugin_impl() {}

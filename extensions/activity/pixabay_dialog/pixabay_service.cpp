@@ -4,12 +4,13 @@
 #include <ck_sync_object.h>
 #include <ck_disk_engine.h>
 #include <ck_data_sync.h>
-
-#include <asyncdatadownloader.h>
+#include <ck_url.h>
 
 #include <string>
 #include <memory>
 #include <atomic>
+
+#include <QDebug>
 
 class pixabay_service::pixabay_service_context {
 public:

@@ -21,7 +21,14 @@ set(QTMOC_SRCS
     desktop_button.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+if (ENABLE_QT5)
+  QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
+
+if (ENABLE_QT4)
+  QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
+
 
 set(sourceFiles
     ${sourceFiles}
@@ -47,7 +54,14 @@ TARGET_LINK_LIBRARIES(dockwidget
     ${libs}
     )
 
-QT5_USE_MODULES(dockwidget Widgets Xml Gui Core)
+if (ENABLE_QT5)
+  QT5_USE_MODULES(dockwidget Widgets Xml Gui Core)
+endif()
+
+if (ENABLE_QT4)
+  QT4_USE_MODULES(dockwidget Xml Gui Core)
+endif()
+
 
 if (NOT APPLE)
 INSTALL(TARGETS dockwidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

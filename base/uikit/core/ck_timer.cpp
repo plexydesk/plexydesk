@@ -22,10 +22,12 @@ timer::timer(int a_duration) : priv(new private_timer) {
   priv->m_duration = a_duration;
   priv->m_is_running = 1;
 
+#ifdef __QT5_TOOLKIT__
   priv->m_qt_timer.connect(&priv->m_qt_timer, &QTimer::timeout, [=]() {
     if (priv->m_func)
       priv->m_func();
   });
+#endif
 }
 
 timer::~timer() { delete priv; }

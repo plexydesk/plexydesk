@@ -50,7 +50,9 @@ DEALINGS IN THE SOFTWARE.
 #include <plexydesk_ui_exports.h>
 
 #ifdef Q_OS_LINUX
+#ifndef Q_WS_X11
 #define Q_WS_X11 Q_OS_LINUX
+#endif
 #endif
 
 #ifdef Q_WS_X11

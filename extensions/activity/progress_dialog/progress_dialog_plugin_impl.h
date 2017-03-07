@@ -28,7 +28,9 @@ class progress_dialog_plugin_impl : public QObject,
                                 public cherry_kit::dialog_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::dialog_plugin_interface)
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.progressdialog")
+#endif
 
 public:
   virtual ~progress_dialog_plugin_impl() {}

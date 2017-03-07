@@ -27,3 +27,7 @@ cherry_kit::style_ref SimpleGrayInterface::style() {
   m_instence_ref = cherry_kit::style_ref(new SimpleGrayStyle());
   return m_instence_ref;
 }
+
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(simplegray, SimpleGrayInterface)
+#endif

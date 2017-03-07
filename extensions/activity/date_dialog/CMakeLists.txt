@@ -15,7 +15,9 @@ set(QTMOC_SRCS
     date_dialog_plugin_impl.h
     )
 
+if (ENABLE_QT5)
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles
     ${sourceFiles}
@@ -41,7 +43,9 @@ TARGET_LINK_LIBRARIES(date_dialog
     ${libs}
     )
 
+if (ENABLE_QT5)
 QT5_USE_MODULES(date_dialog Widgets Xml  Core  )
+endif()
 
 if (NOT APPLE)
 INSTALL(TARGETS date_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

@@ -24,9 +24,6 @@
 #include <ck_widget.h>
 #include <plexydesk_ui_exports.h>
 
-// Qt
-#include <QTimeZone>
-
 namespace cherry_kit {
 class DECL_UI_KIT_EXPORT clock_view : public widget {
 public:

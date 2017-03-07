@@ -20,7 +20,9 @@ set(QTMOC_SRCS
     classicbackgroundrender.h
     )
 
+if (ENABLE_QT5)
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles
     ${sourceFiles}
@@ -29,7 +31,9 @@ set(sourceFiles
 
 ADD_LIBRARY(classicbackdrop SHARED ${sourceFiles})
 
+if (ENABLE_QT5)
 QT5_USE_MODULES(classicbackdrop Widgets Xml  Core )
+endif()
 
 if (MINGW)
     SET_TARGET_PROPERTIES(classicbackdrop PROPERTIES

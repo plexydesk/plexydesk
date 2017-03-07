@@ -24,6 +24,8 @@ option(ENABLE_DEVELOPER_BUILD "Build PlexyDesk without Code Signing" ON)
 if(BUILD_WITH_QT)
   add_definitions(-DBUILD_WITH_QT=1)
   add_definitions(-D__QT_TOOLKIT__)
+  add_definitions(-D__QT5_TOOLKIT__)
+  set(ENABLE_QT5 TRUE)
 endif()
 
 if(BUILD_OPTIMIZED)

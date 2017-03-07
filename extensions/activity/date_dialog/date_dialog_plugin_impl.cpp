@@ -27,3 +27,6 @@ cherry_kit::desktop_dialog_ref date_dialog_plugin_impl::activity() {
 
   return obj;
 }
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(date_dialog, date_dialog_plugin_impl)
+#endif

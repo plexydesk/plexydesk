@@ -23,6 +23,7 @@
 #include <plexydesk_ui_exports.h>
 #include <QVariant>
 #include <QObject>
+#include <QSharedPointer>
 
 /*!
 \class UI::DataSource

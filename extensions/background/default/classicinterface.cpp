@@ -41,3 +41,7 @@ ClassicBackdrop::controller() {
 
   return m_instance_ref;
 }
+
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(classicbackdrop, ClassicBackdrop)
+#endif

@@ -30,4 +30,6 @@ panel_plugin_impl::controller() {
   return obj;
 }
 
-// Q_EXPORT_PLUGIN2(dockengine, DockInterface)
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(dockwidget, panel_plugin_impl)
+#endif

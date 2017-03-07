@@ -28,4 +28,6 @@ cherry_kit::desktop_dialog_ref icon_dialog_plugin_impl::activity() {
   return obj;
 }
 
-// Q_EXPORT_PLUGIN2(chooserengine, ChooserInterface)
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(icon_dialog, icon_dialog_plugin_impl)
+#endif

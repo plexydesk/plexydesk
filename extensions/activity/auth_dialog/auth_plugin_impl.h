@@ -27,7 +27,10 @@
 class auth_plugin_impl : public QObject, public cherry_kit::dialog_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::dialog_plugin_interface)
+
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.auth")
+#endif
 
 public:
   virtual ~auth_plugin_impl() {}

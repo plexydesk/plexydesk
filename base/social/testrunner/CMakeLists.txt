@@ -16,19 +16,20 @@ if (ENABLE_WINRT)
     set(winrt_libs WindowsApp.lib)
 endif()
 
-set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
+set(libs 
+    ${QT_QTGUI_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${QT_QTSVG_LIBRARY}
     ${QT_QTNETWORK_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTXML_LIBRARY}
-    ${PLEXY_UI_CORE_LIBRARY}
     ${QT_QTXMLPATTERNS_LIBRARY}
-		${X11_LIBRARIES}
+    ${X11_LIBRARIES}
     ${Qt5X11Extras_LIBRARIES}
     ${winrt_libs}
-    )
+   )
 
 
 ########### prepare files ###############
@@ -46,7 +47,15 @@ endif()
 
 #SET_PROPERTY(TARGET social_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
 
-QT5_USE_MODULES(social_runtime Widgets Xml  Core)
+if (ENABLE_QT5)
+  QT5_USE_MODULES(social_runtime Widgets Xml  Core)
+endif()
+
+if (ENABLE_QT4)
+	QT4_USE_MODULES(social_runtime Gui Xml Core Network)
+endif()
+
+
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(social_runtime)
@@ -59,8 +68,8 @@ endif()
 
 
 TARGET_LINK_LIBRARIES(social_runtime
-    ${PLEXY_UI_CORE_LIBRARY}
     ${QUETZAL_SOCIAL_KIT_LIBRARY}
+    ${QUETZAL_DATA_KIT_LIBRARY}
     ${QT_QTMAIN_LIBRARY}
     ${libs}
     ${winrt_libs}

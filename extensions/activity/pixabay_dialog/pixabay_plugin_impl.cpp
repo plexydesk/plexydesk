@@ -28,4 +28,6 @@ cherry_kit::desktop_dialog_ref pixabay_plugin_impl::activity() {
   return obj;
 }
 
-// Q_EXPORT_PLUGIN2(pixabayengine, pixabayInterface)
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(pixabay_dialog, pixabay_plugin_impl)
+#endif

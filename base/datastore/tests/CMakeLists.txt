@@ -32,6 +32,7 @@ if(UNIX AND NOT APPLE)
 						)
 endif()
 
+if (ENABLE_QT5)
 set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${QT_QTSVG_LIBRARY}
@@ -40,13 +41,13 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTXML_LIBRARY}
-    ${PLEXY_UI_CORE_LIBRARY}
     ${QT_QTXMLPATTERNS_LIBRARY}
     ${Qt5X11Extras_LIBRARIES}
     ${THREAD_LIBS}
     ${X11_LIBRARIES}
     ${LIBRARY_NATIVE_LINK_TARGETS}
     )
+endif()
 
 
 ########### prepare files ###############
@@ -60,7 +61,6 @@ if(APPLE)
 endif()
 
 #SET_PROPERTY(TARGET datasync_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
-#QT5_USE_MODULES(datasync_runtime Widgets Xml  Core)
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(datasync_runtime)
@@ -69,7 +69,9 @@ endif(MSVC)
 TARGET_LINK_LIBRARIES(datasync_runtime LINK_PUBLIC
     ${QUETZAL_DATA_KIT_LIBRARY}
 		${libs}
+    Qt4::QtGui Qt4::QtXml
     )
+
 
 ########### Install files ###############
 if(APPLE)

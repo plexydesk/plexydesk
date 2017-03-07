@@ -6,7 +6,7 @@
 
 #include <ck_style.h>
 #include <ck_widget.h>
-#include <webservice.h>
+
 #include <ck_desktop_dialog.h>
 #include <ck_session_sync.h>
 
@@ -55,6 +55,7 @@ Q_SLOTS:
   void onDocuemntTitleAvailable(const QString &title);
   void exec_toolbar_action(const QString &action);
 
+#ifdef __QT5_TOOLKIT__
   // web service
   void onServiceCompleteJson(social_kit::web_service *service);
   void onSizeServiceCompleteJson(social_kit::web_service *service);
@@ -62,6 +63,8 @@ Q_SLOTS:
   void onImageReady();
   void onImageSaveReadyJson();
   void onImageReadyJson(const QString &fileName);
+#endif
+
   void deleteImageAttachment();
 
 protected:

@@ -18,7 +18,9 @@ set(QTMOC_SRCS
     notewidget.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS)
+if (ENABLE_QT5)
+  QT5_WRAP_CPP(QT_MOC_SRCS)
+endif()
 
 set(sourceFiles
     ${sourceFiles}
@@ -45,7 +47,9 @@ TARGET_LINK_LIBRARIES(desktopnoteswidget
     ${libs}
     )
 
-QT5_USE_MODULES(desktopnoteswidget Widgets Xml  Core  )
+if (ENABLE_QT5)
+  QT5_USE_MODULES(desktopnoteswidget Widgets Xml  Core  )
+endif()
 
 if (NOT APPLE)
     INSTALL(TARGETS desktopnoteswidget DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

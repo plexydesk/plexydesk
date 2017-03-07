@@ -14,7 +14,9 @@ set(QTMOC_SRCS
     simple_gray_impl.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+if (ENABLE_QT5)
+	QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles
     ${sourceFiles}
@@ -40,7 +42,9 @@ TARGET_LINK_LIBRARIES(simplegray
     ${libs}
     )
 
+if (ENABLE_QT5)
 QT5_USE_MODULES(simplegray Widgets Xml  Core  )
+endif()
 
 if (NOT APPLE)
 INSTALL(TARGETS simplegray DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

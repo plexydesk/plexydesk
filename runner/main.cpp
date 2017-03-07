@@ -20,7 +20,6 @@
 
 // qt
 #include <QApplication>
-#include <QGuiApplication>
 #include <QtCore>
 #include <QtGui>
 #include <QIcon>
@@ -38,7 +37,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#ifdef __QT5_TOOLKIT__
 #include <qpa/qplatformnativeinterface.h>
+#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xregion.h>
@@ -215,7 +216,7 @@ public:
         workspace->add_default_space();
       }
 
-#ifdef Q_OS_LINUX
+#if defined (Q_OS_LINUX) && defined (__QT5_TOOLKIT__)
       QPlatformNativeInterface *native =
           QGuiApplication::platformNativeInterface();
 

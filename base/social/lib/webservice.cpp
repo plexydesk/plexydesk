@@ -55,7 +55,6 @@ public:
   std::map<std::string, service_query_parameters> m_input_argument_map;
 
   remote_service *m_service_def;
-  QNetworkAccessManager *mNetworkManager;
 
   /* new */
   remote_service *m_service;

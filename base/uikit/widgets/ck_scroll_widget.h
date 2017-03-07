@@ -22,8 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <config.h>
 #include <ck_widget.h>
 
-#include <QtWidgets/QGraphicsItem>
-#include <QtWidgets/QGraphicsObject>
+#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <plexydesk_ui_exports.h>
 
 namespace cherry_kit {

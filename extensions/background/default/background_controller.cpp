@@ -26,9 +26,13 @@
 #include <ck_resource_manager.h>
 
 // social
+
+#ifdef __QT5_TOOLKIT__
 #include <webservice.h>
 #include <asyncdatadownloader.h>
 #include <asyncimagecreator.h>
+#endif
+
 
 // Qt
 #include <QDir>
@@ -43,6 +47,8 @@
 #include <ck_icon_button.h>
 #include <ck_system_window_context.h>
 #include <ck_image_io.h>
+
+#include <ck_url.h>
 
 #include "desktopwindow.h"
 
@@ -396,6 +402,7 @@ void desktop_controller_impl::request_action(const QString &actionName,
 */
 
 void desktop_controller_impl::download_image_from_url(const QUrl &fileUrl) {
+#ifdef 	__QT5_TOOLKIT__
   social_kit::AsyncDataDownloader *downloader =
       new social_kit::AsyncDataDownloader(this);
 
@@ -408,6 +415,7 @@ void desktop_controller_impl::download_image_from_url(const QUrl &fileUrl) {
 
   downloader->setMetaData(metaData);
   downloader->setUrl(fileUrl);
+#endif
 }
 
 void desktop_controller_impl::set_desktop_scale_type(
@@ -460,6 +468,7 @@ void desktop_controller_impl::set_view_rect(const QRectF &rect) {
 void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
                                                       const QString &source,
                                                       bool a_local_file) {
+#ifdef __QT5_TOOLKIT__
   // todo:
   // replace with image_io class.
   social_kit::AsyncImageCreator *ck_image_service =
@@ -474,11 +483,13 @@ void desktop_controller_impl::sync_image_data_to_disk(const QByteArray &data,
   ck_image_service->setData(data, cherry_kit::config::cache_dir("wallpaper"),
                             a_local_file);
   ck_image_service->start();
+#endif
 }
 
 void desktop_controller_impl::sync_image_data_to_disk(const QImage &data,
                                                       const QString &source,
                                                       bool saveLocally) {
+#ifdef __QT5_TOOLKIT__
   social_kit::AsyncImageCreator *ck_async_image_service =
       new social_kit::AsyncImageCreator(this);
 
@@ -491,9 +502,11 @@ void desktop_controller_impl::sync_image_data_to_disk(const QImage &data,
   ck_async_image_service->setData(
       data, cherry_kit::config::cache_dir("wallpaper"), saveLocally);
   ck_async_image_service->start();
+#endif
 }
 
 void desktop_controller_impl::image_locally_available() {
+#ifdef __QT5_TOOLKIT__
   social_kit::AsyncDataDownloader *downloader =
       qobject_cast<social_kit::AsyncDataDownloader *>(sender());
 
@@ -502,9 +515,11 @@ void desktop_controller_impl::image_locally_available() {
                             downloader->metaData()["url"].toString(), true);
     downloader->deleteLater();
   }
+#endif
 }
 
 void desktop_controller_impl::on_image_data_available() {
+#ifdef __QT5_TOOLKIT__
   social_kit::AsyncImageCreator *ck_image_service =
       qobject_cast<social_kit::AsyncImageCreator *>(sender());
 
@@ -537,6 +552,7 @@ void desktop_controller_impl::on_image_data_available() {
     ck_image_service->quit();
     ck_image_service->deleteLater();
   }
+#endif
 }
 
 void desktop_controller_impl::set_desktop_scale_type(const QString &a_action) {}

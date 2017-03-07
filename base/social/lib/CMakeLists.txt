@@ -33,6 +33,7 @@ if (UNIX AND NOT APPLE)
 endif()
 
 # Find Qt5
+if (ENABLE_QT5)
 if (NOT Qt5Core_FOUND)
     FIND_PACKAGE(Qt5Core REQUIRED)
     FIND_PACKAGE(Qt5Widgets REQUIRED)
@@ -47,6 +48,7 @@ if (NOT Qt5Core_FOUND)
     set(PLEXYCORE_STANDALONE 1)
     ADD_DEFINITIONS(-DPLEXYCORE_STANDALONE)
 endif (NOT Qt5Core_FOUND)
+endif()
 
 
  if (ENABLE_WINRT)
@@ -99,7 +101,6 @@ set(sourceFiles
     asyncimageloader.cpp
     asyncimagecreator.cpp
     asyncdatadownloader.cpp
-    webserver.cpp
     webcontentinterface.cpp
     ${PLATFORM_SOURCE_FILES}
    )
@@ -113,7 +114,6 @@ set(headerFiles
     asyncimageloader.h
     asyncimagecreator.h
     asyncdatadownloader.h
-    webserver.h
     webcontentinterface.h
     ${PLATFORM_HEADERS_FILES}
    )
@@ -184,7 +184,13 @@ TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY}
     tinyxml2
     )
 
-QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
+if (ENABLE_QT5)
+  QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
+endif()
+
+if (ENABLE_QT4)
+  QT4_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Xml Gui Network)
+endif()
 
 
 if (UNIX AND NOT APPLE)

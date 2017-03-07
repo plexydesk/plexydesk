@@ -3,9 +3,11 @@
 
 #include "notewidget.h"
 
+#ifdef __QT5_TOOLKIT__
 #include <webservice.h>
 #include <asyncimagecreator.h>
 #include <asyncdatadownloader.h>
+#endif
 
 #include <ck_label.h>
 #include <ck_config.h>
@@ -319,6 +321,7 @@ void NoteWidget::dropEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
+#ifdef __QT5__TOOLKIT__
   social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
@@ -338,9 +341,11 @@ void NoteWidget::requestNoteSideImageFromWebService(const QString &key) {
 
   connect(service, SIGNAL(finished(social_kit::web_service *)), this,
           SLOT(onServiceCompleteJson(social_kit::web_service *)));
+#endif
 }
 
 void NoteWidget::requestPhotoSizes(const QString &photoID) {
+#ifdef __QT5__TOOLKIT__
   social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.flickr.json.api");
@@ -357,6 +362,7 @@ void NoteWidget::requestPhotoSizes(const QString &photoID) {
 
   connect(service, SIGNAL(finished(social_kit::web_service *)), this,
           SLOT(onSizeServiceCompleteJson(social_kit::web_service *)));
+#endif
 }
 
 void NoteWidget::onClicked() { Q_EMIT clicked(this); }
@@ -426,6 +432,7 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
   }
 }
 
+#ifdef __QT5_TOOLKIT__
 void NoteWidget::onServiceCompleteJson(social_kit::web_service *service) {
   QList<QVariantMap> photoList = service->methodData("photo");
 
@@ -503,6 +510,7 @@ void NoteWidget::onImageSaveReadyJson() {
 void NoteWidget::onImageReadyJson(const QString &fileName) {
   qDebug() << Q_FUNC_INFO << fileName;
 }
+#endif
 
 void NoteWidget::deleteImageAttachment() {
   /*

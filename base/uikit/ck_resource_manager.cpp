@@ -17,8 +17,6 @@
 *  along with PlexyDesk. If not, see <http://www.gnu.org/licenses/lgpl.html>
 *******************************************************************************/
 
-#include <asyncdatadownloader.h>
-#include <asyncimagecreator.h>
 #include <config.h>
 
 #include <QStringList>
@@ -27,12 +25,12 @@
 #include <QDebug>
 #include <QDomDocument>
 #include <QDomNamedNodeMap>
+
 #include <ck_extension_manager.h>
 #include <ck_config.h>
 
 #include <ck_data_sync.h>
 #include <ck_disk_engine.h>
-#include <webservice.h>
 
 #include "ck_resource_manager.h"
 

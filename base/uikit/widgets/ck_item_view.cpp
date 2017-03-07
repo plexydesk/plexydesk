@@ -2,7 +2,9 @@
 
 #include <QDebug>
 
+#ifdef __QT5_TOOLKIT__
 #include <QScroller>
+#endif
 #include <ck_scrollbar.h>
 
 namespace cherry_kit {

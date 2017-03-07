@@ -19,11 +19,8 @@
 #ifndef PHOTOSEARCH_ACTIVITY_H
 #define PHOTOSEARCH_ACTIVITY_H
 
-#include <QtCore>
-
 #include <ck_window.h>
 #include <ck_data_source.h>
-#include <QtNetwork>
 #include <ck_desktop_dialog.h>
 #include <ck_table_view_item.h>
 

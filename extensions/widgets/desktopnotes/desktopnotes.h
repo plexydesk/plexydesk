@@ -24,7 +24,6 @@
 #include <ck_data_source.h>
 #include <ck_desktop_controller_interface.h>
 #include <ck_widget.h>
-#include <QtNetwork>
 
 class desktop_task_controller_impl
     : public cherry_kit::desktop_controller_interface {

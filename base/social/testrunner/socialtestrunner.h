@@ -4,6 +4,8 @@
 #include <QObject>
 #include <webservice.h>
 
+#include <QNetworkReply>
+
 class SocialTestRunner : public QObject {
   Q_OBJECT
 public:

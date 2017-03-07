@@ -28,4 +28,6 @@ cherry_kit::desktop_dialog_ref auth_plugin_impl::activity() {
   return obj;
 }
 
-// Q_EXPORT_PLUGIN2(authengine, authInterface)
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(auth_dialog, auth_plugin_impl)
+#endif

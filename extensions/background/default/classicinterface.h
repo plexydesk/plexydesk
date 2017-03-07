@@ -27,7 +27,9 @@ class ClassicBackdrop : public QObject,
                         public cherry_kit::desktop_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::desktop_plugin_interface)
+#ifdef __QT5__TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.classicbackground")
+#endif
 
 public:
   ClassicBackdrop(QObject *a_parent_ptr = 0);

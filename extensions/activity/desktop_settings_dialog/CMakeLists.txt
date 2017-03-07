@@ -15,7 +15,9 @@ set(QTMOC_SRCS
     desktop_settings_plugin_impl.h
     )
 
+if (ENABLE_QT5)
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles
     ${sourceFiles}
@@ -42,7 +44,9 @@ TARGET_LINK_LIBRARIES(desktop_settings_dialog
     ${libs}
     )
 
-#QT5_USE_MODULES(desktop_settings_dialog Widgets)
+if (ENABLE_QT5)
+QT5_USE_MODULES(desktop_settings_dialog Widgets)
+endif()
 
 if (NOT APPLE)
     INSTALL(TARGETS desktop_settings_dialog DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

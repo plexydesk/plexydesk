@@ -16,9 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QScroller>
 #include <QDebug>
+
+#ifdef __QT5_TOOLKIT__
 #include <QScroller>
+#endif
+
 #include <QGraphicsSceneWheelEvent>
 
 #include "ck_scroll_widget.h"
@@ -38,7 +41,9 @@ public:
 scroll_widget::scroll_widget(const QRectF &a_rect, widget *parent)
     : widget(parent), o_scroll_widget(new Private) {
   o_scroll_widget->m_viewport = 0;
+#ifdef __QT5_TOOLKIT__
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
+#endif
   o_scroll_widget->m_size = a_rect.size();
 }
 
@@ -101,6 +106,7 @@ void scroll_widget::dragMoveEvent(QGraphicsSceneDragDropEvent *a_event_ptr) {
 }
 
 bool scroll_widget::event(QEvent *a_event_ptr) {
+#ifdef __QT5_TOOLKIT__
   if (!o_scroll_widget->m_viewport) {
     return QGraphicsObject::event(a_event_ptr);
   }
@@ -129,6 +135,7 @@ bool scroll_widget::event(QEvent *a_event_ptr) {
   default:
     break;
   }
+#endif
   return QGraphicsObject::event(a_event_ptr);
 }
 

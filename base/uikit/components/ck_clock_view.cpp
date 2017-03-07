@@ -35,6 +35,12 @@
 #include <math.h>
 #include <cmath>
 
+#ifdef  __QT5_TOOLKIT__
+// Qt
+#include <QTimeZone>
+#endif
+
+
 namespace cherry_kit {
 bool double_equals(double a, double b, double epsilon = 0.001) {
   return std::abs(a - b) < epsilon;
@@ -44,7 +50,15 @@ typedef std::function<void(const clock_view *)> timeout_callback_func;
 
 class clock_view::PrivateClockWidget {
 public:
+#ifdef __QT5_TOOLKIT__
   PrivateClockWidget() : m_timezone(0) {}
+#endif
+
+#ifdef __QT4_TOOLKIT__
+  PrivateClockWidget() {}
+#endif
+
+
   ~PrivateClockWidget() {}
 
   void on_timout_slot_func();
@@ -70,7 +84,9 @@ public:
   QString m_completion_time_label;
 
   QByteArray m_timezone_id;
+#ifdef __QT5_TOOLKIT__
   QTimeZone *m_timezone;
+#endif
 
   std::vector<completion_callback_func> m_completed_callback_list;
   std::vector<timeout_callback_func> m_timeout_callback_list;
@@ -85,6 +101,8 @@ clock_view::clock_view(widget *parent)
   priv->m_mark_start = 0.1;
   priv->m_mark_end = 0.0;
   priv->m_range_timer_duration = 1000;
+
+#ifdef __QT5_TOOLKIT__
   priv->m_clock_timer->setTimerType(Qt::VeryCoarseTimer);
   priv->m_range_timer->setTimerType(Qt::VeryCoarseTimer);
 
@@ -97,6 +115,7 @@ clock_view::clock_view(widget *parent)
     priv->on_range_timout_slot_func(this);
     update();
   });
+#endif
 
   priv->m_clock_timer->start(1000);
   priv->m_range_timer->stop();
@@ -113,11 +132,13 @@ void clock_view::set_timezone_id(const QByteArray &a_timezone_id) {
 
   priv->m_clock_timer->stop();
 
+#ifdef __QT5_TOOLKIT__
   if (priv->m_timezone) {
     delete priv->m_timezone;
   }
 
   priv->m_timezone = new QTimeZone(a_timezone_id);
+#endif
 
   priv->m_clock_timer->start();
   update();
@@ -141,9 +162,11 @@ void clock_view::add_range_marker(double a_start, double a_end) {
 
   QDateTime current_date_time = QDateTime::currentDateTime();
 
+#ifdef __QT5_TOOLKIT__
   if (priv->m_timezone)
     current_date_time =
         current_date_time.toTimeZone(*priv->m_timezone);
+#endif
 
   QTime current_time = current_date_time.time();
 
@@ -184,8 +207,10 @@ clock_view::~clock_view() {
     priv->m_clock_timer->stop();
   }
 
+#ifdef __QT5_TOOLKIT__
   if (priv->m_timezone)
     delete priv->m_timezone;
+#endif
 
   delete priv;
 }
@@ -211,8 +236,11 @@ void clock_view::PrivateClockWidget::on_range_timout_slot_func(
 void clock_view::PrivateClockWidget::update() {
   QDateTime _date_time = QDateTime::currentDateTime();
 
+
+#ifdef __QT5_TOOLKIT__
   if (m_timezone)
     _date_time = _date_time.toTimeZone(*m_timezone);
+#endif
 
   m_second_value = 6.0 * _date_time.time().second();
   m_minutes_value = 6.0 * _date_time.time().minute();

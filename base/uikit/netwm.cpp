@@ -43,7 +43,7 @@
 
 //#define NETWMDEBUG
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 #ifdef Q_OS_LINUX // FIXME
 
 #include "netwm.h"

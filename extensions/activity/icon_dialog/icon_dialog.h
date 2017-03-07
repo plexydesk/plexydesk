@@ -19,10 +19,7 @@
 #ifndef CHOOSER_ACTIVITY_H
 #define CHOOSER_ACTIVITY_H
 
-#include <QtCore>
-
 #include <ck_data_source.h>
-#include <QtNetwork>
 #include <ck_desktop_dialog.h>
 #include <ck_widget.h>
 #include <ck_window.h>

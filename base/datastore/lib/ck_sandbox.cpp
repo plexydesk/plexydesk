@@ -1,6 +1,8 @@
 #include <ck_sandbox.h>
 
+#ifdef Q_OS_WIN
 #include <QStandardPaths>
+#endif
 
 QString ck_sandbox_root() {
 

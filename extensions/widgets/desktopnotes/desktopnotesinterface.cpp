@@ -27,3 +27,7 @@ cherry_kit::desktop_controller_ref task_plugin_impl::controller() {
 
   return obj;
 }
+
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(desktopnoteswidget, task_plugin_impl)
+#endif

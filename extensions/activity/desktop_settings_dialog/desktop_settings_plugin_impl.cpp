@@ -28,4 +28,6 @@ cherry_kit::desktop_dialog_ref desktop_settings_plugin_impl::activity() {
   return obj;
 }
 
-// Q_EXPORT_PLUGIN2(photosearchengine, PhotoSearchInterface)
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(desktop_settings_dialog, desktop_settings_plugin_impl)
+#endif

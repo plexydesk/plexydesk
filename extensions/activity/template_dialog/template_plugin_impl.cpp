@@ -28,4 +28,6 @@ cherry_kit::desktop_dialog_ref template_plugin_impl::activity() {
   return obj;
 }
 
-// Q_EXPORT_PLUGIN2(templateengine, TemplateInterface)
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(template_dialog, template_plugin_impl)
+#endif

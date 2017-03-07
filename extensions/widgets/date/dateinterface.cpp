@@ -26,3 +26,7 @@ cherry_kit::desktop_controller_ref date_plugin_impl::controller() {
 
   return obj;
 }
+
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(datewidget, date_plugin_impl)
+#endif

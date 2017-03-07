@@ -27,7 +27,9 @@ set(headerFiles desktopmanager.h ${extra_headers})
 
 set(QTMOC_SRCS ${extra_headers})
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+if (ENABLE_QT5)
+  QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles
 	desktopmanager.cpp
@@ -44,6 +46,8 @@ if(WIN32)
   endif()
 
   ADD_DEFINITIONS(-DNODEFAULTLIB:library)
+
+if (ENABLE_QT5)
   set(libs
     ${QT_QTGUI_LIBRARY}
     ${QT_QTCORE_LIBRARY}
@@ -52,9 +56,11 @@ if(WIN32)
     runtimeobject.lib
     ${winrt_libs}
     )
+endif()
 endif(WIN32)
 
 if(UNIX)
+if (ENABLE_QT5)
 	set(libs
 		${QT_QTGUI_LIBRARY}
 		${QT_QTCORE_LIBRARY}
@@ -63,6 +69,7 @@ if(UNIX)
 		${X11_LIBRARIES}
 		${Qt5X11Extras_LIBRARIES}
 		${extra_libs})
+endif()
 endif(UNIX)
 
 ########### Prepare files ###############
@@ -79,6 +86,7 @@ IF(WIN32)
         SET_TARGET_PROPERTIES(${APPLICATION_EXE_NAME} PROPERTIES MINSIZEREL "/SUBSYSTEM:WINDOWS")
 endif()
 
+if (ENABLE_QT5)
 TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME}
         ${libs}
         Qt5::Widgets
@@ -89,12 +97,35 @@ TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME}
         ${MAC_LIBS}
         )
 
-QT5_USE_MODULES(${APPLICATION_EXE_NAME} Widgets Xml Core)
+
+  QT5_USE_MODULES(${APPLICATION_EXE_NAME} Widgets Xml Core)
+endif()
+
+if (ENABLE_QT4)
+TARGET_LINK_LIBRARIES(${APPLICATION_EXE_NAME}
+        ${libs}
+        Qt4::QtGui
+        Qt4::QtCore
+	Qt4::QtOpenGL
+        ${QT_QTGUI_LIBRARY}
+        ${PLEXY_UI_CORE_LIBRARY}
+        ${Qt5X11Extras_LIBRARIES}
+        ${MAC_LIBS}
+        )
+
+
+  QT4_USE_MODULES(${APPLICATION_EXE_NAME} Gui Xml Core)
+endif()
+
+
 
 ########### Install files ###############
+install(TARGETS plexydesk DESTINATION bin)
+
+IF (ENABLE_QT5)
 if(UNIX)
-  install(TARGETS plexydesk DESTINATION bin)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plexydesk.desktop DESTINATION share/applications)
+endif()
 endif()
 
 if(WIN32)

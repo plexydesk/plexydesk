@@ -28,7 +28,10 @@ class desktop_settings_plugin_impl : public QObject,
                              public cherry_kit::dialog_plugin_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::dialog_plugin_interface)
+
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.photosearch")
+#endif
 
 public:
   virtual ~desktop_settings_plugin_impl() {}

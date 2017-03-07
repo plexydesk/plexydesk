@@ -24,7 +24,6 @@
 #include <ck_data_source.h>
 #include <ck_desktop_controller_interface.h>
 #include <ck_widget.h>
-#include <QtNetwork>
 #include <ck_table_view_item.h>
 #include <ck_fixed_layout.h>
 

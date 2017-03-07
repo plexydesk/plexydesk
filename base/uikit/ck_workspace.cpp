@@ -6,10 +6,13 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDesktopWidget>
-#include <QGLWidget>
+#include <QtOpenGL/QGLWidget>
 #include <QImage>
 #include <QPainter>
+
+#ifdef __QT5_TOOLKIT__
 #include <QScroller>
+#endif
 
 #include <ck_data_sync.h>
 #include <ck_disk_engine.h>
@@ -61,8 +64,16 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
 #ifndef Q_OS_WIN
+#ifdef __QT5_TOOLKIT__
   setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint |
                  Qt::WindowStaysOnBottomHint | Qt::NoDropShadowWindowHint);
+#endif
+
+#ifdef __QT4_TOOLKIT__
+  //setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint |
+   //              Qt::WindowStaysOnBottomHint);
+#endif
+
 #endif
 
 #ifdef Q_OS_WIN
@@ -156,6 +167,7 @@ bool workspace::is_accelerated_rendering_on() const {
 }
 
 void workspace::auto_switch() {
+#ifdef __QT5_TOOLKIT__
   QScroller::grabGesture(this, QScroller::TouchGesture);
 
   if (QScroller::hasScroller(this)) {
@@ -172,6 +184,7 @@ void workspace::auto_switch() {
   }
 
   QScroller::ungrabGesture(this);
+#endif
 }
 
 void workspace::expose_sub_region(const QRectF &a_region) {

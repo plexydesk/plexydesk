@@ -1,23 +1,28 @@
 #include "socialtestrunner.h"
+#include <config.h>
+
 #include <QDebug>
 #include <QDesktopServices>
 #include <QImage>
 #include <QMap>
+
+#ifdef __QT5_TOOLKIT__
 #include <QUrlQuery>
 #include <QtNetwork>
+#include <webserver.h>
+#endif
+
 #include <asyncdatadownloader.h>
 #include <asyncimagecreator.h>
 #include <asyncimageloader.h>
-#include <config.h>
+
 #include <ck_remote_service.h>
-#include <webserver.h>
-#include <webservice.h>
-
-#include <iostream>
-
 #include <ck_image_io.h>
 #include <ck_url.h>
 
+#include <webservice.h>
+
+#include <iostream>
 
 #ifdef __WINDOWS_UWP_PLATFORM__
 #define CK_ASSERT(condition, message)                                          \
@@ -348,11 +353,13 @@ void SocialTestRunner::testsocialphotosizesJson(const QString &photoID) {
 }
 
 void SocialTestRunner::testDirLoader(const QString &path) {
+  /*
   social_kit::AsyncImageLoader *loader = new social_kit::AsyncImageLoader(this);
   loader->setUrl(QUrl(path));
   loader->start();
 
   connect(loader, SIGNAL(ready()), this, SLOT(onImageReady()));
+  */
 }
 
 void SocialTestRunner::validate_multipart_form_data() {
@@ -671,6 +678,7 @@ void SocialTestRunner::onDropBoxAccountInfoServiceComplete(
 
 // web server
 void SocialTestRunner::startWebServer() {
+  /*
   authDropBox();
 
   social_kit::WebServer *server = new social_kit::WebServer(this);
@@ -678,11 +686,13 @@ void SocialTestRunner::startWebServer() {
 
   connect(server, SIGNAL(requestCompleted(QVariantMap)), this,
           SLOT(onServerRequestCompleted(QVariantMap)));
+          */
 }
 
 void SocialTestRunner::authDropBox() {
   // based on :
   // https://www.dropbox.com/developers/blog/45/using-oauth-20-with-the-core-api;
+#ifdef __QT5_TOOLKIT__
   qsrand(16);
   int number = qrand();
   QString data = QString("%1").arg(number);
@@ -698,10 +708,13 @@ void SocialTestRunner::authDropBox() {
   dropboxUrl.setQuery(query);
 
   QDesktopServices::openUrl(dropboxUrl);
+#endif
 }
 
 void SocialTestRunner::getDropBoxAccountInfo(const QString &access_token,
                                              const QString &uid) {
+
+#ifdef __QT5_TOOLKIT__
   social_kit::web_service *service = new social_kit::web_service(this);
 
   service->create("com.dropbox.api.v2");
@@ -716,6 +729,7 @@ void SocialTestRunner::getDropBoxAccountInfo(const QString &access_token,
 
   connect(service, SIGNAL(finished(social_kit::web_service *)), this,
           SLOT(onDropBoxAccountInfoServiceComplete(social_kit::web_service *)));
+#endif
 }
 
 void SocialTestRunner::check_pixabay_sd_photo_search() {
