@@ -5,6 +5,7 @@
 #include <ck_resource_manager.h>
 
 #include <cstdlib>
+#include <algorithm>
 
 namespace cherry_kit {
 class scrollbar::private_scrollbar {

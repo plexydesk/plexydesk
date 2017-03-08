@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <ck_resource_manager.h>
 
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 

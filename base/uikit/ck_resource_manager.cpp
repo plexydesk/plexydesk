@@ -67,7 +67,7 @@ resource_manager::resource_manager(const QString &a_theme_name)
   priv->m_resource_group = QDir::toNativeSeparators(theme_pack_path);
   priv->m_resource_name = a_theme_name;
 
-#ifndef __APPLE__
+#ifdef __APPLE__
   priv->m_current_style_ref =
       cherry_kit::extension_manager::instance()->style("simplegray");
 #else

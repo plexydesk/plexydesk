@@ -34,8 +34,10 @@
 #include <ck_config.h>
 #include "desktopmanager.h"
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
 #include <objc/objc.h>
 #include <objc/message.h>
+#endif
 
 bool on_dock_clicked_func(id self,SEL _cmd,...)
 {
@@ -49,6 +51,7 @@ bool on_dock_clicked_func(id self,SEL _cmd,...)
 class Runtime {
 public:
   Runtime() {
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
     id cls = objc_getClass("NSApplication");
     SEL sharedApplication = sel_registerName("sharedApplication");
     id appInst = objc_msgSend(cls,sharedApplication);
@@ -68,6 +71,7 @@ public:
             NSLog(@"Failed to register with your mac");
         }
     }
+#endif
 
     CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
     CFStringRef macPath =
@@ -93,9 +97,9 @@ public:
 
 
     for(int i = 0; i < screen_count; i++) {
-      qDebug() << Q_FUNC_INFO << "Screen ID :" << i;
       DesktopManager *workspace = new DesktopManager();
       m_workspace_list.push_back(workspace);
+      //workspace->set_accelerated_rendering(true);
 
       workspace->move_to_screen(i);
 
@@ -116,14 +120,18 @@ public:
 
       NSView *_desktopView = reinterpret_cast<NSView *>(workspace->winId());
 
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
       [[_desktopView window]
               setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+#endif
+/*
       [[_desktopView window] setHasShadow:NO];
       [[_desktopView window] setOpaque:NO];
       [[_desktopView window] setLevel:kCGDesktopIconWindowLevel + 1];
       [[_desktopView window] makeKeyAndOrderFront:_desktopView];
       [[_desktopView window] setBackgroundColor:[NSColor clearColor]];
-
+*/
       workspace->show();
     }
   }

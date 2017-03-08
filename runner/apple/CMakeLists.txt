@@ -1,13 +1,28 @@
+
+if (ENABLE_QT5)
 set(OSX_ICON_FILES ${CMAKE_SOURCE_DIR}/artwork/icons/plexydesk.icns)
+endif()
+
+if (ENABLE_QT4)
+set(OSX_ICON_FILES ${CMAKE_SOURCE_DIR}/plexydesk/artwork/icons/plexydesk.icns)
+endif()
+
 set(MACOSX_BUNDLE_ICON_FILE "plexydesk.icns")
 set(QTMOC_SRCS ../desktopmanager.h)
 
+if (ENABLE_QT5)
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
+
+if (ENABLE_QT4)
+QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
 
 set(sourceFiles ../desktopmanager.cpp main.mm)
 
 #Locate cococa framework on mac
 INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
+
 FIND_LIBRARY(COCOA_LIBRARY Cocoa)
 FIND_LIBRARY(GLUT_LIBRARY GLUT)
 FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
@@ -31,7 +46,15 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
 SET_TARGET_PROPERTIES(plexydesk PROPERTIES INSTALL_RPATH "@loader_path/../Frameworks/")
+
+if (ENABLE_QT5)
 SET_TARGET_PROPERTIES(plexydesk PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/cmakemodules/plexydesk-info.plist)
+endif()
+
+if (ENABLE_QT4)
+SET_TARGET_PROPERTIES(plexydesk PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/plexydesk/cmakemodules/plexydesk-info.plist)
+endif()
+
 #rpath specific properties
 #set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
 

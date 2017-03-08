@@ -7,6 +7,8 @@
 #endif
 #include <ck_scrollbar.h>
 
+#include <algorithm>
+
 namespace cherry_kit {
 
 typedef std::pair<int, int> item_coordinate_t;

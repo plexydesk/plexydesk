@@ -57,6 +57,23 @@
 #include <tchar.h>
 #endif
 
+//#temporary fix to port 
+static bool _url_is_local_file(const QUrl &a_url) {
+#ifdef __QT5_TOOLKIT__
+  return a_url.isLocalFile();
+#endif
+
+#ifdef __QT4_TOOLKIT__
+  QString _local_file = a_url.toLocalFile();
+
+  if (_local_file.isEmpty()) {
+    return 1;
+  } 
+
+  return 0;
+#endif
+}
+
 class desktop_controller_impl::PrivateBackgroundController {
 public:
   PrivateBackgroundController() {}
@@ -122,6 +139,7 @@ void desktop_controller_impl::revoke_session(const QVariantMap &args) {
   if (qt_image_url.isEmpty())
     return;
 
+#ifdef __QT5_TOOLKIT__
   if (qt_image_url.isLocalFile()) {
     o_ctr->m_background_window->set_background(
         qt_image_url.toLocalFile().toStdString());
@@ -129,6 +147,19 @@ void desktop_controller_impl::revoke_session(const QVariantMap &args) {
   } else {
     download_image_from_url(qt_image_url);
   }
+#endif
+
+#ifdef __QT4_TOOLKIT__
+  QString _local_file = qt_image_url.toLocalFile();
+
+  if (_url_is_local_file(qt_image_url)) {
+    o_ctr->m_background_window->set_background(
+        qt_image_url.toLocalFile().toStdString());
+    o_ctr->m_background_texture = qt_image_url.toString().toStdString();
+  } else {
+    download_image_from_url(qt_image_url);
+  }
+#endif
 }
 
 void desktop_controller_impl::session_data_ready(
@@ -144,7 +175,7 @@ void desktop_controller_impl::session_data_ready(
   if (qt_background_url.isEmpty())
     return;
 
-  if (qt_background_url.isLocalFile()) {
+  if (_url_is_local_file(qt_background_url)) {
     o_ctr->m_background_window->set_background(
         qt_background_url.toLocalFile().toStdString());
     o_ctr->m_background_texture = background_url_str;
@@ -437,7 +468,7 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
   if (event->mimeData()->urls().count() >= 0) {
     QUrl qt_dropped_file_url = event->mimeData()->urls().value(0);
 
-    if (!qt_dropped_file_url.isLocalFile()) {
+    if (!_url_is_local_file(qt_dropped_file_url)) {
       download_image_from_url(qt_dropped_file_url);
       return;
     }

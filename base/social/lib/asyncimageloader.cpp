@@ -67,6 +67,7 @@ QString AsyncImageLoader::filePathFromName(const QString &key) const {
 }
 
 void AsyncImageLoader::run() {
+#ifdef __QT5_TOOLKIT__
   qDebug() << Q_FUNC_INFO;
   if (!d->mUrl.isValid()) {
     qWarning() << Q_FUNC_INFO << "Invalid URL";
@@ -125,6 +126,7 @@ void AsyncImageLoader::run() {
     // remote file.
     d->nm->get(QNetworkRequest(d->mUrl));
   }
+#endif
 }
 
 void AsyncImageLoader::onNetworkRequestFinished(QNetworkReply *reply) {

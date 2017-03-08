@@ -297,7 +297,7 @@ void CocoaStyle::draw_window_button(const style_data &features,
 }
 
 #ifdef __APPLE__
-CGContextRef _create_cg_context(int pixelsWide, int pixelsHigh) {
+static CGContextRef _create_cg_context(int pixelsWide, int pixelsHigh) {
   CGContextRef context = NULL;
   CGColorSpaceRef colorSpace;
   void *bitmapData;
@@ -328,7 +328,7 @@ CGContextRef _create_cg_context(int pixelsWide, int pixelsHigh) {
   return context; // 7
 }
 
-QImage _cg_image_to_qimage(CGImageRef image) {
+static QImage _cg_image_to_qimage(CGImageRef image) {
   const size_t w = CGImageGetWidth(image), h = CGImageGetHeight(image);
   QImage ret(w, h, QImage::Format_ARGB32_Premultiplied);
   ret.fill(Qt::transparent);
@@ -339,6 +339,7 @@ QImage _cg_image_to_qimage(CGImageRef image) {
   return ret;
 }
 
+/*
 void _draw_drop_shadow(CGContextRef myContext, // 1
                        CGFloat wd, CGFloat ht) {
   CGSize myShadowOffset = CGSizeMake(2, -5);         // 2
@@ -346,6 +347,8 @@ void _draw_drop_shadow(CGContextRef myContext, // 1
   CGContextSetShadow(myContext, myShadowOffset, 30); // 7
   CGContextRestoreGState(myContext);                 // 15
 }
+*/
+
 #endif
 void CocoaStyle::PrivateCocoa::set_default_font_size(QPainter *painter,
                                                      int a_size,

@@ -8,6 +8,7 @@
 #import <Cocoa/Cocoa.h>
 
 #include <ApplicationServices/ApplicationServices.h>
+#include <AvailabilityMacros.h>
 
 cherry_kit::screen::platform_screen::platform_screen() {}
 
@@ -25,7 +26,7 @@ float cherry_kit::screen::platform_screen::scale_factor(
   NSArray *screen_list = [NSScreen screens];
 
   if (a_display_id > screen_list.count || a_display_id < 0) {
-    qDebug() << Q_FUNC_INFO << "Invalid display id";
+    //qDebug() << Q_FUNC_INFO << "Invalid display id";
     return 1.0f;
   }
 
@@ -36,12 +37,21 @@ float cherry_kit::screen::platform_screen::scale_factor(
 
   float desktop_scale =
       display_width(a_display_id) / desktop_width(a_display_id);
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
+  if (desktop_scale < 1) {
+    return screen.userSpaceScaleFactor / desktop_scale;
+  }
 
+  return screen.userSpaceScaleFactor;
+#endif
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
   if (desktop_scale < 1) {
     return screen.backingScaleFactor / desktop_scale;
   }
 
   return screen.backingScaleFactor;
+#endif
 }
 
 float cherry_kit::screen::platform_screen::desktop_width(
@@ -66,7 +76,7 @@ float cherry_kit::screen::platform_screen::display_width(
   NSArray *screen_list = [NSScreen screens];
 
   if (a_display_id > screen_list.count || a_display_id < 0) {
-    qDebug() << Q_FUNC_INFO << "Invalid display id";
+    //qDebug() << Q_FUNC_INFO << "Invalid display id";
     return 1920.0f;
   }
 
@@ -83,7 +93,7 @@ float cherry_kit::screen::platform_screen::display_height(
   NSArray *screen_list = [NSScreen screens];
 
   if (a_display_id > screen_list.count || a_display_id < 0) {
-    qDebug() << Q_FUNC_INFO << "Invalid display id";
+    //qDebug() << Q_FUNC_INFO << "Invalid display id";
     return 1080.0f;
   }
 

@@ -34,6 +34,7 @@
 
 #include <math.h>
 #include <cmath>
+#include <algorithm>
 
 #ifdef  __QT5_TOOLKIT__
 // Qt

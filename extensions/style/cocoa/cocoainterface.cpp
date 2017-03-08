@@ -28,3 +28,6 @@ cherry_kit::style_ref CocoaInterface::style() {
   return m_instence_ref;
 }
 
+#ifdef __QT4_TOOLKIT__
+Q_EXPORT_PLUGIN2(cocoastyle, CocoaInterface)
+#endif

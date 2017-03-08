@@ -252,7 +252,7 @@ if (ENABLE_QT5)
 endif()
 
 if (ENABLE_QT4)
-  qt4_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Widgets Xml OpenGL Core)
+  qt4_use_modules(${PLEXY_UI_CORE_LIBRARY} Gui Xml OpenGL Core)
 endif()
 
 if(UNIX AND NOT APPLE)

@@ -26,7 +26,9 @@
 class CocoaInterface : public QObject, public cherry_kit::style_interface {
   Q_OBJECT
   Q_INTERFACES(cherry_kit::style_interface)
+#ifdef __QT5_TOOLKIT__
   Q_PLUGIN_METADATA(IID "org.qt-project.cocoa")
+#endif
 
 public:
   virtual ~CocoaInterface() {

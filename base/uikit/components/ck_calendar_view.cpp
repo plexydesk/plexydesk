@@ -24,6 +24,8 @@
 #include <ck_icon_button.h>
 #include <ck_resource_manager.h>
 
+#include <algorithm>
+
 namespace cherry_kit {
 class calendar_view::PrivateCalendarWidget {
 public:

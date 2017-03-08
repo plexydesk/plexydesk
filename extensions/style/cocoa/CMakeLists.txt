@@ -1,3 +1,4 @@
+set(CMAKE_AUTOMOC ON)
 set(sourceFiles
     cocoa.cpp
     cocoainterface.cpp
@@ -16,7 +17,14 @@ set(QTMOC_SRCS
     cocoainterface.h
     )
 
+if (ENABEL_QT5)
 QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
+
+if (ENABEL_QT4)
+QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
+
 
 set(sourceFiles
     ${sourceFiles}
@@ -33,7 +41,7 @@ if(APPLE)
     include_directories(/System/Library/Frameworks)
 
     find_library(CORE_GRAPHICS_LIBRARY ApplicationServices)
-    find_library(COCOA_LIBRARY Cocoa)
+    find_library(COCOA_LIBRARY Cocoa Required)
     find_library(GLUT_LIBRARY GLUT)
     find_library(OpenGL_LIBRARY OpenGL)
 
@@ -50,8 +58,7 @@ if(APPLE)
         ${OpenGL_LIBRARY})
 endif(APPLE)
 
-ADD_LIBRARY(cocoastyle SHARED ${sourceFiles} ${QT_MOC_SRCS}
-                              ${LIBRARY_NATIVE_LINK_TARGETS})
+ADD_LIBRARY(cocoastyle SHARED ${sourceFiles} ${QT_MOC_SRCS})
 
 if (MINGW)
     SET_TARGET_PROPERTIES(cocoastyle PROPERTIES
@@ -63,10 +70,18 @@ endif(MINGW)
 
 TARGET_LINK_LIBRARIES(cocoastyle
     ${PLEXY_UI_CORE_LIBRARY}
+    ${LIBRARY_NATIVE_LINK_TARGETS}
     ${libs}
     )
 
+if (ENABEL_QT5)
 QT5_USE_MODULES(cocoastyle Widgets Xml  Core  )
+endif()
+
+if (ENABEL_QT4)
+QT4_USE_MODULES(cocoastyle Gui Xml  Core  )
+endif()
+
 
 if (NOT APPLE)
 INSTALL(TARGETS cocoastyle DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)

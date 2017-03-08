@@ -345,6 +345,7 @@ QImage _cg_image_to_qimage(CGImageRef image) {
   return ret;
 }
 
+/*
 void _draw_drop_shadow(CGContextRef myContext, // 1
                        CGFloat wd, CGFloat ht) {
   CGSize myShadowOffset = CGSizeMake(2, -5);         // 2
@@ -352,6 +353,7 @@ void _draw_drop_shadow(CGContextRef myContext, // 1
   CGContextSetShadow(myContext, myShadowOffset, 30); // 7
   CGContextRestoreGState(myContext);                 // 15
 }
+*/
 #endif
 void SimpleGrayStyle::PrivateSimpleGray::set_default_font_size(
     QPainter *painter, int a_size, bool a_highlight) {

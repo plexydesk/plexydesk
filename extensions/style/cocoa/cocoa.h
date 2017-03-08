@@ -22,7 +22,6 @@
 #include <QtCore>
 
 #include <ck_data_source.h>
-#include <QtNetwork>
 #include <ck_style.h>
 #include <ck_resource_manager.h>
 
