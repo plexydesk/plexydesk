@@ -493,6 +493,8 @@ void desktop_controller_impl::set_view_rect(const QRectF &rect) {
     o_ctr->m_background_window->set_contents_geometry(0, 0, rect.width(),
                                                       rect.height());
     o_ctr->m_background_window->set_coordinates(rect.x(), rect.y());
+    o_ctr->m_background_window->set_background_size(rect.width(), 
+		    rect.height());
   }
 }
 

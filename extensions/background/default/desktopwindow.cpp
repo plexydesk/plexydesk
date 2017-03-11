@@ -18,6 +18,7 @@ public:
   }
 
   QImage m_background_texture;
+  QPixmap m_background_pixmap;
   unsigned char *m_background_buffer;
   int m_background_width;
   int m_background_height;
@@ -28,6 +29,14 @@ public:
 void desktop_window::reset_window_background() {
   memset(priv->m_background_buffer, 0,
          (4 * priv->m_background_height * priv->m_background_width));
+}
+
+void desktop_window::set_background_size(int a_width, int a_height) {
+  priv->m_background_height = a_height;
+  priv->m_background_width = a_width;
+
+  priv->m_background_pixmap = priv->m_background_pixmap.scaled(a_width, a_height);
+  update();
 }
 
 bool desktop_window::is_seamless() { return priv->m_seamless; }
@@ -87,6 +96,7 @@ void desktop_window::set_background(const std::string &a_image_name) {
 
         priv->m_background_texture = QImage(
             surface->buffer, surface->width, surface->height, QImage::Format_ARGB32);
+        priv->m_background_pixmap = QPixmap::fromImage(priv->m_background_texture);
         update();
 
         delete ck_image;
@@ -106,6 +116,7 @@ void desktop_window::set_background(const std::string &a_image_name) {
 void desktop_window::set_background(const QImage &a_image_name) {
   priv->m_background_texture = QImage();
   priv->m_background_texture = a_image_name;
+  priv->m_background_pixmap = QPixmap::fromImage(a_image_name);
   setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
   update();
 }
@@ -121,13 +132,22 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
 
   a_ctx->save();
   a_ctx->setRenderHints(QPainter::SmoothPixmapTransform);
+  a_ctx->drawPixmap(QPoint(0, 0), priv->m_background_pixmap);
+  /*
   QRectF draw_rect;
   draw_rect.setX(0);
   draw_rect.setY(0);
   draw_rect.setWidth(priv->m_background_texture.width());
   draw_rect.setHeight(priv->m_background_texture.height());
 
-  a_ctx->drawImage(a_rect, priv->m_background_texture,
-                  draw_rect, Qt::DiffuseAlphaDither);
+  //a_ctx->drawPixmap(a_rect.toRect(), priv->m_background_pixmap,
+   //              draw_rect.toRect());
+   //
+  a_ctx->drawImage(QPoint(0, 0), priv->m_background_texture);
+
+  //a_ctx->drawImage(a_rect.toRect(), priv->m_background_texture,
+   //               draw_rect.toRect());
+   //               
+   */
   a_ctx->restore();
 }

@@ -30,6 +30,8 @@ public:
   void set_desktop_scale_mode(DesktopScalingMode a_desktop_mode = kNone);
   DesktopScalingMode desktop_scale_mode() const;
 
+  void set_background_size(int a_width, int a_height);
+
 protected:
   void paint_view(QPainter *a_ctx, const QRectF &a_rect);
 
