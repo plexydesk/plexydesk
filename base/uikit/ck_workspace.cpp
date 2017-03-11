@@ -61,7 +61,9 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+
+  setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+  //setCacheMode(CacheBackground);
 
 #ifndef Q_OS_WIN
 #ifdef __QT5_TOOLKIT__
@@ -69,9 +71,10 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
                  Qt::WindowStaysOnBottomHint | Qt::NoDropShadowWindowHint);
 #endif
 
-#ifdef __QT4_TOOLKIT__
-  //setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint |
-   //              Qt::WindowStaysOnBottomHint);
+#if defined(__QT4_TOOLKIT__) && defined(__APPLE__)
+  setWindowFlags(Qt::CustomizeWindowHint
+		  | Qt::FramelessWindowHint
+		  | Qt::WindowStaysOnBottomHint);
 #endif
 
 #endif

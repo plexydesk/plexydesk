@@ -72,7 +72,7 @@ desktop_window::desktop_window()
     }
   });
 
-  setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
+  //setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
   QPixmapCache::setCacheLimit(9096);
 }
 
@@ -117,7 +117,7 @@ void desktop_window::set_background(const QImage &a_image_name) {
   priv->m_background_texture = QImage();
   priv->m_background_texture = a_image_name;
   priv->m_background_pixmap = QPixmap::fromImage(a_image_name);
-  setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
+  //setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
   update();
 }
 
@@ -130,9 +130,13 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
     return;
   }
 
+  a_ctx->setClipRect(boundingRect());
   a_ctx->save();
   a_ctx->setRenderHints(QPainter::SmoothPixmapTransform);
-  a_ctx->drawPixmap(QPoint(0, 0), priv->m_background_pixmap);
+  //a_ctx->drawPixmap(QPoint(0, 0), priv->m_background_pixmap);
+
+  a_ctx->setBrush(QBrush(priv->m_background_pixmap));
+  a_ctx->drawRect(a_rect);
   /*
   QRectF draw_rect;
   draw_rect.setX(0);
