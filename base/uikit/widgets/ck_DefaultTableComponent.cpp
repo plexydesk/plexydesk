@@ -177,10 +177,6 @@ void DefaultTableComponent::paint(QPainter *painter,
     features.geometry = boundingRect();
     features.text_data = m_priv_ptr->m_current_label_str;
 
-    painter->setRenderHint(QPainter::Antialiasing, true);
-    painter->setRenderHint(QPainter::TextAntialiasing, true);
-    painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
-
     if (cherry_kit::ResourceManager::style()) {
       cherry_kit::ResourceManager::style()->draw("vertical_list_item", features,
                                                  painter);

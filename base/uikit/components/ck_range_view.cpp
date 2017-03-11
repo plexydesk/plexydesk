@@ -142,9 +142,6 @@ void range_view::paint_view(QPainter *painter, const QRectF &rect) {
   pen.setWidth(10);
   painter->setPen(pen);
 
-  painter->setRenderHint(QPainter::Antialiasing);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing);
-
   QRectF handle(this->boundingRect().center().x() - 5,
                 this->boundingRect().center().y() - 5, 10, 10);
   QRectF borderRect(boundingRect().x() + 24, boundingRect().y() + 24,

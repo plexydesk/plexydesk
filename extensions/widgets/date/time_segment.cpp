@@ -35,10 +35,6 @@ void time_segment::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   // todo:
   // this should be moved to style class.
   a_ctx->save();
-  a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                            QPainter::SmoothPixmapTransform |
-                            QPainter::HighQualityAntialiasing,
-                        true);
 
   if (heighlight()) {
     QPainterPath dot_path;

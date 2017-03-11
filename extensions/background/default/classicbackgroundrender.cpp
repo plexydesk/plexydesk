@@ -100,9 +100,6 @@ void ClassicBackgroundRender::paint_view(QPainter *painter,
                                          const QRectF &rect /*rect*/) {
   if (mSeamLessMode) {
     painter->save();
-    painter->setRenderHints(QPainter::SmoothPixmapTransform |
-                            QPainter::Antialiasing |
-                            QPainter::HighQualityAntialiasing);
     painter->setBackgroundMode(Qt::TransparentMode);
     painter->setCompositionMode(QPainter::CompositionMode_Source);
     painter->fillRect(rect, Qt::transparent);

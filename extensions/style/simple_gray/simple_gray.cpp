@@ -210,9 +210,7 @@ void SimpleGrayStyle::PrivateSimpleGray::set_pen_color(
 
 void SimpleGrayStyle::set_default_painter_hints(QPainter *painter) {
   painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                              QPainter::SmoothPixmapTransform |
-                              QPainter::HighQualityAntialiasing,
-                          true);
+                              QPainter::SmoothPixmapTransform, true);
 }
 
 void SimpleGrayStyle::draw_push_button(const style_data &features,
@@ -961,9 +959,6 @@ void SimpleGrayStyle::draw_text_editor(const style_data &features,
                                        const QString &text, QPainter *a_ctx,
                                        const widget *a_widget) {
   /* Painter settings */
-  a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                            QPainter::HighQualityAntialiasing,
-                        true);
   QPen pen;
 
   pen = QPen(QColor(255, 255, 255), 1, Qt::SolidLine, Qt::RoundCap,
@@ -1143,8 +1138,7 @@ void SimpleGrayStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx,
 
   a_ctx->save();
   a_ctx->setOpacity(0.9);
-  a_ctx->setRenderHints(
-      QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
+
   QPainterPath path;
   path.addRoundedRect(rect, 0, 0);
   a_ctx->fillPath(path,
@@ -1159,8 +1153,6 @@ void SimpleGrayStyle::draw_scrollbar_slider(const style_data &a_data,
               a_data.geometry.height());
   a_ctx->save();
   a_ctx->setOpacity(0.5);
-  a_ctx->setRenderHints(
-      QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
   path.addRoundedRect(rect, 2, 2);
   a_ctx->fillPath(path, d->color(cherry_kit::resource_manager::kTextColor));

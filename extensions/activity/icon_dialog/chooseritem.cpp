@@ -151,10 +151,6 @@ void GridIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                      QWidget *widget) {
   /* Painter settings */
   if (d->mType == List || d->mIsSelected) {
-    painter->setRenderHint(QPainter::Antialiasing, true);
-    painter->setRenderHint(QPainter::TextAntialiasing, true);
-    painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
-
     QPainterPath path;
     path.addRoundedRect(boundingRect(), 4.0, 4.0);
     painter->fillPath(path, QColor(254, 254, 254));

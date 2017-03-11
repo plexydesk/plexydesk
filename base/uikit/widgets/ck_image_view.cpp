@@ -72,11 +72,6 @@ void image_view::paint_view(QPainter *a_painter_ptr,
   int marginLeft = (a_exposeRect.width() - o_image_view->mPixmap.width()) / 2;
   a_painter_ptr->save();
 
-  a_painter_ptr->setRenderHints(QPainter::HighQualityAntialiasing |
-                                QPainter::SmoothPixmapTransform |
-                                QPainter::Antialiasing,
-                                true);
-
   QRect rect(marginLeft, a_exposeRect.y(), o_image_view->mPixmap.width(),
              o_image_view->mPixmap.height());
 

@@ -63,8 +63,8 @@ desktop_window::desktop_window()
     }
   });
 
-  setCacheMode(ItemCoordinateCache);
-  // QPixmapCache::setCacheLimit(1920 * 1200 * 32);
+  setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
+  QPixmapCache::setCacheLimit(9096);
 }
 
 desktop_window::~desktop_window() { delete priv; }
@@ -106,7 +106,7 @@ void desktop_window::set_background(const std::string &a_image_name) {
 void desktop_window::set_background(const QImage &a_image_name) {
   priv->m_background_texture = QImage();
   priv->m_background_texture = a_image_name;
-  // setCacheMode(ItemCoordinateCache, a_image_name.size());
+  setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
   update();
 }
 
@@ -122,12 +122,12 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   a_ctx->save();
   a_ctx->setRenderHints(QPainter::SmoothPixmapTransform);
   QRectF draw_rect;
-  draw_rect.setX(a_rect.x());
-  draw_rect.setY(a_rect.y());
-  draw_rect.setWidth(a_rect.width());
-  draw_rect.setHeight(a_rect.height());
+  draw_rect.setX(0);
+  draw_rect.setY(0);
+  draw_rect.setWidth(priv->m_background_texture.width());
+  draw_rect.setHeight(priv->m_background_texture.height());
 
-  a_ctx->drawImage(draw_rect, priv->m_background_texture,
-                   QRectF(0, 0, 1920, 1080));
+  a_ctx->drawImage(a_rect, priv->m_background_texture,
+                  draw_rect, Qt::DiffuseAlphaDither);
   a_ctx->restore();
 }

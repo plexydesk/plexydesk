@@ -181,7 +181,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 #ifndef __APPLE__
     QGraphicsDropShadowEffect *lEffect = new QGraphicsDropShadowEffect(this);
     lEffect->setColor(QColor("#000000"));
-    lEffect->setBlurRadius(22);
+    lEffect->setBlurRadius(6);
     lEffect->setXOffset(0);
     lEffect->setYOffset(0);
     setGraphicsEffect(lEffect);

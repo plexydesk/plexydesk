@@ -61,7 +61,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+  setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 
 #ifndef Q_OS_WIN
 #ifdef __QT5_TOOLKIT__
@@ -98,6 +98,8 @@ workspace::~workspace() { delete priv; }
 
 void workspace::move_to_screen(int a_screen_id) {
   priv->m_screen_id = a_screen_id;
+
+  /* set the desktop geometry */
   set_workspace_geometry(a_screen_id);
 
   priv->m_render_box = QRectF(0, 0, get_base_width(), get_base_height());
@@ -115,9 +117,9 @@ void workspace::move_to_screen(int a_screen_id) {
   qDebug() << Q_FUNC_INFO << "Final H" << (height_factor * get_base_height());
 #endif
 
-  setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
-                 QPainter::HighQualityAntialiasing |
-                 QPainter::TextAntialiasing);
+  setRenderHints(QPainter::Antialiasing
+		  | QPainter::SmoothPixmapTransform
+		  | QPainter::TextAntialiasing);
 
   scale(width_factor, height_factor);
 }
@@ -151,14 +153,14 @@ void workspace::set_accelerated_rendering(bool a_on) {
 
   if (priv->m_opengl_on) {
     setViewport(new QGLWidget(
-        QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer | QGL::SampleBuffers)));
-    setCacheMode(QGraphicsView::CacheNone);
+        QGLFormat(QGL::DoubleBuffer)));
+    setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
     setupViewport(new QWidget);
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setOptimizationFlag(QGraphicsView::DontClipPainter);
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
   }
 }
 
@@ -216,9 +218,8 @@ void workspace::paintEvent(QPaintEvent *event) {
   if (!priv->m_opengl_on) {
     QPainter p;
     p.begin(viewport());
+    p.setClipping(true);
     p.save();
-    p.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing |
-                     QPainter::HighQualityAntialiasing);
     p.setBackgroundMode(Qt::TransparentMode);
     p.setCompositionMode(QPainter::CompositionMode_Source);
     p.fillRect(event->rect(), Qt::transparent);
@@ -552,10 +553,6 @@ QPixmap workspace::thumbnail(space *a_space, int a_scale_factor) {
   QPainter _desktop_preview;
 
   _desktop_preview.begin(&_thumbnail);
-
-  _desktop_preview.setRenderHints(QPainter::SmoothPixmapTransform |
-                                  QPainter::Antialiasing |
-                                  QPainter::HighQualityAntialiasing);
   _desktop_preview.fillRect(_thumbnail_geometry, Qt::transparent);
   _desktop_preview.setBackgroundMode(Qt::TransparentMode);
   _desktop_preview.setCompositionMode(QPainter::CompositionMode_SourceOver);
