@@ -79,9 +79,6 @@ public:
     const char *pathPtr =
             CFStringGetCStringPtr(macPath,CFStringGetSystemEncoding());
 
-    CFRelease(appUrlRef);
-    CFRelease(macPath);
-
     cherry_kit::extension_manager *loader =
             cherry_kit::extension_manager::init(
                 QDir::toNativeSeparators(QLatin1String(pathPtr)  +
@@ -92,7 +89,8 @@ public:
                                          QLatin1String(
                                              "/Contents/PlugIns/plexydesk/")));
     Q_UNUSED(loader);
-
+    CFRelease(appUrlRef);
+    CFRelease(macPath);
     int screen_count = [[NSScreen screens] count];
 
 

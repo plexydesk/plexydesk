@@ -53,7 +53,6 @@ config *config::instance() {
 }
 
 config::~config() { delete d; }
-
 QString config::prefix() {
 #ifdef Q_OS_WIN
   QDir binaryPath(QCoreApplication::applicationDirPath());
@@ -69,15 +68,19 @@ QString config::prefix() {
   return basePath;
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef __APPLE__
   CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
   CFStringRef macPath =
       CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
   const char *pathPtr =
       CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+  qDebug() << Q_FUNC_INFO << QString(pathPtr);
+
+  QLatin1String _prefix = QLatin1String(pathPtr);
   CFRelease(appUrlRef);
   CFRelease(macPath);
-  return QLatin1String(pathPtr) + QString("/Contents/");
+
+  return _prefix + QString("/Contents/");
 #endif
 
   return QString();
