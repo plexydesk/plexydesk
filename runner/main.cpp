@@ -41,6 +41,11 @@
 #include <qpa/qplatformnativeinterface.h>
 #endif
 
+#if defined(Q_WS_X11) && defined(__QT4_TOOLKIT__)// && defined(Q_WS_MAC) ??
+#include <X11/Xlib.h>
+#include <QX11Info>
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xregion.h>
 #include <X11/extensions/shape.h>
@@ -232,6 +237,13 @@ public:
         // handle wayland
       }
 #endif
+
+#if defined (Q_OS_LINUX) && defined (__QT4_TOOLKIT__)
+    NETWinInfo info(QX11Info::display(), workspace->winId(), QX11Info::appRootWindow(), NET::WMDesktop );
+    info.setDesktop(NETWinInfo::OnAllDesktops);
+    info.setWindowType(NET::Desktop);
+#endif
+
       workspace->show();
 
 #ifdef Q_OS_WIN32
