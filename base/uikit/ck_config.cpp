@@ -98,8 +98,21 @@ std::string config::icon_resource_prefix_path()
   QString prefix_path = PLEXYPREFIX;
   QString rv = prefix_path;
 
-#ifdef Q_OS_MAC
-  rv = prefix() + "/Resources/icons/";
+#ifdef __APPLE__
+  CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  CFStringRef macPath =
+      CFURLCopyFileSystemPath(appUrlRef, kCFURLPOSIXPathStyle);
+  const char *pathPtr =
+      CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+  qDebug() << Q_FUNC_INFO << QString(pathPtr);
+
+  QLatin1String _prefix = QLatin1String(pathPtr);
+  CFRelease(appUrlRef);
+  CFRelease(macPath);
+
+  rv = _prefix + "/Contents/Resources/icons/";
+  qDebug() << Q_FUNC_INFO << "App Prefix : " << _prefix;
+  qDebug() << Q_FUNC_INFO << rv;
 #endif
 
 #ifdef Q_OS_LINUX
