@@ -61,7 +61,6 @@ generate_export_header( ${PLEXY_CORE_LIBRARY}
 #target properties for OS X
 if(APPLE)
     set_target_properties(${PLEXY_CORE_LIBRARY} PROPERTIES FRAMEWORK 1)
-    set_target_properties(${PLEXY_CORE_LIBRARY} PROPERTIES SKIP_BUILD_RPATH 1)
 endif()
 
 #target properties for MINGW

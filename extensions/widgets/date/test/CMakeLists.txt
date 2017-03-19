@@ -61,11 +61,6 @@ set(libs ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ADD_EXECUTABLE(event_tool ${WIN_APPLICATION} ${sourceFiles})
 
 #target properties for OS X
-if(APPLE)
-    set_target_properties(event_tool PROPERTIES SKIP_BUILD_RPATH FALSE)
-    set_target_properties(event_tool PROPERTIES SKIP_INSTALL_RPATH FALSE)
-    set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
-endif()
 
 #SET_PROPERTY(TARGET event_tool PROPERTY QT5_NO_LINK_QTMAIN ON)
 #QT5_USE_MODULES(event_tool Widgets Xml  Core)

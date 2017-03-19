@@ -53,15 +53,6 @@ endif()
 ########### prepare files ###############
 ADD_EXECUTABLE(datasync_runtime ${WIN_APPLICATION} ${sourceFiles})
 
-#target properties for OS X
-if(APPLE)
-	if (ENABLE_QT5)
-		set_target_properties(datasync_runtime PROPERTIES SKIP_BUILD_RPATH FALSE)
-		set_target_properties(datasync_runtime PROPERTIES SKIP_INSTALL_RPATH FALSE)
-		set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks/")
-	endif()
-endif()
-
 #SET_PROPERTY(TARGET datasync_runtime PROPERTY QT5_NO_LINK_QTMAIN ON)
 
 	if (MSVC)

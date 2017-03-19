@@ -123,6 +123,9 @@ endif()
 
 if (APPLE)
   add_definitions(-D__APPLE_PLATFORM__)
+  
+  set(CMAKE_MACOSX_RPATH NO)
+  set(CMAKE_INSTALL_NAME_DIR "@executable_path/../frameworks")
 endif()
 
 # Project variables that need to be defined manually
