@@ -13,8 +13,6 @@ public:
   ~PrivateDesktopWindow() {
     if (m_background_buffer)
       free(m_background_buffer);
-
-    qDebug() << Q_FUNC_INFO;
   }
 
   QImage m_background_texture;
@@ -35,7 +33,7 @@ void desktop_window::set_background_size(int a_width, int a_height) {
   priv->m_background_height = a_height;
   priv->m_background_width = a_width;
 
-  priv->m_background_pixmap = priv->m_background_pixmap.scaled(a_width, a_height);
+  //priv->m_background_pixmap = priv->m_background_pixmap.scaled(a_width, a_height);
   update();
 }
 
@@ -117,7 +115,6 @@ void desktop_window::set_background(const QImage &a_image_name) {
   priv->m_background_texture = QImage();
   priv->m_background_texture = a_image_name;
   priv->m_background_pixmap = QPixmap::fromImage(a_image_name);
-  //setCacheMode(ItemCoordinateCache, QSize(1920, 1200));
   update();
 }
 
@@ -137,21 +134,6 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
 
   a_ctx->setBrush(QBrush(priv->m_background_pixmap));
   a_ctx->drawRect(a_rect);
-  /*
-  QRectF draw_rect;
-  draw_rect.setX(0);
-  draw_rect.setY(0);
-  draw_rect.setWidth(priv->m_background_texture.width());
-  draw_rect.setHeight(priv->m_background_texture.height());
 
-  //a_ctx->drawPixmap(a_rect.toRect(), priv->m_background_pixmap,
-   //              draw_rect.toRect());
-   //
-  a_ctx->drawImage(QPoint(0, 0), priv->m_background_texture);
-
-  //a_ctx->drawImage(a_rect.toRect(), priv->m_background_texture,
-   //               draw_rect.toRect());
-   //               
-   */
   a_ctx->restore();
 }
