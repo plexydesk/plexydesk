@@ -262,7 +262,6 @@ void widget::set_contents_geometry(float a_x, float a_y, float a_width,
   /// setPos(mapFromScene(a_rect.topLeft()));
   setPos(a_rect.topLeft());
   priv->_invoke_geometry_func(scaled_rect);
-  setCacheMode(ItemCoordinateCache, contents_geometry().size().toSize());
   request_update();
 }
 
