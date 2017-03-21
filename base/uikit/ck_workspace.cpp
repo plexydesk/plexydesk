@@ -344,11 +344,14 @@ int workspace::screen_id() const { return priv->m_screen_id; }
 
 void workspace::revoke_space(const QString &a_name, int a_id) {
   space *_space = create_blank_space();
+  uint _new_space_id = priv->m_desktop_space_list.count();
+
+  _space->set_id(_new_space_id);
 
   _space->set_workspace(this);
   _space->set_qt_graphics_scene(scene());
   _space->set_name(a_name);
-  _space->set_id(a_id);
+  _space->set_id(_new_space_id);
 
   QRectF _space_geometry;
   _space_geometry.setX(0);
@@ -387,25 +390,18 @@ QRectF workspace::workspace_geometry() const {
 }
 
 void workspace::expose(uint a_space_id) {
-  uint _current_space_count = priv->m_desktop_space_list.count();
+  foreach(space *_space, priv->m_desktop_space_list) {
+      if (!_space)
+          continue;
 
-  if (a_space_id > _current_space_count) {
-    return;
-  }
-
-	space *_current_space = current_active_space();
-
-	if (_current_space && (_current_space->id() == a_space_id)) {
-			return;
-	}
-
-  space *_space = priv->m_desktop_space_list.at(a_space_id);
-
-  if (_space) {
-		_space->reset_focus();
-    QRectF _space_rect = _space->geometry();
-    priv->m_current_activty_space_id = a_space_id;
-    expose_sub_region(_space_rect);
+      if (_space->id() == a_space_id) {
+       //_space->reset_focus();
+       QRectF _space_rect = _space->geometry();
+       priv->m_current_activty_space_id = a_space_id;
+       qDebug() << "-- " << Q_FUNC_INFO << "Check space";
+       expose_sub_region(_space_rect);
+       break;
+      }
   }
 }
 
@@ -593,7 +589,10 @@ void workspace::add_default_space() {
   space *_space = create_blank_space();
 
   _space->set_name("default");
-  _space->set_id(priv->m_desktop_space_list.count());
+
+  uint _new_space_id = priv->m_desktop_space_list.count();
+
+  _space->set_id(_new_space_id);
 
   std::for_each(std::begin(priv->m_default_controller_name_list),
                 std::end(priv->m_default_controller_name_list),
