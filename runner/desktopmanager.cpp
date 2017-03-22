@@ -58,7 +58,20 @@ void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {
         dock_controller->task().execute("menu", data);
       }
     }
+  } else {
+
+      int count = items(event->pos()).size();
+
+      qDebug() << Q_FUNC_INFO << "-- Resetting focus : Count :" << count;
+      if (count <= 0) {
+          space *_space = current_active_space();
+
+          if (_space) {
+              _space->reset_focus();
+          }
+      }
   }
+
 
   cherry_kit::workspace::mouseReleaseEvent(event);
 }

@@ -41,11 +41,12 @@ using namespace cherry_kit;
 
 class desktop_panel_controller_impl::PrivateDock {
 public:
-  PrivateDock() : m_main_menu_toolbar(0), m_sub_menu_toolbar(0){}
+  PrivateDock() : m_main_menu_toolbar(0), m_sub_menu_toolbar(0), m_expose_window(0){}
   ~PrivateDock() {}
 
 public:
   window *m_deskt_menu;
+  window *m_expose_window;
 
   cherry_kit::item_view *m_task_grid;
   cherry_kit::fixed_layout *m_fixed_panel_layout;
@@ -91,7 +92,6 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
 }
 
 desktop_panel_controller_impl::~desktop_panel_controller_impl() {
-  qDebug() << Q_FUNC_INFO;
   delete priv;
 }
 
@@ -539,6 +539,11 @@ void desktop_panel_controller_impl::prepare_removal() {
   // if (priv->m_task_window) {
   //   priv->m_task_window->discard();
   //}
+
+    if (priv->m_expose_window) {
+        priv->m_expose_window->close();
+        delete priv->m_expose_window;
+    }
 }
 
 void desktop_panel_controller_impl::switch_to_previous_space() {
@@ -631,50 +636,59 @@ void desktop_panel_controller_impl::add_new_space() {
     if (_workspace) {
       if (_workspace->space_count() >= 12)
         return;
+
+      space *_current_space = _workspace->current_active_space();
+      if (_current_space)
+          _current_space->reset_focus();
+
       _workspace->add_default_space();
     }
   }
 }
 
-void desktop_panel_controller_impl::update_desktop_preview() {
-  qDebug() << Q_FUNC_INFO;
-  if (!viewport())
-    return;
+void desktop_panel_controller_impl::load_desktop_expose(
+        cherry_kit::item_view *preview_list,
+        float preview_height, float preview_width)
+{
 
-  cherry_kit::window *expose_window = new cherry_kit::window();
+    foreach(cherry_kit::space * _space,
+            viewport()->owner_workspace()->current_spaces()) {
+      cherry_kit::model_view_item *item = new cherry_kit::model_view_item();
+      cherry_kit::image_view *image_view = new cherry_kit::image_view();
+      QPixmap preview = viewport()->owner_workspace()->thumbnail(_space);
 
-  /* default thumbnail returned is 10% of the actual desktop */
-  float preview_width = (viewport()->geometry().width() / 100) * 10;
-  float preview_height = (viewport()->geometry().height() / 100) * 10;
+      image_view->on_click([=]() {
+        viewport()->owner_workspace()->expose(_space->id());
+      });
 
-  cherry_kit::item_view *preview_list = new cherry_kit::item_view(
-      expose_window, cherry_kit::item_view::kGridModel);
-  preview_list->set_column_count(11);
-  preview_list->set_content_size(preview_width, preview_height);
-  preview_list->set_view_geometry(
-      QRectF(0, 0, viewport()->geometry().width(),
-             (preview_height + expose_window->window_title_height()) - 16 ));
+      image_view->set_pixmap(preview);
+      image_view->set_contents_geometry(0, 0, preview_width, preview_height);
 
-  expose_window->set_window_title("");
-  expose_window->set_geometry(
-      QRectF(0, 0, viewport()->geometry().width(), preview_height));
-  expose_window->set_window_type(cherry_kit::window::kPopupWindow);
-  expose_window->set_window_opacity(0.5);
+      item->set_view(image_view);
 
-  expose_window->on_visibility_changed([=](window *a_window_ref,
-                                           bool a_visible) {
-    if (!a_visible) {
-      preview_list->clear();
-      a_window_ref->close();
-      delete a_window_ref;
+      preview_list->insert(item);
     }
-  });
+}
 
-  // insert preview items.
-  foreach(cherry_kit::space * _space,
-          viewport()->owner_workspace()->current_spaces()) {
+void desktop_panel_controller_impl::remove_desktop_review(item_view *a_list,
+                                                          int a_space_id)
+{
+    // todo
+    qDebug() << Q_FUNC_INFO << "Not impl - Grid Model needs items removal";
+}
+
+void desktop_panel_controller_impl::insert_desktop_preview_item(
+        cherry_kit::item_view *preview_list,
+        float preview_height, float preview_width)
+{
+    int total_spaces = viewport()->owner_workspace()->current_spaces().count();
+    int availble_preview_count = preview_list->count();
+
+    space *_space = viewport()->owner_workspace()->get_space(total_spaces - 1);
+
     cherry_kit::model_view_item *item = new cherry_kit::model_view_item();
     cherry_kit::image_view *image_view = new cherry_kit::image_view();
+
     QPixmap preview = viewport()->owner_workspace()->thumbnail(_space);
 
     image_view->on_click([=]() {
@@ -687,7 +701,57 @@ void desktop_panel_controller_impl::update_desktop_preview() {
     item->set_view(image_view);
 
     preview_list->insert(item);
-  }
+}
+
+void desktop_panel_controller_impl::create_desktop_preview() {
+  if (!viewport())
+    return;
+
+  if (!priv->m_expose_window)
+     priv->m_expose_window = new cherry_kit::window();
+
+  /* default thumbnail returned is 10% of the actual desktop */
+  float preview_width = (viewport()->geometry().width() / 100) * 10;
+  float preview_height = (viewport()->geometry().height() / 100) * 10;
+
+  cherry_kit::item_view *preview_list = new cherry_kit::item_view(
+      priv->m_expose_window, cherry_kit::item_view::kGridModel);
+
+  preview_list->set_column_count(11);
+  preview_list->set_content_size(preview_width, preview_height);
+  preview_list->set_view_geometry(
+      QRectF(0, 0, viewport()->geometry().width(),
+             (preview_height + priv->m_expose_window->window_title_height()) - 16 ));
+
+  priv->m_expose_window->set_window_title("");
+  priv->m_expose_window->set_geometry(
+      QRectF(0, 0, viewport()->geometry().width(), preview_height));
+  priv->m_expose_window->set_window_type(cherry_kit::window::kPopupWindow);
+
+  priv->m_expose_window->set_window_opacity(0.5);
+
+  priv->m_expose_window->on_visibility_changed([=](window *a_window_ref,
+                                           bool a_visible) {
+    if (!a_visible) {
+      //preview_list->clear();
+      //a_window_ref->close();
+      //delete a_window_ref;
+    }
+  });
+
+  viewport()->owner_workspace()->on_change([=](workspace::workspace_change_t a_change, int a_space_id) {
+      if (a_change == workspace::kSpaceRemovedNotify) {
+          //remove preview
+          remove_desktop_review(preview_list, 0);
+          return;
+      }
+
+      if (a_change == workspace::kSpaceAddedNotify) {
+         // space added
+          insert_desktop_preview_item(preview_list, preview_height, preview_width);
+          return;
+      }
+  });
 
   // cleanup
   preview_list->on_item_removed([=](cherry_kit::model_view_item *a_item) {
@@ -705,13 +769,27 @@ void desktop_panel_controller_impl::update_desktop_preview() {
   button_item->set_view(btn);
   preview_list->insert(button_item);
 
-  expose_window->set_window_content(preview_list);
+  // insert preview items.
+  load_desktop_expose(preview_list, preview_height, preview_width);
+
+
+
+  priv->m_expose_window->set_window_content(preview_list);
 
   QPointF menu_pos =
-      viewport()->center(expose_window->geometry(), QRectF(),
+      viewport()->center(priv->m_expose_window->geometry(), QRectF(),
                          cherry_kit::space::kCenterOnViewportTop);
 
-  expose_window->set_coordinates(menu_pos.x(), menu_pos.y());
+  priv->m_expose_window->set_coordinates(menu_pos.x(), menu_pos.y());
 
-  insert(expose_window);
+  insert(priv->m_expose_window);
+}
+
+void desktop_panel_controller_impl::update_desktop_preview() {
+  /*
+  if (!priv->m_expose_window)
+      create_desktop_preview();
+
+  priv->m_expose_window->show();
+  */
 }

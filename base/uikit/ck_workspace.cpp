@@ -26,13 +26,20 @@ public:
   PrivateWorkSpace() {}
   ~PrivateWorkSpace() {}
 
+  void notify_update(workspace_change_t a_change, int a_space_id);
+
   SpacesList m_desktop_space_list;
+
   QRectF m_workspace_geometry;
   QRectF m_render_box;
+
   int m_space_count;
   int m_current_activty_space_id;
   float m_workspace_left_margine;
+
   std::vector<std::string> m_default_controller_name_list;
+  std::vector<workspace::workspace_change_callback_t> m_notification_listners;
+
   bool m_opengl_on;
   int m_screen_id;
 };
@@ -149,6 +156,11 @@ space *workspace::current_active_space() const {
   }
 
   return _current_space;
+}
+
+space *workspace::get_space(int a_id)
+{
+    return priv->m_desktop_space_list.at(a_id);
 }
 
 void workspace::set_accelerated_rendering(bool a_on) {
@@ -342,6 +354,11 @@ float workspace::desktop_horizontal_scale_factor() {
 
 int workspace::screen_id() const { return priv->m_screen_id; }
 
+void workspace::on_change(workspace::workspace_change_callback_t a_callback)
+{
+    priv->m_notification_listners.push_back(a_callback);
+}
+
 void workspace::revoke_space(const QString &a_name, int a_id) {
   space *_space = create_blank_space();
   uint _new_space_id = priv->m_desktop_space_list.count();
@@ -368,6 +385,8 @@ void workspace::revoke_space(const QString &a_name, int a_id) {
 
   _space->setGeometry(_space_geometry);
   _space->restore_session();
+
+  _space->hide();
 
   priv->m_desktop_space_list << _space;
 }
@@ -403,14 +422,17 @@ void workspace::expose(uint a_space_id) {
 
        space *_active_space = current_active_space();
 
-       if (_active_space)
+       if (_active_space) {
          _active_space->hide();
+       }
 
        QRectF _space_rect = _space->geometry();
        priv->m_current_activty_space_id = a_space_id;
-       qDebug() << "-- " << Q_FUNC_INFO << "Check space";
+
        expose_sub_region(_space_rect);
+
        _space->show();
+
        break;
       }
   }
@@ -445,13 +467,6 @@ space *workspace::expose_next() {
 
   _next_space->show();
 
-  /*
-  _space_geometry = _next_space->geometry();
-  _space_geometry.setX(_space_geometry.width());
-
-  this->expose_sub_region(_space_geometry);
-  */
-
   return _next_space;
 }
 
@@ -476,14 +491,6 @@ space *workspace::expose_previous() {
     _active_space->hide();
 
   _prev_space->show();
-
-  /*
-  _space_geometry = _prev_space->geometry();
-  _space_geometry.setX(_space_geometry.width() -
-                       priv->m_workspace_left_margine);
-
-  this->expose_sub_region(_space_geometry);
-  */
 
   return _prev_space;
 }
@@ -543,8 +550,8 @@ void workspace::remove(space *a_space_ptr) {
       return;
   }
 
-  QRectF _deleted_geometry = a_space_ptr->geometry();
   QString _space_ref = a_space_ptr->session_name();
+  int _space_id = a_space_ptr->id();
 
   priv->m_workspace_geometry.setHeight(priv->m_workspace_geometry.height() -
                                        a_space_ptr->geometry().height());
@@ -576,6 +583,8 @@ void workspace::remove(space *a_space_ptr) {
   priv->m_desktop_space_list.removeAll(a_space_ptr);
 
   delete a_space_ptr;
+
+  priv->notify_update(kSpaceRemovedNotify, _space_id);
 }
 
 QPixmap workspace::thumbnail(space *a_space, int a_scale_factor) {
@@ -678,6 +687,8 @@ void workspace::add_default_space() {
   sync->add_object(obj);
 
   delete sync;
+
+  priv->notify_update(kSpaceAddedNotify, 0);
 }
 
 void workspace::restore_session() {
@@ -698,6 +709,8 @@ void workspace::restore_session() {
   sync->find("Space", "", "");
 
   delete sync;
+
+  priv->notify_update(kSpaceAddedNotify, 0);
 }
 
 float workspace::get_base_width() {
@@ -707,4 +720,13 @@ float workspace::get_base_width() {
 float workspace::get_base_height() {
   return screen::get()->desktop_height(priv->m_screen_id);
 }
+
+void workspace::PrivateWorkSpace::notify_update(workspace_change_t a_change, int a_space_id) {
+  std::for_each(std::begin(m_notification_listners),
+                std::end(m_notification_listners), [=](workspace_change_callback_t a_callback) {
+      if(a_callback)
+          a_callback(a_change, a_space_id);
+  });
+}
+
 }

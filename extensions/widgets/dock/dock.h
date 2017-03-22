@@ -26,6 +26,7 @@
 #include <ck_widget.h>
 #include <ck_table_view_item.h>
 #include <ck_fixed_layout.h>
+#include <ck_item_view.h>
 
 using namespace cherry_kit;
 
@@ -47,6 +48,13 @@ public:
 
   cherry_kit::ui_action task();
 
+  void create_desktop_preview();
+  void insert_desktop_preview_item(cherry_kit::item_view *preview_list,
+                                   float preview_height, float preview_width);
+
+  void load_desktop_expose(cherry_kit::item_view *preview_list,
+                           float preview_height, float preview_width);
+  void remove_desktop_review(cherry_kit::item_view *a_list, int a_space_id);
 protected:
 
   widget *create_task_action(ui_action &a_task);

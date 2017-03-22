@@ -190,7 +190,10 @@ void space::insert_window_to_view(window *a_window, bool a_managed) {
   a_window->set_screen_id(owner_workspace()->screen_id());
 
   // introduce the item to the graphicsview system
-  ctx->m_native_scene->addItem(a_window);
+
+  if (a_window->window_type() != window::kFramelessWindow) {
+    ctx->m_native_scene->addItem(a_window);
+  }
 
   if (a_window->window_type() == window::kApplicationWindow)
     a_window->setZValue(kMaximumZOrder);
@@ -220,7 +223,7 @@ void space::insert_window_to_view(window *a_window, bool a_managed) {
     std::for_each(std::begin(ctx->m_window_list), std::end(ctx->m_window_list),
                   [=](window *a_win) {
       if (a_win->window_type() == window::kFramelessWindow) {
-        a_win->setZValue(kMinimumZOrder);
+        //a_win->setZValue(kMinimumZOrder);
       }
 
       if (a_win->window_type() == window::kPanelWindow) {

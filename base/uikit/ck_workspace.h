@@ -31,9 +31,18 @@ typedef QGraphicsView PlatformScrollView;
 namespace cherry_kit {
 typedef QList<space *> SpacesList;
 
+
 class DECL_UI_KIT_EXPORT workspace : public QGraphicsView {
   Q_OBJECT
 public:
+  typedef enum {
+        kSpaceAddedNotify,
+        kSpaceRemovedNotify,
+        kSpaceUpdatedNotify
+    } workspace_change_t;
+
+  typedef std::function<void(workspace_change_t, int)> workspace_change_callback_t;
+
   workspace(QGraphicsScene *a_graphics_scene_ptr, QWidget *a_parent_ptr = 0);
   virtual ~workspace();
 
@@ -53,6 +62,7 @@ public:
 
   virtual SpacesList current_spaces();
   virtual space *current_active_space() const;
+  virtual space *get_space(int a_id);
   virtual uint space_count() const;
 
   virtual void restore_session();
@@ -72,6 +82,8 @@ public:
   virtual int screen_id() const;
 
   virtual void create_view(std::function <void(workspace *)>) {}
+
+  virtual void on_change(workspace_change_callback_t a_callback);
 
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);

@@ -221,6 +221,8 @@ public:
         workspace->add_default_space();
       }
 
+      workspace->expose(0);
+
 #if defined (Q_OS_LINUX) && defined (__QT5_TOOLKIT__)
       QPlatformNativeInterface *native =
           QGuiApplication::platformNativeInterface();
