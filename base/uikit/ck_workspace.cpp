@@ -355,8 +355,13 @@ void workspace::revoke_space(const QString &a_name, int a_id) {
 
   QRectF _space_geometry;
   _space_geometry.setX(0);
+  _space_geometry.setY(0);
+
+  /*
   _space_geometry.setY((priv->m_workspace_geometry.height()) -
                        priv->m_render_box.height());
+                       */
+
   _space_geometry.setHeight(priv->m_render_box.height());
   _space_geometry.setWidth(priv->m_render_box.width() +
                            priv->m_workspace_left_margine);
@@ -374,8 +379,7 @@ space *workspace::create_blank_space() {
   _space->set_qt_graphics_scene(scene());
 
   priv->m_space_count += 1;
-  priv->m_workspace_geometry.setHeight(priv->m_render_box.height() *
-                                       priv->m_space_count);
+  priv->m_workspace_geometry.setHeight(priv->m_render_box.height());
   priv->m_workspace_geometry.setWidth(priv->m_render_box.width());
   priv->m_workspace_geometry.setX(0.0);
   priv->m_workspace_geometry.setY(0.0);
@@ -396,10 +400,17 @@ void workspace::expose(uint a_space_id) {
 
       if (_space->id() == a_space_id) {
        //_space->reset_focus();
+
+       space *_active_space = current_active_space();
+
+       if (_active_space)
+         _active_space->hide();
+
        QRectF _space_rect = _space->geometry();
        priv->m_current_activty_space_id = a_space_id;
        qDebug() << "-- " << Q_FUNC_INFO << "Check space";
        expose_sub_region(_space_rect);
+       _space->show();
        break;
       }
   }
@@ -410,6 +421,8 @@ space *workspace::expose_next() {
     qDebug() << Q_FUNC_INFO << "Maximum Space Count Reached";
     return 0;
   }
+
+  space *_active_space = current_active_space();
 
   QRectF _space_geometry;
   priv->m_current_activty_space_id = priv->m_current_activty_space_id + 1;
@@ -427,16 +440,24 @@ space *workspace::expose_next() {
     return 0;
   }
 
+  if (_active_space)
+    _active_space->hide();
+
+  _next_space->show();
+
+  /*
   _space_geometry = _next_space->geometry();
   _space_geometry.setX(_space_geometry.width());
 
   this->expose_sub_region(_space_geometry);
+  */
 
   return _next_space;
 }
 
 space *workspace::expose_previous() {
   QRectF _space_geometry;
+  space *_active_space = current_active_space();
 
   priv->m_current_activty_space_id = priv->m_current_activty_space_id - 1;
 
@@ -451,11 +472,18 @@ space *workspace::expose_previous() {
     return 0;
   }
 
+  if (_active_space)
+    _active_space->hide();
+
+  _prev_space->show();
+
+  /*
   _space_geometry = _prev_space->geometry();
   _space_geometry.setX(_space_geometry.width() -
                        priv->m_workspace_left_margine);
 
   this->expose_sub_region(_space_geometry);
+  */
 
   return _prev_space;
 }
@@ -509,13 +537,19 @@ void workspace::remove(space *a_space_ptr) {
     return;
   }
 
+  /* avoid deleting the last space */
+  qDebug() << Q_FUNC_INFO << "-- Space Count : " << space_count();
+  if (space_count() == 1) {
+      return;
+  }
+
   QRectF _deleted_geometry = a_space_ptr->geometry();
   QString _space_ref = a_space_ptr->session_name();
 
   priv->m_workspace_geometry.setHeight(priv->m_workspace_geometry.height() -
                                        a_space_ptr->geometry().height());
 
-  setSceneRect(priv->m_workspace_geometry);
+  //setSceneRect(priv->m_workspace_geometry);
 
   priv->m_current_activty_space_id = priv->m_current_activty_space_id - 1;
 
@@ -526,11 +560,20 @@ void workspace::remove(space *a_space_ptr) {
   priv->m_space_count = priv->m_space_count - 1;
 
 
+  space *_active_space = current_active_space();
+
+  if (_active_space)
+      _active_space->show();
+
+  a_space_ptr->hide();
+
   // adjust geometry of the remaining spaces.
-  update_space_geometry(a_space_ptr, _deleted_geometry);
+  //update_space_geometry(a_space_ptr, _deleted_geometry);
 
   // update the removed spaces into session
   save_space_removal_session_data(_space_ref);
+
+  priv->m_desktop_space_list.removeAll(a_space_ptr);
 
   delete a_space_ptr;
 }
@@ -605,8 +648,12 @@ void workspace::add_default_space() {
 
   QRectF _space_geometry;
   _space_geometry.setX(0);
+  _space_geometry.setY(0);
+  /*
   _space_geometry.setY((priv->m_workspace_geometry.height()) -
                        priv->m_render_box.height());
+                       */
+
   _space_geometry.setHeight(priv->m_render_box.height());
   _space_geometry.setWidth(priv->m_render_box.width() +
                            priv->m_workspace_left_margine);
@@ -614,6 +661,7 @@ void workspace::add_default_space() {
   _space->setGeometry(_space_geometry);
 
   this->expose_sub_region(_space_geometry);
+
   priv->m_current_activty_space_id = _space->id();
 
   cherry_kit::data_sync *sync =

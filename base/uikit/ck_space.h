@@ -96,6 +96,10 @@ public:
                   ViewportLocation a_location = kCenterOnViewport);
   virtual desktop_dialog_ref
   create_child_activity(const std::string &a_name, widget *a_window);
+
+  virtual void hide();
+  virtual void show();
+
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);

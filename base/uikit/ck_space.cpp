@@ -727,6 +727,22 @@ desktop_dialog_ref space::create_child_activity(const std::string &a_name,
   return intent;
 }
 
+void space::hide() {
+    std::for_each(std::begin(ctx->m_window_list),
+                  std::end(ctx->m_window_list), [=](window *a_window) {
+        if (a_window)
+            a_window->hide();
+    });
+}
+
+void space::show() {
+        std::for_each(std::begin(ctx->m_window_list),
+                  std::end(ctx->m_window_list), [=](window *a_window) {
+        if (a_window)
+            a_window->show();
+    });
+}
+
 void space::setGeometry(const QRectF &a_geometry) {
   ctx->m_geometry = a_geometry;
 
