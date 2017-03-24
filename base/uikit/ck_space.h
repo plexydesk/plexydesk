@@ -100,6 +100,8 @@ public:
   virtual void hide();
   virtual void show();
 
+
+  virtual void update_background_texture();
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);
@@ -124,7 +126,6 @@ protected:
   // experimental:
   virtual void draw();
   virtual GraphicsSurface *surface();
-
 private:
   void add_activity(cherry_kit::desktop_dialog_ref a_activity_ptr,
                     bool m_managed);

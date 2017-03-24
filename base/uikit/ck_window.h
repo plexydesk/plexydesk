@@ -82,11 +82,11 @@ public:
 
   virtual void removeFocus();
 
+  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr);
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
 
-  virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect_ptr);
 
   void invoke_focus_handlers();
   void invoke_window_closed_action();

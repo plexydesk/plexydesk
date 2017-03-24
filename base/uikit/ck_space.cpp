@@ -252,6 +252,8 @@ void space::insert_window_to_view(window *a_window, bool a_managed) {
 
   a_window->raise();
   a_window->show();
+
+  update_background_texture();
 }
 
 void space::remove_window_from_view(window *a_window) {
@@ -381,6 +383,28 @@ void space::draw() {
 }
 
 GraphicsSurface *space::surface() { return &ctx->m_surface; }
+
+void space::update_background_texture()
+{
+    QPixmap _background_pixmap(geometry().width(),
+                               geometry().height());
+
+    QPainter p;
+    p.begin(&_background_pixmap);
+    p.fillRect(geometry(), Qt::blue);
+
+    std::for_each(std::begin(ctx->m_window_list),
+                  std::end(ctx->m_window_list),
+                  [&](window *a_win) {
+        if (a_win && a_win->window_type() == window::kFramelessWindow) {
+            a_win->paint_view(&p, geometry());
+        }
+    });
+    p.end();
+
+    QBrush _brush(_background_pixmap);
+    ctx->m_native_scene->setBackgroundBrush(_brush);
+}
 
 void space::save_controller_to_session(const QString &a_controller_name) {
   cherry_kit::data_sync *sync =

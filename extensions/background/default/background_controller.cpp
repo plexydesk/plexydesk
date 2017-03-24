@@ -199,6 +199,7 @@ void desktop_controller_impl::open_background_dialog() const {
       o_ctr->m_background_window->set_background(value);
       o_ctr->m_background_texture = "file:///" + value;
       viewport()->update_session_value(controller_name(), "", "");
+      viewport()->update_background_texture();
     }
   });
 }
@@ -257,6 +258,7 @@ void desktop_controller_impl::open_online_dialog() {
       o_ctr->m_background_texture = "file:///" + value;
 	  o_ctr->m_background_window->set_background(value);
       viewport()->update_session_value(controller_name(), "", "");
+      viewport()->update_background_texture();
     }
   });
 }
@@ -483,6 +485,9 @@ void desktop_controller_impl::handle_drop_event(cherry_kit::widget * /*widget*/,
         o_ctr->m_background_texture =
             "file:///" + qt_dropped_file_name_string.toStdString();
         sync_session_data("background", qt_dropped_file_name_string);
+
+        viewport()->update_background_texture();
+
       }
     }
   }
@@ -495,6 +500,7 @@ void desktop_controller_impl::set_view_rect(const QRectF &rect) {
     o_ctr->m_background_window->set_coordinates(rect.x(), rect.y());
     o_ctr->m_background_window->set_background_size(rect.width(), 
 		    rect.height());
+    viewport()->update_background_texture();
   }
 }
 
@@ -565,6 +571,7 @@ void desktop_controller_impl::on_image_data_available() {
 
     if (o_ctr->m_background_window) {
       o_ctr->m_background_window->set_background(ck_image_service->image());
+      viewport()->update_background_texture();
     }
 
     if (viewport()) {
