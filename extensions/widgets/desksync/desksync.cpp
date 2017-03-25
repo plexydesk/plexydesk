@@ -76,7 +76,6 @@ void desksync_controller::show_auth_dialog() {
           viewport()->create_activity("auth_dialog");
 
   ck_activity->on_notify([=](const std::string &key, const std::string &value) {
-      qDebug() << Q_FUNC_INFO << key.c_str() << " : " << value.c_str();
         cherry_kit::sync_object *obj = new cherry_kit::sync_object();
         cherry_kit::data_sync *sync = new cherry_kit::data_sync("Global");
         cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
@@ -101,12 +100,9 @@ void desksync_controller::request_pixabay_key(const std::string &a_token) {
     social_kit::url_request *request = new social_kit::url_request();
 
     request->on_response_ready([&](const social_kit::url_response &response) {
-        qDebug() << QString((const char *)response.data_buffer());
-        /*
-    CK_ASSERT(response.status_code() == 200, "Invalid Response From Server");
-    CK_ASSERT(response.http_version() == "HTTP 1.1",
-              "Wrong http version -> " + response.http_version());
-              */
+
+        if(response.status_code() != 200)
+            return;
 
         social_kit::remote_service srv_query("org.plexydesk.api.xml");
 
@@ -138,13 +134,6 @@ void desksync_controller::request_pixabay_key(const std::string &a_token) {
 
   /* service data */
   social_kit::url_request_context input_data;
-  /*
-  input_data.add("grant_type", "password");
-  input_data.add("username", K_SOCIAL_KIT_ACCOUNT_USERNAME);
-  input_data.add("password", K_SOCIAL_KIT_ACCOUNT_PASSWORD);
-  input_data.add("client_id", K_SOCIAL_KIT_CLIENT_ID);
-  input_data.add("client_secret", K_SOCIAL_KIT_CLIENT_SECRET);
-  */
 
   input_data.add_header("Authorization", "Bearer " + a_token);
   input_data.set_mime_type(
