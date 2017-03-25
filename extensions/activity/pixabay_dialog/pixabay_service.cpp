@@ -159,16 +159,15 @@ void pixabay_service::search(const std::string &a_keyword, int a_page) {
   std::string _client_key = K_SOCIAL_KIT_PIXABAY_API_KEY;
 
   if (_client_key.empty()) {
-      cherry_kit::data_sync *sync = new cherry_kit::data_sync("socialkit");
+      cherry_kit::data_sync *sync = new cherry_kit::data_sync("Global");
       cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
       sync->set_sync_engine(engine);
 
       sync->on_object_found([&](cherry_kit::sync_object &a_object,
                             const std::string &a_app_name, bool a_found) {
-
         if (a_found) {
-           _client_key = a_object.property("client_key");
+           _client_key = a_object.property("token");
            remote_query(a_page, a_keyword, _client_key);
         } else {
            qDebug() << Q_FUNC_INFO << "Error : Social Key Not found ";

@@ -219,6 +219,16 @@ void test_url_post_request::validate_account_register(
         result.get("key_id").at(0);
      CK_ASSERT(token_type.get("key_id").value().compare("1") == 0,
               "Invalid access token type");
+
+     social_kit::remote_result_data token_value =
+             result.get("client_token").at(0);
+
+     qDebug() << Q_FUNC_INFO << token_value.get("client_token").value().c_str();
+
+     CK_ASSERT(token_value.get("client_token").value().compare("hola") == 1,
+              "Invalid access token type");
+
+
   });
 
   /* service data */

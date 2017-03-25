@@ -194,8 +194,8 @@ void auth_dialog::request_login() {
                                  const social_kit::web_service *a_web_service) {
       priv->m_progress_widget->set_value(100);
       if (a_result.get("access_token").size() == 0) {
-          qDebug() << Q_FUNC_INFO << "No Access Token";
           priv->m_main_window->set_window_title("Sorry, No Such Account");
+
           priv->m_username->set_input_focus(true);
           priv->m_progress_widget->hide();
 
@@ -205,7 +205,6 @@ void auth_dialog::request_login() {
       social_kit::remote_result_data token_data =
         a_result.get("access_token").at(0);
      std::string _access_token = token_data.get("access_token").value();
-     qDebug() << Q_FUNC_INFO << _access_token.c_str();
 
      priv->m_main_window->hide();
 

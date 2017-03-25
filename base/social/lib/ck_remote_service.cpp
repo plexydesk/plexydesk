@@ -638,7 +638,7 @@ remote_result remote_service::response(const std::string &a_method_name,
     std::string doc_data((const char *)a_response.data_buffer(),
                          a_response.data_buffer_size());
     if (reader.parse(doc_data, root)) {
-      std::cout << "parsed success fully" << doc_data << std::endl;
+      //std::cout << "parsed success fully" << doc_data << std::endl;
       std::vector<service_result_query *> list = srv_result->query_list();
       std::for_each(std::begin(list), std::end(list),
                     [&](service_result_query *query) {

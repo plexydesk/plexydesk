@@ -35,6 +35,7 @@ public:
 
   bool remove_widget(cherry_kit::widget *a_widget_ptr);
 
+  void request_pixabay_key(const std::string &a_token);
 private:
   class Privatedesksync;
   Privatedesksync *const priv;
