@@ -66,11 +66,7 @@ static bool _url_is_local_file(const QUrl &a_url) {
 #ifdef __QT4_TOOLKIT__
   QString _local_file = a_url.toLocalFile();
 
-  if (_local_file.isEmpty()) {
-    return 1;
-  } 
-
-  return 0;
+  return !_local_file.isEmpty();
 #endif
 }
 
@@ -111,8 +107,6 @@ void desktop_controller_impl::init() {
       cherry_kit::resource_manager::instance()->drawable_file_name(
           "mdpi", "desktop/ck_default_wallpaper.png");
 
-  qDebug() << Q_FUNC_INFO << default_wallpaper_file;
-
   o_ctr->m_background_texture = default_wallpaper_file.toStdString();
   o_ctr->m_background_window = new desktop_window();
   o_ctr->m_background_window->set_controller(this);
@@ -125,7 +119,6 @@ void desktop_controller_impl::init() {
       delete o_ctr->m_background_window;
   });
 
-  qDebug() << Q_FUNC_INFO << "insert Window";
   insert(o_ctr->m_background_window);
 }
 
@@ -172,6 +165,7 @@ void desktop_controller_impl::session_data_ready(
   QUrl qt_background_url = QUrl(background_url_str.c_str());
   QString qt_mode_string = a_session_root.property("mode").c_str();
 
+
   if (qt_background_url.isEmpty())
     return;
 
@@ -179,6 +173,7 @@ void desktop_controller_impl::session_data_ready(
     o_ctr->m_background_window->set_background(
         qt_background_url.toLocalFile().toStdString());
     o_ctr->m_background_texture = background_url_str;
+    viewport()->update_background_texture();
   } else {
     download_image_from_url(qt_background_url);
   }
