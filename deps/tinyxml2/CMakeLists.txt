@@ -25,10 +25,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 # Add targets
 option(BUILD_SHARED_LIBS "build shared or static libraries" ON)
 add_library(tinyxml2 SHARED tinyxml2.cpp tinyxml2.h)
+
+if (NOT APPLE)
 set_target_properties(tinyxml2 PROPERTIES
         COMPILE_DEFINITIONS "TINYXML2_EXPORT"
 	VERSION "${GENERIC_LIB_VERSION}"
 	SOVERSION "${GENERIC_LIB_SOVERSION}")
+endif()
 
 if (NOT APPLE)
 if (NOT WIN32)
