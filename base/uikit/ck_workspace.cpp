@@ -168,13 +168,13 @@ void workspace::set_accelerated_rendering(bool a_on) {
 
   if (priv->m_opengl_on) {
     setViewport(new QGLWidget(
-        QGLFormat(QGL::DoubleBuffer)));
+        QGLFormat(QGL::DoubleBuffer | QGL::AlphaChannel | QGL::Rgba)));
     setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
     setupViewport(new QWidget);
-    setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    setOptimizationFlag(QGraphicsView::DontClipPainter);
+    //setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    //setOptimizationFlag(QGraphicsView::DontClipPainter);
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
   }
 }

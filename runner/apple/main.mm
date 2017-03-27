@@ -97,7 +97,10 @@ public:
     for(int i = 0; i < screen_count; i++) {
       DesktopManager *workspace = new DesktopManager();
       m_workspace_list.push_back(workspace);
-      //workspace->set_accelerated_rendering(true);
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_6
+      workspace->set_accelerated_rendering(true);
+#endif
 
       workspace->move_to_screen(i);
 
@@ -115,6 +118,8 @@ public:
       if (workspace->space_count() <= 0) {
         workspace->add_default_space();
       }
+
+      workspace->expose(0);
 
       NSView *_desktopView = reinterpret_cast<NSView *>(workspace->winId());
 
