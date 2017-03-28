@@ -456,11 +456,13 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
     QPainterPath border_path;
     border_path.addRoundedRect(window_title_fill, 4.0, 4.0);
 
-    a_ctx->save();
-    a_ctx->setPen(QColor("#ffffff"));
-    a_ctx->setOpacity(0.8);
-    a_ctx->drawPath(window_background_path);
-    a_ctx->restore();
+    if (ck_window->window_type() != window::kPopupWindow) {
+    	a_ctx->save();
+    	a_ctx->setPen(QColor("#ffffff"));
+    	a_ctx->setOpacity(0.8);
+    	a_ctx->drawPath(window_background_path);
+    	a_ctx->restore();
+    }
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
