@@ -36,6 +36,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include <ck_timer.h>
+
 #ifdef  __QT5_TOOLKIT__
 // Qt
 #include <QTimeZone>
@@ -59,7 +61,6 @@ public:
   PrivateClockWidget() {}
 #endif
 
-
   ~PrivateClockWidget() {}
 
   void on_timout_slot_func();
@@ -80,6 +81,10 @@ public:
 
   QTimer *m_clock_timer;
   QTimer *m_range_timer;
+
+  cherry_kit::timer *m_update_timer;
+  cherry_kit::timer *m_range_update_timer;
+
   int m_range_timer_duration;
   int m_range_timer_initial_duration;
   QString m_completion_time_label;
@@ -97,6 +102,10 @@ clock_view::clock_view(widget *parent)
     : cherry_kit::widget(parent), priv(new PrivateClockWidget) {
   priv->m_clock_timer = new QTimer(this);
   priv->m_range_timer = new QTimer(this);
+
+  priv->m_update_timer = new cherry_kit::timer(1000);
+  priv->m_range_update_timer = new cherry_kit::timer(1000);
+
   priv->m_mark_hour_value = 0.0;
   priv->m_mark_minutes_value = 0.0;
   priv->m_mark_start = 0.1;
@@ -118,8 +127,17 @@ clock_view::clock_view(widget *parent)
   });
 #endif
 
+#ifdef __QT4_TOOLKIT__
+priv->m_update_timer->on_timeout([this]() {
+  priv->on_timout_slot_func();
+  update();
+});
+#endif
+
   priv->m_clock_timer->start(1000);
   priv->m_range_timer->stop();
+
+  priv->m_update_timer->start();
 
   set_widget_flag(widget::kRenderDropShadow, false);
   setFlag(QGraphicsItem::ItemIsMovable, false);
