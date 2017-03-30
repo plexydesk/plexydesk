@@ -125,8 +125,8 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   d->m_ui->add_rows(2);
   d->m_ui->add_segments(0, 1);
   d->m_ui->add_segments(1, 9);
-  d->m_ui->set_row_height(0, "88%");
-  d->m_ui->set_row_height(1, "12%");
+  d->m_ui->set_row_height(0, "90%");
+  d->m_ui->set_row_height(1, "10%");
 
   cherry_kit::widget_properties_t text_editor_prop;
   text_editor_prop["text"] = "";
