@@ -61,7 +61,12 @@ public:
   PrivateClockWidget() {}
 #endif
 
-  ~PrivateClockWidget() {}
+  ~PrivateClockWidget() {
+    if (m_update_timer)
+      m_update_timer->stop();
+    if (m_range_update_timer)
+      m_range_update_timer->stop();
+  }
 
   void on_timout_slot_func();
   void on_range_timout_slot_func(const clock_view *a_widget);
