@@ -52,7 +52,20 @@ void text_editor::update_scrollbars() {
   priv->m_v_scrollbar->setPos(priv->m_proxy_widget->geometry().width() - 16, 0);
 
   priv->m_v_scrollbar->set_maximum_value(
-      priv->m_text_editor->document()->size().height());
+              priv->m_text_editor->document()->size().height());
+}
+
+void text_editor::copy() {
+    QClipboard *clipboard = QApplication::clipboard();
+
+    if (priv->m_text_editor && clipboard)
+        clipboard->setText(text());
+}
+
+void text_editor::paste() {
+    QClipboard *clipboard = QApplication::clipboard();
+    if (priv->m_text_editor && clipboard)
+      priv->m_text_editor->append(clipboard->text());
 }
 
 text_editor::text_editor(widget *parent)

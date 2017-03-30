@@ -145,13 +145,17 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   d->m_ui->add_widget(1, 1, "image_button", button_props, [=]() {});
   cherry_kit::icon_button *copy_btn = dynamic_cast<cherry_kit::icon_button *>(
       d->m_ui->add_widget(1, 1, "image_button", button_props, [=]() {}));
-  copy_btn->on_click([this]() {});
+  copy_btn->on_click([this]() {
+      d->m_text_editor_widget->copy();
+  });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_paste.png";
   cherry_kit::icon_button *paste_btn = dynamic_cast<cherry_kit::icon_button *>(
       d->m_ui->add_widget(1, 2, "image_button", button_props, [=]() {}));
-  paste_btn->on_click([this]() {});
+  paste_btn->on_click([this]() {
+      d->m_text_editor_widget->paste();
+  });
 
   button_props["label"] = "";
   button_props["icon"] = "toolbar/ck_white_selection.png";

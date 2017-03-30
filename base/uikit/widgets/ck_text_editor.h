@@ -51,6 +51,10 @@ public:
 
   virtual void convert_to_link();
   void update_scrollbars();
+
+  virtual void copy();
+  virtual void paste();
+
   public
 Q_SLOTS:
   void on_text_updated();
