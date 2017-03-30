@@ -149,8 +149,9 @@ void text_editor::set_geometry(const QRectF &a_rect) {
   priv->m_proxy_widget->setMaximumSize(a_rect.size());
   priv->m_proxy_widget->resize(a_rect.size());
   priv->m_text_editor->resize(a_rect.width(), a_rect.height());
-  priv->m_text_editor->move(0.0, 0.0);
-
+  priv->m_text_editor->setGeometry(QRect(0, 0, a_rect.width(), a_rect.height()));
+  //priv->m_text_editor->setPos(0.0, 0.0);
+ 
   widget::set_geometry(a_rect);
   update_scrollbars();
 }
