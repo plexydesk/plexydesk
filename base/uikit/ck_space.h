@@ -90,7 +90,6 @@ public:
   virtual void reset_focus();
 
   // new gen.
-
   virtual desktop_dialog_ref
   create_activity(const std::string &a_name,
                   ViewportLocation a_location = kCenterOnViewport);
@@ -99,7 +98,6 @@ public:
 
   virtual void hide();
   virtual void show();
-
 
   virtual void update_background_texture();
 protected:

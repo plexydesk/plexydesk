@@ -765,8 +765,10 @@ void space::hide() {
 void space::show() {
         std::for_each(std::begin(ctx->m_window_list),
                   std::end(ctx->m_window_list), [=](window *a_window) {
-        if (a_window)
-            a_window->show();
+        if (a_window) {
+            if (a_window->window_type() != window::kPopupWindow)
+              a_window->show();
+        }
     });
 }
 
