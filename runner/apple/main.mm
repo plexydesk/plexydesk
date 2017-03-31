@@ -39,6 +39,10 @@
 #include <objc/message.h>
 #endif
 
+#if defined (__APPLE__) && defined(__QT4_TOOLKIT__)
+#include <carbon/carbon.h>
+#endif
+
 bool on_dock_clicked_func(id self,SEL _cmd,...)
 {
   Q_UNUSED(self)
@@ -121,20 +125,27 @@ public:
 
       workspace->expose(0);
 
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_5
+      HIViewRef _desktopView = reinterpret_cast<HIViewRef>(workspace->winId());
+      HIWindowRef _window = HIViewGetWindow(_desktopView);
+
+      if (_window) {
+         ChangeWindowAttributes(_window, kWindowNoShadowAttribute, kWindowNoAttributes);  
+         SetWindowGroupLevel(GetWindowGroup(_window), kCGDesktopIconWindowLevel);
+      } 
+#endif
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_6
       NSView *_desktopView = reinterpret_cast<NSView *>(workspace->winId());
-
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
       [[_desktopView window]
               setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-#endif
-/*
       [[_desktopView window] setHasShadow:NO];
       [[_desktopView window] setOpaque:NO];
       [[_desktopView window] setLevel:kCGDesktopIconWindowLevel + 1];
       [[_desktopView window] makeKeyAndOrderFront:_desktopView];
       [[_desktopView window] setBackgroundColor:[NSColor clearColor]];
-*/
+#endif
       workspace->show();
     }
   }
