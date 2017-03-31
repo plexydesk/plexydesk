@@ -50,6 +50,8 @@ public:
       std::function<void(const QString &, const QString &)> a_callback);
   void on_note_deleted(std::function<void()> a_callback);
 
+  void adjust();
+
 Q_SIGNALS:
   void clicked(NoteWidget *item);
 

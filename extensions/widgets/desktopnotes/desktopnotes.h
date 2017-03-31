@@ -51,8 +51,8 @@ public:
   virtual void handle_drop_event(cherry_kit::widget *widget, QDropEvent *event);
 
 private:
-  void createNoteUI(cherry_kit::session_sync *a_session);
-  void createReminderUI(cherry_kit::session_sync *a_session);
+  void createNoteUI(cherry_kit::session_sync *a_session, bool adjust=false);
+  void createReminderUI(cherry_kit::session_sync *a_session, bool adjust=false);
 
   class PrivateDesktopNotes;
   PrivateDesktopNotes *const priv;

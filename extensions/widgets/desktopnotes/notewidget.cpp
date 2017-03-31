@@ -558,3 +558,10 @@ NoteWidget::PrivateNoteWidget::notify_config_change(const QString &a_key,
       a_func(a_key, a_value);
   });
 }
+
+void
+NoteWidget::adjust() {
+  qDebug() << Q_FUNC_INFO << "carbon bug #: moving window up: " << d->m_text_editor_widget->geometry();
+  QRectF _geom = d->m_text_editor_widget->geometry();
+  d->m_text_editor_widget->set_geometry(QRectF(0, -48, _geom.width(), _geom.height()+ 48 * 2));
+}

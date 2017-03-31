@@ -50,13 +50,19 @@ void desktop_task_controller_impl::session_data_ready(
   revoke_previous_session(
       "Notes",
       [this](cherry_kit::desktop_controller_interface *a_controller,
-             cherry_kit::session_sync *a_session) { createNoteUI(a_session); });
+             cherry_kit::session_sync *a_session) { 
+#if defined(__QT4_TOOLKIT__) && defined(__APPLE__)
+              createNoteUI(a_session, true); 
+#else
+              createNoteUI(a_session); 
+#endif
+      });
 
   revoke_previous_session(
       "Reminders",
       [this](cherry_kit::desktop_controller_interface *a_controller,
              cherry_kit::session_sync *a_session) {
-        createReminderUI(a_session);
+        createReminderUI(a_session, true);
       });
 }
 
@@ -153,7 +159,7 @@ void desktop_task_controller_impl::handle_drop_event(cherry_kit::widget *widget,
 }
 
 void desktop_task_controller_impl::createNoteUI(
-    cherry_kit::session_sync *a_session) {
+    cherry_kit::session_sync *a_session, bool adjust) {
   cherry_kit::window *window = new cherry_kit::window();
   window->set_geometry(QRectF(0, 0, 320, 240));
 
@@ -219,11 +225,13 @@ void desktop_task_controller_impl::createNoteUI(
     window_location.setX(a_session->session_data("x").toFloat());
     window_location.setY(a_session->session_data("y").toFloat());
     window->setPos(window_location);
+    if (adjust)
+      note->adjust();
   }
 }
 
 void desktop_task_controller_impl::createReminderUI(
-    cherry_kit::session_sync *a_session) {
+    cherry_kit::session_sync *a_session, bool adjusted) {
   cherry_kit::window *window = new cherry_kit::window();
   cherry_kit::fixed_layout *view = new cherry_kit::fixed_layout(window);
 
