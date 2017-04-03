@@ -391,7 +391,8 @@ void space::update_background_texture()
 
     QPainter p;
     p.begin(&_background_pixmap);
-    p.fillRect(geometry(), Qt::blue);
+    p.fillRect(geometry(), Qt::transparent);
+    p.setRenderHints(QPainter::HighQualityAntialiasing, true);
 
     std::for_each(std::begin(ctx->m_window_list),
                   std::end(ctx->m_window_list),

@@ -128,8 +128,11 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
 
   a_ctx->setClipRect(boundingRect());
   a_ctx->save();
-  a_ctx->setRenderHints(QPainter::SmoothPixmapTransform);
-  //a_ctx->drawPixmap(QPoint(0, 0), priv->m_background_pixmap);
+ /*
+  a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                              QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, true);
+*/
+  a_ctx->setRenderHints(QPainter::HighQualityAntialiasing, true);
 
   a_ctx->setBrush(QBrush(priv->m_background_pixmap));
   a_ctx->drawRect(a_rect);

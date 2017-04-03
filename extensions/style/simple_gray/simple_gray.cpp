@@ -210,7 +210,7 @@ void SimpleGrayStyle::PrivateSimpleGray::set_pen_color(
 
 void SimpleGrayStyle::set_default_painter_hints(QPainter *painter) {
   painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                              QPainter::SmoothPixmapTransform, true);
+                              QPainter::HighQualityAntialiasing, true);
 }
 
 void SimpleGrayStyle::draw_push_button(const style_data &features,
@@ -469,8 +469,8 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
       CGContextSetRGBFillColor(bitmap_ctx, window_color.red(),
                                window_color.blue(), window_color.green(),
                                features.opacity);
-      CGContextFillRect(bitmap_ctx, CGRectMake(10, 10, _pixmap->width() - 20,
-                                               _pixmap->height() - 20));
+      CGContextFillRect(bitmap_ctx, CGRectMake(11, 11, _pixmap->width() - 22,
+                                               _pixmap->height() - 22));
 
       CGContextRestoreGState(bitmap_ctx);
       CGContextRelease(bitmap_ctx);
