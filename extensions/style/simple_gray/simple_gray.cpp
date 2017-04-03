@@ -383,16 +383,17 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
                                         const widget *a_widget) {
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(10, 10, -10, -10);
+  QRectF _shadow_rect = features.geometry;
 #else
   QRectF rect = features.geometry.adjusted(1, 1, -1, -1);
 #endif
 
   a_ctx->save();
   set_default_painter_hints(a_ctx);
+  /* draw seperator */
+  window *ck_window = dynamic_cast<window *>(features.style_object);
 #ifdef __APPLE__
   /* draw shadow */
-  QPainterPath drop_shadow;
-  drop_shadow.addRoundRect(features.geometry, 4.0, 4.0);
   QPaintDevice *current_paint_device = a_ctx->paintEngine()->paintDevice();
   CGContextRef bitmap_ctx = 0;
 
@@ -401,7 +402,7 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
       QImage *qt_surface = static_cast<QImage *>(current_paint_device);
 
       if (!qt_surface)
-        qDebug() << Q_FUNC_INFO << "Error Loding Qt Image";
+        return;
 
       CGColorSpaceRef colorspace =
           CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
@@ -418,18 +419,63 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
       // draw
       CGSize myShadowOffset = CGSizeMake(0.0, 0.0);
       CGContextSaveGState(bitmap_ctx);
-      CGContextSetShadow(bitmap_ctx, myShadowOffset, 15);
+      CGContextSetShadow(bitmap_ctx, myShadowOffset, 6);
 
       QColor window_color = d->color(resource_manager::kLightPrimaryColor);
 
       CGContextSetRGBFillColor(bitmap_ctx, window_color.red(),
                                window_color.blue(), window_color.green(),
                                features.opacity);
-      CGContextFillRect(bitmap_ctx, CGRectMake(15, 15, qt_surface->width() - 30,
-                                               qt_surface->height() - 30));
+      CGContextFillRect(bitmap_ctx, CGRectMake(10, 10, qt_surface->width() - 20,
+                                               qt_surface->height() - 20));
 
       CGContextRestoreGState(bitmap_ctx);
       CGContextRelease(bitmap_ctx);
+    } else if (current_paint_device->devType() == QInternal::Pixmap) {
+      a_ctx->setClipping(false);
+      QPixmap *_pixmap = static_cast<QPixmap *>(current_paint_device);
+
+      if (!_pixmap) {
+        qDebug() << Q_FUNC_INFO << "Error Loding Qt Pixmap";
+	return;
+      }
+
+      QImage _offscreen_buffer = _pixmap->toImage();
+           
+      CGColorSpaceRef colorspace =
+          CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+      uint flags = kCGImageAlphaPremultipliedFirst;
+      flags |= kCGBitmapByteOrder32Host;
+
+      bitmap_ctx = CGBitmapContextCreate(
+          _offscreen_buffer.bits(), _offscreen_buffer.width(), _offscreen_buffer.height(), 8, _offscreen_buffer.bytesPerLine(), colorspace, flags);
+
+      CGContextTranslateCTM(bitmap_ctx, 0, _pixmap->height());
+      CGContextScaleCTM(bitmap_ctx, 1, -1);
+
+      CGColorSpaceRelease(colorspace);
+
+      // draw
+      CGSize myShadowOffset = CGSizeMake(0.0, 0.0);
+      CGContextSaveGState(bitmap_ctx);
+      float _color_data[] = {0, 0, 0, 1};
+      CGColorSpaceRef cg_shadow_color_space = CGColorSpaceCreateDeviceRGB();
+      CGColorRef cg_shadow_color = CGColorCreate(cg_shadow_color_space, _color_data);
+
+      CGContextSetShadowWithColor(bitmap_ctx, myShadowOffset, 15, cg_shadow_color);
+
+      QColor window_color = d->color(resource_manager::kLightPrimaryColor);
+
+      CGContextSetRGBFillColor(bitmap_ctx, window_color.red(),
+                               window_color.blue(), window_color.green(),
+                               features.opacity);
+      CGContextFillRect(bitmap_ctx, CGRectMake(10, 10, _pixmap->width() - 20,
+                                               _pixmap->height() - 20));
+
+      CGContextRestoreGState(bitmap_ctx);
+      CGContextRelease(bitmap_ctx);
+
+      a_ctx->drawImage(_shadow_rect, _offscreen_buffer);
     } else if (current_paint_device->devType() == QInternal::Widget) {
       qDebug() << Q_FUNC_INFO << "Device Type Is Widget";
     }
@@ -444,9 +490,6 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
   window_background_path.addRoundedRect(rect, 4.0, 4.0);
   a_ctx->fillPath(window_background_path,
                   d->color(resource_manager::kLightPrimaryColor));
-
-  /* draw seperator */
-  window *ck_window = dynamic_cast<window *>(features.style_object);
 
   if (ck_window && ck_window->window_type() != window::kPanelWindow) {
     QRectF window_title_rect(12, 5, rect.width() - 16, 48.0 * scale_factor());
