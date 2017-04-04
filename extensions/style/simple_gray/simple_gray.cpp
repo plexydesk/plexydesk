@@ -1165,6 +1165,9 @@ void SimpleGrayStyle::draw_image_button(const style_data &a_features,
                                );
   a_ctx->save();
   set_default_painter_hints(a_ctx);
+  a_ctx->setRenderHint(QPainter::SmoothPixmapTransform, true);
+  a_ctx->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  a_ctx->setRenderHint(QPainter::Antialiasing, true);
   a_ctx->drawPixmap(icon_draw_rect, a_features.image_data);
 
   d->set_default_font_size(a_ctx, 12, true);

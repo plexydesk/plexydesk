@@ -129,7 +129,8 @@ void workspace::move_to_screen(int a_screen_id) {
 
   setRenderHints(QPainter::Antialiasing
 		  | QPainter::SmoothPixmapTransform
-		  | QPainter::TextAntialiasing);
+		  | QPainter::TextAntialiasing
+                  );
 
   scale(width_factor, height_factor);
 }
@@ -167,8 +168,15 @@ void workspace::set_accelerated_rendering(bool a_on) {
   priv->m_opengl_on = a_on;
 
   if (priv->m_opengl_on) {
-    setViewport(new QGLWidget(
-        QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::AlphaChannel | QGL::Rgba)));
+    QGLFormat _gl_options(
+	QGL::SampleBuffers | QGL::DoubleBuffer | QGL::AlphaChannel | QGL::Rgba);
+    _gl_options.setSamples(4);
+    _gl_options.setAlpha(true);
+    _gl_options.setAccum(true);
+    QGLWidget *_gl_widget = new QGLWidget(_gl_options);
+
+    setViewport(_gl_widget);
+
     setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   } else {
