@@ -36,7 +36,7 @@ class DECL_UI_KIT_EXPORT workspace : public QGraphicsView {
   Q_OBJECT
 public:
   typedef enum {
-        kSpaceAddedNotify,
+        kSpaceAddedNotify = 0,
         kSpaceRemovedNotify,
         kSpaceUpdatedNotify
     } workspace_change_t;

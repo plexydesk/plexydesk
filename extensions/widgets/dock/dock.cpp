@@ -140,8 +140,12 @@ void desktop_panel_controller_impl::discover_actions_from_controller(
   }
 
   ui_action root_action = controller->task();
+
+#ifdef __DEBUG_BUILD__
   qDebug() << Q_FUNC_INFO << "Loading from :" << name
            << "Root Task : " << root_action.name().c_str();
+#endif
+
   insert_action(root_action);
 }
 
@@ -673,8 +677,28 @@ void desktop_panel_controller_impl::load_desktop_expose(
 void desktop_panel_controller_impl::remove_desktop_review(item_view *a_list,
                                                           int a_space_id)
 {
-    // todo
-    qDebug() << Q_FUNC_INFO << "Not impl - Grid Model needs items removal";
+  if (!a_list || !viewport())
+    return;
+  // todo
+  qDebug() << Q_FUNC_INFO << "Not impl - Grid Model needs items removal";
+  a_list->clear();
+
+  /* default thumbnail returned is 10% of the actual desktop */
+  float preview_width = (viewport()->geometry().width() / 100) * 10;
+  float preview_height = (viewport()->geometry().height() / 100) * 10;
+  
+  // insert button
+  cherry_kit::model_view_item *button_item = new cherry_kit::model_view_item();
+  cherry_kit::icon_button *btn = new cherry_kit::icon_button();
+
+  btn->set_contents_geometry(0, 0, 128, 128);
+  btn->set_icon("navigation/ck_add.png");
+  btn->on_click([=]() { add_new_space(); });
+
+  button_item->set_view(btn);
+  a_list->insert(button_item);
+
+  load_desktop_expose(a_list, preview_height, preview_width);
 }
 
 void desktop_panel_controller_impl::insert_desktop_preview_item(
@@ -742,13 +766,15 @@ void desktop_panel_controller_impl::create_desktop_preview() {
   viewport()->owner_workspace()->on_change([=](workspace::workspace_change_t a_change, int a_space_id) {
       if (a_change == workspace::kSpaceRemovedNotify) {
           //remove preview
-          remove_desktop_review(preview_list, 0);
+          remove_desktop_review(preview_list, a_space_id);
+	  viewport()->owner_workspace()->expose(0);
           return;
       }
 
       if (a_change == workspace::kSpaceAddedNotify) {
          // space added
           insert_desktop_preview_item(preview_list, preview_height, preview_width);
+	  viewport()->owner_workspace()->expose(a_space_id);
           return;
       }
   });
@@ -772,8 +798,6 @@ void desktop_panel_controller_impl::create_desktop_preview() {
   // insert preview items.
   load_desktop_expose(preview_list, preview_height, preview_width);
 
-
-
   priv->m_expose_window->set_window_content(preview_list);
 
   QPointF menu_pos =
@@ -786,10 +810,10 @@ void desktop_panel_controller_impl::create_desktop_preview() {
 }
 
 void desktop_panel_controller_impl::update_desktop_preview() {
-  /*
+/*
   if (!priv->m_expose_window)
       create_desktop_preview();
 
   priv->m_expose_window->show();
-  */
+*/
 }

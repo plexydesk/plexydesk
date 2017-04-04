@@ -439,6 +439,7 @@ void workspace::expose(uint a_space_id) {
 
        expose_sub_region(_space_rect);
 
+       _space->update_background_texture();
        _space->show();
 
        break;
@@ -473,6 +474,7 @@ space *workspace::expose_next() {
   if (_active_space)
     _active_space->hide();
 
+  _next_space->update_background_texture();
   _next_space->show();
 
   return _next_space;
@@ -498,6 +500,7 @@ space *workspace::expose_previous() {
   if (_active_space)
     _active_space->hide();
 
+  _prev_space->update_background_texture();
   _prev_space->show();
 
   return _prev_space;
@@ -590,9 +593,9 @@ void workspace::remove(space *a_space_ptr) {
 
   priv->m_desktop_space_list.removeAll(a_space_ptr);
 
-  delete a_space_ptr;
-
   priv->notify_update(kSpaceRemovedNotify, _space_id);
+
+  delete a_space_ptr;
 }
 
 QPixmap workspace::thumbnail(space *a_space, int a_scale_factor) {
@@ -696,7 +699,7 @@ void workspace::add_default_space() {
 
   delete sync;
 
-  priv->notify_update(kSpaceAddedNotify, 0);
+  priv->notify_update(kSpaceAddedNotify, _space->id());
 }
 
 void workspace::restore_session() {

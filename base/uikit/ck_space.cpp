@@ -771,6 +771,8 @@ void space::show() {
               a_window->show();
         }
     });
+
+    update_background_texture();
 }
 
 void space::setGeometry(const QRectF &a_geometry) {
