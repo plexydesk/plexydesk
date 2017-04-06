@@ -88,6 +88,8 @@ public:
   virtual void show_navigator();
   virtual void hide_navigator();
 
+  float get_base_height();
+  float get_base_width();
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);
@@ -106,9 +108,6 @@ private:
   void set_workspace_geometry(int a_screen_id);
 
   void save_space_removal_session_data(const QString &a_space_name);
-
-  float get_base_height();
-  float get_base_width();
 };
 }
 #endif // WORKSPACE_H

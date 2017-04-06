@@ -106,16 +106,18 @@ public:
 
 void wp_compositor::init(workspace *a_workspace) {
   m_cmp_window = new cherry_kit::window();
+  m_cmp_window->set_window_type(cherry_kit::window::kPopupWindow);
+
   m_viewport = a_workspace;
 
   /* default thumbnail returned is 10% of the actual desktop */
   QGraphicsScene *_scene = m_viewport->scene();
 
-  float preview_width = (m_viewport->width() / 100) * 10;
-  float preview_height = (m_viewport->height() / 100) * 10;
+  float preview_width = (m_viewport->get_base_width() / 100) * 10;
+  float preview_height = (m_viewport->get_base_height() / 100) * 10;
 
-  m_view_width = m_viewport->width();
-  m_view_height = m_viewport->height();
+  m_view_width = m_viewport->get_base_width();
+  m_view_height = m_viewport->get_base_height();
 
   m_current_preview_list = new cherry_kit::item_view(
       m_cmp_window, cherry_kit::item_view::kGridModel);
@@ -609,8 +611,6 @@ void workspace::expose(uint a_space_id) {
       if (!_space)
           continue;
 
-      priv->m_compositor->insert(_space);
-
       if (_space->id() == a_space_id) {
        //_space->reset_focus();
 
@@ -865,6 +865,7 @@ void workspace::add_default_space() {
   QRectF _space_geometry;
   _space_geometry.setX(0);
   _space_geometry.setY(0);
+
   /*
   _space_geometry.setY((priv->m_workspace_geometry.height()) -
                        priv->m_render_box.height());

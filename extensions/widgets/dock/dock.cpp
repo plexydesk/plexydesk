@@ -81,6 +81,13 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
     delete aWindow;
   });
 
+  priv->m_deskt_menu->on_visibility_changed([=](window *a_window_ref, bool a_visible) {
+    if (!a_visible) {
+      if(viewport())
+        viewport()->owner_workspace()->hide_navigator();
+    }
+  });
+
   priv->m_task_grid = new item_view(priv->m_deskt_menu, item_view::kGridModel);
   priv->m_task_grid->set_content_margin(0, 0, 0, 0);
   priv->m_task_grid->set_content_spacing(0);
@@ -322,6 +329,9 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
       delete ck_layout;
       delete sub_task_grid;
       delete sub_menu;
+
+      if(viewport())
+        viewport()->owner_workspace()->hide_navigator();
     }
   });
 
@@ -774,7 +784,7 @@ void desktop_panel_controller_impl::create_desktop_preview() {
       if (a_change == workspace::kSpaceAddedNotify) {
          // space added
           insert_desktop_preview_item(preview_list, preview_height, preview_width);
-	  viewport()->owner_workspace()->expose(a_space_id);
+          viewport()->owner_workspace()->expose(a_space_id);
           return;
       }
   });
