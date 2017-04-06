@@ -85,6 +85,9 @@ public:
 
   virtual void on_change(workspace_change_callback_t a_callback);
 
+  virtual void show_navigator();
+  virtual void hide_navigator();
+
 protected:
   virtual void paintEvent(QPaintEvent *a_event_ptr);
   virtual void dragEnterEvent(QDragEnterEvent *a_event_ptr);

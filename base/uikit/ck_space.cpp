@@ -407,6 +407,34 @@ void space::update_background_texture()
     ctx->m_native_scene->setBackgroundBrush(_brush);
 }
 
+QPixmap space::preview(int a_scale_factor) const {
+  QPixmap rv_mirror(geometry().width() / a_scale_factor,
+                    geometry().height() / a_scale_factor);
+
+  QPixmap offscreen(geometry().width(),
+                    geometry().height());
+
+  QPainter p;
+  p.begin(&offscreen);
+  p.fillRect(geometry(), Qt::transparent);
+  std::for_each(std::begin(ctx->m_window_list),
+                  std::end(ctx->m_window_list),
+                  [&](window *a_win) {
+        if (a_win && a_win->window_type() == window::kFramelessWindow) {
+            a_win->paint_view(&p, geometry());
+        }
+   });
+  p.end();
+
+
+  QPainter scaled_painter;
+  scaled_painter.begin(&rv_mirror);
+  scaled_painter.drawPixmap(rv_mirror.rect(), offscreen, geometry().toRect());
+  scaled_painter.end();
+
+  return rv_mirror;
+}
+
 void space::save_controller_to_session(const QString &a_controller_name) {
   cherry_kit::data_sync *sync =
       new cherry_kit::data_sync(ctx->session_name_of_space().toStdString());

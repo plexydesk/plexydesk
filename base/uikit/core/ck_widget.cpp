@@ -364,7 +364,7 @@ void widget::exec_func(InputEvent a_type, const widget *a_widget_ptr) {
 void widget::invoke_click_handlers() {
   std::for_each(std::begin(priv->m_on_click_handlers),
                 std::end(priv->m_on_click_handlers),
-                [&](std::function<void()> a_func) {
+                [=](std::function<void()> a_func) {
                   if (a_func)
                     a_func();
                   else

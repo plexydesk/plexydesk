@@ -17,14 +17,72 @@
 #include <ck_data_sync.h>
 #include <ck_disk_engine.h>
 #include <ck_icon_button.h>
+#include <ck_image_view.h>
+#include <ck_item_view.h>
 #include <ck_screen.h>
 #include <ck_sync_object.h>
 
+#include <vector>
+#include <algorithm>
+
 namespace cherry_kit {
+/* internal desktop compositor to manage spaces context */
+class wp_compositor {
+public:
+    typedef std::vector<window *> cmp_window_list_t;
+    typedef std::vector<widget *> cmp_widget_list_t;
+    typedef std::vector<const space *> cmp_space_list_t;
+
+    wp_compositor() {}
+    virtual ~wp_compositor() {
+        if (m_cmp_window)
+            delete m_cmp_window;
+    }
+
+    /* initiate the backing store to render the desktop offline*/
+    void init(workspace *a_workspace);
+
+    void reset() {
+        //m_space_list.clear();
+    }
+
+    void insert(const space *a_space);
+    void insert(const widget *a_widget);
+    void insert(const window *a_window);
+
+    void update();
+
+    void show() {
+       if (m_cmp_window)
+           m_cmp_window->show();
+    }
+
+    void hide() {
+        if (m_cmp_window)
+            m_cmp_window->hide();
+    }
+
+private:
+    cmp_window_list_t m_window_list;
+    cmp_widget_list_t m_widget_list;
+    cmp_space_list_t m_space_list;
+
+    cherry_kit::window *m_cmp_window;
+    cherry_kit::item_view *m_current_preview_list;
+
+    int m_view_width;
+    int m_view_height;
+
+    workspace *m_viewport;
+};
+
 class workspace::PrivateWorkSpace {
 public:
   PrivateWorkSpace() {}
-  ~PrivateWorkSpace() {}
+  ~PrivateWorkSpace() {
+      if (m_compositor)
+          delete m_compositor;
+  }
 
   void notify_update(workspace_change_t a_change, int a_space_id);
 
@@ -42,8 +100,123 @@ public:
 
   bool m_opengl_on;
   int m_screen_id;
+
+  wp_compositor *m_compositor;
 };
 
+void wp_compositor::init(workspace *a_workspace) {
+  m_cmp_window = new cherry_kit::window();
+  m_viewport = a_workspace;
+
+  /* default thumbnail returned is 10% of the actual desktop */
+  QGraphicsScene *_scene = m_viewport->scene();
+
+  float preview_width = (m_viewport->width() / 100) * 10;
+  float preview_height = (m_viewport->height() / 100) * 10;
+
+  m_view_width = m_viewport->width();
+  m_view_height = m_viewport->height();
+
+  m_current_preview_list = new cherry_kit::item_view(
+      m_cmp_window, cherry_kit::item_view::kGridModel);
+
+  m_current_preview_list->set_column_count(11);
+  m_current_preview_list->set_content_size(preview_width, preview_height);
+  m_current_preview_list->set_view_geometry(
+      QRectF(0, 0, m_view_width,
+             (preview_height + m_cmp_window->window_title_height()) - 16 ));
+
+  m_cmp_window->set_window_opacity(0.5);
+
+  // cleanup
+  m_current_preview_list->on_item_removed([=](cherry_kit::model_view_item *a_item) {
+    a_item->view()->setParentItem(0);
+
+    m_viewport->scene()->removeItem(a_item->view());
+
+    if (a_item && a_item->view()) {
+        delete a_item;
+    }
+  });
+
+  // insert button
+  cherry_kit::model_view_item *button_item = new cherry_kit::model_view_item();
+  cherry_kit::icon_button *btn = new cherry_kit::icon_button();
+
+  btn->set_contents_geometry(0, 0, 128, 128);
+  btn->set_icon("navigation/ck_add.png");
+
+  btn->on_click([=]() {
+      //todo
+      m_viewport->add_default_space();
+  });
+
+  button_item->set_view(btn);
+  m_current_preview_list->insert(button_item);
+
+  m_cmp_window->set_window_content(m_current_preview_list);
+
+  _scene->addItem(m_cmp_window);
+  m_cmp_window->setPos(0, 0);
+
+  m_viewport->on_change([this](workspace::workspace_change_t type, int id) {
+      m_cmp_window->hide();
+  });
+
+  hide();
+}
+
+void wp_compositor::insert(const space *a_space) {
+  m_space_list.push_back(a_space);
+}
+
+void wp_compositor::insert(const widget *a_widget) {
+}
+
+void wp_compositor::insert(const window *a_window) {
+}
+
+void wp_compositor::update() {
+    m_current_preview_list->clear();
+
+    // insert button
+    cherry_kit::model_view_item *button_item = new cherry_kit::model_view_item();
+    cherry_kit::icon_button *btn = new cherry_kit::icon_button();
+
+    btn->set_contents_geometry(0, 0, 128, 128);
+    btn->set_icon("navigation/ck_add.png");
+
+    btn->on_click([=]() {
+        //todo
+        m_viewport->add_default_space();
+    });
+
+    button_item->set_view(btn);
+    m_current_preview_list->insert(button_item);
+    foreach(const space *a_ptr, m_viewport->current_spaces()) {
+        if (!a_ptr)
+            return;
+
+        cherry_kit::model_view_item *item = new cherry_kit::model_view_item();
+        cherry_kit::image_view *image_view = new cherry_kit::image_view();
+
+        QPixmap preview = a_ptr->preview(10.0);
+
+        image_view->on_click([=]() {
+            m_viewport->expose(a_ptr->id());
+        });
+
+        image_view->set_pixmap(preview);
+        image_view->set_contents_geometry(0, 0, m_view_width / 10,
+                                          m_view_height / 10);
+
+        item->set_view(image_view);
+
+        m_current_preview_list->insert(item);
+    }
+}
+
+/* start workspace class impl */
 void workspace::set_workspace_geometry(int a_screen_id) {
   QRect _current_desktop_geometry =
       QRect(0, 0, screen::get()->x_resolution(a_screen_id),
@@ -367,6 +540,16 @@ void workspace::on_change(workspace::workspace_change_callback_t a_callback)
     priv->m_notification_listners.push_back(a_callback);
 }
 
+void workspace::show_navigator() {
+   priv->m_compositor->update();
+   priv->m_compositor->show();
+}
+
+void workspace::hide_navigator()
+{
+    priv->m_compositor->hide();
+}
+
 void workspace::revoke_space(const QString &a_name, int a_id) {
   space *_space = create_blank_space();
   uint _new_space_id = priv->m_desktop_space_list.count();
@@ -421,9 +604,12 @@ QRectF workspace::workspace_geometry() const {
 }
 
 void workspace::expose(uint a_space_id) {
+
   foreach(space *_space, priv->m_desktop_space_list) {
       if (!_space)
           continue;
+
+      priv->m_compositor->insert(_space);
 
       if (_space->id() == a_space_id) {
        //_space->reset_focus();
@@ -445,6 +631,7 @@ void workspace::expose(uint a_space_id) {
        break;
       }
   }
+  priv->m_compositor->hide();
 }
 
 space *workspace::expose_next() {
@@ -477,6 +664,7 @@ space *workspace::expose_next() {
   _next_space->update_background_texture();
   _next_space->show();
 
+  priv->m_compositor->hide();
   return _next_space;
 }
 
@@ -503,6 +691,7 @@ space *workspace::expose_previous() {
   _prev_space->update_background_texture();
   _prev_space->show();
 
+  priv->m_compositor->hide();
   return _prev_space;
 }
 
@@ -651,6 +840,13 @@ SpacesList workspace::current_spaces() { return priv->m_desktop_space_list; }
 void workspace::add_default_space() {
   space *_space = create_blank_space();
 
+  /* reset focus of the current space */
+  space *_active_space = current_active_space();
+
+  if (_active_space) {
+      _active_space->reset_focus();
+  }
+
   _space->set_name("default");
 
   uint _new_space_id = priv->m_desktop_space_list.count();
@@ -722,6 +918,9 @@ void workspace::restore_session() {
   delete sync;
 
   priv->notify_update(kSpaceAddedNotify, 0);
+
+  priv->m_compositor = new wp_compositor;
+  priv->m_compositor->init(this);
 }
 
 float workspace::get_base_width() {
@@ -739,5 +938,4 @@ void workspace::PrivateWorkSpace::notify_update(workspace_change_t a_change, int
           a_callback(a_change, a_space_id);
   });
 }
-
 }

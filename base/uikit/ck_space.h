@@ -100,6 +100,7 @@ public:
   virtual void show();
 
   virtual void update_background_texture();
+  virtual QPixmap preview(int a_scale_factor) const;
 protected:
   virtual void clear();
   void register_controller(const QString &a_controller_name);

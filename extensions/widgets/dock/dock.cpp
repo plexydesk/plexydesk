@@ -816,4 +816,5 @@ void desktop_panel_controller_impl::update_desktop_preview() {
 
   priv->m_expose_window->show();
 */
+  viewport()->owner_workspace()->show_navigator();
 }

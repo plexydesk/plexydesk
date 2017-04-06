@@ -26,8 +26,9 @@ class model_view_item::PrivateModelViewItem {
 public:
   PrivateModelViewItem() : m_view_ptr(0), m_index(0) {}
   ~PrivateModelViewItem()	{
-		if (m_view_ptr)
+        if (m_view_ptr) {
 			delete m_view_ptr;
+        }
 	}
 
   QVariantMap m_data;
