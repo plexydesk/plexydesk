@@ -458,7 +458,7 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
       // draw
       CGSize myShadowOffset = CGSizeMake(0.0, 0.0);
       CGContextSaveGState(bitmap_ctx);
-      float _color_data[] = {0, 0, 0, 1};
+      CGFloat _color_data[] = {0.0f, 0.0f, 0.0f, 1.0f};
       CGColorSpaceRef cg_shadow_color_space = CGColorSpaceCreateDeviceRGB();
       CGColorRef cg_shadow_color = CGColorCreate(cg_shadow_color_space, _color_data);
 
