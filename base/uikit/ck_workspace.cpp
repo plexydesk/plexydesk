@@ -543,12 +543,15 @@ void workspace::on_change(workspace::workspace_change_callback_t a_callback)
 }
 
 void workspace::show_navigator() {
+  if (priv->m_compositor) {
    priv->m_compositor->update();
    priv->m_compositor->show();
+  }
 }
 
 void workspace::hide_navigator()
 {
+  if (priv->m_compositor)
     priv->m_compositor->hide();
 }
 
