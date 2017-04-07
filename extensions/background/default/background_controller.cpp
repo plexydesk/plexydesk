@@ -380,6 +380,10 @@ void desktop_controller_impl::expose_platform_desktop() const {
     cherry_kit::workspace *ck_workspace = viewport()->owner_workspace();
 
     if (ck_workspace) {
+      if (ck_workspace->is_accelerated_rendering_on()) {
+        //todo do a desktop notification
+        return;
+      }
 #ifdef Q_OS_WIN
       cherry_kit::system_window_context::get()->hide_native_desktop();
 #endif
@@ -389,6 +393,8 @@ void desktop_controller_impl::expose_platform_desktop() const {
   if (o_ctr->m_background_window)
     o_ctr->m_background_window->set_seamless(
         !o_ctr->m_background_window->is_seamless());
+
+   viewport()->update_background_texture();
 }
 
 /*

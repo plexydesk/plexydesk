@@ -358,7 +358,7 @@ void workspace::set_accelerated_rendering(bool a_on) {
     setupViewport(new QWidget);
     //setOptimizationFlags(QGraphicsView::DontSavePainterState);
     //setOptimizationFlag(QGraphicsView::DontClipPainter);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
   }
 }
 
