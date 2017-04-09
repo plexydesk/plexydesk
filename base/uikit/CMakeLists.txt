@@ -103,6 +103,7 @@ set(LIBRARY_WIDGET_SOURCE_CXX_FILES
     widgets/ck_table_view_item.cpp
     widgets/ck_item_view.cpp
     widgets/ck_scrollbar.cpp
+    widgets/ck_text_view.cpp
     components/ck_dial_view.cpp
     components/ck_clock_view.cpp
     components/ck_range_view.cpp
@@ -157,6 +158,7 @@ set(LIBRARY_HEADER_FILES
     widgets/ck_table_view_item.h
     widgets/ck_item_view.h
     widgets/ck_scrollbar.h
+    widgets/ck_text_view.h
     components/ck_dial_view.h
     components/ck_clock_view.h
     components/ck_range_view.h

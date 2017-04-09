@@ -38,7 +38,6 @@ public:
 
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
-
 private:
   class PrivateLabel;
   PrivateLabel *const o_label;

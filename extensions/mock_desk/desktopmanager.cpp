@@ -25,6 +25,7 @@
 #include <ck_space.h>
 #include <ck_workspace.h>
 #include <ck_text_editor.h>
+#include <ck_text_view.h>
 
 class DesktopManager::PrivateDesktopManager {
 public:
@@ -54,12 +55,31 @@ void DesktopManager::add_sample_text()
 
   scene()->addItem(window);
   window->set_window_title("Hello world");
-  cherry_kit::text_editor *edit = new cherry_kit::text_editor();
+  cherry_kit::text_view *edit = new cherry_kit::text_view();
   cherry_kit::widget *widget = new cherry_kit::widget();
-  widget->set_geometry(QRectF(0, 0, 200, 200));
-  edit->set_geometry(QRectF(0, 0, 200, 200));
+  widget->set_geometry(QRectF(0, 0, 640, 480));
+  edit->set_geometry(QRectF(0, 0, 640, 480));
   window->set_window_content(edit);
+
   window->show();
+
+  /* load data */
+  QFile file("/home/siraj/data.txt");
+  if(!file.open(QIODevice::ReadOnly)) {
+      return;
+  }
+
+  QTextStream in(&file);
+  std::string data;
+
+  while(!in.atEnd()) {
+      QString line = in.readLine();
+      data += line.toStdString() + '\n';
+  }
+
+  file.close();
+
+  edit->set_text(data);
 }
 
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {

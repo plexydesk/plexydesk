@@ -30,7 +30,6 @@ class DECL_UI_KIT_EXPORT line_edit : public widget {
 public:
   explicit line_edit(widget *a_parent_ptr = 0);
   virtual ~line_edit();
-
   virtual void set_text(const QString &a_txt);
   virtual QString text() const;
 
