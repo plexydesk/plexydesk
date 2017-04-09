@@ -1,6 +1,9 @@
 #include "ck_text_view.h"
 
+#include <QTextCursor>
 #include <QTextLayout>
+#include <QTextBlock>
+#include <QTextDocument>
 
 #include <iostream>
 #include <fstream>
@@ -34,6 +37,26 @@ class font_metrics {
       QFontMetrics metric(current_font);
       return metric.height();
     }
+};
+
+class cursor {
+public:
+  cursor() : m_text_pos(0), m_screen_pos_x(0),
+    m_screen_pos_y(0) {}
+  ~cursor() {}
+
+  void move_left() {
+    m_text_pos--;
+    m_screen_pos_x--;
+  }
+  void move_right() {}
+  void move_up() {}
+  void move_down() {}
+
+private:
+  int m_text_pos;
+  int m_screen_pos_x;
+  int m_screen_pos_y;
 };
 
 class document {
@@ -72,9 +95,15 @@ public:
         return m_data.at(pos);
     }
 
+    cursor *get_cursor() {
+      return &m_cursor;
+    }
+
 private:
     std::string m_data;
     std::vector<std::string> m_line_vector;
+    
+    cursor m_cursor;
 };
 
 class text_view::text_view_context {
@@ -100,7 +129,8 @@ public:
     int m_font_height;
     int m_font_width;
 
-    document m_doc;
+    QTextDocument q_doc;
+    QTextCursor m_cursor;
 };
 
 text_view::text_view(widget *a_parent) : widget(a_parent),
@@ -113,19 +143,12 @@ text_view::~text_view(){
     delete ctx;
 }
 
-void text_view::set_text(const std::__cxx11::string &a_text)
-{
+void text_view::set_text(const std::__cxx11::string &a_text) {
    ctx->m_text = a_text;
-   ctx->m_doc.set_text(a_text);
-   ctx->m_doc.parse();
-
-   std::vector<std::string> line = ctx->m_doc.lines();
-
-   ctx->m_text_cursor_pos.setX(
-               ctx->m_font_width * line.at(line.size() - 1).length() + 1);
-
-   ctx->m_text_cursor_pos.setY(line.size() - 1);
-
+   ctx->q_doc.setPageSize(geometry().size());
+   ctx->m_cursor = QTextCursor(&ctx->q_doc); 
+   ctx->m_cursor.setVisualNavigation(true);
+   ctx->m_cursor.insertText(a_text.c_str());
    update();
 }
 
@@ -138,25 +161,16 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
     a_painter->setRenderHint(QPainter::TextAntialiasing, true);
     a_painter->setRenderHint(QPainter::Antialiasing, true);
     a_painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
-    std::vector<std::string> line_data = ctx->m_doc.lines();
-    int line_num = 0;
 
-    std::for_each(std::begin(line_data),
-                  std::end(line_data),
-                  [&](std::string &data) {
-        line_num = ctx->layout(a_painter, data, line_num);
-    });
+    ctx->q_doc.drawContents(a_painter, a_rect);
+    
+    const QTextBlock current_block = ctx->q_doc.findBlock(ctx->m_cursor.position()); //ctx->m_cursor.block(); 
+    QTextLayout *current_layout = current_block.layout();
 
-    a_painter->drawRect(QRect(ctx->m_text_cursor_pos.x(),
-                              ctx->m_text_cursor_pos.y() +2,
-                              2,
-                              font_metrics::font_height() - 4));
-    /*
-    ctx->m_layout_mgr->drawCursor(a_painter,
-                                  ctx->m_text_cursor_pos,
-                                  0,
-                                  1);
-                                  */
+    current_layout->drawCursor(a_painter,
+                                  QPointF(),
+                                  ctx->m_cursor.positionInBlock(),
+                                  2);
     a_painter->restore();
 
 }
@@ -164,42 +178,43 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
 void text_view::keyPressEvent(QKeyEvent *a_event_ptr)
 {
   if (a_event_ptr->key() == Qt::Key_Left) {
-     ctx->m_text_cursor_pos.setX(
-                 ctx->m_text_cursor_pos.x() - ctx->m_font_width);
-     ctx->m_caret_pos--;
+     ctx->m_cursor.movePosition(QTextCursor::Left);
      update();
      return;
   }
 
   if (a_event_ptr->key() == Qt::Key_Right) {
-     ctx->m_text_cursor_pos.setX(
-                 ctx->m_text_cursor_pos.x() + ctx->m_font_width);
-     ctx->m_caret_pos++;
+     ctx->m_cursor.movePosition(QTextCursor::Right);
      update();
      return;
   }
 
   if (a_event_ptr->key() == Qt::Key_Up) {
-     ctx->m_text_cursor_pos.setY(
-                 ctx->m_text_cursor_pos.y() - ctx->m_font_height);
+     ctx->m_cursor.movePosition(QTextCursor::Up);
      update();
      return;
   }
 
   if (a_event_ptr->key() == Qt::Key_Down) {
-     ctx->m_text_cursor_pos.setY(
-                 ctx->m_text_cursor_pos.y() + ctx->m_font_height);
+     ctx->m_cursor.movePosition(QTextCursor::Down);
+     update();
+     return;
+  }
+ 
+  if (a_event_ptr->key() == Qt::Key_Backspace) {
+     ctx->m_cursor.deletePreviousChar();
+     update();
+     return;
+  }
+ 
+  if (a_event_ptr->key() == Qt::Key_Delete) {
+     ctx->m_cursor.deleteChar();
      update();
      return;
   }
 
-  ctx->insert_char(a_event_ptr->text().toStdString());
-
-  int move_by = font_metrics::font_width(a_event_ptr->text().at(0).toLatin1());
-  ctx->m_text_cursor_pos.setX(
-                 ctx->m_text_cursor_pos.x() + move_by);
-
-  ctx->m_caret_pos++;
+  ctx->m_cursor.clearSelection();
+  ctx->m_cursor.insertText(a_event_ptr->text().at(0));
   update();
 }
 
@@ -214,7 +229,6 @@ int text_view::text_view_context::layout(QPainter *p,
 
    m_layout_mgr->clearLayout();
    m_layout_mgr->clearAdditionalFormats();
-   m_layout_mgr->clearFormats();
    m_layout_mgr->setText(data.c_str());
    m_layout_mgr->beginLayout();
 
@@ -238,13 +252,7 @@ int text_view::text_view_context::layout(QPainter *p,
 }
 
 void text_view::text_view_context::insert_char(const std::string &a_char)
-{
-  int line = m_text_cursor_pos.y();
-  int column = m_text_cursor_pos.x();
-
-  m_doc.insert(line, m_caret_pos, a_char);
-  m_doc.parse();
-}
+{}
 
 void document::insert(int x, int y, const std::string &a_char) {
   m_data.insert(y + 1, a_char);

@@ -27,6 +27,8 @@
 #include <ck_text_editor.h>
 #include <ck_text_view.h>
 
+#include <carbon/carbon.h>
+
 class DesktopManager::PrivateDesktopManager {
 public:
   PrivateDesktopManager() : m_scene(0) {}
@@ -44,7 +46,19 @@ DesktopManager::DesktopManager(QWidget *parent)
 
    priv->m_scene = new QGraphicsScene(this);
    setScene(priv->m_scene);
-   setWindowFlags(Qt::Window);
+   //setWindowFlags(Qt::Window);
+   move_to_screen(0);
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
+      HIViewRef _desktopView = reinterpret_cast<HIViewRef>(this->winId());
+      HIWindowRef _window = HIViewGetWindow(_desktopView);
+
+      if (_window) {
+         ChangeWindowAttributes(_window, kWindowNoShadowAttribute, kWindowNoAttributes);  
+         //SetWindowGroupLevel(GetWindowGroup(_window), kCGDesktopIconWindowLevel);
+      } 
+#endif
+
 }
 
 DesktopManager::~DesktopManager() { delete priv; }
@@ -60,11 +74,12 @@ void DesktopManager::add_sample_text()
   widget->set_geometry(QRectF(0, 0, 640, 480));
   edit->set_geometry(QRectF(0, 0, 640, 480));
   window->set_window_content(edit);
+  window->setScale(1.2);
 
   window->show();
 
   /* load data */
-  QFile file("/home/siraj/data.txt");
+  QFile file("/Users/siraj//data.txt");
   if(!file.open(QIODevice::ReadOnly)) {
       return;
   }
@@ -80,6 +95,8 @@ void DesktopManager::add_sample_text()
   file.close();
 
   edit->set_text(data);
+
+  show();
 }
 
 void DesktopManager::mouseReleaseEvent(QMouseEvent *event) {

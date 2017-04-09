@@ -2,11 +2,32 @@ set(CMAKE_AUTOMOC ON)
 
 ########### Source files ###############
 set(sourceFiles
-    main.cpp
     desktopmanager.cpp
     mock_desk_runtime.cpp
     extrunner.cpp
     )
+
+if (APPLE)
+  set(sourceFiles ${sourceFiles} main.mm)
+endif()
+
+if (NOT APPLE)
+  set(sourceFiles ${sourceFiles} main.cpp)
+endif()
+#Locate cococa framework on mac
+INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
+
+if (APPLE AND ENABLE_QT4)
+  FIND_LIBRARY(CARBON_LIBRARY Carbon)
+endif()
+
+if (APPLE)
+FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+FIND_LIBRARY(GLUT_LIBRARY GLUT)
+FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
+MARK_AS_ADVANCED (CARBON_LIBRARY COCOA_LIBRARY GLUT_LIBRARY OpenGL_LIBRARY)
+set(MAC_LIBS  ${CARBON_LIBRARY} ${COCOA_LIBRARY} ${GLUT_LIBRARY} ${OpenGL_LIBRARY})
+endif()
 
 if (WIN32)
     set(GUI_TYPE WIN32)
@@ -32,13 +53,15 @@ set(libs
 		${X11_LIBRARIES}
     ${Qt5X11Extras_LIBRARIES}
     ${winrt_libs}
+    ${MAC_LIBS}
     )
 
 
 ########### prepare files ###############
 
 
-QT5_WRAP_CPP(QT_MOC_SRCS mock_desk_runtime.h)
+
+#QT5_WRAP_CPP(QT_MOC_SRCS mock_desk_runtime.h)
 
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR}/extensions/mock_desk)
 
@@ -46,7 +69,7 @@ ADD_EXECUTABLE(mock_desk ${WIN_APPLICATION} ${sourceFiles})
 
 SET_PROPERTY(TARGET mock_desk PROPERTY QT5_NO_LINK_QTMAIN ON)
 
-QT5_USE_MODULES(mock_desk Widgets Xml Core)
+QT4_USE_MODULES(mock_desk Gui Xml Core)
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(mock_desk)
@@ -58,4 +81,5 @@ TARGET_LINK_LIBRARIES(mock_desk ${libs}
  #DBUS_ADD_ACTIVATION_SERVICE(org.plexydesk.extloader.service.in)
 
 ########### Install files ###############
-INSTALL(TARGETS mock_desk DESTINATION bin)
+
+install(TARGETS mock_desk BUNDLE DESTINATION . COMPONENT Runtime RUNTIME DESTINATION bin COMPONENT Runtime)

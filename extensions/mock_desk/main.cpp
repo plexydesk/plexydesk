@@ -20,7 +20,6 @@
 
 // qt
 #include <QApplication>
-#include <QGuiApplication>
 #include <QtCore>
 #include <QtGui>
 #include <QIcon>
@@ -38,6 +37,8 @@
 // Windows
 #include <Windows.h>
 #include <tchar.h>
+
+#import <Cocoa/Cocoa.h>
 
 WNDPROC wpOrigEditProc;
 
@@ -136,7 +137,7 @@ int main(int argc, char *argv[]) {
 
   QApplication app(argc, argv);
 
-  //init_plugin_loader();
+  init_plugin_loader();
 
   /*
   cherry_kit::timer timer(1000);

@@ -126,7 +126,7 @@ public:
       workspace->expose(0);
 
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_5
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
       HIViewRef _desktopView = reinterpret_cast<HIViewRef>(workspace->winId());
       HIWindowRef _window = HIViewGetWindow(_desktopView);
 

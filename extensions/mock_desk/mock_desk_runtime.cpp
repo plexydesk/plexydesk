@@ -22,7 +22,7 @@ void Runtime::open_window() {
                                QLatin1String("/Contents/PlugIns/plexydesk/")));
 
   m_manager = new DesktopManager();
-  m_manager->resize(640, 480);
+  //m_manager->resize(640, 480);
   m_manager->add_sample_text();
   m_manager->show();
  /*
