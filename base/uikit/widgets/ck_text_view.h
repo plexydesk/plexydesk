@@ -4,7 +4,9 @@
 #include <plexydesk_ui_exports.h>
 #include <ck_widget.h>
 
+class QGraphicsSceneMouseEvent;
 namespace cherry_kit {
+
 
 class DECL_UI_KIT_EXPORT text_view : public widget
 {
@@ -18,6 +20,7 @@ protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 
   virtual void keyPressEvent(QKeyEvent *a_event_ptr);
+  virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event);
 
 private:
     class text_view_context;
