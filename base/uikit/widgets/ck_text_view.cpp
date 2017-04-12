@@ -43,7 +43,7 @@ class font_metrics {
 
 class text_view::text_view_context {
 public:
-    text_view_context() {
+    text_view_context() : m_last_anchor(0) {
         m_font_height = font_metrics::font_height();
         m_font_width = font_metrics::font_width();
     }
@@ -63,6 +63,8 @@ public:
 
     QTextDocument m_doc;
     QTextCursor m_cursor;
+    QTextBlock m_anchor_block; 
+    int m_last_anchor;
 };
 
 text_view::text_view(widget *a_parent) : widget(a_parent),
@@ -76,12 +78,37 @@ text_view::~text_view(){
 }
 
 void text_view::set_text(const std::__cxx11::string &a_text) {
+   QFont default_font("Optima");
+   QSizeF default_page_size = QSizeF(geometry().width(), geometry().height());
+
+   default_font.setPointSize(18);
+
    ctx->m_text = a_text;
-   ctx->m_doc.setPageSize(geometry().size());
+   ctx->m_doc.setDefaultFont(default_font);
+   ctx->m_doc.setPageSize(default_page_size);
    ctx->m_cursor = QTextCursor(&ctx->m_doc); 
    ctx->m_cursor.setVisualNavigation(true);
    ctx->m_cursor.insertText(a_text.c_str());
    update();
+}
+
+static void do_layout(QTextLayout *layout) {
+  int leading = 17;// fontMetrics.leading();
+  qreal height = layout->position().y();
+
+  layout->beginLayout();
+  while (1) {
+    QTextLine line = layout->createLine();
+    if (!line.isValid())
+        break;
+
+    //line.setLineWidth(lineWidth);
+    height += leading;
+    line.setPosition(QPointF(0, height));
+    height += line.height();
+  }
+
+  layout->endLayout();
 }
 
 void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
@@ -94,20 +121,166 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
     a_painter->setRenderHint(QPainter::Antialiasing, true);
     a_painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
+    a_painter->save();
+    a_painter->setOpacity(0.3);
+    //a_painter->fillRect(QRect(0, 0, 16.0, a_rect.height()), QColor("#888888"));
+    a_painter->restore();
+
+    QRectF document_geometry = QRectF(a_rect.x() + 16,
+                                      a_rect.y(),
+                                      a_rect.width() - 16,
+                                      a_rect.height());
     ctx->m_doc.drawContents(a_painter, a_rect);
-    
-    const QTextBlock current_block = ctx->m_doc.findBlock(ctx->m_cursor.position()); //ctx->m_cursor.block(); 
+        
+    const QTextBlock current_block = 
+      ctx->m_doc.findBlock(ctx->m_cursor.position()); 
     QTextLayout *current_layout = current_block.layout();
 
-    current_layout->drawCursor(a_painter,
+    //if (hasFocus() && !ctx->m_cursor.hasSelection()) {
+    if (hasFocus()) {
+      current_layout->drawCursor(a_painter,
                                   QPointF(),
                                   ctx->m_cursor.positionInBlock(),
                                   2);
-    a_painter->restore();
+    }
+    /* draw selection */
+   if (current_layout && ctx->m_cursor.hasSelection()) {
+     QPointF cursor_pos = current_layout->position();
+     QTextBlock anchor_block = ctx->m_doc.findBlock(ctx->m_cursor.anchor());
+     QTextLayout *anchor_layout = anchor_block.layout();
+     
+     if (anchor_layout) {
+       QTextLine anchor_line = anchor_layout->lineForTextPosition(ctx->m_last_anchor); 
+       QPointF anchor_block_pos = anchor_layout->position();
+       qreal anchor_x = anchor_line.cursorToX(ctx->m_last_anchor) + anchor_block_pos.x();
+       qreal anchor_y = anchor_block_pos.y() + anchor_line.rect().y();
+       qreal leading = anchor_line.rect().height();
+
+       QTextLine current_line = current_layout->lineForTextPosition(ctx->m_cursor.positionInBlock()); 
+       QPointF current_block_pos = current_layout->position();
+       qreal current_cursor_x = (current_line.cursorToX(ctx->m_cursor.positionInBlock()) + current_block_pos.x());
+       qreal current_cursor_y = current_block_pos.y() + current_line.rect().y();
+
+       qreal selection_length = current_cursor_x - anchor_x;
+          
+       /* check if we are on the same block */
+       bool on_same_block = false;
+       bool multi_line_selection = false;
+
+       if (current_block.blockNumber() == anchor_block.blockNumber()) {
+         on_same_block = true;
+       }
+      
+       /* we are on the same line */
+       QPainterPath selection_path;
+
+       if (current_cursor_y == anchor_y) {
+         selection_path.addRect(QRectF(anchor_x, anchor_y, selection_length , leading));
+       }
+
+       /* select text top down direction */ 
+       if (current_cursor_y > anchor_y) {
+         QRectF selection_rect_start = QRectF(anchor_x, anchor_y, anchor_line.rect().width() - anchor_x , leading);
+         QRectF selection_rect_end = QRectF(current_line.rect().x(), current_cursor_y, current_cursor_x , leading);
+
+         int line_count = (current_cursor_y - anchor_y) / leading;
+         
+         if (line_count >= 1) multi_line_selection = true;
+         
+         /* we are on the same block but we have multi-line selection */
+         if (on_same_block && multi_line_selection) {
+           QRectF inline_selction_start = QRectF(anchor_x, anchor_y, anchor_line.rect().width() - anchor_x, leading);
+           QRectF inline_selction_end = QRectF(current_line.rect().x(), current_cursor_y, current_cursor_x, leading);
+
+           selection_path.addRect(inline_selction_end);
+
+           if (line_count > 1) {;
+             QRectF selection_line_start = QRectF(0, anchor_y + leading, anchor_line.rect().width(), (line_count - 1) * leading);
+             selection_path.addRect(selection_line_start);
+             a_painter->drawRect(selection_line_start);
+           }
+         
+           selection_path.addRect(inline_selction_start);
+           qDebug() << Q_FUNC_INFO << "selection on same block @ : " << on_same_block << "Has Multi Selection @: " << multi_line_selection;
+         } 
+
+         /* we are on differnt blocks but we have multi-line selection */
+         if (multi_line_selection && !on_same_block){ 
+           QRectF selection_line_start = QRectF(0, anchor_y + leading, anchor_line.rect().width(), (line_count - 1) * leading);
+
+           selection_path.addRect(selection_rect_start);
+           selection_path.addRect(selection_line_start);
+           selection_path.addRect(selection_rect_end);
+         } 
+       }
+
+       /* select text buttom up direction and backwards*/ 
+       if (current_cursor_y < anchor_y) {
+         QRectF selection_rect_start = QRectF(0, anchor_y, anchor_x , leading); 
+         QRectF selection_rect_end = QRectF(current_cursor_x, current_cursor_y, current_line.rect().width() - current_cursor_x , leading);
+
+         int line_count = (anchor_y - current_cursor_y) / leading;
+
+         if (line_count >= 1) multi_line_selection = true;
+         
+         if (multi_line_selection && !on_same_block) {
+           selection_path.addRect(selection_rect_start);
+
+           if (line_count > 1) {
+             QRectF selection_line_start = QRectF(0, current_cursor_y + leading, anchor_line.rect().width(), (line_count - 1) * leading);
+             selection_path.addRect(selection_line_start);
+            }
+
+           selection_path.addRect(selection_rect_end);
+         } 
+
+         /* we are on the same block but we have multi-line selection */
+         if (on_same_block && multi_line_selection) {
+	   QRectF inline_selction_start = QRectF(0, anchor_y, anchor_x, leading);
+           QRectF inline_selction_end = QRectF(current_cursor_x, current_cursor_y, current_line.rect().width() - current_cursor_x, leading);
+
+           selection_path.addRect(inline_selction_start);
+
+           if (line_count > 1) {;
+             QRectF selection_line_start = QRectF(0, current_cursor_y + leading, anchor_line.rect().width(), (line_count - 1) * leading);
+             selection_path.addRect(selection_line_start);
+           }
+         
+           selection_path.addRect(inline_selction_end);
+         } 
+       }
+
+         a_painter->save();
+         a_painter->setOpacity(0.4);
+         QRectF selection_rect = selection_path.boundingRect();
+         QLinearGradient selection_fill(QPointF(selection_rect.width() / 2, 0), 
+                                        QPointF(selection_rect.width() / 2, selection_rect.height()));
+         selection_fill.setColorAt(0, QColor("#EFEFEF"));
+         selection_fill.setColorAt(0.50, QColor("#A0C7F1"));
+         selection_fill.setColorAt(0.70, QColor("#87BAF2"));
+         selection_fill.setColorAt(1, QColor("#C9F5FC"));
+
+         a_painter->fillPath(selection_path, QBrush(selection_fill));
+         a_painter->restore();
+
+         a_painter->save();
+         QPainterPathStroker stroke;
+         a_painter->setOpacity(0.2);
+         stroke.setJoinStyle(Qt::RoundJoin);
+         stroke.setCapStyle(Qt::RoundCap);
+         a_painter->strokePath(stroke.createStroke(selection_path.simplified()), QPen(QColor("#2f2c92")));
+         a_painter->restore();
+
+     }
+   }
+   
+   a_painter->restore();
 }
 
 void text_view::keyPressEvent(QKeyEvent *a_event)
 {
+  ctx->m_cursor.clearSelection();
+
   if (a_event->key() == Qt::Key_Left) {
      ctx->m_cursor.movePosition(QTextCursor::Left);
      update();
@@ -144,7 +317,6 @@ void text_view::keyPressEvent(QKeyEvent *a_event)
      return;
   }
 
-  ctx->m_cursor.clearSelection();
   ctx->m_cursor.insertText(a_event->text().at(0));
   update();
 }
@@ -154,17 +326,49 @@ void text_view::mousePressEvent(QGraphicsSceneMouseEvent *a_event) {
 
   int cursor_pos = ctx->hit_test(pos.x(), pos.y()); 
 
-  if (cursor_pos > 0) {
+  if (cursor_pos >= 0) {
+    ctx->m_cursor.clearSelection();
     ctx->m_cursor.setPosition(cursor_pos, QTextCursor::MoveAnchor);
+    ctx->m_last_anchor = ctx->m_cursor.positionInBlock();
+    ctx->m_anchor_block = ctx->m_doc.findBlock(ctx->m_cursor.anchor());
   }
  
   update();
   a_event->accept();
 }
 
+void text_view::mouseMoveEvent(QGraphicsSceneMouseEvent *a_event) {
+  QPointF pos = a_event->pos();
+
+  int cursor_pos = ctx->hit_test(pos.x(), pos.y()); 
+
+  if (cursor_pos >= 0) {
+     // if (a_event->button() == Qt::LeftButton) {
+        ctx->m_cursor.setPosition(cursor_pos, QTextCursor::KeepAnchor);
+     // }
+  }
+ 
+  update();
+  a_event->accept();
+}
+
+void text_view::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event) {
+  QPointF pos = a_event->pos();
+
+  int cursor_pos = ctx->hit_test(pos.x(), pos.y()); 
+
+  if (cursor_pos >= 0) {
+    //ctx->m_cursor.setPosition(cursor_pos, QTextCursor::KeepAnchor);
+  }
+ 
+  update();
+  a_event->accept();
+}
+
+
 int text_view::text_view_context::hit_test(float a_x, float a_y) {
-  QTextBlock block = m_doc.begin();
   int block_count = 0;
+  QTextBlock block = m_doc.begin();
 
   while(block.isValid()) {
     QTextLayout *layout = block.layout();
@@ -178,7 +382,7 @@ int text_view::text_view_context::hit_test(float a_x, float a_y) {
     QRectF block_bound = layout->boundingRect();
     QPointF block_pos = layout->position();
 
-    QPointF src_pos = QPointF(block_pos.x() + 1, a_y);
+    QPointF src_pos = QPointF(block_pos.x(), a_y);
    
     block_bound = QRectF(block_pos.x(), block_pos.y(),
                          block_bound.width(),

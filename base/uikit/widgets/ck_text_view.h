@@ -21,6 +21,8 @@ protected:
 
   virtual void keyPressEvent(QKeyEvent *a_event_ptr);
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event);
+  virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *a_event);
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event);
 
 private:
     class text_view_context;
