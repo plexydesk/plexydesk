@@ -77,7 +77,7 @@ text_view::~text_view(){
     delete ctx;
 }
 
-void text_view::set_text(const std::__cxx11::string &a_text) {
+void text_view::set_text(const std::string &a_text) {
    QFont default_font("Optima");
    QSizeF default_page_size = QSizeF(geometry().width(), geometry().height());
 
