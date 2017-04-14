@@ -80,8 +80,6 @@ public:
 
 text_view::text_view(widget *a_parent) : widget(a_parent),
     ctx(new text_view_context) {
-    ctx->m_engine = new font_metrics();
-    ctx->m_layout_mgr = new QTextLayout();
 }
 
 text_view::~text_view(){
@@ -155,10 +153,21 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
         
     const QTextBlock current_block = 
       ctx->m_doc.findBlock(ctx->m_cursor.position()); 
+
+    if (!current_block.isValid() || ctx->m_doc.isEmpty())
+      return;
+    
     QTextLayout *current_layout = current_block.layout();
 
-    if (current_layout && hasFocus() && !ctx->m_cursor.hasSelection()) {
+    if (current_layout && hasFocus() && !ctx->m_cursor.isNull() && !ctx->m_cursor.hasSelection()) {
       QTextLine current_line = current_layout->lineForTextPosition(ctx->m_cursor.positionInBlock()); 
+
+      if (current_layout->lineCount() == 0 || current_line.width() <= 0) {
+	a_painter->restore();
+	a_painter->restore();
+	return;
+      }
+
       QPointF current_block_pos = current_layout->position();
       qreal current_cursor_x = (current_line.cursorToX(ctx->m_cursor.positionInBlock()) + current_block_pos.x());
       qreal current_cursor_y = current_block_pos.y() + current_line.rect().y();

@@ -626,9 +626,9 @@ widget *fixed_layout::PrivateViewBuilder::add_new_text_view_at(
     text = a_props.at("text");
   }
 
-  editor->set_text(text);
   editor->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
                               calculate_cell_height(a_row, a_col)));
+  editor->set_text(text);
   layout();
 
   return editor;

@@ -226,7 +226,8 @@ void NoteWidget::setNoteWidgetContent(const QString &status) {
 }
 
 void NoteWidget::set_editor_text(const QString &a_text) {
-  d->m_text_editor_widget->set_text(a_text.toStdString());
+  std::string _text = a_text.toStdString();
+  d->m_text_editor_widget->set_text(_text);
 }
 
 void NoteWidget::setID(const QString &id) { d->m_note_id = id; }
