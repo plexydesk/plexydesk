@@ -14,8 +14,9 @@ public:
     text_view(widget *a_parent = 0);
     virtual ~text_view();
 
-    void set_text(const std::string &a_text);
-
+    virtual void set_text(const std::string &a_text);
+    virtual void scroll_up();
+    virtual void scroll_down();
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 

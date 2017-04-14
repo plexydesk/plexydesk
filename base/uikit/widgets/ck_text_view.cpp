@@ -43,7 +43,7 @@ class font_metrics {
 
 class text_view::text_view_context {
 public:
-    text_view_context() : m_last_anchor(0), m_scroll_y(0.0) {
+    text_view_context() : m_last_anchor(0), m_scroll_y(0.0), m_cursor_width(1) {
         m_font_height = font_metrics::font_height();
         m_font_width = font_metrics::font_width();
     }
@@ -69,6 +69,7 @@ public:
     int m_last_anchor;
 
     float m_scroll_y;
+    int m_cursor_width;
 };
 
 text_view::text_view(widget *a_parent) : widget(a_parent),
@@ -118,8 +119,8 @@ static void do_layout(QTextLayout *layout) {
 void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
     QPainterPath background_path;
     background_path.addRoundRect(a_rect, 1.5, 1.5);
-    /* use Qt */
 
+    /* use Qt */
     a_painter->save();
     a_painter->setClipRect(a_rect);
     a_painter->setRenderHint(QPainter::TextAntialiasing, true);
@@ -146,11 +147,43 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
       ctx->m_doc.findBlock(ctx->m_cursor.position()); 
     QTextLayout *current_layout = current_block.layout();
 
-    if (hasFocus() && !ctx->m_cursor.hasSelection()) {
+    if (current_layout && hasFocus() && !ctx->m_cursor.hasSelection()) {
+      QTextLine current_line = current_layout->lineForTextPosition(ctx->m_cursor.positionInBlock()); 
+      QPointF current_block_pos = current_layout->position();
+      qreal current_cursor_x = (current_line.cursorToX(ctx->m_cursor.positionInBlock()) + current_block_pos.x());
+      qreal current_cursor_y = current_block_pos.y() + current_line.rect().y();
+      qreal leading = current_line.rect().height();
+
+      a_painter->save();
+      QPen cursor_pen;
+      QPainterPath text_cursor_path; 
+
+      QLinearGradient cursor_fill(QPointF(ctx->m_cursor_width / 2, 0), 
+                                   QPointF(ctx->m_cursor_width / 2, leading));
+
+      cursor_fill.setColorAt(0, QColor("#EFEFEF"));
+      cursor_fill.setColorAt(0.50, QColor("#A0C7F1"));
+      cursor_fill.setColorAt(0.70, QColor("#87BAF2"));
+      cursor_fill.setColorAt(1, QColor("#C9F5FC"));
+
+
+      cursor_pen.setColor(QColor("#F65C9F"));
+      /*
       current_layout->drawCursor(a_painter,
                                   QPointF(),
                                   ctx->m_cursor.positionInBlock(),
                                   10);
+      */
+      a_painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+      text_cursor_path.addRoundRect(QRectF(0, 0, ctx->m_cursor_width, leading), 1, 1);
+      a_painter->translate(current_cursor_x, current_cursor_y);
+
+      a_painter->setOpacity(0.8);
+      a_painter->fillPath(text_cursor_path, QBrush(cursor_fill));
+
+      a_painter->setOpacity(0.4);
+      a_painter->drawPath(text_cursor_path);
+      a_painter->restore();
     }
     /* draw selection */
    if (current_layout && ctx->m_cursor.hasSelection()) {
@@ -259,26 +292,28 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
        }
 
          a_painter->save();
-         a_painter->setOpacity(0.4);
+         //a_painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+         a_painter->setOpacity(0.8);
          QRectF selection_rect = selection_path.boundingRect();
-         QLinearGradient selection_fill(QPointF(selection_rect.width() / 2, 0), 
-                                        QPointF(selection_rect.width() / 2, selection_rect.height()));
-         selection_fill.setColorAt(0, QColor("#EFEFEF"));
+         QRectF selection_rect_adjusted = QRectF(0, 0, selection_rect.width(), selection_rect.height());
+
+         QLinearGradient selection_fill(QPointF(selection_rect.width() / 2, selection_rect.y()), 
+                                        QPointF(selection_rect.width() / 2, 
+                                        selection_rect.y() + selection_rect.height()));
+         selection_fill.setColorAt(0, QColor("#E5E0FC"));
          selection_fill.setColorAt(0.50, QColor("#A0C7F1"));
          selection_fill.setColorAt(0.70, QColor("#87BAF2"));
          selection_fill.setColorAt(1, QColor("#C9F5FC"));
 
          a_painter->fillPath(selection_path, QBrush(selection_fill));
-         a_painter->restore();
+         
+         QPen cursor_pen;
+         cursor_pen.setColor(QColor("#888888"));
+         a_painter->setPen(cursor_pen);
+         a_painter->setOpacity(0.4);
+         a_painter->drawPath(selection_path.simplified());
 
-         a_painter->save();
-         QPainterPathStroker stroke;
-         a_painter->setOpacity(0.2);
-         stroke.setJoinStyle(Qt::RoundJoin);
-         stroke.setCapStyle(Qt::RoundCap);
-         a_painter->strokePath(stroke.createStroke(selection_path.simplified()), QPen(QColor("#2f2c92")));
          a_painter->restore();
-
      }
    }
    
@@ -291,59 +326,58 @@ void text_view::keyPressEvent(QKeyEvent *a_event)
 
   if (a_event->key() == Qt::Key_Left) {
      ctx->m_cursor.movePosition(QTextCursor::Left);
+     ctx->m_cursor_width = 10;
      update();
      return;
   }
 
   if (a_event->key() == Qt::Key_Right) {
      ctx->m_cursor.movePosition(QTextCursor::Right);
+     ctx->m_cursor_width = 10;
      update();
      return;
   }
 
   if (a_event->key() == Qt::Key_Up) {
      ctx->m_cursor.movePosition(QTextCursor::Up);
-     update();
-
-     int scroll_by = ctx->needs_page_scroll();
-
-     if (scroll_by == 0) 
-       ctx->m_scroll_y = 0;
-     else
-      ctx->m_scroll_y -= scroll_by;
-     update();
-
+     ctx->m_cursor_width = 10;
+     scroll_up();
      return;
   }
 
   if (a_event->key() == Qt::Key_Down) {
      ctx->m_cursor.movePosition(QTextCursor::Down);
-     update();
-
-     int scroll_by = ctx->needs_page_scroll();
-     if (scroll_by == 0) 
-       ctx->m_scroll_y = ctx->m_scroll_y;
-     else
-       ctx->m_scroll_y += scroll_by;
-
-     update();
-
+     ctx->m_cursor_width = 10;
+     scroll_down();
     return;
   }
  
   if (a_event->key() == Qt::Key_Backspace) {
      ctx->m_cursor.deletePreviousChar();
+     ctx->m_cursor_width = 1;
      update();
      return;
   }
  
   if (a_event->key() == Qt::Key_Delete) {
      ctx->m_cursor.deleteChar();
+     ctx->m_cursor_width = 1;
      update();
      return;
   }
+  
+  if (a_event->key() == Qt::Key_Enter) { 
+   ctx->m_cursor_width = 1;
+   scroll_down();
+  }
+ 
+  if (a_event->key() == Qt::Key_Return) { 
+   ctx->m_cursor_width = 1;
+   scroll_down();
+  }
 
   ctx->m_cursor.insertText(a_event->text().at(0));
+  ctx->m_cursor_width = 1;
   update();
 }
 
@@ -414,6 +448,29 @@ int text_view::text_view_context::needs_page_scroll() {
   } 
   
   return 0;
+}
+
+void text_view::scroll_up() {
+  update();
+  int scroll_by = ctx->needs_page_scroll();
+
+  if (scroll_by == 0) 
+    ctx->m_scroll_y = 0;
+  else
+   ctx->m_scroll_y -= scroll_by;
+  update();
+}
+
+void text_view::scroll_down() {
+  update();
+  int scroll_by = ctx->needs_page_scroll();
+
+  if (scroll_by == 0) 
+    ctx->m_scroll_y = ctx->m_scroll_y;
+  else
+    ctx->m_scroll_y += scroll_by;
+
+  update();
 }
 
 int text_view::text_view_context::hit_test(float a_x, float a_y) {
