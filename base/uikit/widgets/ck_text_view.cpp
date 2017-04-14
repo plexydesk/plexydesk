@@ -43,13 +43,15 @@ class font_metrics {
 
 class text_view::text_view_context {
 public:
-    text_view_context() : m_last_anchor(0) {
+    text_view_context() : m_last_anchor(0), m_scroll_y(0.0) {
         m_font_height = font_metrics::font_height();
         m_font_width = font_metrics::font_width();
     }
     ~text_view_context() {}
 
     int hit_test(float, float);
+    
+    int needs_page_scroll();
 
     std::string m_text;
     font_metrics *m_engine;
@@ -65,6 +67,8 @@ public:
     QTextCursor m_cursor;
     QTextBlock m_anchor_block; 
     int m_last_anchor;
+
+    float m_scroll_y;
 };
 
 text_view::text_view(widget *a_parent) : widget(a_parent),
@@ -78,10 +82,10 @@ text_view::~text_view(){
 }
 
 void text_view::set_text(const std::string &a_text) {
-   QFont default_font("Optima");
+   QFont default_font("Courier");
    QSizeF default_page_size = QSizeF(geometry().width(), geometry().height());
 
-   default_font.setPointSize(18);
+   default_font.setPointSize(14);
 
    ctx->m_text = a_text;
    ctx->m_doc.setDefaultFont(default_font);
@@ -112,7 +116,8 @@ static void do_layout(QTextLayout *layout) {
 }
 
 void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
-    a_painter->fillRect(a_rect, Qt::white);
+    QPainterPath background_path;
+    background_path.addRoundRect(a_rect, 1.5, 1.5);
     /* use Qt */
 
     a_painter->save();
@@ -121,27 +126,31 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
     a_painter->setRenderHint(QPainter::Antialiasing, true);
     a_painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
+    a_painter->fillPath(background_path, Qt::white);
+
     a_painter->save();
     a_painter->setOpacity(0.3);
     //a_painter->fillRect(QRect(0, 0, 16.0, a_rect.height()), QColor("#888888"));
     a_painter->restore();
 
-    QRectF document_geometry = QRectF(a_rect.x() + 16,
+    QRectF document_geometry = QRectF(a_rect.x(),
                                       a_rect.y(),
-                                      a_rect.width() - 16,
-                                      a_rect.height());
-    ctx->m_doc.drawContents(a_painter, a_rect);
+                                      a_rect.width(),
+                                      a_rect.height() + ctx->m_scroll_y);
+    //a_painter->save();
+    a_painter->translate(a_rect.x(), a_rect.y() - (ctx->m_scroll_y));
+    ctx->m_doc.drawContents(a_painter, QRectF());
+   // a_painter->restore();
         
     const QTextBlock current_block = 
       ctx->m_doc.findBlock(ctx->m_cursor.position()); 
     QTextLayout *current_layout = current_block.layout();
 
-    //if (hasFocus() && !ctx->m_cursor.hasSelection()) {
-    if (hasFocus()) {
+    if (hasFocus() && !ctx->m_cursor.hasSelection()) {
       current_layout->drawCursor(a_painter,
                                   QPointF(),
                                   ctx->m_cursor.positionInBlock(),
-                                  2);
+                                  10);
     }
     /* draw selection */
    if (current_layout && ctx->m_cursor.hasSelection()) {
@@ -197,11 +206,10 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
            if (line_count > 1) {;
              QRectF selection_line_start = QRectF(0, anchor_y + leading, anchor_line.rect().width(), (line_count - 1) * leading);
              selection_path.addRect(selection_line_start);
-             a_painter->drawRect(selection_line_start);
            }
          
            selection_path.addRect(inline_selction_start);
-           qDebug() << Q_FUNC_INFO << "selection on same block @ : " << on_same_block << "Has Multi Selection @: " << multi_line_selection;
+           //qDebug() << Q_FUNC_INFO << "selection on same block @ : " << on_same_block << "Has Multi Selection @: " << multi_line_selection;
          } 
 
          /* we are on differnt blocks but we have multi-line selection */
@@ -296,13 +304,31 @@ void text_view::keyPressEvent(QKeyEvent *a_event)
   if (a_event->key() == Qt::Key_Up) {
      ctx->m_cursor.movePosition(QTextCursor::Up);
      update();
+
+     int scroll_by = ctx->needs_page_scroll();
+
+     if (scroll_by == 0) 
+       ctx->m_scroll_y = 0;
+     else
+      ctx->m_scroll_y -= scroll_by;
+     update();
+
      return;
   }
 
   if (a_event->key() == Qt::Key_Down) {
      ctx->m_cursor.movePosition(QTextCursor::Down);
      update();
-     return;
+
+     int scroll_by = ctx->needs_page_scroll();
+     if (scroll_by == 0) 
+       ctx->m_scroll_y = ctx->m_scroll_y;
+     else
+       ctx->m_scroll_y += scroll_by;
+
+     update();
+
+    return;
   }
  
   if (a_event->key() == Qt::Key_Backspace) {
@@ -324,7 +350,7 @@ void text_view::keyPressEvent(QKeyEvent *a_event)
 void text_view::mousePressEvent(QGraphicsSceneMouseEvent *a_event) {
   QPointF pos = a_event->pos();
 
-  int cursor_pos = ctx->hit_test(pos.x(), pos.y()); 
+  int cursor_pos = ctx->hit_test(pos.x(), pos.y() + ctx->m_scroll_y); 
 
   if (cursor_pos >= 0) {
     ctx->m_cursor.clearSelection();
@@ -340,7 +366,7 @@ void text_view::mousePressEvent(QGraphicsSceneMouseEvent *a_event) {
 void text_view::mouseMoveEvent(QGraphicsSceneMouseEvent *a_event) {
   QPointF pos = a_event->pos();
 
-  int cursor_pos = ctx->hit_test(pos.x(), pos.y()); 
+  int cursor_pos = ctx->hit_test(pos.x(), pos.y() + ctx->m_scroll_y); 
 
   if (cursor_pos >= 0) {
      // if (a_event->button() == Qt::LeftButton) {
@@ -355,7 +381,7 @@ void text_view::mouseMoveEvent(QGraphicsSceneMouseEvent *a_event) {
 void text_view::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event) {
   QPointF pos = a_event->pos();
 
-  int cursor_pos = ctx->hit_test(pos.x(), pos.y()); 
+  int cursor_pos = ctx->hit_test(pos.x(), pos.y() + ctx->m_scroll_y); 
 
   if (cursor_pos >= 0) {
     //ctx->m_cursor.setPosition(cursor_pos, QTextCursor::KeepAnchor);
@@ -365,6 +391,30 @@ void text_view::mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event) {
   a_event->accept();
 }
 
+int text_view::text_view_context::needs_page_scroll() {
+  int current_cursor = m_cursor.position();
+  float view_height = m_doc.pageSize().height();
+  float document_height = m_doc.size().height();
+  const QTextBlock current_block = 
+    m_doc.findBlock(m_cursor.position()); 
+  QTextLayout *current_layout = current_block.layout();
+
+  if (!current_layout)
+    return 0;
+ 
+  if (m_cursor.atEnd())
+    return 0;
+
+  QTextLine current_line = current_layout->lineForTextPosition(m_cursor.positionInBlock()); 
+  QPointF current_block_pos = current_layout->position();
+  float current_cursor_y = current_block_pos.y() + current_line.rect().y();
+  
+  if (current_cursor_y > view_height) {
+    return ((current_cursor_y - view_height) < 0) ? -17 : 17;
+  } 
+  
+  return 0;
+}
 
 int text_view::text_view_context::hit_test(float a_x, float a_y) {
   int block_count = 0;

@@ -120,6 +120,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 
   QRectF content_geometry(a_widget_ptr->contents_geometry());
 
+/* following adjustments are made to fit quartz based dropshadows */
 #ifdef __APPLE__
   content_geometry.setHeight(content_geometry.height() + window_title_height() +
                              30);
@@ -131,7 +132,7 @@ void window::set_window_content(widget *a_widget_ptr) {
 
   if (priv->m_window_type == kApplicationWindow) {
 #ifdef __APPLE__
-    priv->m_window_content->setPos(15.0, window_bordr_height + 10);
+    priv->m_window_content->setPos(15.0, window_bordr_height + 2);
     content_geometry.setHeight(content_geometry.height());
 #else
     priv->m_window_content->setPos(1.0, window_bordr_height);

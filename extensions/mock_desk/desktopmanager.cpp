@@ -68,13 +68,13 @@ void DesktopManager::add_sample_text()
   cherry_kit::window *window = new cherry_kit::window();
 
   scene()->addItem(window);
-  window->set_window_title("Hello world");
+  window->set_window_title("Note");
   cherry_kit::text_view *edit = new cherry_kit::text_view();
   cherry_kit::widget *widget = new cherry_kit::widget();
   widget->set_geometry(QRectF(0, 0, 640, 480));
   edit->set_geometry(QRectF(0, 0, 640, 480));
   window->set_window_content(edit);
-  window->setScale(1.2);
+  //window->setScale(1.2);
 
   window->show();
 
