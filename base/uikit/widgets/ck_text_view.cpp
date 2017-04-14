@@ -46,6 +46,8 @@ public:
     text_view_context() : m_last_anchor(0), m_scroll_y(0.0), m_cursor_width(1) {
         m_font_height = font_metrics::font_height();
         m_font_width = font_metrics::font_width();
+        m_background_color = "#ffffff";
+        m_text_color = "#2b2b2b";
     }
     ~text_view_context() {}
 
@@ -70,6 +72,10 @@ public:
 
     float m_scroll_y;
     int m_cursor_width;
+    
+    /* style properties */
+    std::string m_background_color;
+    std::string m_text_color;
 };
 
 text_view::text_view(widget *a_parent) : widget(a_parent),
@@ -127,7 +133,7 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
     a_painter->setRenderHint(QPainter::Antialiasing, true);
     a_painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
 
-    a_painter->fillPath(background_path, Qt::white);
+    a_painter->fillPath(background_path, QColor(ctx->m_background_color.c_str()));
 
     a_painter->save();
     a_painter->setOpacity(0.3);
@@ -138,10 +144,14 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
                                       a_rect.y(),
                                       a_rect.width(),
                                       a_rect.height() + ctx->m_scroll_y);
-    //a_painter->save();
     a_painter->translate(a_rect.x(), a_rect.y() - (ctx->m_scroll_y));
+
+    a_painter->save();
+    QPen text_pen;
+    text_pen.setColor(QColor(ctx->m_text_color.c_str()));
+    a_painter->setPen(text_pen);
     ctx->m_doc.drawContents(a_painter, QRectF());
-   // a_painter->restore();
+    a_painter->restore();
         
     const QTextBlock current_block = 
       ctx->m_doc.findBlock(ctx->m_cursor.position()); 
@@ -165,7 +175,6 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
       cursor_fill.setColorAt(0.50, QColor("#A0C7F1"));
       cursor_fill.setColorAt(0.70, QColor("#87BAF2"));
       cursor_fill.setColorAt(1, QColor("#C9F5FC"));
-
 
       cursor_pen.setColor(QColor("#F65C9F"));
       /*
@@ -473,6 +482,18 @@ void text_view::scroll_down() {
 
   update();
 }
+
+void text_view::set_background_color(const std::string &a_color) {
+  ctx->m_background_color = a_color;
+} 
+
+void text_view::set_text_color(const std::string &a_color) {
+  ctx->m_text_color = a_color;
+} 
+
+void text_view::copy() {} 
+
+void text_view::paste() {} 
 
 int text_view::text_view_context::hit_test(float a_x, float a_y) {
   int block_count = 0;

@@ -54,6 +54,7 @@ class DECL_UI_KIT_EXPORT fixed_layout {
     kCalendar,
     kClock,
     kDialView,
+    kTextView,
   } ViewIdentifier;
 
 public:

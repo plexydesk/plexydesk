@@ -7,6 +7,7 @@
 #include <ck_icon_button.h>
 #include <ck_label.h>
 #include <ck_text_editor.h>
+#include <ck_text_view.h>
 #include <ck_line_edit.h>
 #include <ck_calendar_view.h>
 #include <ck_clock_view.h>
@@ -67,6 +68,9 @@ public:
   void update_image_button_properties(int a_row, int a_col,
                                       const widget_properties_t &a_props);
 
+  widget *add_new_text_view_at(int a_row, int a_col,
+                               const widget_properties_t &a_props,
+                               widget_handler_callback_t a_callback);
   widget *add_new_text_edit_at(int a_row, int a_col,
                                const widget_properties_t &a_props,
                                widget_handler_callback_t a_callback);
@@ -275,6 +279,10 @@ widget *fixed_layout::add_widget(int a_row, int a_column,
   case kTextEdit:
     rv = priv->add_new_text_edit_at(a_row, a_column, a_properties, a_callback);
     break;
+  case kTextView:
+    rv = priv->add_new_text_view_at(a_row, a_column, a_properties, a_callback);
+    break;
+
   case kImageButton:
     rv = priv->add_new_image_button_at(a_row, a_column, a_properties,
                                        a_callback);
@@ -337,6 +345,7 @@ void fixed_layout::PrivateViewBuilder::build_ui_map() {
   m_ui_dict["label"] = fixed_layout::kLabel;
   m_ui_dict["line_edit"] = fixed_layout::kLineEdit;
   m_ui_dict["text_edit"] = fixed_layout::kTextEdit;
+  m_ui_dict["text_view"] = fixed_layout::kTextView;
   m_ui_dict["progress_bar"] = fixed_layout::kProgressBar;
   m_ui_dict["model_view"] = fixed_layout::kModelView;
   m_ui_dict["grid_model_view"] = fixed_layout::kGridModelView;
@@ -591,6 +600,30 @@ widget *fixed_layout::PrivateViewBuilder::add_new_text_edit_at(
 
   if (a_props.find("text") != a_props.end()) {
     text = QString::fromStdString(a_props.at("text"));
+  }
+
+  editor->set_text(text);
+  editor->set_geometry(QRectF(0, 0, calculate_cell_width(a_row, a_col),
+                              calculate_cell_height(a_row, a_col)));
+  layout();
+
+  return editor;
+}
+
+widget *fixed_layout::PrivateViewBuilder::add_new_text_view_at(
+    int a_row, int a_col, const widget_properties_t &a_props,
+    widget_handler_callback_t a_callback) {
+  cherry_kit::text_view *editor =
+      new cherry_kit::text_view(m_content_frame);
+  GridPos pos(a_row, a_col);
+
+  m_widget_grid[pos] = editor;
+  m_ui_type_dict[pos] = kTextView;
+
+  std::string text;
+
+  if (a_props.find("text") != a_props.end()) {
+    text = a_props.at("text");
   }
 
   editor->set_text(text);

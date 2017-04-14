@@ -15,6 +15,7 @@
 #include <ck_image_view.h>
 #include <ck_icon_button.h>
 #include <ck_text_editor.h>
+#include <ck_text_view.h>
 #include <ck_disk_engine.h>
 #include <ck_sync_object.h>
 #include <ck_icon_button.h>
@@ -47,7 +48,7 @@ public:
 
   QPixmap m_image_attachment;
 
-  cherry_kit::text_editor *m_text_editor_widget;
+  cherry_kit::text_view *m_text_editor_widget;
   cherry_kit::icon_button *m_attachment_del_button;
   cherry_kit::image_view *m_image_attachment_view;
 
@@ -131,8 +132,8 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
   cherry_kit::widget_properties_t text_editor_prop;
   text_editor_prop["text"] = "";
 
-  d->m_text_editor_widget = dynamic_cast<cherry_kit::text_editor *>(
-      d->m_ui->add_widget(0, 0, "text_edit", text_editor_prop, [=]() {}));
+  d->m_text_editor_widget = dynamic_cast<cherry_kit::text_view *>(
+      d->m_ui->add_widget(0, 0, "text_view", text_editor_prop, [=]() {}));
 
   cherry_kit::widget_properties_t button_props;
 
@@ -197,10 +198,12 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
       d->m_on_delete_func();
   });
 
+  /*
   connect(d->m_text_editor_widget, SIGNAL(documentTitleAvailable(QString)),
           this, SLOT(onDocuemntTitleAvailable(QString)));
   connect(d->m_text_editor_widget, SIGNAL(text_updated(QString)), this,
           SLOT(onTextUpdated(QString)));
+ */
 
   setAcceptDrops(true);
   set_geometry(parent->geometry());
@@ -223,7 +226,7 @@ void NoteWidget::setNoteWidgetContent(const QString &status) {
 }
 
 void NoteWidget::set_editor_text(const QString &a_text) {
-  d->m_text_editor_widget->set_text(a_text);
+  d->m_text_editor_widget->set_text(a_text.toStdString());
 }
 
 void NoteWidget::setID(const QString &id) { d->m_note_id = id; }
@@ -232,9 +235,9 @@ void NoteWidget::set_editor_color_scheme(const QString &a_fb_color,
                                          const QString &a_bg_color) {
   if (!d->m_text_editor_widget)
     return;
-  d->m_text_editor_widget->style(QString("border: 0; background: %1; color: %2")
-                                     .arg(a_bg_color)
-                                     .arg(a_fb_color));
+
+  d->m_text_editor_widget->set_background_color(a_bg_color.toStdString());
+  d->m_text_editor_widget->set_text_color(a_fb_color.toStdString());
 }
 
 QString NoteWidget::title() const { return d->m_note_title; }
@@ -398,39 +401,44 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
       d->m_viewport->create_child_activity("datepickeractivity", this);
     }
   } else if (action == tr("list")) {
-    d->m_text_editor_widget->begin_list();
+    //d->m_text_editor_widget->begin_list();
   } else if (action == tr("link")) {
-    d->m_text_editor_widget->convert_to_link();
+    //d->m_text_editor_widget->convert_to_link();
   } else if (action == tr("red")) {
-    d->m_text_editor_widget->style(
-        "border: 0; background: #D55521; color: #ffffff");
+    d->m_text_editor_widget->set_text_color("#ffffff");
+    d->m_text_editor_widget->set_background_color("#D55521");
     d->notify_config_change("background", "#D55521");
     d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("yellow")) {
-    d->m_text_editor_widget->style(
-        "border: 0; background: #E6DA42; color: #000000");
+    d->m_text_editor_widget->set_text_color("#2b2b2b");
+    d->m_text_editor_widget->set_background_color("#E6DA42");
     d->notify_config_change("background", "#e6da42");
-    d->notify_config_change("forground", "#000000");
+    d->notify_config_change("forground", "#2b2b2b");
   } else if (action == tr("green")) {
-    d->m_text_editor_widget->style(
-        "border: 0; background: #29CDA8; color: #ffffff");
+    //d->m_text_editor_widget->style(
+     //   "border: 0; background: #29CDA8; color: #ffffff");
+    d->m_text_editor_widget->set_text_color("#ffffff");
+    d->m_text_editor_widget->set_background_color("#29CDA8");
     d->notify_config_change("background", "#29cda8");
     d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("blue")) {
-    d->m_text_editor_widget->style(
-        "border: 0; background: #0AACF0; color: #ffffff");
+    d->m_text_editor_widget->set_text_color("#ffffff");
+    d->m_text_editor_widget->set_background_color("#0AACF0");
+
     d->notify_config_change("background", "#0AACF0");
     d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("black")) {
-    d->m_text_editor_widget->style(
-        "border: 0; background: #4A4A4A; color: #ffffff");
+    d->m_text_editor_widget->set_text_color("#ffffff");
+    d->m_text_editor_widget->set_background_color("#4A4A4A");
+
     d->notify_config_change("background", "#4A4A4A");
     d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("white")) {
-    d->m_text_editor_widget->style(
-        "border: 0; background: #ffffff; color: #000000");
+    d->m_text_editor_widget->set_text_color("#ffffff");
+    d->m_text_editor_widget->set_background_color("#2b2b2b");
+
     d->notify_config_change("background", "#ffffff");
-    d->notify_config_change("forground", "#000000");
+    d->notify_config_change("forground", "#2b2b2b");
   } else if (action == tr("delete")) {
     this->hide();
   }

@@ -17,6 +17,12 @@ public:
     virtual void set_text(const std::string &a_text);
     virtual void scroll_up();
     virtual void scroll_down();
+    
+    virtual void set_background_color(const std::string &a_color);
+    virtual void set_text_color(const std::string &a_color);
+
+    virtual void copy();
+    virtual void paste();
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 
