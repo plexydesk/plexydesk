@@ -5,9 +5,10 @@ set(sourceFiles
     desktopmanager.cpp
     mock_desk_runtime.cpp
     extrunner.cpp
+    main.cpp
     )
 
-if (APPLE)
+if (APPLE AND ENABLE_QT4)
   set(sourceFiles ${sourceFiles} main.mm)
 endif()
 
@@ -69,7 +70,9 @@ ADD_EXECUTABLE(mock_desk ${WIN_APPLICATION} ${sourceFiles})
 
 SET_PROPERTY(TARGET mock_desk PROPERTY QT5_NO_LINK_QTMAIN ON)
 
+if (ENABLE_QT4)
 QT4_USE_MODULES(mock_desk Gui Xml Core)
+endif()
 
 if (MSVC)
     MSVC_SET_PROPER_CONSOLE_HANDLING(mock_desk)
