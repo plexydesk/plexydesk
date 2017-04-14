@@ -33,7 +33,7 @@ public:
     typedef std::vector<widget *> cmp_widget_list_t;
     typedef std::vector<const space *> cmp_space_list_t;
 
-    wp_compositor() {}
+    wp_compositor() : m_cmp_window(0), m_viewport(0) {}
     virtual ~wp_compositor() {
         if (m_cmp_window)
             delete m_cmp_window;
@@ -53,13 +53,13 @@ public:
     void update();
 
     void show() {
-       if (m_cmp_window)
+       if (m_viewport && m_cmp_window)
            m_cmp_window->show();
     }
 
     void hide() {
-        if (m_cmp_window)
-            m_cmp_window->hide();
+        if (m_viewport && m_cmp_window)
+          m_cmp_window->hide();
     }
 
 private:
