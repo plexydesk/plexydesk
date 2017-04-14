@@ -293,24 +293,25 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
 
          a_painter->save();
          //a_painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-         a_painter->setOpacity(0.8);
+         a_painter->setOpacity(0.5);
          QRectF selection_rect = selection_path.boundingRect();
          QRectF selection_rect_adjusted = QRectF(0, 0, selection_rect.width(), selection_rect.height());
 
          QLinearGradient selection_fill(QPointF(selection_rect.width() / 2, selection_rect.y()), 
                                         QPointF(selection_rect.width() / 2, 
                                         selection_rect.y() + selection_rect.height()));
-         selection_fill.setColorAt(0, QColor("#E5E0FC"));
+         selection_fill.setColorAt(0, QColor("#E5F0FC"));
          selection_fill.setColorAt(0.50, QColor("#A0C7F1"));
-         selection_fill.setColorAt(0.70, QColor("#87BAF2"));
+         //selection_fill.setColorAt(0.70, QColor("#87BAF2"));
+         selection_fill.setColorAt(0.70, QColor("#98C7F9"));
          selection_fill.setColorAt(1, QColor("#C9F5FC"));
 
          a_painter->fillPath(selection_path, QBrush(selection_fill));
          
          QPen cursor_pen;
-         cursor_pen.setColor(QColor("#888888"));
+         cursor_pen.setColor(Qt::blue);
          a_painter->setPen(cursor_pen);
-         a_painter->setOpacity(0.4);
+         a_painter->setOpacity(0.2);
          a_painter->drawPath(selection_path.simplified());
 
          a_painter->restore();
@@ -444,7 +445,7 @@ int text_view::text_view_context::needs_page_scroll() {
   float current_cursor_y = current_block_pos.y() + current_line.rect().y();
   
   if (current_cursor_y > view_height) {
-    return ((current_cursor_y - view_height) < 0) ? -17 : 17;
+    return ((current_cursor_y - view_height) < 0) ? -32 : 32;
   } 
   
   return 0;
