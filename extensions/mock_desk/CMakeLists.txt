@@ -5,11 +5,14 @@ set(sourceFiles
     desktopmanager.cpp
     mock_desk_runtime.cpp
     extrunner.cpp
-    main.cpp
     )
 
 if (APPLE AND ENABLE_QT4)
   set(sourceFiles ${sourceFiles} main.mm)
+endif()
+
+if (APPLE AND ENABLE_QT5)
+  set(sourceFiles ${sourceFiles} main.cpp)
 endif()
 
 if (NOT APPLE)

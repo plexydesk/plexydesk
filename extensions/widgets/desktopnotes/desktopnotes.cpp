@@ -51,11 +51,7 @@ void desktop_task_controller_impl::session_data_ready(
       "Notes",
       [this](cherry_kit::desktop_controller_interface *a_controller,
              cherry_kit::session_sync *a_session) { 
-#if defined(__QT4_TOOLKIT__) && defined(__APPLE__)
-              createNoteUI(a_session, true); 
-#else
               createNoteUI(a_session); 
-#endif
       });
 
   revoke_previous_session(
