@@ -205,6 +205,16 @@ NoteWidget::NoteWidget(cherry_kit::session_sync *a_session,
           SLOT(onTextUpdated(QString)));
  */
 
+  d->m_text_editor_widget->on_text_changed([this]() {
+      QString text = d->m_text_editor_widget->text();
+      std::for_each(std::begin(d->m_on_title_callback_func_list),
+                    std::end(d->m_on_title_callback_func_list),
+                    [&](on_title_callback_func a_func) {
+        if (a_func)
+          a_func(text);
+      });
+  });
+
   setAcceptDrops(true);
   set_geometry(parent->geometry());
 
@@ -435,8 +445,8 @@ void NoteWidget::exec_toolbar_action(const QString &action) {
     d->notify_config_change("background", "#4A4A4A");
     d->notify_config_change("forground", "#ffffff");
   } else if (action == tr("white")) {
-    d->m_text_editor_widget->set_text_color("#ffffff");
-    d->m_text_editor_widget->set_background_color("#2b2b2b");
+    d->m_text_editor_widget->set_text_color("#2b2b2b");
+    d->m_text_editor_widget->set_background_color("#ffffff");
 
     d->notify_config_change("background", "#ffffff");
     d->notify_config_change("forground", "#2b2b2b");

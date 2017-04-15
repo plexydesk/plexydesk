@@ -6,6 +6,7 @@
 #include <QTextDocument>
 
 #include <QGraphicsSceneMouseEvent>
+#include <QAbstractTextDocumentLayout>
 
 #include <iostream>
 #include <fstream>
@@ -55,6 +56,8 @@ public:
     
     int needs_page_scroll();
 
+    void notify_text_update();
+
     std::string m_text;
     font_metrics *m_engine;
 
@@ -76,6 +79,9 @@ public:
     /* style properties */
     std::string m_background_color;
     std::string m_text_color;
+
+    /* update notify */
+    std::vector<text_view::update_notify_callback_t> m_text_update_notify_chain;
 };
 
 text_view::text_view(widget *a_parent) : widget(a_parent),
@@ -101,6 +107,10 @@ void text_view::set_text(const std::string &a_text) {
    update();
 }
 
+QString text_view::text() const {
+   return ctx->m_doc.toPlainText();
+}
+
 static void do_layout(QTextLayout *layout) {
   int leading = 17;// fontMetrics.leading();
   qreal height = layout->position().y();
@@ -122,7 +132,7 @@ static void do_layout(QTextLayout *layout) {
 
 void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
     QPainterPath background_path;
-    background_path.addRoundRect(a_rect, 1.5, 1.5);
+    background_path.addRoundRect(a_rect, 2, 2);
 
     /* use Qt */
     a_painter->save();
@@ -148,14 +158,24 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
     QPen text_pen;
     text_pen.setColor(QColor(ctx->m_text_color.c_str()));
     a_painter->setPen(text_pen);
-    ctx->m_doc.drawContents(a_painter, QRectF());
+
+    QAbstractTextDocumentLayout::PaintContext _doc_ctx;
+    _doc_ctx.palette.setColor(QPalette::Text, a_painter->pen().color());
+
+    ctx->m_doc.documentLayout()->draw(a_painter, _doc_ctx);
     a_painter->restore();
         
     const QTextBlock current_block = 
       ctx->m_doc.findBlock(ctx->m_cursor.position()); 
 
-    if (!current_block.isValid() || ctx->m_doc.isEmpty())
+    if (!current_block.isValid() || ctx->m_doc.isEmpty()) {
+      text_pen.setColor(QColor(ctx->m_text_color.c_str()));
+      a_painter->setPen(text_pen);
+      a_painter->drawRect(QRect(4, 0, 1, 17));
+      a_painter->restore();
+      a_painter->restore();
       return;
+    }
     
     QTextLayout *current_layout = current_block.layout();
 
@@ -163,9 +183,9 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
       QTextLine current_line = current_layout->lineForTextPosition(ctx->m_cursor.positionInBlock()); 
 
       if (current_layout->lineCount() == 0 || current_line.width() <= 0) {
-	a_painter->restore();
-	a_painter->restore();
-	return;
+        a_painter->restore();
+        a_painter->restore();
+        return;
       }
 
       QPointF current_block_pos = current_layout->position();
@@ -186,12 +206,7 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
       cursor_fill.setColorAt(1, QColor("#C9F5FC"));
 
       cursor_pen.setColor(QColor("#F65C9F"));
-      /*
-      current_layout->drawCursor(a_painter,
-                                  QPointF(),
-                                  ctx->m_cursor.positionInBlock(),
-                                  10);
-      */
+           
       a_painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
       text_cursor_path.addRoundRect(QRectF(0, 0, ctx->m_cursor_width, leading), 1, 1);
       a_painter->translate(current_cursor_x, current_cursor_y);
@@ -200,6 +215,8 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
       a_painter->fillPath(text_cursor_path, QBrush(cursor_fill));
 
       a_painter->setOpacity(0.4);
+      text_pen.setColor(QColor(ctx->m_text_color.c_str()));
+      a_painter->setPen(text_pen);
       a_painter->drawPath(text_cursor_path);
       a_painter->restore();
     }
@@ -324,13 +341,13 @@ void text_view::paint_view(QPainter *a_painter, const QRectF &a_rect) {
          selection_fill.setColorAt(0.70, QColor("#98C7F9"));
          selection_fill.setColorAt(1, QColor("#C9F5FC"));
 
-         a_painter->fillPath(selection_path, QBrush(selection_fill));
+         a_painter->fillPath(selection_path.simplified(), QBrush(selection_fill));
          
          QPen cursor_pen;
          cursor_pen.setColor(Qt::blue);
          a_painter->setPen(cursor_pen);
          a_painter->setOpacity(0.2);
-         a_painter->drawPath(selection_path.simplified());
+         //a_painter->strokePath(selection_path.simplified(), a_painter->pen());
 
          a_painter->restore();
      }
@@ -398,6 +415,7 @@ void text_view::keyPressEvent(QKeyEvent *a_event)
   ctx->m_cursor.insertText(a_event->text().at(0));
   ctx->m_cursor_width = 1;
   update();
+  ctx->notify_text_update();
 }
 
 void text_view::mousePressEvent(QGraphicsSceneMouseEvent *a_event) {
@@ -469,6 +487,15 @@ int text_view::text_view_context::needs_page_scroll() {
   return 0;
 }
 
+void text_view::text_view_context::notify_text_update()
+{
+    std::for_each(std::begin(m_text_update_notify_chain),
+                  std::end(m_text_update_notify_chain), [this](text_view::update_notify_callback_t a_callback) {
+        if (a_callback)
+            a_callback();
+    });
+}
+
 void text_view::scroll_up() {
   update();
   int scroll_by = ctx->needs_page_scroll();
@@ -494,15 +521,21 @@ void text_view::scroll_down() {
 
 void text_view::set_background_color(const std::string &a_color) {
   ctx->m_background_color = a_color;
+  update();
 } 
 
 void text_view::set_text_color(const std::string &a_color) {
   ctx->m_text_color = a_color;
+  update();
 } 
 
 void text_view::copy() {} 
 
-void text_view::paste() {} 
+void text_view::paste() {}
+
+void text_view::on_text_changed(text_view::update_notify_callback_t a_callback) {
+  ctx->m_text_update_notify_chain.push_back(a_callback);
+}
 
 int text_view::text_view_context::hit_test(float a_x, float a_y) {
   int block_count = 0;

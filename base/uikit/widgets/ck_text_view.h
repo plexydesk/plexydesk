@@ -6,15 +6,17 @@
 
 class QGraphicsSceneMouseEvent;
 namespace cherry_kit {
-
-
 class DECL_UI_KIT_EXPORT text_view : public widget
 {
 public:
+    typedef std::function<void()> update_notify_callback_t;
+
     text_view(widget *a_parent = 0);
     virtual ~text_view();
 
     virtual void set_text(const std::string &a_text);
+    virtual QString text() const;
+
     virtual void scroll_up();
     virtual void scroll_down();
     
@@ -23,6 +25,8 @@ public:
 
     virtual void copy();
     virtual void paste();
+
+    void on_text_changed(text_view::update_notify_callback_t a_callback);
 protected:
   virtual void paint_view(QPainter *a_painter_ptr, const QRectF &a_rect);
 
