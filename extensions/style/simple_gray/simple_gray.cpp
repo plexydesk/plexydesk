@@ -430,15 +430,15 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
       CGColorSpaceRef cg_shadow_color_space = CGColorSpaceCreateDeviceRGB();
       CGColorRef cg_shadow_color = CGColorCreate(cg_shadow_color_space, _color_data);
 
-      CGContextSetShadowWithColor(bitmap_ctx, myShadowOffset, 15, cg_shadow_color);
+      CGContextSetShadowWithColor(bitmap_ctx, myShadowOffset, 10, cg_shadow_color);
 
       QColor window_color = d->color(resource_manager::kLightPrimaryColor);
 
       CGContextSetRGBFillColor(bitmap_ctx, window_color.red(),
                                window_color.blue(), window_color.green(),
                                features.opacity);
-      CGContextFillRect(bitmap_ctx, CGRectMake(11, 11, qt_surface->width() - 22,
-                                               qt_surface->height() - 22));
+      CGContextFillRect(bitmap_ctx, CGRectMake(12, 12, qt_surface->width() - 24,
+                                               qt_surface->height() - 24));
 
       CGContextRestoreGState(bitmap_ctx);
       CGContextRelease(bitmap_ctx);
