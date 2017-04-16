@@ -72,7 +72,7 @@ void desktop_task_controller_impl::set_view_rect(const QRectF &rect) {}
 
 cherry_kit::ui_action desktop_task_controller_impl::task() {
   cherry_kit::ui_action task;
-  task.set_name("Record");
+  task.set_name("Write");
   task.set_visible(1);
   task.set_controller(controller_name().toStdString());
   task.set_icon("navigation/ck_do.png");
