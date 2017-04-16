@@ -4,6 +4,8 @@
 #include <QTextLayout>
 #include <QTextBlock>
 #include <QTextDocument>
+#include <QClipboard>
+#include <QApplication>
 
 #include <QGraphicsSceneMouseEvent>
 #include <QAbstractTextDocumentLayout>
@@ -401,6 +403,10 @@ void text_view::keyPressEvent(QKeyEvent *a_event)
      update();
      return;
   }
+
+  if (a_event->key() == Qt::Key_Shift) {
+    return;
+  }
   
   if (a_event->key() == Qt::Key_Enter) { 
    ctx->m_cursor_width = 1;
@@ -529,9 +535,20 @@ void text_view::set_text_color(const std::string &a_color) {
   update();
 } 
 
-void text_view::copy() {} 
+void text_view::copy() {
+    QClipboard *clipboard = QApplication::clipboard();
 
-void text_view::paste() {}
+    if (clipboard)
+        clipboard->setText(ctx->m_doc.toPlainText());
+}
+
+void text_view::paste() {
+    QClipboard *clipboard = QApplication::clipboard();
+    if (clipboard)
+      ctx->m_cursor.insertText(clipboard->text());
+
+    ctx->notify_text_update();
+}
 
 void text_view::on_text_changed(text_view::update_notify_callback_t a_callback) {
   ctx->m_text_update_notify_chain.push_back(a_callback);
