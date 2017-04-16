@@ -463,15 +463,10 @@ void workspace::dropEvent(QDropEvent *a_event_ptr) {
   QPoint _global_drop_pos = a_event_ptr->pos();
   QPointF _scene_drop_pos = mapToScene(mapFromGlobal(_global_drop_pos));
 
-  for (int i = 0; i < priv->m_desktop_space_list.count(); i++) {
-    space *_space = priv->m_desktop_space_list.at(i);
-    if (!_space) {
-      continue;
-    }
+  space *_space = current_active_space();
 
-    if (_space->geometry().contains(_scene_drop_pos)) {
+  if (_space) {
       _space->drop_event_handler(a_event_ptr, _scene_drop_pos);
-    }
   }
 
   a_event_ptr->setDropAction(Qt::CopyAction);

@@ -877,6 +877,16 @@ void space::drop_event_handler(QDropEvent *event,
       ck_widget->controller()->handle_drop_event(ck_widget, event);
       return;
     }
+
+    /* since event was not processed pass it to the background  */
+     std::for_each(std::begin(ctx->m_window_list),
+                  std::end(ctx->m_window_list),
+                  [&](window *a_win) {
+        if (a_win &&  a_win->controller() && a_win->window_type() == window::kFramelessWindow) {
+            a_win->controller()->handle_drop_event(a_win, event);
+        }
+   });
+
   }
 }
 }
