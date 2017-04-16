@@ -536,18 +536,21 @@ void text_view::set_text_color(const std::string &a_color) {
 } 
 
 void text_view::copy() {
-    QClipboard *clipboard = QApplication::clipboard();
+  QClipboard *clipboard = QApplication::clipboard();
 
-    if (clipboard)
-        clipboard->setText(ctx->m_doc.toPlainText());
+  if (clipboard)
+    clipboard->setText(ctx->m_doc.toPlainText());
 }
 
 void text_view::paste() {
-    QClipboard *clipboard = QApplication::clipboard();
-    if (clipboard)
-      ctx->m_cursor.insertText(clipboard->text());
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if (clipboard) {
+    ctx->m_cursor.insertText(clipboard->text());
+    update();
 
     ctx->notify_text_update();
+  }
 }
 
 void text_view::on_text_changed(text_view::update_notify_callback_t a_callback) {
