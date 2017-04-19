@@ -36,7 +36,7 @@ class DECL_UI_KIT_EXPORT fixed_layout {
     kAlignNone = 0,
     kAlignLeft = 1,
     kAlignRight = 2,
-    kAlignCenter = 3,
+    kAlignCenter = 3
   } Alignment;
 
   typedef enum {
@@ -54,7 +54,7 @@ class DECL_UI_KIT_EXPORT fixed_layout {
     kCalendar,
     kClock,
     kDialView,
-    kTextView,
+    kTextView
   } ViewIdentifier;
 
 public:
