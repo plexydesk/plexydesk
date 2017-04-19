@@ -293,7 +293,7 @@ clock_view::PrivateClockWidget::notify_timeout(const clock_view *a_widget) {
 
 void clock_view::paint_view(QPainter *p, const QRectF &r) {
   // done intentionally to make the clock look squre.
-  QRectF rect(r.x() + 16, r.y(), r.width() - 32, r.width() - 32);
+  QRectF rect(r.x() + 16, r.y(), r.height() - 32, r.height() - 32);
 
   style_data feature;
 
@@ -316,7 +316,10 @@ void clock_view::paint_view(QPainter *p, const QRectF &r) {
   feature.text_data = priv->m_completion_time_label;
 
   if (cherry_kit::resource_manager::style()) {
+    p->save();
+    p->translate(rect.x() + 32, rect.y() + 16);
     cherry_kit::resource_manager::style()->draw("clock", feature, p);
+    p->restore();
   }
 }
 }
