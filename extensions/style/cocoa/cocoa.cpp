@@ -1273,15 +1273,21 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
                                );
   a_ctx->save();
   set_default_painter_hints(a_ctx);
-  a_ctx->setRenderHint(QPainter::SmoothPixmapTransform, true);
+  a_ctx->setRenderHint(QPainter::SmoothPixmapTransform, false);
   a_ctx->setRenderHint(QPainter::HighQualityAntialiasing, true);
   a_ctx->setRenderHint(QPainter::Antialiasing, true);
+  a_ctx->setRenderHint(QPainter::TextAntialiasing, false);
   a_ctx->drawPixmap(icon_draw_rect, a_features.image_data);
+  qDebug() << Q_FUNC_INFO << icon_draw_rect;
 
+  a_ctx->save();
   d->set_default_font_size(a_ctx, 12, true);
   d->set_pen_color(a_ctx, resource_manager::kTextColor);
+  a_ctx->setRenderHint(QPainter::Antialiasing, true);
+  a_ctx->setRenderHint(QPainter::TextAntialiasing, true);
   a_ctx->drawText(text_draw_rect, a_features.text_data,
                   Qt::AlignCenter | Qt::AlignVCenter);
+  a_ctx->restore(); 
 
   a_ctx->restore();
   a_ctx->restore();
