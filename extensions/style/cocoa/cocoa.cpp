@@ -260,40 +260,67 @@ void CocoaStyle::draw_push_button(const style_data &features,
 void CocoaStyle::draw_window_button(const style_data &features,
                                     QPainter *painter) {
 #ifdef __APPLE__
-  QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
-  QImage *surface_ref = d->get_drawable_surface(painter);
-  cherry_kit::graphics_context ctx(surface_ref);
-
-  if (!ctx.is_valid())
-    return;
-
-  ctx.draw_round_rect(rect.x(), rect.y(), rect.width(), rect.height(), 4.0,4.0);
+  QRectF rect = features.geometry.adjusted(
+      6 * scale_factor(), 6 * scale_factor(), -2 * scale_factor(), -2);
 #else
-  QRectF rect = features.geometry.adjusted(6, 6, -2, -2);
-  painter->save();
+  QRectF rect =
+      features.geometry.adjusted(2 * scale_factor(), 2 * scale_factor(),
+                                 -2 * scale_factor(), -2 * scale_factor());
+#endif
 
+  painter->save();
   set_default_painter_hints(painter);
 
   QPainterPath background;
-  background.addRoundedRect(rect, 4.0, 4.0);
+  background.addRoundedRect(rect, 4.0 * scale_factor(), 4.0 * scale_factor());
 
   if (features.render_state == style_data::kRenderElement) {
-    painter->fillPath(background, d->color(resource_manager::kTextColor));
+    QLinearGradient aqua_blue_fill(QPointF(rect.width() / 2, 0),
+                                 QPointF(rect.width() / 2, rect.height()));
+
+    aqua_blue_fill.setColorAt(0, QColor("#EFEFEF"));
+    aqua_blue_fill.setColorAt(0.50, QColor("#A0C7F1"));
+    aqua_blue_fill.setColorAt(0.70, QColor("#87BAF2"));
+    aqua_blue_fill.setColorAt(1, QColor("#C9F5FC"));
+
+    painter->save();
+    painter->setPen(QColor("#ffffff"));
+    painter->setOpacity(0.5);
+    painter->drawPath(background);
+    painter->restore();
+    painter->fillPath(background, QBrush(aqua_blue_fill));
   } else {
-    painter->fillPath(background, d->color(resource_manager::kAccentColor));
+    QLinearGradient aqua_blue_fill(QPointF(rect.width() / 2, 0),
+                                 QPointF(rect.width() / 2, rect.height()));
+
+    aqua_blue_fill.setColorAt(0, QColor("#C9F5FC"));
+    aqua_blue_fill.setColorAt(0.50, QColor("#87BAF2"));
+    aqua_blue_fill.setColorAt(0.70, QColor("#A0C7F1"));
+    aqua_blue_fill.setColorAt(1, QColor("#EFEFEF"));
+
+    painter->fillPath(background, QBrush(aqua_blue_fill));
   }
 
   painter->save();
 
-  d->set_pen_color(painter, resource_manager::kTextBackground, 2);
-  QRectF cross_rect(12.0, 12.0, rect.width() - 12, rect.height() - 12);
+  d->set_pen_color(painter, resource_manager::kDarkPrimaryColor,
+                   2 * scale_factor());
+#ifdef __APPLE__
+  QRectF cross_rect(12.0 * scale_factor(), 12.0 * scale_factor(),
+                    rect.width() - (12 * scale_factor()),
+                    rect.height() - (12 * scale_factor()));
+#else
+  QRectF cross_rect(8.0 * scale_factor(), 8.0 * scale_factor(),
+                    rect.width() - (12 * scale_factor()),
+                    rect.height() - (12 * scale_factor()));
+#endif
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
   painter->drawLine(cross_rect.topRight(), cross_rect.bottomLeft());
 
   painter->restore();
+
   painter->restore();
-#endif
 }
 
 #ifdef __APPLE__
@@ -398,16 +425,19 @@ void CocoaStyle::draw_window_frame(const style_data &features,
                                    QPainter *a_ctx) {
 #ifdef __APPLE__
   QRectF rect = features.geometry.adjusted(10, 10, -10, -10);
+  QRectF _shadow_rect = features.geometry;
 #else
   QRectF rect = features.geometry.adjusted(1, 1, -1, -1);
 #endif
 
   a_ctx->save();
   set_default_painter_hints(a_ctx);
+  /* draw seperator */
+  window *ck_window = dynamic_cast<window *>(features.style_object);
+
 #ifdef __APPLE__
+  if (ck_window && ck_window->window_type() != window::kFramelessWindow) {
   /* draw shadow */
-  QPainterPath drop_shadow;
-  drop_shadow.addRoundRect(features.geometry, 4.0, 4.0);
   QPaintDevice *current_paint_device = a_ctx->paintEngine()->paintDevice();
   CGContextRef bitmap_ctx = 0;
 
@@ -416,7 +446,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
       QImage *qt_surface = static_cast<QImage *>(current_paint_device);
 
       if (!qt_surface)
-        qDebug() << Q_FUNC_INFO << "Error Loding Qt Image";
+        return;
 
       CGColorSpaceRef colorspace =
           CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
@@ -433,47 +463,133 @@ void CocoaStyle::draw_window_frame(const style_data &features,
       // draw
       CGSize myShadowOffset = CGSizeMake(0.0, 0.0);
       CGContextSaveGState(bitmap_ctx);
-      CGContextSetShadow(bitmap_ctx, myShadowOffset, 15);
+
+      //CGContextSetShadow(bitmap_ctx, myShadowOffset, 15);
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_6
+      CGFloat _color_data[] = {0.0f, 0.0f, 0.0f, 1.0f};
+#else
+      float _color_data[] = {0.0f, 0.0f, 0.0f, 1.0f};
+#endif
+      CGColorSpaceRef cg_shadow_color_space = CGColorSpaceCreateDeviceRGB();
+      CGColorRef cg_shadow_color = CGColorCreate(cg_shadow_color_space, _color_data);
+
+      CGContextSetShadowWithColor(bitmap_ctx, myShadowOffset, 10, cg_shadow_color);
 
       QColor window_color = d->color(resource_manager::kLightPrimaryColor);
 
       CGContextSetRGBFillColor(bitmap_ctx, window_color.red(),
                                window_color.blue(), window_color.green(),
                                features.opacity);
-      CGContextFillRect(bitmap_ctx, CGRectMake(15, 15, qt_surface->width() - 30,
-                                               qt_surface->height() - 30));
+      CGContextFillRect(bitmap_ctx, CGRectMake(12, 12, qt_surface->width() - 24,
+                                               qt_surface->height() - 24));
 
       CGContextRestoreGState(bitmap_ctx);
       CGContextRelease(bitmap_ctx);
+    } else if (current_paint_device->devType() == QInternal::Pixmap) {
+      a_ctx->setClipping(false);
+      QPixmap *_pixmap = static_cast<QPixmap *>(current_paint_device);
+
+      if (!_pixmap) {
+        qDebug() << Q_FUNC_INFO << "Error Loding Qt Pixmap";
+        return;
+      }
+
+      QImage _offscreen_buffer = _pixmap->toImage();
+
+      CGColorSpaceRef colorspace =
+          CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+      uint flags = kCGImageAlphaPremultipliedFirst;
+      flags |= kCGBitmapByteOrder32Host;
+
+      bitmap_ctx = CGBitmapContextCreate(
+          _offscreen_buffer.bits(), _offscreen_buffer.width(), _offscreen_buffer.height(), 8, _offscreen_buffer.bytesPerLine(), colorspace, flags);
+
+      CGContextTranslateCTM(bitmap_ctx, 0, _pixmap->height());
+      CGContextScaleCTM(bitmap_ctx, 1, -1);
+
+      CGColorSpaceRelease(colorspace);
+
+      // draw
+      CGSize myShadowOffset = CGSizeMake(0.0, 0.0);
+      CGContextSaveGState(bitmap_ctx);
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_6
+      CGFloat _color_data[] = {0.0f, 0.0f, 0.0f, 1.0f};
+#else
+      float _color_data[] = {0.0f, 0.0f, 0.0f, 1.0f};
+#endif
+      CGColorSpaceRef cg_shadow_color_space = CGColorSpaceCreateDeviceRGB();
+      CGColorRef cg_shadow_color = CGColorCreate(cg_shadow_color_space, _color_data);
+
+      CGContextSetShadowWithColor(bitmap_ctx, myShadowOffset, 15, cg_shadow_color);
+
+      QColor window_color = d->color(resource_manager::kLightPrimaryColor);
+
+      CGContextSetRGBFillColor(bitmap_ctx, window_color.red(),
+                               window_color.blue(), window_color.green(),
+                               features.opacity);
+      CGContextFillRect(bitmap_ctx, CGRectMake(11, 11, _pixmap->width() - 22,
+                                               _pixmap->height() - 22));
+
+      CGContextRestoreGState(bitmap_ctx);
+      CGContextRelease(bitmap_ctx);
+      CGColorSpaceRelease(cg_shadow_color_space);
+      CGColorRelease(cg_shadow_color);
+
+      a_ctx->drawImage(_shadow_rect, _offscreen_buffer);
     } else if (current_paint_device->devType() == QInternal::Widget) {
       qDebug() << Q_FUNC_INFO << "Device Type Is Widget";
     }
   } else {
     qDebug() << Q_FUNC_INFO << "Invalide Paint Device";
   }
+}
 #endif
+  /* white aqua gradient */
+  QPointF _aqua_start(rect.width() /2, rect.y());
+  QPointF _aqua_end(rect.width() /2, rect.y() + 6);
+  QLinearGradient aqua_blue_fill(_aqua_start, _aqua_end);
 
-  a_ctx->setOpacity(features.opacity);
+  aqua_blue_fill.setColorAt(0, QColor("#FFFFFF"));
+  aqua_blue_fill.setColorAt(0.50, QColor("#FBFBFB"));
+  aqua_blue_fill.setColorAt(0.70, QColor("#F6F6F6"));
+  aqua_blue_fill.setColorAt(1, QColor("#FFFFFF"));
+ 
+  aqua_blue_fill.setSpread(QGradient::RepeatSpread);
+  //aqua_blue_fill.setSpread(QGradient::ReflectSpread);
+
+  a_ctx->setOpacity(features.opacity / 2);
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
-  window_background_path.addRoundedRect(rect, 4.0, 4.0);
-  a_ctx->fillPath(window_background_path,
-                  d->color(resource_manager::kLightPrimaryColor));
-
-  /* draw seperator */
-  window *ck_window = dynamic_cast<window *>(features.style_object);
+  window_background_path.addRoundedRect(rect, 2.0, 2.0);
+  a_ctx->fillPath(window_background_path, QBrush(aqua_blue_fill));
 
   if (ck_window && ck_window->window_type() != window::kPanelWindow) {
-    QRectF window_title_rect(12, 5, rect.width() - 16, 48);
+    QRectF window_title_rect(12, 5, rect.width() - 16, 48.0 * scale_factor());
+    QRectF window_title_fill(0, 0, rect.width() , 48.0 * scale_factor());
+
+    /* window border */
+    QPainterPath border_path;
+    border_path.addRoundedRect(window_title_fill, 4.0, 4.0);
+    /*
+    if (ck_window->window_type() != window::kPopupWindow) {
+        a_ctx->save();
+        a_ctx->setPen(QColor("#ffffff"));
+        a_ctx->setOpacity(0.8);
+        a_ctx->drawPath(window_background_path);
+        a_ctx->restore();
+    }
+    */
 
     QLinearGradient seperator_line_grad(window_title_rect.bottomLeft(),
                                         window_title_rect.bottomRight());
     seperator_line_grad.setColorAt(
         0.0, d->color(resource_manager::kLightPrimaryColor));
     seperator_line_grad.setColorAt(0.5,
-                                   d->color(resource_manager::kDividerColor));
+                                   d->color(resource_manager::kDarkPrimaryColor));
     seperator_line_grad.setColorAt(
-        1.0, d->color(resource_manager::kLightPrimaryColor));
+        1.0, QColor("#ffffff"));
 
     // draw frame text;
     a_ctx->save();
@@ -487,16 +603,34 @@ void CocoaStyle::draw_window_frame(const style_data &features,
 
     a_ctx->save();
 
+    /*
+    QPointF _aqua_start(window_title_rect.width()/2, window_title_rect.x());
+    QPointF _aqua_end(window_title_rect.width() /2, window_title_rect.y() + window_title_rect.height());
+    QLinearGradient aqua_blue_fill(_aqua_start, _aqua_end);
+
+    aqua_blue_fill.setColorAt(0, QColor("#FFFFFF"));
+    aqua_blue_fill.setColorAt(0.50, QColor("#FBFBFB"));
+    aqua_blue_fill.setColorAt(0.70, QColor("#F6F6F6"));
+    aqua_blue_fill.setColorAt(1, QColor("#FFFFFF"));
+
     QPen linePen = QPen(seperator_line_grad, 1, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin);
     a_ctx->setPen(linePen);
-    a_ctx->drawLine(window_title_rect.bottomLeft(),
-                    window_title_rect.bottomRight());
+  
+    a_ctx->drawLine(QPointF(rect.x() + 10 , window_title_rect.height()),
+                    QPointF(rect.width(), window_title_rect.height()));
+    */
+    //a_ctx->drawLine(window_title_rect.bottomLeft(), window_title_rect.bottomRight());
+
     a_ctx->restore();
+   
   }
 
-  a_ctx->setOpacity(1.0);
+  a_ctx->setOpacity(0.6);
   a_ctx->restore();
+#ifdef __APPLE__
+#endif
+    //
 }
 
 void CocoaStyle::draw_clock_hands(
@@ -594,7 +728,7 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
 void CocoaStyle::draw_clock_surface(const style_data &features,
                                     QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
-  float border_len = features.geometry.width() - (16 * scale_factor());
+  float border_len = features.geometry.width() - (32);
 
   QRectF rect = QRectF(
       features.geometry.x() + ((features.geometry.width() - border_len) / 2),
@@ -611,20 +745,56 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
 
   set_default_painter_hints(a_ctx);
 
-  d->set_pen_color(a_ctx, resource_manager::kTextColor, 5 * scale_factor());
+  d->set_pen_color(a_ctx, resource_manager::kTextColor, 15);
 
   QPainterPath _clock_background;
   _clock_background.addEllipse(rect);
 
-  a_ctx->fillPath(_clock_background, d->color(resource_manager::kTextColor));
-  a_ctx->drawEllipse(rect);
+  qreal rad = (rect.width() / 2) + 5;
+
+  /* aqua */
+  QLinearGradient aqua_blue_fill(QPointF(rect.width() / 2, 0),
+                                 QPointF(rect.width() / 2, rect.height()));
+
+  aqua_blue_fill.setColorAt(0, QColor("#EFEFEF"));
+  aqua_blue_fill.setColorAt(0.60, QColor("#F6F6F6"));
+  aqua_blue_fill.setColorAt(0.75, QColor("#DEDEDE"));
+  aqua_blue_fill.setColorAt(1, QColor("#C9F5FC"));
+
+  QRadialGradient gr(rad + 24, rad + 16, rad, rad , rad );
+  gr.setColorAt(0.0, QColor(255, 255, 255, 89));
+  gr.setColorAt(0.2, QColor(255, 255, 255, 89));
+  gr.setColorAt(0.9, QColor(127, 255, 255, 89));
+  gr.setColorAt(0.95, QColor(0, 0, 0, 127));
+  gr.setColorAt(1, QColor(0, 0, 0, 0));
+    
+  a_ctx->save();
+  a_ctx->setOpacity(0.9);
+  a_ctx->fillPath(_clock_background, QBrush(aqua_blue_fill));
+  a_ctx->restore();  
+  
+  a_ctx->save();
+  QPen _outline_pen;
+  _outline_pen.setColor(d->color(resource_manager::kDarkPrimaryColor));
+  a_ctx->setPen(_outline_pen);
+  //a_ctx->drawEllipse(rect);
+  a_ctx->restore();
+
+  a_ctx->save();
+  a_ctx->setBrush(gr);
+  a_ctx->setPen(Qt::NoPen);
+  //a_ctx->translate(24, 24);
+  QRectF glass_rect(0, 0, features.geometry.width(), features.geometry.height());
+  //a_ctx->drawEllipse(glass_rect);
+  a_ctx->drawRect(glass_rect);
+  a_ctx->restore();
 
   // draw second markers.
   for (int i = 0; i < 60; i++) {
     double percent = (i / 60.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor);
+    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 1);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -633,7 +803,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 2);
+    d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 3);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -642,7 +812,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
     float percent = (i / 360.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 4);
+    d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 4);
     a_ctx->drawPoint(marker_location);
   }
 
@@ -706,9 +876,9 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
   */
 
   draw_clock_hands(a_ctx, features.geometry, 3, hour_value,
-                   resource_manager::kSecondryTextColor, 3 * scale_factor());
+                   resource_manager::kDarkPrimaryColor, 3 * scale_factor());
   draw_clock_hands(a_ctx, rect, 4, minutes_value,
-                   resource_manager::kSecondryTextColor, 2 * scale_factor());
+                   resource_manager::kDarkPrimaryColor, 2 * scale_factor());
 
   QRectF _clock_wheel_rect(rect.center().x() - (4 * scale_factor()),
                            rect.center().y() - (4 * scale_factor()),
@@ -1055,7 +1225,6 @@ void CocoaStyle::drawVListItem(const style_data &features, QPainter *painter) {
 void CocoaStyle::draw_image_button(const style_data &a_features,
                                    QPainter *a_ctx) {
   a_ctx->save();
-
   set_default_painter_hints(a_ctx);
 
   QPainterPath background_path;
@@ -1079,29 +1248,31 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
     qWarning() << Q_FUNC_INFO << "Unknown State";
   }
 
-  QRect icon_rect = a_rect.toRect();
-  if (a_features.text_data.isNull() || a_features.text_data.isEmpty()) {
-    icon_rect.setX(a_rect.center().x() - (icon_rect.height() / 2));
-  } else {
-    icon_rect.setX(a_rect.center().x() - (icon_rect.width() / 2));
-  }
-  icon_rect.setWidth(icon_rect.height());
-
-  QRect text_rect = a_rect.toRect();
-  text_rect.setX(icon_rect.width() + 5);
-
+  QRect expose_area = a_rect.toRect();
+  QRect icon_area = a_features.image_data.rect();
+  QRect icon_draw_rect = QRect((expose_area.width() - icon_area.width()) / 2,
+                               (expose_area.height() - icon_area.height()) / 2,
+                               icon_area.width(), icon_area.height());
+  QRect text_draw_rect = QRect(0,
+                               (icon_area.height() + 12),
+                               expose_area.width(),
+                               (expose_area.height() - icon_area.height())
+                               );
   a_ctx->save();
   set_default_painter_hints(a_ctx);
-  a_ctx->drawPixmap(icon_rect, a_features.image_data);
-  a_ctx->restore();
+  a_ctx->setRenderHint(QPainter::SmoothPixmapTransform, true);
+  a_ctx->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  a_ctx->setRenderHint(QPainter::Antialiasing, true);
+  a_ctx->drawPixmap(icon_draw_rect, a_features.image_data);
 
-  if (!a_features.text_data.isNull()) {
-    d->set_default_font_size(a_ctx, 8);
-    a_ctx->drawText(text_rect, a_features.text_data,
-                    Qt::AlignLeft | Qt::AlignVCenter);
-  }
+  d->set_default_font_size(a_ctx, 12, true);
+  d->set_pen_color(a_ctx, resource_manager::kTextColor);
+  a_ctx->drawText(text_draw_rect, a_features.text_data,
+                  Qt::AlignCenter | Qt::AlignVCenter);
+
   a_ctx->restore();
-}
+  a_ctx->restore();
+ }
 
 void CocoaStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) {
   QRectF rect = a_data.geometry;
