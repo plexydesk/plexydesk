@@ -24,7 +24,7 @@ public:
   QRectF geometry;
   QString text_data;
   QTextOption text_options;
-  QPixmap image_data;
+  QImage image_data;
   RenderState render_state;
   float opacity;
 

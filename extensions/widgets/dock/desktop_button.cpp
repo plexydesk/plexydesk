@@ -23,7 +23,7 @@ void desktop_button::set_icon(const std::string &a_icon_name) {
   if (!m_button)
     return;
 
-  QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+  QImage pixmap = cherry_kit::resource_manager::instance()->drawable(
       a_icon_name.c_str(), "mdpi");
   m_button->set_pixmap(pixmap);
 }

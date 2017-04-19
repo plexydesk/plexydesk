@@ -18,7 +18,7 @@ public:
   PrivateImageButton() : m_state(_kNormal) {}
   ~PrivateImageButton() {}
 
-  QPixmap m_button_icon;
+  QImage m_button_icon;
   QString m_button_text;
   QColor mBgColor;
 
@@ -53,13 +53,13 @@ QSizeF icon_button::sizeHint(Qt::SizeHint which,
   return geometry().size();
 }
 
-void icon_button::set_pixmap(const QPixmap &a_pixmap) {
+void icon_button::set_pixmap(const QImage &a_pixmap) {
   o_image_button->m_button_icon = a_pixmap;
   update();
 }
 
 void icon_button::set_icon(const std::string &a_icon_name) {
-  QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+  QImage pixmap = cherry_kit::resource_manager::instance()->drawable(
       a_icon_name.c_str(), "mdpi");
 
   set_pixmap(pixmap);

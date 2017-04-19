@@ -53,7 +53,7 @@ public:
   QString m_resource_name;
   QString m_resource_group;
 
-  QHash<QString, QPixmap> m_image_cache;
+  QHash<QString, QImage> m_image_cache;
   std::map<ColorName, std::string> m_color_map;
 
   style_ref m_current_style_ref;
@@ -133,9 +133,9 @@ QString resource_manager::drawable_file_name(const QString &a_dpi,
   return iconThemePath;
 }
 
-QPixmap resource_manager::drawable(const QString &a_fileName,
+QImage resource_manager::drawable(const QString &a_fileName,
                                    const QString &a_dpi) {
-  QPixmap rv;
+  QImage rv;
 
   QString iconThemePath = drawable_file_name(a_dpi, a_fileName);
 
@@ -150,7 +150,7 @@ QPixmap resource_manager::drawable(const QString &a_fileName,
     return rv;
   }
 
-  rv = QPixmap(iconThemePath);
+  rv = QImage(iconThemePath);
   priv->m_image_cache[iconThemePath] = rv;
 
   return rv;

@@ -35,7 +35,7 @@ public:
   virtual QSizeF sizeHint(Qt::SizeHint which,
                           const QSizeF &a_constraint = QSizeF()) const;
 
-  virtual void set_pixmap(const QPixmap &a_pixmap);
+  virtual void set_pixmap(const QImage &a_pixmap);
   virtual void set_icon(const std::string &a_icon_name);
 
   virtual void set_text(const QString &a_text);

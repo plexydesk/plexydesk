@@ -114,7 +114,7 @@ widget *desktop_panel_controller_impl::create_task_action(
   cherry_kit::widget *rv = new cherry_kit::widget();
   cherry_kit::icon_button *btn = new cherry_kit::icon_button(rv);
 
-  QPixmap icon_pixmap(cherry_kit::resource_manager::instance()->drawable(
+  QImage icon_pixmap(cherry_kit::resource_manager::instance()->drawable(
       a_task.icon().c_str(), "mdpi"));
 
   int icon_size = viewport()->scaled_width(96);

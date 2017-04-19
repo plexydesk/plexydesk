@@ -382,7 +382,7 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
     if (timer->elapsed_seconds() >= dial_value_in_seconds) {
       timer->stop();
       ck_window->set_window_title("Complete");
-      QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+      QImage pixmap = cherry_kit::resource_manager::instance()->drawable(
           "toolbar/ck_play.png", "mdpi");
       ck_start_btn->set_pixmap(pixmap);
 
@@ -404,14 +404,14 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
         timer->start();
       }
       if (ck_start_btn) {
-        QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+        QImage pixmap = cherry_kit::resource_manager::instance()->drawable(
             "toolbar/ck_stop.png", "mdpi");
         ck_start_btn->set_pixmap(pixmap);
       }
     } else {
       timer->stop();
       if (ck_start_btn) {
-        QPixmap pixmap = cherry_kit::resource_manager::instance()->drawable(
+        QImage pixmap = cherry_kit::resource_manager::instance()->drawable(
             "toolbar/ck_play.png", "mdpi");
         ck_start_btn->set_pixmap(pixmap);
       }
@@ -422,7 +422,6 @@ void time_controller::PrivateClockController::setup_create_timer_ui(
   if (ck_dial) {
     ck_dial->set_maximum_dial_value(60);
     ck_dial->on_dialed([=](int a_value) {
-      qDebug() << Q_FUNC_INFO << a_value;
       if (ck_timer_label) {
         ck_timer_label->set_text(QString("%1").arg(a_value));
       }

@@ -1277,8 +1277,7 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
   a_ctx->setRenderHint(QPainter::HighQualityAntialiasing, true);
   a_ctx->setRenderHint(QPainter::Antialiasing, true);
   a_ctx->setRenderHint(QPainter::TextAntialiasing, false);
-  a_ctx->drawPixmap(icon_draw_rect, a_features.image_data);
-  qDebug() << Q_FUNC_INFO << icon_draw_rect;
+  a_ctx->drawImage(icon_draw_rect, a_features.image_data);
 
   a_ctx->save();
   d->set_default_font_size(a_ctx, 12, true);

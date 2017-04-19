@@ -50,7 +50,7 @@ public:
   virtual void set_style(const std::string &a_name);
   static style_ref style();
 
-  virtual QPixmap drawable(const QString &a_fileName, const QString &a_dpi);
+  virtual QImage drawable(const QString &a_fileName, const QString &a_dpi);
   virtual QString drawable_file_name(const QString &a_dpi,
                                      const QString &a_fileName);
   static const char *color(ColorName a_name);
