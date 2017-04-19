@@ -42,7 +42,10 @@ using namespace cherry_kit;
 class desktop_panel_controller_impl::PrivateDock {
 public:
   PrivateDock() : m_main_menu_toolbar(0), m_sub_menu_toolbar(0), m_expose_window(0){}
-  ~PrivateDock() {}
+  ~PrivateDock() {
+    if (m_main_menu_toolbar)
+        delete m_main_menu_toolbar;
+  }
 
 public:
   window *m_deskt_menu;
@@ -77,6 +80,9 @@ desktop_panel_controller_impl::desktop_panel_controller_impl(QObject *object)
   priv->m_deskt_menu->on_window_discarded([=](cherry_kit::window *aWindow) {
     if (priv->m_task_grid)
       priv->m_task_grid->clear();
+
+    //if (priv->m_main_menu_toolbar)
+     //   delete priv->m_main_menu_toolbar;
 
     delete aWindow;
   });
@@ -184,49 +190,47 @@ void desktop_panel_controller_impl::insert_action(ui_action &a_task) {
 
   priv->m_task_grid->insert(grid_item);
 
-  /* navigation toolbar */
-  cherry_kit::fixed_layout *ck_layout =
-      new cherry_kit::fixed_layout(priv->m_task_grid);
-  priv->m_main_menu_toolbar = ck_layout;
+  if (!priv->m_main_menu_toolbar)  {
+    priv->m_main_menu_toolbar = new cherry_kit::fixed_layout(priv->m_task_grid);
 
-  ck_layout->set_content_margin(4, 4, 4, 4);
-  ck_layout->set_geometry(0, 0, priv->m_task_grid->geometry().width(), 32);
+    priv->m_main_menu_toolbar->set_content_margin(4, 4, 4, 4);
+    priv->m_main_menu_toolbar->set_geometry(0, 0, 384, 32);
 
-  ck_layout->add_rows(1);
-  ck_layout->add_segments(0, 5);
+    priv->m_main_menu_toolbar->add_rows(1);
+    priv->m_main_menu_toolbar->add_segments(0, 5);
 
-  ck_layout->set_row_height(0, "100%");
+    priv->m_main_menu_toolbar->set_row_height(0, "100%");
 
-  cherry_kit::widget_properties_t ui_data;
+    cherry_kit::widget_properties_t ui_data;
 
-  ui_data["icon"] = "toolbar/ck_arrow-left.png";
-  ck_layout->add_widget(0, 0, "image_button", ui_data, [=]() {
-     switch_to_previous_space();
-  });
+    ui_data["icon"] = "toolbar/ck_arrow-left.png";
+    priv->m_main_menu_toolbar->add_widget(0, 0, "image_button", ui_data, [=]() {
+        switch_to_previous_space();
+    });
 
-  ui_data["icon"] = "toolbar/ck_eye.png";
-  ck_layout->add_widget(0, 1, "image_button", ui_data, [=]() {
-     toggle_seamless();
-  });
+    ui_data["icon"] = "toolbar/ck_eye.png";
+    priv->m_main_menu_toolbar->add_widget(0, 1, "image_button", ui_data, [=]() {
+      toggle_seamless();
+    });
 
-  ui_data["icon"] = "toolbar/ck_bin.png";
-  ck_layout->add_widget(0, 2, "image_button", ui_data, [=]() {
+    ui_data["icon"] = "toolbar/ck_bin.png";
+    priv->m_main_menu_toolbar->add_widget(0, 2, "image_button", ui_data, [=]() {
       remove_space_request();
-  });
+    });
 
-  ui_data["icon"] = "toolbar/ck_switch.png";
-  ck_layout->add_widget(0, 3, "image_button", ui_data, [=]() {
+    ui_data["icon"] = "toolbar/ck_switch.png";
+    priv->m_main_menu_toolbar->add_widget(0, 3, "image_button", ui_data, [=]() {
       qApp->quit();
-  });
+    });
 
-  ui_data["icon"] = "toolbar/ck_arrow-right.png";
-  ck_layout->add_widget(0, 4, "image_button", ui_data, [=]() {
+    ui_data["icon"] = "toolbar/ck_arrow-right.png";
+    priv->m_main_menu_toolbar->add_widget(0, 4, "image_button", ui_data, [=]() {
       switch_to_next_space();
-  });
+    });
+  }
 
-  ck_layout->viewport()->set_coordinates(
-      0, 10 + priv->m_deskt_menu->window_title_height() +
-             priv->m_task_grid->geometry().height());
+  priv->m_main_menu_toolbar->viewport()->set_coordinates(0,
+    priv->m_task_grid->geometry().height() - 32);
 
   priv->m_deskt_menu->set_window_content(priv->m_task_grid);
 }

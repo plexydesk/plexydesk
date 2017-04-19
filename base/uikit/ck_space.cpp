@@ -803,6 +803,11 @@ void space::show() {
     update_background_texture();
 }
 
+void space::update_view() {
+  if (ctx->m_native_scene)
+    ctx->m_native_scene->update();
+}
+
 void space::setGeometry(const QRectF &a_geometry) {
   ctx->m_geometry = a_geometry;
 

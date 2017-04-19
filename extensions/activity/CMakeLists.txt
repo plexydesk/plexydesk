@@ -6,6 +6,7 @@ add_subdirectory(date_dialog)
 add_subdirectory(template_dialog)    
 add_subdirectory(pixabay_dialog)    
 add_subdirectory(auth_dialog)    
+add_subdirectory(style_dialog)    
 
 if (ENABLE_QT5)
 add_subdirectory(timezone_dialog)                           

@@ -362,6 +362,7 @@ if (UNIX)
 endif ()
 
 add_subdirectory(extensions/widgets/clock)
+add_subdirectory(extensions/widgets/deskcontrol)
 add_subdirectory(extensions/widgets/photoframe)
 #ADD_SUBDIRECTORY(extensions/widgets/folderwidget)
 add_subdirectory(extensions/background/default)

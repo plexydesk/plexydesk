@@ -26,18 +26,7 @@
 namespace cherry_kit {
 class DECL_UI_KIT_EXPORT resource_manager {
 public:
-  resource_manager(const QString &a_theme_name);
-  virtual ~resource_manager();
-
-  static resource_manager *instance();
-
-  virtual void set_theme_name(const QString &a_name);
-
-  static style_ref style();
-
-  virtual QPixmap drawable(const QString &a_fileName, const QString &a_dpi);
-  virtual QString drawable_file_name(const QString &a_dpi,
-                                     const QString &a_fileName);
+  typedef std::function<void()> resource_ready_callback_t;
 
   typedef enum {
     kDarkPrimaryColor = 1,
@@ -50,11 +39,26 @@ public:
     kAccentColor
   } ColorName;
 
+  resource_manager(const QString &a_theme_name);
+  virtual ~resource_manager();
+  virtual void init();
+
+  static resource_manager *instance();
+
+  virtual void set_theme_name(const QString &a_name);
+
+  virtual void set_style(const std::string &a_name);
+  static style_ref style();
+
+  virtual QPixmap drawable(const QString &a_fileName, const QString &a_dpi);
+  virtual QString drawable_file_name(const QString &a_dpi,
+                                     const QString &a_fileName);
   static const char *color(ColorName a_name);
   virtual void set_color_scheme(const std::string &a_name);
   virtual std::string color_scheme() const;
   virtual const char *color_code(ColorName a_name);
 
+  virtual void on_ready(resource_ready_callback_t a_callback);
 private:
   void scane_resources();
   style_ref default_desktop_style();

@@ -99,6 +99,7 @@ public:
   virtual void hide();
   virtual void show();
 
+  virtual void update_view();
   virtual void update_background_texture();
   virtual QPixmap preview(int a_scale_factor) const;
 protected:

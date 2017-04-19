@@ -48,7 +48,7 @@ public:
   }
 
   std::string get_dpi() const;
-
+  void notify_ready();
 
   QString m_resource_name;
   QString m_resource_group;
@@ -57,6 +57,9 @@ public:
   std::map<ColorName, std::string> m_color_map;
 
   style_ref m_current_style_ref;
+ 
+  /* list of ready signals */
+  std::vector<resource_ready_callback_t> m_ready_callchain_list;
 };
 
 resource_manager::resource_manager(const QString &a_theme_name)
@@ -69,7 +72,7 @@ resource_manager::resource_manager(const QString &a_theme_name)
 
 #ifdef __APPLE__
   priv->m_current_style_ref =
-      cherry_kit::extension_manager::instance()->style("simplegray");
+      cherry_kit::extension_manager::instance()->style("cocoastyle");
 #else
   priv->m_current_style_ref =
       cherry_kit::extension_manager::instance()->style("simplegray");
@@ -79,6 +82,24 @@ resource_manager::resource_manager(const QString &a_theme_name)
 resource_manager::~resource_manager() {
   qDebug() << Q_FUNC_INFO;
   delete priv;
+}
+
+void resource_manager::init() {
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Global");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
+
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
+                            const std::string &a_app_name, bool a_found) {
+     if (a_found) {
+      priv->m_resource_name = a_object.property("theme").c_str();
+     }
+
+     delete sync;
+   });
+     
+  sync->find("skin", "theme", "");
 }
 
 style_ref resource_manager::default_desktop_style() {
@@ -102,8 +123,8 @@ const char *resource_manager::color(resource_manager::ColorName a_name) {
   return instance()->color_code(a_name);
 }
 
-QString resource_manager::drawable_file_name(const QString &a_dpi, const QString &a_fileName)
-{
+QString resource_manager::drawable_file_name(const QString &a_dpi,
+                                             const QString &a_fileName) {
   QString iconThemePath =
       QDir::toNativeSeparators(priv->m_resource_group + "/" +
                                priv->m_resource_name + "/" +
@@ -185,7 +206,7 @@ void resource_manager::set_color_scheme(const std::string &a_name) {
 std::string resource_manager::color_scheme() const { return std::string(); }
 
 const char *resource_manager::color_code(resource_manager::ColorName a_name) {
-  std::string error_rv = "#000000";
+  std::string error_rv("#000000");
   const char *rv;
 
   if (priv->m_color_map.find(a_name) ==
@@ -200,8 +221,38 @@ const char *resource_manager::color_code(resource_manager::ColorName a_name) {
 }
 
 void resource_manager::set_theme_name(const QString &a_name) {
-  Q_UNUSED(a_name);
-}
+  cherry_kit::data_sync *sync = new cherry_kit::data_sync("Global");
+  cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
+
+  sync->set_sync_engine(engine);
+
+  sync->on_object_found([&](cherry_kit::sync_object &a_object,
+                            const std::string &a_app_name, bool a_found) {
+    if (a_found) {
+      delete engine;
+      return;
+    }
+
+    cherry_kit::sync_object *obj = new cherry_kit::sync_object();
+
+    obj->set_name("style");
+
+    obj->set_property("type", "theme");
+    obj->set_property("icons", "default");
+
+    sync->add_object(*obj);
+
+    delete engine;
+  });
+
+  sync->find("style", "icons", a_name.toStdString());
+  /* check if the theme exisits */
+  }
+
+  void resource_manager::set_style(const std::string &a_name) {
+    priv->m_current_style_ref =
+      cherry_kit::extension_manager::instance()->style("cocoastyle");
+  }
 
 std::string resource_manager::ThemepackLoaderPrivate::get_dpi() const {
    std::string rv = "mdpi";
@@ -218,6 +269,23 @@ std::string resource_manager::ThemepackLoaderPrivate::get_dpi() const {
    }
 
    return rv;
+}
+
+void resource_manager::on_ready(resource_ready_callback_t a_callback) {
+    priv->m_ready_callchain_list.push_back(a_callback);
+}
+
+void resource_manager::scane_resources() {
+  //where shuold I scan for resources :| ? first look in prefix
+
+}
+
+void resource_manager::ThemepackLoaderPrivate::notify_ready() {
+  std::for_each(std::begin(m_ready_callchain_list),
+                std::end(m_ready_callchain_list), [=](resource_ready_callback_t a_callback) {
+    if (a_callback)
+      a_callback();
+  });
 }
 
 } // namespace plexydesk

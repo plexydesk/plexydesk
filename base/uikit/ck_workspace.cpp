@@ -128,7 +128,8 @@ void wp_compositor::init(workspace *a_workspace) {
       QRectF(0, 0, m_view_width,
              (preview_height + m_cmp_window->window_title_height()) - 16 ));
 
-  m_cmp_window->set_window_opacity(0.5);
+  /* let the theme decide this */
+  //m_cmp_window->set_window_opacity(0.5);
 
   // cleanup
   m_current_preview_list->on_item_removed([=](cherry_kit::model_view_item *a_item) {

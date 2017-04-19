@@ -18,6 +18,10 @@ if (ENABLE_QT5)
 	QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 endif()
 
+if (ENABEL_QT4)
+QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+endif()
+
 set(sourceFiles
     ${sourceFiles}
     ${headerFiles}
@@ -44,6 +48,10 @@ TARGET_LINK_LIBRARIES(simplegray
 
 if (ENABLE_QT5)
 QT5_USE_MODULES(simplegray Widgets Xml  Core  )
+endif()
+
+if (ENABEL_QT4)
+QT4_USE_MODULES(cocoastyle Gui Xml  Core  )
 endif()
 
 if (NOT APPLE)

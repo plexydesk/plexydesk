@@ -8,16 +8,14 @@
 class desktop_window::PrivateDesktopWindow {
 public:
   PrivateDesktopWindow()
-      : m_background_buffer(0), m_background_width(0), m_background_height(0),
+      : m_background_width(0), m_background_height(0),
         m_seamless(0), m_desktop_mode(kNone) {}
   ~PrivateDesktopWindow() {
-    if (m_background_buffer)
-      free(m_background_buffer);
   }
 
-  QImage m_background_texture;
+  //QImage m_background_texture;
   QPixmap m_background_pixmap;
-  unsigned char *m_background_buffer;
+  //unsigned char *m_background_buffer;
   int m_background_width;
   int m_background_height;
   bool m_seamless;
@@ -25,14 +23,16 @@ public:
 };
 
 void desktop_window::reset_window_background() {
+  /*
   memset(priv->m_background_buffer, 0,
          (4 * priv->m_background_height * priv->m_background_width));
+         */
 }
 
 void desktop_window::set_background_size(int a_width, int a_height) {
   priv->m_background_height = a_height;
   priv->m_background_width = a_width;
-
+  priv->m_background_pixmap = QPixmap(a_width, a_height); 
   //priv->m_background_pixmap = priv->m_background_pixmap.scaled(a_width, a_height);
   update();
 }
@@ -58,19 +58,7 @@ desktop_window::desktop_window()
   set_window_type(cherry_kit::window::kFramelessWindow);
 
   on_window_resized([this](window *a_window, int a_width, int a_height) {
-    if (priv->m_background_buffer) {
-      /*
-    //reset_window_background();
-    p_window->m_background_width = a_width;
-    p_window->m_background_height = a_height;
-    p_window->m_background_buffer = (unsigned char *)realloc(
-        p_window->m_background_buffer, (a_width, a_height * 4));
-    //reset_window_background();
-    */
-    }
   });
-
-  //QPixmapCache::setCacheLimit(9096);
 }
 
 desktop_window::~desktop_window() { delete priv; }
@@ -88,12 +76,14 @@ void desktop_window::set_background(const std::string &a_image_name) {
       std::unique_ptr<cherry_kit::image_io> p(std::move(scale_service));
 
       scale_service->on_resize([&](cherry_kit::io_surface *surface) {
-        if (!surface)
+        if (!surface) {
+          delete ck_image;
           return;
+        }
 
-        priv->m_background_texture = QImage(
-            surface->buffer, surface->width, surface->height, QImage::Format_ARGB32);
-        priv->m_background_pixmap = QPixmap::fromImage(priv->m_background_texture);
+        QImage m_background_texture = QImage(
+           surface->buffer, surface->width, surface->height, QImage::Format_ARGB32);
+        priv->m_background_pixmap = QPixmap::fromImage(m_background_texture);
         update();
 
         delete ck_image;
@@ -102,6 +92,7 @@ void desktop_window::set_background(const std::string &a_image_name) {
       scale_service->resize(ck_image_surface_ref, 1920, 1080, nullptr);
 
     } else {
+      delete ck_image;
       qWarning() << Q_FUNC_INFO << "Failed loading image!";
     }
 
@@ -111,8 +102,8 @@ void desktop_window::set_background(const std::string &a_image_name) {
 }
 
 void desktop_window::set_background(const QImage &a_image_name) {
-  priv->m_background_texture = QImage();
-  priv->m_background_texture = a_image_name;
+  //priv->m_background_texture = QImage();
+  //priv->m_background_texture = a_image_name;
   priv->m_background_pixmap = QPixmap::fromImage(a_image_name);
   update();
 }
@@ -132,7 +123,7 @@ void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
   a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
                               QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, true);
 */
-  a_ctx->setRenderHints(QPainter::HighQualityAntialiasing, true);
+  a_ctx->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform, true);
 
   a_ctx->setBrush(QBrush(priv->m_background_pixmap));
   a_ctx->drawRect(a_rect);

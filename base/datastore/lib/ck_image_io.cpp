@@ -179,6 +179,7 @@ void image_io::resize(io_surface *a_surface, int a_width, int a_height,
   std::cout << "task status : " << std::endl;
   io_surface *rv = priv->m_async_op.get();
   io_ctx->notify_resize(rv);
+  delete rv;
 }
 
 io_surface::io_surface() : width(0), height(0), buffer(nullptr) {}
@@ -210,7 +211,6 @@ io_surface *io_surface::dup()
     rv->width = width;
     rv->height = height;
     rv->buffer = copy();
-
     return rv;
 }
 }
