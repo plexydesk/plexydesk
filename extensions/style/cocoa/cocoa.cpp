@@ -153,7 +153,6 @@ CocoaStyle::CocoaStyle() : d(new PrivateCocoa) {
 }
 
 CocoaStyle::~CocoaStyle() {
-  qDebug() << Q_FUNC_INFO;
   delete d;
 }
 
@@ -183,7 +182,6 @@ void CocoaStyle::draw(const QString &type, const style_data &options,
     break;
   case 10:
     draw_clock_surface(options, painter);
-    // draw_clock_surface_to_buffer(options, painter);
     break;
   case 13:
     draw_knob(options, painter);
@@ -564,6 +562,12 @@ void CocoaStyle::draw_window_frame(const style_data &features,
   QPainterPath window_background_path;
   window_background_path.addRoundedRect(rect, 2.0, 2.0);
   a_ctx->fillPath(window_background_path, QBrush(aqua_blue_fill));
+  a_ctx->save();
+  QPen _outline_pen;
+  _outline_pen.setColor(QColor("#ffffff"));
+  a_ctx->setPen(_outline_pen);
+  a_ctx->drawPath(window_background_path);
+  a_ctx->restore();
 
   if (ck_window && ck_window->window_type() != window::kPanelWindow) {
     QRectF window_title_rect(12, 5, rect.width() - 16, 48.0 * scale_factor());
@@ -650,7 +654,7 @@ void CocoaStyle::draw_clock_hands(
   _xform_hour.translate(-_transPos.x(), -_transPos.y());
   a_ctx->setTransform(_xform_hour);
 
-  d->set_pen_color(a_ctx, a_clock_hand_color, a_thikness);
+  d->set_pen_color(a_ctx, a_clock_hand_color, a_thikness + 1);
   a_ctx->drawLine(_clock_hour_rect.topLeft(), _clock_hour_rect.center());
   a_ctx->restore();
 }
@@ -728,7 +732,7 @@ void CocoaStyle::draw_timer_marker(QRectF rect, QTransform _xform_hour,
 void CocoaStyle::draw_clock_surface(const style_data &features,
                                     QPainter *a_ctx) {
   /* please note that the clock is drawn with the inverted color scheme */
-  float border_len = features.geometry.width() - (32);
+  float border_len = features.geometry.width() - (48);
 
   QRectF rect = QRectF(
       features.geometry.x() + ((features.geometry.width() - border_len) / 2),
@@ -750,23 +754,15 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
   QPainterPath _clock_background;
   _clock_background.addEllipse(rect);
 
-  qreal rad = (rect.width() / 2) + 5;
 
   /* aqua */
   QLinearGradient aqua_blue_fill(QPointF(rect.width() / 2, 0),
                                  QPointF(rect.width() / 2, rect.height()));
 
-  aqua_blue_fill.setColorAt(0, QColor("#EFEFEF"));
-  aqua_blue_fill.setColorAt(0.60, QColor("#F6F6F6"));
-  aqua_blue_fill.setColorAt(0.75, QColor("#DEDEDE"));
-  aqua_blue_fill.setColorAt(1, QColor("#C9F5FC"));
-
-  QRadialGradient gr(rad + 24, rad + 16, rad, rad , rad );
-  gr.setColorAt(0.0, QColor(255, 255, 255, 89));
-  gr.setColorAt(0.2, QColor(255, 255, 255, 89));
-  gr.setColorAt(0.9, QColor(127, 255, 255, 89));
-  gr.setColorAt(0.95, QColor(0, 0, 0, 127));
-  gr.setColorAt(1, QColor(0, 0, 0, 0));
+  aqua_blue_fill.setColorAt(0, QColor("#FFFFFF"));
+  aqua_blue_fill.setColorAt(0.60, QColor("#FFFFFF"));
+  aqua_blue_fill.setColorAt(0.75, QColor("#FFFFFF"));
+  aqua_blue_fill.setColorAt(1, QColor("#FFFFFF"));
     
   a_ctx->save();
   a_ctx->setOpacity(0.9);
@@ -775,16 +771,33 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
   
   a_ctx->save();
   QPen _outline_pen;
+  float _frame_adjust = 8;
   _outline_pen.setColor(d->color(resource_manager::kDarkPrimaryColor));
+  _outline_pen.setWidth(10);
   a_ctx->setPen(_outline_pen);
-  //a_ctx->drawEllipse(rect);
+  QRectF frame_rect(features.geometry.x() + _frame_adjust,
+                    features.geometry.y() + _frame_adjust,
+                    features.geometry.width() - (_frame_adjust * 2),
+                    features.geometry.height() - (_frame_adjust * 2));
+  a_ctx->drawEllipse(frame_rect);
   a_ctx->restore();
 
   a_ctx->save();
+  QRectF glass_rect(features.geometry.x() + _frame_adjust ,
+                    features.geometry.y() + _frame_adjust ,
+                    features.geometry.width() - (_frame_adjust * 2),
+                    features.geometry.height() - (_frame_adjust* 2));
+  qreal rad = (glass_rect.width() / 2);
+  QRadialGradient gr(rad + 16 + _frame_adjust , rad + _frame_adjust, rad, rad , rad );
+
+  gr.setColorAt(0.0, QColor(255, 255, 255, 89));
+  gr.setColorAt(0.2, QColor(255, 255, 255, 89));
+  gr.setColorAt(0.9, QColor(255, 255, 255, 89));
+  gr.setColorAt(0.95, QColor(100, 100, 100, 127));
+  gr.setColorAt(1, QColor(0, 0, 0, 0));
+
   a_ctx->setBrush(gr);
   a_ctx->setPen(Qt::NoPen);
-  //a_ctx->translate(24, 24);
-  QRectF glass_rect(0, 0, features.geometry.width(), features.geometry.height());
   //a_ctx->drawEllipse(glass_rect);
   a_ctx->drawRect(glass_rect);
   a_ctx->restore();
@@ -794,7 +807,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
     double percent = (i / 60.0);
     QPointF marker_location = _clock_background.pointAtPercent(percent);
 
-    d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 1);
+    d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 1);
     a_ctx->drawPoint(marker_location);
   }
 
