@@ -600,6 +600,7 @@ void CocoaStyle::draw_window_frame(const style_data &features,
 
     d->set_default_font_size(a_ctx, 16.0, true);
     d->set_pen_color(a_ctx, resource_manager::kTextColor);
+    a_ctx->setOpacity(1.0);
     a_ctx->drawText(window_title_rect, features.text_data,
                     QTextOption(Qt::AlignCenter));
 
@@ -1272,12 +1273,22 @@ void CocoaStyle::draw_image_button(const style_data &a_features,
                                (expose_area.height() - icon_area.height())
                                );
   a_ctx->save();
+  a_ctx->save();
   set_default_painter_hints(a_ctx);
-  a_ctx->setRenderHint(QPainter::SmoothPixmapTransform, false);
   a_ctx->setRenderHint(QPainter::HighQualityAntialiasing, true);
   a_ctx->setRenderHint(QPainter::Antialiasing, true);
-  a_ctx->setRenderHint(QPainter::TextAntialiasing, false);
-  a_ctx->drawImage(icon_draw_rect, a_features.image_data);
+  a_ctx->setRenderHint(QPainter::TextAntialiasing, true);
+  qDebug() << Q_FUNC_INFO << "target @: " << icon_draw_rect << " src @: " << a_features.image_data.rect();
+
+
+  if (icon_area.width() < 16 || icon_area.height() < 16)
+    a_ctx->setRenderHint(QPainter::SmoothPixmapTransform, false);
+  else
+    a_ctx->setRenderHint(QPainter::SmoothPixmapTransform, true);
+
+  a_ctx->translate(icon_draw_rect.x(), icon_draw_rect.y());
+  a_ctx->drawImage(a_features.image_data.rect(), a_features.image_data, a_features.image_data.rect(), Qt::DiffuseDither | Qt::DiffuseAlphaDither);
+  a_ctx->restore();
 
   a_ctx->save();
   d->set_default_font_size(a_ctx, 12, true);
@@ -1296,7 +1307,7 @@ void CocoaStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) {
   QRectF rect = a_data.geometry;
 
   a_ctx->save();
-  a_ctx->setOpacity(0.9);
+  a_ctx->setOpacity(0.5);
   a_ctx->setRenderHints(
       QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
@@ -1311,19 +1322,17 @@ void CocoaStyle::draw_scrollbar_slider(const style_data &a_data,
   QRectF rect(2, a_data.geometry.y(), a_data.geometry.width() - 4,
               a_data.geometry.height());
   a_ctx->save();
-  a_ctx->setOpacity(0.5);
   a_ctx->setRenderHints(
       QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
-  path.addRoundedRect(rect, 2, 2);
-  a_ctx->fillPath(path, d->color(cherry_kit::resource_manager::kTextColor));
+  path.addRoundedRect(rect, 6, 6);
+  a_ctx->fillPath(path, d->color(cherry_kit::resource_manager::kDarkPrimaryColor));
   a_ctx->restore();
 }
 
 void CocoaStyle::draw_label(const style_data &aFeatures, QPainter *a_ctx) {
   a_ctx->save();
 
-  set_default_painter_hints(a_ctx);
 
   /* spacial case so doing it manually */
   QFont _font = a_ctx->font();
@@ -1342,12 +1351,23 @@ void CocoaStyle::draw_label(const style_data &aFeatures, QPainter *a_ctx) {
 
   if (aFeatures.render_state == style_data::kRenderRaised) {
     d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor);
-    a_ctx->fillRect(aFeatures.geometry,
-                    d->color(resource_manager::kAccentColor));
+    QRectF rect = aFeatures.geometry;
+    QLinearGradient aqua_blue_fill(QPointF(rect.width() / 2, 0),
+                                 QPointF(rect.width() / 2, rect.height()));
+
+    aqua_blue_fill.setColorAt(0, QColor("#697AF0"));
+    aqua_blue_fill.setColorAt(0.50, QColor("#5768F7"));
+    aqua_blue_fill.setColorAt(1, QColor("#4351f6"));
+
+    a_ctx->save();
+    a_ctx->setOpacity(0.8);
+    a_ctx->fillRect(aFeatures.geometry, QBrush(aqua_blue_fill));
+    a_ctx->restore();
   } else {
     d->set_pen_color(a_ctx, resource_manager::kTextColor);
   }
 
+  set_default_painter_hints(a_ctx);
   a_ctx->drawText(aFeatures.geometry, text, aFeatures.text_options);
   a_ctx->restore();
 }
