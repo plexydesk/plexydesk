@@ -257,10 +257,12 @@ event_browser_ui::event_browser_ui(cherry_kit::session_sync *a_session,
   window->on_window_discarded([=](cherry_kit::window *aWindow) {
     a_session->unbind_window(aWindow);
     ck_model_view->clear();
-    ck_timer->stop();
+    if (ck_timer->is_active())
+      ck_timer->stop();
+    delete ck_timer;
+
     delete ck_model_view;
     delete ui;
-    delete ck_timer;
     delete aWindow;
   });
 

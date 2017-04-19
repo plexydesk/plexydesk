@@ -23,7 +23,7 @@ public:
     private_timer() : m_is_running(0) {}
     ~private_timer() {
       m_is_running = 0;
-#ifdef __APPLE__
+#if defined(__QT4_TOOLKIT__) && defined (__APPLE__)
       cf_stop_timer(m_current_timer);
 #endif
     }
@@ -34,7 +34,7 @@ public:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_start_time;
     QTimer m_qt_timer;
 
-#ifdef __APPLE__
+#if defined(__QT4_TOOLKIT__) && defined (__APPLE__)
     CFRunLoopTimerRef m_current_timer;
 
     void exec() {
