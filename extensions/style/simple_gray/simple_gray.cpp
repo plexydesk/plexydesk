@@ -392,7 +392,9 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
   set_default_painter_hints(a_ctx);
   /* draw seperator */
   window *ck_window = dynamic_cast<window *>(features.style_object);
+  
 #ifdef __APPLE__
+  if (ck_window && ck_window->window_type() != window::kFramelessWindow) {
   /* draw shadow */
   QPaintDevice *current_paint_device = a_ctx->paintEngine()->paintDevice();
   CGContextRef bitmap_ctx = 0;
@@ -490,6 +492,8 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
 
       CGContextRestoreGState(bitmap_ctx);
       CGContextRelease(bitmap_ctx);
+      CGColorSpaceRelease(cg_shadow_color_space);
+      CGColorRelease(cg_shadow_color);
 
       a_ctx->drawImage(_shadow_rect, _offscreen_buffer);
     } else if (current_paint_device->devType() == QInternal::Widget) {
@@ -498,6 +502,7 @@ void SimpleGrayStyle::draw_window_frame(const style_data &features,
   } else {
     qDebug() << Q_FUNC_INFO << "Invalide Paint Device";
   }
+}
 #endif
 
   a_ctx->setOpacity(features.opacity);
