@@ -124,7 +124,7 @@ void time_segment::create_new(new_event_callback_t a_callback) {
   ck_window->set_window_title("Add Appointment");
 
   ck_layout->set_verticle_spacing(5);
-  ck_layout->set_content_margin(5, 5, 5, 5);
+  ck_layout->set_content_margin(0, 0, 0, 0);
   ck_layout->set_geometry(0, 0, 320, 240);
 
   ck_layout->add_rows(4);
@@ -168,7 +168,7 @@ void time_segment::create_new(new_event_callback_t a_callback) {
   ck_duration_editor->set_readonly(true);
 
   ui_data["label"] = "+";
-  ck_layout->add_widget(0, 2, "button", ui_data, [=]() {
+  cherry_kit::button *ck_add_button = dynamic_cast<cherry_kit::button*> (ck_layout->add_widget(0, 2, "button", ui_data, [=]() {
     m_duration++;
 
     if (m_duration >= 60)
@@ -182,10 +182,14 @@ void time_segment::create_new(new_event_callback_t a_callback) {
 
     ck_duration_editor->set_text(
         QString("%1:%2").arg(m_time_value).arg(time_value));
-  });
+  }));
+
+  if (ck_add_button)
+    ck_add_button->set_tool_button();
+
 
   ui_data["label"] = "-";
-  ck_layout->add_widget(0, 3, "button", ui_data, [=]() {
+  cherry_kit::button *ck_minus_button = dynamic_cast<cherry_kit::button*>(ck_layout->add_widget(0, 3, "button", ui_data, [=]() {
     m_duration--;
     QString time_value = QString("%1").arg(m_duration);
 
@@ -199,7 +203,11 @@ void time_segment::create_new(new_event_callback_t a_callback) {
 
     ck_duration_editor->set_text(
         QString("%1:%2").arg(m_time_value).arg(time_value));
-  });
+  }));
+
+
+  if (ck_minus_button)
+    ck_minus_button->set_tool_button();
 
   /* end adding the first row */
   ui_data["label"] = "End";
@@ -212,7 +220,7 @@ void time_segment::create_new(new_event_callback_t a_callback) {
   ck_end_time_editor->set_readonly(true);
 
   ui_data["label"] = "+";
-  ck_layout->add_widget(1, 2, "button", ui_data, [=]() {
+  cherry_kit::button *ck_end_add_button = dynamic_cast<cherry_kit::button*> (ck_layout->add_widget(1, 2, "button", ui_data, [=]() {
     m_duration++;
 
     if (m_duration >= 60)
@@ -226,10 +234,10 @@ void time_segment::create_new(new_event_callback_t a_callback) {
 
     ck_end_time_editor->set_text(
         QString("%1:%2").arg(m_time_value).arg(time_value));
-  });
+  }));
 
   ui_data["label"] = "-";
-  ck_layout->add_widget(1, 3, "button", ui_data, [=]() {
+  cherry_kit::button *ck_end_end_button = dynamic_cast<cherry_kit::button*> (ck_layout->add_widget(1, 3, "button", ui_data, [=]() {
     m_duration--;
     QString time_value = QString("%1").arg(m_duration);
 
@@ -243,7 +251,13 @@ void time_segment::create_new(new_event_callback_t a_callback) {
 
     ck_end_time_editor->set_text(
         QString("%1:%2").arg(m_time_value).arg(time_value));
-  });
+  }));
+
+  if (ck_end_add_button)
+      ck_end_add_button->set_tool_button();
+
+  if (ck_end_end_button)
+      ck_end_end_button->set_tool_button();
 
   //////
   ui_data["label"] = "Add";

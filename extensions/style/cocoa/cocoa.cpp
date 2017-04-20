@@ -30,6 +30,7 @@
 
 #include <QPaintEngine>
 #include <QPaintDevice>
+#include <ck_button.h>
 
 #ifdef __APPLE__
 #include <ApplicationServices/ApplicationServices.h>
@@ -223,32 +224,102 @@ void CocoaStyle::set_default_painter_hints(QPainter *painter) {
 void CocoaStyle::draw_push_button(const style_data &features,
                                   QPainter *painter) {
   QRectF rect = features.geometry;
+  cherry_kit::button *ck_button =
+          dynamic_cast<cherry_kit::button *>(features.style_object);
 
   /* Painter settings */
   painter->save();
   set_default_painter_hints(painter);
 
   QPainterPath button_background_path;
-  button_background_path.addRoundedRect(rect, 2.0, 2.0);
+
+  if (ck_button && ck_button->is_tool_button())
+    button_background_path.addRoundedRect(rect, 0.0, 0.0);
+  else
+    button_background_path.addRoundedRect(rect, 4.0, 4.0);
 
   if (features.render_state == style_data::kRenderPressed) {
     painter->fillPath(button_background_path,
                       d->color(resource_manager::kPrimaryColor));
     d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter);
+    d->set_default_font_size(painter, 12);
     painter->drawPath(button_background_path);
-  } else if (features.render_state == style_data::kRenderRaised) {
-    painter->fillPath(button_background_path,
-                      d->color(resource_manager::kDarkPrimaryColor));
-    d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter, 8);
-    painter->drawPath(button_background_path);
+  } else if (features.render_state == style_data::kRenderRaised || (ck_button && ck_button->is_tool_button())) {
+    /*layer 1*/
+    QLinearGradient aqua_blue_layer1(QPointF(rect.width() / 2, rect.y()),
+                               QPointF(rect.width() / 2, rect.height()));
+
+    aqua_blue_layer1.setColorAt(0, QColor("#A5D6F7"));
+    aqua_blue_layer1.setColorAt(0.10, QColor("#84C6F7"));
+    aqua_blue_layer1.setColorAt(0.40, QColor("#429CE7"));
+    aqua_blue_layer1.setColorAt(1, QColor("#C6FFFF"));
+
+    painter->fillPath(button_background_path, QBrush(aqua_blue_layer1));
+
+    /* layer 2 : gloss left */
+    QRectF left_gloss_rect(rect.x() , features.geometry.y(), (rect.width()),
+                           rect.height() / 2);
+
+    QPainterPath left_gloss;
+    if (ck_button && ck_button->is_tool_button()) {
+        left_gloss.addRoundedRect(left_gloss_rect,0, 0);
+    }  else {
+        left_gloss.addRoundedRect(left_gloss_rect, 4, 4);
+
+    }
+    painter->save();
+    QLinearGradient aqua_blue_layer2(QPointF(rect.width() / 2, rect.y()),
+                                     QPointF(rect.width() / 2, rect.height()));
+
+    aqua_blue_layer2.setColorAt(0, QColor("#ffffff"));
+    //aqua_blue_layer2.setColorAt(0.50, QColor("#429CE7"));
+    //aqua_blue_layer2.setColorAt(0.70, QColor("#84C6F7"));
+    aqua_blue_layer2.setColorAt(1, Qt::transparent);
+
+    painter->setOpacity(0.9);
+    painter->fillPath(left_gloss, QBrush(aqua_blue_layer2));
+    painter->restore();
   } else {
-    painter->fillPath(button_background_path,
-                      d->color(resource_manager::kDarkPrimaryColor));
-    d->set_pen_color(painter, resource_manager::kSecondryTextColor);
-    d->set_default_font_size(painter, 8);
+    /*layer 1*/
+    QLinearGradient aqua_blue_layer1(QPointF(rect.width() / 2, rect.y()),
+                               QPointF(rect.width() / 2, rect.height()));
+
+    aqua_blue_layer1.setColorAt(0, QColor("#FBFBFB"));
+    aqua_blue_layer1.setColorAt(0.50, QColor("#E0E0E0"));
+    aqua_blue_layer1.setColorAt(0.70, QColor("#EBEBEB"));
+    aqua_blue_layer1.setColorAt(1, QColor("#FFFFFF"));
+
+    painter->fillPath(button_background_path, QBrush(aqua_blue_layer1));
+
+    /* layer 2 : gloss left */
+    QRectF left_gloss_rect(rect.x() , features.geometry.y(), (rect.width()),
+              rect.height() / 2);
+
+    QPainterPath left_gloss;
+    left_gloss.addRoundedRect(left_gloss_rect, 4, 4);
+
+    painter->save();
+    QLinearGradient aqua_blue_layer2(QPointF(rect.width() / 2, rect.y()),
+                               QPointF(rect.width() / 2, rect.height()));
+
+    aqua_blue_layer2.setColorAt(0, QColor("#ffffff"));
+    //aqua_blue_layer2.setColorAt(0.50, QColor("#429CE7"));
+    //aqua_blue_layer2.setColorAt(0.70, QColor("#84C6F7"));
+    aqua_blue_layer2.setColorAt(1, Qt::transparent);
+
+    painter->setOpacity(0.9);
+    painter->fillPath(left_gloss, QBrush(aqua_blue_layer2));
+    painter->restore();
+  }
+
+  if ((ck_button && !ck_button->is_tool_button())) {
+    painter->save();
+    QPen shadow_pen;
+    shadow_pen.setColor(QColor("#888888"));
+    painter->setPen(shadow_pen);
+    painter->setOpacity(0.4);
     painter->drawPath(button_background_path);
+    painter->restore();
   }
 
   painter->drawText(features.geometry, Qt::AlignCenter, features.text_data);
@@ -270,7 +341,7 @@ void CocoaStyle::draw_window_button(const style_data &features,
   set_default_painter_hints(painter);
 
   QPainterPath background;
-  background.addRoundedRect(rect, 4.0 * scale_factor(), 4.0 * scale_factor());
+  background.addRoundedRect(rect, 8.0 * scale_factor(), 8.0 * scale_factor());
 
   if (features.render_state == style_data::kRenderElement) {
     QLinearGradient aqua_blue_fill(QPointF(rect.width() / 2, 0),
@@ -297,6 +368,7 @@ void CocoaStyle::draw_window_button(const style_data &features,
     aqua_blue_fill.setColorAt(1, QColor("#EFEFEF"));
 
     painter->fillPath(background, QBrush(aqua_blue_fill));
+
   }
 
   painter->save();
@@ -315,6 +387,8 @@ void CocoaStyle::draw_window_button(const style_data &features,
 
   painter->drawLine(cross_rect.topLeft(), cross_rect.bottomRight());
   painter->drawLine(cross_rect.topRight(), cross_rect.bottomLeft());
+
+  painter->drawPath(background);
 
   painter->restore();
 
@@ -1058,84 +1132,142 @@ void CocoaStyle::draw_knob(const style_data &features, QPainter *a_ctx) {
 }
 
 void CocoaStyle::draw_line_edit(const style_data &features, QPainter *painter) {
-  cherry_kit::line_edit *ck_line_edit =
-      dynamic_cast<cherry_kit::line_edit *>(features.style_object);
-  QRectF rect = features.geometry.adjusted(0, 0, 0, 0);
+    cherry_kit::line_edit *ck_line_edit =
+        dynamic_cast<cherry_kit::line_edit *>(features.style_object);
 
-  set_default_painter_hints(painter);
+    if (!ck_line_edit)
+        return;
 
-  QPainterPath background_path;
-  background_path.addRoundedRect(rect, 0, 0);
+    QRectF rect = features.geometry.adjusted(0, 0, 0, 0);
 
-  painter->fillPath(background_path,
-                    d->color(resource_manager::kTextBackground));
+    set_default_painter_hints(painter);
 
-  d->set_default_font_size(painter, 8);
+    QPainterPath background_path;
+    background_path.addRoundedRect(rect, 0, 0);
 
-  if (features.render_state == style_data::kRenderRaised) {
-    d->set_pen_color(painter, resource_manager::kDividerColor);
-  } else {
-    d->set_pen_color(painter, resource_manager::kPrimaryColor);
-  }
-  painter->setOpacity(0.8);
-  painter->drawPath(background_path);
-  painter->setOpacity(1.0);
+    painter->fillPath(background_path,
+                      d->color(resource_manager::kTextBackground));
 
-  painter->save();
+    d->set_default_font_size(painter, 14);
 
-  d->set_pen_color(painter, resource_manager::kTextColor);
-  painter->drawText(
-      features.geometry.adjusted(4.0 * scale_factor(), 0.0, 0.0, 0.0),
-      Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
-  // cursor handling.
-  int cursor_pos = features.attributes["cursor_location"].toInt();
-  int selection_cursor = features.attributes["selection_cursor"].toInt();
+    if (features.render_state == style_data::kRenderRaised) {
+      d->set_pen_color(painter, resource_manager::kDividerColor);
+    } else {
+      d->set_pen_color(painter, resource_manager::kPrimaryColor);
+    }
 
-  QFontMetrics m = painter->fontMetrics();
-  int _text_pixel_width = m.width(features.text_data);
-
-  int _text_cursor_width_to_left = 4 * scale_factor();
-  int _text_cursor_width_to_right = 4 * scale_factor();
-
-  if (cursor_pos == features.text_data.count()) {
-    _text_cursor_width_to_left += _text_pixel_width;
-  } else {
-    _text_cursor_width_to_left += m.width(features.text_data.left(cursor_pos));
-  }
-
-  if (selection_cursor == features.text_data.count()) {
-    _text_cursor_width_to_right += _text_pixel_width;
-  } else {
-    _text_cursor_width_to_right +=
-        m.width(features.text_data.left(selection_cursor));
-  }
-
-  if (ck_line_edit && !ck_line_edit->readonly()) {
-    QPointF line1(_text_cursor_width_to_left, 4 * scale_factor());
-    QPointF line2(_text_cursor_width_to_left,
-                  m.height() + (1 * scale_factor()));
-
-    d->set_pen_color(painter, resource_manager::kPrimaryColor, 1);
-    painter->drawLine(line1, line2);
-  }
-
-  if (features.render_state == style_data::kRenderPressed) {
-    /*
-     * if current text cursor is at x1 and selection cursor at x2
-     * distence between the cursors (x1 - x2)
-     * */
-    int diff = (_text_cursor_width_to_left - _text_cursor_width_to_right);
-
-    QRectF selection_rect =
-        QRectF(_text_cursor_width_to_right, (rect.height() - m.height()) / 2,
-               diff, m.height());
+    if (ck_line_edit && !ck_line_edit->readonly()) {
+      painter->setOpacity(0.8);
+      painter->drawPath(background_path);
+      painter->setOpacity(1.0);
+    }
 
     painter->save();
-    painter->setOpacity(0.3);
-    painter->fillRect(selection_rect, d->color(resource_manager::kAccentColor));
 
-    painter->restore();
+    d->set_pen_color(painter, resource_manager::kTextColor);
+
+    if (ck_line_edit && ck_line_edit->readonly()) {
+        /*layer 1*/
+        QLinearGradient aqua_blue_layer1(QPointF(rect.width() / 2, rect.y()),
+                                   QPointF(rect.width() / 2, rect.height()));
+
+        aqua_blue_layer1.setColorAt(0, QColor("#FBFBFB"));
+        aqua_blue_layer1.setColorAt(0.50, QColor("#E0E0E0"));
+        aqua_blue_layer1.setColorAt(0.70, QColor("#EBEBEB"));
+        aqua_blue_layer1.setColorAt(1, QColor("#FFFFFF"));
+
+        QPainterPath readonly_path;
+        readonly_path.addRect(rect);
+        painter->fillPath(readonly_path, QBrush(aqua_blue_layer1));
+    }
+
+
+    if (!ck_line_edit->is_password_input()) {
+      painter->drawText(
+          features.geometry.adjusted(4.0 * scale_factor(), 0.0, 0.0, 0.0),
+          Qt::AlignLeft | Qt::AlignVCenter, features.text_data);
+    } else {
+        float x_pos = 10 * features.text_data.count();
+        for (int x = 0; x < features.text_data.count(); x++) {
+          int y_pos = features.geometry.adjusted(
+                      (6.0 * scale_factor())+ x_pos, 0.0, 0.0, 0.0).center().toPoint().y();
+          QPainterPath password_dot;
+          password_dot.addEllipse(QPoint(8 + (x * 10), y_pos), 4, 4);
+          painter->fillPath(password_dot, d->color(resource_manager::kPrimaryColor));
+        }
+    }
+    // cursor handling.
+    int cursor_pos = features.attributes["cursor_location"].toInt();
+    int selection_cursor = features.attributes["selection_cursor"].toInt();
+
+    QFontMetrics m = painter->fontMetrics();
+    int _text_pixel_width = m.width(features.text_data);
+
+    int _text_cursor_width_to_left = 4 * scale_factor();
+    int _text_cursor_width_to_right = 4 * scale_factor();
+
+    if (cursor_pos == features.text_data.count()) {
+      _text_cursor_width_to_left += _text_pixel_width;
+    } else {
+      _text_cursor_width_to_left += m.width(features.text_data.left(cursor_pos));
+    }
+
+    if (selection_cursor == features.text_data.count()) {
+      _text_cursor_width_to_right += _text_pixel_width;
+    } else {
+      _text_cursor_width_to_right +=
+          m.width(features.text_data.left(selection_cursor));
+    }
+
+
+    if (ck_line_edit && !ck_line_edit->readonly()
+            && !ck_line_edit->is_password_input()
+            && ck_line_edit->has_input_focus()) {
+      QPointF line1(_text_cursor_width_to_left + 2, 10 * scale_factor());
+      QPointF line2(_text_cursor_width_to_left + 2,
+                    m.height() + (5 * scale_factor()));
+
+      d->set_pen_color(painter, resource_manager::kPrimaryColor, 1);
+
+      painter->drawLine(line1, line2);
+    } else if (ck_line_edit->is_password_input()
+               && ck_line_edit->has_input_focus()) {
+      QPointF line1(4 + (features.text_data.count() * 10) * scale_factor(),
+                    8 * scale_factor());
+      QPointF line2(4 + (features.text_data.count() * 10) * scale_factor(),
+                    m.height() + (4 * scale_factor()));
+
+      d->set_pen_color(painter, resource_manager::kPrimaryColor, 1);
+
+      painter->drawLine(line1, line2);
+    }
+
+    if (features.render_state == style_data::kRenderPressed) {
+      /*
+       * if current text cursor is at x1 and selection cursor at x2
+       * distence between the cursors (x1 - x2)
+       * */
+      int diff = (_text_cursor_width_to_left - _text_cursor_width_to_right);
+
+      QRectF selection_rect =
+          QRectF(_text_cursor_width_to_right, (rect.height() - m.height()) / 2,
+                 diff, m.height());
+
+      painter->save();
+      painter->setOpacity(0.3);
+      painter->fillRect(selection_rect, d->color(resource_manager::kAccentColor));
+
+      painter->restore();
   }
+
+  painter->save();
+  QPen shadow_pen;
+  shadow_pen.setColor(d->color(resource_manager::kDarkPrimaryColor));
+  painter->setOpacity(0.3);
+  painter->setPen(shadow_pen);
+  painter->drawPath(background_path);
+  painter->restore();
+
   painter->restore();
 }
 
@@ -1338,7 +1470,7 @@ void CocoaStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) {
   a_ctx->setRenderHints(
       QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
-  path.addRoundedRect(rect, 6, 6);
+  path.addRoundedRect(rect, 4, 4);
 
   QLinearGradient aqua_white_inverted(QPointF(rect.x(), rect.height() / 2),
                                QPointF(rect.x() + rect.width(), rect.height() / 2));
@@ -1360,7 +1492,7 @@ void CocoaStyle::draw_scrollbar_slider(const style_data &a_data,
   a_ctx->setRenderHints(
       QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
-  path.addRoundedRect(rect, 5, 5);
+  path.addRoundedRect(rect, 3, 3);
 
   /*layer 1*/
   QLinearGradient aqua_blue_layer1(QPointF(rect.x(), rect.height() / 2),
@@ -1378,7 +1510,7 @@ void CocoaStyle::draw_scrollbar_slider(const style_data &a_data,
               rect.height() - 2);
 
   QPainterPath left_gloss;
-  left_gloss.addRoundedRect(left_gloss_rect, 3, 3);
+  left_gloss.addRoundedRect(left_gloss_rect, 4, 4);
 
   a_ctx->save();
   QLinearGradient aqua_blue_layer2(QPointF(rect.x(), rect.height() / 2),
@@ -1397,7 +1529,6 @@ void CocoaStyle::draw_scrollbar_slider(const style_data &a_data,
 
 void CocoaStyle::draw_label(const style_data &aFeatures, QPainter *a_ctx) {
   a_ctx->save();
-
 
   /* spacial case so doing it manually */
   QFont _font = a_ctx->font();
@@ -1425,7 +1556,7 @@ void CocoaStyle::draw_label(const style_data &aFeatures, QPainter *a_ctx) {
     aqua_blue_fill.setColorAt(1, QColor("#4351f6"));
 
     a_ctx->save();
-    a_ctx->setOpacity(0.8);
+    a_ctx->setOpacity(0.4);
     a_ctx->fillRect(aFeatures.geometry, QBrush(aqua_blue_fill));
     a_ctx->restore();
   } else {

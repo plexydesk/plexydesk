@@ -18,7 +18,7 @@ public:
     HOVER
   } ButtonState;
 
-  PrivateButton() {}
+  PrivateButton() : m_toolbutton(0){}
   ~PrivateButton() {}
 
   void invoke_click_actions();
@@ -29,6 +29,8 @@ public:
   QVariant m_button_data;
 
   std::vector<std::function<void ()>> m_click_action_list;
+
+  bool m_toolbutton;
 };
 
 button::button(widget *a_parent_ptr)
@@ -89,6 +91,7 @@ void button::paint_normal_button(QPainter *a_painter_ptr,
   feature.text_data = priv->m_button_text;
   feature.geometry = a_rect;
   feature.render_state = style_data::kRenderElement;
+  feature.style_object = this;
 
   if (cherry_kit::resource_manager::style()) {
     cherry_kit::resource_manager::style()->draw("button", feature,
@@ -102,6 +105,7 @@ void button::paint_sunken_button(QPainter *painter, const QRectF &a_rect) {
   feature.text_data = priv->m_button_text;
   feature.geometry = a_rect;
   feature.render_state = style_data::kRenderPressed;
+  feature.style_object = this;
 
   if (cherry_kit::resource_manager::style()) {
     cherry_kit::resource_manager::style()->draw("button", feature, painter);
@@ -114,6 +118,7 @@ void button::paint_hover_button(QPainter *a_painter, const QRectF &a_rect) {
   feature.text_data = priv->m_button_text;
   feature.geometry = a_rect;
   feature.render_state = style_data::kRenderRaised;
+  feature.style_object = this;
 
   if (cherry_kit::resource_manager::style()) {
     cherry_kit::resource_manager::style()->draw("button", feature, a_painter);
@@ -145,6 +150,14 @@ QVariant button::action_data() const { return priv->m_button_data; }
 
 void button::on_click(std::function<void()> a_callback) {
     priv->m_click_action_list.push_back(a_callback);
+}
+
+void button::set_tool_button(bool a_value) {
+    priv->m_toolbutton = a_value;
+}
+
+bool button::is_tool_button() const {
+    return priv->m_toolbutton;
 }
 
 void button::paint_view(QPainter *a_painter_ptr, const QRectF &a_rect) {

@@ -51,6 +51,9 @@ public:
 
   virtual void on_click(std::function<void()> a_callback);
 
+  virtual void set_tool_button(bool a_value = true);
+  virtual bool is_tool_button() const ;
+
 protected:
   virtual void mousePressEvent(QGraphicsSceneMouseEvent *a_event_ptr);
   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *a_event_ptr);
