@@ -970,7 +970,7 @@ void CocoaStyle::draw_knob(const style_data &features, QPainter *a_ctx) {
   double angle_percent = features.attributes["angle"].toDouble();
   double max_value = features.attributes["max_value"].toDouble();
 
-  d->set_pen_color(a_ctx, resource_manager::kTextColor, 1);
+  d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 1);
   QPainterPath _clock_background;
   QPainterPath _marker_background;
   QPainterPath _border_background;
@@ -984,7 +984,7 @@ void CocoaStyle::draw_knob(const style_data &features, QPainter *a_ctx) {
   a_ctx->fillPath(_clock_background, d->color(resource_manager::kTextColor));
   a_ctx->drawPath(_clock_background);
 
-  d->set_pen_color(a_ctx, resource_manager::kDividerColor, 1);
+  d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 1);
   a_ctx->drawPath(_border_background);
 
   // draw segement markers.
@@ -1007,7 +1007,16 @@ void CocoaStyle::draw_knob(const style_data &features, QPainter *a_ctx) {
       knob_path.pointAtPercent(angle_percent);
 
   /* draw the dial */
-  a_ctx->fillPath(border_path, d->color(resource_manager::kLightPrimaryColor));
+  qreal rad = border_rect.width() / 2;
+
+  QRadialGradient aqua_white_inverted(border_rect.center(), rad, border_rect.center());
+
+  aqua_white_inverted.setColorAt(0, QColor("#FFFFFF"));
+  //aqua_white_inverted.setColorAt(0.50, QColor("#F4F4F4"));
+  //aqua_white_inverted.setColorAt(0.70, QColor("#FDFDFD"));
+  aqua_white_inverted.setColorAt(1, QColor("#F2F2F2"));
+
+  a_ctx->fillPath(border_path, QBrush(aqua_white_inverted));
 
   QTransform xform = a_ctx->transform();
   xform.translate(transPos.x(), transPos.y());
@@ -1016,17 +1025,35 @@ void CocoaStyle::draw_knob(const style_data &features, QPainter *a_ctx) {
 
   a_ctx->setTransform(xform);
 
-  d->set_pen_color(a_ctx, resource_manager::kTextColor, 8);
+  a_ctx->save();
+
+  QPainterPath handle_path;
+  QLinearGradient aqua_blue_layer1(QPointF(0, handle_rect.height() / 2),
+                                   QPointF(handle_rect.x() + (handle_rect.width()), handle_rect.height() / 2));
+
+  aqua_blue_layer1.setColorAt(0, Qt::transparent);
+  //aqua_blue_layer1.setColorAt(0.50, QColor("#429CE7"));
+  //aqua_blue_layer1.setColorAt(0.70, QColor("#84C6F7"));
+  aqua_blue_layer1.setColorAt(1, QColor("#FFFFFF"));
+
+  //handle_path.addEllipse(current_marker_location_for_min, 6, 6);
+  handle_path.addEllipse(handle_rect);
+  a_ctx->setOpacity(0.5);
+  a_ctx->fillPath(handle_path, QBrush(aqua_blue_layer1));
+
+  a_ctx->restore();
+
+  d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 8);
   a_ctx->drawPoint(current_marker_location_for_min);
 
   if (features.render_state == style_data::kRenderRaised) {
-    d->set_pen_color(a_ctx, resource_manager::kAccentColor, 8);
-    a_ctx->drawPoint(current_marker_location_for_min);
+    d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 8);
+    //a_ctx->drawPoint(current_marker_location_for_min);
   }
 
   if (features.render_state == style_data::kRenderPressed) {
-    d->set_pen_color(a_ctx, resource_manager::kPrimaryColor, 4);
-    a_ctx->drawPoint(current_marker_location_for_min);
+    d->set_pen_color(a_ctx, resource_manager::kDarkPrimaryColor, 4);
+    //a_ctx->drawPoint(current_marker_location_for_min);
   }
 }
 
@@ -1307,13 +1334,21 @@ void CocoaStyle::draw_scrollbar(const style_data &a_data, QPainter *a_ctx) {
   QRectF rect = a_data.geometry;
 
   a_ctx->save();
-  a_ctx->setOpacity(0.5);
+  a_ctx->setOpacity(0.9);
   a_ctx->setRenderHints(
       QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
-  path.addRoundedRect(rect, 0, 0);
-  a_ctx->fillPath(path,
-                  d->color(cherry_kit::resource_manager::kLightPrimaryColor));
+  path.addRoundedRect(rect, 6, 6);
+
+  QLinearGradient aqua_white_inverted(QPointF(rect.x(), rect.height() / 2),
+                               QPointF(rect.x() + rect.width(), rect.height() / 2));
+
+  aqua_white_inverted.setColorAt(0, QColor("#C5C5C5"));
+  aqua_white_inverted.setColorAt(0.50, QColor("#F4F4F4"));
+  aqua_white_inverted.setColorAt(0.70, QColor("#FDFDFD"));
+  aqua_white_inverted.setColorAt(1, QColor("#F2F2F2"));
+
+  a_ctx->fillPath(path, QBrush(aqua_white_inverted));
   a_ctx->restore();
 }
 
@@ -1325,8 +1360,38 @@ void CocoaStyle::draw_scrollbar_slider(const style_data &a_data,
   a_ctx->setRenderHints(
       QPainter::HighQualityAntialiasing | QPainter::Antialiasing, true);
   QPainterPath path;
-  path.addRoundedRect(rect, 6, 6);
-  a_ctx->fillPath(path, d->color(cherry_kit::resource_manager::kDarkPrimaryColor));
+  path.addRoundedRect(rect, 5, 5);
+
+  /*layer 1*/
+  QLinearGradient aqua_blue_layer1(QPointF(rect.x(), rect.height() / 2),
+                               QPointF(rect.x() + rect.width(), rect.height() / 2));
+
+  aqua_blue_layer1.setColorAt(0, QColor("#0051C0"));
+  aqua_blue_layer1.setColorAt(0.50, QColor("#429CE7"));
+  aqua_blue_layer1.setColorAt(0.70, QColor("#84C6F7"));
+  aqua_blue_layer1.setColorAt(1, QColor("#A5D6F7"));
+
+  a_ctx->fillPath(path, QBrush(aqua_blue_layer1));
+
+  /* layer 2 : gloss left */
+  QRectF left_gloss_rect(rect.x() + 1, a_data.geometry.y() + 1, (rect.width() / 2) - 2,
+              rect.height() - 2);
+
+  QPainterPath left_gloss;
+  left_gloss.addRoundedRect(left_gloss_rect, 3, 3);
+
+  a_ctx->save();
+  QLinearGradient aqua_blue_layer2(QPointF(rect.x(), rect.height() / 2),
+                               QPointF(rect.x() + rect.width(), rect.height() / 2));
+
+  aqua_blue_layer2.setColorAt(0, QColor("#ffffff"));
+  //aqua_blue_layer2.setColorAt(0.50, QColor("#429CE7"));
+  //aqua_blue_layer2.setColorAt(0.70, QColor("#84C6F7"));
+  aqua_blue_layer2.setColorAt(1, Qt::transparent);
+  a_ctx->setOpacity(0.9);
+  a_ctx->fillPath(left_gloss, QBrush(aqua_blue_layer2));
+  a_ctx->restore();
+
   a_ctx->restore();
 }
 
