@@ -116,7 +116,9 @@ public:
       workspace->add_default_controller("datewidget");
       workspace->add_default_controller("dockwidget");
       workspace->add_default_controller("desksyncwidget");
+#if 0
       workspace->add_default_controller("deskcontrolwidget");
+#endif
 
       workspace->restore_session();
 

@@ -83,7 +83,7 @@ window::window(widget *parent) : widget(parent), priv(new PrivateWindow) {
   priv->m_window_type = kApplicationWindow;
 
   priv->m_window_close_button = new window_button(this);
-  priv->m_window_close_button->setPos(8, 8);
+  priv->m_window_close_button->setPos(14, 14);
   priv->m_window_close_button->show();
   // todo:
   // set the correct z-order
