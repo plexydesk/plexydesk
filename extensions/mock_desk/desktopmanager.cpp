@@ -27,7 +27,9 @@
 #include <ck_text_editor.h>
 #include <ck_text_view.h>
 
+#if defined (MAC_OS_X_VERSION_MIN_REQUIRED)
 #include <carbon/carbon.h>
+#endif //defined (MAC_OS_X_VERSION_MIN_REQUIRED)
 
 class DesktopManager::PrivateDesktopManager {
 public:
@@ -49,6 +51,7 @@ DesktopManager::DesktopManager(QWidget *parent)
    //setWindowFlags(Qt::Window);
    move_to_screen(0);
 
+#if defined (MAC_OS_X_VERSION_MIN_REQUIRED)
 #if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
       HIViewRef _desktopView = reinterpret_cast<HIViewRef>(this->winId());
       HIWindowRef _window = HIViewGetWindow(_desktopView);
@@ -57,8 +60,8 @@ DesktopManager::DesktopManager(QWidget *parent)
          ChangeWindowAttributes(_window, kWindowNoShadowAttribute, kWindowNoAttributes);  
          //SetWindowGroupLevel(GetWindowGroup(_window), kCGDesktopIconWindowLevel);
       } 
-#endif
-
+#endif //MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
+#endif //defined(MAC_OS_X_VERSION_MIN_REQUIRED)
 }
 
 DesktopManager::~DesktopManager() { delete priv; }

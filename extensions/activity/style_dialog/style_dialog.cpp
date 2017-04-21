@@ -123,4 +123,6 @@ bool style_dialog::purge() {
   }
 
   priv->m_main_window = 0;
+
+  return true;
 }

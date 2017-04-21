@@ -8,21 +8,22 @@ namespace cherry_kit {
 class null_windows_context : public system_window_context {
 public:
     null_windows_context() {}
+    virtual ~null_windows_context() = default;
 
-    device_window *find_window(const std::string &a_title,
-                               const std::string &a_window_class)  { return 0;}
-    bool reparent(device_window *a_child, device_window *a_parent) {return 0;}
+    device_window *find_window(const std::string &/*a_title*/,
+                               const std::string &/*a_window_class*/)  { return 0;}
+    bool reparent(device_window */*a_child*/, device_window */*a_parent*/) { return false; }
 
     device_window *desktop() { return 0;}
 
-    bool convert_to_popup_window(device_window *a_window) {return false;}
-    bool convert_to_panel_window(device_window *a_window) {return false;}
-    bool convert_to_desktop_window(device_window *a_window) {return false;}
-    bool convert_to_frameless_window(device_window *a_window) {return false;}
-    bool convert_to_transparent_window(device_window *a_window) {return false;}
-    bool convert_to_notification_window(device_window *a_window) {return false;}
-    void post_notifycation(const std::string &icon, const std::string &msg) {}
-    bool hide_native_desktop() {}
+    bool convert_to_popup_window(device_window */*a_window*/) { return false; }
+    bool convert_to_panel_window(device_window */*a_window*/) { return false; }
+    bool convert_to_desktop_window(device_window */*a_window*/) { return false; }
+    bool convert_to_frameless_window(device_window */*a_window*/) { return false; }
+    bool convert_to_transparent_window(device_window */*a_window*/) { return false; }
+    bool convert_to_notification_window(device_window */*a_window*/) { return false; }
+    void post_notifycation(const std::string &/*icon*/, const std::string &/*msg*/) {}
+    bool hide_native_desktop() { return false; }
 
 };
 

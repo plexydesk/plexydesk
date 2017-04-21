@@ -17,6 +17,8 @@ public:
     cherry_kit::disk_engine *engine = new cherry_kit::disk_engine();
 
     sync->set_sync_engine(engine);
+
+    return sync;
 	}
 
   std::string m_event_prefix;
