@@ -21,7 +21,7 @@
 
 #include <config.h>
 
-#ifdef __WINDOWS_UWP_PLATFORM__
+#if defined(__WINDOWS_UWP_PLATFORM__) || defined(__APPLE__)
 #define CK_ASSERT(condition, message)                                          \
   do {                                                                         \
     if (!(condition)) {                                                        \
