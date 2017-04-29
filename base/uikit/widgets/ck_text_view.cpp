@@ -408,14 +408,13 @@ void text_view::keyPressEvent(QKeyEvent *a_event)
     return;
   }
   
-  if (a_event->key() == Qt::Key_Enter) { 
+  if (a_event->key() == Qt::Key_Enter || a_event->key() == Qt::Key_Return ) { 
    ctx->m_cursor_width = 1;
    scroll_down();
-  }
- 
-  if (a_event->key() == Qt::Key_Return) { 
-   ctx->m_cursor_width = 1;
-   scroll_down();
+   ctx->m_cursor.insertText("\n");
+   update();
+   ctx->notify_text_update();
+   return;
   }
 
   ctx->m_cursor.insertText(a_event->text().at(0));
