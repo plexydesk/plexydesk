@@ -223,6 +223,8 @@ public:
         workspace->add_default_space();
       }
 
+      workspace->expose(0);
+
 #ifdef Q_OS_LINUX
       QPlatformNativeInterface *native =
           QGuiApplication::platformNativeInterface();
