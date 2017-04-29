@@ -146,7 +146,7 @@ void pixabay_service::remote_query(int a_page,
   input_data.insert("per_page", "8");
   input_data.insert("min_width", "1920");
   input_data.insert("min_height", "1080");
-  input_data.insert("editors_choise", "true");
+  input_data.insert("editors_choice", "false");
   input_data.insert("response_group", "high_resolution");
 
   notify_progress(5);
