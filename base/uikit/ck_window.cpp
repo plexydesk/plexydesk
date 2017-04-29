@@ -126,7 +126,7 @@ void window::set_window_content(widget *a_widget_ptr) {
                              30);
   content_geometry.setWidth(content_geometry.width() + 30);
 #else
-  content_geometry.setHeight(content_geometry.height() + window_title_height());
+  content_geometry.setHeight(content_geometry.height() + window_title_height() + 10);
   content_geometry.setWidth(content_geometry.width() + 2);
 #endif
 

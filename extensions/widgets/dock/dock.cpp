@@ -306,7 +306,7 @@ void desktop_panel_controller_impl::insert_sub_action(ui_action &a_task) {
   cherry_kit::fixed_layout *ck_layout =
       new cherry_kit::fixed_layout(sub_task_grid);
 
-  ck_layout->set_content_margin(4, 4, 4, 4);
+  ck_layout->set_content_margin(0, 0, 0, 0);
   ck_layout->set_geometry(0, 0, sub_task_grid->geometry().width(), 32);
 
   ck_layout->add_rows(1);
