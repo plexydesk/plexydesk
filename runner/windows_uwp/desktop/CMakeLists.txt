@@ -222,11 +222,12 @@ include(${CMAKE_SOURCE_DIR}/cmakemodules/windows-code-sign.cmake)
 endif()
 
 if (ENABLE_WINRT)
- set(APPX_PUBLISHER "PlexyDesk")
- set(APPX_VERSION "1.0.3.0")
- set(APPX_ARCH "x64")
+ #set(APPX_PUBLISHER "PlexyDesk")
+ #set(APPX_VERSION "1.0.3.0")
+ #set(APPX_ARCH "x64")
  set(APPX_BINARY "plexydesk")
  set(APPX_DEVICE_FAMILY "Windows.Universal")
+
  set(APPX_PRODUCT_DISPLAY_NAME "PlexyDesk Cherry")
  set(APPX_PRODUCT_DESCRIPTION "PlexyDesk Desktop Manager")
 

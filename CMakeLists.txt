@@ -353,7 +353,7 @@ endif()
 add_subdirectory(base/social/data)
 add_subdirectory(base/datastore/lib)
 add_subdirectory(base/social/lib)
-add_subdirectory(base/social/testrunner)
+#add_subdirectory(base/social/testrunner)
 
 if (UNIX)
 	add_subdirectory(extensions/runtime)

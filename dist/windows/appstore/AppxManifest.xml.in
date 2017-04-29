@@ -8,7 +8,7 @@
   IgnorableNamespaces="uap mp mobile">
 
   <Identity
-    Name="1aae1b88-f0fc-4b37-97af-7e7ab2330286"
+    Name="${APPX_PACKAGE_NAME}"
     Publisher="CN=${APPX_PUBLISHER}"
     Version="${APPX_VERSION}"
     ProcessorArchitecture="${APPX_ARCH}" />
@@ -16,8 +16,8 @@
   <mp:PhoneIdentity PhoneProductId="1aae1b88-f0fc-4b37-97af-7e7ab2330286" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>plexydesk</DisplayName>
-    <PublisherDisplayName>${APPX_PUBLISHER}</PublisherDisplayName>
+    <DisplayName>Plexydesk</DisplayName>
+    <PublisherDisplayName>PlexyDesk</PublisherDisplayName>
     <Logo>assets\icon_50x50.png</Logo>
   </Properties>
 
