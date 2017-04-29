@@ -28,6 +28,7 @@
 #include <ck_button.h>
 #include <ck_icon_button.h>
 #include <ck_text_editor.h>
+#include <ck_text_view.h>
 
 #include "notewidget.h"
 
@@ -254,7 +255,7 @@ void desktop_task_controller_impl::createReminderUI(
 
   cherry_kit::widget_properties_t accept_button_prop;
 
-  view->add_widget(0, 0, "text_edit", text_editor_prop, [=]() {});
+  view->add_widget(0, 0, "text_view", text_editor_prop, [=]() {});
 
   accept_button_prop["label"] = "";
   accept_button_prop["icon"] = "toolbar/ck_calendar.png";
@@ -265,11 +266,12 @@ void desktop_task_controller_impl::createReminderUI(
     accept_button_prop["label"] = "";
     accept_button_prop["icon"] = "toolbar/ck_checkmark2.png";
 
-    cherry_kit::text_editor *editor =
-        dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
+    cherry_kit::text_view *editor =
+        dynamic_cast<cherry_kit::text_view *>(view->at(0, 0));
 
     if (editor) {
-      editor->style("border: 0; background: #29CDA8; color: #ffffff");
+      editor->set_background_color("#2b2b2b");
+      editor->set_text_color("#ffffff");
     }
   } else {
     accept_button_prop["label"] = "";
@@ -309,8 +311,8 @@ void desktop_task_controller_impl::createReminderUI(
 
   if (save_btn) {
     std::function<void()> func = [=]() {
-      cherry_kit::text_editor *editor =
-          dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
+      cherry_kit::text_view *editor =
+          dynamic_cast<cherry_kit::text_view *>(view->at(0, 0));
       if (editor) {
         a_session->save_session_attribute(session_store_name("reminders"),
                                           "Reminders", "reminders_id",
@@ -327,8 +329,8 @@ void desktop_task_controller_impl::createReminderUI(
 
   if (done_btn) {
     std::function<void()> func = [=]() {
-      cherry_kit::text_editor *editor =
-          dynamic_cast<cherry_kit::text_editor *>(view->at(0, 0));
+      cherry_kit::text_view *editor =
+          dynamic_cast<cherry_kit::text_view *>(view->at(0, 0));
       bool is_complete = 0;
 
       if (a_session->session_keys().contains("state")) {
@@ -342,10 +344,14 @@ void desktop_task_controller_impl::createReminderUI(
       }
 
       if (editor) {
-        if (is_complete)
-          editor->style("border: 0; background: #ffffff; color: #000000");
-        else
-          editor->style("border: 0; background: #29CDA8; color: #ffffff");
+        if (is_complete) {
+          editor->set_background_color("#2b2b2b");
+      	  editor->set_text_color("#ffffff");
+	}
+        else {
+	   editor->set_background_color("#ffffff");
+      	   editor->set_text_color("#2b2b2b");
+	}
       }
 
       cherry_kit::widget_properties_t update_prop;
