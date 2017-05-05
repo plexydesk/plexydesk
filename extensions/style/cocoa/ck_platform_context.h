@@ -3,6 +3,7 @@
 
 #include <QImage>
 
+#ifdef __APPLE__
 namespace cherry_kit {
 class ck_color {
 public:
@@ -36,5 +37,6 @@ private:
   private_platform_context *const ctx;
 };
 }
+#endif
 
 #endif // CK_PLATFORM_CONTEXT_H

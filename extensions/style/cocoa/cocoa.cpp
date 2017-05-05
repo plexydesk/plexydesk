@@ -631,7 +631,9 @@ void CocoaStyle::draw_window_frame(const style_data &features,
   aqua_blue_fill.setSpread(QGradient::RepeatSpread);
   //aqua_blue_fill.setSpread(QGradient::ReflectSpread);
 
+#ifdef __APPLE__
   a_ctx->setOpacity(features.opacity / 2);
+#endif
   /* draw the adjusted window frame */
   QPainterPath window_background_path;
   window_background_path.addRoundedRect(rect, 2.0, 2.0);
@@ -705,11 +707,10 @@ void CocoaStyle::draw_window_frame(const style_data &features,
    
   }
 
-  a_ctx->setOpacity(0.6);
-  a_ctx->restore();
 #ifdef __APPLE__
+  a_ctx->setOpacity(1.0);
 #endif
-    //
+  a_ctx->restore();
 }
 
 void CocoaStyle::draw_clock_hands(

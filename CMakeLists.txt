@@ -391,6 +391,7 @@ if (APPLE)
  add_subdirectory(extensions/style/cocoa)
 endif()
 
+add_subdirectory(extensions/style/cocoa)
 add_subdirectory(extensions/style/simple_gray)
 
 add_subdirectory(artwork/packs/)

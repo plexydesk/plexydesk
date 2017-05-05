@@ -12,7 +12,6 @@
 //#include <CoreGraphics/CGDirectDisplay.h>
 //#include <stdlib.h>
 //#include <malloc/malloc.h>
-#endif
 
 namespace cherry_kit {
 class graphics_context::private_platform_context {
@@ -96,3 +95,4 @@ CGContextRef graphics_context::private_platform_context::copy_cg_context(
   return rv;
 }
 }
+#endif

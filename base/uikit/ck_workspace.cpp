@@ -159,7 +159,9 @@ void wp_compositor::init(workspace *a_workspace) {
 
   m_cmp_window->set_window_content(m_current_preview_list);
 
-  _scene->addItem(m_cmp_window);
+  if (_scene)
+    _scene->addItem(m_cmp_window);
+
   m_cmp_window->setPos(0, 0);
 
   m_viewport->on_change([this](workspace::workspace_change_t type, int id) {
@@ -278,6 +280,8 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   priv->m_workspace_left_margine = 32;
 
   setAcceptDrops(true);
+
+  priv->m_compositor = new wp_compositor;
 }
 
 workspace::~workspace() { delete priv; }
@@ -576,6 +580,9 @@ void workspace::revoke_space(const QString &a_name, int a_id) {
                            priv->m_workspace_left_margine);
 
   _space->setGeometry(_space_geometry);
+
+  priv->m_compositor->init(this);
+
   _space->restore_session();
 
   _space->hide();
@@ -846,6 +853,7 @@ void workspace::add_default_space() {
       _active_space->reset_focus();
   }
 
+  priv->m_compositor->init(this);
   _space->set_name("default");
 
   uint _new_space_id = priv->m_desktop_space_list.count();
@@ -918,9 +926,6 @@ void workspace::restore_session() {
   delete sync;
 
   priv->notify_update(kSpaceAddedNotify, 0);
-
-  priv->m_compositor = new wp_compositor;
-  priv->m_compositor->init(this);
 }
 
 float workspace::get_base_width() {
