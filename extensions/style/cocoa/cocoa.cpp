@@ -828,7 +828,14 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
   d->set_pen_color(a_ctx, resource_manager::kTextColor, 15);
 
   QPainterPath _clock_background;
+  QPainterPath _clock_cover_path;
   _clock_background.addEllipse(rect);
+  _clock_cover_path.addEllipse(features.geometry);
+
+  a_ctx->save();
+  a_ctx->setOpacity(1.0);
+  a_ctx->fillPath(_clock_cover_path, QBrush(QColor("#ffffff")));
+  a_ctx->restore();
 
 
   /* aqua */
@@ -839,7 +846,7 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
   aqua_blue_fill.setColorAt(0.60, QColor("#FFFFFF"));
   aqua_blue_fill.setColorAt(0.75, QColor("#FFFFFF"));
   aqua_blue_fill.setColorAt(1, QColor("#FFFFFF"));
-    
+
   a_ctx->save();
   a_ctx->setOpacity(0.9);
   a_ctx->fillPath(_clock_background, QBrush(aqua_blue_fill));

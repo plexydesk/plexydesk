@@ -39,7 +39,8 @@ public:
     kNotificationWindow = 4,
     kDialogWindow = 5,
     kMessageWindow = 6,
-    kPopupWindow = 7
+    kPopupWindow = 7,
+    kGadgetWindow = 8
   } WindowType;
 
   typedef std::function<void(window *, int, int)> ResizeCallback;

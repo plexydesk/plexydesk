@@ -240,6 +240,8 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
   cherry_kit::window *ck_window = new cherry_kit::window();
   cherry_kit::fixed_layout *ck_ui = new cherry_kit::fixed_layout(ck_window);
 
+  ck_window->set_window_type(cherry_kit::window::kGadgetWindow);
+
   cherry_kit::icon_button *ck_location_btn = 0;
   cherry_kit::clock_view *ck_clock = 0;
 

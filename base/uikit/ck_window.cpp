@@ -130,7 +130,7 @@ void window::set_window_content(widget *a_widget_ptr) {
   content_geometry.setWidth(content_geometry.width() + 2);
 #endif
 
-  if (priv->m_window_type == kApplicationWindow) {
+  if (priv->m_window_type == kApplicationWindow || priv->m_window_type == kGadgetWindow) {
 #ifdef __APPLE__
     priv->m_window_content->setPos(15.0, window_bordr_height + 2);
     content_geometry.setHeight(content_geometry.height());
@@ -195,6 +195,15 @@ void window::set_window_content(widget *a_widget_ptr) {
     enable_window_background(false);
   }
 
+  if (priv->m_window_type == kGadgetWindow) {
+    QGraphicsDropShadowEffect *lEffect = new QGraphicsDropShadowEffect(this);
+    lEffect->setColor(QColor("#000000"));
+    lEffect->setBlurRadius(6);
+    lEffect->setXOffset(0);
+    lEffect->setYOffset(0);
+    setGraphicsEffect(lEffect);
+  }
+
   request_update();
 }
 
@@ -229,6 +238,10 @@ void window::set_window_type(window::WindowType a_window_type) {
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
     // todo : globaly expose z-index of each window layer.
+    enable_window_background(false);
+  }
+
+  if (priv->m_window_type == kGadgetWindow) {
     enable_window_background(false);
   }
 }
