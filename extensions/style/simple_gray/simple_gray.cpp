@@ -655,12 +655,13 @@ void SimpleGrayStyle::draw_clock_surface(const style_data &features,
                                          QPainter *a_ctx,
                                          const widget *a_widget) {
   /* please note that the clock is drawn with the inverted color scheme */
-  float border_len = features.geometry.width() - (48 * scale_factor());
+  float border_len = features.geometry.width() - (24 * scale_factor());
 
   QRectF rect = QRectF(
       features.geometry.x() + ((features.geometry.width() - border_len) / 2),
       (features.geometry.y() + ((features.geometry.height() - border_len) / 2)),
       border_len, border_len);
+  QRectF border_rect = features.geometry;
 
   double second_value = features.attributes["seconds"].toDouble();
   double minutes_value = features.attributes["minutes"].toDouble();
@@ -675,10 +676,29 @@ void SimpleGrayStyle::draw_clock_surface(const style_data &features,
   d->set_pen_color(a_ctx, resource_manager::kTextColor, 15);
 
   QPainterPath _clock_background;
+  QPainterPath _clock_border_path;
+
   _clock_background.addEllipse(rect);
+  _clock_border_path.addEllipse(border_rect);
+
+  QRadialGradient radialGrad(rect.center(), rect.width() / 2);
+  radialGrad.setColorAt(0,  d->color(resource_manager::kTextColor));
+  radialGrad.setColorAt(0.90, Qt::transparent);
+  radialGrad.setColorAt(1, Qt::black);
+
+  a_ctx->fillPath(_clock_border_path, QBrush(QColor("#ffffff")));
 
   a_ctx->fillPath(_clock_background, d->color(resource_manager::kTextColor));
   a_ctx->drawEllipse(rect);
+
+  a_ctx->save();
+  QPen p;
+  p.setColor(QColor("#ffffff"));
+  p.setWidth(10);
+  a_ctx->setPen(p);
+
+  a_ctx->drawEllipse(border_rect);
+  a_ctx->restore();
 
   // draw second markers.
   for (int i = 0; i < 60; i++) {
@@ -706,6 +726,11 @@ void SimpleGrayStyle::draw_clock_surface(const style_data &features,
     d->set_pen_color(a_ctx, resource_manager::kLightPrimaryColor, 4);
     a_ctx->drawPoint(marker_location);
   }
+
+  a_ctx->save();
+  a_ctx->setOpacity(0.2);
+  a_ctx->fillPath(_clock_border_path, radialGrad);
+  a_ctx->restore();
 
   // draw marker
   double current_percent = (mark_hour) / 24.0;
@@ -796,6 +821,17 @@ void SimpleGrayStyle::draw_clock_surface(const style_data &features,
 
   draw_clock_hands(a_ctx, rect, 5, second_value, resource_manager::kAccentColor,
                    1 * scale_factor());
+
+  /* glass effect */
+  QRadialGradient gloss_grad(QPointF(rect.width(), rect.width() /2), rect.width() / 2);
+  gloss_grad.setColorAt(0, QColor("#ffffff"));
+  gloss_grad.setColorAt(1, Qt::transparent);
+
+  a_ctx->save();
+  a_ctx->setOpacity(0.5);
+  a_ctx->fillPath(_clock_border_path, gloss_grad);
+  a_ctx->restore();
+
 }
 
 void SimpleGrayStyle::draw_clock_surface_to_buffer(const style_data &features,

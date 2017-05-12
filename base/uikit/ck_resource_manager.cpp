@@ -72,7 +72,7 @@ resource_manager::resource_manager(const QString &a_theme_name)
 
 #ifdef __APPLE__
   priv->m_current_style_ref =
-      cherry_kit::extension_manager::instance()->style("cocoastyle");
+      cherry_kit::extension_manager::instance()->style("simplegray");
 #else
   priv->m_current_style_ref =
       cherry_kit::extension_manager::instance()->style("simplegray");
@@ -159,10 +159,10 @@ QImage resource_manager::drawable(const QString &a_fileName,
 void resource_manager::load_default_color_values() {
   priv->m_color_map[kDarkPrimaryColor] = "#5CAFE5";
   priv->m_color_map[kPrimaryColor] = "#2196F3";
-  priv->m_color_map[kLightPrimaryColor] = "#EFEFEF";
+  priv->m_color_map[kLightPrimaryColor] = "#FFFFFF";
   priv->m_color_map[kTextBackground] = "#FFFFFF";
   priv->m_color_map[kAccentColor] = "#FF4081";
-  priv->m_color_map[kTextColor] = "#2b2b2b";
+  priv->m_color_map[kTextColor] = "#4A4A4A";
   priv->m_color_map[kSecondryTextColor] = "#FFFFFF";
   priv->m_color_map[kDividerColor] = "#B6B6B6";
 }
