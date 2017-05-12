@@ -269,7 +269,7 @@ void time_controller::PrivateClockController::setup_create_clock_ui(
       ck_ui->add_widget(0, 0, "clock", ui_data, [=]() {}));
 
   ck_location_btn = add_action_button(ck_ui, 1, 0, "", "ck_location");
-  ck_location_btn->hide();
+  //ck_location_btn->hide();
 
   ck_window->set_window_content(ck_ui->viewport());
   ck_window->set_window_title("Time");
