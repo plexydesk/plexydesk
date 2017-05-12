@@ -810,6 +810,8 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
   /* please note that the clock is drawn with the inverted color scheme */
   float border_len = features.geometry.width() - (48);
 
+  QRectF border_rect = features.geometry.adjusted(1, 1, -2 , -2);
+  QRectF outer_rect = features.geometry.adjusted(-9, -9, 10 , 10);
   QRectF rect = QRectF(
       features.geometry.x() + ((features.geometry.width() - border_len) / 2),
       (features.geometry.y() + ((features.geometry.height() - border_len) / 2)),
@@ -829,13 +831,21 @@ void CocoaStyle::draw_clock_surface(const style_data &features,
 
   QPainterPath _clock_background;
   QPainterPath _clock_cover_path;
+  QPainterPath _edge_background;
   _clock_background.addEllipse(rect);
-  _clock_cover_path.addEllipse(features.geometry);
+  _clock_cover_path.addEllipse(border_rect);
+  _edge_background.addEllipse(outer_rect);
+
+  a_ctx->save();
+  a_ctx->setOpacity(0.4);
+  a_ctx->fillPath(_edge_background, QBrush(QColor("#ffffff")));
+  a_ctx->restore();
 
   a_ctx->save();
   a_ctx->setOpacity(1.0);
   a_ctx->fillPath(_clock_cover_path, QBrush(QColor("#ffffff")));
   a_ctx->restore();
+
 
 
   /* aqua */
