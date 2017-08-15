@@ -1,6 +1,6 @@
 # Change the values below as needed
 %define name plexydesk
-%define version 0.6.6
+%define version 1.0.3
 %define rpm_release 1
 %define debug_on 0
 
@@ -26,11 +26,11 @@
 Group:		System/GUI/Other
 Release:	%{rpm_release}.openSUSE%{suse_version}
 Requires:	ffmpeg
-Requires:	libqt4 >= 4.7.0, libqimageblitz4 >= 0.0.4, libQtWebKit4 >= 4.7.0
+Requires:	qt5 >= 5.2.0, libsoup
 Requires:	xorg-x11-libs, xorg-x11-libSM, xorg-x11-libXext, xorg-x11-libXrender
 BuildRequires:  libffmpeg-devel
-BuildRequires:  libqt4-devel >= 4.7.0, libqimageblitz-devel, libQtWebKit-devel
-BuildRequires:  xorg-x11-devel, xorg-x11-libSM-devel, xorg-x11-libXext-devel, xorg-x11-libXrender-devel
+BuildRequires:  libqt-devel >= 5.2.0 
+BuildRequires:  xorg-x11-devel, xorg-x11-libXrender-devel
 %endif
 
 
@@ -42,10 +42,9 @@ BuildRequires:  xorg-x11-devel, xorg-x11-libSM-devel, xorg-x11-libXext-devel, xo
 Group:		User Interface/Desktops
 Release:	%{rpm_release}.fc%{fedora_vernum}
 Requires:	ffmpeg, ffmpeg-libs
-Requires:	qimageblitz, libQGLViewer, qt-webkit
 Requires:	libSM, libXext, libXcomposite, libXdamage, libXrender
-BuildRequires:  qt-devel >= 4.7.0, qimageblitz-devel, ffmpeg-devel, qt-webkit-devel
-BuildRequires:  libSM-devel, libXext-devel, libXcomposite-devel, libXdamage-devel, libXrender-devel
+BuildRequires:  qt5-devel >= 5.2.0 ffmpeg-devel
+BuildRequires:  libXcomposite-devel 
 %endif
 
 

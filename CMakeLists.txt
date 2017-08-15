@@ -129,9 +129,9 @@ if (APPLE)
 endif()
 
 # Project variables that need to be defined manually
-set(LIB_MAJOR 1)
-set(LIB_MINOR 0)
-set(LIB_RELEASE 3)
+set(LIB_MAJOR 0)
+set(LIB_MINOR 6)
+set(LIB_RELEASE 6)
 
 set(APPLICATION_INTERNAL_VERSION 20150101)
 set(APPLICATION_DATE 2015-01-01)
