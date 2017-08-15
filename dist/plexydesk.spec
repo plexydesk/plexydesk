@@ -55,10 +55,9 @@ BuildRequires:  libXcomposite-devel
 Group:		Graphical desktop/Other
 Release:	%{rpm_release}mdv%{product_version}
 Requires:	ffmpeg
-Requires:	libqimageblitz4 >= 4.0, libqtdeclarative4 >= 4.7.0, libqtdbus4 >= 4.7.0
-Requires:	libqtwebkit4 >= 4.7.0, libqtopengl4 >= 4.7.0, qt4-qmlviewer
+Requires:	libqt5 >= 5.2.0
 Requires:	libsm6, libxext6, libxcomposite1, libxdamage1, libxrender1
-BuildRequires:  libqt4-devel >= 4.7.0, libqimageblitz-devel, libffmpeg-devel
+BuildRequires:  libqt5-devel >= 5.5.0, libqimageblitz-devel, libffmpeg-devel
 BuildRequires:  libsm6-devel, libxext6-devel, libxcomposite1-devel, libxdamage-devel, libxrender1-devel
 %endif
 %endif
