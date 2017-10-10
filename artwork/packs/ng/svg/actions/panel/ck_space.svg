@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.0.1 (7597) - http://www.bohemiancoding.com/sketch -->
+    <title>36x36</title>
+    <description>Created with Sketch.</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="36x36" sketch:type="MSArtboardGroup">
+            <path d="M18,35 C27.3888412,35 35,27.3888412 35,18 C35,8.61115879 27.3888412,1 18,1 C8.61115879,1 1,8.61115879 1,18 C1,27.3888412 8.61115879,35 18,35 Z" id="Oval-1-copy-3" fill="#418DD9" sketch:type="MSShapeGroup"></path>
+            <g id="window-spaces" sketch:type="MSLayerGroup" transform="translate(11.000000, 11.000000)" fill="#F8F8F8">
+                <rect id="Rectangle-19" sketch:type="MSShapeGroup" x="8" y="8" width="6" height="6"></rect>
+                <rect id="Rectangle-20" sketch:type="MSShapeGroup" x="8" y="0" width="6" height="6"></rect>
+                <rect id="Rectangle-21" sketch:type="MSShapeGroup" x="0" y="8" width="6" height="6"></rect>
+                <rect id="Rectangle-22" sketch:type="MSShapeGroup" x="0" y="0" width="6" height="6"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
