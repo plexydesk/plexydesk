@@ -22,6 +22,7 @@
 #include <plexydesk_ui_exports.h>
 
 #include <ck_style.h>
+#include <functional>
 
 namespace cherry_kit {
 class DECL_UI_KIT_EXPORT resource_manager {
