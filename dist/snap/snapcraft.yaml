@@ -2,8 +2,7 @@ name: plexydesk
 version: 0.1
 summary: PlexyDesk Desktop Manager
 description: |
-  The MOOS ping example requires the MOOSDB as well as the ping/pong
-  application.
+        PlexyDesk is a modern multi platform desktop manager, which runs on GNU/Linux, Microsoft Windows, and Apple MacOS.
 
 grade: devel
 confinement: strict
