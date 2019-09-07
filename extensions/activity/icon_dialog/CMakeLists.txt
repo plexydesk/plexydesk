@@ -16,7 +16,7 @@ set(QTMOC_SRCS
     )
 
 if (ENABLE_QT5)
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+	#QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 endif()
 
 set(sourceFiles

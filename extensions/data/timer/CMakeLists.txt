@@ -15,8 +15,6 @@ set(QTMOC_SRCS
     timerinterface.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
-
 set(sourceFiles
     ${sourceFiles}
     ${headerFiles}

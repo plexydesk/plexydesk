@@ -15,7 +15,7 @@ set(QTMOC_SRCS
     timezone_dialog_plugin_impl.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+#QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
 set(sourceFiles
     ${sourceFiles}

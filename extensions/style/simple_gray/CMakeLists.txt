@@ -15,11 +15,11 @@ set(QTMOC_SRCS
     )
 
 if (ENABLE_QT5)
-	QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+	#QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 endif()
 
 if (ENABEL_QT4)
-QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+	#QT4_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 endif()
 
 set(sourceFiles
@@ -32,6 +32,7 @@ set(libs
     )
 
 ADD_LIBRARY(simplegray SHARED ${sourceFiles})
+#set_property(TARGET simplegray APPEND PROPERTY AUTOGEN_TARGET_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/meta.json)
 
 if (MINGW)
     SET_TARGET_PROPERTIES(simplegray PROPERTIES
@@ -47,16 +48,16 @@ TARGET_LINK_LIBRARIES(simplegray
     )
 
 if (ENABLE_QT5)
-QT5_USE_MODULES(simplegray Widgets Xml  Core  )
+   QT5_USE_MODULES(simplegray Widgets Xml  Core  )
 endif()
 
 if (ENABEL_QT4)
-QT4_USE_MODULES(cocoastyle Gui Xml  Core  )
+   QT4_USE_MODULES(cocoastyle Gui Xml  Core  )
 endif()
 
 if (NOT APPLE)
-INSTALL(TARGETS simplegray DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
-INSTALL(FILES simplegray.desktop DESTINATION share/plexy/ext/groups)
+   INSTALL(TARGETS simplegray DESTINATION ${CMAKE_INSTALL_LIBDIR}/plexyext)
+   INSTALL(FILES simplegray.desktop DESTINATION share/plexy/ext/groups)
 endif (NOT APPLE)
 
 if (APPLE)

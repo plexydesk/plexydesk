@@ -13,7 +13,6 @@ set(QTMOC_SRCS
 	templateinterface.h
 	)
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
 set(sourceFiles
 	${sourceFiles}
