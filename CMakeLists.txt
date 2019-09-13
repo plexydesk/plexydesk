@@ -395,3 +395,4 @@ add_subdirectory(extensions/style/cocoa)
 add_subdirectory(extensions/style/simple_gray)
 
 add_subdirectory(artwork/packs/)
+add_subdirectory(artwork/icons/)
