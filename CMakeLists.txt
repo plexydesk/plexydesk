@@ -262,7 +262,15 @@ endif (DOXYGEN_FOUND)
 CONFIGURE_FILE(
     "${CMAKE_CURRENT_SOURCE_DIR}/runner/plexydesk.cmake.desktop"
     "${CMAKE_CURRENT_BINARY_DIR}/runner/plexydesk.desktop"
+    "${CMAKE_CURRENT_SOURCE_DIR}/runner/plexydesk-wayland.cmake.desktop"
     @ONLY)
+
+CONFIGURE_FILE(
+    "${CMAKE_CURRENT_SOURCE_DIR}/runner/plexydesk-wayland.cmake.desktop"
+    "${CMAKE_CURRENT_BINARY_DIR}/runner/plexydesk-wayland.desktop"
+    "${CMAKE_CURRENT_SOURCE_DIR}/runner/plexydesk-wayland.cmake.desktop"
+    @ONLY)
+
 
 CONFIGURE_FILE(
     "${CMAKE_CURRENT_SOURCE_DIR}/dist/windows/make_nsis_installer.cmake.nsi"

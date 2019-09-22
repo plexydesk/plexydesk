@@ -125,6 +125,7 @@ install(TARGETS plexydesk DESTINATION bin)
 IF (ENABLE_QT5)
 if(UNIX)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plexydesk.desktop DESTINATION share/applications)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plexydesk-wayland.desktop DESTINATION share/applications)
 endif()
 endif()
 

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=@APPLICATION_NAME@ Wayland Runtime
+GenericName=Desktop Orginiser Under Wayland
+GenericName[bg]=Организатор за работната площ
+Comment=Helps you efficiently organise and use your Desktop.
+Comment[bg]=Ефективно организира и променя работната Ви площ.
+Exec=sh -c "QT_QPA_PLATFORM=wayland @CMAKE_INSTALL_PREFIX@/bin/@APPLICATION_EXE_NAME@ -platform wayland"
+TryExec=@CMAKE_INSTALL_PREFIX@/bin/@APPLICATION_EXE_NAME@
+Icon=@CMAKE_INSTALL_PREFIX@/share/plexy/@APPLICATION_EXE_NAME@.png
+Terminal=false
+Categories=Qt;System;
