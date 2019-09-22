@@ -224,10 +224,10 @@ public:
       workspace->expose(0);
 
 #if defined (Q_OS_LINUX) && defined (__QT5_TOOLKIT__)
-      QPlatformNativeInterface *native =
-          QGuiApplication::platformNativeInterface();
+      if (a_platform_name && (strcmp(a_platform_name, "xcb") == 0)) {
+	QPlatformNativeInterface *native =
+	    QGuiApplication::platformNativeInterface();
 
-      if (native && a_platform_name && (strcmp(a_platform_name, "xcb") == 0)) {
         Display *display = static_cast<Display *>(
             native->nativeResourceForWindow("display", NULL));
         if (display) {
@@ -368,12 +368,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     runtime_platform_name = argv[i + 1];
   }
 
-  if (!runtime_platform_name) {
-    const char *null_platform = "xcb";
-    runtime_platform_name = (char *)malloc(sizeof(null_platform));
-    strncpy(runtime_platform_name, null_platform, sizeof(null_platform));
-  }
-  printf("Detected Platform %s\n", runtime_platform_name);
+  if (runtime_platform_name)
+    printf("Detected Platform %s\n", runtime_platform_name);
 #endif
 
   QApplication app(argc, argv);
@@ -385,11 +381,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
       QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
                                QLatin1String("/plexyext/")));
 
-
   Runtime runtime(runtime_platform_name);
-
-  if (runtime_platform_name)
-      free(runtime_platform_name);
 
   return app.exec();
 }
