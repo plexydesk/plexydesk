@@ -25,10 +25,8 @@
 %if %{is_suse}
 Group:		System/GUI/Other
 Release:	%{rpm_release}.openSUSE%{suse_version}
-Requires:	ffmpeg
 Requires:	qt5 >= 5.2.0, libsoup
 Requires:	xorg-x11-libs, xorg-x11-libSM, xorg-x11-libXext, xorg-x11-libXrender
-BuildRequires:  libffmpeg-devel
 BuildRequires:  libqt-devel >= 5.2.0 
 BuildRequires:  xorg-x11-devel, xorg-x11-libXrender-devel
 %endif
@@ -37,13 +35,12 @@ BuildRequires:  xorg-x11-devel, xorg-x11-libXrender-devel
 # Is this Fedora? If yes, define specific options for it.
 # Note: Fedora requires enabling of rpmfusion repo
 %if %{is_fedora}
-%define fedora_version      %(rpm -q --queryformat '%{VERSION}' fedora-release)
+%define fedora_version      %(rpm -q --queryformat '%{VERSION}' fedora-release-common)
 %define fedora_vernum       %(echo "%{fedora_version}" | tr -d '.')
 Group:		User Interface/Desktops
 Release:	%{rpm_release}.fc%{fedora_vernum}
-Requires:	ffmpeg, ffmpeg-libs
 Requires:	libSM, libXext, libXcomposite, libXdamage, libXrender
-BuildRequires:  qt5-devel >= 5.2.0 ffmpeg-devel
+BuildRequires:  qt5-devel >= 5.2.0
 BuildRequires:  libXcomposite-devel 
 %endif
 
@@ -54,10 +51,9 @@ BuildRequires:  libXcomposite-devel
 %if %{is_pclinuxos} < 1
 Group:		Graphical desktop/Other
 Release:	%{rpm_release}mdv%{product_version}
-Requires:	ffmpeg
 Requires:	libqt5 >= 5.2.0
 Requires:	libsm6, libxext6, libxcomposite1, libxdamage1, libxrender1
-BuildRequires:  libqt5-devel >= 5.5.0, libqimageblitz-devel, libffmpeg-devel
+BuildRequires:  libqt5-devel >= 5.5.0, libqimageblitz-devel
 BuildRequires:  libsm6-devel, libxext6-devel, libxcomposite1-devel, libxdamage-devel, libxrender1-devel
 %endif
 %endif
@@ -97,8 +93,7 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}-root
 Vendor:		PlexyDesk Team
 Source:		%{name}-%{version}.tar.bz2
 Requires:	shared-mime-info
-BuildRequires:	glibc-devel, cmake >= 2.6, automake, libtool
-BuildRequires:	bison, flex
+BuildRequires:	glibc-devel, cmake >= 2.6, automake, libsoup-devel
 
 
 %description

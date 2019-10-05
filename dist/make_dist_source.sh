@@ -75,7 +75,7 @@ fi
 
 # Create the tarball
 prog_ok "Creating the sources tarball..."
-tar -cjf "${READY_DIR}/${APP_NAME}-${APP_VERSION}.tar.bz2" . --exclude-vcs --exclude 'build' --exclude 'INSTALLERS' --transform "${TRANSFORM_STRING}" --transform "${TRANSFORM_STRING_DOT}" --numeric-owner
+tar -cvjf "${READY_DIR}/${APP_NAME}-${APP_VERSION}.tar.bz2" . --transform "${TRANSFORM_STRING}" --transform "${TRANSFORM_STRING_DOT}" --numeric-owner
 
 if [ $? -ne 0 ]; then
     prog_err "Creating the sources tarball..."
