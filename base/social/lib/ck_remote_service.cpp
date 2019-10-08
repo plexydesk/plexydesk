@@ -269,7 +269,7 @@ remote_service::remote_service(const std::string &input)
   if (ck_file_exisits(service_file.c_str())) {
     tinyxml2::XMLError error =
         ctx->m_xml_root_doc.LoadFile(service_file.c_str());
-    if (error != tinyxml2::XML_NO_ERROR) {
+    if (error != tinyxml2::XML_SUCCESS) {
       // std::cout << __LINE__ << " : " << __FUNCTION__ << " Error "
       //         << ctx->m_xml_root_doc.GetErrorStr1() << std::endl;
       ctx->m_current_error = kDefinitionLoadError;
@@ -617,7 +617,7 @@ remote_result remote_service::response(const std::string &a_method_name,
     std::vector<service_result_query *> list = srv_result->query_list();
     tinyxml2::XMLDocument doc;
     if (doc.Parse((const char *)a_response.data_buffer(),
-                  a_response.data_buffer_size()) != tinyxml2::XML_NO_ERROR) {
+                  a_response.data_buffer_size()) != tinyxml2::XML_SUCCESS) {
       std::cout << __FUNCTION__ << "xml parse error .... [fail]" << std::endl;
       return rv;
     }

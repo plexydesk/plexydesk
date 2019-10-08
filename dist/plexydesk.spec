@@ -1,7 +1,7 @@
 # Change the values below as needed
 %define name plexydesk
 %define version 1.0.3
-%define rpm_release 1
+%define rpm_release 2
 %define debug_on 0
 
 
@@ -93,7 +93,8 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}-root
 Vendor:		PlexyDesk Team
 Source:		%{name}-%{version}.tar.bz2
 Requires:	shared-mime-info
-BuildRequires:	glibc-devel, cmake >= 2.6, automake, libsoup-devel
+Requires:	tinyxml2
+BuildRequires:	glibc-devel, cmake >= 2.6, automake, libsoup-devel, tinyxml2-devel
 
 
 %description

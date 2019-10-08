@@ -91,6 +91,8 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Network REQUIRED)
 
+find_package(TinyXML2 REQUIRED)
+
 #plugins
 if (APPLE)
     set (CMAKE_PLEXYDESK_OSX_PLUGIN_PREFIX "plexydesk.app/Contents/PlugIns/plexydesk/")
@@ -332,7 +334,10 @@ INCLUDE_DIRECTORIES(
 INCLUDE(CPack)
 
 add_subdirectory(deps/json-cpp)
-add_subdirectory(deps/tinyxml2)
+
+if (APPLE OR WIN32)
+    add_subdirectory(deps/tinyxml2)
+endif(WIN32 OR APPLE)
 
 if (WIN32)
     ADD_SUBDIRECTORY(dist/windows)
