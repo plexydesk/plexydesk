@@ -202,12 +202,13 @@ int SocketWrapper::recv(void* buffer, size_t size)
             int err = SSL_get_error(ssl_, ret);
             if (err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE)
             {
-                // SSL needs more data, not an error
-                return 0;
+                // Not an error, means try again later
+                errno = EAGAIN; // Simulate non-blocking would block
+                return -1; // Tell higher layers: "no data now, but keep alive"
             }
             else
             {
-                // Real error or disconnect
+                // Real SSL error
                 ERR_print_errors_fp(stderr);
                 return -1;
             }
@@ -215,10 +216,15 @@ int SocketWrapper::recv(void* buffer, size_t size)
     }
     else
     {
-        return ::recv(sock_, (char*)buffer, (int)size, 0);
+        int ret = ::recv(sock_, (char*)buffer, (int)size, 0);
+        if (ret == 0)
+        {
+            // recv() returns 0 -> clean socket close
+            return -1;
+        }
+        return ret;
     }
 }
-
 
 bool SocketWrapper::wait_for_ready(bool want_read, bool want_write, int timeout_ms)
 {
