@@ -328,11 +328,11 @@ void widget::focusInEvent(QFocusEvent *a_event_ptr)
 }
 
 float widget::scale_factor_for_width() const {
-  return geometry().width() / contents_geometry().width();
+  return geometry().width();
 }
 
 float widget::scale_factor_for_height() const {
-  return geometry().height() / contents_geometry().height();
+  return geometry().height();
 }
 
 void widget::set_child_widet_visibility(bool a_visibility) {

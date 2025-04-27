@@ -54,19 +54,21 @@ void ClassicBackgroundRender::setBackgroundGeometry(const QRectF &rect) {
 
 void ClassicBackgroundRender::setBackgroundMode(
     ClassicBackgroundRender::ScalingMode mode) {
-  mScalingMode = mode;
+    mScalingMode = mode;
 
-  if (mode == FitHeight) {
-    mBackgroundImageHeightScaled =
-        mBackgroundImage.scaledToHeight(this->contents_geometry().height());
-  }
+    if (mode == FitHeight) {
+        mBackgroundImageHeightScaled =
+            mBackgroundImage.scaledToHeight(this->contents_geometry().height());
+    } else if (mode == FitWidth) {
+        mBackgroundImageWidthScaled =
+            mBackgroundImage.scaledToWidth(this->contents_geometry().width());
+    } else if (mode == Streach) {
+        mBackgroundImage = mBackgroundImage.scaled(
+            this->contents_geometry().size().toSize(),
+            Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    }
 
-  if (mode == FitWidth) {
-    mBackgroundImageWidthScaled =
-        mBackgroundImage.scaledToWidth(this->contents_geometry().width());
-  }
-
-  update();
+    update();
 }
 
 cherry_kit::style_ref ClassicBackgroundRender::style() const {
@@ -98,6 +100,8 @@ void ClassicBackgroundRender::setSeamLessMode(bool value) {
 
 void ClassicBackgroundRender::paint_view(QPainter *painter,
                                          const QRectF &rect /*rect*/) {
+
+  /*
   if (mSeamLessMode) {
     painter->save();
     painter->setBackgroundMode(Qt::TransparentMode);
@@ -138,4 +142,5 @@ void ClassicBackgroundRender::paint_view(QPainter *painter,
   default:
     break;
   }
+  */
 }

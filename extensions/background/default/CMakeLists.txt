@@ -5,20 +5,17 @@ set(sourceFiles
     desktopwindow.cpp
     background_controller.cpp
     classicinterface.cpp
-    classicbackgroundrender.cpp
     )
 
 set(headerFiles
     desktopwindow.h
     background_controller.h
     classicinterface.h
-    classicbackgroundrender.h
     )
 
 set(QTMOC_SRCS
     background_controller.h
     classicinterface.h
-    classicbackgroundrender.h
     )
 
 if (ENABLE_QT5)

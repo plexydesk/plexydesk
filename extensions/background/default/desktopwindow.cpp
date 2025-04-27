@@ -102,31 +102,32 @@ void desktop_window::set_background(const std::string &a_image_name) {
 }
 
 void desktop_window::set_background(const QImage &a_image_name) {
-  //priv->m_background_texture = QImage();
-  //priv->m_background_texture = a_image_name;
-  priv->m_background_pixmap = QPixmap::fromImage(a_image_name);
-  update();
+    priv->m_background_pixmap = QPixmap::fromImage(
+        a_image_name.scaled(priv->m_background_width, priv->m_background_height,
+                            Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    update();
 }
 
 void desktop_window::paint_view(QPainter *a_ctx, const QRectF &a_rect) {
-  if (priv->m_seamless) {
-    a_ctx->setBackgroundMode(Qt::TransparentMode);
-    a_ctx->setCompositionMode(QPainter::CompositionMode_Source);
-    a_ctx->fillRect(a_rect, Qt::transparent);
-    widget::paint_view(a_ctx, a_rect);
-    return;
-  }
+    if (priv->m_seamless) {
+        a_ctx->setBackgroundMode(Qt::TransparentMode);
+        a_ctx->setCompositionMode(QPainter::CompositionMode_Source);
+        a_ctx->fillRect(a_rect, Qt::transparent);
+        widget::paint_view(a_ctx, a_rect);
+        return;
+    }
 
-  a_ctx->setClipRect(boundingRect());
-  a_ctx->save();
- /*
-  a_ctx->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                              QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing, true);
-*/
-  a_ctx->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform, true);
+    a_ctx->setClipRect(boundingRect());
+    a_ctx->save();
 
-  a_ctx->setBrush(QBrush(priv->m_background_pixmap));
-  a_ctx->drawRect(a_rect);
+    a_ctx->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform, true);
 
-  a_ctx->restore();
+    // Scale the pixmap to fit the rectangle
+    if (!priv->m_background_pixmap.isNull()) {
+        QPixmap scaled_pixmap = priv->m_background_pixmap.scaled(
+            a_rect.size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        a_ctx->drawPixmap(a_rect.topLeft(), scaled_pixmap);
+    }
+
+    a_ctx->restore();
 }

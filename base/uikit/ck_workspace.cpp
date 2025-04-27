@@ -266,7 +266,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
 #ifdef Q_OS_WIN
   /* do not change this unless it's a must */
-  //setWindowFlags(Qt::CustomizeWindowHint);
+  setWindowFlags(Qt::CustomizeWindowHint);
   setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 #endif
 
