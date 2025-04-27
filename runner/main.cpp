@@ -40,360 +40,217 @@
 #ifdef __QT5_TOOLKIT__
 #include <qpa/qplatformnativeinterface.h>
 #endif
-
-#if defined(Q_WS_X11) && defined(__QT4_TOOLKIT__)// && defined(Q_WS_MAC) ??
-#include <X11/Xlib.h>
-#include <QX11Info>
-#endif
-
 #include <X11/Xlib.h>
 #include <X11/Xregion.h>
 #include <X11/extensions/shape.h>
 #include <X11/Xutil.h>
-
 #include <netwm.h>
+#endif
 
+#ifdef Q_OS_WIN32
+#include <Windows.h>
+#include <tchar.h>
+#include <clrdata.h>
 #endif
 
 #include "desktopmanager.h"
 #include <ck_screen.h>
 
 #ifdef Q_OS_WIN32
-// Windows
-#include <Windows.h>
-#include <tchar.h>
-#include <clrdata.h>
+void configureWindowsWorkspace(DesktopManager *workspace, bool desktop_mode = false) {
+    HWND hwnd = (HWND)workspace->winId();
 
-WNDPROC wpOrigEditProc;
+    if (desktop_mode) {
+        // Find Progman
+        HWND progman = FindWindowW(L"Progman", NULL);
+        if (!progman) {
+            qWarning() << "Failed to find Progman window";
+            return;
+        }
 
-extern void __reset_session_log();
-extern void __sync_session_log(QtMsgType msg_type,
-                        const QMessageLogContext &ctx,
-                        const QString &data);
+        SendMessageTimeout(progman, 0x052C, 0, 0, SMTO_NORMAL, 1000, nullptr);
 
+        // Find WorkerW
+        HWND workerw = NULL;
+        HWND shell_view = FindWindowExW(progman, NULL, L"SHELLDLL_DefView", NULL);
+        if (shell_view) {
+            workerw = FindWindowExW(NULL, progman, L"WorkerW", NULL);
+        }
 
-void __sync_session_log(QtMsgType msg_type,
-                        const QMessageLogContext &ctx,
-                        const QString &data)
-{
-    QByteArray debug_data = data.toLocal8Bit();
+        if (!workerw) {
+            qWarning() << "Failed to find WorkerW window";
+            return;
+        }
 
-    QFile sync_file(
-                QDir::toNativeSeparators(
-                    QDir::homePath() + "/plexydesk-session-log.txt"));
+        // Set parent to WorkerW
+        SetParent(hwnd, workerw);
 
-    sync_file.open(QIODevice::WriteOnly
-                        | QIODevice::Text
-                        | QIODevice::Append);
+        HMONITOR hmon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY);
+        MONITORINFO mi = { sizeof(mi) };
+        if (GetMonitorInfo(hmon, &mi)) {
+            RECT monitor_rect = mi.rcMonitor;
+            // Set position relative to WorkerW
+            SetWindowPos(hwnd, HWND_BOTTOM,
+                         monitor_rect.left, monitor_rect.top,
+                         monitor_rect.right - monitor_rect.left,
+                         monitor_rect.bottom - monitor_rect.top,
+                         SWP_NOACTIVATE | SWP_NOZORDER);
+        } else {
+            qWarning() << "Failed to get monitor info";
+        }
 
-    if (!sync_file.isOpen()) { return;}
+        LONG ex_style = GetWindowLong(hwnd, GWL_EXSTYLE);
+        ex_style |= WS_EX_NOACTIVATE | WS_EX_LAYERED;
+        SetWindowLong(hwnd, GWL_EXSTYLE, ex_style);
 
-    QTextStream sync_stream(&sync_file);
+        SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
 
-    if (msg_type == QtWarningMsg || msg_type == QtDebugMsg) {
-      sync_stream <<  debug_data.constData() << " - " << endl;
+        ShowWindow(hwnd, SW_SHOWNOACTIVATE);
+    } else {
+        LONG style = GetWindowLong(hwnd, GWL_STYLE);
+        style &= ~(WS_CAPTION | WS_THICKFRAME | WS_BORDER);
+        SetWindowLong(hwnd, GWL_STYLE, style);
+
+        SetWindowPos(hwnd, HWND_TOP, 100, 100, 800, 600, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
     }
-
-    sync_file.close();
 }
 
-void __reset_session_log() {
-    QFile sync_file(
-                QDir::toNativeSeparators(
-                    QDir::homePath() + "/plexydesk-session-log.txt"));
-
+void resetWindowsSessionLog() {
+    QFile sync_file(QDir::toNativeSeparators(QDir::homePath() + "/plexydesk-session-log.txt"));
     sync_file.open(QIODevice::WriteOnly | QIODevice::Text);
-
-    if (!sync_file.isOpen()){ return;}
-
-    QTextStream sync_stream(&sync_file);
-
-    sync_stream << "";
-    sync_file.close();
+    if (sync_file.isOpen()) {
+        QTextStream sync_stream(&sync_file);
+        sync_stream << "";
+        sync_file.close();
+    }
 }
 
-// Subclass procedure
-LRESULT APIENTRY
-EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  if (uMsg == WM_WINDOWPOSCHANGING) {
-
-    if (!SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
-                      SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE)) {
-      qDebug() << Q_FUNC_INFO << "Error maintaining native z order";
+void syncWindowsSessionLog(QtMsgType msg_type, const QMessageLogContext &ctx, const QString &data) {
+    QByteArray debug_data = data.toLocal8Bit();
+    QFile sync_file(QDir::toNativeSeparators(QDir::homePath() + "/plexydesk-session-log.txt"));
+    sync_file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
+    if (sync_file.isOpen()) {
+        QTextStream sync_stream(&sync_file);
+        if (msg_type == QtWarningMsg || msg_type == QtDebugMsg) {
+            sync_stream << debug_data.constData() << " - " << endl;
+        }
+        sync_file.close();
     }
-    return 0;
-  }
-
-  if (uMsg == WM_WINDOWPOSCHANGED) {
-    /*
-    if (!SetWindowPos( hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER
-    |
-    SWP_NOACTIVATE)) {
-            qDebug() << Q_FUNC_INFO << "Error maintaining native z order";
-    }
-    */
-
-    return 0;
-  }
-
-  if (uMsg == WM_SETFOCUS) {
-    /*
-    if (!SetWindowPos(hwnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE |
-    SWP_NOACTIVATE)) {
-            qDebug() << Q_FUNC_INFO << "Error changing native z order";
-    }
-    */
-
-    return CallWindowProc(wpOrigEditProc, hwnd, uMsg, wParam, lParam);
-  }
-
-  return CallWindowProc(wpOrigEditProc, hwnd, uMsg, wParam, lParam);
 }
+#endif
 
-// usage
-//     CHAR msgText[256];
-//     getLastErrorText(msgText,sizeof(msgText));
-static CHAR *          //   return error message
-    getLastErrorText(  // converts "Lasr Error" code into text
-        CHAR *pBuf,    //   message buffer
-        ULONG bufSize) //   buffer size
-{
-  DWORD retSize;
-  LPTSTR pTemp = NULL;
-
-  if (bufSize < 16) {
-    if (bufSize > 0) {
-      pBuf[0] = '\0';
+#ifdef Q_OS_LINUX
+void configureLinuxWorkspace(DesktopManager *workspace, const char *platform_name) {
+    if (platform_name && (strcmp(platform_name, "xcb") == 0)) {
+        QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
+        Display *display = static_cast<Display *>(native->nativeResourceForWindow("display", NULL));
+        if (display) {
+            NETWinInfo info(display, workspace->winId(), RootWindow(display, 0), NET::WMDesktop);
+            info.setDesktop(NETWinInfo::OnAllDesktops);
+            info.setWindowType(NET::Desktop);
+        }
     }
-    return (pBuf);
-  }
-  retSize = FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-          FORMAT_MESSAGE_ARGUMENT_ARRAY,
-      NULL, GetLastError(), LANG_NEUTRAL, (LPTSTR) & pTemp, 0, NULL);
-  if (!retSize || pTemp == NULL) {
-    pBuf[0] = '\0';
-  } else {
-    pTemp[strlen(pTemp) - 2] = '\0'; // remove cr and newline character
-    sprintf(pBuf, "%0.*s (0x%x)", bufSize - 16, pTemp, GetLastError());
-    LocalFree((HLOCAL)pTemp);
-  }
-  return (pBuf);
 }
 #endif
 
 class Runtime {
-private:
-#ifdef Q_OS_WIN32
-    int check_windows_version() {
-       OSVERSIONINFO osvi;
-       ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-       osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-       GetVersionEx(&osvi);
-       return osvi.dwMajorVersion;
-    }
-
-#endif
-
-#ifdef Q_OS_WIN32
-//#error "Not supported";
-#endif
 public:
-  Runtime(const char *a_platform_name = 0) {
-    for (int i = 0; i < cherry_kit::screen::get()->screen_count() ; i++) {
-      DesktopManager *workspace = new DesktopManager();
-      //workspace->set_accelerated_rendering(true);
+    Runtime(const char *platform_name = nullptr, bool windowed_mode = false) {
+        for (int i = 0; i < cherry_kit::screen::get()->screen_count(); i++) {
+            DesktopManager *workspace = new DesktopManager();
+            workspace->move_to_screen(i);
+            m_workspace_list.push_back(workspace);
 
-      workspace->move_to_screen(i);
-      m_workspace_list.push_back(workspace);
-      workspace->add_default_controller("classicbackdrop");
-      workspace->add_default_controller("dockwidget");
-      workspace->add_default_controller("plexyclock");
-      workspace->add_default_controller("desktopnoteswidget");
-      workspace->add_default_controller("folderwidget");
-      workspace->add_default_controller("datewidget");
-      workspace->add_default_controller("photoframe");
-      workspace->add_default_controller("desksyncwidget");
+            workspace->add_default_controller("classicbackdrop");
+            workspace->add_default_controller("dockwidget");
+            workspace->add_default_controller("plexyclock");
+            workspace->add_default_controller("desktopnoteswidget");
+            workspace->add_default_controller("folderwidget");
+            workspace->add_default_controller("datewidget");
+            workspace->add_default_controller("photoframe");
+            workspace->add_default_controller("desksyncwidget");
 
-      workspace->restore_session();
+            workspace->restore_session();
 
-      if (workspace->space_count() <= 0) {
-        workspace->add_default_space();
-      }
+            if (workspace->space_count() <= 0) {
+                workspace->add_default_space();
+            }
 
-      workspace->expose(0);
+            workspace->expose(0);
 
-#if defined (Q_OS_LINUX) && defined (__QT5_TOOLKIT__)
-      if (a_platform_name && (strcmp(a_platform_name, "xcb") == 0)) {
-	QPlatformNativeInterface *native =
-	    QGuiApplication::platformNativeInterface();
-
-        Display *display = static_cast<Display *>(
-            native->nativeResourceForWindow("display", NULL));
-        if (display) {
-          NETWinInfo info(display, workspace->winId(), RootWindow(display, 0),
-                          NET::WMDesktop);
-          info.setDesktop(NETWinInfo::OnAllDesktops);
-          info.setWindowType(NET::Desktop);
-        }
-        // handle wayland
-      }
+            if (!windowed_mode) {
+#ifdef Q_OS_LINUX
+                configureLinuxWorkspace(workspace, platform_name);
 #endif
-
-#if defined (Q_OS_LINUX) && defined (__QT4_TOOLKIT__)
-    NETWinInfo info(QX11Info::display(), workspace->winId(), QX11Info::appRootWindow(), NET::WMDesktop );
-    info.setDesktop(NETWinInfo::OnAllDesktops);
-    info.setWindowType(NET::Desktop);
-#endif
-
-      workspace->show();
 
 #ifdef Q_OS_WIN32
-      cherry_kit::device_window *d_window =
-              cherry_kit::system_window_context::get()->desktop();
-      SetParent((window_handle_t)workspace->winId(), d_window->handle());
-
-      // Ensure the window stays on top
-      SetWindowPos((HWND)workspace->winId(), HWND_TOPMOST,
-                   0, 0, 0, 0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-
-      // Force the Z-order to be updated
-      HWND hwnd = (HWND)workspace->winId();
-      SetForegroundWindow(hwnd);
-      BringWindowToTop(hwnd);
-      RedrawWindow(hwnd, NULL, NULL, RDW_UPDATENOW | RDW_ALLCHILDREN);
+                configureWindowsWorkspace(workspace);
 #endif
+            }
 
-#ifdef Q_OS_WIN32_DISABLED
-    HWND hShellWnd = GetShellWindow();
-
-      HWND hDefView =
-          FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
-      HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);
-      HWND ProgmanHwnd = FindWindow("Progman", "Program Manager");
-      //HWND aero_shell_hwnd = FindWindow("CabinetWClass", "Personalization");
-
-      if (!folderView)
-          qApp->quit();
-
-      if (check_windows_version() < 5){
-         if (SetParent((HWND)workspace->winId(), folderView) == NULL)
-          qApp->quit();
-         return;
-      } else {
-         if (SetParent((HWND)workspace->winId(), hDefView) == NULL)
-          qApp->quit();
-      }
-
-      LONG lStyle = GetWindowLong((HWND) workspace->winId(), GWL_STYLE);
-      LONG current_window_ex_style = GetWindowLong((HWND) workspace->winId(), GWL_EXSTYLE);
-
-      //lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
-      lStyle &= ~(WS_SYSMENU | WS_MINIMIZE | WS_CAPTION | WS_SIZEBOX);
-      lStyle |=
-              (WS_MAXIMIZE
-               | WS_CHILDWINDOW
-               | WS_VISIBLE
-               | WS_CLIPCHILDREN
-               | WS_CLIPSIBLINGS
-               );
-      SetWindowLongPtr((HWND) workspace->winId(), GWL_STYLE, lStyle);
-
-      current_window_ex_style &= ~(WS_EX_WINDOWEDGE
-                                   | WS_EX_RIGHTSCROLLBAR
-                                   | WS_EX_LEFTSCROLLBAR
-                                   | WS_EX_LEFT
-                                   | WS_EX_RIGHT
-                                   | WS_EX_STATICEDGE
-                                   );
-
-      SetWindowLongPtr((HWND) workspace->winId(), GWL_EXSTYLE,
-                       current_window_ex_style
-                       | WS_EX_TOPMOST
-                       | WS_EX_COMPOSITED
-                       | WS_EX_TRANSPARENT
-                       | WS_EX_ACCEPTFILES
-                       | WS_EX_TOOLWINDOW
-                       );
-
-      SetWindowLongPtr((HWND) workspace->viewport()->winId(), GWL_EXSTYLE,
-                       current_window_ex_style
-                       | WS_EX_TOPMOST
-                       | WS_EX_COMPOSITED
-                       | WS_EX_TRANSPARENT
-                       | WS_EX_ACCEPTFILES
-                       );
-
-      SetWindowPos((HWND) workspace->winId(), HWND_TOPMOST,
-                   0, 0, 0, 0,
-                   SWP_FRAMECHANGED
-                   | SWP_NOMOVE
-                   | SWP_NOSIZE
-                   | SWP_NOZORDER
-                   | SWP_NOOWNERZORDER);
-
-      SetWindowPos((HWND) workspace->viewport()->winId(), HWND_TOPMOST,
-                   0, 0, 0, 0,
-                   SWP_FRAMECHANGED
-                   | SWP_NOMOVE
-                   | SWP_NOSIZE
-                   | SWP_NOZORDER
-                   | SWP_NOOWNERZORDER);
-
-      PDWORD_PTR result = 0;
-      ::SendMessageTimeout(ProgmanHwnd, 0x052C, 0xD, 0x1, SMTO_NORMAL, 1000, result);
-      cherry_kit::system_window_context::get()->hide_native_desktop();
-#endif
+            workspace->show();
+        }
     }
-  }
 
-  ~Runtime() {
-    std::for_each(std::begin(m_workspace_list), std::end(m_workspace_list),
-                  [&](DesktopManager *a_manager) { delete a_manager; });
+    ~Runtime() {
+        for (auto workspace : m_workspace_list) {
+            delete workspace;
+        }
+        m_workspace_list.clear();
 
-    m_workspace_list.clear();
+        delete cherry_kit::resource_manager::instance();
+        cherry_kit::extension_manager::instance()->destroy_instance();
+    }
 
-    cherry_kit::resource_manager *rm = cherry_kit::resource_manager::instance();
-    delete rm;
-    cherry_kit::extension_manager::instance()->destroy_instance();
-  }
-
-private:
-  std::vector<DesktopManager *> m_workspace_list;
+    std::vector<DesktopManager *> m_workspace_list;
 };
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
 #ifdef Q_OS_WIN32
-  __reset_session_log();
-  qInstallMessageHandler(__sync_session_log);
+    resetWindowsSessionLog();
+    qInstallMessageHandler(syncWindowsSessionLog);
 #endif
 
-  char *runtime_platform_name = 0;
+    char *platform_name = nullptr;
+    bool windowed_mode = false;
+    bool desktop_mode = false;
 
 #ifdef Q_OS_LINUX
-  for (int i = 0; i < argc; i++) {
-    if ((strcmp(argv[i], "-platform") != 0) ||
-        (argc < (i + 1) && strlen(argv[i + 1]) <= 0) || (argv[i + 1][0] == '-'))
-      continue;
-
-    runtime_platform_name = argv[i + 1];
-  }
-
-  if (runtime_platform_name)
-    printf("Detected Platform %s\n", runtime_platform_name);
+    for (int i = 0; i < argc; i++) {
+        if ((strcmp(argv[i], "-platform") == 0) && (i + 1 < argc)) {
+            platform_name = argv[i + 1];
+            break;
+        }
+    }
 #endif
 
-  QApplication app(argc, argv);
-  cherry_kit::extension_manager *loader = 0;
+    for (int i = 0; i < argc; i++) {
+        if (strcmp(argv[i], "--windowed") == 0) {
+            windowed_mode = true;
+            break;
+        }
+        if (strcmp(argv[i], "--desktop") == 0) {
+            desktop_mode = true;
+            break;
+        }
+    }
 
-  loader = cherry_kit::extension_manager::instance(
-      QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
-                               QLatin1String("/share/plexy/ext/groups/")),
-      QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() +
-                               QLatin1String("/plexyext/")));
+    QApplication app(argc, argv);
 
-  Runtime runtime(runtime_platform_name);
+    cherry_kit::extension_manager::instance(
+        QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() + QLatin1String("/share/plexy/ext/groups/")),
+        QDir::toNativeSeparators(cherry_kit::config::instance()->prefix() + QLatin1String("/plexyext/"))
+    );
 
-  return app.exec();
+    Runtime runtime(platform_name, windowed_mode);
+
+#ifdef Q_OS_WIN32
+    if (!windowed_mode) {
+        for (auto workspace : runtime.m_workspace_list) {
+            configureWindowsWorkspace(workspace, desktop_mode);
+        }
+    }
+#endif
+
+    return app.exec();
 }
