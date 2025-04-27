@@ -189,12 +189,36 @@ int SocketWrapper::send(const void* data, size_t size)
 int SocketWrapper::recv(void* buffer, size_t size)
 {
     if (!connected_) return -1;
-    if (useSSL_) {
-        return SSL_read(ssl_, buffer, (int)size);
-    } else {
+
+    if (useSSL_)
+    {
+        int ret = SSL_read(ssl_, buffer, (int)size);
+        if (ret > 0)
+        {
+            return ret;
+        }
+        else
+        {
+            int err = SSL_get_error(ssl_, ret);
+            if (err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE)
+            {
+                // SSL needs more data, not an error
+                return 0;
+            }
+            else
+            {
+                // Real error or disconnect
+                ERR_print_errors_fp(stderr);
+                return -1;
+            }
+        }
+    }
+    else
+    {
         return ::recv(sock_, (char*)buffer, (int)size, 0);
     }
 }
+
 
 bool SocketWrapper::wait_for_ready(bool want_read, bool want_write, int timeout_ms)
 {
