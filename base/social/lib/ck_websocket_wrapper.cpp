@@ -126,27 +126,41 @@ bool SocketWrapper::connect_socket(const std::string& host, int port)
     }
 
 #ifdef _WIN32
-    if (last_error == WSAEWOULDBLOCK) {
-        // Non-blocking connect in progress
-        if (wait_for_ready(false, true, 5000)) { // Wait up to 5 seconds for writable
+    if (last_error == WSAEWOULDBLOCK)
+    {
+        if (wait_for_ready(false, true, 5000)) // wait up to 5 seconds for writable
+        {
             return true;
-        } else {
+        }
+        else
+        {
             std::cerr << "connect() timeout after WSAEWOULDBLOCK\n";
             return false;
         }
     }
 #else
-    if (last_error == EINPROGRESS) {
-        if (wait_for_ready(false, true, 5000)) {
+    if (last_error == EINPROGRESS)
+    {
+        if (wait_for_ready(false, true, 5000))
+        {
+            int sock_error = 0;
+            socklen_t len = sizeof(sock_error);
+            if (getsockopt(sock_, SOL_SOCKET, SO_ERROR, &sock_error, &len) < 0 || sock_error != 0)
+            {
+                std::cerr << "connect() failed after select(), errno=" << sock_error << " (" << strerror(sock_error) << ")\n";
+                return false;
+            }
             return true;
-        } else {
+        }
+        else
+        {
             std::cerr << "connect() timeout after EINPROGRESS\n";
             return false;
         }
     }
 #endif
 
-    std::cerr << "connect() failed, error = " << last_error << "\n";
+    std::cerr << "connect() failed immediately, error = " << last_error << "\n";
     return false;
 }
 

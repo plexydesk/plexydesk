@@ -3,7 +3,6 @@
 #endif
 
 #include "../ck_websocket_client.h"
-
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -18,7 +17,7 @@ int main()
 
     client.set_on_connect([&]() {
         std::cout << "Connected to WebSocket!\n";
-        client.send("Hello WebSocket from Social Kit!");
+        client.send("Hello WebSocket Server!"); // <-- IMPORTANT: SEND SOMETHING!
     });
 
     client.set_on_message([&](const std::string& message) {
@@ -37,16 +36,25 @@ int main()
     if (client.connect("wss://echo.websocket.events")) {
         std::cout << "Connecting...\n";
 
-        // Instead of sleep, wait until message is received
-        while (!message_received) {
+        auto start = std::chrono::steady_clock::now();
+
+        while (!message_received)
+        {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            auto now = std::chrono::steady_clock::now();
+            if (std::chrono::duration_cast<std::chrono::seconds>(now - start).count() > 15)
+            {
+                std::cerr << "Timeout waiting for message\n";
+                break;
+            }
         }
 
-        // Now close after getting message
         client.close();
-    } else {
+    }
+    else {
         std::cerr << "Failed to connect\n";
     }
 
     return 0;
 }
+
