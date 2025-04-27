@@ -57,6 +57,7 @@ private:
     int port_;
     bool use_ssl_;
     std::string path_;
+    std::string fragmented_message_buffer_;
 };
 
 } // namespace social_kit

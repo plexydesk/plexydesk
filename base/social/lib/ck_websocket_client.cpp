@@ -157,16 +157,20 @@ void WebSocketClient::parse_frames()
             payload = read_buffer_.substr(header_size, payload_len);
         }
 
+        if (!fin) {
+            fragmented_message_buffer_ += payload;
+            continue;
+        } else if (!fragmented_message_buffer_.empty()) {
+            fragmented_message_buffer_ += payload;
+            payload = fragmented_message_buffer_;
+            fragmented_message_buffer_.clear();
+        }
+
         if (opcode == 1 && on_message_) {
             on_message_(payload);
         }
 
         read_buffer_.erase(0, header_size + mask_offset + payload_len);
-
-        if (!fin) {
-            // TODO: handle fragmentation later if needed
-            break;
-        }
     }
 }
 
