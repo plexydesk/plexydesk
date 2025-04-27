@@ -2,8 +2,34 @@
 #include <regex>
 #include <sstream>
 #include <iostream>
+#include <random>
+#include <sstream>
+#include <iomanip>
 
 namespace social_kit {
+
+std::string random_sec_websocket_key()
+{
+    unsigned char key[16];
+    std::random_device rd;
+    for (int i = 0; i < 16; ++i) {
+        key[i] = rd();
+    }
+
+    // base64 encode (simple)
+    static const char* base64_chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    std::string base64;
+    for (int i = 0; i < 16; i += 3) {
+        int val = (key[i] << 16) + (key[i + 1] << 8) + key[i + 2];
+        base64.push_back(base64_chars[(val >> 18) & 0x3F]);
+        base64.push_back(base64_chars[(val >> 12) & 0x3F]);
+        base64.push_back(base64_chars[(val >> 6) & 0x3F]);
+        base64.push_back(base64_chars[val & 0x3F]);
+    }
+    return base64;
+}
+
 
 WebSocketClient::WebSocketClient()
     : running_(false), port_(80), use_ssl_(false)
@@ -48,6 +74,7 @@ void WebSocketClient::send(const std::string& message)
 
 void WebSocketClient::close()
 {
+    if (!running_) return;
     running_ = false;
     socket_.close();
     if (io_thread_.joinable()) io_thread_.join();
@@ -87,12 +114,38 @@ bool WebSocketClient::perform_handshake()
     std::string request = build_handshake_request();
     socket_.send(request.c_str(), request.size());
 
-    char buffer[4096];
-    int len = socket_.recv(buffer, sizeof(buffer));
-    if (len <= 0) return false;
+    std::string response;
+    char buffer[1024];
 
-    std::string response(buffer, len);
-    return response.find("101 Switching Protocols") != std::string::npos;
+    auto start_time = std::chrono::steady_clock::now();
+
+    while (true)
+    {
+        int len = socket_.recv(buffer, sizeof(buffer));
+        if (len > 0)
+        {
+            response.append(buffer, len);
+            if (response.find("\r\n\r\n") != std::string::npos) {
+                break; // Full HTTP headers received
+            }
+        }
+
+        auto now = std::chrono::steady_clock::now();
+        if (std::chrono::duration_cast<std::chrono::seconds>(now - start_time).count() > 5)
+        {
+            if (on_error_) on_error_("Handshake timeout");
+            return false;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    if (response.find("101 Switching Protocols") != std::string::npos) {
+        return true;
+    }
+
+    if (on_error_) on_error_("Handshake failed: " + response);
+    return false;
 }
 
 void WebSocketClient::send_pending()
@@ -181,7 +234,7 @@ std::string WebSocketClient::build_handshake_request()
        << "Host: " << host_ << ":" << port_ << "\r\n"
        << "Upgrade: websocket\r\n"
        << "Connection: Upgrade\r\n"
-       << "Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==\r\n"
+       << "Sec-WebSocket-Key: " << random_sec_websocket_key() << "\r\n"
        << "Sec-WebSocket-Version: 13\r\n\r\n";
     return ss.str();
 }

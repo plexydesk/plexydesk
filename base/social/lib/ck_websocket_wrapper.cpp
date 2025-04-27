@@ -34,6 +34,8 @@ bool SocketWrapper::connect(const std::string& host, int port, bool useSSL)
         ssl_ = SSL_new(ctx_);
         SSL_set_fd(ssl_, sock_);
 
+	SSL_set_tlsext_host_name(ssl_, host.c_str());
+
         int ret;
         do {
             ret = SSL_connect(ssl_);
@@ -77,7 +79,7 @@ bool SocketWrapper::connect_socket(const std::string& host, int port)
         return false;
     }
 
-    ::connect(sock_, res->ai_addr, (int)res->ai_addrlen); // will return immediately
+    ::connect(sock_, res->ai_addr, (int)res->ai_addrlen); 
 
     freeaddrinfo(res);
     return true;
@@ -133,18 +135,26 @@ bool SocketWrapper::wait_for_ready(bool want_read, bool want_write, int timeout_
 
 void SocketWrapper::close()
 {
+    if (!connected_) return; 
+
+    connected_ = false;
+
     if (ssl_)
     {
-        SSL_shutdown(ssl_);
-        SSL_free(ssl_);
+        SSL_shutdown(static_cast<SSL*>(ssl_));
+        SSL_free(static_cast<SSL*>(ssl_));
+        ssl_ = nullptr;
     }
-    if (ctx_) SSL_CTX_free(ctx_);
+    if (ctx_)
+    {
+        SSL_CTX_free(static_cast<SSL_CTX*>(ctx_));
+        ctx_ = nullptr;
+    }
 
 #ifdef _WIN32
     closesocket(sock_);
 #else
     ::close(sock_);
 #endif
-    connected_ = false;
 }
 }
