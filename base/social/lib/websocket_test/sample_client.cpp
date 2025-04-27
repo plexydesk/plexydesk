@@ -1,3 +1,7 @@
+#ifdef _WIN32
+#include <openssl/applink.c>
+#endif
+
 #include "../ck_websocket_client.h"
 
 #include <iostream>

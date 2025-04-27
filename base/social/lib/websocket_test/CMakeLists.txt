@@ -12,4 +12,8 @@ add_executable(wsclient
     ../ck_websocket_wrapper.cpp
 )
 
-target_link_libraries(wsclient PRIVATE OpenSSL::SSL OpenSSL::Crypto pthread)
+if (WIN32)
+    target_link_libraries(wsclient PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+else()
+    target_link_libraries(wsclient PRIVATE OpenSSL::SSL OpenSSL::Crypto pthread)
+endif(WIN32)
