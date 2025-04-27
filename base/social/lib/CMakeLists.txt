@@ -98,6 +98,7 @@ set(sourceFiles
     ck_remote_account.cpp
     ck_remote_account_sync.cpp
     ck_websocket_wrapper.cpp
+    ck_websocket_client.cpp
     webservice.cpp
     asyncimageloader.cpp
     asyncimagecreator.cpp
@@ -112,6 +113,7 @@ set(headerFiles
     ck_remote_account.h
     ck_remote_account_sync.h
     ck_websocket_wrapper.h
+    ck_websocket_client.h
     webservice.h
     asyncimageloader.h
     asyncimagecreator.h
