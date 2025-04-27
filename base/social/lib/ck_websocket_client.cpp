@@ -89,6 +89,8 @@ void WebSocketClient::event_loop()
 
     if (on_connect_) on_connect_();
 
+    send_pending(); 
+
     while (running_)
     {
         bool want_read = true;
@@ -242,23 +244,38 @@ std::string WebSocketClient::build_handshake_request()
 std::string WebSocketClient::encode_frame(const std::string& message)
 {
     std::string frame;
-    frame += 0x81; // FIN + Text Frame
+    frame += 0x81; // FIN + Text frame
 
-    if (message.size() <= 125) {
-        frame += static_cast<char>(message.size());
-    } else if (message.size() <= 65535) {
-        frame += 126;
-        frame += static_cast<char>((message.size() >> 8) & 0xFF);
-        frame += static_cast<char>(message.size() & 0xFF);
+    size_t payload_len = message.size();
+
+    if (payload_len <= 125) {
+        frame += static_cast<char>(0x80 | payload_len); // MASK bit set
+    } else if (payload_len <= 65535) {
+        frame += static_cast<char>(0x80 | 126);
+        frame += static_cast<char>((payload_len >> 8) & 0xFF);
+        frame += static_cast<char>(payload_len & 0xFF);
     } else {
-        frame += 127;
+        frame += static_cast<char>(0x80 | 127);
         for (int i = 7; i >= 0; --i)
-            frame += static_cast<char>((message.size() >> (i * 8)) & 0xFF);
+            frame += static_cast<char>((payload_len >> (i * 8)) & 0xFF);
     }
 
-    frame += message;
+    // Create random 4-byte mask
+    uint8_t masking_key[4];
+    std::random_device rd;
+    for (int i = 0; i < 4; ++i) {
+        masking_key[i] = rd() & 0xFF;
+        frame += masking_key[i];
+    }
+
+    // Mask the payload
+    for (size_t i = 0; i < payload_len; ++i) {
+        frame += message[i] ^ masking_key[i % 4];
+    }
+
     return frame;
 }
+
 
 void WebSocketClient::shutdown()
 {
