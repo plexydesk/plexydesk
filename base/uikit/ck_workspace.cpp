@@ -242,7 +242,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
   priv->m_screen_id = -1;
 
   setAttribute(Qt::WA_AcceptTouchEvents);
-  setAttribute(Qt::WA_TranslucentBackground);
+  //setAttribute(Qt::WA_TranslucentBackground);
 
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -266,7 +266,7 @@ workspace::workspace(QGraphicsScene *a_graphics_scene_ptr,
 
 #ifdef Q_OS_WIN
   /* do not change this unless it's a must */
-  setWindowFlags(Qt::CustomizeWindowHint);
+  //setWindowFlags(Qt::CustomizeWindowHint);
   setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 #endif
 

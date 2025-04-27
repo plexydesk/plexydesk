@@ -259,6 +259,14 @@ if (DOXYGEN_FOUND)
         )
 endif (DOXYGEN_FOUND)
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows" AND ENABLE_WINRT)
+    set(WINDOWS_KITS_UNION_METADATA "C:/Program Files (x86)/Windows Kits/10/UnionMetadata")
+    if(EXISTS "${WINDOWS_KITS_UNION_METADATA}")
+        add_compile_options(/AI"${WINDOWS_KITS_UNION_METADATA}")
+    endif()
+endif()
+
+
 CONFIGURE_FILE(
     "${CMAKE_CURRENT_SOURCE_DIR}/runner/plexydesk.cmake.desktop"
     "${CMAKE_CURRENT_BINARY_DIR}/runner/plexydesk.desktop"

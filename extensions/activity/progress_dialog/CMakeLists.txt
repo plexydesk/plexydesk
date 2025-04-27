@@ -26,7 +26,6 @@ set(sourceFiles
 
 set(libs
     ${QT_QTCORE_LIBRARY}
-    ${PLEXY_UI_CORE_LIBRARY}
     )
 
 ADD_LIBRARY(progress_dialog SHARED ${sourceFiles})

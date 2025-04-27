@@ -252,10 +252,22 @@ public:
       cherry_kit::device_window *d_window =
               cherry_kit::system_window_context::get()->desktop();
       SetParent((window_handle_t)workspace->winId(), d_window->handle());
+
+      // Ensure the window stays on top
+      SetWindowPos((HWND)workspace->winId(), HWND_TOPMOST,
+                   0, 0, 0, 0,
+                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+      // Force the Z-order to be updated
+      HWND hwnd = (HWND)workspace->winId();
+      SetForegroundWindow(hwnd);
+      BringWindowToTop(hwnd);
+      RedrawWindow(hwnd, NULL, NULL, RDW_UPDATENOW | RDW_ALLCHILDREN);
 #endif
 
 #ifdef Q_OS_WIN32_DISABLED
-      HWND hShellWnd = GetShellWindow();
+    HWND hShellWnd = GetShellWindow();
+
       HWND hDefView =
           FindWindowEx(hShellWnd, NULL, _T("SHELLDLL_DefView"), NULL);
       HWND folderView = FindWindowEx(hDefView, NULL, _T("SysListView32"), NULL);

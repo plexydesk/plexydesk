@@ -15,7 +15,7 @@ set(QTMOC_SRCS
     httpserverinterface.h
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+#QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
 set(sourceFiles
     ${sourceFiles}

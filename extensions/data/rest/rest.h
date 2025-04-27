@@ -20,6 +20,7 @@
 #define REST_DATA_H
 
 #include <QtCore>
+#include <QObject>
 
 #include <ck_data_source.h>
 #include <QtNetwork>

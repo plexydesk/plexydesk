@@ -13,9 +13,10 @@ set(headerFiles
 set(QTMOC_SRCS
     flickrphotosearch.h
     flickrphotosearchinterface.h
+    flickrphotosearchdata.h # Added to ensure MOC generation
     )
 
-QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
+#QT5_WRAP_CPP(QT_MOC_SRCS ${QTMOC_SRCS})
 
 set(sourceFiles
     ${sourceFiles}

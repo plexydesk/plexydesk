@@ -74,7 +74,10 @@ endif(UNIX)
 
 ########### Prepare files ###############
 ADD_EXECUTABLE(${APPLICATION_EXE_NAME} ${APP_TYPE} ${WIN_APPLICATION} ${sourceFiles} ${resourceFiles} ${QT_MOC_SRCS})
-set_property(TARGET ${APPLICATION_EXE_NAME} PROPERTY VS_WINRT_COMPONENT TRUE)
+
+IF (ENABLE_WINRT)
+  set_property(TARGET ${APPLICATION_EXE_NAME} PROPERTY VS_WINRT_COMPONENT TRUE)
+endif(ENABLE_WINRT)
 
 #if(MSVC)
 #	MSVC_SET_PROPER_CONSOLE_HANDLING(${APPLICATION_EXE_NAME})
@@ -187,7 +190,6 @@ if (NOT ENABLE_WINRT)
 
 	install(FILES
   		${QT_DLL_DIR}/../plugins/bearer/qgenericbearer.dll
-  		${QT_DLL_DIR}/../plugins/bearer/qnativewifibearer.dll
   		DESTINATION bearer
 		)
 endif()
@@ -271,7 +273,7 @@ if (NOT ENABLE_WINRT)
 	windows_code_sign_deps(imageformats/qwebp.dll)
 	windows_code_sign_deps(imageformats/qtga.dll)
 	windows_code_sign_deps(imageformats/qsvg.dll)
-	windows_code_sign_deps(bearer/qnativewifibearer.dll)
+	#windows_code_sign_deps(bearer/qnativewifibearer.dll)
 	windows_code_sign_deps(platforms/qwindows.dll)
 	windows_code_sign_deps(mediaservice/wmfengine.dll)
 #	windows_code_sign_deps(imageformats/qmng.dll)

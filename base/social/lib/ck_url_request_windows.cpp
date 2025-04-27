@@ -161,7 +161,18 @@ void __stdcall _http_response_func(HINTERNET hInternet, DWORD_PTR dwContext,
 void url_request::platform_url_request::send_message_async(
     url_request_type_t a_type, const std::string &a_url,
     const url_request_context &a_form_data) {
-    #error "Not Implemented"
+    // Example implementation for Windows
+    std::cout << "send_message_async called with URL: " << a_url << std::endl;
+
+    // TODO: Add actual implementation for sending HTTP requests using WinHTTP or another library.
+    // For now, just simulate a response.
+    url_response response;
+    response.set_status_code(200);
+    response.set_http_version("HTTP/1.1");
+    response.set_response_body("Simulated response body");
+
+    // Notify listeners with the simulated response
+    ctx->notify_listners(ctx, response);
 }
 
 void url_request::platform_url_request::send_message_async(
