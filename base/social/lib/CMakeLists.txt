@@ -177,12 +177,18 @@ if (ENABLE_WINRT)
   set_property(TARGET ${QUETZAL_SOCIAL_KIT_LIBRARY} PROPERTY VS_WINRT_COMPONENT TRUE)
 endif()
 
-TARGET_LINK_LIBRARIES(${QUETZAL_SOCIAL_KIT_LIBRARY}
+find_package(OpenSSL REQUIRED)
+target_include_directories(QuetzalSocialKitQt PRIVATE ${OPENSSL_INCLUDE_DIR})
+#target_link_libraries(QuetzalSocialKitQt PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+
+target_link_libraries(${QUETZAL_SOCIAL_KIT_LIBRARY}
+    OpenSSL::SSL
+    OpenSSL::Crypto
     ${APPLE_OSX_PLATFORM_LINK_LIBRARIES}
     ${PLATFORM_LINK_LIBRARIES}
     jsoncpp_ck
     tinyxml2
-    )
+)
 
 if (ENABLE_QT5)
   QT5_USE_MODULES(${QUETZAL_SOCIAL_KIT_LIBRARY} Core Widgets Xml Network)
