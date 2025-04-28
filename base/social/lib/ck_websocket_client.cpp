@@ -89,7 +89,9 @@ void WebSocketClient::event_loop()
 
     if (on_connect_) on_connect_();
 
-    send_pending(); 
+    send_pending(); // Immediately flush queued messages
+
+    auto last_ping = std::chrono::steady_clock::now();
 
     while (running_)
     {
@@ -106,10 +108,27 @@ void WebSocketClient::event_loop()
 
         if (want_read) read_data();
         if (want_write) send_pending();
+
+        // Send PING every 30 seconds
+        auto now = std::chrono::steady_clock::now();
+        if (std::chrono::duration_cast<std::chrono::seconds>(now - last_ping).count() >= 30)
+        {
+            send_ping();
+            last_ping = now;
+        }
     }
 
     if (on_close_) on_close_();
 }
+
+void WebSocketClient::send_ping()
+{
+    std::string frame;
+    frame += static_cast<char>(0x89); // 0x8 = control frame, 0x9 = PING
+    frame += static_cast<char>(0x00); // Payload length = 0
+    socket_.send(frame.c_str(), frame.size());
+}
+
 
 bool WebSocketClient::perform_handshake()
 {
@@ -282,5 +301,11 @@ void WebSocketClient::shutdown()
     running_ = false;
     socket_.close();
 }
+
+bool WebSocketClient::is_running() const
+{
+    return running_;
+}
+
 
 } // namespace social_kit

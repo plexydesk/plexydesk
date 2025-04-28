@@ -24,6 +24,7 @@ public:
     bool connect(const std::string& url);
     void send(const std::string& message);
     void close();
+    bool is_running() const;
 
     void set_on_connect(OnConnectCallback cb) { on_connect_ = cb; }
     void set_on_message(OnMessageCallback cb) { on_message_ = cb; }
@@ -36,6 +37,7 @@ private:
     void send_pending();
     void read_data();
     void parse_frames();
+    void send_ping();
     void shutdown();
 
     std::string build_handshake_request();

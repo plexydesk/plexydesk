@@ -12,8 +12,16 @@ add_executable(wsclient
     ../ck_websocket_wrapper.cpp
 )
 
+add_executable(bs_client
+    binance_client.cpp
+    ../ck_websocket_client.cpp
+    ../ck_websocket_wrapper.cpp
+)
+
 if (WIN32)
     target_link_libraries(wsclient PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+    target_link_libraries(bs_client PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 else()
     target_link_libraries(wsclient PRIVATE OpenSSL::SSL OpenSSL::Crypto pthread)
+    target_link_libraries(bs_client PRIVATE OpenSSL::SSL OpenSSL::Crypto pthread)
 endif(WIN32)
