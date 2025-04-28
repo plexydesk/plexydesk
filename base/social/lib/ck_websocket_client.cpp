@@ -38,7 +38,9 @@ WebSocketClient::WebSocketClient()
 
 WebSocketClient::~WebSocketClient()
 {
-    close();
+    if (is_running()) {
+    	close();
+    }
 }
 
 bool WebSocketClient::connect(const std::string& url)
