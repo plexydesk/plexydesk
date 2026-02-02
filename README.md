@@ -1,3 +1,8 @@
+We have suspened the development of this codebase, we are taking plexydesk to the next level with a new display protocol and a display server, you can find more information about it from http://plexydesk.com and our social media pages x.com/plexydesk 
+---------------------------------------------------------------------------------------------
+
+
+
 What is PlexyDesk ?
 ------------------
 
