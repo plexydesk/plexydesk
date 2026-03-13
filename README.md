@@ -1,8 +1,3 @@
-Scaleway has Hijacked the domain plexydesk.com and plexydesk.org so until resolved please use github as the main point to get information about plexydesk
-
-We are extreamly sorry about the inconvience, and scleway.com is 100% responsible for the downtime 
----------------------------------------------------------------------------------------------
-
 
 
 What is PlexyDesk ?
