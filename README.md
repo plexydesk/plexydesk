@@ -1,4 +1,6 @@
-We have suspened the development of this codebase, we are taking plexydesk to the next level with a new display protocol and a display server, you can find more information about it from http://plexydesk.com and our social media pages x.com/plexydesk 
+Scaleway has Hijacked the domain plexydesk.com and plexydesk.org so until resolved please use github as the main point to get information about plexydesk
+
+We are extreamly sorry about the inconvience, and scleway.com is 100% responsible for the downtime 
 ---------------------------------------------------------------------------------------------
 
 
