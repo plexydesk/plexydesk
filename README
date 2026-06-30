@@ -1,0 +1,26 @@
+libplexy — PlexyDesk IPC & Protocol Library
+============================================
+
+This package contains the core client-side IPC library for PlexyDesk.
+It implements the plexy wire protocol and DMA-BUF zero-copy buffer management
+used by all client applications to communicate with the plexyshell compositor.
+
+BUILD ORDER
+  This is module 1 of 7. No other plexy modules are required first.
+
+DEPENDENCIES
+  - Linux (POSIX, rt)
+  - A C11-capable compiler (gcc or clang)
+
+BUILD
+  make
+  make install PREFIX=/usr/local
+
+INSTALL PATHS
+  /usr/local/lib/libplexy.so
+  /usr/local/include/plexy/plexy.h
+  /usr/local/include/plexy/plexy_protocol.h
+
+LICENSE
+  GNU Affero General Public License v3.0 only — see COPYING
+  Copyright (C) 2024-2026 Siraj Razick
